@@ -4,6 +4,8 @@ using LivingWorldMod.UI;
 using Terraria;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using LivingWorldMod.Items;
+using Terraria.ID;
 
 namespace LivingWorldMod
 {
@@ -19,13 +21,21 @@ namespace LivingWorldMod
             Instance = this;
 		}
 
-        public void ToggleClockworkHammerUI()
+        public void ShowClockworkHammerUI(ClockworkHammer forHammer)
         {
-            ToggleClockworkHammerUI(ClockworkHammerInterface.CurrentState == null);
+            ClockworkHammerInterface.SetState(ClockworkHammerUI.ActivateFor(forHammer));
+            Main.PlaySound(SoundID.MenuOpen);
         }
-        public void ToggleClockworkHammerUI(bool show)
+
+        public void CloseClockworkHammerUI()
         {
-            ClockworkHammerInterface.SetState(show ? ClockworkHammerUI : null);
+            ClockworkHammerInterface.SetState(null);
+            Main.PlaySound(SoundID.MenuClose);
+        }
+
+        public bool HasClockworkHammerUI()
+        {
+            return ClockworkHammerInterface.CurrentState != null;
         }
 
         public override void Load()
