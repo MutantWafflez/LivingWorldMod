@@ -17,6 +17,8 @@ namespace LivingWorldMod.Items
 	{
 		public SlopeSetting SlopeSetting { get; set; } = SlopeSetting.TYPE_CYCLE;
 
+		private Vector2 tilePos = new Vector2();
+
 		public override void SetStaticDefaults() {
 			Tooltip.SetDefault("Right click while holding to choose hammer preset");
 		}
@@ -61,16 +63,26 @@ namespace LivingWorldMod.Items
             if(player.altFunctionUse == 2)
             {
 				//Console.WriteLine("showing hammer ui");
-				if (LivingWorldMod.Instance.HasClockworkHammerUI())
-					LivingWorldMod.Instance.CloseClockworkHammerUI();
-				else
+				// because this method is called over and over again, don't do the toggle
+				if (!LivingWorldMod.Instance.HasClockworkHammerUI())
 					LivingWorldMod.Instance.ShowClockworkHammerUI(this);
+				//	LivingWorldMod.Instance.CloseClockworkHammerUI();
 				return false; // pretend nothing happened
             }
 			else
             {
 				if (LivingWorldMod.Instance.HasClockworkHammerUI())
 					return false; // no usage
+
+				// do the thing
+				tilePos.X = Main.mouseX + Main.screenPosition.X;
+				// handle reverse gravity
+				if (player.gravDir == 1f) tilePos.Y = Main.mouseY + Main.screenPosition.Y;
+				else tilePos.Y = Main.screenPosition.Y + Main.screenHeight - Main.mouseY;
+
+				tilePos /= 16f;
+				Tile tile = Main.tile[(int) tilePos.X, (int) tilePos.Y];
+				ModifyTile(tile);
 
 				return true;
 			}
@@ -83,29 +95,38 @@ namespace LivingWorldMod.Items
 				case SlopeSetting.TYPE_CYCLE:
 					byte curSlope = tile.slope();
 					tile.slope((byte) ((curSlope + 1) % 6));
+					tile.halfBrick(tile.slope() != Tile.Type_Solid);
 					break;
 				case SlopeSetting.SLOPE_TOP_RIGHT:
 					tile.slope(Tile.Type_SlopeUpRight);
+					tile.halfBrick(true);
 					break;
 				case SlopeSetting.TYPE_FLAT:
 					tile.slope(Tile.Type_Halfbrick);
+					tile.halfBrick(true);
 					break;
 				case SlopeSetting.SLOPE_BOTTOM_RIGHT:
 					tile.slope(Tile.Type_SlopeDownRight);
+					tile.halfBrick(true);
 					break;
 				case SlopeSetting.TYPE_REMOVE_WALL:
 					
 					break;
 				case SlopeSetting.SLOPE_BOTTOM_LEFT:
 					tile.slope(Tile.Type_SlopeDownLeft);
+					tile.halfBrick(true);
 					break;
 				case SlopeSetting.TYPE_FULL:
 					tile.slope(Tile.Type_Solid);
+					tile.halfBrick(false);
 					break;
 				case SlopeSetting.SLOPE_TOP_LEFT:
 					tile.slope(Tile.Type_SlopeUpLeft);
+					tile.halfBrick(true);
 					break;
 			}
+
+			Main.PlaySound(SoundID.Dig);
         }
     }
 }
