@@ -10,7 +10,7 @@ namespace LivingWorldMod.Items
 {
 	public enum SlopeSetting
     {
-		TYPE_CYCLE, SLOPE_TOP_RIGHT, TYPE_FLAT, SLOPE_BOTTOM_RIGHT, TYPE_REMOVE_WALL, SLOPE_BOTTOM_LEFT, TYPE_FULL, SLOPE_TOP_LEFT
+		TYPE_CYCLE, SLOPE_TOP_RIGHT, TYPE_FLAT, SLOPE_BOTTOM_RIGHT, TYPE_NULL, SLOPE_BOTTOM_LEFT, TYPE_FULL, SLOPE_TOP_LEFT
     }
 
 	public class ClockworkHammer : ModItem
@@ -82,7 +82,8 @@ namespace LivingWorldMod.Items
 
 				tilePos /= 16f;
 				Tile tile = Main.tile[(int) tilePos.X, (int) tilePos.Y];
-				ModifyTile(tile);
+				if(tile.active())
+					ModifyTile(tile);
 
 				return true;
 			}
@@ -109,9 +110,9 @@ namespace LivingWorldMod.Items
 					tile.slope(Tile.Type_SlopeDownRight);
 					tile.halfBrick(true);
 					break;
-				case SlopeSetting.TYPE_REMOVE_WALL:
-					
-					break;
+				case SlopeSetting.TYPE_NULL:
+					// no function for now
+					return;
 				case SlopeSetting.SLOPE_BOTTOM_LEFT:
 					tile.slope(Tile.Type_SlopeDownLeft);
 					tile.halfBrick(true);
