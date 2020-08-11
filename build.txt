@@ -1,3 +1,4 @@
 displayName = Living World Mod
 author = RiverOaken
 version = 0.1
+buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*
