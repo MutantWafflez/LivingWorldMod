@@ -1,3 +1,3 @@
+displayName = Living World Mod
 author = RiverOaken
 version = 0.1
-displayName = Living World Mod
