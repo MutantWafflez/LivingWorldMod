@@ -1,18 +1,40 @@
-﻿using Terraria;
+﻿using System.Collections.Generic;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 
 namespace LivingWorldMod.NPCs.Villagers
 {
+    [AutoloadHead]
     public class SkyVillager : Villager
     {
-        public SkyVillager() : base("Harpy", 1) { }
+        public static readonly string[] skyHostile =
+        {
+            "You suck.",
+        };
+
+        public static readonly string[] skyNeutral =
+        {
+            "You're alright, I suppose."
+        };
+
+        public static readonly string[] skyFriendly =
+        {
+            "You're great!"
+        };
+
+        public SkyVillager() : base("Harpy", 1, VillagerType.SkyVillager, skyHostile, skyNeutral, skyFriendly) { }
 
         public override void SetDefaults()
         {
             base.SetDefaults();
             isMerchant = true;
+        }
+
+        public override string TownNPCName()
+        {
+            return "Test";
         }
 
         public override string GetChat()
@@ -24,19 +46,6 @@ namespace LivingWorldMod.NPCs.Villagers
             chatChoices.Add("No, I don't want any crackers. And stop calling me Polly!");
 
             return chatChoices;
-        }
-
-        public override string TownNPCName()
-        {
-            switch (WorldGen.genRand.Next(2))
-            {
-                case 0:
-                    return "Harpsicord";
-                case 1:
-                    return "Darpy";
-                default:
-                    return "Name? I don't have a name. (Report to Devs!)";
-            }
         }
 
         public override void SetupShop(Chest shop, ref int nextSlot)

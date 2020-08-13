@@ -15,29 +15,52 @@ namespace LivingWorldMod.NPCs.Villagers
         /// <summary>
         /// What type of villager this is. Is used for the Texture.
         /// </summary>
-        public readonly string villagerType;
+        public readonly string villagerTextureType;
+
+        /// <summary>
+        /// What numerical type of villager this is. Used for Reputation values.
+        /// </summary>
+        public readonly VillagerType villagerType;
+
+        /// <summary>
+        /// Reputation chat component. Hostile messages
+        /// </summary>
+        public readonly string[] hostileResponses;
+
+        /// <summary>
+        /// Reputation chat component. Neutral messages
+        /// </summary>
+        public readonly string[] neutralResponses;
+
+        /// <summary>
+        /// Reputation chat component. Friendly messages
+        /// </summary>
+        public readonly string[] friendlyResponses;
 
         /// <summary>
         /// Number of the sprite variation of said Villager. Used for Texture loading.
         /// </summary>
         public readonly int spriteVariation;
 
-        public Villager(string vilType, int spriteVar)
+        public Villager(string vilTextType, int spriteVar, VillagerType vilType, string[] hostile, string[] neutral, string[] friendly)
         {
-            villagerType = vilType;
+            villagerTextureType = vilTextType;
             spriteVariation = spriteVar;
+            villagerType = vilType;
+            hostileResponses = hostile;
+            neutralResponses = neutral;
+            friendlyResponses = friendly;
         }
 
-        public override string Texture => VILLAGER_TEXTURE_PATH + villagerType + "Type" + spriteVariation;
+        public override string Texture => VILLAGER_TEXTURE_PATH + villagerTextureType + "Type" + spriteVariation;
 
         public override void SetDefaults()
         {
-            npc.aiStyle = 7;
             npc.width = 18;
             npc.height = 40;
             npc.townNPC = true;
             npc.friendly = true;
-            npc.lifeMax = 200;
+            npc.lifeMax = 500;
             npc.defense = 15;
             npc.knockBackResist = 0.5f;
         }
@@ -85,9 +108,22 @@ namespace LivingWorldMod.NPCs.Villagers
         /// <summary>
         /// Gives the reputation text of the given village. Returns a not very nice message by default.
         /// </summary>
-        public virtual string GetReputationChat()
+        public string GetReputationChat()
         {
-            return "Want to know your reputation? Sorry, no can do. We haven't met you before. (Default Message, Report to devs!)";
+            float reputation = LWMWorld.villageReputation[(int)villagerType];
+            if (reputation < -30f)
+            {
+                return Main.rand.Next(hostileResponses);
+            }
+            else if (reputation >= -30f && reputation <= 30f)
+            {
+                return Main.rand.Next(neutralResponses);
+            }
+            else if (reputation > 30f)
+            {
+                return Main.rand.Next(friendlyResponses);
+            }
+            return "Reputation chat error! Report to devs! Reputation value: " + reputation;
         }
     }
 }
