@@ -3,6 +3,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using Terraria.Localization;
+using Terraria.Utilities;
 
 namespace LivingWorldMod.NPCs.Villagers
 {
@@ -11,6 +12,11 @@ namespace LivingWorldMod.NPCs.Villagers
         public const string VILLAGER_TEXTURE_PATH = "LivingWorldMod/NPCs/VillagerTextures/";
 
         public bool isMerchant;
+
+        public bool isNegativeRep;
+        public bool isNeutralRep;
+        public bool isPositiveRep;
+        public bool isMaxRep;
 
         /// <summary>
         /// What type of villager this is. Is used for the Texture.
@@ -23,33 +29,25 @@ namespace LivingWorldMod.NPCs.Villagers
         public readonly VillagerType villagerType;
 
         /// <summary>
-        /// Reputation chat component. Hostile messages
+        /// Normal GetChat() text for the given Villager.
         /// </summary>
-        public readonly string[] hostileResponses;
+        public WeightedRandom<string> getChat = new WeightedRandom<string>();
 
         /// <summary>
-        /// Reputation chat component. Neutral messages
+        /// Reputation Chat. Changes based on current Village's reputation.
         /// </summary>
-        public readonly string[] neutralResponses;
-
-        /// <summary>
-        /// Reputation chat component. Friendly messages
-        /// </summary>
-        public readonly string[] friendlyResponses;
+        public WeightedRandom<string> reputationChat = new WeightedRandom<string>();
 
         /// <summary>
         /// Number of the sprite variation of said Villager. Used for Texture loading.
         /// </summary>
         public readonly int spriteVariation;
 
-        public Villager(string vilTextType, int spriteVar, VillagerType vilType, string[] hostile, string[] neutral, string[] friendly)
+        public Villager(string vilTextType, int spriteVar, VillagerType vilType)
         {
             villagerTextureType = vilTextType;
             spriteVariation = spriteVar;
             villagerType = vilType;
-            hostileResponses = hostile;
-            neutralResponses = neutral;
-            friendlyResponses = friendly;
         }
 
         public override string Texture => VILLAGER_TEXTURE_PATH + villagerTextureType + "Type" + spriteVariation;
@@ -100,30 +98,52 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public override bool CanChat() => true;
 
-        public override string GetChat()
+        public override void PostAI()
         {
-            return "Hmmm... Seems like the Child Class of this Villager didn't override GetChat() correctly! What a shame!";
+            UpdateReputationBools();
+            UpdateChatLists();
         }
 
         /// <summary>
-        /// Gives the reputation text of the given village. Returns a not very nice message by default.
+        /// Gives the reputation text of the given village.
         /// </summary>
-        public string GetReputationChat()
+        public string GetReputationChat() => reputationChat;
+
+        public override string GetChat() => getChat;
+
+        private void UpdateReputationBools()
         {
             float reputation = LWMWorld.villageReputation[(int)villagerType];
             if (reputation < -30f)
             {
-                return Main.rand.Next(hostileResponses);
+                isNegativeRep = true;
+                isNeutralRep = false;
+                isPositiveRep = false;
+                isMaxRep = false;
             }
             else if (reputation >= -30f && reputation <= 30f)
             {
-                return Main.rand.Next(neutralResponses);
+                isNegativeRep = false;
+                isNeutralRep = true;
+                isPositiveRep = false;
+                isMaxRep = false;
             }
-            else if (reputation > 30f)
+            else if (reputation > 30f && reputation < 100f)
             {
-                return Main.rand.Next(friendlyResponses);
+                isNegativeRep = false;
+                isNeutralRep = false;
+                isPositiveRep = true;
+                isMaxRep = false;
             }
-            return "Reputation chat error! Report to devs! Reputation value: " + reputation;
+            else if (reputation >= 100f)
+            {
+                isNegativeRep = true;
+                isNeutralRep = false;
+                isPositiveRep = false;
+                isMaxRep = true;
+            }
         }
+
+        public abstract void UpdateChatLists();
     }
 }
