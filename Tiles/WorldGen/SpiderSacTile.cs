@@ -4,6 +4,7 @@ using Terraria.ObjectData;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.Enums;
+using LivingWorldMod.Projectiles.Hostile;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Tiles.WorldGen
@@ -17,6 +18,7 @@ namespace LivingWorldMod.Tiles.WorldGen
 			Main.tileNoAttach[Type] = true;
 			Main.tileWaterDeath[Type] = true;
 			Main.tileLavaDeath[Type] = true;
+			Main.tileCut[Type] = true;
 
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style1x2Top);
 			TileObjectData.newTile.Width = 2;
@@ -29,9 +31,14 @@ namespace LivingWorldMod.Tiles.WorldGen
 
 			ModTranslation mapName = CreateMapEntryName();
 			mapName.SetDefault("Spider Sac");
-			AddMapEntry(default(Color), mapName);
+			AddMapEntry(new Color(220, 205, 205), mapName);
 		}
 
         public override bool Dangersense(int i, int j, Player player) => true;
+
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
+			Projectile.NewProjectile(new Vector2(i * 16 + 16, j * 16 + frameY + 16), Vector2.Zero, ModContent.ProjectileType<SpiderSacProj>(), 0, 0);
+        }
     }
 }

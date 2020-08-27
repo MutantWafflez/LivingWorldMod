@@ -4,6 +4,8 @@ namespace LivingWorldMod
 {
 	public class LivingWorldMod : Mod
 	{
+        internal static bool debugMode = false;
+
         public override void PostUpdateEverything()
         {
             for (int repIndex = 0; repIndex < LWMWorld.villageReputation.Length; repIndex++)
