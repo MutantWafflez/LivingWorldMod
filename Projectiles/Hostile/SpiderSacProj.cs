@@ -38,7 +38,14 @@ namespace LivingWorldMod.Projectiles.Hostile
         {
             Gore.NewGore(projectile.Center, new Vector2(Main.rand.NextFloat(-4, -3), Main.rand.NextFloat(-3, -1)), mod.GetGoreSlot("Gores/SpiderSacGore"));
             Gore.NewGore(projectile.Center, new Vector2(Main.rand.NextFloat(3, 4), Main.rand.NextFloat(-3, -1)), mod.GetGoreSlot("Gores/SpiderSacGore"));
-            
+
+            for (int i = 0; i < 60; i++)
+            {
+                Vector2 position = projectile.position;
+                Dust.NewDust(position, 32, 32, 102, 0f, -8f, 0, new Color(255, 255, 255), 1.1f);
+            }
+
+
             int spiderCount = Main.rand.Next(2, 6);
             for (int i = 0; i < spiderCount; i++)
             {
