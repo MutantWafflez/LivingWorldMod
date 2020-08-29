@@ -10,8 +10,9 @@ namespace LivingWorldMod.NPCs.Villagers
     [AutoloadHead]
     public class SkyVillager : Villager
     {
+        public bool isFlying = false;
 
-        public SkyVillager() : base("Harpy", 1, VillagerType.SkyVillager) { }
+        public SkyVillager() : base("Harpy", Main.rand.Next(1, 4), VillagerType.SkyVillager) { }
 
         public override void SetDefaults()
         {
@@ -28,6 +29,21 @@ namespace LivingWorldMod.NPCs.Villagers
         {
             shop.item[nextSlot].SetDefaults(ItemID.Feather);
             nextSlot++;
+        }
+
+        public override bool PreAI()
+        {
+            if (isFlying)
+            {
+                AI();
+                return false;
+            }
+            return true;
+        }
+
+        public override void AI()
+        {
+            
         }
 
         public override void UpdateChatLists()
