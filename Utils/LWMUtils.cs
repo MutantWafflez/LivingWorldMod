@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Utilities;
@@ -12,6 +13,27 @@ namespace LivingWorldMod.Utils
             {
                 weightedRandom.Add(curType, weight);
             }
+        }
+
+        /// <summary>
+        /// Returns whether or not the given player is within a given range of an NPC type.
+        /// </summary>
+        /// <param name="npcType">The type of NPC checked for.</param>
+        /// <param name="range">The distance required to be considered "within range", measured in pixels.</param>
+        /// <returns></returns>
+        public static bool IsWithinRangeOfNPC(this Player player, int npcType, float range)
+        {
+            for (int i = 0; i < 200; i++) {
+                if (!Main.npc[i].active)
+                {
+                    continue;
+                }
+                if (Main.npc[i].type == npcType && player.Distance(Main.npc[i].Center) <= range)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         //----------Extension Methods----------
