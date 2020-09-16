@@ -10,6 +10,7 @@ using static Terraria.ModLoader.ModContent;
 using LivingWorldMod.Tiles.WorldGen;
 using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.Utils;
+using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod
 {
@@ -19,6 +20,38 @@ namespace LivingWorldMod
         public bool[] spiderWalls = new bool[Main.maxTilesX * Main.maxTilesY];
         public bool[] visitedCoords = new bool[Main.maxTilesX * Main.maxTilesY];
         public List<List<Point16>> spiderCaves = new List<List<Point16>>();
+
+        /// <summary>
+        /// Changes the inputted VillagerType's reputation by amount.
+        /// </summary>
+        /// <param name="villagerType">Enum of VillagerType</param>
+        /// <param name="amount">Amount by which the reputation is changed</param>
+        public static void ModifyReputation(VillagerType villagerType, int amount)
+        {
+            if (villagerType >= 0 && villagerType < VillagerType.VillagerTypeCount)
+            {
+                villageReputation[(int)villagerType] += amount;
+            }
+        }
+
+        /// <summary>
+        /// Changes the inputted VillagerType's reputation by amount, and creates a combat text by the changed amount at combatTextPosition.
+        /// </summary>
+        /// <param name="villagerType">Enum of VillagerType</param>
+        /// <param name="amount">Amount by which the reputation is changed</param>
+        /// <param name="combatTextPosition">Location of the combat text created to signify the changed reputation amount</param>
+        public static void ModifyReputation(VillagerType villagerType, int amount, Rectangle combatTextPosition)
+        {
+            if (villagerType >= 0 && villagerType < VillagerType.VillagerTypeCount)
+            {
+                villageReputation[(int)villagerType] += amount;
+
+                Color combatTextColor = new Color(255, 0, 0);
+                if (amount > 0)
+                    combatTextColor = new Color(0, 255, 0);
+                CombatText.NewText(combatTextPosition, combatTextColor, (amount > 0 ? "+" : "") + amount + " Reputation", true);
+            }
+        }
 
         public override TagCompound Save()
         {
