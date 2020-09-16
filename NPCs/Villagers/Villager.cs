@@ -50,7 +50,7 @@ namespace LivingWorldMod.NPCs.Villagers
             villagerType = vilType;
         }
 
-        public override string Texture => VILLAGER_TEXTURE_PATH + villagerTextureType + "Type" + spriteVariation;
+        public override string Texture => VILLAGER_TEXTURE_PATH + villagerTextureType + "Style" + spriteVariation;
 
         public override void SetDefaults()
         {
@@ -61,6 +61,7 @@ namespace LivingWorldMod.NPCs.Villagers
             npc.lifeMax = 500;
             npc.defense = 15;
             npc.knockBackResist = 0.5f;
+            npc.aiStyle = 7;
         }
 
         public override void SetChatButtons(ref string button, ref string button2)
