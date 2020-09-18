@@ -1,16 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using LivingWorldMod.Utils;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using LivingWorldMod.Utils;
-using Terraria.Utilities;
-using System.IO;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.NPCs.Villagers
 {
-    [AutoloadHead]
+
     public class SkyVillager : Villager
     {
         public bool isFlying = false;
@@ -20,11 +16,12 @@ namespace LivingWorldMod.NPCs.Villagers
         private int flyingFrameCounter = 0; //This is created due to npc.frameCounter being reverted to 0 in the Vanilla TownNPC code, so a variable must be made
 
         private int flightCooldown = 0; //Used for a cooldown on doing flight so no rare chances of instant landing/flying
-        
+
         public SkyVillager() : base("Harpy", Main.rand.Next(1, 4), VillagerType.SkyVillager) { }
 
         public override void SetStaticDefaults()
         {
+            base.SetStaticDefaults();
             Main.npcFrameCount[npc.type] = 27;
         }
 
@@ -78,7 +75,7 @@ namespace LivingWorldMod.NPCs.Villagers
                 AI(); //This is here because returning false in PreAI will also prevent our AI from running
                 return false;
             }
-            return true;
+            return base.PreAI();
         }
 
         public override void AI()
@@ -145,7 +142,7 @@ namespace LivingWorldMod.NPCs.Villagers
                 if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.Next(1501) == 0 && npc.ai[0] != -1f)
                 {
                     npc.velocity *= 0f;
-                    npc.velocity.Y = 0.01f; 
+                    npc.velocity.Y = 0.01f;
                     npc.ai[0] = -1f;
                     npc.ai[1] = 0f;
                     npc.netUpdate = true;
@@ -169,6 +166,7 @@ namespace LivingWorldMod.NPCs.Villagers
                     npc.velocity *= 0f;
                     flightCooldown = Main.rand.Next(60 * 120, 60 * 240); //Random flight cooldown anywhere from 120 seconds to 240 seconds
                     isFlying = false;
+                    npc.noGravity = false;
                     npc.netUpdate = true;
                     return;
                 }

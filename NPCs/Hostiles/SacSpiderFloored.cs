@@ -44,7 +44,7 @@ namespace LivingWorldMod.NPCs.Hostiles
                 {
                     npc.velocity.Y -= jumpVelocity;
                 }
-            } 
+            }
             else
             {
                 npc.velocity.X = 2f * npc.direction;
@@ -89,7 +89,7 @@ namespace LivingWorldMod.NPCs.Hostiles
         /// <param name="referencePos">The position used as reference for if the second parameter, possiblePos, is above</param>
         /// <param name="possiblePos">Position checked as if it is above referencePos</param>
         /// <returns></returns>
-        private bool IsAbove(Vector2 referencePos, Vector2 possiblePos) => (referencePos.Y - possiblePos.Y) > 32 ;
+        private bool IsAbove(Vector2 referencePos, Vector2 possiblePos) => (referencePos.Y - possiblePos.Y) > 32;
 
         public override void FindFrame(int frameHeight)
         {

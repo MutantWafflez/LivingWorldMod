@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using LivingWorldMod.NPCs.Villagers;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using LivingWorldMod.NPCs.Villagers;
-using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.NPCs
 {
-    public class ReputationGlobalNPC : GlobalNPC
+    public class LWMGeneralGlobalNPC : GlobalNPC
     {
-
-
+        /// <summary>
+        /// Removes reputation from the Harpy Reputation value if a normal Harpy or Wyvern is killed
+        /// </summary>
         public override bool SpecialNPCLoot(NPC npc)
         {
             switch (npc.type)
@@ -25,5 +24,7 @@ namespace LivingWorldMod.NPCs
             }
             return base.SpecialNPCLoot(npc);
         }
+
+
     }
 }

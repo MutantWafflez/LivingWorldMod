@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Terraria;
-using Terraria.ID;
 using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace LivingWorldMod.Utils
 {
