@@ -67,6 +67,7 @@ namespace LivingWorldMod
                     TagCompound villagerDataTag = new TagCompound
                     {
                         {"type", (int)((Villager)npcAtIndex.modNPC).villagerType },
+                        {"spriteVar",  ((Villager)npcAtIndex.modNPC).spriteVariation}, 
                         {"x", npcAtIndex.Center.X },
                         {"y", npcAtIndex.Center.Y },
                         {"name", npcAtIndex.GivenName },
@@ -93,9 +94,11 @@ namespace LivingWorldMod
                 //if (recievedVilType == (int)VillagerType.LihzahrdVillager)
                 //Lihzahrd Villager types here
                 int npcIndex = NPC.NewNPC((int)villagerData[i].GetFloat("x"), (int)villagerData[i].GetFloat("y"), villagerType);
-                Main.npc[npcIndex].GivenName = villagerData[i].GetString("name");
-                Main.npc[npcIndex].homeTileX = villagerData[i].GetAsInt("homeTileX");
-                Main.npc[npcIndex].homeTileX = villagerData[i].GetAsInt("homeTileY");
+                NPC npcAtIndex = Main.npc[npcIndex];
+                npcAtIndex.GivenName = villagerData[i].GetString("name");
+                ((Villager)npcAtIndex.modNPC).spriteVariation = villagerData[i].GetInt("spriteVar");
+                npcAtIndex.homeTileX = villagerData[i].GetInt("homeTileX");
+                npcAtIndex.homeTileX = villagerData[i].GetInt("homeTileY");
             }
         }
 
