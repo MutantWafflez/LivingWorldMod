@@ -1,22 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using LivingWorldMod.NPCs.Villagers;
+using LivingWorldMod.Tiles.WorldGen;
+using LivingWorldMod.Utils;
+using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using Terraria.DataStructures;
 using Terraria.World.Generation;
-using Terraria.GameContent.Generation;
 using static Terraria.ModLoader.ModContent;
-using LivingWorldMod.Tiles.WorldGen;
-using LivingWorldMod.NPCs.Villagers;
-using LivingWorldMod.Utils;
-using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod
 {
     public class LWMWorld : ModWorld
     {
         public static int[] villageReputation = new int[(int)VillagerType.VillagerTypeCount];
+
         public bool[] spiderWalls = new bool[Main.maxTilesX * Main.maxTilesY];
         public bool[] visitedCoords = new bool[Main.maxTilesX * Main.maxTilesY];
         public List<List<Point16>> spiderCaves = new List<List<Point16>>();
@@ -55,14 +56,47 @@ namespace LivingWorldMod
 
         public override TagCompound Save()
         {
+            IList<TagCompound> villagerData = new List<TagCompound>();
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npcAtIndex = Main.npc[i];
+                if (!LWMUtils.IsTypeOfVillager(npcAtIndex))
+                    continue;
+                else
+                {
+                    TagCompound villagerDataTag = new TagCompound
+                    {
+                        {"type", (int)((Villager)npcAtIndex.modNPC).villagerType },
+                        {"x", npcAtIndex.Center.X },
+                        {"y", npcAtIndex.Center.Y },
+                        {"name", npcAtIndex.GivenName },
+                        {"homeTileX", npcAtIndex.homeTileX },
+                        {"homeTileY", npcAtIndex.homeTileY }
+                    };
+                    villagerData.Add(villagerDataTag);
+                }
+            }
             return new TagCompound {
-                {"VillageReputation", villageReputation }
+                {"VillageReputation", villageReputation },
+                {"VillagerData", villagerData }
             };
         }
 
         public override void Load(TagCompound tag)
         {
             villageReputation = tag.GetIntArray("VillageReputation");
+            IList<TagCompound> villagerData = tag.GetList<TagCompound>("VillagerData");
+            for (int i = 0; i < villagerData.Count; i++)
+            {
+                int villagerType = NPCType<SkyVillager>();
+                int recievedVilType = villagerData[i].GetAsInt("type");
+                //if (recievedVilType == (int)VillagerType.LihzahrdVillager)
+                //Lihzahrd Villager types here
+                int npcIndex = NPC.NewNPC((int)villagerData[i].GetFloat("x"), (int)villagerData[i].GetFloat("y"), villagerType);
+                Main.npc[npcIndex].GivenName = villagerData[i].GetString("name");
+                Main.npc[npcIndex].homeTileX = villagerData[i].GetAsInt("homeTileX");
+                Main.npc[npcIndex].homeTileX = villagerData[i].GetAsInt("homeTileY");
+            }
         }
 
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
@@ -71,7 +105,8 @@ namespace LivingWorldMod
             if (spiderCavesIndex != -1)
                 tasks.Insert(spiderCavesIndex + 1, new PassLegacy("Spider Sac Tiles", CustomSpiderCavernGenTask));
             int structureGenTask = tasks.FindIndex(task => task.Name.Equals("Micro Biomes"));
-            if (structureGenTask != -1) {
+            if (structureGenTask != -1)
+            {
                 tasks.Insert(structureGenTask + 1, new PassLegacy("Sky Village", SkyVillageGenTask));
             }
         }
@@ -161,7 +196,7 @@ namespace LivingWorldMod
                     List<TileNode> childNodes = activeNode.GetChildren();
                     childNodes.ForEach(child => queue.Enqueue(child));
                 }
-    
+
                 //Finish cave iteration
                 spiderCaves.Add(currentCave);
             }

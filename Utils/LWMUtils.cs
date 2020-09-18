@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework;
+using LivingWorldMod.NPCs.Villagers;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Utilities;
@@ -23,7 +23,8 @@ namespace LivingWorldMod.Utils
         /// <returns></returns>
         public static bool IsWithinRangeOfNPC(this Player player, int npcType, float range)
         {
-            for (int i = 0; i < 200; i++) {
+            for (int i = 0; i < 200; i++)
+            {
                 if (!Main.npc[i].active)
                 {
                     continue;
@@ -32,6 +33,19 @@ namespace LivingWorldMod.Utils
                 {
                     return true;
                 }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns whether or not a given NPC is a type of Villager.
+        /// </summary>
+        /// <param name="npc">The npc to check.</param>
+        public static bool IsTypeOfVillager(this NPC npc)
+        {
+            if (npc.modNPC?.GetType().BaseType == typeof(Villager))
+            {
+                return true;
             }
             return false;
         }

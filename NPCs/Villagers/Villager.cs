@@ -56,7 +56,6 @@ namespace LivingWorldMod.NPCs.Villagers
         {
             npc.width = 18;
             npc.height = 40;
-            npc.townNPC = true;
             npc.friendly = true;
             npc.lifeMax = 500;
             npc.defense = 15;
