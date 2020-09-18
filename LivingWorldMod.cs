@@ -7,6 +7,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using System.Reflection;
 using static Mono.Cecil.Cil.OpCodes;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace LivingWorldMod
 {
@@ -54,6 +55,15 @@ namespace LivingWorldMod
         }
 
         #region Method Swaps
+        private int NPC_TypeToHeadIndex(On.Terraria.NPC.orig_TypeToHeadIndex orig, int type)
+        {
+            if (type == ModContent.NPCType<SkyVillager>())
+            {
+                return type;
+            }
+            return orig(type);
+        }
+
         private void NPC_AI_007_TownEntities(On.Terraria.NPC.orig_AI_007_TownEntities orig, NPC self)
         {
             if (LWMUtils.IsTypeOfVillager(self))
@@ -78,15 +88,6 @@ namespace LivingWorldMod
             {
                 self.townNPC = false;
             }
-        }
-
-        private int NPC_TypeToHeadIndex(On.Terraria.NPC.orig_TypeToHeadIndex orig, int type)
-        {
-            if (type == ModContent.NPCType<SkyVillager>())
-            {
-                return type;
-            }
-            return orig(type);
         }
         #endregion
     }

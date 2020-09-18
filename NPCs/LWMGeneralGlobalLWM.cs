@@ -16,10 +16,10 @@ namespace LivingWorldMod.NPCs
             switch (npc.type)
             {
                 case NPCID.Harpy:
-                    LWMWorld.ModifyReputation(VillagerType.SkyVillager, -1, new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height));
+                    LWMWorld.ModifyReputation(VillagerType.Harpy, -1, new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height));
                     break;
                 case NPCID.WyvernHead:
-                    LWMWorld.ModifyReputation(VillagerType.SkyVillager, -5, new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height));
+                    LWMWorld.ModifyReputation(VillagerType.Harpy, -5, new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height));
                     break;
             }
             return base.SpecialNPCLoot(npc);
