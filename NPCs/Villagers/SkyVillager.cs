@@ -17,11 +17,16 @@ namespace LivingWorldMod.NPCs.Villagers
 
         private int flightCooldown = 0; //Used for a cooldown on doing flight so no rare chances of instant landing/flying*/
 
-        /*public override void SetStaticDefaults()
+        public SkyVillager()
         {
-            base.SetStaticDefaults();
+            villagerType = VillagerType.Harpy;
+        }
+
+        public override void SetStaticDefaults()
+        {
             Main.npcFrameCount[npc.type] = 27;
-        }*/
+        }
+        
 
         /*public override string TownNPCName()
         {
