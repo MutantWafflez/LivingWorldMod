@@ -9,50 +9,9 @@ namespace LivingWorldMod.NPCs.Villagers
 {
     public abstract class Villager : ModNPC
     {
-        public const string VILLAGER_TEXTURE_PATH = "LivingWorldMod/NPCs/VillagerTextures/";
 
-        public bool isMerchant;
 
-        public bool isNegativeRep;
-        public bool isNeutralRep;
-        public bool isPositiveRep;
-        public bool isMaxRep;
-
-        /// <summary>
-        /// What type of villager this is. Is used for the Texture.
-        /// </summary>
-        public readonly string villagerTextureType;
-
-        /// <summary>
-        /// What numerical type of villager this is. Used for Reputation values.
-        /// </summary>
-        public readonly VillagerType villagerType;
-
-        /// <summary>
-        /// Normal GetChat() text for the given Villager.
-        /// </summary>
-        public WeightedRandom<string> getChat = new WeightedRandom<string>();
-
-        /// <summary>
-        /// Reputation Chat. Changes based on current Village's reputation.
-        /// </summary>
-        public WeightedRandom<string> reputationChat = new WeightedRandom<string>();
-
-        /// <summary>
-        /// Number of the sprite variation of said Villager. Used for Texture loading.
-        /// </summary>
-        public readonly int spriteVariation;
-
-        public Villager(string vilTextType, int spriteVar, VillagerType vilType)
-        {
-            villagerTextureType = vilTextType;
-            spriteVariation = spriteVar;
-            villagerType = vilType;
-        }
-
-        public override string Texture => VILLAGER_TEXTURE_PATH + villagerTextureType + "Style" + spriteVariation;
-
-        public override void SetDefaults()
+        /*public override void SetDefaults()
         {
             npc.width = 18;
             npc.height = 40;
@@ -61,9 +20,9 @@ namespace LivingWorldMod.NPCs.Villagers
             npc.defense = 15;
             npc.knockBackResist = 0.5f;
             npc.aiStyle = 7;
-        }
+        }*/
 
-        public override void SetChatButtons(ref string button, ref string button2)
+        /*public override void SetChatButtons(ref string button, ref string button2)
         {
             if (isMerchant)
             {
@@ -74,9 +33,9 @@ namespace LivingWorldMod.NPCs.Villagers
             {
                 button = "Reputation";
             }
-        }
+        }*/
 
-        public override void OnChatButtonClicked(bool firstButton, ref bool shop)
+        /*public override void OnChatButtonClicked(bool firstButton, ref bool shop)
         {
             if (firstButton && isMerchant)
             {
@@ -94,24 +53,9 @@ namespace LivingWorldMod.NPCs.Villagers
             {
                 shop = true;
             }
-        }
+        }*/
 
-        public override bool CanChat() => true;
-
-        public override void PostAI()
-        {
-            UpdateReputationBools();
-            UpdateChatLists();
-        }
-
-        /// <summary>
-        /// Gives the reputation text of the given village.
-        /// </summary>
-        public string GetReputationChat() => reputationChat;
-
-        public override string GetChat() => getChat;
-
-        private void UpdateReputationBools()
+        /*private void UpdateReputationBools()
         {
             float reputation = LWMWorld.villageReputation[(int)villagerType];
             if (reputation < -30f)
@@ -143,7 +87,6 @@ namespace LivingWorldMod.NPCs.Villagers
                 isMaxRep = true;
             }
         }
-
-        public abstract void UpdateChatLists();
+        */
     }
 }

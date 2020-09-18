@@ -9,30 +9,21 @@ namespace LivingWorldMod.NPCs.Villagers
 
     public class SkyVillager : Villager
     {
-        public bool isFlying = false;
+        /*public bool isFlying = false;
 
         private int flyingFrame = 0;
 
         private int flyingFrameCounter = 0; //This is created due to npc.frameCounter being reverted to 0 in the Vanilla TownNPC code, so a variable must be made
 
-        private int flightCooldown = 0; //Used for a cooldown on doing flight so no rare chances of instant landing/flying
+        private int flightCooldown = 0; //Used for a cooldown on doing flight so no rare chances of instant landing/flying*/
 
-        public SkyVillager() : base("Harpy", Main.rand.Next(1, 4), VillagerType.SkyVillager) { }
-
-        public override void SetStaticDefaults()
+        /*public override void SetStaticDefaults()
         {
             base.SetStaticDefaults();
             Main.npcFrameCount[npc.type] = 27;
-        }
+        }*/
 
-        public override void SetDefaults()
-        {
-            base.SetDefaults();
-            animationType = NPCID.Guide;
-            isMerchant = true;
-        }
-
-        public override string TownNPCName()
+        /*public override string TownNPCName()
         {
             switch (WorldGen.genRand.Next(10))
             {
@@ -59,15 +50,9 @@ namespace LivingWorldMod.NPCs.Villagers
                 default:
                     return "Robin";
             }
-        }
+        }*/
 
-        public override void SetupShop(Chest shop, ref int nextSlot)
-        {
-            shop.item[nextSlot].SetDefaults(ItemID.Feather);
-            nextSlot++;
-        }
-
-        public override bool PreAI()
+        /*public override bool PreAI()
         {
             //We want the Vanilla AI to run only when the Harpy is not flying, however otherwise, allow our AI to take over
             if (isFlying || (npc.ai[0] >= 1.1f && npc.ai[0] <= 1.3f))
@@ -171,23 +156,9 @@ namespace LivingWorldMod.NPCs.Villagers
                     return;
                 }
             }
-        }
+        }*/
 
-        public override void SendExtraAI(BinaryWriter writer)
-        {
-            writer.Write(isFlying);
-            writer.Write(flightCooldown);
-        }
-
-        public override void ReceiveExtraAI(BinaryReader reader)
-        {
-            isFlying = reader.ReadBoolean();
-            flightCooldown = reader.ReadInt32();
-        }
-
-        public override bool CanChat() => !isFlying;
-
-        public override void UpdateChatLists()
+        /*public override void UpdateChatLists()
         {
             reputationChat.Clear();
             getChat.Clear();
@@ -265,6 +236,6 @@ namespace LivingWorldMod.NPCs.Villagers
                     flyingFrameCounter = 0;
                 }
             }
-        }
+        }*/
     }
 }
