@@ -6,6 +6,7 @@ using Terraria.Localization;
 using Terraria.Utilities;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.ID;
+using System.Collections.Generic;
 
 namespace LivingWorldMod.NPCs.Villagers
 {
@@ -14,23 +15,19 @@ namespace LivingWorldMod.NPCs.Villagers
         public static readonly string VILLAGER_SPRITE_PATH = nameof(LivingWorldMod) + "/NPCs/Villagers/Textures/";
 
         public readonly WeightedRandom<string> dialogueText;
-
         public readonly WeightedRandom<string> reputationText;
+        public readonly List<string> possibleNames;
 
         public bool isNegativeRep;
-        public bool isNeutralRep;
+        public bool isNeutralRep = true; //This is set to true prematurely *just* in case UpdateReputationBools() isn't called.
         public bool isPositiveRep;
         public bool isMaxRep;
+
+        public bool isMerchant = true;
 
         public VillagerType villagerType;
 
         public int spriteVariation = 0;
-
-        public Villager()
-        {
-            dialogueText = GetDialogueText();
-            reputationText = GetReputationText();
-        }
 
         public string VillagerName
         {
@@ -40,6 +37,13 @@ namespace LivingWorldMod.NPCs.Villagers
             }
         }
 
+        public Villager()
+        {
+            dialogueText = GetDialogueText();
+            reputationText = GetReputationText();
+            possibleNames = GetPossibleNames();
+        }
+
         public override string Texture => VILLAGER_SPRITE_PATH + VillagerName + "Style1";
 
         public override string[] AltTextures => new string[] { 
@@ -47,6 +51,7 @@ namespace LivingWorldMod.NPCs.Villagers
             VILLAGER_SPRITE_PATH + VillagerName + "Style3"
         };
 
+        #region Defaults Methods
         public override bool CloneNewInstances => true;
 
         public override ModNPC Clone()
@@ -72,8 +77,9 @@ namespace LivingWorldMod.NPCs.Villagers
             npc.aiStyle = 7;
             animationType = NPCID.Guide;
         }
+        #endregion
 
-        //TODO: Figure how in the heck to draw NPCs manually properly
+        #region Update Methods
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             Texture2D textureToDraw;
@@ -90,7 +96,20 @@ namespace LivingWorldMod.NPCs.Villagers
             return false;
         }
 
-        /*public override void SetChatButtons(ref string button, ref string button2)
+        public override void PostAI()
+        {
+            UpdateReputationBools();
+        }
+        #endregion
+
+        #region Chat Methods
+        public override bool CanChat() => true;
+
+        public override string GetChat() => dialogueText;
+
+        public override string TownNPCName() => possibleNames[WorldGen.genRand.Next(possibleNames.Count)];
+
+        public override void SetChatButtons(ref string button, ref string button2)
         {
             if (isMerchant)
             {
@@ -101,9 +120,9 @@ namespace LivingWorldMod.NPCs.Villagers
             {
                 button = "Reputation";
             }
-        }*/
+        }
 
-        /*public override void OnChatButtonClicked(bool firstButton, ref bool shop)
+        public override void OnChatButtonClicked(bool firstButton, ref bool shop)
         {
             if (firstButton && isMerchant)
             {
@@ -111,20 +130,20 @@ namespace LivingWorldMod.NPCs.Villagers
             }
             else if (firstButton && !isMerchant)
             {
-                Main.npcChatText = GetReputationChat();
+                Main.npcChatText = reputationText.Get();
             }
             else if (!firstButton && isMerchant)
             {
-                Main.npcChatText = GetReputationChat();
+                Main.npcChatText = reputationText.Get();
             }
             else
             {
                 shop = true;
             }
-        }*/
+        }
+        #endregion
 
         #region Virtual Methods
-
         /// <summary>
         /// Method used to fill the dialogueText variable that is used when talking to Villager.
         /// </summary>
@@ -146,8 +165,16 @@ namespace LivingWorldMod.NPCs.Villagers
             chat.Add("If someone saw this text... I'd be scared and tell a mod dev immediately!");
             return chat;
         }
+
+        public virtual List<string> GetPossibleNames()
+        {
+            List<string> names = new List<string>();
+            names.Add("Villager (Report to Mod Dev!)");
+            return names;
+        }
         #endregion
 
+        #region Miscellaneous Methods
         private void UpdateReputationBools()
         {
             float reputation = LWMWorld.villageReputation[(int)villagerType];
@@ -180,5 +207,6 @@ namespace LivingWorldMod.NPCs.Villagers
                 isMaxRep = true;
             }
         }
+        #endregion
     }
 }
