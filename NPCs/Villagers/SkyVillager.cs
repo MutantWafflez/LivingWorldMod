@@ -24,10 +24,14 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public override void AI()
         {
+            //This check is IMPORTANT. We don't want to use PreAI cause that obstructs functionality of some other mods,
+            //so changing aiStyle is a much better way of doing this so that other mods can still properly block this AI from
+            //running if need be.
             if (isFlying || (npc.ai[0] >= 1.1f && npc.ai[0] <= 1.3f))
                 npc.aiStyle = -1;
             else
                 npc.aiStyle = 7;
+
             if (!isFlying)
             {
                 flightCooldown--;
