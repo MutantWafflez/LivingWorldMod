@@ -11,13 +11,10 @@ namespace LivingWorldMod.NPCs.Villagers
 
     public class SkyVillager : Villager
     {
-        /*public bool isFlying = false;
-
-        private int flyingFrame = 0;
-
+        public bool isFlying = false;
+        private int flyingFrame = 0; //Used for what animation frame of flying the harpy is in
         private int flyingFrameCounter = 0; //This is created due to npc.frameCounter being reverted to 0 in the Vanilla TownNPC code, so a variable must be made
-
-        private int flightCooldown = 0; //Used for a cooldown on doing flight so no rare chances of instant landing/flying*/
+        private int flightCooldown = 0; //Used for a cooldown on doing flight so no rare chances of instant landing/flying
 
         public override void SetStaticDefaults()
         {
@@ -25,19 +22,12 @@ namespace LivingWorldMod.NPCs.Villagers
             Main.npcFrameCount[npc.type] = 27;
         }
 
-        /*public override bool PreAI()
-        {
-            //We want the Vanilla AI to run only when the Harpy is not flying, however otherwise, allow our AI to take over
-            if (isFlying || (npc.ai[0] >= 1.1f && npc.ai[0] <= 1.3f))
-            {
-                AI(); //This is here because returning false in PreAI will also prevent our AI from running
-                return false;
-            }
-            return base.PreAI();
-        }
-
         public override void AI()
         {
+            if (isFlying || (npc.ai[0] >= 1.1f && npc.ai[0] <= 1.3f))
+                npc.aiStyle = -1;
+            else
+                npc.aiStyle = 7;
             if (!isFlying)
             {
                 flightCooldown--;
@@ -129,7 +119,7 @@ namespace LivingWorldMod.NPCs.Villagers
                     return;
                 }
             }
-        }*/
+        }
 
         #region Villager Class Overrides
         public override WeightedRandom<string> GetDialogueText()
@@ -210,9 +200,11 @@ namespace LivingWorldMod.NPCs.Villagers
             };
             return names;
         }
+
+        public override bool CanChat() => !isFlying;
         #endregion
 
-        /*public override void FindFrame(int frameHeight)
+        public override void FindFrame(int frameHeight)
         {
             //Flying animation should take place when flying, obviously, and when the Harpy is adjusting against Gravity when first taking off
             if (npc.ai[0] != -1f && (isFlying || npc.ai[0] == 1.2f || npc.ai[0] == 1.3f))
@@ -236,6 +228,6 @@ namespace LivingWorldMod.NPCs.Villagers
                     flyingFrameCounter = 0;
                 }
             }
-        }*/
+        }
     }
 }
