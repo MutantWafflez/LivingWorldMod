@@ -10,7 +10,7 @@ namespace LivingWorldMod.Items.Debug
         public override void SetDefaults()
         {
             item.CloneDefaults(ItemID.DirtBlock);
-            item.createTile = ModContent.TileType<VillagerHomeTile>();
+            item.createTile = ModContent.TileType<SkyVillagerHomeTile>();
         }
     }
 }

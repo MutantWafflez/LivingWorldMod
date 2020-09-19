@@ -22,6 +22,7 @@ namespace LivingWorldMod
         public bool[] visitedCoords = new bool[Main.maxTilesX * Main.maxTilesY];
         public List<List<Point16>> spiderCaves = new List<List<Point16>>();
 
+        #region Reputation
         /// <summary>
         /// Changes the inputted VillagerType's reputation by amount.
         /// </summary>
@@ -53,7 +54,9 @@ namespace LivingWorldMod
                 CombatText.NewText(combatTextPosition, combatTextColor, (amount > 0 ? "+" : "") + amount + " Reputation", true);
             }
         }
+        #endregion
 
+        #region I/O
         public override TagCompound Save()
         {
             IList<TagCompound> villagerData = new List<TagCompound>();
@@ -71,8 +74,7 @@ namespace LivingWorldMod
                         {"x", npcAtIndex.Center.X },
                         {"y", npcAtIndex.Center.Y },
                         {"name", npcAtIndex.GivenName },
-                        {"homeTileX", npcAtIndex.homeTileX },
-                        {"homeTileY", npcAtIndex.homeTileY }
+                        {"homePos",  ((Villager)npcAtIndex.modNPC).homePosition }
                     };
                     villagerData.Add(villagerDataTag);
                 }
@@ -97,11 +99,12 @@ namespace LivingWorldMod
                 NPC npcAtIndex = Main.npc[npcIndex];
                 npcAtIndex.GivenName = villagerData[i].GetString("name");
                 ((Villager)npcAtIndex.modNPC).spriteVariation = villagerData[i].GetInt("spriteVar");
-                npcAtIndex.homeTileX = villagerData[i].GetInt("homeTileX");
-                npcAtIndex.homeTileX = villagerData[i].GetInt("homeTileY");
+                ((Villager)npcAtIndex.modNPC).homePosition = villagerData[i].Get<Vector2>("homePos");
             }
         }
+        #endregion
 
+        #region World Gen
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {
             int spiderCavesIndex = tasks.FindIndex(task => task.Name.Equals("Spider Caves"));
@@ -249,9 +252,27 @@ namespace LivingWorldMod
             progress.Set(0.67f);
 
             StructureHelper.StructureHelper.GenerateStructure("Structures/SkyVillageStructure", new Point16(xPos, yPos), mod);
+
             progress.Set(0.99f);
 
             progress.End();
         }
+        public override void PostWorldGen()
+        {
+            //Spawn Villagers
+            for (int i = 0; i < Main.maxTilesX; i++)
+            {
+                for (int j = 0; j < Main.maxTilesY; j++)
+                {
+                    if (Framing.GetTileSafely(i, j).type == TileType<SkyVillagerHomeTile>())
+                    {
+                        int npcIndex = NPC.NewNPC(i * 16, j * 16, NPCType<SkyVillager>());
+                        NPC npcAtIndex = Main.npc[npcIndex];
+                        ((Villager)npcAtIndex.modNPC).homePosition = new Vector2(i, j);
+                    }
+                }
+            }
+        }
+        #endregion
     }
 }

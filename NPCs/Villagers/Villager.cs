@@ -23,6 +23,8 @@ namespace LivingWorldMod.NPCs.Villagers
         public bool isPositiveRep;
         public bool isMaxRep;
 
+        public Vector2 homePosition;
+
         public bool isMerchant = true;
 
         public VillagerType villagerType;
@@ -95,6 +97,8 @@ namespace LivingWorldMod.NPCs.Villagers
             spriteBatch.Draw(textureToDraw, new Rectangle((int)(npc.Right.X - (npc.frame.Width / 1.5) - Main.screenPosition.X), (int)(npc.Bottom.Y - npc.frame.Height - Main.screenPosition.Y + 2f), npc.frame.Width, npc.frame.Height), npc.frame, drawColor, npc.rotation, default(Vector2), spriteDirection, 0);
             return false;
         }
+
+        public override bool CheckActive() => false;
 
         public override void PostAI()
         {

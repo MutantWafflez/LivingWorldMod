@@ -69,6 +69,8 @@ namespace LivingWorldMod
             if (LWMUtils.IsTypeOfVillager(self))
             {
                 self.townNPC = true;
+                self.homeTileX = (int)((Villager)self.modNPC).homePosition.X;
+                self.homeTileY = (int)((Villager)self.modNPC).homePosition.Y;
             }
             orig(self);
             if (LWMUtils.IsTypeOfVillager(self))
