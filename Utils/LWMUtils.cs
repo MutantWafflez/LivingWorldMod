@@ -14,7 +14,7 @@ namespace LivingWorldMod.Utils
                 weightedRandom.Add(curType, weight);
             }
         }
-
+      
         /// <summary>
         /// Returns whether or not the given player is within a given range of an NPC type.
         /// </summary>
@@ -35,9 +35,5 @@ namespace LivingWorldMod.Utils
             }
             return false;
         }
-
-        //----------Extension Methods----------
-        public static Tile ToTile(this TileNode tn) => Framing.GetTileSafely(tn.position);
-        public static Point16 Add(this Point16 point, int p1x, int p1y) => point + new Point16(p1x, p1y);
     }
 }
