@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework.Audio;
-using Terraria;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Audio.Sounds

@@ -1,8 +1,5 @@
-﻿using LivingWorldMod.Gores;
-using LivingWorldMod.NPCs.Hostiles;
+﻿using LivingWorldMod.NPCs.Hostiles;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -26,7 +23,7 @@ namespace LivingWorldMod.Projectiles.Hostile
             projectile.width = 32;
             projectile.height = 28; //Is slightly smaller than the actual sprite so that on tile contact it looks a bit more smooth
         }
-        
+
         //We want it to cut tiles (such as webs) but not hit NPCs or players
         public override bool? CanCutTiles() => true;
 

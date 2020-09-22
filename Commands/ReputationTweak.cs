@@ -1,6 +1,5 @@
 ﻿using LivingWorldMod.NPCs.Villagers;
 using System;
-using Terraria;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Commands
@@ -39,7 +38,7 @@ namespace LivingWorldMod.Commands
                 {
                     throw new UsageException("Did not input correct Village Type: " + type);
                 }
-            } 
+            }
             else
             {
                 throw new UsageException("Did not input a Reputation Value or Village Type.");

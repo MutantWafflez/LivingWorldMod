@@ -1,5 +1,4 @@
 using LivingWorldMod.Tiles.WorldGen;
-using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 

@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using LivingWorldMod.NPCs.Villagers;
+using LivingWorldMod.Tiles.WorldGen;
+using LivingWorldMod.Utils;
+using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using Terraria.DataStructures;
 using Terraria.World.Generation;
-using Terraria.GameContent.Generation;
 using static Terraria.ModLoader.ModContent;
-using LivingWorldMod.Tiles.WorldGen;
-using LivingWorldMod.NPCs.Villagers;
-using LivingWorldMod.Utils;
-using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod
 {
@@ -24,6 +24,7 @@ namespace LivingWorldMod
             iterationsPerTick = Main.maxTilesX * Main.maxTilesY / 54000;
         }
 
+        #region Reputation
         /// <summary>
         /// Changes the inputted VillagerType's reputation by amount.
         /// </summary>
@@ -55,27 +56,66 @@ namespace LivingWorldMod
                 CombatText.NewText(combatTextPosition, combatTextColor, (amount > 0 ? "+" : "") + amount + " Reputation", true);
             }
         }
+        #endregion
 
+        #region I/O
         public override TagCompound Save()
         {
+            IList<TagCompound> villagerData = new List<TagCompound>();
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npcAtIndex = Main.npc[i];
+                if (!LWMUtils.IsTypeOfVillager(npcAtIndex))
+                    continue;
+                else
+                {
+                    TagCompound villagerDataTag = new TagCompound
+                    {
+                        {"type", (int)((Villager)npcAtIndex.modNPC).villagerType },
+                        {"spriteVar",  ((Villager)npcAtIndex.modNPC).spriteVariation}, 
+                        {"x", npcAtIndex.Center.X },
+                        {"y", npcAtIndex.Center.Y },
+                        {"name", npcAtIndex.GivenName },
+                        {"homePos",  ((Villager)npcAtIndex.modNPC).homePosition }
+                    };
+                    villagerData.Add(villagerDataTag);
+                }
+            }
             return new TagCompound {
-                {"VillageReputation", villageReputation }
+                {"VillageReputation", villageReputation },
+                {"VillagerData", villagerData }
             };
         }
 
         public override void Load(TagCompound tag)
         {
             villageReputation = tag.GetIntArray("VillageReputation");
+            IList<TagCompound> villagerData = tag.GetList<TagCompound>("VillagerData");
+            for (int i = 0; i < villagerData.Count; i++)
+            {
+                int villagerType = NPCType<SkyVillager>();
+                int recievedVilType = villagerData[i].GetAsInt("type");
+                //if (recievedVilType == (int)VillagerType.LihzahrdVillager)
+                //Lihzahrd Villager types here
+                int npcIndex = NPC.NewNPC((int)villagerData[i].GetFloat("x"), (int)villagerData[i].GetFloat("y"), villagerType);
+                NPC npcAtIndex = Main.npc[npcIndex];
+                npcAtIndex.GivenName = villagerData[i].GetString("name");
+                ((Villager)npcAtIndex.modNPC).spriteVariation = villagerData[i].GetInt("spriteVar");
+                ((Villager)npcAtIndex.modNPC).homePosition = villagerData[i].Get<Vector2>("homePos");
+            }
         }
+        #endregion
 
-        //https://github.com/tModLoader/tModLoader/wiki/Vanilla-World-Generation-Steps
+        #region World Gen
+		//https://github.com/tModLoader/tModLoader/wiki/Vanilla-World-Generation-Steps
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {
             int spiderCavesIndex = tasks.FindIndex(task => task.Name.Equals("Spider Caves"));
             if (spiderCavesIndex != -1)
                 tasks.Insert(spiderCavesIndex + 1, new PassLegacy("Spider Sac Tiles", CustomSpiderCavernGenTask));
             int structureGenTask = tasks.FindIndex(task => task.Name.Equals("Micro Biomes"));
-            if (structureGenTask != -1) {
+            if (structureGenTask != -1)
+            {
                 tasks.Insert(structureGenTask + 1, new PassLegacy("Sky Village", SkyVillageGenTask));
             }
         }
@@ -227,9 +267,27 @@ namespace LivingWorldMod
             progress.Set(0.67f);
 
             StructureHelper.StructureHelper.GenerateStructure("Structures/SkyVillageStructure", new Point16(xPos, yPos), mod);
+
             progress.Set(0.99f);
 
             progress.End();
         }
+        public override void PostWorldGen()
+        {
+            //Spawn Villagers
+            for (int i = 0; i < Main.maxTilesX; i++)
+            {
+                for (int j = 0; j < Main.maxTilesY; j++)
+                {
+                    if (Framing.GetTileSafely(i, j).type == TileType<SkyVillagerHomeTile>())
+                    {
+                        int npcIndex = NPC.NewNPC(i * 16, j * 16, NPCType<SkyVillager>());
+                        NPC npcAtIndex = Main.npc[npcIndex];
+                        ((Villager)npcAtIndex.modNPC).homePosition = new Vector2(i, j);
+                    }
+                }
+            }
+        }
+        #endregion
     }
 }

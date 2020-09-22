@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
