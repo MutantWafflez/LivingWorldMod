@@ -9,6 +9,8 @@ using Terraria.GameContent.Generation;
 using static Terraria.ModLoader.ModContent;
 using LivingWorldMod.Tiles.WorldGen;
 using LivingWorldMod.NPCs.Villagers;
+using LivingWorldMod.Utils;
+using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod
 {
@@ -20,6 +22,38 @@ namespace LivingWorldMod
         {
             //Main.maxTilesX/Y change from world to world and needs to be updated
             iterationsPerTick = Main.maxTilesX * Main.maxTilesY / 54000;
+        }
+
+        /// <summary>
+        /// Changes the inputted VillagerType's reputation by amount.
+        /// </summary>
+        /// <param name="villagerType">Enum of VillagerType</param>
+        /// <param name="amount">Amount by which the reputation is changed</param>
+        public static void ModifyReputation(VillagerType villagerType, int amount)
+        {
+            if (villagerType >= 0 && villagerType < VillagerType.VillagerTypeCount)
+            {
+                villageReputation[(int)villagerType] += amount;
+            }
+        }
+
+        /// <summary>
+        /// Changes the inputted VillagerType's reputation by amount, and creates a combat text by the changed amount at combatTextPosition.
+        /// </summary>
+        /// <param name="villagerType">Enum of VillagerType</param>
+        /// <param name="amount">Amount by which the reputation is changed</param>
+        /// <param name="combatTextPosition">Location of the combat text created to signify the changed reputation amount</param>
+        public static void ModifyReputation(VillagerType villagerType, int amount, Rectangle combatTextPosition)
+        {
+            if (villagerType >= 0 && villagerType < VillagerType.VillagerTypeCount)
+            {
+                villageReputation[(int)villagerType] += amount;
+
+                Color combatTextColor = new Color(255, 0, 0);
+                if (amount > 0)
+                    combatTextColor = new Color(0, 255, 0);
+                CombatText.NewText(combatTextPosition, combatTextColor, (amount > 0 ? "+" : "") + amount + " Reputation", true);
+            }
         }
 
         public override TagCompound Save()
@@ -40,6 +74,10 @@ namespace LivingWorldMod
             int spiderCavesIndex = tasks.FindIndex(task => task.Name.Equals("Spider Caves"));
             if (spiderCavesIndex != -1)
                 tasks.Insert(spiderCavesIndex + 1, new PassLegacy("Spider Sac Tiles", CustomSpiderCavernGenTask));
+            int structureGenTask = tasks.FindIndex(task => task.Name.Equals("Micro Biomes"));
+            if (structureGenTask != -1) {
+                tasks.Insert(structureGenTask + 1, new PassLegacy("Sky Village", SkyVillageGenTask));
+            }
         }
 
         private void CustomSpiderCavernGenTask(GenerationProgress progress)
@@ -145,6 +183,53 @@ namespace LivingWorldMod
 
                 currentIteration++;
             }
+        }
+
+        private void SkyVillageGenTask(GenerationProgress progress)
+        {
+            //TODO: Find better way to find space for structure
+            progress.Message = "Generating Structures... Sky Village";
+            progress.Start(0f);
+
+            int xPos = WorldGen.genRand.Next((int)(Main.maxTilesX * 0.1), (int)(Main.maxTilesX * 0.9));
+
+            int yPos = WorldGen.genRand.Next(Main.maxTilesY - (int)(Main.maxTilesY * 0.95), Main.maxTilesY - (int)(Main.maxTilesY * 0.875));
+            progress.Set(0.34f);
+
+            //Structure is 160 x 92
+            bool foundFreeSpace = false;
+            while (!foundFreeSpace)
+            {
+                bool overlap = false;
+                for (int i = xPos; i < xPos + 160; i++)
+                {
+                    for (int j = yPos; j < yPos + 92; j++)
+                    {
+                        if (!Framing.GetTileSafely(i, j).active())
+                            continue;
+                        overlap = true;
+                        break;
+                    }
+                    if (overlap)
+                        break;
+                }
+                if (overlap)
+                {
+                    xPos = WorldGen.genRand.Next((int)(Main.maxTilesX * 0.1), (int)(Main.maxTilesX * 0.9));
+                    yPos = WorldGen.genRand.Next(Main.maxTilesY - (int)(Main.maxTilesY * 0.95), Main.maxTilesY - (int)(Main.maxTilesY * 0.875));
+                    continue;
+                }
+                else
+                {
+                    foundFreeSpace = true;
+                }
+            }
+            progress.Set(0.67f);
+
+            StructureHelper.StructureHelper.GenerateStructure("Structures/SkyVillageStructure", new Point16(xPos, yPos), mod);
+            progress.Set(0.99f);
+
+            progress.End();
         }
     }
 }

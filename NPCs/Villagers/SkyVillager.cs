@@ -4,24 +4,64 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using LivingWorldMod.Utils;
 using Terraria.Utilities;
+using System.IO;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.NPCs.Villagers
 {
     [AutoloadHead]
     public class SkyVillager : Villager
     {
+        public bool isFlying = false;
 
-        public SkyVillager() : base("Harpy", 1, VillagerType.SkyVillager) { }
+        private int flyingFrame = 0;
+
+        private int flyingFrameCounter = 0; //This is created due to npc.frameCounter being reverted to 0 in the Vanilla TownNPC code, so a variable must be made
+
+        private int flightCooldown = 0; //Used for a cooldown on doing flight so no rare chances of instant landing/flying
+        
+        public SkyVillager() : base("Harpy", Main.rand.Next(1, 4), VillagerType.SkyVillager) { }
+
+        public override void SetStaticDefaults()
+        {
+            Main.npcFrameCount[npc.type] = 27;
+        }
 
         public override void SetDefaults()
         {
             base.SetDefaults();
+            animationType = NPCID.Guide;
             isMerchant = true;
         }
 
         public override string TownNPCName()
         {
-            return "Test";
+            switch (WorldGen.genRand.Next(10))
+            {
+                case 0:
+                    return "Merel";
+                case 1:
+                    return "Mari";
+                case 2:
+                    return "Wren";
+                case 3:
+                    return "Yona";
+                case 4:
+                    return "Jena";
+                case 5:
+                    return "Tori";
+                case 6:
+                    return "Loa";
+                case 7:
+                    return "Eve";
+                case 8:
+                    return "Rima";
+                case 9:
+                    return "Luyu";
+                default:
+                    return "Robin";
+            }
         }
 
         public override void SetupShop(Chest shop, ref int nextSlot)
@@ -29,6 +69,125 @@ namespace LivingWorldMod.NPCs.Villagers
             shop.item[nextSlot].SetDefaults(ItemID.Feather);
             nextSlot++;
         }
+
+        public override bool PreAI()
+        {
+            //We want the Vanilla AI to run only when the Harpy is not flying, however otherwise, allow our AI to take over
+            if (isFlying || (npc.ai[0] >= 1.1f && npc.ai[0] <= 1.3f))
+            {
+                AI(); //This is here because returning false in PreAI will also prevent our AI from running
+                return false;
+            }
+            return true;
+        }
+
+        public override void AI()
+        {
+            if (!isFlying)
+            {
+                flightCooldown--;
+                if (flightCooldown < 0)
+                    flightCooldown = 0;
+                //All of this is for the Transition of being on the Ground to being in the Air
+                if (npc.velocity.X == 0f && npc.ai[0] != 7f && flightCooldown <= 0)
+                {
+                    //Initial Jump
+                    if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.Next(1501) == 0 && npc.ai[0] != 1.1f && npc.ai[0] != 1.2f)
+                    {
+                        npc.velocity.X *= 0f;
+                        npc.velocity.Y = -8f;
+                        npc.ai[0] = 1.1f;
+                        npc.ai[1] = 0f;
+                        npc.netUpdate = true;
+                        return;
+                    }
+                    //Be in Jump Animation momentarily
+                    if (npc.ai[0] == 1.1f && ++npc.ai[1] > 15)
+                    {
+                        npc.ai[0] = 1.2f;
+                        npc.ai[1] = 0f;
+                        npc.netUpdate = true;
+                        return;
+                    }
+                    //Begin flapping wings, adjusting against gravity
+                    else if (npc.ai[0] == 1.2f && ++npc.ai[1] > 20)
+                    {
+                        npc.ai[0] = 1.3f;
+                        npc.ai[1] = 0f;
+                        npc.noGravity = true;
+                        npc.netUpdate = true;
+                        return;
+                    }
+                    //Has Positive Lift, begin moving upwards against gravity
+                    else if (npc.ai[0] == 1.3f && ++npc.ai[1] < 40)
+                    {
+                        npc.velocity.Y -= 0.1f;
+                        npc.netUpdate = true;
+                        return;
+                    }
+                    //Lift has been balanced with gravity, steady out and allow for horizontal movement
+                    else if (npc.ai[0] == 1.3f)
+                    {
+                        npc.ai[0] = 0f;
+                        npc.ai[1] = 0f;
+                        npc.ai[2] = 0f;
+                        npc.ai[3] = 0f;
+                        npc.velocity *= 0f;
+                        isFlying = true;
+                        npc.netUpdate = true;
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                //Placeholder conditions for when landing will take place, will be replaced when Village Structures are finished
+                if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.Next(1501) == 0 && npc.ai[0] != -1f)
+                {
+                    npc.velocity *= 0f;
+                    npc.velocity.Y = 0.01f; 
+                    npc.ai[0] = -1f;
+                    npc.ai[1] = 0f;
+                    npc.netUpdate = true;
+                    return;
+                }
+                //Begin moving towards ground, slowly
+                if (npc.ai[0] == -1f && (!npc.collideY || npc.velocity.Y != 0f))
+                {
+                    npc.velocity.Y += 0.1f;
+                    if (npc.velocity.Y > 1.5f)
+                        npc.velocity.Y = 1.5f;
+                    return;
+                }
+                //On touching ground, revert back to walking animations, and allow for chat
+                else if (Main.netMode != NetmodeID.MultiplayerClient && npc.ai[0] == -1f && (npc.collideY || npc.velocity.Y == 0f))
+                {
+                    npc.ai[0] = 0f;
+                    npc.ai[1] = Main.rand.Next(300, 800); //Will stand still for a random interval instead of instant walking
+                    npc.ai[2] = 0f;
+                    npc.ai[3] = 0f;
+                    npc.velocity *= 0f;
+                    flightCooldown = Main.rand.Next(60 * 120, 60 * 240); //Random flight cooldown anywhere from 120 seconds to 240 seconds
+                    isFlying = false;
+                    npc.netUpdate = true;
+                    return;
+                }
+            }
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(isFlying);
+            writer.Write(flightCooldown);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            isFlying = reader.ReadBoolean();
+            flightCooldown = reader.ReadInt32();
+        }
+
+        public override bool CanChat() => !isFlying;
 
         public override void UpdateChatLists()
         {
@@ -46,6 +205,7 @@ namespace LivingWorldMod.NPCs.Villagers
                 getChat.Add("Leave me alone you ugly landwalking son of a- squak!");
                 getChat.Add("Do you want my feathers going down your back like a stegosaurus?", 0.66);
                 getChat.Add("Are all the flightless this fowl and annoying...?");
+                getChat.Add("Humans... Despicable. Created those foul windows!");
             }
             else if (isNeutralRep)
             {
@@ -76,11 +236,37 @@ namespace LivingWorldMod.NPCs.Villagers
             //General Event Chat
 
             //Rain
-            getChat.ConditionalStringAdd("I’m super thankful we’re above the clouds. I cannot stand my hair being wet.", Main.raining);
-            getChat.ConditionalStringAdd("Ahh, watching the rain fall from the clouds is so relaxing.", Main.raining);
+            getChat.ConditionalStringAdd("I’m super thankful we’re above the clouds. I cannot stand my hair being wet.", Main.raining, 2);
+            getChat.ConditionalStringAdd("Ahh, watching the rain fall from the clouds is so relaxing.", Main.raining, 2);
             //Solar Eclipse
-            getChat.ConditionalStringAdd("It’s so fun watching all the monsters going crazy down there attacking people. I’m glad we’re somewhat safe up here.", Main.eclipse);
-            getChat.ConditionalStringAdd("What, are you scared or something?", Main.eclipse);
+            getChat.ConditionalStringAdd("It’s so fun watching all the monsters going crazy down there attacking people. I’m glad we’re somewhat safe up here.", Main.eclipse, 2);
+            getChat.ConditionalStringAdd("What, are you scared or something?", Main.eclipse, 2);
+        }
+
+        public override void FindFrame(int frameHeight)
+        {
+            //Flying animation should take place when flying, obviously, and when the Harpy is adjusting against Gravity when first taking off
+            if (npc.ai[0] != -1f && (isFlying || npc.ai[0] == 1.2f || npc.ai[0] == 1.3f))
+            {
+                npc.frame.Y = (21 + flyingFrame) * frameHeight;
+                if (++flyingFrameCounter >= 6)
+                {
+                    if (++flyingFrame > 5)
+                        flyingFrame = 0;
+                    flyingFrameCounter = 0;
+                }
+            }
+            //Slower flying animation when landing
+            else if (isFlying && npc.ai[0] == -1f)
+            {
+                npc.frame.Y = (21 + flyingFrame) * frameHeight;
+                if (++flyingFrameCounter >= 12)
+                {
+                    if (++flyingFrame > 5)
+                        flyingFrame = 0;
+                    flyingFrameCounter = 0;
+                }
+            }
         }
     }
 }
