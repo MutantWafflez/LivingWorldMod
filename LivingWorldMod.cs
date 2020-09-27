@@ -14,6 +14,7 @@ namespace LivingWorldMod
     public class LivingWorldMod : Mod
     {
         internal static bool debugMode = false;
+        internal static readonly int villageGiftCooldownTime = 60 * 60 * 24; //24 IRL minutes (24 in game hours)
 
         public override void PostUpdateEverything()
         {

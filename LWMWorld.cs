@@ -17,6 +17,7 @@ namespace LivingWorldMod
     public class LWMWorld : ModWorld
     {
         public static int[] villageReputation = new int[(int)VillagerType.VillagerTypeCount];
+        public static int[] villageGiftCooldown = new int[(int)VillagerType.VillagerTypeCount];
 
         public override void Initialize()
         {
@@ -30,11 +31,15 @@ namespace LivingWorldMod
         /// </summary>
         /// <param name="villagerType">Enum of VillagerType</param>
         /// <param name="amount">Amount by which the reputation is changed</param>
-        public static void ModifyReputation(VillagerType villagerType, int amount)
+        public static void ModifyReputation(VillagerType villagerType, int amount, bool wasGift = false)
         {
             if (villagerType >= 0 && villagerType < VillagerType.VillagerTypeCount)
             {
                 villageReputation[(int)villagerType] += amount;
+                if (wasGift)
+                {
+                    villageGiftCooldown[(int)villagerType] = LivingWorldMod.villageGiftCooldownTime;
+                }
             }
         }
 
@@ -44,16 +49,20 @@ namespace LivingWorldMod
         /// <param name="villagerType">Enum of VillagerType</param>
         /// <param name="amount">Amount by which the reputation is changed</param>
         /// <param name="combatTextPosition">Location of the combat text created to signify the changed reputation amount</param>
-        public static void ModifyReputation(VillagerType villagerType, int amount, Rectangle combatTextPosition)
+        public static void ModifyReputation(VillagerType villagerType, int amount, Rectangle combatTextPosition, bool wasGift = false)
         {
             if (villagerType >= 0 && villagerType < VillagerType.VillagerTypeCount)
             {
                 villageReputation[(int)villagerType] += amount;
+                if (wasGift)
+                    villageGiftCooldown[(int)villagerType] = LivingWorldMod.villageGiftCooldownTime;
 
-                Color combatTextColor = new Color(255, 0, 0);
-                if (amount > 0)
-                    combatTextColor = new Color(0, 255, 0);
-                CombatText.NewText(combatTextPosition, combatTextColor, (amount > 0 ? "+" : "") + amount + " Reputation", true);
+                Color combatTextColor = Color.Lime;
+                if (amount < 0)
+                    combatTextColor = Color.Red;
+                else if (amount == 0)
+                    combatTextColor = Color.Gray;
+                CombatText.NewText(combatTextPosition, combatTextColor, (amount >= 0 ? "+" : "") + amount + " Reputation", true);
             }
         }
         #endregion
@@ -83,7 +92,8 @@ namespace LivingWorldMod
             }
             return new TagCompound {
                 {"VillageReputation", villageReputation },
-                {"VillagerData", villagerData }
+                {"VillagerData", villagerData },
+                {"VillageGiftCooldown", villageGiftCooldown }
             };
         }
 
@@ -103,6 +113,7 @@ namespace LivingWorldMod
                 ((Villager)npcAtIndex.modNPC).spriteVariation = villagerData[i].GetInt("spriteVar");
                 ((Villager)npcAtIndex.modNPC).homePosition = villagerData[i].Get<Vector2>("homePos");
             }
+            villageGiftCooldown = tag.GetIntArray("VillageGiftCooldown");
         }
         #endregion
 
@@ -222,6 +233,14 @@ namespace LivingWorldMod
                     spiderSacsPlaced++;
 
                 currentIteration++;
+            }
+
+            for (int i = 0; i < villageGiftCooldown.Length; i++)
+            {
+                if (--villageGiftCooldown[i] < 0)
+                {
+                    villageGiftCooldown[i] = 0;
+                }
             }
         }
 

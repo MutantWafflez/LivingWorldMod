@@ -14,9 +14,10 @@ namespace LivingWorldMod.NPCs.Villagers
     {
         public static readonly string VILLAGER_SPRITE_PATH = nameof(LivingWorldMod) + "/NPCs/Villagers/Textures/";
 
-        public readonly WeightedRandom<string> dialogueText;
-        public readonly WeightedRandom<string> reputationText;
         public readonly List<string> possibleNames;
+
+        public readonly List<int> likedGifts;
+        public readonly List<int> dislikedGifts;
 
         public bool isNegativeRep;
         public bool isNeutralRep = true; //This is set to true prematurely *just* in case UpdateReputationBools() isn't called.
@@ -41,9 +42,9 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public Villager()
         {
-            dialogueText = GetDialogueText();
-            reputationText = GetReputationText();
             possibleNames = GetPossibleNames();
+            likedGifts = GetLikedGifts();
+            dislikedGifts = GetDislikedGifts();
         }
 
         public override string Texture => VILLAGER_SPRITE_PATH + VillagerName + "Style1";
@@ -109,7 +110,11 @@ namespace LivingWorldMod.NPCs.Villagers
         #region Chat Methods
         public override bool CanChat() => true;
 
-        public override string GetChat() => dialogueText;
+        public override string GetChat()
+        {
+            AttemptGift();
+            return GetDialogueText();
+        }
 
         public override string TownNPCName() => possibleNames[WorldGen.genRand.Next(possibleNames.Count)];
 
@@ -134,11 +139,11 @@ namespace LivingWorldMod.NPCs.Villagers
             }
             else if (firstButton && !isMerchant)
             {
-                Main.npcChatText = reputationText.Get();
+                Main.npcChatText = GetReputationText();
             }
             else if (!firstButton && isMerchant)
             {
-                Main.npcChatText = reputationText.Get();
+                Main.npcChatText = GetReputationText();
             }
             else
             {
@@ -149,7 +154,7 @@ namespace LivingWorldMod.NPCs.Villagers
 
         #region Virtual Methods
         /// <summary>
-        /// Method used to fill the dialogueText variable that is used when talking to Villager.
+        /// Method used to determine what is said to the player upon right click.
         /// </summary>
         /// <returns>Returns a value telling the player to contact a mod dev by default.</returns>
         public virtual WeightedRandom<string> GetDialogueText()
@@ -160,7 +165,7 @@ namespace LivingWorldMod.NPCs.Villagers
         }
 
         /// <summary>
-        /// Method used to fill the reputationText variable that is used wwhen clicking the Reputation chat button.
+        /// Method used to determine what is said to the player based on the Village reputation upon pressing the Reputation button.
         /// </summary>
         /// <returns>Returns a value telling the player to contact a mod dev by default.</returns>
         public virtual WeightedRandom<string> GetReputationText()
@@ -175,6 +180,28 @@ namespace LivingWorldMod.NPCs.Villagers
             List<string> names = new List<string>();
             names.Add("Villager (Report to Mod Dev!)");
             return names;
+        }
+
+        /// <summary>
+        /// Method used to fill the likedGifts list that is used to determine if a Villager likes a given gift.
+        /// If overriding, fill the list with IDs of items that are liked.
+        /// </summary>
+        /// <returns>Returns an empty List of ints by default.</returns>
+        public virtual List<int> GetLikedGifts()
+        {
+            List<int> likedGifts = new List<int>();
+            return likedGifts;
+        }
+
+        /// <summary>
+        /// Method used to fill the dislikedGifts list that is used to determine if a Villager dislikes a given gift.
+        /// If overriding, fill the list with IDs of items that are disliked.
+        /// </summary>
+        /// <returns>Returns an empty List of ints by default.</returns>
+        public virtual List<int> GetDislikedGifts()
+        {
+            List<int> dislikedGifts = new List<int>();
+            return dislikedGifts;
         }
         #endregion
 
@@ -205,10 +232,32 @@ namespace LivingWorldMod.NPCs.Villagers
             }
             else if (reputation >= 100f)
             {
-                isNegativeRep = true;
+                isNegativeRep = false;
                 isNeutralRep = false;
                 isPositiveRep = false;
                 isMaxRep = true;
+            }
+        }
+
+        private void AttemptGift()
+        {
+            Player localPlayer = Main.LocalPlayer;
+            if (localPlayer.talkNPC == npc.whoAmI && localPlayer.HeldItem.type > ItemID.None && LWMWorld.villageGiftCooldown[(int)villagerType] == 0)
+            {
+                Item helditem = localPlayer.HeldItem;
+                if (helditem.favorited) { return; }
+                if (likedGifts.Contains(helditem.type))
+                {
+                    LWMWorld.ModifyReputation(villagerType, 5, npc.getRect(), true);
+                }
+                else if (dislikedGifts.Contains(helditem.type))
+                {
+                    LWMWorld.ModifyReputation(villagerType, -5, npc.getRect(), true);
+                }
+                else
+                {
+                    LWMWorld.ModifyReputation(villagerType, 0, npc.getRect(), true);
+                }
             }
         }
         #endregion

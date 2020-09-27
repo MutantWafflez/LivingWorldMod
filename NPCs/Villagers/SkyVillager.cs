@@ -103,6 +103,25 @@ namespace LivingWorldMod.NPCs.Villagers
             return names;
         }
 
+        public override List<int> GetLikedGifts()
+        {
+            List<int> likedGifts = new List<int>
+            {
+                ItemID.FallenStar,
+                ItemID.Worm
+            };
+            return likedGifts;
+        }
+
+        public override List<int> GetDislikedGifts()
+        {
+            List<int> dislikedGifts = new List<int>
+            {
+                ItemID.Feather,
+            };
+            return dislikedGifts;
+        }
+
         public override bool CanChat() => !isFlying;
         #endregion
 
