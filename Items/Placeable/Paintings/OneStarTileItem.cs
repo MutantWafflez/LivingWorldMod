@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Tiles.Furniture.Paintings;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -15,6 +16,7 @@ namespace LivingWorldMod.Items.Placeable.Paintings
         public override void SetDefaults()
         {
             item.CloneDefaults(ItemID.TheMerchant);
+            item.value = Item.buyPrice(gold: 1);
             item.createTile = ModContent.TileType<OneStarTile>();
             item.placeStyle = 0;
         }
