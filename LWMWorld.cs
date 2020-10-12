@@ -66,6 +66,14 @@ namespace LivingWorldMod
             }
         }
 
+        #region Update Methods
+        public override void PostUpdate() 
+        {
+            SpiderSacRegen();
+        }
+        #endregion
+
+        #region I/O
         public override TagCompound Save()
         {
             IList<TagCompound> villagerData = new List<TagCompound>();
@@ -111,7 +119,9 @@ namespace LivingWorldMod
             }
             villageGiftCooldown = tag.GetIntArray("VillageGiftCooldown");
         }
+        #endregion
 
+        #region World Gen
         //https://github.com/tModLoader/tModLoader/wiki/Vanilla-World-Generation-Steps
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {
@@ -196,11 +206,6 @@ namespace LivingWorldMod
                 WorldGen.KillTile(tileCoords[m].X, tileCoords[m].Y, effectOnly: true);
 
             return true;
-        }
-
-        public override void PostUpdate()
-        {
-            SpiderSacRegen();
         }
 
         int iterationsPerTick = 0;
@@ -352,5 +357,6 @@ namespace LivingWorldMod
 
             progress.End();
         }
+        #endregion
     }
 }
