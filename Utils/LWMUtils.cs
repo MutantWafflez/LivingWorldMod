@@ -35,5 +35,10 @@ namespace LivingWorldMod.Utils
             }
             return false;
         }
+
+
+        //----------Extension Methods----------
+        public static Tile ToTile(this TileNode tn) => Framing.GetTileSafely(tn.position);
+        public static Point16 Add(this Point16 point, int p1x, int p1y) => new Point16(point.X + p1x, point.Y + p1y);
     }
 }
