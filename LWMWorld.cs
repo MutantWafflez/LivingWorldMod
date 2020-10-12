@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -10,12 +12,6 @@ using static Terraria.ModLoader.ModContent;
 using LivingWorldMod.Tiles.WorldGen;
 using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.Utils;
-using Microsoft.Xna.Framework;
-using System.Linq;
-using Mono.CompilerServices.SymbolWriter;
-using System.Security.AccessControl;
-using System;
-using System.Security.Cryptography.X509Certificates;
 
 namespace LivingWorldMod
 {
