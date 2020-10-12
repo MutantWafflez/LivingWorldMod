@@ -8,6 +8,7 @@ using Terraria.ModLoader;
 using System.Reflection;
 using static Mono.Cecil.Cil.OpCodes;
 using Microsoft.Xna.Framework.Graphics;
+using LivingWorldMod.UI;
 
 namespace LivingWorldMod
 {
@@ -25,6 +26,7 @@ namespace LivingWorldMod
                 else if (LWMWorld.villageReputation[repIndex] < -100)
                     LWMWorld.villageReputation[repIndex] = -100;
             }
+
         }
 
         public override void UpdateMusic(ref int music, ref MusicPriority priority)
