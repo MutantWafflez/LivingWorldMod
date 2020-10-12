@@ -1,8 +1,10 @@
 ﻿using LivingWorldMod.Items.Placeable.Paintings;
 using LivingWorldMod.Utils;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Utilities;
@@ -12,16 +14,13 @@ namespace LivingWorldMod.NPCs.Villagers
 
     public class SkyVillager : Villager
     {
+        #region AI Data
         public bool isFlying = false;
+
         private int flyingFrame = 0; //Used for what animation frame of flying the harpy is in
         private int flyingFrameCounter = 0; //This is created due to npc.frameCounter being reverted to 0 in the Vanilla TownNPC code, so a variable must be made
-        private int flightCooldown = 0; //Used for a cooldown on doing flight so no rare chances of instant landing/flying
-
-        public override void SetStaticDefaults()
-        {
-            base.SetStaticDefaults();
-            Main.npcFrameCount[npc.type] = 27;
-        }
+        private int flightCooldown = 0;
+        #endregion
 
         #region Villager Class Overrides
         public override WeightedRandom<string> GetDialogueText()
@@ -126,12 +125,24 @@ namespace LivingWorldMod.NPCs.Villagers
         #endregion
 
         #region Normal Overrides
+        public override void SetStaticDefaults() {
+            base.SetStaticDefaults();
+            Main.npcFrameCount[npc.type] = 27;
+        }
+
         public override void SetupShop(Chest shop, ref int nextSlot)
         {
             shop.item[nextSlot].SetDefaults(ModContent.ItemType<SkyBustTileItem>());
             nextSlot++;
             shop.item[nextSlot].SetDefaults(ModContent.ItemType<OneStarTileItem>());
             nextSlot++;
+        }
+
+        public override bool? CanBeHitByProjectile(Projectile projectile) {
+            if (projectile.type == ProjectileID.HarpyFeather) {
+                return false;
+            }
+            return base.CanBeHitByProjectile(projectile);
         }
         #endregion
 

@@ -48,5 +48,21 @@ namespace LivingWorldMod.Utils
             }
             return false;
         }
+
+        /// <summary>
+        /// Finds the closest NPC to any other NPC.
+        /// Optionally can find the nearest NPC of a given type if needed.
+        /// </summary>
+        public static NPC FindNearestNPC(this NPC npc, int npcType = -1) {
+            float distance = float.MaxValue;
+            NPC selectedNPC = null;
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                if (Main.npc[i] != npc && Main.npc[i].Distance(npc.Center) < distance && (Main.npc[i].type == npcType || npcType == -1)) {
+                    selectedNPC = Main.npc[i];
+                    distance = Main.npc[i].Distance(npc.Center);
+                }
+            }
+            return selectedNPC;
+        }
     }
 }
