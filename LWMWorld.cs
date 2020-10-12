@@ -26,6 +26,7 @@ namespace LivingWorldMod
             iterationsPerTick = Main.maxTilesX * Main.maxTilesY / 54000;
         }
 
+        #region Reputation
         /// <summary>
         /// Changes the inputted VillagerType's reputation by amount.
         /// </summary>
@@ -65,11 +66,18 @@ namespace LivingWorldMod
                 CombatText.NewText(combatTextPosition, combatTextColor, (amount >= 0 ? "+" : "") + amount + " Reputation", true);
             }
         }
+        #endregion
 
         #region Update Methods
         public override void PostUpdate() 
         {
             SpiderSacRegen();
+
+            for (int i = 0; i < villageGiftCooldown.Length; i++) {
+                if (--villageGiftCooldown[i] < 0) {
+                    villageGiftCooldown[i] = 0;
+                }
+            }
         }
         #endregion
 
@@ -237,14 +245,6 @@ namespace LivingWorldMod
 
                 currentIteration++;
             }
-
-            for (int i = 0; i < villageGiftCooldown.Length; i++)
-            {
-                if (--villageGiftCooldown[i] < 0)
-                {
-                    villageGiftCooldown[i] = 0;
-                }
-            }
         }
 
         private void SkyVillageGenTask(GenerationProgress progress)
@@ -356,6 +356,18 @@ namespace LivingWorldMod
             #endregion
 
             progress.End();
+        }
+        public override void PostWorldGen() {
+            //Spawn Villagers
+            for (int i = 0; i < Main.maxTilesX; i++) {
+                for (int j = 0; j < Main.maxTilesY; j++) {
+                    if (Framing.GetTileSafely(i, j).type == TileType<SkyVillagerHomeTile>()) {
+                        int npcIndex = NPC.NewNPC(i * 16, j * 16, NPCType<SkyVillager>());
+                        NPC npcAtIndex = Main.npc[npcIndex];
+                        ((Villager)npcAtIndex.modNPC).homePosition = new Vector2(i, j);
+                    }
+                }
+            }
         }
         #endregion
     }
