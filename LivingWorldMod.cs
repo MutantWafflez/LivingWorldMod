@@ -1,20 +1,18 @@
-using LivingWorldMod.NPCs.Villagers;
-using LivingWorldMod.Utils;
-using MonoMod.Cil;
-using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
+using Terraria.UI;
 using Terraria.ModLoader;
-using System.Reflection;
-using static Mono.Cecil.Cil.OpCodes;
-using Microsoft.Xna.Framework.Graphics;
 using LivingWorldMod.UI;
+using LivingWorldMod.Utils;
+using LivingWorldMod.NPCs.Villagers;
 
 namespace LivingWorldMod
 {
     public class LivingWorldMod : Mod
     {
-        internal static bool debugMode = false;
+        internal static bool debugMode = true;
         internal static readonly int villageGiftCooldownTime = 60 * 60 * 24; //24 IRL minutes (24 in game hours)
 
         public override void PostUpdateEverything()
@@ -26,7 +24,6 @@ namespace LivingWorldMod
                 else if (LWMWorld.villageReputation[repIndex] < -100)
                     LWMWorld.villageReputation[repIndex] = -100;
             }
-
         }
 
         public override void UpdateMusic(ref int music, ref MusicPriority priority)
@@ -55,7 +52,49 @@ namespace LivingWorldMod
             //Sets the Villager's townNPC value to true only for the duration of the AI method
             On.Terraria.NPC.AI_007_TownEntities += NPC_AI_007_TownEntities;
             #endregion
+
+            #region UI Initialization
+            if (!Main.dedServ && Main.netMode != NetmodeID.Server)
+            {
+                HarpyShrineInterface = new UserInterface();
+                HarpyShrineState = new HarpyShrineUIState();
+                HarpyShrineState.Activate();
+                HarpyShrineInterface.SetState(HarpyShrineState);
+            }
+            #endregion
         }
+
+        #region UI
+        internal static UserInterface HarpyShrineInterface;
+        internal static HarpyShrineUIState HarpyShrineState;
+        private GameTime _lastUpdateUiGameTime;
+
+        public override void UpdateUI(GameTime gameTime)
+        {
+            _lastUpdateUiGameTime = gameTime;
+            if (HarpyShrineInterface?.CurrentState != null)
+                HarpyShrineInterface.Update(gameTime);
+        }
+
+        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+        {
+            //https://github.com/tModLoader/tModLoader/wiki/Vanilla-Interface-layers-values
+            int interfaceLayer = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Interface Logic 1"));
+            if (interfaceLayer != -1)
+            {
+                layers.Insert(interfaceLayer, new LegacyGameInterfaceLayer(
+                    "LWM: HarpyShrine",
+                    delegate
+                    {
+                        if (_lastUpdateUiGameTime != null && HarpyShrineInterface?.CurrentState != null)
+                            HarpyShrineInterface.Draw(Main.spriteBatch, _lastUpdateUiGameTime);
+
+                        return true;
+                    },
+                       InterfaceScaleType.Game));
+            }
+        }
+        #endregion
 
         #region Method Swaps
         private int NPC_TypeToHeadIndex(On.Terraria.NPC.orig_TypeToHeadIndex orig, int type)
