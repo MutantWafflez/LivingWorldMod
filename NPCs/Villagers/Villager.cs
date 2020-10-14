@@ -12,7 +12,7 @@ namespace LivingWorldMod.NPCs.Villagers
 {
     public abstract class Villager : ModNPC
     {
-        public static readonly string VILLAGER_SPRITE_PATH = nameof(LivingWorldMod) + "Textures/NPCs/Villagers";
+        public static readonly string VILLAGER_SPRITE_PATH = nameof(LivingWorldMod) + "/Textures/NPCs/Villagers/";
 
         public readonly List<string> possibleNames;
 
