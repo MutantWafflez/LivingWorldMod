@@ -208,7 +208,7 @@ namespace LivingWorldMod.NPCs.Villagers
         #region Miscellaneous Methods
         private void UpdateReputationBools()
         {
-            float reputation = LWMWorld.villageReputation[(int)villagerType];
+            float reputation = LWMWorld.GetReputation(villagerType);
             if (reputation < -30f)
             {
                 isNegativeRep = true;

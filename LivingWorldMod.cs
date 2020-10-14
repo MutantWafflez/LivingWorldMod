@@ -17,7 +17,7 @@ namespace LivingWorldMod
 
         public override void PostUpdateEverything()
         {
-            for (int repIndex = 0; repIndex < LWMWorld.villageReputation.Length; repIndex++)
+            for (int repIndex = 0; repIndex < (int)VillagerType.VillagerTypeCount; repIndex++)
             {
                 if (LWMWorld.villageReputation[repIndex] > 100)
                     LWMWorld.villageReputation[repIndex] = 100;

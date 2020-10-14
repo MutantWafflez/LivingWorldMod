@@ -17,8 +17,8 @@ namespace LivingWorldMod
 {
     public class LWMWorld : ModWorld
     {
-        public static int[] villageReputation = new int[(int)VillagerType.VillagerTypeCount];
-        public static int[] villageGiftCooldown = new int[(int)VillagerType.VillagerTypeCount];
+        internal static int[] villageReputation = new int[(int)VillagerType.VillagerTypeCount];
+        internal static int[] villageGiftCooldown = new int[(int)VillagerType.VillagerTypeCount];
 
         public override void Initialize()
         {
@@ -66,6 +66,12 @@ namespace LivingWorldMod
                 CombatText.NewText(combatTextPosition, combatTextColor, (amount >= 0 ? "+" : "") + amount + " Reputation", true);
             }
         }
+
+        /// <summary>
+        /// Returns reputation value of given villager type.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the reputation of.</param>
+        public static int GetReputation(VillagerType villagerType) => villageReputation[(int)villagerType];
         #endregion
 
         #region Update Methods
