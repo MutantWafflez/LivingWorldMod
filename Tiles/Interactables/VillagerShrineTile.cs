@@ -1,20 +1,18 @@
-﻿using LivingWorldMod.UI;
+﻿using LivingWorldMod.NPCs.Villagers;
 using Microsoft.Xna.Framework;
+using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
-using static Terraria.ModLoader.ModContent;
 
-namespace LivingWorldMod.Tiles.Interactables
-{
-    class HarpyShrine_Tile : ModTile
+namespace LivingWorldMod.Tiles.Interactables {
+    public abstract class VillagerShrineTile : ModTile 
     {
-        public override void SetDefaults()
-        {
+        public VillagerType shrineType;
+
+        public override void SetDefaults() {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
             Main.tileTable[Type] = false;
@@ -37,34 +35,19 @@ namespace LivingWorldMod.Tiles.Interactables
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0);
             TileObjectData.addTile(Type);
 
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Harpy Shrine");
-            AddMapEntry(new Color(210, 210, 210), name);
+            animationFrameHeight = 90;
         }
 
         public override bool HasSmartInteract() => true;
 
-        public override bool NewRightClick(int i, int j)
-        {
-            //ItemSlot UI Placement
-            HarpyShrineUIState.TileRightClicked(i, j);
+        public override bool CanKillTile(int i, int j, ref bool blockDamaged) => LivingWorldMod.debugMode;
 
+        public override bool CanExplode(int i, int j) => LivingWorldMod.debugMode;
 
-            return true;
-        }
-
-        public override void MouseOver(int i, int j)
-        {
-            Player player = Main.LocalPlayer;
-
-            player.showItemIcon2 = ItemType<Items.Debug.HarpyShrine>();
-            player.showItemIcon = true;
-            player.noThrow = 2;
-        }
-
-        public override void KillMultiTile(int i, int j, int frameX, int frameY)
-        {
-            Item.NewItem(i * 16, j * 16, 32, 16, ItemType<Items.Debug.HarpyShrine>());
+        public override void AnimateTile(ref int frame, ref int frameCounter) {
+            //Add 101 so the reputation value will never be negative
+            int reputation = LWMWorld.GetReputation(shrineType) + 101;
+            frame = frameCounter = (int)(reputation / 13.4f); // 201 max reputation / 15 frames = 13.4
         }
     }
 }

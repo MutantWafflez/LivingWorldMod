@@ -89,7 +89,7 @@ namespace LivingWorldMod.UI
             {
                 for (int l = 0; l < 5; l++)
                 {
-                    if (Framing.GetTileSafely(i - k, j - l).type == TileType<HarpyShrine_Tile>())
+                    if (Framing.GetTileSafely(i - k, j - l).type == TileType<HarpyShrineTile>())
                         itemSlotPos = new Vector2(i - k, j - l);
                     else continue;
                 }
