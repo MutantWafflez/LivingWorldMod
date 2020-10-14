@@ -12,7 +12,7 @@ namespace LivingWorldMod.NPCs.Villagers
 {
     public abstract class Villager : ModNPC
     {
-        public static readonly string VILLAGER_SPRITE_PATH = nameof(LivingWorldMod) + "/NPCs/Villagers/Textures/";
+        public static readonly string VILLAGER_SPRITE_PATH = nameof(LivingWorldMod) + "Textures/NPCs/Villagers";
 
         public readonly List<string> possibleNames;
 
@@ -110,11 +110,7 @@ namespace LivingWorldMod.NPCs.Villagers
         #region Chat Methods
         public override bool CanChat() => true;
 
-        public override string GetChat()
-        {
-            AttemptGift();
-            return GetDialogueText();
-        }
+        public override string GetChat() => GetDialogueText();
 
         public override string TownNPCName() => possibleNames[WorldGen.genRand.Next(possibleNames.Count)];
 
@@ -236,28 +232,6 @@ namespace LivingWorldMod.NPCs.Villagers
                 isNeutralRep = false;
                 isPositiveRep = false;
                 isMaxRep = true;
-            }
-        }
-
-        private void AttemptGift()
-        {
-            Player localPlayer = Main.LocalPlayer;
-            if (localPlayer.talkNPC == npc.whoAmI && localPlayer.HeldItem.type > ItemID.None && LWMWorld.villageGiftCooldown[(int)villagerType] == 0)
-            {
-                Item helditem = localPlayer.HeldItem;
-                if (helditem.favorited) { return; }
-                if (likedGifts.Contains(helditem.type))
-                {
-                    LWMWorld.ModifyReputation(villagerType, 5, npc.getRect(), true);
-                }
-                else if (dislikedGifts.Contains(helditem.type))
-                {
-                    LWMWorld.ModifyReputation(villagerType, -5, npc.getRect(), true);
-                }
-                else
-                {
-                    LWMWorld.ModifyReputation(villagerType, 0, npc.getRect(), true);
-                }
             }
         }
         #endregion
