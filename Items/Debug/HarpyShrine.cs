@@ -11,11 +11,11 @@ namespace LivingWorldMod.Items.Debug
 			item.maxStack = 99;
 			item.useTurn = true;
 			item.autoReuse = true;
-			item.useAnimation = 15;
+			item.useAnimation = 10;
 			item.useTime = 10;
 			item.useStyle = ItemUseStyleID.SwingThrow;
-			item.consumable = true;
-			item.createTile = TileType<HarpyShrine_Tile>();
+			item.consumable = false;
+			item.createTile = TileType<HarpyShrineTile>();
 		}
 	}
 }
