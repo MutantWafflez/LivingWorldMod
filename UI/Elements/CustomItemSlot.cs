@@ -9,6 +9,8 @@ namespace LivingWorldMod.UI.Elements
 {
     class CustomItemSlot : UIElement
     {
+        //MAKE SURE TO CALL ACTIVATE() WHEN USING THIS UIELEMENT
+
         internal Item Item;
         internal Func<Item, bool> ValidItemFunc;
         private readonly float _globalScale;
@@ -22,6 +24,13 @@ namespace LivingWorldMod.UI.Elements
             _opacity = opacity;
             Item = new Item();
             Item.SetDefaults(0);
+        }
+
+        public override void OnInitialize()
+        {
+            //This code can only run after the UIElement Width/Height has been set
+            Width.Set(Width.Pixels * _globalScale, 0);
+            Height.Set(Height.Pixels * _globalScale, 0);
 
             OnMouseDown += CustomItemSlot_OnMouseDown;
         }

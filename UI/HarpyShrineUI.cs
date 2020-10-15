@@ -84,6 +84,7 @@ namespace LivingWorldMod.UI
             _itemSlot.Height.Set(54f, 0);
             _itemSlot.Left.Set(5f, 0);
             _itemSlot.Top.Set(25f, 0);
+            _itemSlot.Activate(); //Runs OnInitialize
             SMPanel.Append(_itemSlot);
         }
 
