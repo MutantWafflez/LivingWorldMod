@@ -77,6 +77,14 @@ namespace LivingWorldMod.UI
             closeMenuCross.Top.Set(-7f, 0);
             closeMenuCross.OnClick += (__, _) => { SMPanel.Remove(); showUI = false; };
             SMPanel.Append(closeMenuCross);
+
+            //ItemSlot
+            CustomItemSlot _itemSlot = new CustomItemSlot();
+            _itemSlot.Width.Set(54f, 0);
+            _itemSlot.Height.Set(54f, 0);
+            _itemSlot.Left.Set(5f, 0);
+            _itemSlot.Top.Set(25f, 0);
+            SMPanel.Append(_itemSlot);
         }
 
         public static void TileRightClicked(int i, int j)
