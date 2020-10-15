@@ -13,8 +13,11 @@ namespace LivingWorldMod
     public class LivingWorldMod : Mod
     {
         internal static bool debugMode = true;
+
+        public static GiftPreferences[] villageGiftPreferences;
         internal static readonly int villageGiftCooldownTime = 60 * 60 * 24; //24 IRL minutes (24 in game hours)
 
+        #region Update Methods
         public override void PostUpdateEverything()
         {
             for (int repIndex = 0; repIndex < (int)VillagerType.VillagerTypeCount; repIndex++)
@@ -41,6 +44,7 @@ namespace LivingWorldMod
                 priority = MusicPriority.Environment;
             }
         }
+        #endregion
 
         public override void Load()
         {
@@ -62,6 +66,8 @@ namespace LivingWorldMod
                 HarpyShrineInterface.SetState(HarpyShrineState);
             }
             #endregion
+
+            villageGiftPreferences = GiftPreferences.InitializeGiftArray();
         }
 
         #region UI

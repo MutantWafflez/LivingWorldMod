@@ -16,9 +16,6 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public readonly List<string> possibleNames;
 
-        public readonly List<int> likedGifts;
-        public readonly List<int> dislikedGifts;
-
         public bool isNegativeRep;
         public bool isNeutralRep = true; //This is set to true prematurely *just* in case UpdateReputationBools() isn't called.
         public bool isPositiveRep;
@@ -43,8 +40,6 @@ namespace LivingWorldMod.NPCs.Villagers
         public Villager()
         {
             possibleNames = GetPossibleNames();
-            likedGifts = GetLikedGifts();
-            dislikedGifts = GetDislikedGifts();
         }
 
         public override string Texture => VILLAGER_SPRITE_PATH + VillagerName + "Style1";
@@ -176,28 +171,6 @@ namespace LivingWorldMod.NPCs.Villagers
             List<string> names = new List<string>();
             names.Add("Villager (Report to Mod Dev!)");
             return names;
-        }
-
-        /// <summary>
-        /// Method used to fill the likedGifts list that is used to determine if a Villager likes a given gift.
-        /// If overriding, fill the list with IDs of items that are liked.
-        /// </summary>
-        /// <returns>Returns an empty List of ints by default.</returns>
-        public virtual List<int> GetLikedGifts()
-        {
-            List<int> likedGifts = new List<int>();
-            return likedGifts;
-        }
-
-        /// <summary>
-        /// Method used to fill the dislikedGifts list that is used to determine if a Villager dislikes a given gift.
-        /// If overriding, fill the list with IDs of items that are disliked.
-        /// </summary>
-        /// <returns>Returns an empty List of ints by default.</returns>
-        public virtual List<int> GetDislikedGifts()
-        {
-            List<int> dislikedGifts = new List<int>();
-            return dislikedGifts;
         }
         #endregion
 
