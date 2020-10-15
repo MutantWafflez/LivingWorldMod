@@ -9,6 +9,7 @@ using static Terraria.ModLoader.ModContent;
 using LivingWorldMod.UI.Elements;
 using LivingWorldMod.Tiles.Interactables;
 using Terraria.GameContent.UI.Elements;
+using LivingWorldMod.NPCs.Villagers;
 
 namespace LivingWorldMod.UI
 {
@@ -28,12 +29,6 @@ namespace LivingWorldMod.UI
             Instance = this;
             showUI = false;
             itemSlotPos = Vector2.Zero;
-
-            //_itemSlot = new VanillaItemSlotWrapper(ItemSlot.Context.ChestItem, 1.25f);
-            //_itemSlot.Left.Set(300, 0);
-            //_itemSlot.Top.Set(300, 0);
-            //_itemSlot.ValidItemFunc = item => item.IsAir || !item.IsAir && item.Prefix(-3);
-            //Append(_itemSlot);
         }
 
         public static void CreateShapesMenuPanel()
@@ -105,6 +100,12 @@ namespace LivingWorldMod.UI
             }
 
             itemSlotPos += new Vector2(-5, -11); //offset from the topleft corner (in tiles)
+        }
+
+        public static void ChangeStage()
+        {
+            int reputation = LWMWorld.GetReputation(VillagerType.Harpy) + 101;
+            int stage = (int)(reputation / 13.4f);
         }
 
         public override void Update(GameTime gameTime)

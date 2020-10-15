@@ -1,18 +1,19 @@
 ﻿using LivingWorldMod.NPCs.Villagers;
-using Microsoft.Xna.Framework;
-using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Tiles.Interactables {
-    public abstract class VillagerShrineTile : ModTile 
+namespace LivingWorldMod.Tiles.Interactables
+{
+    public abstract class VillagerShrineTile : ModTile
     {
         public VillagerType shrineType;
+        public int shrineStage;
 
-        public override void SetDefaults() {
+        public override void SetDefaults()
+        {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
             Main.tileTable[Type] = false;
@@ -44,10 +45,14 @@ namespace LivingWorldMod.Tiles.Interactables {
 
         public override bool CanExplode(int i, int j) => LivingWorldMod.debugMode;
 
-        public override void AnimateTile(ref int frame, ref int frameCounter) {
-            //Add 101 so the reputation value will never be negative
-            int reputation = LWMWorld.GetReputation(shrineType) + 101;
-            frame = frameCounter = (int)(reputation / 13.4f); // 201 max reputation / 15 frames = 13.4
+        public override void AnimateTile(ref int frame, ref int frameCounter)
+        {
+            int reputation = LWMWorld.GetReputation(shrineType);
+            shrineStage = (int)(reputation / 6.66f); //Increase stage for each 7 rep (100 rep / 15 frames = 6.666..)
+
+            //Negative values won't be visually displayed, only in the UI
+            if (shrineStage < 0) shrineStage = 0;
+            frame = frameCounter = shrineStage; 
         }
     }
 }
