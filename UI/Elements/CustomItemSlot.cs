@@ -1,15 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
-using Terraria.ID;
-using Terraria.DataStructures;
 
 namespace LivingWorldMod.UI.Elements
 {
@@ -17,14 +11,14 @@ namespace LivingWorldMod.UI.Elements
     {
         internal Item Item;
         internal Func<Item, bool> ValidItemFunc;
-        internal readonly float _scale;
-        internal readonly float _opacity;
-        internal readonly Texture2D _texture;
+        private readonly float _globalScale;
+        private readonly float _opacity;
+        private readonly Texture2D _texture;
 
         public CustomItemSlot(Texture2D texture = null, float scale = 1f, float opacity = 1f)
-        { 
+        {
             _texture = texture ?? ModContent.GetTexture("LivingWorldMod/Textures/UIElements/ShrineMenu/ItemSlot");
-            _scale = scale;
+            _globalScale = scale;
             _opacity = opacity;
             Item = new Item();
             Item.SetDefaults(0);
@@ -34,23 +28,43 @@ namespace LivingWorldMod.UI.Elements
 
         private void CustomItemSlot_OnMouseDown(UIMouseEvent evt, UIElement listeningElement)
         {
-            if (Item.type > ItemID.None)
+            //if mouseItem is stackable, do not allow swapping with itemSlot (unless stack == 1)
+            //Maybe send itemSlot Item to the inventory if shift is pressed?
+            if (Main.mouseItem.maxStack > 1 && Item.IsAir)
             {
-                Main.mouseItem = Item.Clone();
-                Item.TurnToAir();
+                //stack > 0, items can't be reforged. No need to clone
+                Item.SetDefaults(Main.mouseItem.type);
+                Main.mouseItem.stack--;
+
+                return;
             }
-            else
+
+            if (Main.mouseItem.maxStack > 1 && !Item.IsAir)
             {
-                Item = Main.mouseItem.Clone();
-                Main.mouseItem.TurnToAir();
+                if (Main.mouseItem.type == Item.type)
+                {
+                    Main.mouseItem.stack++;
+                    Item.TurnToAir();
+
+                    return;
+                }
+
+                //empty mouseItem still has a >1 maxStack
+                if (Main.mouseItem.stack != 1 && !Main.mouseItem.IsAir) return;
             }
+
+            //if mouseItem is empty or non stackable, allow swap with itemSlot
+            //Maybe cloning more than needed?
+            Item tempItem = Item.Clone();
+            Item = Main.mouseItem.Clone();
+            Main.mouseItem = tempItem.Clone();
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             //Background of ItemSlot
             Vector2 position = GetDimensions().ToRectangle().TopLeft();
-            spriteBatch.Draw(_texture, position, new Color(255, 255, 255, _opacity));
+            spriteBatch.Draw(_texture, position, _texture.Bounds, new Color(255, 255, 255, _opacity), 0f, Vector2.Zero, _globalScale, SpriteEffects.None, 0f);
 
             Texture2D itemInSlot = Main.itemTexture[Item.type];
             Rectangle rect = itemInSlot.Bounds;
@@ -61,7 +75,7 @@ namespace LivingWorldMod.UI.Elements
             Vector2 origin = rect.Center() - new Vector2(itemInSlot.Height > 32 ? itemInSlot.Height - 5 : 27);
 
             //Drawing item's texture inside the ItemSlot
-            spriteBatch.Draw(itemInSlot, position, rect, new Color(255, 255, 255, 1f), 0f, origin, scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(itemInSlot, position, rect, new Color(255, 255, 255, 1f), 0f, origin, scale * _globalScale, SpriteEffects.None, 0f);
         }
     }
 }
