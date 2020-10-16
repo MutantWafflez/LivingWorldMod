@@ -14,8 +14,8 @@ namespace LivingWorldMod
     {
         internal static bool debugMode = true;
 
-        public static GiftPreferences[] villageGiftPreferences;
         internal static readonly int villageGiftCooldownTime = 60 * 60 * 24; //24 IRL minutes (24 in game hours)
+        internal static int[,] villageGiftPreferences;
 
         #region Update Methods
         public override void PostUpdateEverything()
@@ -46,6 +46,7 @@ namespace LivingWorldMod
         }
         #endregion
 
+        #region Loading
         public override void Load()
         {
             #region Villager Related Method Swaps
@@ -66,9 +67,45 @@ namespace LivingWorldMod
                 HarpyShrineInterface.SetState(HarpyShrineState);
             }
             #endregion
-
-            villageGiftPreferences = GiftPreferences.InitializeGiftArray();
         }
+
+        public override void PostSetupContent() {
+            villageGiftPreferences = new int[(int)VillagerType.VillagerTypeCount, ItemLoader.ItemCount];
+            InitializeDefaultGiftPreferences();
+        }
+
+        public void InitializeDefaultGiftPreferences() {
+            //Harpy Villagers
+            villageGiftPreferences[(int)VillagerType.Harpy, ItemID.Worm] = 3;
+            villageGiftPreferences[(int)VillagerType.Harpy, ItemID.FallenStar] = 5;
+            villageGiftPreferences[(int)VillagerType.Harpy, ItemID.Feather] = -3;
+            villageGiftPreferences[(int)VillagerType.Harpy, ItemID.GiantHarpyFeather] = -5;
+        }
+
+        #endregion
+
+        #region Mod Compatability
+        /// <summary>
+        /// Modifies the reputation a given item will give upon gifting it to a given villager type.
+        /// </summary>
+        /// <param name="vilType">The villager type to have their preference changed.</param>
+        /// <param name="itemType">The item type that will have its corresponding reputation changed.</param>
+        /// <param name="reputation">The new reputation value of the given item type.</param>
+        public void ChangeGiftPreference(VillagerType vilType, int itemType, int reputation) {
+            villageGiftPreferences[(int)vilType, itemType] = reputation;
+        }
+
+        /// <summary>
+        /// Retrives the reputation modifier a given item type will have on a given villager type.
+        /// If the item does not have a set reputation modifier, this will return 0 by default.
+        /// </summary>
+        /// <param name="vilType">The villager type to find the specific preference of.</param>
+        /// <param name="itemType">The type of item to have its reputation modifier checked.</param>
+        /// <returns></returns>
+        public int GetSpecificGiftPreference(VillagerType vilType, int itemType) {
+            return villageGiftPreferences[(int)vilType, itemType];
+        }
+        #endregion
 
         #region UI
         internal static UserInterface HarpyShrineInterface;
