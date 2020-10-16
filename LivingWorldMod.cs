@@ -62,7 +62,7 @@ namespace LivingWorldMod
             if (!Main.dedServ && Main.netMode != NetmodeID.Server)
             {
                 HarpyShrineInterface = new UserInterface();
-                HarpyShrineState = new HarpyShrineUIState();
+                HarpyShrineState = new ShrineUIState();
                 HarpyShrineState.Activate();
                 HarpyShrineInterface.SetState(HarpyShrineState);
             }
@@ -84,7 +84,7 @@ namespace LivingWorldMod
 
         #endregion
 
-        #region Mod Compatability
+        #region Mod Compatibility
         /// <summary>
         /// Modifies the reputation a given item will give upon gifting it to a given villager type.
         /// </summary>
@@ -109,7 +109,7 @@ namespace LivingWorldMod
 
         #region UI
         internal static UserInterface HarpyShrineInterface;
-        internal static HarpyShrineUIState HarpyShrineState;
+        internal static ShrineUIState HarpyShrineState;
         private GameTime _lastUpdateUiGameTime;
 
         public override void UpdateUI(GameTime gameTime)

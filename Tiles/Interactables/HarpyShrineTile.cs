@@ -1,14 +1,9 @@
-﻿using LivingWorldMod.NPCs.Villagers;
-using LivingWorldMod.UI;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.DataStructures;
-using Terraria.Enums;
-using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
+using LivingWorldMod.NPCs.Villagers;
+using LivingWorldMod.UI;
 
 namespace LivingWorldMod.Tiles.Interactables
 {
@@ -27,7 +22,7 @@ namespace LivingWorldMod.Tiles.Interactables
         public override bool NewRightClick(int i, int j)
         {
             //ItemSlot UI Placement
-            HarpyShrineUIState.TileRightClicked(i, j);
+            ShrineUIState.TileRightClicked(i, j, shrineType);
             return true;
         }
 

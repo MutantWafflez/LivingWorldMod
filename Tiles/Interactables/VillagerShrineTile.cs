@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.NPCs.Villagers;
+using LivingWorldMod.UI;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -49,9 +50,10 @@ namespace LivingWorldMod.Tiles.Interactables
         {
             int reputation = LWMWorld.GetReputation(shrineType);
             shrineStage = (int)(reputation / 6.66f); //Increase stage for each 7 rep (100 rep / 15 frames = 6.666..)
-
             //Negative values won't be visually displayed, only in the UI
             if (shrineStage < 0) shrineStage = 0;
+            //Not sure if the line below will stop working when other shrines are implemented
+            ShrineUIState.shrineStage[(int)shrineType] = shrineStage;
             frame = frameCounter = shrineStage; 
         }
     }
