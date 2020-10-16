@@ -12,12 +12,9 @@ namespace LivingWorldMod.NPCs.Villagers
 {
     public abstract class Villager : ModNPC
     {
-        public static readonly string VILLAGER_SPRITE_PATH = nameof(LivingWorldMod) + "/NPCs/Villagers/Textures/";
+        public static readonly string VILLAGER_SPRITE_PATH = nameof(LivingWorldMod) + "/Textures/NPCs/Villagers/";
 
         public readonly List<string> possibleNames;
-
-        public readonly List<int> likedGifts;
-        public readonly List<int> dislikedGifts;
 
         public bool isNegativeRep;
         public bool isNeutralRep = true; //This is set to true prematurely *just* in case UpdateReputationBools() isn't called.
@@ -43,8 +40,6 @@ namespace LivingWorldMod.NPCs.Villagers
         public Villager()
         {
             possibleNames = GetPossibleNames();
-            likedGifts = GetLikedGifts();
-            dislikedGifts = GetDislikedGifts();
         }
 
         public override string Texture => VILLAGER_SPRITE_PATH + VillagerName + "Style1";
@@ -110,11 +105,7 @@ namespace LivingWorldMod.NPCs.Villagers
         #region Chat Methods
         public override bool CanChat() => true;
 
-        public override string GetChat()
-        {
-            AttemptGift();
-            return GetDialogueText();
-        }
+        public override string GetChat() => GetDialogueText();
 
         public override string TownNPCName() => possibleNames[WorldGen.genRand.Next(possibleNames.Count)];
 
@@ -181,34 +172,12 @@ namespace LivingWorldMod.NPCs.Villagers
             names.Add("Villager (Report to Mod Dev!)");
             return names;
         }
-
-        /// <summary>
-        /// Method used to fill the likedGifts list that is used to determine if a Villager likes a given gift.
-        /// If overriding, fill the list with IDs of items that are liked.
-        /// </summary>
-        /// <returns>Returns an empty List of ints by default.</returns>
-        public virtual List<int> GetLikedGifts()
-        {
-            List<int> likedGifts = new List<int>();
-            return likedGifts;
-        }
-
-        /// <summary>
-        /// Method used to fill the dislikedGifts list that is used to determine if a Villager dislikes a given gift.
-        /// If overriding, fill the list with IDs of items that are disliked.
-        /// </summary>
-        /// <returns>Returns an empty List of ints by default.</returns>
-        public virtual List<int> GetDislikedGifts()
-        {
-            List<int> dislikedGifts = new List<int>();
-            return dislikedGifts;
-        }
         #endregion
 
         #region Miscellaneous Methods
         private void UpdateReputationBools()
         {
-            float reputation = LWMWorld.villageReputation[(int)villagerType];
+            float reputation = LWMWorld.GetReputation(villagerType);
             if (reputation < -30f)
             {
                 isNegativeRep = true;
@@ -236,28 +205,6 @@ namespace LivingWorldMod.NPCs.Villagers
                 isNeutralRep = false;
                 isPositiveRep = false;
                 isMaxRep = true;
-            }
-        }
-
-        private void AttemptGift()
-        {
-            Player localPlayer = Main.LocalPlayer;
-            if (localPlayer.talkNPC == npc.whoAmI && localPlayer.HeldItem.type > ItemID.None && LWMWorld.villageGiftCooldown[(int)villagerType] == 0)
-            {
-                Item helditem = localPlayer.HeldItem;
-                if (helditem.favorited) { return; }
-                if (likedGifts.Contains(helditem.type))
-                {
-                    LWMWorld.ModifyReputation(villagerType, 5, npc.getRect(), true);
-                }
-                else if (dislikedGifts.Contains(helditem.type))
-                {
-                    LWMWorld.ModifyReputation(villagerType, -5, npc.getRect(), true);
-                }
-                else
-                {
-                    LWMWorld.ModifyReputation(villagerType, 0, npc.getRect(), true);
-                }
             }
         }
         #endregion

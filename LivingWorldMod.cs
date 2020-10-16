@@ -1,32 +1,32 @@
-using LivingWorldMod.NPCs.Villagers;
-using LivingWorldMod.Utils;
-using MonoMod.Cil;
-using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
+using Terraria.UI;
 using Terraria.ModLoader;
-using System.Reflection;
-using static Mono.Cecil.Cil.OpCodes;
-using Microsoft.Xna.Framework.Graphics;
 using LivingWorldMod.UI;
+using LivingWorldMod.Utils;
+using LivingWorldMod.NPCs.Villagers;
 
 namespace LivingWorldMod
 {
     public class LivingWorldMod : Mod
     {
-        internal static bool debugMode = false;
-        internal static readonly int villageGiftCooldownTime = 60 * 60 * 24; //24 IRL minutes (24 in game hours)
+        internal static bool debugMode = true;
 
+        internal static readonly int villageGiftCooldownTime = 60 * 60 * 24; //24 IRL minutes (24 in game hours)
+        internal static int[,] villageGiftPreferences;
+
+        #region Update Methods
         public override void PostUpdateEverything()
         {
-            for (int repIndex = 0; repIndex < LWMWorld.villageReputation.Length; repIndex++)
+            for (int repIndex = 0; repIndex < (int)VillagerType.VillagerTypeCount; repIndex++)
             {
                 if (LWMWorld.villageReputation[repIndex] > 100)
                     LWMWorld.villageReputation[repIndex] = 100;
                 else if (LWMWorld.villageReputation[repIndex] < -100)
                     LWMWorld.villageReputation[repIndex] = -100;
             }
-
         }
 
         public override void UpdateMusic(ref int music, ref MusicPriority priority)
@@ -44,7 +44,9 @@ namespace LivingWorldMod
                 priority = MusicPriority.Environment;
             }
         }
+        #endregion
 
+        #region Loading
         public override void Load()
         {
             #region Villager Related Method Swaps
@@ -55,7 +57,87 @@ namespace LivingWorldMod
             //Sets the Villager's townNPC value to true only for the duration of the AI method
             On.Terraria.NPC.AI_007_TownEntities += NPC_AI_007_TownEntities;
             #endregion
+
+            #region UI Initialization
+            if (!Main.dedServ && Main.netMode != NetmodeID.Server)
+            {
+                HarpyShrineInterface = new UserInterface();
+                HarpyShrineState = new HarpyShrineUIState();
+                HarpyShrineState.Activate();
+                HarpyShrineInterface.SetState(HarpyShrineState);
+            }
+            #endregion
         }
+
+        public override void PostSetupContent() {
+            villageGiftPreferences = new int[(int)VillagerType.VillagerTypeCount, ItemLoader.ItemCount];
+            InitializeDefaultGiftPreferences();
+        }
+
+        public void InitializeDefaultGiftPreferences() {
+            //Harpy Villagers
+            villageGiftPreferences[(int)VillagerType.Harpy, ItemID.Worm] = 3;
+            villageGiftPreferences[(int)VillagerType.Harpy, ItemID.FallenStar] = 5;
+            villageGiftPreferences[(int)VillagerType.Harpy, ItemID.Feather] = -3;
+            villageGiftPreferences[(int)VillagerType.Harpy, ItemID.GiantHarpyFeather] = -5;
+        }
+
+        #endregion
+
+        #region Mod Compatability
+        /// <summary>
+        /// Modifies the reputation a given item will give upon gifting it to a given villager type.
+        /// </summary>
+        /// <param name="vilType">The villager type to have their preference changed.</param>
+        /// <param name="itemType">The item type that will have its corresponding reputation changed.</param>
+        /// <param name="reputation">The new reputation value of the given item type.</param>
+        public void ChangeGiftPreference(VillagerType vilType, int itemType, int reputation) {
+            villageGiftPreferences[(int)vilType, itemType] = reputation;
+        }
+
+        /// <summary>
+        /// Retrives the reputation modifier a given item type will have on a given villager type.
+        /// If the item does not have a set reputation modifier, this will return 0 by default.
+        /// </summary>
+        /// <param name="vilType">The villager type to find the specific preference of.</param>
+        /// <param name="itemType">The type of item to have its reputation modifier checked.</param>
+        /// <returns></returns>
+        public int GetSpecificGiftPreference(VillagerType vilType, int itemType) {
+            return villageGiftPreferences[(int)vilType, itemType];
+        }
+        #endregion
+
+        #region UI
+        internal static UserInterface HarpyShrineInterface;
+        internal static HarpyShrineUIState HarpyShrineState;
+        private GameTime _lastUpdateUiGameTime;
+
+        public override void UpdateUI(GameTime gameTime)
+        {
+            _lastUpdateUiGameTime = gameTime;
+            if (HarpyShrineInterface?.CurrentState != null)
+                HarpyShrineInterface.Update(gameTime);
+        }
+
+        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+        {
+            //https://github.com/tModLoader/tModLoader/wiki/Vanilla-Interface-layers-values
+            int interfaceLayer = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Interface Logic 1"));
+            if (interfaceLayer != -1)
+            {
+                layers.Insert(interfaceLayer, new LegacyGameInterfaceLayer(
+                    "LWM: HarpyShrine",
+                    delegate
+                    {
+                        if (_lastUpdateUiGameTime != null && HarpyShrineInterface?.CurrentState != null)
+                            HarpyShrineInterface.Draw(Main.spriteBatch, _lastUpdateUiGameTime);
+
+                        return true;
+                    },
+                       InterfaceScaleType.Game));
+            }
+        }
+        #endregion
 
         #region Method Swaps
         private int NPC_TypeToHeadIndex(On.Terraria.NPC.orig_TypeToHeadIndex orig, int type)

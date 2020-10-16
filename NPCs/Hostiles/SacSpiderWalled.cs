@@ -185,11 +185,11 @@ namespace LivingWorldMod.NPCs.Hostiles
                 {
                     for (int j = tileCoordY - 1; j <= tileCoordY + 1; j = displacement + 1)
                     {
-                        if (Framing.GetTileSafely(i, j) == null)
+                        if (Main.tile[i, j] == null)
                         {
                             return;
                         }
-                        if (Framing.GetTileSafely(i, j).wall > WallID.None)
+                        if (Main.tile[i, j].wall > 0)
                         {
                             noEligibleWall = true;
                         }
