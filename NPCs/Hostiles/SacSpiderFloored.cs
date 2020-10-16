@@ -70,7 +70,7 @@ namespace LivingWorldMod.NPCs.Hostiles
                 {
                     for (int j = tileCoordY - 1; j <= tileCoordY + 1; j++)
                     {
-                        if (Main.tile[i, j].wall > 0)
+                        if (Framing.GetTileSafely(i, j).wall > WallID.None)
                         {
                             isEligibleWall = true;
                         }

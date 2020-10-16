@@ -36,6 +36,7 @@ namespace LivingWorldMod.Utils
             }
             return false;
         }
+
         /// <summary>
         /// Returns whether or not a given NPC is a type of Villager.
         /// </summary>
@@ -64,5 +65,9 @@ namespace LivingWorldMod.Utils
             }
             return selectedNPC;
         }
+
+        //----------Extension Methods----------
+        public static Tile ToTile(this TileNode tn) => Framing.GetTileSafely(tn.position);
+        public static Point16 Add(this Point16 point, int p1x, int p1y) => new Point16(point.X + p1x, point.Y + p1y);
     }
 }

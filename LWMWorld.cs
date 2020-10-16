@@ -1,16 +1,17 @@
-﻿using LivingWorldMod.NPCs.Villagers;
-using LivingWorldMod.Tiles.WorldGen;
-using LivingWorldMod.Utils;
-using Microsoft.Xna.Framework;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.DataStructures;
-using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using Terraria.DataStructures;
 using Terraria.World.Generation;
+using Terraria.GameContent.Generation;
 using static Terraria.ModLoader.ModContent;
+using LivingWorldMod.Tiles.WorldGen;
+using LivingWorldMod.NPCs.Villagers;
+using LivingWorldMod.Utils;
 
 namespace LivingWorldMod
 {
@@ -67,21 +68,32 @@ namespace LivingWorldMod
         }
         #endregion
 
+        #region Update Methods
+        public override void PostUpdate() 
+        {
+            SpiderSacRegen();
+
+            for (int i = 0; i < villageGiftCooldown.Length; i++) {
+                if (--villageGiftCooldown[i] < 0) {
+                    villageGiftCooldown[i] = 0;
+                }
+            }
+        }
+        #endregion
+
         #region I/O
         public override TagCompound Save()
         {
             IList<TagCompound> villagerData = new List<TagCompound>();
-            for (int i = 0; i < Main.maxNPCs; i++)
-            {
+            for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npcAtIndex = Main.npc[i];
                 if (!LWMUtils.IsTypeOfVillager(npcAtIndex))
                     continue;
-                else
-                {
+                else {
                     TagCompound villagerDataTag = new TagCompound
                     {
                         {"type", (int)((Villager)npcAtIndex.modNPC).villagerType },
-                        {"spriteVar",  ((Villager)npcAtIndex.modNPC).spriteVariation}, 
+                        {"spriteVar",  ((Villager)npcAtIndex.modNPC).spriteVariation},
                         {"x", npcAtIndex.Center.X },
                         {"y", npcAtIndex.Center.Y },
                         {"name", npcAtIndex.GivenName },
@@ -118,17 +130,16 @@ namespace LivingWorldMod
         #endregion
 
         #region World Gen
-		//https://github.com/tModLoader/tModLoader/wiki/Vanilla-World-Generation-Steps
+        //https://github.com/tModLoader/tModLoader/wiki/Vanilla-World-Generation-Steps
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {
             int spiderCavesIndex = tasks.FindIndex(task => task.Name.Equals("Spider Caves"));
             if (spiderCavesIndex != -1)
                 tasks.Insert(spiderCavesIndex + 1, new PassLegacy("Spider Sac Tiles", CustomSpiderCavernGenTask));
+
             int structureGenTask = tasks.FindIndex(task => task.Name.Equals("Micro Biomes"));
             if (structureGenTask != -1)
-            {
                 tasks.Insert(structureGenTask + 1, new PassLegacy("Sky Village", SkyVillageGenTask));
-            }
         }
 
         private void CustomSpiderCavernGenTask(GenerationProgress progress)
@@ -188,7 +199,7 @@ namespace LivingWorldMod
 
             //Making sure the foundation for the Spider Sac aren't cobwebs or other non solid stuff
             for (int m = 0; m < 2; m++)
-                if (Framing.GetTileSafely(tileCoords[m]).collisionType != 1) 
+                if (Framing.GetTileSafely(tileCoords[m]).collisionType != 1)
                     return false;
 
             //Smoothing top tiles where Spider Sac will sit
@@ -209,7 +220,7 @@ namespace LivingWorldMod
         int startingIteration = 0;
         int currentIteration = 0;
         int spiderSacsPlaced = 0;
-        public override void PostUpdate()
+        void SpiderSacRegen()
         {
             //Progressive iteration of the world throughout the span of 15mins
             for (int i = 0; i < iterationsPerTick; i++)
@@ -234,72 +245,123 @@ namespace LivingWorldMod
 
                 currentIteration++;
             }
-
-            for (int i = 0; i < villageGiftCooldown.Length; i++)
-            {
-                if (--villageGiftCooldown[i] < 0)
-                {
-                    villageGiftCooldown[i] = 0;
-                }
-            }
         }
 
         private void SkyVillageGenTask(GenerationProgress progress)
         {
-            //TODO: Find better way to find space for structure
             progress.Message = "Generating Structures... Sky Village";
             progress.Start(0f);
 
-            int xPos = WorldGen.genRand.Next((int)(Main.maxTilesX * 0.1), (int)(Main.maxTilesX * 0.9));
 
-            int yPos = WorldGen.genRand.Next(Main.maxTilesY - (int)(Main.maxTilesY * 0.95), Main.maxTilesY - (int)(Main.maxTilesY * 0.875));
-            progress.Set(0.34f);
-
-            //Structure is 160 x 92
-            bool foundFreeSpace = false;
-            while (!foundFreeSpace)
+            #region Mapping Floating Islands
+            List<FloatingIsland> islands = new List<FloatingIsland>();
+            int islandsZone = (int)(Main.maxTilesY * 0.18f);
+            bool[] visitedCoords = new bool[Main.maxTilesX * islandsZone];
+            bool validCoordinate(Point16 pos)
             {
-                bool overlap = false;
-                for (int i = xPos; i < xPos + 160; i++)
+                //Making sure the coordinate is within the visitedCoords array
+                if (pos.Y >= islandsZone) return false;
+
+                Tile tile = Framing.GetTileSafely(pos);
+                if (tile.type != TileID.Cloud && tile.type != TileID.RainCloud) return false;
+
+                return true;
+            }
+
+            //left top most visible screen coord is (41, 41)?
+            for (int i = 41; i < Main.maxTilesX; i++)
+            {
+                for (int j = 41; j < islandsZone; j++)
                 {
-                    for (int j = yPos; j < yPos + 92; j++)
+                    Point16 currentPos = new Point16(i, j);
+                    if (!validCoordinate(currentPos)) continue;
+
+                    List<Point16> currentIsland = new List<Point16>();
+
+                    //Simple BFS Algorithm implementation
+                    Queue<TileNode> queue = new Queue<TileNode>();
+                    TileNode startingNode = new TileNode(currentPos);
+                    queue.Enqueue(startingNode);
+
+                    while (queue.Count != 0)
                     {
-                        if (!Framing.GetTileSafely(i, j).active())
-                            continue;
-                        overlap = true;
-                        break;
+                        TileNode activeNode = queue.Dequeue();
+                        if (!validCoordinate(activeNode.position)) continue;
+
+                        //1D array that holds values of 2D coordinates needs a special formula for the index
+                        int index = activeNode.position.Y * Main.maxTilesX + activeNode.position.X;
+                        //index = row * maxColumns + column
+
+                        if (visitedCoords[index]) continue;
+                        else visitedCoords[index] = true;
+
+                        //If current coord wasn't visited yet, add it to the current island list
+                        currentIsland.Add(activeNode.position);
+
+                        List<TileNode> childNodes = activeNode.GetChildren();
+                        childNodes.ForEach(child => queue.Enqueue(child));
                     }
-                    if (overlap)
-                        break;
-                }
-                if (overlap)
-                {
-                    xPos = WorldGen.genRand.Next((int)(Main.maxTilesX * 0.1), (int)(Main.maxTilesX * 0.9));
-                    yPos = WorldGen.genRand.Next(Main.maxTilesY - (int)(Main.maxTilesY * 0.95), Main.maxTilesY - (int)(Main.maxTilesY * 0.875));
-                    continue;
-                }
-                else
-                {
-                    foundFreeSpace = true;
+
+                    //300 tiles? I should probably make some tests and define an average/2
+                    if (currentIsland.Count > 300)
+                        islands.Add(new FloatingIsland(currentIsland));
+
+                    progress.Set((i * j / visitedCoords.Length) * 0.80f);
                 }
             }
-            progress.Set(0.67f);
+            #endregion
 
-            StructureHelper.StructureHelper.GenerateStructure("Structures/SkyVillageStructure", new Point16(xPos, yPos), mod);
+            #region Finding Suitable Spot and Generating it
+            int structureWidth = 160;
+            int structureHeight = 92;
 
-            progress.Set(0.99f);
+            //TODO: MAKE IT CHOOSE SPOTS THAT ARE NOT IN BETWEEN ISLANDS IF THEY'RE CLOSER TO THE CENTER (can happen in small worlds)
+            //X
+            int worldCenter = Main.maxTilesX / 2;
+            int biggestDistanceBetweenIslands = 0;
+            int smallestDistanceToWorldCenter = Main.maxTilesX;
+            int xCoord = 0;
+
+            for (int i = 0; i < islands.Count; i++)
+            {
+                //Can't do islands[i + 1] on last element
+                if (i != islands.Count - 1)
+                {
+                    //Finding the biggest distance between two islands where the middle spot between the two is the closest to the world center
+                    int distanceBetweenIslands = Math.Abs(islands[i + 1].xMin - islands[i].xMax); //Math.Abs not needed since they're ordered?
+                    int theoricalXCoord = islands[i].xMax + distanceBetweenIslands / 2 - structureWidth / 2;
+
+                    if (distanceBetweenIslands > biggestDistanceBetweenIslands && Math.Abs(theoricalXCoord - worldCenter) < smallestDistanceToWorldCenter)
+                    {
+                        biggestDistanceBetweenIslands = distanceBetweenIslands;
+                        smallestDistanceToWorldCenter = Math.Abs(theoricalXCoord - worldCenter);
+                        xCoord = theoricalXCoord;
+                    }
+                }
+            }
+
+            progress.Set(0.85f);
+
+            //Y
+            int yAverage = 0;
+            foreach (FloatingIsland island in islands)
+                yAverage += island.GetYAverage();
+            yAverage /= islands.Count;
+
+            //Make sure structure y value doesn't go below 41 (world border)
+            yAverage = yAverage - structureHeight > 41 ? yAverage - structureHeight : 42;
+
+            progress.Set(0.90f);
+            StructureHelper.StructureHelper.GenerateStructure("Structures/SkyVillageStructure", new Point16(xCoord, yAverage), mod);
+            #endregion
 
             progress.End();
         }
-        public override void PostWorldGen()
-        {
+        public override void PostWorldGen() {
             //Spawn Villagers
-            for (int i = 0; i < Main.maxTilesX; i++)
-            {
-                for (int j = 0; j < Main.maxTilesY; j++)
-                {
-                    if (Framing.GetTileSafely(i, j).type == TileType<SkyVillagerHomeTile>())
-                    {
+            for (int i = 0; i < Main.maxTilesX; i++) {
+                for (int j = 0; j < Main.maxTilesY; j++) {
+                    if (Framing.GetTileSafely(i, j).type == TileType<SkyVillagerHomeTile>()) {
                         int npcIndex = NPC.NewNPC(i * 16, j * 16, NPCType<SkyVillager>());
                         NPC npcAtIndex = Main.npc[npcIndex];
                         ((Villager)npcAtIndex.modNPC).homePosition = new Vector2(i, j);
