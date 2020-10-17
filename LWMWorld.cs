@@ -12,6 +12,7 @@ using static Terraria.ModLoader.ModContent;
 using LivingWorldMod.Tiles.WorldGen;
 using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.Utils;
+using LivingWorldMod.Tiles.Ores;
 
 namespace LivingWorldMod
 {
@@ -146,6 +147,10 @@ namespace LivingWorldMod
             int structureGenTask = tasks.FindIndex(task => task.Name.Equals("Micro Biomes"));
             if (structureGenTask != -1)
                 tasks.Insert(structureGenTask + 1, new PassLegacy("Sky Village", SkyVillageGenTask));
+
+            int roseQuartzTask = tasks.FindIndex(task => task.Name.Equals("Gems"));
+            if (roseQuartzTask != -1)
+                tasks.Insert(roseQuartzTask + 1, new PassLegacy("Rose Quartz", RoseQuartzGeneration));
         }
 
         private void CustomSpiderCavernGenTask(GenerationProgress progress)
@@ -363,11 +368,15 @@ namespace LivingWorldMod
 
             progress.End();
         }
-        public override void PostWorldGen() {
+        public override void PostWorldGen()
+        {
             //Spawn Villagers
-            for (int i = 0; i < Main.maxTilesX; i++) {
-                for (int j = 0; j < Main.maxTilesY; j++) {
-                    if (Framing.GetTileSafely(i, j).type == TileType<SkyVillagerHomeTile>()) {
+            for (int i = 0; i < Main.maxTilesX; i++)
+            {
+                for (int j = 0; j < Main.maxTilesY; j++)
+                {
+                    if (Framing.GetTileSafely(i, j).type == TileType<SkyVillagerHomeTile>())
+                    {
                         int npcIndex = NPC.NewNPC(i * 16, j * 16, NPCType<SkyVillager>());
                         NPC npcAtIndex = Main.npc[npcIndex];
                         ((Villager)npcAtIndex.modNPC).homePosition = new Vector2(i, j);
@@ -375,6 +384,28 @@ namespace LivingWorldMod
                 }
             }
         }
+        private void RoseQuartzGeneration(GenerationProgress progress)
+        {
+            progress.Message = "Rose quartz-ifying the sky";
+            progress.Start(0f);
+
+            for (int k = 0; k < (int)((Main.maxTilesX * Main.maxTilesY) * 0.005); k++)
+            {
+                int x = WorldGen.genRand.Next(0, Main.maxTilesX);
+                int y = WorldGen.genRand.Next(0, (int)(Main.maxTilesY * 0.15f)); 
+
+                Tile tile = Framing.GetTileSafely(x, y);
+                if (tile.active() && tile.type == TileID.Dirt)
+                {
+                    //3rd and 4th values are strength and steps, adjust later if needed
+                    WorldGen.TileRunner(x, y, WorldGen.genRand.Next(3, 5), WorldGen.genRand.Next(2, 4), TileType<RoseQuartzTile>());
+                }
+            }
+
+            progress.Set(1f);
+            progress.End();
+        }
+
         #endregion
     }
 }
