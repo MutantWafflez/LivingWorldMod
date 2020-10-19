@@ -11,7 +11,6 @@ namespace LivingWorldMod.Tiles.Interactables
     public abstract class VillagerShrineTile : ModTile
     {
         public VillagerType shrineType;
-        public int shrineStage;
 
         public override void SetDefaults()
         {
@@ -48,13 +47,9 @@ namespace LivingWorldMod.Tiles.Interactables
 
         public override void AnimateTile(ref int frame, ref int frameCounter)
         {
-            int reputation = LWMWorld.GetReputation(shrineType);
-            shrineStage = (int)(reputation / 6.66f); //Increase stage for each 7 rep (100 rep / 15 frames = 6.666..)
-            //Negative values won't be visually displayed, only in the UI
-            if (shrineStage < 0) shrineStage = 0;
-            //Not sure if the line below will stop working when other shrines are implemented
-            ShrineUIState.shrineStage[(int)shrineType] = shrineStage;
-            frame = frameCounter = shrineStage; 
+            int giftProgress = LWMWorld.GetGiftProgress(shrineType);
+
+            frame = frameCounter = (int)(giftProgress / 6.66f);
         }
     }
 }

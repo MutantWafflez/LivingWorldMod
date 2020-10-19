@@ -20,6 +20,8 @@ namespace LivingWorldMod
     {
         internal static int[] villageReputation = new int[(int)VillagerType.VillagerTypeCount];
         internal static int[] villageGiftCooldown = new int[(int)VillagerType.VillagerTypeCount];
+        internal static int[] villageGiftProgress = new int[(int)VillagerType.VillagerTypeCount];
+        internal static int[] villageShrineStage = new int[(int)VillagerType.VillagerTypeCount];
 
         public override void Initialize()
         {
@@ -69,19 +71,69 @@ namespace LivingWorldMod
         }
 
         /// <summary>
-        /// Returns reputation value of given villager type.
+        /// Returns reputation value of the given villager type.
         /// </summary>
         /// <param name="villagerType">Villager type to get the reputation of.</param>
         public static int GetReputation(VillagerType villagerType) => villageReputation[(int)villagerType];
+
+        /// <summary>
+        /// Returns the gifting progress of the given villager type.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the gifting progress of.</param>
+        public static int GetGiftProgress(VillagerType villagerType) => villageGiftProgress[(int)villagerType];
+
+        /// <summary>
+        /// Returns the shrine stage of the given villager type shrine.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the shrine stage of.</param>
+        public static int GetShrineStage(VillagerType villagerType) => villageShrineStage[(int)villagerType];
+
+        /// <summary>
+        /// Adds an item's gift value to the current gift progess.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the gifting progress of.</param>
+        /// <param name="itemType">Gift's item type.</param>
+        public static void AddGiftToProgress(VillagerType villagerType, int itemType)
+        {
+            int giftValue = GetInstance<LivingWorldMod>().GetSpecificGiftPreference(villagerType, itemType);
+            int giftProgress = GetGiftProgress(villagerType);
+            int shrineStage = GetShrineStage(villagerType);
+
+            if (giftProgress + giftValue >= 100)
+            {
+                int remaining = (giftProgress + giftValue) - 100;
+
+                if (shrineStage < 5)
+                {
+                    villageShrineStage[(int)villagerType] = shrineStage + 1;
+                    villageGiftProgress[(int)villagerType] = remaining;
+
+                    //TODO: INCREASE REPUTATION AFTER SHRINE STAGE +1
+                }
+            }
+            else if (giftProgress + giftValue < 0)
+            {
+                int remaining = 0 - (giftProgress + giftValue);
+
+                if (shrineStage >= 0)
+                {
+                    villageShrineStage[(int)villagerType] = shrineStage - 1;
+                    villageGiftProgress[(int)villagerType] = 100 - remaining;
+                }
+            }
+            else villageGiftProgress[(int)villagerType] = giftProgress + giftValue;
+        }
         #endregion
 
         #region Update Methods
-        public override void PostUpdate() 
+        public override void PostUpdate()
         {
             SpiderSacRegen();
 
-            for (int i = 0; i < villageGiftCooldown.Length; i++) {
-                if (--villageGiftCooldown[i] < 0) {
+            for (int i = 0; i < villageGiftCooldown.Length; i++)
+            {
+                if (--villageGiftCooldown[i] < 0)
+                {
                     villageGiftCooldown[i] = 0;
                 }
             }
@@ -92,11 +144,13 @@ namespace LivingWorldMod
         public override TagCompound Save()
         {
             IList<TagCompound> villagerData = new List<TagCompound>();
-            for (int i = 0; i < Main.maxNPCs; i++) {
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
                 NPC npcAtIndex = Main.npc[i];
                 if (!LWMUtils.IsTypeOfVillager(npcAtIndex))
                     continue;
-                else {
+                else
+                {
                     TagCompound villagerDataTag = new TagCompound
                     {
                         {"type", (int)((Villager)npcAtIndex.modNPC).villagerType },
@@ -111,6 +165,8 @@ namespace LivingWorldMod
             }
             return new TagCompound {
                 {"VillageReputation", villageReputation },
+                {"VillageGiftProgress", villageGiftProgress },
+                {"VillageShrineStage", villageShrineStage },
                 {"VillagerData", villagerData },
                 {"VillageGiftCooldown", villageGiftCooldown }
             };
@@ -119,11 +175,13 @@ namespace LivingWorldMod
         public override void Load(TagCompound tag)
         {
             villageReputation = tag.GetIntArray("VillageReputation");
+            villageGiftProgress = tag.GetIntArray("VillageGiftProgress");
+            villageShrineStage = tag.GetIntArray("VillageShrineStage");
             IList<TagCompound> villagerData = tag.GetList<TagCompound>("VillagerData");
             for (int i = 0; i < villagerData.Count; i++)
             {
                 int villagerType = NPCType<SkyVillager>();
-                int recievedVilType = villagerData[i].GetAsInt("type");
+                int receivedVilType = villagerData[i].GetAsInt("type");
                 //if (recievedVilType == (int)VillagerType.LihzahrdVillager)
                 //Lihzahrd Villager types here
                 int npcIndex = NPC.NewNPC((int)villagerData[i].GetFloat("x"), (int)villagerData[i].GetFloat("y"), villagerType);
@@ -392,7 +450,7 @@ namespace LivingWorldMod
             for (int k = 0; k < (int)((Main.maxTilesX * Main.maxTilesY) * 0.005); k++)
             {
                 int x = WorldGen.genRand.Next(0, Main.maxTilesX);
-                int y = WorldGen.genRand.Next(0, (int)(Main.maxTilesY * 0.15f)); 
+                int y = WorldGen.genRand.Next(0, (int)(Main.maxTilesY * 0.15f));
 
                 Tile tile = Framing.GetTileSafely(x, y);
                 if (tile.active() && tile.type == TileID.Dirt)

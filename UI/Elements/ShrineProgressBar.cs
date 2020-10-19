@@ -7,27 +7,25 @@ using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 using Terraria.ModLoader;
+using LivingWorldMod.NPCs.Villagers;
+
 namespace LivingWorldMod.UI.Elements
 {
     class ShrineProgressBar : UIElement
     {
         private UIText text;
         private UIImage barFrame;
-        private Color positiveC1;
-        private Color negativeC1;
-        private Color positiveC2;
-        private Color negativeC2;
+        private Color colorA;
+        private Color colorB;
         private readonly int maxProgress;
-        private readonly bool repMode;
+        private readonly bool giftMode;
 
-        public ShrineProgressBar(bool repMode, int maxProgress, Color positiveC1, Color negativeC1, Color positiveC2 = default, Color negativeC2 = default)
+        public ShrineProgressBar(bool giftMode, int maxProgress, Color colorA, Color colorB = default)
         {
-            this.repMode = repMode;
+            this.giftMode = giftMode;
             this.maxProgress = maxProgress;
-            this.positiveC1 = positiveC1;
-            this.negativeC1 = negativeC1;
-            this.positiveC2 = positiveC2 == default ? positiveC1 : positiveC2;
-            this.negativeC2 = negativeC2 == default ? negativeC1 : negativeC2;
+            this.colorA = colorA;
+            this.colorB = colorB == default ? colorA : colorB;
         }
 
         public override void OnInitialize()
@@ -53,17 +51,20 @@ namespace LivingWorldMod.UI.Elements
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            int shrineType = (int)ShrineUIState.shrineType;
-            int shrineStage = ShrineUIState.shrineStage[shrineType];
-            int reputation = LWMWorld.villageReputation[shrineType];
+            VillagerType shrineType = ShrineUIState.shrineType;
+            //int reputation = LWMWorld.GetReputation(shrineType);
             float quotient;
-            if (repMode)
+            if (giftMode)
             {
-                text.SetText($"{reputation} / {maxProgress}");
-                quotient = Math.Abs(reputation) / (float)maxProgress;
+                int giftProgress = LWMWorld.GetGiftProgress(shrineType);
+
+                text.SetText($"{giftProgress} / {maxProgress}");
+                quotient = giftProgress / (float)maxProgress;
             }
             else //stageMode
             {
+                int shrineStage = LWMWorld.GetShrineStage(shrineType);
+
                 text.SetText($"{shrineStage} / {maxProgress}");
                 quotient = shrineStage / (float)maxProgress;
             }
@@ -82,7 +83,7 @@ namespace LivingWorldMod.UI.Elements
             {
                 //float percent = (float)i / steps; // Alternate Gradient Approach
                 float percent = (float)i / (right - left);
-                Color color = reputation > 0 ? Color.Lerp(positiveC1, positiveC2, percent) : Color.Lerp(negativeC1, negativeC2, percent);
+                Color color = Color.Lerp(colorA, colorB, percent);
                 spriteBatch.Draw(Main.magicPixel, new Rectangle(left + i, hitbox.Y, 1, hitbox.Height), color);
             }
         }

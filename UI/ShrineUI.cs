@@ -17,7 +17,6 @@ namespace LivingWorldMod.UI
         public static Vector2 itemSlotPos;
         private static CustomItemSlot itemSlot;
         public static VillagerType shrineType;
-        public static int[] shrineStage;
 
         public static UIPanel SMPanel;
         private static float SMWidth;
@@ -29,7 +28,6 @@ namespace LivingWorldMod.UI
             showUI = false;
             itemSlotPos = Vector2.Zero;
             itemSlot = null;
-            shrineStage = new int[(int)VillagerType.VillagerTypeCount];
         }
 
         public static void CreateShapesMenuPanel()
@@ -101,15 +99,14 @@ namespace LivingWorldMod.UI
             SMPanel.Append(gift);
 
             //Reputation Text
-            UIText repText = new UIText("Rep: ", 0.8f);
-            repText.Left.Set(10f, 0);
+            UIText repText = new UIText("Gifts: ", 0.8f);
+            repText.Left.Set(8f, 0);
             repText.Top.Set(95f, 0);
             SMPanel.Append(repText);
 
             //Reputation ProgressBar
-            Color positiveRepColor = new Color(63, 113, 169);
-            Color negativeRepColor = new Color(155, 15, 15);
-            ShrineProgressBar repFrame = new ShrineProgressBar(true, 100, positiveRepColor, negativeRepColor);
+            Color Color = new Color(63, 113, 169);
+            ShrineProgressBar repFrame = new ShrineProgressBar(true, 100, Color);
             repFrame.Width.Set(130f, 0);
             repFrame.Height.Set(16f, 0);
             repFrame.Left.Set(48f, 0);
@@ -124,7 +121,7 @@ namespace LivingWorldMod.UI
             SMPanel.Append(stageText);
 
             //Stage ProgressBar
-            ShrineProgressBar stageFrame = new ShrineProgressBar(false, 15, positiveRepColor, negativeRepColor);
+            ShrineProgressBar stageFrame = new ShrineProgressBar(false, 5, Color);
             stageFrame.Width.Set(130f, 0);
             stageFrame.Height.Set(16f, 0);
             stageFrame.Left.Set(48f, 0);
@@ -136,24 +133,8 @@ namespace LivingWorldMod.UI
         public static void GiftItem()
         {
             int itemType = itemSlot.Item.type;
-            int giftRep = GetInstance<LivingWorldMod>().GetSpecificGiftPreference(shrineType, itemType);
-
-            if (LWMWorld.villageReputation[(int)shrineType] != 100 && giftRep > 0)
-            {
-                LWMWorld.villageReputation[(int)shrineType] += giftRep;
-                if (LWMWorld.villageReputation[(int)shrineType] > 100)
-                    LWMWorld.villageReputation[(int)shrineType] = 100;
-
-                itemSlot.Item.TurnToAir();
-            }
-            else if (LWMWorld.villageReputation[(int)shrineType] != -100 && giftRep < 0)
-            {
-                LWMWorld.villageReputation[(int)shrineType] += giftRep;
-                if (LWMWorld.villageReputation[(int)shrineType] < -100)
-                    LWMWorld.villageReputation[(int)shrineType] = -100;
-
-                itemSlot.Item.TurnToAir();
-            }
+            LWMWorld.AddGiftToProgress(shrineType, itemType);
+            itemSlot.Item.TurnToAir();
         }
 
         public static void TileRightClicked(int i, int j, VillagerType shrineType)
