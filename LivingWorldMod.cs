@@ -14,6 +14,7 @@ namespace LivingWorldMod
     {
         internal static bool debugMode = true;
 
+        public static readonly int maximumReputationValue = 200; //The upper cap of the reputation value
         internal static readonly int villageGiftCooldownTime = 60 * 60 * 24; //24 IRL minutes (24 in game hours)
         internal static int[,] villageGiftPreferences;
 
@@ -22,10 +23,10 @@ namespace LivingWorldMod
         {
             for (int repIndex = 0; repIndex < (int)VillagerType.VillagerTypeCount; repIndex++)
             {
-                if (LWMWorld.villageReputation[repIndex] > 100)
-                    LWMWorld.villageReputation[repIndex] = 100;
-                else if (LWMWorld.villageReputation[repIndex] < -100)
-                    LWMWorld.villageReputation[repIndex] = -100;
+                if (LWMWorld.villageReputation[repIndex] > maximumReputationValue)
+                    LWMWorld.villageReputation[repIndex] = maximumReputationValue;
+                else if (LWMWorld.villageReputation[repIndex] < 0)
+                    LWMWorld.villageReputation[repIndex] = 0;
             }
         }
 

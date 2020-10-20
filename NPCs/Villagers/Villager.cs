@@ -178,28 +178,28 @@ namespace LivingWorldMod.NPCs.Villagers
         private void UpdateReputationBools()
         {
             float reputation = LWMWorld.GetReputation(villagerType);
-            if (reputation < -30f)
+            if (reputation < 50f)
             {
                 isNegativeRep = true;
                 isNeutralRep = false;
                 isPositiveRep = false;
                 isMaxRep = false;
             }
-            else if (reputation >= -30f && reputation <= 30f)
+            else if (reputation > 50f && reputation <= 150f)
             {
                 isNegativeRep = false;
                 isNeutralRep = true;
                 isPositiveRep = false;
                 isMaxRep = false;
             }
-            else if (reputation > 30f && reputation < 100f)
+            else if (reputation > 150f && reputation < 200f)
             {
                 isNegativeRep = false;
                 isNeutralRep = false;
                 isPositiveRep = true;
                 isMaxRep = false;
             }
-            else if (reputation >= 100f)
+            else if (reputation >= 200f)
             {
                 isNegativeRep = false;
                 isNeutralRep = false;
