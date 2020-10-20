@@ -91,7 +91,7 @@ namespace LivingWorldMod
                     villageShrineStage[(int)villagerType] = shrineStage + 1;
                     villageGiftProgress[(int)villagerType] = remaining;
 
-                    //TODO: INCREASE REPUTATION AFTER SHRINE STAGE +1
+                    villageReputation[(int)villagerType] += 50;
                 }
             }
             else if (giftProgress + giftValue < 0)
@@ -102,6 +102,8 @@ namespace LivingWorldMod
                 {
                     villageShrineStage[(int)villagerType] = shrineStage - 1;
                     villageGiftProgress[(int)villagerType] = 100 - remaining;
+
+                    villageReputation[(int)villagerType] -= 50;
                 }
             }
             else villageGiftProgress[(int)villagerType] = giftProgress + giftValue;

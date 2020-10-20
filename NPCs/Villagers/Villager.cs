@@ -16,6 +16,7 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public readonly List<string> possibleNames;
 
+        public bool isHatedRep;
         public bool isNegativeRep;
         public bool isNeutralRep = true; //This is set to true prematurely *just* in case UpdateReputationBools() isn't called.
         public bool isPositiveRep;
@@ -178,15 +179,24 @@ namespace LivingWorldMod.NPCs.Villagers
         private void UpdateReputationBools()
         {
             float reputation = LWMWorld.GetReputation(villagerType);
-            if (reputation < 50f)
+            if (reputation <= 0f) {
+                isHatedRep = true;
+                isNegativeRep = false;
+                isNeutralRep = false;
+                isPositiveRep = false;
+                isMaxRep = false;
+            }
+            else if (reputation <= 50f && reputation > 0f)
             {
+                isHatedRep = false;
                 isNegativeRep = true;
                 isNeutralRep = false;
                 isPositiveRep = false;
                 isMaxRep = false;
             }
-            else if (reputation > 50f && reputation <= 150f)
+            else if (reputation >= 100f && reputation <= 150f)
             {
+                isHatedRep = false;
                 isNegativeRep = false;
                 isNeutralRep = true;
                 isPositiveRep = false;
@@ -194,6 +204,7 @@ namespace LivingWorldMod.NPCs.Villagers
             }
             else if (reputation > 150f && reputation < 200f)
             {
+                isHatedRep = false;
                 isNegativeRep = false;
                 isNeutralRep = false;
                 isPositiveRep = true;
@@ -201,6 +212,7 @@ namespace LivingWorldMod.NPCs.Villagers
             }
             else if (reputation >= 200f)
             {
+                isHatedRep = false;
                 isNegativeRep = false;
                 isNeutralRep = false;
                 isPositiveRep = false;
