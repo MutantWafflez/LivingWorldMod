@@ -29,46 +29,8 @@ namespace LivingWorldMod
             iterationsPerTick = Main.maxTilesX * Main.maxTilesY / 54000;
         }
 
-        #region Reputation
-        /// <summary>
-        /// Changes the inputted VillagerType's reputation by amount.
-        /// </summary>
-        /// <param name="villagerType">Enum of VillagerType</param>
-        /// <param name="amount">Amount by which the reputation is changed</param>
-        public static void ModifyReputation(VillagerType villagerType, int amount, bool wasGift = false)
-        {
-            if (villagerType >= 0 && villagerType < VillagerType.VillagerTypeCount)
-            {
-                villageReputation[(int)villagerType] += amount;
-                if (wasGift)
-                {
-                    villageGiftCooldown[(int)villagerType] = LivingWorldMod.villageGiftCooldownTime;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Changes the inputted VillagerType's reputation by amount, and creates a combat text by the changed amount at combatTextPosition.
-        /// </summary>
-        /// <param name="villagerType">Enum of VillagerType</param>
-        /// <param name="amount">Amount by which the reputation is changed</param>
-        /// <param name="combatTextPosition">Location of the combat text created to signify the changed reputation amount</param>
-        public static void ModifyReputation(VillagerType villagerType, int amount, Rectangle combatTextPosition, bool wasGift = false)
-        {
-            if (villagerType >= 0 && villagerType < VillagerType.VillagerTypeCount)
-            {
-                villageReputation[(int)villagerType] += amount;
-                if (wasGift)
-                    villageGiftCooldown[(int)villagerType] = LivingWorldMod.villageGiftCooldownTime;
-
-                Color combatTextColor = Color.Lime;
-                if (amount < 0)
-                    combatTextColor = Color.Red;
-                else if (amount == 0)
-                    combatTextColor = Color.Gray;
-                CombatText.NewText(combatTextPosition, combatTextColor, (amount >= 0 ? "+" : "") + amount + " Reputation", true);
-            }
-        }
+        #region World Array Modifications
+        //TODO: Multiplayer Compat. for the modification methods
 
         /// <summary>
         /// Returns reputation value of the given villager type.
@@ -77,16 +39,37 @@ namespace LivingWorldMod
         public static int GetReputation(VillagerType villagerType) => villageReputation[(int)villagerType];
 
         /// <summary>
+        /// Changes the inputted VillagerType's reputation by amount.
+        /// </summary>
+        /// <param name="villagerType">Enum of VillagerType</param>
+        /// <param name="amount">Amount by which the reputation is changed</param>
+        public static void ModifyReputation(VillagerType villagerType, int amount) => villageReputation[(int)villagerType] += amount;
+
+        /// <summary>
         /// Returns the gifting progress of the given villager type.
         /// </summary>
         /// <param name="villagerType">Villager type to get the gifting progress of.</param>
         public static int GetGiftProgress(VillagerType villagerType) => villageGiftProgress[(int)villagerType];
 
         /// <summary>
+        /// Modifies the gifting progress of the given villager type.
+        /// </summary>
+        /// <param name="villagerType">Villager type to modify the gifting progress of.</param>
+        /// <param name="amount">The amount to change the gifting progress by.</param>
+        public static void ModifyGiftProgress(VillagerType villagerType, int amount) => villageGiftProgress[(int)villagerType] += amount;
+
+        /// <summary>
         /// Returns the shrine stage of the given villager type shrine.
         /// </summary>
         /// <param name="villagerType">Villager type to get the shrine stage of.</param>
         public static int GetShrineStage(VillagerType villagerType) => villageShrineStage[(int)villagerType];
+
+        /// <summary>
+        /// Modifies the shrine stage of the given villager type.
+        /// </summary>
+        /// <param name="villagerType">Villager type to modify the shrine stage of.</param>
+        /// <param name="amount">The amount to change the shrine stage by.</param>
+        public static void ModifyShrineStage(VillagerType villagerType, int amount) => villageShrineStage[(int)villagerType] += amount;
 
         /// <summary>
         /// Adds an item's gift value to the current gift progess.
