@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Items.Placeable.Paintings;
+﻿using LivingWorldMod.Items.Accessories;
+using LivingWorldMod.Items.Placeable.Paintings;
 using LivingWorldMod.Utils;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
@@ -113,6 +114,8 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public override void SetupShop(Chest shop, ref int nextSlot)
         {
+            shop.item[nextSlot].SetDefaults(ModContent.ItemType<FeatherBag>());
+            nextSlot++;
             shop.item[nextSlot].SetDefaults(ModContent.ItemType<SkyBustTileItem>());
             nextSlot++;
             shop.item[nextSlot].SetDefaults(ModContent.ItemType<OneStarTileItem>());

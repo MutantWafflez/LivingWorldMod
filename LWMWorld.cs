@@ -397,7 +397,7 @@ namespace LivingWorldMod
                 Tile tile = Framing.GetTileSafely(x, y);
                 if (tile.active() && tile.type == TileID.Dirt)
                 {
-                    //3rd and 4th values are strength and steps, adjust later if needed
+                    //3rd and 4th parameters are strength and steps, adjust later if needed
                     WorldGen.TileRunner(x, y, WorldGen.genRand.Next(3, 5), WorldGen.genRand.Next(2, 4), TileType<RoseQuartzTile>());
                 }
             }
