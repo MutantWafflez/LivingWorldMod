@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.NPCs.Villagers;
+using LivingWorldMod.UI;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -10,7 +11,6 @@ namespace LivingWorldMod.Tiles.Interactables
     public abstract class VillagerShrineTile : ModTile
     {
         public VillagerType shrineType;
-        public int shrineStage;
 
         public override void SetDefaults()
         {
@@ -47,12 +47,9 @@ namespace LivingWorldMod.Tiles.Interactables
 
         public override void AnimateTile(ref int frame, ref int frameCounter)
         {
-            int reputation = LWMWorld.GetReputation(shrineType);
-            shrineStage = (int)(reputation / 6.66f); //Increase stage for each 7 rep (100 rep / 15 frames = 6.666..)
+            int giftProgress = LWMWorld.GetGiftProgress(shrineType);
 
-            //Negative values won't be visually displayed, only in the UI
-            if (shrineStage < 0) shrineStage = 0;
-            frame = frameCounter = shrineStage; 
+            frame = frameCounter = (int)(giftProgress / 6.66f);
         }
     }
 }
