@@ -11,7 +11,8 @@ namespace LivingWorldMod
         //Accessory Bools
         public bool featherBag;
         //Other Accessory Variables
-        int timeUntilNextFeather = 90;
+        public int clampTheValueForFeather = 60;
+        int timeUntilNextFeather;
 
         public override void ResetEffects()
         {
@@ -20,7 +21,7 @@ namespace LivingWorldMod
 
         public override void UpdateDead()
         {
-            timeUntilNextFeather = 90;
+            timeUntilNextFeather = clampTheValueForFeather;
         }
 
         public override void PostUpdate()
@@ -54,7 +55,7 @@ namespace LivingWorldMod
                 }
                 if (player.wingTime < player.wingTimeMax && player.wingTime != 0 && player.velocity.Y < 0f)
                 {
-                    int numberProjectiles = 12;
+                    int numberProjectiles = 5;
                     float rotation = MathHelper.ToRadians(180);
 
                     if (timeUntilNextFeather == 0)
@@ -65,7 +66,7 @@ namespace LivingWorldMod
                             int feather = Projectile.NewProjectile(player.Bottom - new Vector2(0, 5), perturbedSpeed, ModContent.ProjectileType<FeatherBagFeather>(), 18, 2.5f, player.whoAmI);
                             NetMessage.SendData(MessageID.SyncProjectile, number: feather);
                         }
-                        timeUntilNextFeather = 90;
+                        timeUntilNextFeather = clampTheValueForFeather;
                     }
                 }
             }
