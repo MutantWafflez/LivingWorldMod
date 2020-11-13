@@ -28,7 +28,7 @@ namespace LivingWorldMod.NPCs.Villagers
         {
             WeightedRandom<string> chat = new WeightedRandom<string>();
 
-            if (isNegativeRep || Main.bloodMoon)
+            if (isHatedRep || isNegativeRep || Main.bloodMoon)
             {
                 chat.Add("Don’t take it personally if we like, rip off your arms and eat you or something.");
                 chat.Add("How do you even live with those repulsive meat sticks in place of wings?");
