@@ -22,6 +22,7 @@ namespace LivingWorldMod
         internal static int[] villageGiftCooldown = new int[(int)VillagerType.VillagerTypeCount];
         internal static int[] villageGiftProgress = new int[(int)VillagerType.VillagerTypeCount];
         internal static int[] villageShrineStage = new int[(int)VillagerType.VillagerTypeCount];
+        internal static bool[] villageGiftDiscovered = new bool[ItemLoader.ItemCount * (int)VillagerType.VillagerTypeCount];
 
         public override void Initialize()
         {
@@ -82,6 +83,7 @@ namespace LivingWorldMod
             int giftProgress = GetGiftProgress(villagerType);
             int shrineStage = GetShrineStage(villagerType);
 
+
             if (giftProgress + giftValue >= 100)
             {
                 int remaining = (giftProgress + giftValue) - 100;
@@ -108,6 +110,21 @@ namespace LivingWorldMod
             }
             else villageGiftProgress[(int)villagerType] = giftProgress + giftValue;
         }
+
+        public static bool IsGiftDiscovered(VillagerType villagerType, int itemType)
+        {
+            int index = ItemLoader.ItemCount * itemType + (int)villagerType;
+
+            return villageGiftDiscovered[index];
+        }
+
+        public static void SetGiftDiscovered(VillagerType villagerType, int itemType)
+        {
+            int index = ItemLoader.ItemCount * itemType + (int)villagerType;
+
+            villageGiftDiscovered[index] = true;
+        }
+
         #endregion
 
         #region Update Methods

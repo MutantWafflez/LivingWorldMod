@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using BuilderEssentials.UI.Elements;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.UI;
@@ -16,11 +17,13 @@ namespace LivingWorldMod.UI
         public static bool showUI;
         public static Vector2 itemSlotPos;
         private static CustomItemSlot itemSlot;
+        private static UIText hoverItemSlotText;
         public static VillagerType shrineType;
 
         public static UIPanel SMPanel;
         private static float SMWidth;
         private static float SMHeight;
+
 
         public override void OnInitialize()
         {
@@ -56,6 +59,9 @@ namespace LivingWorldMod.UI
 
         private static void CreateLayout()
         {
+            //Popup UI Elements
+            hoverItemSlotText = new UIText("");
+
             //Background
             UIImage SMBackground = new UIImage(GetTexture("LivingWorldMod/Textures/UIElements/ShrineMenu/Background"));
             SMBackground.Width.Set(0, 0);
@@ -79,9 +85,12 @@ namespace LivingWorldMod.UI
             itemSlot.Height.Set(54f, 0);
             itemSlot.Left.Set(5f, 0);
             itemSlot.Top.Set(25f, 0);
-            itemSlot.Activate(); //Runs OnInitialize
+            itemSlot.OnMouseOver += (__, _) => ItemSlotHoverTextCreation();
+            itemSlot.OnMouseOut += (__, _) => hoverItemSlotText.Remove();
+            itemSlot.OnItemEquipped += (_) => ItemSlotHoverTextCreation();
+            itemSlot.OnItemRemoved += (_) => hoverItemSlotText.Remove();
+            itemSlot.SetBackgroundTexture(GetTexture("LivingWorldMod/Textures/UIElements/ShrineMenu/ItemSlot"));
             SMPanel.Append(itemSlot);
-
 
             //Gift
             Texture2D giftTexture = GetTexture("LivingWorldMod/Textures/UIElements/ShrineMenu/Gift");
@@ -128,6 +137,34 @@ namespace LivingWorldMod.UI
             stageFrame.Top.Set(120f, 0);
             stageFrame.Activate();
             SMPanel.Append(stageFrame);
+
+            void ItemSlotHoverTextCreation()
+            {
+                hoverItemSlotText = new UIText("Amount Gifted: " + 2 + "\nLiking: Neutral");
+                Instance.Append(hoverItemSlotText);
+            }
+
+            //ItemSlot Item gifted amount
+            //Item gift modifier state(good, bad, neutral..)
+            //Gift cooldown
+
+            ////Gifted Amount Text
+            //UIText giftedAmountText = new UIText("Amount: 2", 0.8f);
+            //giftedAmountText.Left.Set(95f, 0);
+            //giftedAmountText.Top.Set(25f, 0);
+            //SMPanel.Append(giftedAmountText);
+
+            ////Gift Value
+            //UIText giftValue = new UIText("Value: Horrible", 0.8f); //Liking?
+            //giftValue.Left.Set(95f, 0);
+            //giftValue.Top.Set(40f, 0);
+            //SMPanel.Append(giftValue);
+
+            ////Gift Cooldown
+            //UIText giftCooldown = new UIText("Cooldown: 5min", 0.8f);
+            //giftCooldown.Left.Set(95f, 0);
+            //giftCooldown.Top.Set(55f, 0);
+            //SMPanel.Append(giftCooldown);
         }
 
         public static void GiftItem()
@@ -166,6 +203,15 @@ namespace LivingWorldMod.UI
             Vector2 itemSlotWorldPos = itemSlotPos.ToWorldCoordinates() - Main.screenPosition;
             SMPanel?.Left.Set(itemSlotWorldPos.X, 0);
             SMPanel?.Top.Set(itemSlotWorldPos.Y, 0);
+
+            if (itemSlot != null)
+            {
+                if (itemSlot.IsMouseHovering && !itemSlot.Item.IsAir)
+                {
+                    hoverItemSlotText?.Left.Set(Main.mouseX + 22f, 0);
+                    hoverItemSlotText?.Top.Set(Main.mouseY - 22f, 0);
+                }
+            }
         }
     }
 }
