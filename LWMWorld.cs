@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -20,6 +20,8 @@ namespace LivingWorldMod
     {
         internal static int[] villageReputation = new int[(int)VillagerType.VillagerTypeCount];
         internal static int[] villageGiftCooldown = new int[(int)VillagerType.VillagerTypeCount];
+        internal static int[] villageGiftProgress = new int[(int)VillagerType.VillagerTypeCount];
+        internal static int[] villageShrineStage = new int[(int)VillagerType.VillagerTypeCount];
 
         public override void Initialize()
         {
@@ -27,61 +29,96 @@ namespace LivingWorldMod
             iterationsPerTick = Main.maxTilesX * Main.maxTilesY / 54000;
         }
 
-        #region Reputation
+        #region World Array Modifications
+        //TODO: Multiplayer Compat. for the modification methods
+
+        /// <summary>
+        /// Returns reputation value of the given villager type.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the reputation of.</param>
+        public static int GetReputation(VillagerType villagerType) => villageReputation[(int)villagerType];
+
         /// <summary>
         /// Changes the inputted VillagerType's reputation by amount.
         /// </summary>
         /// <param name="villagerType">Enum of VillagerType</param>
         /// <param name="amount">Amount by which the reputation is changed</param>
-        public static void ModifyReputation(VillagerType villagerType, int amount, bool wasGift = false)
+        public static void ModifyReputation(VillagerType villagerType, int amount) => villageReputation[(int)villagerType] += amount;
+
+        /// <summary>
+        /// Returns the gifting progress of the given villager type.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the gifting progress of.</param>
+        public static int GetGiftProgress(VillagerType villagerType) => villageGiftProgress[(int)villagerType];
+
+        /// <summary>
+        /// Modifies the gifting progress of the given villager type.
+        /// </summary>
+        /// <param name="villagerType">Villager type to modify the gifting progress of.</param>
+        /// <param name="amount">The amount to change the gifting progress by.</param>
+        public static void ModifyGiftProgress(VillagerType villagerType, int amount) => villageGiftProgress[(int)villagerType] += amount;
+
+        /// <summary>
+        /// Returns the shrine stage of the given villager type shrine.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the shrine stage of.</param>
+        public static int GetShrineStage(VillagerType villagerType) => villageShrineStage[(int)villagerType];
+
+        /// <summary>
+        /// Modifies the shrine stage of the given villager type.
+        /// </summary>
+        /// <param name="villagerType">Villager type to modify the shrine stage of.</param>
+        /// <param name="amount">The amount to change the shrine stage by.</param>
+        public static void ModifyShrineStage(VillagerType villagerType, int amount) => villageShrineStage[(int)villagerType] += amount;
+
+        /// <summary>
+        /// Adds an item's gift value to the current gift progess.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the gifting progress of.</param>
+        /// <param name="itemType">Gift's item type.</param>
+        public static void AddGiftToProgress(VillagerType villagerType, int itemType)
         {
-            if (villagerType >= 0 && villagerType < VillagerType.VillagerTypeCount)
+            int giftValue = GetInstance<LivingWorldMod>().GetSpecificGiftPreference(villagerType, itemType);
+            int giftProgress = GetGiftProgress(villagerType);
+            int shrineStage = GetShrineStage(villagerType);
+
+            if (giftProgress + giftValue >= 100)
             {
-                villageReputation[(int)villagerType] += amount;
-                if (wasGift)
+                int remaining = (giftProgress + giftValue) - 100;
+
+                if (shrineStage < 5)
                 {
-                    villageGiftCooldown[(int)villagerType] = LivingWorldMod.villageGiftCooldownTime;
+                    villageShrineStage[(int)villagerType] = shrineStage + 1;
+                    villageGiftProgress[(int)villagerType] = remaining;
+
+                    villageReputation[(int)villagerType] += 50;
                 }
             }
-        }
-
-        /// <summary>
-        /// Changes the inputted VillagerType's reputation by amount, and creates a combat text by the changed amount at combatTextPosition.
-        /// </summary>
-        /// <param name="villagerType">Enum of VillagerType</param>
-        /// <param name="amount">Amount by which the reputation is changed</param>
-        /// <param name="combatTextPosition">Location of the combat text created to signify the changed reputation amount</param>
-        public static void ModifyReputation(VillagerType villagerType, int amount, Rectangle combatTextPosition, bool wasGift = false)
-        {
-            if (villagerType >= 0 && villagerType < VillagerType.VillagerTypeCount)
+            else if (giftProgress + giftValue < 0)
             {
-                villageReputation[(int)villagerType] += amount;
-                if (wasGift)
-                    villageGiftCooldown[(int)villagerType] = LivingWorldMod.villageGiftCooldownTime;
+                int remaining = 0 - (giftProgress + giftValue);
 
-                Color combatTextColor = Color.Lime;
-                if (amount < 0)
-                    combatTextColor = Color.Red;
-                else if (amount == 0)
-                    combatTextColor = Color.Gray;
-                CombatText.NewText(combatTextPosition, combatTextColor, (amount >= 0 ? "+" : "") + amount + " Reputation", true);
+                if (shrineStage >= 0)
+                {
+                    villageShrineStage[(int)villagerType] = shrineStage - 1;
+                    villageGiftProgress[(int)villagerType] = 100 - remaining;
+
+                    villageReputation[(int)villagerType] -= 50;
+                }
             }
+            else villageGiftProgress[(int)villagerType] = giftProgress + giftValue;
         }
-
-        /// <summary>
-        /// Returns reputation value of given villager type.
-        /// </summary>
-        /// <param name="villagerType">Villager type to get the reputation of.</param>
-        public static int GetReputation(VillagerType villagerType) => villageReputation[(int)villagerType];
         #endregion
 
         #region Update Methods
-        public override void PostUpdate() 
+        public override void PostUpdate()
         {
             SpiderSacRegen();
 
-            for (int i = 0; i < villageGiftCooldown.Length; i++) {
-                if (--villageGiftCooldown[i] < 0) {
+            for (int i = 0; i < villageGiftCooldown.Length; i++)
+            {
+                if (--villageGiftCooldown[i] < 0)
+                {
                     villageGiftCooldown[i] = 0;
                 }
             }
@@ -92,11 +129,13 @@ namespace LivingWorldMod
         public override TagCompound Save()
         {
             IList<TagCompound> villagerData = new List<TagCompound>();
-            for (int i = 0; i < Main.maxNPCs; i++) {
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
                 NPC npcAtIndex = Main.npc[i];
                 if (!LWMUtils.IsTypeOfVillager(npcAtIndex))
                     continue;
-                else {
+                else
+                {
                     TagCompound villagerDataTag = new TagCompound
                     {
                         {"type", (int)((Villager)npcAtIndex.modNPC).villagerType },
@@ -111,6 +150,8 @@ namespace LivingWorldMod
             }
             return new TagCompound {
                 {"VillageReputation", villageReputation },
+                {"VillageGiftProgress", villageGiftProgress },
+                {"VillageShrineStage", villageShrineStage },
                 {"VillagerData", villagerData },
                 {"VillageGiftCooldown", villageGiftCooldown }
             };
@@ -119,11 +160,13 @@ namespace LivingWorldMod
         public override void Load(TagCompound tag)
         {
             villageReputation = tag.GetIntArray("VillageReputation");
+            villageGiftProgress = tag.GetIntArray("VillageGiftProgress");
+            villageShrineStage = tag.GetIntArray("VillageShrineStage");
             IList<TagCompound> villagerData = tag.GetList<TagCompound>("VillagerData");
             for (int i = 0; i < villagerData.Count; i++)
             {
                 int villagerType = NPCType<SkyVillager>();
-                int recievedVilType = villagerData[i].GetAsInt("type");
+                int receivedVilType = villagerData[i].GetAsInt("type");
                 //if (recievedVilType == (int)VillagerType.LihzahrdVillager)
                 //Lihzahrd Villager types here
                 int npcIndex = NPC.NewNPC((int)villagerData[i].GetFloat("x"), (int)villagerData[i].GetFloat("y"), villagerType);
@@ -392,7 +435,7 @@ namespace LivingWorldMod
             for (int k = 0; k < (int)((Main.maxTilesX * Main.maxTilesY) * 0.005); k++)
             {
                 int x = WorldGen.genRand.Next(0, Main.maxTilesX);
-                int y = WorldGen.genRand.Next(0, (int)(Main.maxTilesY * 0.15f)); 
+                int y = WorldGen.genRand.Next(0, (int)(Main.maxTilesY * 0.15f));
 
                 Tile tile = Framing.GetTileSafely(x, y);
                 if (tile.active() && tile.type == TileID.Dirt)
