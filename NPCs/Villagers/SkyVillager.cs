@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Items.Placeable.Paintings;
+﻿using LivingWorldMod.Items.Accessories;
+using LivingWorldMod.Items.Placeable.Paintings;
 using LivingWorldMod.Utils;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace LivingWorldMod.NPCs.Villagers
         {
             WeightedRandom<string> chat = new WeightedRandom<string>();
 
-            if (isNegativeRep || Main.bloodMoon)
+            if (isHatedRep || isNegativeRep || Main.bloodMoon)
             {
                 chat.Add("Don’t take it personally if we like, rip off your arms and eat you or something.");
                 chat.Add("How do you even live with those repulsive meat sticks in place of wings?");
@@ -113,6 +114,8 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public override void SetupShop(Chest shop, ref int nextSlot)
         {
+            shop.item[nextSlot].SetDefaults(ModContent.ItemType<FeatherBag>());
+            nextSlot++;
             shop.item[nextSlot].SetDefaults(ModContent.ItemType<SkyBustTileItem>());
             nextSlot++;
             shop.item[nextSlot].SetDefaults(ModContent.ItemType<OneStarTileItem>());
