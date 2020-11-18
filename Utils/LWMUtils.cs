@@ -3,7 +3,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.Utilities;
 
-namespace LivingWorldMod.Utils
+namespace LivingWorldMod.Utilities
 {
     internal static class LWMUtils
     {

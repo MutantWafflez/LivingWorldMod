@@ -2,7 +2,7 @@
 using Terraria;
 using Terraria.DataStructures;
 
-namespace LivingWorldMod.Utils
+namespace LivingWorldMod.Utilities 
 {
     public class TileNode
     {
