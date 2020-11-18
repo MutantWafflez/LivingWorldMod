@@ -138,7 +138,7 @@ namespace LivingWorldMod
         /// <param name="itemType">Gift's item type.</param>
         public static int GetGiftAmount(VillagerType villagerType, int itemType)
         {
-            int index = ItemLoader.ItemCount * itemType + (int)villagerType;
+            int index = (int) villagerType * itemType + ItemLoader.ItemCount;
             
             return itemGiftAmount[index];
         }
@@ -150,7 +150,7 @@ namespace LivingWorldMod
         /// <param name="itemType">Gift's item type.</param>
         public static void IncreaseGiftAmount(VillagerType villagerType, int itemType)
         {
-            int index = ItemLoader.ItemCount * itemType + (int)villagerType;
+            int index = (int) villagerType * itemType + ItemLoader.ItemCount;
 
             itemGiftAmount[index]++;
         }
