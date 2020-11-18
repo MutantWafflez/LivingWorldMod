@@ -99,7 +99,6 @@ namespace LivingWorldMod
             int giftProgress = GetGiftProgress(villagerType);
             int shrineStage = GetShrineStage(villagerType);
 
-
             if (giftProgress + giftValue >= 100)
             {
                 int remaining = (giftProgress + giftValue) - 100;
@@ -129,6 +128,9 @@ namespace LivingWorldMod
                 SetShrineStage(villagerType, 3);
                 SetReputation(villagerType, GetReputation(villagerType) + 20);
             }
+            
+            //Increasing the gifted amount
+            IncreaseGiftAmount(villagerType, itemType);
         }
 
         /// <summary>
@@ -138,7 +140,7 @@ namespace LivingWorldMod
         /// <param name="itemType">Gift's item type.</param>
         public static int GetGiftAmount(VillagerType villagerType, int itemType)
         {
-            int index = (int) villagerType * itemType + ItemLoader.ItemCount;
+            int index = (int) villagerType * ItemLoader.ItemCount + itemType;
             
             return itemGiftAmount[index];
         }
@@ -150,7 +152,7 @@ namespace LivingWorldMod
         /// <param name="itemType">Gift's item type.</param>
         public static void IncreaseGiftAmount(VillagerType villagerType, int itemType)
         {
-            int index = (int) villagerType * itemType + ItemLoader.ItemCount;
+            int index = (int) villagerType * ItemLoader.ItemCount + itemType;
 
             itemGiftAmount[index]++;
         }

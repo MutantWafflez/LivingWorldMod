@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace LivingWorldMod.UI
@@ -42,8 +43,8 @@ namespace LivingWorldMod.UI
             Append(background);
 
             //Cross to Close Menu
-            UIImage closeMenuCross =
-                new UIImage(GetTexture("LivingWorldMod/Textures/UIElements/ShrineMenu/CloseCross"));
+            CustomUIImage closeMenuCross =
+                new CustomUIImage(GetTexture("LivingWorldMod/Textures/UIElements/ShrineMenu/CloseCross"), 1f);
             closeMenuCross.Width.Set(19f, 0);
             closeMenuCross.Height.Set(19f, 0);
             closeMenuCross.Left.Set(width - 35f, 0);
@@ -51,22 +52,62 @@ namespace LivingWorldMod.UI
             closeMenuCross.OnClick += (__, _) => Hide();
             Append(closeMenuCross);
 
+            #region Item in itemSlot info
+
+            //Gift Item Image
+            CustomUIImage giftItemStatus = new CustomUIImage(Main.itemTexture[0], 1f);
+            giftItemStatus.SetScaleToFit(true);
+            giftItemStatus.Width.Set(24f, 0);
+            giftItemStatus.Height.Set(24f, 0);
+            giftItemStatus.Left.Set(110f, 0);
+            giftItemStatus.Top.Set(25f, 0);
+            Append(giftItemStatus);
+            giftItemStatus.Hide();
+
+            //Amount gifted
+            CustomUIText giftAmount = new CustomUIText("", 0.9f);
+            giftAmount.Left.Set(140f, 0);
+            giftAmount.Top.Set(30f, 0);
+            Append(giftAmount);
+            giftAmount.Hide();
+
+
+            //Liking Neutral
+
+            #endregion
+
             //ItemSlot
             itemSlot = new CustomItemSlot();
             itemSlot.Width.Set(54f, 0);
             itemSlot.Height.Set(54f, 0);
             itemSlot.Left.Set(5f, 0);
             itemSlot.Top.Set(25f, 0);
+
             itemSlot.OnItemEquipped += (_) =>
             {
                 //Draw placed item on the right
+                giftItemStatus.SetImage(Main.itemTexture[itemSlot.Item.type]);
+
+                if (LWMWorld.GetGiftAmount(shrineType, itemSlot.Item.type) == 0)
+                    giftItemStatus.SetOverlayColor(new Color(66, 66, 66));
+
+                //Update Amount Gifted
+                int amount = LWMWorld.GetGiftAmount(shrineType, itemSlot.Item.type);
+                string text = "Gifted: " + (amount == 0 ? "???" : amount.ToString());
+                giftAmount.SetText(text);
+
+                giftItemStatus.Show();
+                giftAmount.Show();
             };
             itemSlot.OnItemRemoved += (_) =>
             {
                 //Remove drawn item on the right
+                giftItemStatus.Hide();
+                giftAmount.Hide();
             };
             itemSlot.SetBackgroundTexture(GetTexture("LivingWorldMod/Textures/UIElements/ShrineMenu/ItemSlot"));
             Append(itemSlot);
+
 
             //Gift
             Texture2D giftTexture = GetTexture("LivingWorldMod/Textures/UIElements/ShrineMenu/Gift");
@@ -87,13 +128,13 @@ namespace LivingWorldMod.UI
             gift.OnMouseUp += (__, _) => { gift.Top.Set(gift.Top.Pixels - 1f, 0); };
             Append(gift);
 
-            //Reputation Text
-            UIText repText = new UIText("Gifts: ", 0.8f);
+            //Gifts Text
+            CustomUIText repText = new CustomUIText("Gifts: ", 0.8f);
             repText.Left.Set(8f, 0);
             repText.Top.Set(95f, 0);
             Append(repText);
 
-            //Reputation ProgressBar
+            //Gifts ProgressBar
             Color Color = new Color(63, 113, 169);
             ShrineProgressBar repFrame = new ShrineProgressBar(true, 100, Color);
             repFrame.Width.Set(170f, 0);
@@ -104,7 +145,7 @@ namespace LivingWorldMod.UI
             Append(repFrame);
 
             //Stage Text
-            UIText stageText = new UIText("Stage: ", 0.8f);
+            CustomUIText stageText = new CustomUIText("Stage: ", 0.8f);
             stageText.Left.Set(5f, 0);
             stageText.Top.Set(120f, 0);
             Append(stageText);
@@ -122,6 +163,7 @@ namespace LivingWorldMod.UI
         public static void GiftItem()
         {
             int itemType = itemSlot.Item.type;
+            Main.NewText("itemSlot itemType: " + itemType);
             LWMWorld.AddGiftToProgress(shrineType, itemType);
             itemSlot.Item.TurnToAir();
         }
