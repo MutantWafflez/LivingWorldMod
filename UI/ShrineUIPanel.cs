@@ -184,7 +184,7 @@ namespace LivingWorldMod.UI
                 giftAmount.SetText(amountText);
 
                 //Update Gift Liking
-                int liking = GetInstance<LivingWorldMod>().GetSpecificGiftPreference(shrineType, itemSlot.Item.type);
+                int liking = LivingWorldMod.GetGiftValue(shrineType, itemSlot.Item.type);
 
                 string likingText = "Liking: ";
                 if (amount != 0 && Math.Abs(liking) == 3)
@@ -193,7 +193,6 @@ namespace LivingWorldMod.UI
                     likingText += liking > 0 ? "Great" : "Awful";
                 else if (amount != 0 && liking == 0)
                     likingText += "Neutral";
-                // else likingText += "???";
                 giftLiking.SetText(likingText);
 
                 giftAmount.Show();

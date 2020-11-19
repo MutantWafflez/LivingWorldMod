@@ -95,7 +95,7 @@ namespace LivingWorldMod
         /// <param name="itemType">Gift's item type.</param>
         public static void AddGiftToProgress(VillagerType villagerType, int itemType)
         {
-            int giftValue = GetInstance<LivingWorldMod>().GetSpecificGiftPreference(villagerType, itemType);
+            int giftValue = LivingWorldMod.GetGiftValue(villagerType, itemType);
             int giftProgress = GetGiftProgress(villagerType);
             int shrineStage = GetShrineStage(villagerType);
 
