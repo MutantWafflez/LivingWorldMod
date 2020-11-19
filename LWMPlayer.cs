@@ -1,4 +1,7 @@
-﻿using LivingWorldMod.Projectiles.Friendly;
+﻿using LivingWorldMod.Items.Extra;
+using LivingWorldMod.NPCs.Villagers;
+using LivingWorldMod.Projectiles.Friendly;
+using LivingWorldMod.Tiles.Interactables;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -11,7 +14,41 @@ namespace LivingWorldMod
         //Accessory Bools
         public bool featherBag;
         //Other Accessory Variables
-        int timeUntilNextFeather = 90;
+        public int clampTheValueForFeather = 60;
+        int timeUntilNextFeather;
+
+        public override void PostItemCheck()
+        {
+            if (player.HeldItem.type == ModContent.ItemType<RoseMirror>() && player.itemAnimation > 0)
+            {
+                if (Main.rand.Next(2) == 0)
+                {
+                    Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard, 0f, 0f, 150, default, 1.1f);
+                }
+                if (player.itemAnimation == player.HeldItem.useAnimation / 2)
+                { 
+                    for (int j = 0; j < 70; j++)
+                    {
+                        Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard, player.velocity.X * 0.5f, player.velocity.Y * 0.5f, 150, default, 1.5f);
+                    }
+                    Vector2 shrineTile = Vector2.Zero;
+                    for (int i = 0; i < Main.maxTilesX; i++) {
+                        for (int j = 0; j < Main.maxTilesY; j++) {
+                            if (Framing.GetTileSafely(i, j).type == ModContent.TileType<HarpyShrineTile>()) {
+                                shrineTile = new Vector2(i * 16, j * 16);
+                                break;
+                            }
+                        }
+                    }
+                    if (shrineTile != Vector2.Zero) {
+                        player.UnityTeleport(shrineTile + new Vector2(-player.width, player.height / 2));
+                        for (int k = 0; k < 70; k++) {
+                            Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard, 0f, 0f, 150, default, 1.5f);
+                        }
+                    }
+                }
+            }
+        }
 
         public override void ResetEffects()
         {
@@ -20,12 +57,12 @@ namespace LivingWorldMod
 
         public override void UpdateDead()
         {
-            timeUntilNextFeather = 90;
+            timeUntilNextFeather = clampTheValueForFeather;
         }
 
         public override void PostUpdate()
         {
-            #region Feather Bag
+           #region Feather Bag
            if (--timeUntilNextFeather <= 0) {
                 timeUntilNextFeather = 0;
            }
@@ -54,7 +91,7 @@ namespace LivingWorldMod
                 }
                 if (player.wingTime < player.wingTimeMax && player.wingTime != 0 && player.velocity.Y < 0f)
                 {
-                    int numberProjectiles = 12;
+                    int numberProjectiles = 5;
                     float rotation = MathHelper.ToRadians(180);
 
                     if (timeUntilNextFeather == 0)
@@ -65,7 +102,7 @@ namespace LivingWorldMod
                             int feather = Projectile.NewProjectile(player.Bottom - new Vector2(0, 5), perturbedSpeed, ModContent.ProjectileType<FeatherBagFeather>(), 18, 2.5f, player.whoAmI);
                             NetMessage.SendData(MessageID.SyncProjectile, number: feather);
                         }
-                        timeUntilNextFeather = 90;
+                        timeUntilNextFeather = clampTheValueForFeather;
                     }
                 }
             }
