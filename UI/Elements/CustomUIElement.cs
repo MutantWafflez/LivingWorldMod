@@ -127,7 +127,7 @@ namespace BuilderEssentials.UI.Elements
         public virtual void Hide()
         {
             Visible = false;
-            _parent = Parent;
+            _parent = Parent ?? _parent;
             Remove();
 
             OnHide?.Invoke(this);
