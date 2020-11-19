@@ -26,7 +26,7 @@ namespace LivingWorldMod.Commands
                         {
                             throw new UsageException($"Inputted reputation value is greater than {LivingWorldMod.maximumReputationValue} or less than -{LivingWorldMod.maximumReputationValue}.");
                         }
-                        LWMWorld.villageReputation[type] = repValue;
+                        LWMWorld.reputation[type] = repValue;
                         caller.Reply("Village type " + (VillagerType)type + "'s reputation successfully changed to " + repValue);
                     }
                     else

@@ -22,7 +22,7 @@ namespace LivingWorldMod.Tiles.Interactables
         public override bool NewRightClick(int i, int j)
         {
             //ItemSlot UI Placement
-            ShrineUIState.TileRightClicked(i, j, shrineType);
+            ShrineUIPanel.TileRightClicked(i, j, shrineType);
             return true;
         }
 

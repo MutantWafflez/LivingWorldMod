@@ -1,5 +1,5 @@
 ﻿using LivingWorldMod.NPCs.Villagers;
-using LivingWorldMod.Utils;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;

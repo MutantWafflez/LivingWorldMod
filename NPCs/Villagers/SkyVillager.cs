@@ -1,6 +1,6 @@
 ﻿using LivingWorldMod.Items.Accessories;
 using LivingWorldMod.Items.Placeable.Paintings;
-using LivingWorldMod.Utils;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.IO;

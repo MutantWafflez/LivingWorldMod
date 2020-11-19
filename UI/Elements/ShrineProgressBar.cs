@@ -31,16 +31,16 @@ namespace LivingWorldMod.UI.Elements
         public override void OnInitialize()
         {
             UIElement area = new UIElement();
-            area.Width.Set(130f, 0);
-            area.Height.Set(16f, 0);
+            area.Width.Set(Width.Pixels, 0);
+            area.Height.Set(Height.Pixels, 0);
 
             barFrame = new UIImage(ModContent.GetTexture("LivingWorldMod/Textures/UIElements/ShrineMenu/Frame"));
-            barFrame.Width.Set(130f, 0);
-            barFrame.Height.Set(16f, 0);
+            barFrame.Width.Set(Width.Pixels, 0);
+            barFrame.Height.Set(Height.Pixels, 0);
 
             text = new UIText("0/0", 0.8f);
-            text.Width.Set(130f, 0);
-            text.Height.Set(16f, 0);
+            text.Width.Set(Width.Pixels, 0);
+            text.Height.Set(Height.Pixels, 0);
             text.Top.Set(1f, 0);
             text.Left.Set(0f, 0);
 
@@ -51,7 +51,7 @@ namespace LivingWorldMod.UI.Elements
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            VillagerType shrineType = ShrineUIState.shrineType;
+            VillagerType shrineType = ShrineUIPanel.shrineType;
             //int reputation = LWMWorld.GetReputation(shrineType);
             float quotient;
             if (giftMode)

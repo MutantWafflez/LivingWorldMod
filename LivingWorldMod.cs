@@ -5,7 +5,7 @@ using Terraria.ID;
 using Terraria.UI;
 using Terraria.ModLoader;
 using LivingWorldMod.UI;
-using LivingWorldMod.Utils;
+using LivingWorldMod.Utilities;
 using LivingWorldMod.NPCs.Villagers;
 
 namespace LivingWorldMod
@@ -15,7 +15,6 @@ namespace LivingWorldMod
         internal static bool debugMode = true;
 
         public static readonly int maximumReputationValue = 200; //The upper cap of the reputation value
-        internal static readonly int villageGiftCooldownTime = 60 * 60 * 24; //24 IRL minutes (24 in game hours)
         internal static int[,] villageGiftPreferences;
 
         #region Update Methods
@@ -23,10 +22,10 @@ namespace LivingWorldMod
         {
             for (int repIndex = 0; repIndex < (int)VillagerType.VillagerTypeCount; repIndex++)
             {
-                if (LWMWorld.villageReputation[repIndex] > maximumReputationValue)
-                    LWMWorld.villageReputation[repIndex] = maximumReputationValue;
-                else if (LWMWorld.villageReputation[repIndex] < 0)
-                    LWMWorld.villageReputation[repIndex] = 0;
+                if (LWMWorld.reputation[repIndex] > maximumReputationValue)
+                    LWMWorld.reputation[repIndex] = maximumReputationValue;
+                else if (LWMWorld.reputation[repIndex] < 0)
+                    LWMWorld.reputation[repIndex] = 0;
             }
         }
 
