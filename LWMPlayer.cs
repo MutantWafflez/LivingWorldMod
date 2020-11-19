@@ -1,4 +1,6 @@
-﻿using LivingWorldMod.Projectiles.Friendly;
+﻿using LivingWorldMod.Items.Extra;
+using LivingWorldMod.Projectiles.Friendly;
+using LivingWorldMod.Tiles.Interactables;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -14,6 +16,29 @@ namespace LivingWorldMod
         public int clampTheValueForFeather = 60;
         int timeUntilNextFeather;
 
+        public override void PostItemCheck()
+        {
+            if (player.HeldItem.type == ModContent.ItemType<RoseMirror>() && player.itemAnimation > 0)
+            {
+                if (Main.rand.Next(2) == 0)
+                {
+                    Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard, 0f, 0f, 150, default, 1.1f);
+                }
+                else if (player.itemTime == player.HeldItem.useTime / 2)
+                { 
+                    for (int j = 0; j < 70; j++)
+                    {
+                        Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard, player.velocity.X * 0.5f, player.velocity.Y * 0.5f, 150, default, 1.5f);
+                    }
+                    player.Teleport(ShrineCenter);
+                    for (int k = 0; k < 70; k++)
+                    {
+                        Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard, 0f, 0f, 150, default, 1.5f);
+                    }
+                }
+            }
+        }
+
         public override void ResetEffects()
         {
             featherBag = false;
@@ -26,7 +51,7 @@ namespace LivingWorldMod
 
         public override void PostUpdate()
         {
-            #region Feather Bag
+           #region Feather Bag
            if (--timeUntilNextFeather <= 0) {
                 timeUntilNextFeather = 0;
            }
