@@ -1,7 +1,11 @@
 using LivingWorldMod.NPCs.Villagers;
+using LivingWorldMod.Tiles.Interactables;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent.Biomes;
 using Terraria.Utilities;
+using static Terraria.ModLoader.ModContent;
 
 namespace LivingWorldMod.Utilities
 {
@@ -64,6 +68,30 @@ namespace LivingWorldMod.Utilities
                 }
             }
             return selectedNPC;
+        }
+
+        /// <summary>
+        /// Finds the top left tile coordinate of a multi tile.
+        /// </summary>
+        /// <param name="i">Horizontal tile coordinates</param>
+        /// <param name="j">Vertical tile coordinates</param>
+        /// <param name="tileType">Multi tile's tile type.</param>
+        /// <returns></returns>
+        public static Vector2 FindMultiTileTopLeft(int i, int j, int tileType)
+        {
+            Vector2 topLeftPos = new Vector2(i, j);
+            //Finding top left corner
+            for (int k = 0; k < 4; k++)
+            {
+                for (int l = 0; l < 5; l++)
+                {
+                    if (Framing.GetTileSafely(i - k, j - l).type == TileType<HarpyShrineTile>())
+                        topLeftPos = new Vector2(i - k, j - l);
+                    else continue;
+                }
+            }
+
+            return topLeftPos;
         }
 
         //----------Extension Methods----------

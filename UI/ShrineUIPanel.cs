@@ -3,6 +3,7 @@ using BuilderEssentials.UI.Elements;
 using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.Tiles.Interactables;
 using LivingWorldMod.UI.Elements;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -160,7 +161,7 @@ namespace LivingWorldMod.UI
                 LWMWorld.AddGiftToProgress(shrineType, itemType);
                 itemSlot.Item.TurnToAir();
             }
-            
+
             void ShowItemSlotInfo()
             {
                 giftItem.SetImage(Main.itemTexture[itemSlot.Item.type]);
@@ -216,19 +217,7 @@ namespace LivingWorldMod.UI
         {
             shrineType = villageShrineType;
             Instance.Toggle();
-
-            //Finding top left corner
-            for (int k = 0; k < 4; k++)
-            {
-                for (int l = 0; l < 5; l++)
-                {
-                    if (Framing.GetTileSafely(i - k, j - l).type == TileType<HarpyShrineTile>())
-                        itemSlotPos = new Vector2(i - k, j - l);
-                    else continue;
-                }
-            }
-
-            itemSlotPos += new Vector2(-5, -11); //offset from the topleft corner (in tiles)
+            itemSlotPos = LWMUtils.FindMultiTileTopLeft(i, j, TileType<HarpyShrineTile>()) + new Vector2(-5, -11);
         }
 
         public void Update()
