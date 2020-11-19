@@ -85,6 +85,7 @@ namespace LivingWorldMod
         #endregion
 
         #region Mod Compatibility
+        //TODO: REFACTOR THIS
         /// <summary>
         /// Modifies the reputation a given item will give upon gifting it to a given villager type.
         /// </summary>

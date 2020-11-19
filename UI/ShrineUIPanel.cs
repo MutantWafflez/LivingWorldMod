@@ -1,4 +1,5 @@
-﻿using BuilderEssentials.UI.Elements;
+﻿using System;
+using BuilderEssentials.UI.Elements;
 using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.Tiles.Interactables;
 using LivingWorldMod.UI.Elements;
@@ -31,7 +32,7 @@ namespace LivingWorldMod.UI
             BorderColor = Microsoft.Xna.Framework.Color.Transparent;
             BackgroundColor = Microsoft.Xna.Framework.Color.Transparent;
 
-            //Init stuff
+            #region UI Initialization
 
             //Background
             CustomUIImage background =
@@ -55,24 +56,36 @@ namespace LivingWorldMod.UI
             #region Item in itemSlot info
 
             //Gift Item Image
-            CustomUIImage giftItemStatus = new CustomUIImage(Main.itemTexture[0], 1f);
-            giftItemStatus.SetScaleToFit(true);
-            giftItemStatus.Width.Set(24f, 0);
-            giftItemStatus.Height.Set(24f, 0);
-            giftItemStatus.Left.Set(110f, 0);
-            giftItemStatus.Top.Set(25f, 0);
-            Append(giftItemStatus);
-            giftItemStatus.Hide();
+            CustomUIImage giftItem = new CustomUIImage(Main.itemTexture[0], 1f);
+            giftItem.SetScaleToFit(true);
+            giftItem.Left.Set(165f, 0);
+            giftItem.Top.Set(35f, 0);
+            Append(giftItem);
+            giftItem.Hide();
+
+            //Undiscovered Gift
+            CustomUIText undiscoveredGift = new CustomUIText("?", 1f);
+            undiscoveredGift.TextColor = Microsoft.Xna.Framework.Color.LightGray;
+            undiscoveredGift.Left.Set(195f, 0);
+            undiscoveredGift.Top.Set(40f, 0);
+            Append(undiscoveredGift);
+            undiscoveredGift.Hide();
+
 
             //Amount gifted
             CustomUIText giftAmount = new CustomUIText("", 0.9f);
-            giftAmount.Left.Set(140f, 0);
+            giftAmount.Left.Set(110f, 0);
             giftAmount.Top.Set(30f, 0);
             Append(giftAmount);
             giftAmount.Hide();
 
 
             //Liking Neutral
+            CustomUIText giftLiking = new CustomUIText("", 0.9f);
+            giftLiking.Left.Set(110f, 0);
+            giftLiking.Top.Set(50f, 0);
+            Append(giftLiking);
+            giftLiking.Hide();
 
             #endregion
 
@@ -82,32 +95,10 @@ namespace LivingWorldMod.UI
             itemSlot.Height.Set(54f, 0);
             itemSlot.Left.Set(5f, 0);
             itemSlot.Top.Set(25f, 0);
-
-            itemSlot.OnItemEquipped += (_) =>
-            {
-                //Draw placed item on the right
-                giftItemStatus.SetImage(Main.itemTexture[itemSlot.Item.type]);
-
-                if (LWMWorld.GetGiftAmount(shrineType, itemSlot.Item.type) == 0)
-                    giftItemStatus.SetOverlayColor(new Color(66, 66, 66));
-
-                //Update Amount Gifted
-                int amount = LWMWorld.GetGiftAmount(shrineType, itemSlot.Item.type);
-                string text = "Gifted: " + (amount == 0 ? "???" : amount.ToString());
-                giftAmount.SetText(text);
-
-                giftItemStatus.Show();
-                giftAmount.Show();
-            };
-            itemSlot.OnItemRemoved += (_) =>
-            {
-                //Remove drawn item on the right
-                giftItemStatus.Hide();
-                giftAmount.Hide();
-            };
+            itemSlot.OnItemEquipped += _ => ShowItemSlotInfo();
+            itemSlot.OnItemRemoved += _ => HideItemSlotInfo();
             itemSlot.SetBackgroundTexture(GetTexture("LivingWorldMod/Textures/UIElements/ShrineMenu/ItemSlot"));
             Append(itemSlot);
-
 
             //Gift
             Texture2D giftTexture = GetTexture("LivingWorldMod/Textures/UIElements/ShrineMenu/Gift");
@@ -124,6 +115,7 @@ namespace LivingWorldMod.UI
             {
                 gift.Top.Set(gift.Top.Pixels + 1f, 0);
                 GiftItem();
+                HideItemSlotInfo();
             };
             gift.OnMouseUp += (__, _) => { gift.Top.Set(gift.Top.Pixels - 1f, 0); };
             Append(gift);
@@ -158,14 +150,67 @@ namespace LivingWorldMod.UI
             stageFrame.Top.Set(120f, 0);
             stageFrame.Activate();
             Append(stageFrame);
-        }
 
-        public static void GiftItem()
-        {
-            int itemType = itemSlot.Item.type;
-            Main.NewText("itemSlot itemType: " + itemType);
-            LWMWorld.AddGiftToProgress(shrineType, itemType);
-            itemSlot.Item.TurnToAir();
+            #region Methods
+
+            void GiftItem()
+            {
+                int itemType = itemSlot.Item.type;
+                Main.NewText("itemSlot itemType: " + itemType);
+                LWMWorld.AddGiftToProgress(shrineType, itemType);
+                itemSlot.Item.TurnToAir();
+            }
+            
+            void ShowItemSlotInfo()
+            {
+                giftItem.SetImage(Main.itemTexture[itemSlot.Item.type]);
+                giftItem.SetSize(24f, 24f);
+
+                Color color;
+                if (LWMWorld.GetGiftAmount(shrineType, itemSlot.Item.type) == 0)
+                {
+                    color = new Color(66, 66, 66);
+                    giftItem.Show();
+                    undiscoveredGift.Show();
+                }
+                else
+                    color = Microsoft.Xna.Framework.Color.White;
+
+                giftItem.SetOverlayColor(color);
+
+                //Update Amount Gifted
+                int amount = LWMWorld.GetGiftAmount(shrineType, itemSlot.Item.type);
+                string amountText = "Gifted: " + (amount == 0 ? "" : amount.ToString());
+                giftAmount.SetText(amountText);
+
+                //Update Gift Liking
+                int liking = GetInstance<LivingWorldMod>().GetSpecificGiftPreference(shrineType, itemSlot.Item.type);
+
+                string likingText = "Liking: ";
+                if (amount != 0 && Math.Abs(liking) == 3)
+                    likingText += liking > 0 ? "Good" : "Bad";
+                else if (amount != 0 && Math.Abs(liking) == 5)
+                    likingText += liking > 0 ? "Great" : "Awful";
+                else if (amount != 0 && liking == 0)
+                    likingText += "Neutral";
+                // else likingText += "???";
+                giftLiking.SetText(likingText);
+
+                giftAmount.Show();
+                giftLiking.Show();
+            }
+
+            void HideItemSlotInfo()
+            {
+                giftItem.Hide();
+                giftAmount.Hide();
+                giftLiking.Hide();
+                undiscoveredGift.Hide();
+            }
+
+            #endregion
+
+            #endregion
         }
 
         public static void TileRightClicked(int i, int j, VillagerType villageShrineType)
