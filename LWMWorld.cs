@@ -250,6 +250,7 @@ namespace LivingWorldMod
                 {"VillageReputation", reputation},
                 {"VillageGiftProgress", giftProgress},
                 {"VillageShrineStage", shrineStage},
+                {"VillageShrineCoords", shrineCoords.ToList() },
                 {"VillagerData", villagerData},
             };
         }
@@ -259,6 +260,7 @@ namespace LivingWorldMod
             reputation = tag.GetIntArray("VillageReputation");
             giftProgress = tag.GetIntArray("VillageGiftProgress");
             shrineStage = tag.GetIntArray("VillageShrineStage");
+            shrineCoords = tag.GetList<Vector2>("VillageShrineCoords").ToArray();
             IList<TagCompound> villagerData = tag.GetList<TagCompound>("VillagerData");
             for (int i = 0; i < villagerData.Count; i++)
             {
@@ -411,7 +413,7 @@ namespace LivingWorldMod
 
         private void SkyVillageGenTask(GenerationProgress progress)
         {
-            progress.Message = "Generating Structures... Sky Village";
+            progress.Message = "Generating Structures...Sky Village";
             progress.Start(0f);
 
 

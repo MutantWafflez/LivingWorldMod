@@ -31,17 +31,8 @@ namespace LivingWorldMod
                     {
                         Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard, player.velocity.X * 0.5f, player.velocity.Y * 0.5f, 150, default, 1.5f);
                     }
-                    Vector2 shrineTile = Vector2.Zero;
-                    for (int i = 0; i < Main.maxTilesX; i++) {
-                        for (int j = 0; j < Main.maxTilesY; j++) {
-                            if (Framing.GetTileSafely(i, j).type == ModContent.TileType<HarpyShrineTile>()) {
-                                shrineTile = new Vector2(i * 16, j * 16);
-                                break;
-                            }
-                        }
-                    }
-                    if (shrineTile != Vector2.Zero) {
-                        player.UnityTeleport(shrineTile + new Vector2(-player.width, player.height / 2));
+                    if (LWMWorld.shrineCoords[(int)VillagerType.Harpy] != Vector2.Zero) {
+                        player.UnityTeleport(LWMWorld.shrineCoords[(int)VillagerType.Harpy] * 16 + new Vector2(player.width, player.height - 5));
                         for (int k = 0; k < 70; k++) {
                             Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard, 0f, 0f, 150, default, 1.5f);
                         }
