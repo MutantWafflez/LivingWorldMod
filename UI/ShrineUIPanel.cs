@@ -157,7 +157,6 @@ namespace LivingWorldMod.UI
             void GiftItem()
             {
                 int itemType = itemSlot.Item.type;
-                Main.NewText("itemSlot itemType: " + itemType);
                 LWMWorld.AddGiftToProgress(shrineType, itemType);
                 itemSlot.Item.TurnToAir();
             }
