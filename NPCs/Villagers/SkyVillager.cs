@@ -76,7 +76,7 @@ namespace LivingWorldMod.NPCs.Villagers
         {
             WeightedRandom<string> chat = new WeightedRandom<string>();
 
-            chat.ConditionalStringAdd("You totally suck. You’d better make things better, or you’ll be ripped apart limb by limb the next time you even set foot here!", isNegativeRep);
+            chat.ConditionalStringAdd("You totally suck. You’d better make things better, or you’ll be ripped apart limb by limb the next time you even set foot here!", isNegativeRep || isHatedRep);
             chat.ConditionalStringAdd("I don’t have much of an opinion on you. You’re alright I guess, I don’t mind you being here.", isNeutralRep);
             chat.ConditionalStringAdd("Hey, you aren’t so bad for a human. I hope you’ll visit us more often, we don’t have much to do up here in the sky anyway.", isPositiveRep);
             chat.ConditionalStringAdd("The village loves you! It sucks that you aren’t a Harpy, but we don’t mind. Your charisma definitely compensates for it, plus, you’re like, pretty cute for a human. What? I didn’t say anything.", isMaxRep);
@@ -140,6 +140,15 @@ namespace LivingWorldMod.NPCs.Villagers
                 npc.aiStyle = -1;
             else
                 npc.aiStyle = 7;
+
+            if (isFlying) {
+                npc.width = 45;
+                npc.height = 50;
+            }
+            else {
+                npc.width = 25;
+                npc.height = 40;
+            }
 
             if (!isFlying)
             {

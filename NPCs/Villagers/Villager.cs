@@ -67,7 +67,7 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public override void SetDefaults()
         {
-            npc.width = 18;
+            npc.width = 25;
             npc.height = 40;
             npc.friendly = true;
             npc.lifeMax = 500;
