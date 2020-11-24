@@ -1,7 +1,6 @@
-﻿using LivingWorldMod.Items.Extra;
+using LivingWorldMod.Items.Extra;
 using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.Projectiles.Friendly;
-using LivingWorldMod.Tiles.Interactables;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -14,8 +13,18 @@ namespace LivingWorldMod
         //Accessory Bools
         public bool featherBag;
         //Other Accessory Variables
+        /// <summary>
+        /// Someone please make a summary for this beacuse I have no clue what this is supposed to mean tbh - Ryan
+        /// </summary>
         public int clampTheValueForFeather = 60;
+        /// <summary>
+        /// The time between feathers
+        /// </summary>
         int timeUntilNextFeather;
+        /// <summary>
+        /// One time use, divide player.wingTime by 3
+        /// </summary>
+        public const int featherDivision = 3;
 
         public override void PostItemCheck()
         {
@@ -31,9 +40,11 @@ namespace LivingWorldMod
                     {
                         Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard, player.velocity.X * 0.5f, player.velocity.Y * 0.5f, 150, default, 1.5f);
                     }
-                    if (LWMWorld.shrineCoords[(int)VillagerType.Harpy] != Vector2.Zero) {
+                    if (LWMWorld.shrineCoords[(int)VillagerType.Harpy] != Vector2.Zero) 
+                    {
                         player.UnityTeleport(LWMWorld.shrineCoords[(int)VillagerType.Harpy] * 16 + new Vector2(player.width, player.height - 5));
-                        for (int k = 0; k < 70; k++) {
+                        for (int k = 0; k < 70; k++) 
+                        {
                             Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard, 0f, 0f, 150, default, 1.5f);
                         }
                     }
@@ -54,7 +65,8 @@ namespace LivingWorldMod
         public override void PostUpdate()
         {
            #region Feather Bag
-           if (--timeUntilNextFeather <= 0) {
+           if (--timeUntilNextFeather <= 0) 
+           {
                 timeUntilNextFeather = 0;
            }
 
@@ -76,7 +88,7 @@ namespace LivingWorldMod
                     float rotation = MathHelper.ToRadians(180);
                     for (int i = 0; i < numberProjectiles; i++)
                     {
-                        Vector2 perturbedSpeed = new Vector2(6, 6).RotatedBy(MathHelper.Lerp(-rotation, rotation, i / (float)numberProjectiles)); 
+                        Vector2 perturbedSpeed = new Vector2(6, 6).RotatedBy(MathHelper.Lerp(-rotation, rotation, i / (float)numberProjectiles));
                         int feather = Projectile.NewProjectile(player.Bottom - new Vector2(0, 5), perturbedSpeed, ModContent.ProjectileType<FeatherBagFeather>(), 18, 2.5f, player.whoAmI);
                         NetMessage.SendData(MessageID.SyncProjectile, number: feather);
                     }
@@ -91,7 +103,7 @@ namespace LivingWorldMod
                         for (int i = 0; i < numberProjectiles; i++)
                         {
                             Vector2 perturbedSpeed = new Vector2(6, 6).RotatedBy(MathHelper.Lerp(-rotation, rotation, i / (float)numberProjectiles));
-                            int feather = Projectile.NewProjectile(player.Bottom - new Vector2(0, 5), perturbedSpeed, ModContent.ProjectileType<FeatherBagFeather>(), 18, 2.5f, player.whoAmI);
+                            int feather = Projectile.NewProjectile(player.Bottom - new Vector2(0, 5), perturbedSpeed, ModContent.ProjectileType<FeatherBagFeather>(), (int)(player.wingTime / featherDivision) + 18, 2.5f, player.whoAmI);
                             NetMessage.SendData(MessageID.SyncProjectile, number: feather);
                         }
                         timeUntilNextFeather = clampTheValueForFeather;
