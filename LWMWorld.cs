@@ -15,6 +15,7 @@ using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.Tiles.Interactables;
 using LivingWorldMod.Utilities;
 using LivingWorldMod.Tiles.Ores;
+using LivingWorldMod.Buffs.PotionBuffs;
 
 namespace LivingWorldMod
 {
@@ -24,6 +25,7 @@ namespace LivingWorldMod
 
         //Village arrays
         internal static int[] reputation = new int[(int) VillagerType.VillagerTypeCount];
+        internal static int[] reputationAbsorption = new int[(int)VillagerType.VillagerTypeCount];
         internal static int[] giftProgress = new int[(int) VillagerType.VillagerTypeCount];
         internal static int[] shrineStage = Enumerable.Repeat(3, (int) VillagerType.VillagerTypeCount).ToArray();
         internal static int[] itemGiftAmount = new int[ItemLoader.ItemCount * (int) VillagerType.VillagerTypeCount];
@@ -42,9 +44,10 @@ namespace LivingWorldMod
 
         /// <summary>
         /// Returns reputation value of the given villager type.
+        /// Also includes the reputation absorption of the given villager type, if applicable.
         /// </summary>
         /// <param name="villagerType">Villager type to get the reputation of.</param>
-        public static int GetReputation(VillagerType villagerType) => reputation[(int) villagerType];
+        public static int GetReputation(VillagerType villagerType) => Utils.Clamp(reputation[(int) villagerType] + reputationAbsorption[(int)villagerType], 0, LivingWorldMod.maximumReputationValue);
 
         /// <summary>
         /// Changes the inputted VillagerType's reputation by amount.
@@ -55,6 +58,21 @@ namespace LivingWorldMod
         {
             amount = Utils.Clamp(amount, 0, LivingWorldMod.maximumReputationValue);
             reputation[(int) villagerType] = amount;
+        }
+
+        /// <summary>
+        /// Returns reputation absorption value of the given villager type.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the reputation absorption of.</param>
+        public static int GetReputationAbsorption(VillagerType villagerType) => reputationAbsorption[(int)villagerType];
+
+        /// <summary>
+        /// Changes the inputted VillagerType's reputation absorption by amount.
+        /// </summary>
+        /// <param name="villagerType">Enum of VillagerType</param>
+        /// <param name="amount">Amount by which the absorption is changed</param>
+        public static void SetReputationAbsorption(VillagerType villagerType, int amount) {
+            reputationAbsorption[(int)villagerType] = amount;
         }
 
         /// <summary>
@@ -179,6 +197,25 @@ namespace LivingWorldMod
         public override void PostUpdate()
         {
             SpiderSacRegen();
+            UpdateReputationAbsorption();
+        }
+
+        public void UpdateReputationAbsorption() {
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                for (int i = 0; i < reputationAbsorption.Length; i++) {
+                    reputationAbsorption[i] = 0;
+                }
+                if (Main.netMode == NetmodeID.SinglePlayer) {
+                    if (Main.LocalPlayer.HasBuff(ModContent.BuffType<Charmed>())) {
+                        reputationAbsorption[(int)VillagerType.Harpy] += 20;
+                    }
+                }
+                else {
+                    if (Main.player.Any(player => player.HasBuff(ModContent.BuffType<Charmed>()))) {
+                        reputationAbsorption[(int)VillagerType.Harpy] += 20;
+                    }
+                }
+            }
         }
 
         #endregion
@@ -495,6 +532,51 @@ namespace LivingWorldMod
                     shrineCoords[(int) VillagerType.Harpy] =
                         LWMUtils.FindMultiTileTopLeft(i, j, TileType<HarpyShrineTile>());
 
+            //This Gen task is in the Sky Village Gen task since the islands are mapped in this method, and we need those
+            SkyBudGenTask(progress, islands);
+
+            progress.End();
+        }
+
+        private void RoseQuartzGeneration(GenerationProgress progress) {
+            progress.Message = "Rose quartz-ifying the sky";
+            progress.Start(0f);
+
+            for (int k = 0; k < (int)((Main.maxTilesX * Main.maxTilesY) * 0.005); k++) {
+                int x = WorldGen.genRand.Next(0, Main.maxTilesX);
+                int y = WorldGen.genRand.Next(0, (int)(Main.maxTilesY * 0.15f));
+
+                Tile tile = Framing.GetTileSafely(x, y);
+                if (tile.active() && tile.type == TileID.Dirt) {
+                    //3rd and 4th values are strength and steps, adjust later if needed
+                    WorldGen.TileRunner(x, y, WorldGen.genRand.Next(3, 5), WorldGen.genRand.Next(2, 4),
+                        TileType<RoseQuartzTile>());
+                }
+            }
+
+            progress.Set(1f);
+            progress.End();
+        }
+
+        private void SkyBudGenTask(GenerationProgress progress, List<FloatingIsland> islands) {
+            progress.Message = "Planting Sky Buds";
+
+            progress.Set(0.9f);
+
+            //Goes through each mapped island, then tries to plant on each cloud tile with no water with a 1/15 chance
+            foreach (FloatingIsland island in islands) {
+                for (int i = island.xMin; i < island.xMax; i++) {
+                    for (int j = 0; j < Main.maxTilesY * 0.18f; j++) {
+                        if ((Framing.GetTileSafely(i, j).type == TileID.Cloud || Framing.GetTileSafely(i, j).type == TileID.RainCloud) && !Framing.GetTileSafely(i, j - 1).active() && Framing.GetTileSafely(i, j - 1).liquid == 0) {
+                            if (Main.rand.Next(0, 16) == 0) {
+                                WorldGen.Place1x1(i, j - 1, ModContent.TileType<SkyBudHerb>());
+                                Framing.GetTileSafely(i, j - 1).frameX = 0;
+                            }
+                        }
+                    }
+                }
+            }
+
             progress.End();
         }
 
@@ -513,29 +595,6 @@ namespace LivingWorldMod
                     }
                 }
             }
-        }
-
-        private void RoseQuartzGeneration(GenerationProgress progress)
-        {
-            progress.Message = "Rose quartz-ifying the sky";
-            progress.Start(0f);
-
-            for (int k = 0; k < (int) ((Main.maxTilesX * Main.maxTilesY) * 0.005); k++)
-            {
-                int x = WorldGen.genRand.Next(0, Main.maxTilesX);
-                int y = WorldGen.genRand.Next(0, (int) (Main.maxTilesY * 0.15f));
-
-                Tile tile = Framing.GetTileSafely(x, y);
-                if (tile.active() && tile.type == TileID.Dirt)
-                {
-                    //3rd and 4th values are strength and steps, adjust later if needed
-                    WorldGen.TileRunner(x, y, WorldGen.genRand.Next(3, 5), WorldGen.genRand.Next(2, 4),
-                        TileType<RoseQuartzTile>());
-                }
-            }
-
-            progress.Set(1f);
-            progress.End();
         }
 
         #endregion
