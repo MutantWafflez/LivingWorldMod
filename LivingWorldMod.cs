@@ -23,9 +23,13 @@ namespace LivingWorldMod
             for (int repIndex = 0; repIndex < (int)VillagerType.VillagerTypeCount; repIndex++)
             {
                 if (LWMWorld.reputation[repIndex] > maximumReputationValue)
+                {
                     LWMWorld.reputation[repIndex] = maximumReputationValue;
+                    }
                 else if (LWMWorld.reputation[repIndex] < 0)
+                {
                     LWMWorld.reputation[repIndex] = 0;
+                }
             }
         }
 
@@ -69,12 +73,14 @@ namespace LivingWorldMod
             #endregion
         }
 
-        public override void PostSetupContent() {
+        public override void PostSetupContent() 
+        {
             villageGiftPreferences = new int[ItemLoader.ItemCount * (int) VillagerType.VillagerTypeCount];
             InitializeDefaultGiftPreferences();
         }
 
-        public void InitializeDefaultGiftPreferences() {
+        public void InitializeDefaultGiftPreferences() 
+        {
             //Harpy Villagers
             SetGiftValue((int)VillagerType.Harpy, ItemID.Worm, 3);
             SetGiftValue((int)VillagerType.Harpy, ItemID.FallenStar, 5);
@@ -91,7 +97,8 @@ namespace LivingWorldMod
         /// <param name="villagerType">The villager type to have their preference changed.</param>
         /// <param name="itemType">The item type that will have its gift value changed.</param>
         /// <param name="value">The new gift value of the given item type. Value between -5 and 5.</param>
-        public static void SetGiftValue(VillagerType villagerType, int itemType, int value) {
+        public static void SetGiftValue(VillagerType villagerType, int itemType, int value)
+        {
             int index = (int) villagerType * ItemLoader.ItemCount + itemType;
             villageGiftPreferences[index] = Utils.Clamp(value, -5, 5);
         }
@@ -101,7 +108,8 @@ namespace LivingWorldMod
         /// </summary>
         /// <param name="villagerType">The villager type to find the specific preference of.</param>
         /// <param name="itemType">The type of item to have its reputation modifier checked.</param>
-        public static int GetGiftValue(VillagerType villagerType, int itemType) {
+        public static int GetGiftValue(VillagerType villagerType, int itemType)
+        {
             int index = (int) villagerType * ItemLoader.ItemCount + itemType;
             return villageGiftPreferences[index];
         }
