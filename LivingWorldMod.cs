@@ -38,7 +38,8 @@ namespace LivingWorldMod
 
             Player myPlayer = Main.player[Main.myPlayer];
 
-            if (myPlayer.IsWithinRangeOfNPC(ModContent.NPCType<SkyVillager>(), 16 * 75))
+            //42.5 block radius around the shrine for the music
+            if (myPlayer.Distance(LWMWorld.GetShrineWorldPosition(VillagerType.Harpy)) <= 16 * 95)
             {
                 music = GetSoundSlot(SoundType.Music, "Sounds/Music/SkyVillageMusic");
                 priority = MusicPriority.Environment;

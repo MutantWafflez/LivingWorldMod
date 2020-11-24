@@ -190,6 +190,22 @@ namespace LivingWorldMod
             return GetGiftAmount(villagerType, itemType) >= 1;
         }
 
+        /// <summary>
+        /// Returns the TILE coordinates of the given villager type's shrine.
+        /// </summary>
+        /// <param name="villagerType">Type of villager to get the shrine coords of.</param>
+        public static Vector2 GetShrineTilePosition(VillagerType villagerType) {
+            return shrineCoords[(int)villagerType];
+        }
+
+        /// <summary>
+        /// Returns the WORLD (Tile Pos * 16) coordinates of the given villager type's shrine.
+        /// </summary>
+        /// <param name="villagerType">Type of villager to get the shrine coords of.</param>
+        public static Vector2 GetShrineWorldPosition(VillagerType villagerType) {
+            return shrineCoords[(int)villagerType] * 16;
+        }
+
         #endregion
 
         #region Update Methods
