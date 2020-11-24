@@ -142,7 +142,7 @@ namespace LivingWorldMod
 
                         return true;
                     },
-                       InterfaceScaleType.Game));
+                       InterfaceScaleType.UI));
             }
         }
         #endregion
