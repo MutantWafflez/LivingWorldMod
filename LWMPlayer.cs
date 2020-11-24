@@ -40,7 +40,8 @@ namespace LivingWorldMod
                     {
                         Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard, player.velocity.X * 0.5f, player.velocity.Y * 0.5f, 150, default, 1.5f);
                     }
-                    if (LWMWorld.GetShrineTilePosition(VillagerType.Harpy) != Vector2.Zero) {
+                    if (LWMWorld.GetShrineTilePosition(VillagerType.Harpy) != Vector2.Zero) 
+                    {
                         player.UnityTeleport(LWMWorld.GetShrineWorldPosition(VillagerType.Harpy) + new Vector2(player.width, player.height - 5));
                         for (int k = 0; k < 70; k++) 
 						{
