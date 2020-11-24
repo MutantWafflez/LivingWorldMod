@@ -58,12 +58,13 @@ namespace LivingWorldMod
                 timeUntilNextFeather = 0;
            }
 
-            if (featherBag == true && Main.myPlayer == player.whoAmI)
+            if (featherBag && Main.myPlayer == player.whoAmI)
             {
-                 if (player.justJumped == true)
+                 int justStarted = 0;
+                 if (player.justJumped)
                  {
                     int numberProjectiles;
-                    if (player.wingTimeMax == 0)
+                    if (player.wingTimeMax == justStarted)
                     {
                         numberProjectiles = 8; 
                     }
