@@ -14,9 +14,9 @@ namespace LivingWorldMod
         public bool featherBag;
         //Other Accessory Variables
         /// <summary>
-        /// Someone please make a summary for this beacuse I have no clue what this is supposed to mean tbh - Ryan
+        /// Maximum time between each feather measured in ticks
         /// </summary>
-        public int clampTheValueForFeather = 60;
+        public int maxFeatherTimer = 60;
         /// <summary>
         /// The time between feathers
         /// </summary>
@@ -59,7 +59,7 @@ namespace LivingWorldMod
 
         public override void UpdateDead()
         {
-            timeUntilNextFeather = clampTheValueForFeather;
+            timeUntilNextFeather = maxFeatherTimer;
         }
 
         public override void PostUpdate()
@@ -106,7 +106,7 @@ namespace LivingWorldMod
                             int feather = Projectile.NewProjectile(player.Bottom - new Vector2(0, 5), perturbedSpeed, ModContent.ProjectileType<FeatherBagFeather>(), (int)(player.wingTime / featherDivision) + 18, 2.5f, player.whoAmI);
                             NetMessage.SendData(MessageID.SyncProjectile, number: feather);
                         }
-                        timeUntilNextFeather = clampTheValueForFeather;
+                        timeUntilNextFeather = maxFeatherTimer;
                     }
                 }
             }
