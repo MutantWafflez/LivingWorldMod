@@ -166,8 +166,13 @@ namespace LivingWorldMod
                 self.homeTileX = (int)((Villager)self.modNPC).homePosition.X;
                 self.homeTileY = (int)((Villager)self.modNPC).homePosition.Y;
             }
+            else if (LWMUtils.IsTypeOfQuestVillager(self)) {
+                self.townNPC = true;
+                self.homeTileX = (int)(self.position.X / 16);
+                self.homeTileY = (int)(self.position.Y / 16);
+            }
             orig(self);
-            if (LWMUtils.IsTypeOfVillager(self))
+            if (LWMUtils.IsTypeOfVillager(self) || LWMUtils.IsTypeOfQuestVillager(self))
             {
                 self.townNPC = false;
             }
@@ -175,12 +180,12 @@ namespace LivingWorldMod
 
         private void NPC_VanillaFindFrame(On.Terraria.NPC.orig_VanillaFindFrame orig, NPC self, int frameHeight)
         {
-            if (LWMUtils.IsTypeOfVillager(self))
+            if (LWMUtils.IsTypeOfVillager(self) || LWMUtils.IsTypeOfQuestVillager(self))
             {
                 self.townNPC = true;
             }
             orig(self, frameHeight);
-            if (LWMUtils.IsTypeOfVillager(self))
+            if (LWMUtils.IsTypeOfVillager(self) || LWMUtils.IsTypeOfQuestVillager(self))
             {
                 self.townNPC = false;
             }

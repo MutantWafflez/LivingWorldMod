@@ -1,4 +1,5 @@
 using LivingWorldMod.NPCs.Villagers;
+using LivingWorldMod.NPCs.Villagers.Quest;
 using LivingWorldMod.Tiles.Interactables;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -18,28 +19,6 @@ namespace LivingWorldMod.Utilities
                 weightedRandom.Add(curType, weight);
             }
         }
-      
-        /// <summary>
-        /// Returns whether or not the given player is within a given range of an NPC type.
-        /// </summary>
-        /// <param name="npcType">The type of NPC checked for.</param>
-        /// <param name="range">The distance required to be considered "within range", measured in pixels.</param>
-        /// <returns></returns>
-        public static bool IsWithinRangeOfNPC(this Player player, int npcType, float range)
-        {
-            for (int i = 0; i < 200; i++)
-            {
-                if (!Main.npc[i].active)
-                {
-                    continue;
-                }
-                if (Main.npc[i].type == npcType && player.Distance(Main.npc[i].Center) <= range)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         /// <summary>
         /// Returns whether or not a given NPC is a type of Villager.
@@ -49,6 +28,17 @@ namespace LivingWorldMod.Utilities
         {
             if (npc.modNPC?.GetType().BaseType == typeof(Villager))
             {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns whether or not a given NPC is a type of Quest Villager.
+        /// </summary>
+        /// <param name="npc">The npc to check.</param>
+        public static bool IsTypeOfQuestVillager(this NPC npc) {
+            if (npc.modNPC?.GetType().BaseType == typeof(QuestVillager)) {
                 return true;
             }
             return false;
