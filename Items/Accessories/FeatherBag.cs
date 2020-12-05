@@ -9,7 +9,8 @@ namespace LivingWorldMod.Items.Accessories
     {
         public override void SetStaticDefaults()
         {
-            Tooltip.SetDefault("Unleashes a flurry of feathers when jumping or flapping your wings");
+            Tooltip.SetDefault("Unleashes a flurry of feathers when jumping or flapping your wings"
+                + "\nFeathers deal additional damage based on the strength of your wings");
         }
         public override void SetDefaults()
         {
