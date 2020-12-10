@@ -21,7 +21,7 @@ namespace LivingWorldMod.UI.Elements
         public CustomUIText(LocalizedText text, float textScale = 1, bool large = false) : base(text, textScale, large)
         {
         }
-        
+
         /// <summary>
         /// Hides the element if visible or shows the element if not.
         /// </summary>
@@ -32,12 +32,13 @@ namespace LivingWorldMod.UI.Elements
             else
                 Show();
         }
-        
+
         #region Events
 
         public delegate void ElementEvent(CustomUIElement affectedElement);
 
         public event ElementEvent OnShow;
+
         public event ElementEvent OnHide;
 
         /// <summary>
@@ -63,6 +64,6 @@ namespace LivingWorldMod.UI.Elements
             OnHide?.Invoke(null);
         }
 
-        #endregion
+        #endregion Events
     }
 }

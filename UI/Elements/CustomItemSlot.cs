@@ -12,22 +12,27 @@ namespace BuilderEssentials.UI.Elements
         /// Create custom condition to filter which items can be placed in the ItemSlot.
         /// </summary>
         public Func<Item, bool> ValidItem;
+
         /// <summary>
         /// Get the current background texture.
         /// </summary>
         public Texture2D BackgroundTexture { get; private set; }
+
         /// <summary>
         /// Get the current ItemSlot Item.
         /// </summary>
         public Item Item { get; private set; }
+
         /// <summary>
         /// Get the current ItemSlot display state.
         /// </summary>
         public bool DisplayOnly { get; private set; }
+
         /// <summary>
         /// Called when an item is equipped in the ItemSlot.
         /// </summary>
         public event ElementEvent OnItemEquipped;
+
         /// <summary>
         /// Called when an item is removed from the ItemSlot.
         /// </summary>
@@ -53,6 +58,7 @@ namespace BuilderEssentials.UI.Elements
         }
 
         private void SubscribeMouseDown() => OnMouseDown += CustomItemSlot_OnMouseDown;
+
         private void UnsubscribeMouseDown() => OnMouseDown -= CustomItemSlot_OnMouseDown;
 
         private void CustomItemSlot_OnMouseDown(UIMouseEvent evt, UIElement listeningElement)

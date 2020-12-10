@@ -5,7 +5,6 @@ namespace LivingWorldMod.Gores
 {
     public class SpiderSacGore : ModGore
     {
-
         public override void OnSpawn(Gore gore)
         {
             gore.behindTiles = false;

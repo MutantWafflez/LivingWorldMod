@@ -1,12 +1,12 @@
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
-using Terraria.UI;
-using Terraria.ModLoader;
+using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.UI;
 using LivingWorldMod.Utilities;
-using LivingWorldMod.NPCs.Villagers;
+using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.UI;
 
 namespace LivingWorldMod
 {
@@ -18,6 +18,7 @@ namespace LivingWorldMod
         internal static int[] villageGiftPreferences;
 
         #region Update Methods
+
         public override void PostUpdateEverything()
         {
             for (int repIndex = 0; repIndex < (int)VillagerType.VillagerTypeCount; repIndex++)
@@ -25,7 +26,7 @@ namespace LivingWorldMod
                 if (LWMWorld.reputation[repIndex] > maximumReputationValue)
                 {
                     LWMWorld.reputation[repIndex] = maximumReputationValue;
-                    }
+                }
                 else if (LWMWorld.reputation[repIndex] < 0)
                 {
                     LWMWorld.reputation[repIndex] = 0;
@@ -49,21 +50,26 @@ namespace LivingWorldMod
                 priority = MusicPriority.Environment;
             }
         }
-        #endregion
+
+        #endregion Update Methods
 
         #region Loading
+
         public override void Load()
         {
             #region Villager Related Method Swaps
+
             //Allows our villagers to have NPC names despite not having a map head
             On.Terraria.NPC.TypeToHeadIndex += NPC_TypeToHeadIndex;
             //Bypasses the need for the townNPC bool to be true to use the townNPC animation type
             On.Terraria.NPC.VanillaFindFrame += NPC_VanillaFindFrame;
             //Sets the Villager's townNPC value to true only for the duration of the AI method
             On.Terraria.NPC.AI_007_TownEntities += NPC_AI_007_TownEntities;
-            #endregion
+
+            #endregion Villager Related Method Swaps
 
             #region UI Initialization
+
             if (!Main.dedServ && Main.netMode != NetmodeID.Server)
             {
                 HarpyShrineInterface = new UserInterface();
@@ -71,16 +77,17 @@ namespace LivingWorldMod
                 HarpyShrineState.Activate();
                 HarpyShrineInterface.SetState(HarpyShrineState);
             }
-            #endregion
+
+            #endregion UI Initialization
         }
 
-        public override void PostSetupContent() 
+        public override void PostSetupContent()
         {
-            villageGiftPreferences = new int[ItemLoader.ItemCount * (int) VillagerType.VillagerTypeCount];
+            villageGiftPreferences = new int[ItemLoader.ItemCount * (int)VillagerType.VillagerTypeCount];
             InitializeDefaultGiftPreferences();
         }
 
-        public void InitializeDefaultGiftPreferences() 
+        public void InitializeDefaultGiftPreferences()
         {
             //Harpy Villagers
             SetGiftValue((int)VillagerType.Harpy, ItemID.Worm, 3);
@@ -89,9 +96,10 @@ namespace LivingWorldMod
             SetGiftValue((int)VillagerType.Harpy, ItemID.GiantHarpyFeather, -5);
         }
 
-        #endregion
+        #endregion Loading
 
         #region Mod Compatibility
+
         /// <summary>
         /// Modifies the gift value of a given item based on VillagerType.
         /// </summary>
@@ -100,7 +108,7 @@ namespace LivingWorldMod
         /// <param name="value">The new gift value of the given item type. Value between -5 and 5.</param>
         public static void SetGiftValue(VillagerType villagerType, int itemType, int value)
         {
-            int index = (int) villagerType * ItemLoader.ItemCount + itemType;
+            int index = (int)villagerType * ItemLoader.ItemCount + itemType;
             villageGiftPreferences[index] = Utils.Clamp(value, -5, 5);
         }
 
@@ -111,12 +119,14 @@ namespace LivingWorldMod
         /// <param name="itemType">The type of item to have its reputation modifier checked.</param>
         public static int GetGiftValue(VillagerType villagerType, int itemType)
         {
-            int index = (int) villagerType * ItemLoader.ItemCount + itemType;
+            int index = (int)villagerType * ItemLoader.ItemCount + itemType;
             return villageGiftPreferences[index];
         }
-        #endregion
+
+        #endregion Mod Compatibility
 
         #region UI
+
         internal static UserInterface HarpyShrineInterface;
         internal static ShrineUIState HarpyShrineState;
         private GameTime _lastUpdateUiGameTime;
@@ -146,9 +156,11 @@ namespace LivingWorldMod
                        InterfaceScaleType.UI));
             }
         }
-        #endregion
+
+        #endregion UI
 
         #region Method Swaps
+
         private int NPC_TypeToHeadIndex(On.Terraria.NPC.orig_TypeToHeadIndex orig, int type)
         {
             if (type == ModContent.NPCType<SkyVillager>())
@@ -166,7 +178,8 @@ namespace LivingWorldMod
                 self.homeTileX = (int)((Villager)self.modNPC).homePosition.X;
                 self.homeTileY = (int)((Villager)self.modNPC).homePosition.Y;
             }
-            else if (LWMUtils.IsTypeOfQuestVillager(self)) {
+            else if (LWMUtils.IsTypeOfQuestVillager(self))
+            {
                 self.townNPC = true;
                 self.homeTileX = (int)(self.position.X / 16);
                 self.homeTileY = (int)(self.position.Y / 16);
@@ -190,6 +203,7 @@ namespace LivingWorldMod
                 self.townNPC = false;
             }
         }
-        #endregion
+
+        #endregion Method Swaps
     }
 }

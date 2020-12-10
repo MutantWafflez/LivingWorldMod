@@ -5,10 +5,12 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Tiles.Furniture.Misc {
-    public class SkyBudPlanterBox : ModTile {
-
-        public override void SetDefaults() {
+namespace LivingWorldMod.Tiles.Furniture.Misc
+{
+    public class SkyBudPlanterBox : ModTile
+    {
+        public override void SetDefaults()
+        {
             Main.tileSolidTop[Type] = true;
             Main.tileFrameImportant[Type] = true;
             Main.tileMergeDirt[Type] = false;
@@ -25,17 +27,22 @@ namespace LivingWorldMod.Tiles.Furniture.Misc {
             disableSmartCursor = true;
         }
 
-        public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
-            if (Framing.GetTileSafely(i - 1, j).type == type && Framing.GetTileSafely(i + 1, j).type == type) {
+        public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset)
+        {
+            if (Framing.GetTileSafely(i - 1, j).type == type && Framing.GetTileSafely(i + 1, j).type == type)
+            {
                 frameXOffset = 18;
             }
-            else if (Framing.GetTileSafely(i - 1, j).type != type && Framing.GetTileSafely(i + 1, j).type == type) {
+            else if (Framing.GetTileSafely(i - 1, j).type != type && Framing.GetTileSafely(i + 1, j).type == type)
+            {
                 frameXOffset = 0;
             }
-            else if (Framing.GetTileSafely(i - 1, j).type == type && Framing.GetTileSafely(i + 1, j).type != type) {
+            else if (Framing.GetTileSafely(i - 1, j).type == type && Framing.GetTileSafely(i + 1, j).type != type)
+            {
                 frameXOffset = 36;
             }
-            else {
+            else
+            {
                 frameXOffset = 54;
             }
         }

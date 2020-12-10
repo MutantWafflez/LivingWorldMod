@@ -8,7 +8,6 @@ namespace LivingWorldMod.Projectiles.Hostile
 {
     public class SpiderSacProj : ModProjectile
     {
-
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Falling Spider Sac");
@@ -41,7 +40,6 @@ namespace LivingWorldMod.Projectiles.Hostile
                 Vector2 position = projectile.position;
                 Dust.NewDust(position, 32, 32, 102, 0f, -8f, 0, new Color(255, 255, 255), 1.1f);
             }
-
 
             int spiderCount = Main.rand.Next(2, 6);
             for (int i = 0; i < spiderCount; i++)

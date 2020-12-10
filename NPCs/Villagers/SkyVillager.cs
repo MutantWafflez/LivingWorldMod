@@ -1,29 +1,28 @@
 ﻿using LivingWorldMod.Items.Accessories;
 using LivingWorldMod.Items.Placeable.Paintings;
 using LivingWorldMod.Utilities;
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.IO;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 
 namespace LivingWorldMod.NPCs.Villagers
 {
-
     public class SkyVillager : Villager
     {
         #region AI Data
+
         public bool isFlying = false;
 
         private int flyingFrame = 0; //Used for what animation frame of flying the harpy is in
         private int flyingFrameCounter = 0; //This is created due to npc.frameCounter being reverted to 0 in the Vanilla TownNPC code, so a variable must be made
         private int flightCooldown = 0;
-        #endregion
+
+        #endregion AI Data
 
         #region Villager Class Overrides
+
         public override WeightedRandom<string> GetDialogueText()
         {
             WeightedRandom<string> chat = new WeightedRandom<string>();
@@ -104,10 +103,13 @@ namespace LivingWorldMod.NPCs.Villagers
         }
 
         public override bool CanChat() => !isFlying;
-        #endregion
+
+        #endregion Villager Class Overrides
 
         #region Normal Overrides
-        public override void SetStaticDefaults() {
+
+        public override void SetStaticDefaults()
+        {
             base.SetStaticDefaults();
             Main.npcFrameCount[npc.type] = 27;
         }
@@ -122,15 +124,19 @@ namespace LivingWorldMod.NPCs.Villagers
             nextSlot++;
         }
 
-        public override bool? CanBeHitByProjectile(Projectile projectile) {
-            if (projectile.type == ProjectileID.HarpyFeather) {
+        public override bool? CanBeHitByProjectile(Projectile projectile)
+        {
+            if (projectile.type == ProjectileID.HarpyFeather)
+            {
                 return false;
             }
             return base.CanBeHitByProjectile(projectile);
         }
-        #endregion
+
+        #endregion Normal Overrides
 
         #region Animation & AI
+
         public override void AI()
         {
             //This check is IMPORTANT. We don't want to use PreAI cause that obstructs functionality of some other mods,
@@ -141,11 +147,13 @@ namespace LivingWorldMod.NPCs.Villagers
             else
                 npc.aiStyle = 7;
 
-            if (isFlying) {
+            if (isFlying)
+            {
                 npc.width = 45;
                 npc.height = 50;
             }
-            else {
+            else
+            {
                 npc.width = 25;
                 npc.height = 40;
             }
@@ -268,6 +276,7 @@ namespace LivingWorldMod.NPCs.Villagers
                 }
             }
         }
-        #endregion
+
+        #endregion Animation & AI
     }
 }

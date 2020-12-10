@@ -44,6 +44,5 @@ namespace LivingWorldMod.Commands
                 throw new UsageException("Did not input a Reputation Value or Village Type.");
             }
         }
-
     }
 }

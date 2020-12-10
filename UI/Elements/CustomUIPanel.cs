@@ -1,5 +1,4 @@
-﻿using Terraria;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -15,14 +14,17 @@ namespace BuilderEssentials.UI.Elements
         /// Get the current background texture.
         /// </summary>
         public Texture2D BackgroundTexture { get; private set; }
+
         /// <summary>
         /// Get the current border texture.
         /// </summary>
         public Texture2D BorderTexture { get; private set; }
+
         /// <summary>
         /// Get/Set the current background color.
         /// </summary>
         public Color BackgroundColor { get; set; }
+
         /// <summary>
         /// Get/Set the current border color.
         /// </summary>

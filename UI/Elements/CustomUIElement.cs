@@ -1,7 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria.UI;
 
 namespace BuilderEssentials.UI.Elements
@@ -30,7 +28,6 @@ namespace BuilderEssentials.UI.Elements
 
         private UIElement _parent;
         private bool _initialized = false;
-
 
         public override void Update(GameTime gameTime)
         {
@@ -108,6 +105,7 @@ namespace BuilderEssentials.UI.Elements
         public delegate void ElementEvent(CustomUIElement affectedElement);
 
         public event ElementEvent OnShow;
+
         public event ElementEvent OnHide;
 
         /// <summary>
@@ -133,6 +131,6 @@ namespace BuilderEssentials.UI.Elements
             OnHide?.Invoke(this);
         }
 
-        #endregion
+        #endregion Events
     }
 }

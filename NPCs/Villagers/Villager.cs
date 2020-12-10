@@ -1,12 +1,11 @@
-using System;
-using Terraria;
-using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
-using Terraria.Localization;
-using Terraria.Utilities;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.ID;
 using System.Collections.Generic;
+using Terraria;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
+using Terraria.Utilities;
 
 namespace LivingWorldMod.NPCs.Villagers
 {
@@ -45,12 +44,13 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public override string Texture => VILLAGER_SPRITE_PATH + VillagerName + "Style1";
 
-        public override string[] AltTextures => new string[] { 
+        public override string[] AltTextures => new string[] {
             VILLAGER_SPRITE_PATH + VillagerName + "Style2",
             VILLAGER_SPRITE_PATH + VillagerName + "Style3"
         };
 
         #region Defaults Methods
+
         public override bool CloneNewInstances => true;
 
         public override ModNPC Clone()
@@ -76,9 +76,11 @@ namespace LivingWorldMod.NPCs.Villagers
             npc.aiStyle = 7;
             animationType = NPCID.Guide;
         }
-        #endregion
+
+        #endregion Defaults Methods
 
         #region Update Methods
+
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             Texture2D textureToDraw;
@@ -101,9 +103,11 @@ namespace LivingWorldMod.NPCs.Villagers
         {
             UpdateReputationBools();
         }
-        #endregion
+
+        #endregion Update Methods
 
         #region Chat Methods
+
         public override bool CanChat() => true;
 
         public override string GetChat() => GetDialogueText();
@@ -142,9 +146,11 @@ namespace LivingWorldMod.NPCs.Villagers
                 shop = true;
             }
         }
-        #endregion
+
+        #endregion Chat Methods
 
         #region Virtual Methods
+
         /// <summary>
         /// Method used to determine what is said to the player upon right click.
         /// </summary>
@@ -173,13 +179,16 @@ namespace LivingWorldMod.NPCs.Villagers
             names.Add("Villager (Report to Mod Dev!)");
             return names;
         }
-        #endregion
+
+        #endregion Virtual Methods
 
         #region Miscellaneous Methods
+
         private void UpdateReputationBools()
         {
             float reputation = LWMWorld.GetReputation(villagerType);
-            if (reputation <= 0f) {
+            if (reputation <= 0f)
+            {
                 isHatedRep = true;
                 isNegativeRep = false;
                 isNeutralRep = false;
@@ -219,6 +228,7 @@ namespace LivingWorldMod.NPCs.Villagers
                 isMaxRep = true;
             }
         }
-        #endregion
+
+        #endregion Miscellaneous Methods
     }
 }

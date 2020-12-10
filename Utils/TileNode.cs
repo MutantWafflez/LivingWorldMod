@@ -2,7 +2,7 @@
 using Terraria;
 using Terraria.DataStructures;
 
-namespace LivingWorldMod.Utilities 
+namespace LivingWorldMod.Utilities
 {
     public class TileNode
     {
@@ -22,7 +22,7 @@ namespace LivingWorldMod.Utilities
             return childNodes;
         }
 
-        void EvaluatePoint(Point16 coord, ref List<TileNode> childNodes)
+        private void EvaluatePoint(Point16 coord, ref List<TileNode> childNodes)
         {
             //Making sure the coordinate is within world bounds
             if (coord.X > Main.maxTilesX || coord.X < 0 || coord.Y > Main.maxTilesY || coord.Y < 0) return;

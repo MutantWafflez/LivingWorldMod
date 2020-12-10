@@ -1,5 +1,4 @@
 ﻿using LivingWorldMod.NPCs.Villagers;
-using LivingWorldMod.UI;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;

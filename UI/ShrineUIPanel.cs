@@ -1,14 +1,13 @@
-﻿using System;
-using BuilderEssentials.UI.Elements;
+﻿using BuilderEssentials.UI.Elements;
 using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.Tiles.Interactables;
 using LivingWorldMod.UI.Elements;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace LivingWorldMod.UI
@@ -72,14 +71,12 @@ namespace LivingWorldMod.UI
             Append(undiscoveredGift);
             undiscoveredGift.Hide();
 
-
             //Amount gifted
             CustomUIText giftAmount = new CustomUIText("", 0.9f);
             giftAmount.Left.Set(110f, 0);
             giftAmount.Top.Set(30f, 0);
             Append(giftAmount);
             giftAmount.Hide();
-
 
             //Liking Neutral
             CustomUIText giftLiking = new CustomUIText("", 0.9f);
@@ -88,7 +85,7 @@ namespace LivingWorldMod.UI
             Append(giftLiking);
             giftLiking.Hide();
 
-            #endregion
+            #endregion Item in itemSlot info
 
             //ItemSlot
             itemSlot = new CustomItemSlot();
@@ -207,9 +204,9 @@ namespace LivingWorldMod.UI
                 undiscoveredGift.Hide();
             }
 
-            #endregion
+            #endregion Methods
 
-            #endregion
+            #endregion UI Initialization
         }
 
         public static void TileRightClicked(int i, int j, VillagerType villageShrineType)

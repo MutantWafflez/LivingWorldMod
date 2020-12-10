@@ -1,17 +1,16 @@
 ﻿//Adapted from https://github.com/tModLoader/tModLoader/blob/master/ExampleMod/UI/ExampleResourceBar.cs
 
-using System;
+using LivingWorldMod.NPCs.Villagers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
-using Terraria.UI;
 using Terraria.ModLoader;
-using LivingWorldMod.NPCs.Villagers;
+using Terraria.UI;
 
 namespace LivingWorldMod.UI.Elements
 {
-    class ShrineProgressBar : UIElement
+    internal class ShrineProgressBar : UIElement
     {
         private UIText text;
         private UIImage barFrame;

@@ -4,7 +4,6 @@ using LivingWorldMod.Tiles.Interactables;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.GameContent.Biomes;
 using Terraria.Utilities;
 using static Terraria.ModLoader.ModContent;
 
@@ -37,8 +36,10 @@ namespace LivingWorldMod.Utilities
         /// Returns whether or not a given NPC is a type of Quest Villager.
         /// </summary>
         /// <param name="npc">The npc to check.</param>
-        public static bool IsTypeOfQuestVillager(this NPC npc) {
-            if (npc.modNPC?.GetType().BaseType == typeof(QuestVillager)) {
+        public static bool IsTypeOfQuestVillager(this NPC npc)
+        {
+            if (npc.modNPC?.GetType().BaseType == typeof(QuestVillager))
+            {
                 return true;
             }
             return false;
@@ -48,11 +49,14 @@ namespace LivingWorldMod.Utilities
         /// Finds the closest NPC to any other NPC.
         /// Optionally can find the nearest NPC of a given type if needed.
         /// </summary>
-        public static NPC FindNearestNPC(this NPC npc, int npcType = -1) {
+        public static NPC FindNearestNPC(this NPC npc, int npcType = -1)
+        {
             float distance = float.MaxValue;
             NPC selectedNPC = null;
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                if (Main.npc[i] != npc && Main.npc[i].Distance(npc.Center) < distance && (Main.npc[i].type == npcType || npcType == -1)) {
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                if (Main.npc[i] != npc && Main.npc[i].Distance(npc.Center) < distance && (Main.npc[i].type == npcType || npcType == -1))
+                {
                     selectedNPC = Main.npc[i];
                     distance = Main.npc[i].Distance(npc.Center);
                 }
@@ -86,6 +90,7 @@ namespace LivingWorldMod.Utilities
 
         //----------Extension Methods----------
         public static Tile ToTile(this TileNode tn) => Framing.GetTileSafely(tn.position);
+
         public static Point16 Add(this Point16 point, int p1x, int p1y) => new Point16(point.X + p1x, point.Y + p1y);
     }
 }

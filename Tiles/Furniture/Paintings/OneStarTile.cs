@@ -1,8 +1,8 @@
-﻿using Terraria;
+﻿using LivingWorldMod.Items.Placeable.Paintings;
+using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
-using Microsoft.Xna.Framework;
-using LivingWorldMod.Items.Placeable.Paintings;
 
 namespace LivingWorldMod.Tiles.Furniture.Paintings
 {

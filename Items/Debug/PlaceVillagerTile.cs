@@ -7,6 +7,7 @@ namespace LivingWorldMod.Items.Debug
     public class PlaceVillagerTile : DebugItem
     {
         public override string Texture => "Terraria/UI/DisplaySlots_5";
+
         public override void SetDefaults()
         {
             item.CloneDefaults(ItemID.DirtBlock);

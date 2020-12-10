@@ -1,5 +1,7 @@
-﻿namespace LivingWorldMod.ID {
-    public enum WingID : int {
+﻿namespace LivingWorldMod.ID
+{
+    public enum WingID : int
+    {
         Default = 0,
         AngelWings,
         DemonWings,
