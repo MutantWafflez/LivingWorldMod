@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -11,14 +12,24 @@ using Terraria.GameContent.Generation;
 using static Terraria.ModLoader.ModContent;
 using LivingWorldMod.Tiles.WorldGen;
 using LivingWorldMod.NPCs.Villagers;
-using LivingWorldMod.Utils;
+using LivingWorldMod.Tiles.Interactables;
+using LivingWorldMod.Utilities;
+using LivingWorldMod.Tiles.Ores;
+using LivingWorldMod.Buffs.PotionBuffs;
 
 namespace LivingWorldMod
 {
     public class LWMWorld : ModWorld
     {
-        public static int[] villageReputation = new int[(int)VillagerType.VillagerTypeCount];
-        public static int[] villageGiftCooldown = new int[(int)VillagerType.VillagerTypeCount];
+        //After reaching max gifts on the shrine at stage 5, give 20 reputation
+
+        //Village arrays
+        internal static int[] reputation = new int[(int) VillagerType.VillagerTypeCount];
+        internal static int[] reputationAbsorption = new int[(int)VillagerType.VillagerTypeCount];
+        internal static int[] giftProgress = new int[(int) VillagerType.VillagerTypeCount];
+        internal static int[] shrineStage = Enumerable.Repeat(3, (int) VillagerType.VillagerTypeCount).ToArray();
+        internal static int[] itemGiftAmount = new int[ItemLoader.ItemCount * (int) VillagerType.VillagerTypeCount];
+        internal static Vector2[] shrineCoords = new Vector2[(int) VillagerType.VillagerTypeCount];
 
         public override void Initialize()
         {
@@ -26,113 +37,274 @@ namespace LivingWorldMod
             iterationsPerTick = Main.maxTilesX * Main.maxTilesY / 54000;
         }
 
-        #region Reputation
+        #region World Array Modifications
+
+        //TODO: Multiplayer Compat. for the modification methods
+        //TODO: reinitialize stuff in case there's no save file (fresh world)
+
+        /// <summary>
+        /// Returns reputation value of the given villager type.
+        /// Also includes the reputation absorption of the given villager type, if applicable.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the reputation of.</param>
+        public static int GetReputation(VillagerType villagerType) => Utils.Clamp(reputation[(int) villagerType] + reputationAbsorption[(int)villagerType], 0, LivingWorldMod.maximumReputationValue);
+
         /// <summary>
         /// Changes the inputted VillagerType's reputation by amount.
         /// </summary>
         /// <param name="villagerType">Enum of VillagerType</param>
         /// <param name="amount">Amount by which the reputation is changed</param>
-        public static void ModifyReputation(VillagerType villagerType, int amount, bool wasGift = false)
+        public static void SetReputation(VillagerType villagerType, int amount)
         {
-            if (villagerType >= 0 && villagerType < VillagerType.VillagerTypeCount)
-            {
-                villageReputation[(int)villagerType] += amount;
-                if (wasGift)
-                {
-                    villageGiftCooldown[(int)villagerType] = LivingWorldMod.villageGiftCooldownTime;
-                }
-            }
+            amount = Utils.Clamp(amount, 0, LivingWorldMod.maximumReputationValue);
+            reputation[(int) villagerType] = amount;
         }
 
         /// <summary>
-        /// Changes the inputted VillagerType's reputation by amount, and creates a combat text by the changed amount at combatTextPosition.
+        /// Returns reputation absorption value of the given villager type.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the reputation absorption of.</param>
+        public static int GetReputationAbsorption(VillagerType villagerType) => reputationAbsorption[(int)villagerType];
+
+        /// <summary>
+        /// Changes the inputted VillagerType's reputation absorption by amount.
         /// </summary>
         /// <param name="villagerType">Enum of VillagerType</param>
-        /// <param name="amount">Amount by which the reputation is changed</param>
-        /// <param name="combatTextPosition">Location of the combat text created to signify the changed reputation amount</param>
-        public static void ModifyReputation(VillagerType villagerType, int amount, Rectangle combatTextPosition, bool wasGift = false)
-        {
-            if (villagerType >= 0 && villagerType < VillagerType.VillagerTypeCount)
-            {
-                villageReputation[(int)villagerType] += amount;
-                if (wasGift)
-                    villageGiftCooldown[(int)villagerType] = LivingWorldMod.villageGiftCooldownTime;
-
-                Color combatTextColor = Color.Lime;
-                if (amount < 0)
-                    combatTextColor = Color.Red;
-                else if (amount == 0)
-                    combatTextColor = Color.Gray;
-                CombatText.NewText(combatTextPosition, combatTextColor, (amount >= 0 ? "+" : "") + amount + " Reputation", true);
-            }
+        /// <param name="amount">Amount by which the absorption is changed</param>
+        public static void SetReputationAbsorption(VillagerType villagerType, int amount) {
+            reputationAbsorption[(int)villagerType] = amount;
         }
+
+        /// <summary>
+        /// Returns the gifting progress of the given villager type.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the gifting progress of.</param>
+        public static int GetGiftProgress(VillagerType villagerType) => giftProgress[(int) villagerType];
+
+        /// <summary>
+        /// Modifies the gifting progress of the given villager type.
+        /// </summary>
+        /// <param name="villagerType">Villager type to modify the gifting progress of.</param>
+        /// <param name="amount">The amount to change the gifting progress by.</param>
+        public static void SetGiftProgress(VillagerType villagerType, int amount)
+        {
+            amount = Utils.Clamp(amount, 0, 100);
+            giftProgress[(int) villagerType] = amount;
+        }
+
+        /// <summary>
+        /// Returns the shrine stage of the given villager type shrine.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the shrine stage of.</param>
+        public static int GetShrineStage(VillagerType villagerType) => shrineStage[(int) villagerType];
+
+        /// <summary>
+        /// Modifies the shrine stage of the given villager type.
+        /// </summary>
+        /// <param name="villagerType">Villager type to modify the shrine stage of.</param>
+        /// <param name="amount">The amount to change the shrine stage by.</param>
+        public static void SetShrineStage(VillagerType villagerType, int amount)
+        {
+            amount = Utils.Clamp(amount, 0, 5);
+            shrineStage[(int) villagerType] = amount;
+        }
+
+        /// <summary>
+        /// Adds an item's gift value to the current gift progess.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the gifting progress of.</param>
+        /// <param name="itemType">Gift's item type.</param>
+        public static void AddGiftToProgress(VillagerType villagerType, int itemType)
+        {
+            int giftValue = LivingWorldMod.GetGiftValue(villagerType, itemType);
+            int giftProgress = GetGiftProgress(villagerType);
+            int shrineStage = GetShrineStage(villagerType);
+
+            if (giftProgress + giftValue >= 100)
+            {
+                int remaining = (giftProgress + giftValue) - 100;
+
+                if (shrineStage < 5)
+                {
+                    SetShrineStage(villagerType, shrineStage + 1);
+                    SetGiftProgress(villagerType, remaining);
+                }
+            }
+            else if (giftProgress + giftValue < 0)
+            {
+                int remaining = 0 - (giftProgress + giftValue);
+
+                if (shrineStage >= 0)
+                {
+                    SetShrineStage(villagerType, shrineStage - 1);
+                    SetGiftProgress(villagerType, 100 - remaining);
+                }
+            }
+            else SetGiftProgress(villagerType, giftProgress + giftValue);
+
+            //Setting default values and increasing reputation if it reaches max gift progress on last stage
+            if (shrineStage == 5 && giftProgress + giftProgress >= 100)
+            {
+                SetGiftProgress(villagerType, 0);
+                SetShrineStage(villagerType, 3);
+                SetReputation(villagerType, GetReputation(villagerType) + 20);
+            }
+
+            //Increasing the gifted amount
+            IncreaseGiftAmount(villagerType, itemType);
+        }
+
+        /// <summary>
+        /// Returns the item's gifted amount.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the gifting progress of.</param>
+        /// <param name="itemType">Gift's item type.</param>
+        public static int GetGiftAmount(VillagerType villagerType, int itemType)
+        {
+            int index = (int) villagerType * ItemLoader.ItemCount + itemType;
+
+            return itemGiftAmount[index];
+        }
+
+        /// <summary>
+        /// Increases the item's gifted amount by one.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the gifting progress of.</param>
+        /// <param name="itemType">Gift's item type.</param>
+        public static void IncreaseGiftAmount(VillagerType villagerType, int itemType)
+        {
+            int index = (int) villagerType * ItemLoader.ItemCount + itemType;
+
+            itemGiftAmount[index]++;
+        }
+
+        /// <summary>
+        /// Returns whether the item was already gifted once or more.
+        /// </summary>
+        /// <param name="villagerType">Villager type to get the gifting progress of.</param>
+        /// <param name="itemType">Gift's item type.</param>
+        public static bool IsGiftDiscovered(VillagerType villagerType, int itemType)
+        {
+            int index = ItemLoader.ItemCount * itemType + (int) villagerType;
+
+            return GetGiftAmount(villagerType, itemType) >= 1;
+        }
+
+        /// <summary>
+        /// Returns the TILE coordinates of the given villager type's shrine.
+        /// </summary>
+        /// <param name="villagerType">Type of villager to get the shrine coords of.</param>
+        public static Vector2 GetShrineTilePosition(VillagerType villagerType) 
+        {
+            return shrineCoords[(int)villagerType];
+        }
+
+        /// <summary>
+        /// Returns the WORLD (Tile Pos * 16) coordinates of the given villager type's shrine.
+        /// </summary>
+        /// <param name="villagerType">Type of villager to get the shrine coords of.</param>
+        public static Vector2 GetShrineWorldPosition(VillagerType villagerType) 
+        {
+            return shrineCoords[(int)villagerType] * 16;
+        }
+
         #endregion
 
         #region Update Methods
-        public override void PostUpdate() 
+
+        public override void PostUpdate()
         {
             SpiderSacRegen();
+            UpdateReputationAbsorption();
+        }
 
-            for (int i = 0; i < villageGiftCooldown.Length; i++) {
-                if (--villageGiftCooldown[i] < 0) {
-                    villageGiftCooldown[i] = 0;
+        public void UpdateReputationAbsorption() {
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                for (int i = 0; i < reputationAbsorption.Length; i++) {
+                    reputationAbsorption[i] = 0;
+                }
+                if (Main.netMode == NetmodeID.SinglePlayer) {
+                    if (Main.LocalPlayer.HasBuff(ModContent.BuffType<Charmed>())) {
+                        reputationAbsorption[(int)VillagerType.Harpy] += 20;
+                    }
+                }
+                else {
+                    if (Main.player.Any(player => player.HasBuff(ModContent.BuffType<Charmed>()))) {
+                        reputationAbsorption[(int)VillagerType.Harpy] += 20;
+                    }
                 }
             }
         }
+
         #endregion
 
         #region I/O
+
         public override TagCompound Save()
         {
             IList<TagCompound> villagerData = new List<TagCompound>();
-            for (int i = 0; i < Main.maxNPCs; i++) {
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
                 NPC npcAtIndex = Main.npc[i];
                 if (!LWMUtils.IsTypeOfVillager(npcAtIndex))
                     continue;
-                else {
+                else
+                {
                     TagCompound villagerDataTag = new TagCompound
                     {
-                        {"type", (int)((Villager)npcAtIndex.modNPC).villagerType },
-                        {"spriteVar",  ((Villager)npcAtIndex.modNPC).spriteVariation},
-                        {"x", npcAtIndex.Center.X },
-                        {"y", npcAtIndex.Center.Y },
-                        {"name", npcAtIndex.GivenName },
-                        {"homePos",  ((Villager)npcAtIndex.modNPC).homePosition }
+                        {"type", (int) ((Villager) npcAtIndex.modNPC).villagerType},
+                        {"spriteVar", ((Villager) npcAtIndex.modNPC).spriteVariation},
+                        {"x", npcAtIndex.Center.X},
+                        {"y", npcAtIndex.Center.Y},
+                        {"name", npcAtIndex.GivenName},
+                        {"homePos", ((Villager) npcAtIndex.modNPC).homePosition}
                     };
                     villagerData.Add(villagerDataTag);
                 }
             }
-            return new TagCompound {
-                {"VillageReputation", villageReputation },
-                {"VillagerData", villagerData },
-                {"VillageGiftCooldown", villageGiftCooldown }
+
+            return new TagCompound
+            {
+                {"VillageReputation", reputation},
+                {"VillageGiftProgress", giftProgress},
+                {"VillageShrineStage", shrineStage},
+                {"VillageShrineCoords", shrineCoords.ToList() },
+                {"VillagerData", villagerData},
             };
         }
 
         public override void Load(TagCompound tag)
         {
-            villageReputation = tag.GetIntArray("VillageReputation");
+            reputation = tag.GetIntArray("VillageReputation");
+            giftProgress = tag.GetIntArray("VillageGiftProgress");
+            shrineStage = tag.GetIntArray("VillageShrineStage");
+            shrineCoords = tag.GetList<Vector2>("VillageShrineCoords").ToArray();
             IList<TagCompound> villagerData = tag.GetList<TagCompound>("VillagerData");
             for (int i = 0; i < villagerData.Count; i++)
             {
                 int villagerType = NPCType<SkyVillager>();
-                int recievedVilType = villagerData[i].GetAsInt("type");
+                int receivedVilType = villagerData[i].GetAsInt("type");
                 //if (recievedVilType == (int)VillagerType.LihzahrdVillager)
                 //Lihzahrd Villager types here
-                int npcIndex = NPC.NewNPC((int)villagerData[i].GetFloat("x"), (int)villagerData[i].GetFloat("y"), villagerType);
+                int npcIndex = NPC.NewNPC((int) villagerData[i].GetFloat("x"), (int) villagerData[i].GetFloat("y"),
+                    villagerType);
                 NPC npcAtIndex = Main.npc[npcIndex];
                 npcAtIndex.GivenName = villagerData[i].GetString("name");
-                ((Villager)npcAtIndex.modNPC).spriteVariation = villagerData[i].GetInt("spriteVar");
-                ((Villager)npcAtIndex.modNPC).homePosition = villagerData[i].Get<Vector2>("homePos");
+                ((Villager) npcAtIndex.modNPC).spriteVariation = villagerData[i].GetInt("spriteVar");
+                ((Villager) npcAtIndex.modNPC).homePosition = villagerData[i].Get<Vector2>("homePos");
             }
-            villageGiftCooldown = tag.GetIntArray("VillageGiftCooldown");
         }
+
         #endregion
 
         #region World Gen
+
         //https://github.com/tModLoader/tModLoader/wiki/Vanilla-World-Generation-Steps
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {
+            // int pyramids = tasks.FindIndex(task => task.Name.Equals("Pyramids"));
+            // tasks.RemoveAt(pyramids);
+
             int spiderCavesIndex = tasks.FindIndex(task => task.Name.Equals("Spider Caves"));
             if (spiderCavesIndex != -1)
                 tasks.Insert(spiderCavesIndex + 1, new PassLegacy("Spider Sac Tiles", CustomSpiderCavernGenTask));
@@ -140,6 +312,10 @@ namespace LivingWorldMod
             int structureGenTask = tasks.FindIndex(task => task.Name.Equals("Micro Biomes"));
             if (structureGenTask != -1)
                 tasks.Insert(structureGenTask + 1, new PassLegacy("Sky Village", SkyVillageGenTask));
+
+            int roseQuartzTask = tasks.FindIndex(task => task.Name.Equals("Gems"));
+            if (roseQuartzTask != -1)
+                tasks.Insert(roseQuartzTask + 1, new PassLegacy("Rose Quartz", RoseQuartzGeneration));
         }
 
         private void CustomSpiderCavernGenTask(GenerationProgress progress)
@@ -152,7 +328,7 @@ namespace LivingWorldMod
 
             for (int k = 0; k < tileArray1D; k++)
             {
-                progress.Set((float)k / tileArray1D);
+                progress.Set((float) k / tileArray1D);
 
                 int i = k % Main.maxTilesX;
                 int j = k / Main.maxTilesX;
@@ -170,32 +346,34 @@ namespace LivingWorldMod
             //Making sure we don't go out of world bounds
             if (i > Main.maxTilesX || i - 1 < 0 || j > Main.maxTilesY || j - 1 < 0) return false;
 
-            Point16[] tileCoords = {
-                    //Top Left/Right, Mid Left/Right, Bottom Left/Right
-                    new Point16(i, j - 1), new Point16(i + 1, j - 1),
-                    new Point16(i, j), new Point16(i + 1, j),
-                    new Point16(i, j + 1), new Point16(i + 1, j + 1)
-                };
+            Point16[] tileCoords =
+            {
+                //Top Left/Right, Mid Left/Right, Bottom Left/Right
+                new Point16(i, j - 1), new Point16(i + 1, j - 1),
+                new Point16(i, j), new Point16(i + 1, j),
+                new Point16(i, j + 1), new Point16(i + 1, j + 1)
+            };
 
             //Making sure all of the tiles are within a Spider Cave
             foreach (Point16 coord in tileCoords)
-                if (Framing.GetTileSafely(coord).wall != WallID.SpiderUnsafe) return false;
+                if (Framing.GetTileSafely(coord).wall != WallID.SpiderUnsafe)
+                    return false;
 
             //Coord must have a heightx2 empty space below them
             int height = 7;
             for (int l = 0; l < 2; l++)
-                for (int k = j; k < j + height; k++)
-                {
-                    Tile tempTile = Framing.GetTileSafely(i + l, k);
-                    if (tempTile.active() && (tempTile.type != TileID.Cobweb || tempTile.type != 159)) return false;
-                }
+            for (int k = j; k < j + height; k++)
+            {
+                Tile tempTile = Framing.GetTileSafely(i + l, k);
+                if (tempTile.active() && (tempTile.type != TileID.Cobweb || tempTile.type != 159)) return false;
+            }
 
             //Prevents tiles in a square of 60 tiles of lenght where current coord is the center
             int radius = 30;
             for (int m = j - radius; m < j + radius; m++) //y
-                for (int n = i - radius; n < i + radius; n++) //x
-                    if (Framing.GetTileSafely(n, m).type == TileType<SpiderSacTile>())
-                        return false;
+            for (int n = i - radius; n < i + radius; n++) //x
+                if (Framing.GetTileSafely(n, m).type == TileType<SpiderSacTile>())
+                    return false;
 
             //Making sure the foundation for the Spider Sac aren't cobwebs or other non solid stuff
             for (int m = 0; m < 2; m++)
@@ -220,6 +398,7 @@ namespace LivingWorldMod
         int startingIteration = 0;
         int currentIteration = 0;
         int spiderSacsPlaced = 0;
+
         void SpiderSacRegen()
         {
             //Progressive iteration of the world throughout the span of 15mins
@@ -235,7 +414,10 @@ namespace LivingWorldMod
 
                 //Only allow a max of 2 Spider Sacs placed per "lap"
                 if (spiderSacsPlaced >= 2)
-                { currentIteration += iterationsPerTick - i; break; }
+                {
+                    currentIteration += iterationsPerTick - i;
+                    break;
+                }
 
                 int x = currentIteration % Main.maxTilesX;
                 int y = currentIteration / Main.maxTilesX;
@@ -249,14 +431,16 @@ namespace LivingWorldMod
 
         private void SkyVillageGenTask(GenerationProgress progress)
         {
-            progress.Message = "Generating Structures... Sky Village";
+            progress.Message = "Generating Structures...Sky Village";
             progress.Start(0f);
 
 
             #region Mapping Floating Islands
+
             List<FloatingIsland> islands = new List<FloatingIsland>();
-            int islandsZone = (int)(Main.maxTilesY * 0.18f);
+            int islandsZone = (int) (Main.maxTilesY * 0.18f);
             bool[] visitedCoords = new bool[Main.maxTilesX * islandsZone];
+
             bool validCoordinate(Point16 pos)
             {
                 //Making sure the coordinate is within the visitedCoords array
@@ -309,9 +493,11 @@ namespace LivingWorldMod
                     progress.Set((i * j / visitedCoords.Length) * 0.80f);
                 }
             }
+
             #endregion
 
             #region Finding Suitable Spot and Generating it
+
             int structureWidth = 160;
             int structureHeight = 92;
 
@@ -328,10 +514,12 @@ namespace LivingWorldMod
                 if (i != islands.Count - 1)
                 {
                     //Finding the biggest distance between two islands where the middle spot between the two is the closest to the world center
-                    int distanceBetweenIslands = Math.Abs(islands[i + 1].xMin - islands[i].xMax); //Math.Abs not needed since they're ordered?
+                    int distanceBetweenIslands =
+                        Math.Abs(islands[i + 1].xMin - islands[i].xMax); //Math.Abs not needed since they're ordered?
                     int theoricalXCoord = islands[i].xMax + distanceBetweenIslands / 2 - structureWidth / 2;
 
-                    if (distanceBetweenIslands > biggestDistanceBetweenIslands && Math.Abs(theoricalXCoord - worldCenter) < smallestDistanceToWorldCenter)
+                    if (distanceBetweenIslands > biggestDistanceBetweenIslands &&
+                        Math.Abs(theoricalXCoord - worldCenter) < smallestDistanceToWorldCenter)
                     {
                         biggestDistanceBetweenIslands = distanceBetweenIslands;
                         smallestDistanceToWorldCenter = Math.Abs(theoricalXCoord - worldCenter);
@@ -352,23 +540,83 @@ namespace LivingWorldMod
             yAverage = yAverage - structureHeight > 41 ? yAverage - structureHeight : 42;
 
             progress.Set(0.90f);
-            StructureHelper.StructureHelper.GenerateStructure("Structures/SkyVillageStructure", new Point16(xCoord, yAverage), mod);
+            StructureHelper.StructureHelper.GenerateStructure("Structures/SkyVillageStructure",
+                new Point16(xCoord, yAverage), mod);
+
             #endregion
+
+            //Finding shrine top left position
+            for (int i = xCoord; i < xCoord + structureWidth; i++)
+            for (int j = yAverage; j < yAverage + structureHeight; j++)
+                if (Framing.GetTileSafely(i, j).type == TileType<HarpyShrineTile>())
+                    shrineCoords[(int) VillagerType.Harpy] =
+                        LWMUtils.FindMultiTileTopLeft(i, j, TileType<HarpyShrineTile>());
+
+            //This Gen task is in the Sky Village Gen task since the islands are mapped in this method, and we need those
+            SkyBudGenTask(progress, islands);
 
             progress.End();
         }
-        public override void PostWorldGen() {
+
+        private void RoseQuartzGeneration(GenerationProgress progress) {
+            progress.Message = "Rose quartz-ifying the sky";
+            progress.Start(0f);
+
+            for (int k = 0; k < (int)((Main.maxTilesX * Main.maxTilesY) * 0.005); k++) {
+                int x = WorldGen.genRand.Next(0, Main.maxTilesX);
+                int y = WorldGen.genRand.Next(0, (int)(Main.maxTilesY * 0.15f));
+
+                Tile tile = Framing.GetTileSafely(x, y);
+                if (tile.active() && tile.type == TileID.Dirt) {
+                    //3rd and 4th values are strength and steps, adjust later if needed
+                    WorldGen.TileRunner(x, y, WorldGen.genRand.Next(3, 5), WorldGen.genRand.Next(2, 4),
+                        TileType<RoseQuartzTile>());
+                }
+            }
+
+            progress.Set(1f);
+            progress.End();
+        }
+
+        private void SkyBudGenTask(GenerationProgress progress, List<FloatingIsland> islands) {
+            progress.Message = "Planting Sky Buds";
+
+            progress.Set(0.9f);
+
+            //Goes through each mapped island, then tries to plant on each cloud tile with no water with a 1/15 chance
+            foreach (FloatingIsland island in islands) {
+                for (int i = island.xMin; i < island.xMax; i++) {
+                    for (int j = 0; j < Main.maxTilesY * 0.18f; j++) {
+                        if ((Framing.GetTileSafely(i, j).type == TileID.Cloud || Framing.GetTileSafely(i, j).type == TileID.RainCloud) && !Framing.GetTileSafely(i, j - 1).active() && Framing.GetTileSafely(i, j - 1).liquid == 0) {
+                            if (Main.rand.Next(0, 16) == 0) {
+                                WorldGen.Place1x1(i, j - 1, ModContent.TileType<SkyBudHerb>());
+                                Framing.GetTileSafely(i, j - 1).frameX = 0;
+                            }
+                        }
+                    }
+                }
+            }
+
+            progress.End();
+        }
+
+        public override void PostWorldGen()
+        {
             //Spawn Villagers
-            for (int i = 0; i < Main.maxTilesX; i++) {
-                for (int j = 0; j < Main.maxTilesY; j++) {
-                    if (Framing.GetTileSafely(i, j).type == TileType<SkyVillagerHomeTile>()) {
+            for (int i = 0; i < Main.maxTilesX; i++)
+            {
+                for (int j = 0; j < Main.maxTilesY; j++)
+                {
+                    if (Framing.GetTileSafely(i, j).type == TileType<SkyVillagerHomeTile>())
+                    {
                         int npcIndex = NPC.NewNPC(i * 16, j * 16, NPCType<SkyVillager>());
                         NPC npcAtIndex = Main.npc[npcIndex];
-                        ((Villager)npcAtIndex.modNPC).homePosition = new Vector2(i, j);
+                        ((Villager) npcAtIndex.modNPC).homePosition = new Vector2(i, j);
                     }
                 }
             }
         }
+
         #endregion
     }
 }

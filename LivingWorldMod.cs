@@ -1,32 +1,36 @@
-using LivingWorldMod.NPCs.Villagers;
-using LivingWorldMod.Utils;
-using MonoMod.Cil;
-using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
+using Terraria.UI;
 using Terraria.ModLoader;
-using System.Reflection;
-using static Mono.Cecil.Cil.OpCodes;
-using Microsoft.Xna.Framework.Graphics;
 using LivingWorldMod.UI;
+using LivingWorldMod.Utilities;
+using LivingWorldMod.NPCs.Villagers;
 
 namespace LivingWorldMod
 {
     public class LivingWorldMod : Mod
     {
-        internal static bool debugMode = false;
-        internal static readonly int villageGiftCooldownTime = 60 * 60 * 24; //24 IRL minutes (24 in game hours)
+        internal static bool debugMode = true;
 
+        public static readonly int maximumReputationValue = 200; //The upper cap of the reputation value
+        internal static int[] villageGiftPreferences;
+
+        #region Update Methods
         public override void PostUpdateEverything()
         {
-            for (int repIndex = 0; repIndex < LWMWorld.villageReputation.Length; repIndex++)
+            for (int repIndex = 0; repIndex < (int)VillagerType.VillagerTypeCount; repIndex++)
             {
-                if (LWMWorld.villageReputation[repIndex] > 100)
-                    LWMWorld.villageReputation[repIndex] = 100;
-                else if (LWMWorld.villageReputation[repIndex] < -100)
-                    LWMWorld.villageReputation[repIndex] = -100;
+                if (LWMWorld.reputation[repIndex] > maximumReputationValue)
+                {
+                    LWMWorld.reputation[repIndex] = maximumReputationValue;
+                    }
+                else if (LWMWorld.reputation[repIndex] < 0)
+                {
+                    LWMWorld.reputation[repIndex] = 0;
+                }
             }
-
         }
 
         public override void UpdateMusic(ref int music, ref MusicPriority priority)
@@ -38,13 +42,16 @@ namespace LivingWorldMod
 
             Player myPlayer = Main.player[Main.myPlayer];
 
-            if (myPlayer.IsWithinRangeOfNPC(ModContent.NPCType<SkyVillager>(), 16 * 75))
+            //42.5 block radius around the shrine for the music
+            if (myPlayer.Distance(LWMWorld.GetShrineWorldPosition(VillagerType.Harpy)) <= 16 * 95)
             {
                 music = GetSoundSlot(SoundType.Music, "Sounds/Music/SkyVillageMusic");
                 priority = MusicPriority.Environment;
             }
         }
+        #endregion
 
+        #region Loading
         public override void Load()
         {
             #region Villager Related Method Swaps
@@ -55,7 +62,91 @@ namespace LivingWorldMod
             //Sets the Villager's townNPC value to true only for the duration of the AI method
             On.Terraria.NPC.AI_007_TownEntities += NPC_AI_007_TownEntities;
             #endregion
+
+            #region UI Initialization
+            if (!Main.dedServ && Main.netMode != NetmodeID.Server)
+            {
+                HarpyShrineInterface = new UserInterface();
+                HarpyShrineState = new ShrineUIState();
+                HarpyShrineState.Activate();
+                HarpyShrineInterface.SetState(HarpyShrineState);
+            }
+            #endregion
         }
+
+        public override void PostSetupContent() 
+        {
+            villageGiftPreferences = new int[ItemLoader.ItemCount * (int) VillagerType.VillagerTypeCount];
+            InitializeDefaultGiftPreferences();
+        }
+
+        public void InitializeDefaultGiftPreferences() 
+        {
+            //Harpy Villagers
+            SetGiftValue((int)VillagerType.Harpy, ItemID.Worm, 3);
+            SetGiftValue((int)VillagerType.Harpy, ItemID.FallenStar, 5);
+            SetGiftValue((int)VillagerType.Harpy, ItemID.Feather, -3);
+            SetGiftValue((int)VillagerType.Harpy, ItemID.GiantHarpyFeather, -5);
+        }
+
+        #endregion
+
+        #region Mod Compatibility
+        /// <summary>
+        /// Modifies the gift value of a given item based on VillagerType.
+        /// </summary>
+        /// <param name="villagerType">The villager type to have their preference changed.</param>
+        /// <param name="itemType">The item type that will have its gift value changed.</param>
+        /// <param name="value">The new gift value of the given item type. Value between -5 and 5.</param>
+        public static void SetGiftValue(VillagerType villagerType, int itemType, int value)
+        {
+            int index = (int) villagerType * ItemLoader.ItemCount + itemType;
+            villageGiftPreferences[index] = Utils.Clamp(value, -5, 5);
+        }
+
+        /// <summary>
+        /// Returns the gift value a given item type will have on a given villager type.
+        /// </summary>
+        /// <param name="villagerType">The villager type to find the specific preference of.</param>
+        /// <param name="itemType">The type of item to have its reputation modifier checked.</param>
+        public static int GetGiftValue(VillagerType villagerType, int itemType)
+        {
+            int index = (int) villagerType * ItemLoader.ItemCount + itemType;
+            return villageGiftPreferences[index];
+        }
+        #endregion
+
+        #region UI
+        internal static UserInterface HarpyShrineInterface;
+        internal static ShrineUIState HarpyShrineState;
+        private GameTime _lastUpdateUiGameTime;
+
+        public override void UpdateUI(GameTime gameTime)
+        {
+            _lastUpdateUiGameTime = gameTime;
+            if (HarpyShrineInterface?.CurrentState != null)
+                HarpyShrineInterface.Update(gameTime);
+        }
+
+        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+        {
+            //https://github.com/tModLoader/tModLoader/wiki/Vanilla-Interface-layers-values
+            int interfaceLayer = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Interface Logic 1"));
+            if (interfaceLayer != -1)
+            {
+                layers.Insert(interfaceLayer, new LegacyGameInterfaceLayer(
+                    "LWM: HarpyShrine",
+                    delegate
+                    {
+                        if (_lastUpdateUiGameTime != null && HarpyShrineInterface?.CurrentState != null)
+                            HarpyShrineInterface.Draw(Main.spriteBatch, _lastUpdateUiGameTime);
+
+                        return true;
+                    },
+                       InterfaceScaleType.UI));
+            }
+        }
+        #endregion
 
         #region Method Swaps
         private int NPC_TypeToHeadIndex(On.Terraria.NPC.orig_TypeToHeadIndex orig, int type)

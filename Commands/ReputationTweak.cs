@@ -10,7 +10,7 @@ namespace LivingWorldMod.Commands
 
         public override CommandType Type => CommandType.World;
 
-        public override string Description => "Modifies a given village's reputation. Cannot go below -100 or above 100.";
+        public override string Description => $"Modifies a given village's reputation. Cannot go below -{LivingWorldMod.maximumReputationValue} or above {LivingWorldMod.maximumReputationValue}.";
 
         public override string Usage => "/rep <VillageType> [value]" + "\nVillageType Legend: 0 = Sky, 1 = Lihzahrd";
 
@@ -22,12 +22,12 @@ namespace LivingWorldMod.Commands
                 {
                     if (int.TryParse(args[1], out int repValue))
                     {
-                        if (Math.Abs(repValue) > 100)
+                        if (Math.Abs(repValue) > LivingWorldMod.maximumReputationValue)
                         {
-                            throw new UsageException("Inputted reputation value is greater than 100 or less than -100.");
+                            throw new UsageException($"Inputted reputation value is greater than {LivingWorldMod.maximumReputationValue} or less than -{LivingWorldMod.maximumReputationValue}.");
                         }
-                        LWMWorld.villageReputation[type] = repValue;
-                        caller.Reply("Village type " + type + "'s reputation successfully changed to " + repValue);
+                        LWMWorld.reputation[type] = repValue;
+                        caller.Reply("Village type " + (VillagerType)type + "'s reputation successfully changed to " + repValue);
                     }
                     else
                     {

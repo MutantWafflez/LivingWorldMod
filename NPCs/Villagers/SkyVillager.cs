@@ -1,5 +1,6 @@
-﻿using LivingWorldMod.Items.Placeable.Paintings;
-using LivingWorldMod.Utils;
+﻿using LivingWorldMod.Items.Accessories;
+using LivingWorldMod.Items.Placeable.Paintings;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.IO;
@@ -27,7 +28,7 @@ namespace LivingWorldMod.NPCs.Villagers
         {
             WeightedRandom<string> chat = new WeightedRandom<string>();
 
-            if (isNegativeRep || Main.bloodMoon)
+            if (isHatedRep || isNegativeRep || Main.bloodMoon)
             {
                 chat.Add("Don’t take it personally if we like, rip off your arms and eat you or something.");
                 chat.Add("How do you even live with those repulsive meat sticks in place of wings?");
@@ -75,7 +76,7 @@ namespace LivingWorldMod.NPCs.Villagers
         {
             WeightedRandom<string> chat = new WeightedRandom<string>();
 
-            chat.ConditionalStringAdd("You totally suck. You’d better make things better, or you’ll be ripped apart limb by limb the next time you even set foot here!", isNegativeRep);
+            chat.ConditionalStringAdd("You totally suck. You’d better make things better, or you’ll be ripped apart limb by limb the next time you even set foot here!", isNegativeRep || isHatedRep);
             chat.ConditionalStringAdd("I don’t have much of an opinion on you. You’re alright I guess, I don’t mind you being here.", isNeutralRep);
             chat.ConditionalStringAdd("Hey, you aren’t so bad for a human. I hope you’ll visit us more often, we don’t have much to do up here in the sky anyway.", isPositiveRep);
             chat.ConditionalStringAdd("The village loves you! It sucks that you aren’t a Harpy, but we don’t mind. Your charisma definitely compensates for it, plus, you’re like, pretty cute for a human. What? I didn’t say anything.", isMaxRep);
@@ -102,25 +103,6 @@ namespace LivingWorldMod.NPCs.Villagers
             return names;
         }
 
-        public override List<int> GetLikedGifts()
-        {
-            List<int> likedGifts = new List<int>
-            {
-                ItemID.FallenStar,
-                ItemID.Worm
-            };
-            return likedGifts;
-        }
-
-        public override List<int> GetDislikedGifts()
-        {
-            List<int> dislikedGifts = new List<int>
-            {
-                ItemID.Feather,
-            };
-            return dislikedGifts;
-        }
-
         public override bool CanChat() => !isFlying;
         #endregion
 
@@ -132,6 +114,8 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public override void SetupShop(Chest shop, ref int nextSlot)
         {
+            shop.item[nextSlot].SetDefaults(ModContent.ItemType<FeatherBag>());
+            nextSlot++;
             shop.item[nextSlot].SetDefaults(ModContent.ItemType<SkyBustTileItem>());
             nextSlot++;
             shop.item[nextSlot].SetDefaults(ModContent.ItemType<OneStarTileItem>());
@@ -156,6 +140,15 @@ namespace LivingWorldMod.NPCs.Villagers
                 npc.aiStyle = -1;
             else
                 npc.aiStyle = 7;
+
+            if (isFlying) {
+                npc.width = 45;
+                npc.height = 50;
+            }
+            else {
+                npc.width = 25;
+                npc.height = 40;
+            }
 
             if (!isFlying)
             {
