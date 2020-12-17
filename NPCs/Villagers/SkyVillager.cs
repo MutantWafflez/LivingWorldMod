@@ -26,16 +26,18 @@ namespace LivingWorldMod.NPCs.Villagers
         // was thinking of doing something like this for defining the store items; this is one day. Could be a 2D array
         // for all the days? Not sure how frequently its accessed.
         // Anyway, SetupShop() will loop through these and apply them.
-        private ShopItem[][] allShopItems => new []
+        
+        public override ShopItem[] DailyShopItems => GetItems();
+
+        private ShopItem[] GetItems()
         {
-            new [] {
+            ShopItem[] items = {
                 new ShopItem(ModContent.ItemType<FeatherBag>(), 1),
                 new ShopItem(ModContent.ItemType<SkyBustTileItem>(), 5),
                 new ShopItem(ModContent.ItemType<OneStarTileItem>(), 5)
-            }
-        };
-
-        public override ShopItem[] DailyShopItems => allShopItems[0];
+            };
+            return items;
+        }
 
         #endregion Store Item Stack Info
 

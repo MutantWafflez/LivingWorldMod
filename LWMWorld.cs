@@ -246,6 +246,17 @@ namespace LivingWorldMod
                 }
             }
         }
+        
+        public void RefreshDailyShops()
+        {
+            // fetch each villager and refresh their shop
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+                if (npc.active && npc.modNPC is SkyVillager villager)
+                    villager.RefreshDailyShop();
+            }
+        }
 
         #endregion Update Methods
 
@@ -637,15 +648,5 @@ namespace LivingWorldMod
         }
 
         #endregion World Gen
-        
-        #region Shop Stock
-
-        public void RefreshDailyShops()
-        {
-            // fetch each villager and refresh their shop
-            ((SkyVillager) Main.npc[ModContent.NPCType<SkyVillager>()].modNPC).RefreshDailyShop();
-        }
-        
-        #endregion Shop Stock
     }
 }

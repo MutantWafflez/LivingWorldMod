@@ -62,6 +62,7 @@ namespace LivingWorldMod.NPCs.Villagers
         {
             Villager clonedNPC = (Villager)base.Clone();
             clonedNPC.spriteVariation = Main.rand.Next(0, 3);
+            clonedNPC.dailyShop = dailyShop == null ? null : new DailyShopData(DailyShopItems);
             return clonedNPC;
         }
 
