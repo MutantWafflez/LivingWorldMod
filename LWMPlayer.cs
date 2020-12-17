@@ -1,5 +1,6 @@
 using LivingWorldMod.ID;
 using LivingWorldMod.Items.Extra;
+using LivingWorldMod.Items.Placeable.Paintings;
 using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.Projectiles.Friendly;
 using Microsoft.Xna.Framework;
@@ -42,6 +43,12 @@ namespace LivingWorldMod
         public static readonly FieldInfo[] wingList = typeof(ArmorIDs.Wing).GetFields().Where(field => field.IsLiteral && !field.IsInitOnly).ToArray();
 
         #endregion Feather Bag
+        
+        /// <summary>
+        /// A cache of the item index as found during CanBuyItem. Used in PostBuyItem to update the item slot after
+        /// buying, and put back the item but with an X over it, when the stack runs out.
+        /// </summary>
+        private int itemIdx;
 
         public override void PostItemCheck()
         {
@@ -198,5 +205,38 @@ namespace LivingWorldMod
         }
 
         #endregion Helper Methods
+        
+        #region Item Slot Management
+        
+        public override void PostBuyItem(NPC vendor, Item[] shopInventory, Item item)
+        {
+            if (vendor.type != ModContent.NPCType<SkyVillager>())
+                return;
+
+            if (shopInventory[itemIdx].type == ItemID.None)
+            {
+                // restore the item to the slot and mark it as not purchasable
+                shopInventory[itemIdx].SetDefaults(item.type);
+                ((SkyBustTileItem) shopInventory[itemIdx].modItem).isOutOfStock = true;
+            }
+
+            item.buyOnce = false;
+        }
+
+        public override bool CanBuyItem(NPC vendor, Item[] shopInventory, Item item)
+        {
+            Main.NewText("buy item");
+            
+            // record the index of the item being purchased
+            itemIdx = Array.IndexOf(shopInventory, item);
+			
+            // check if this is a modded item and cannot be purchased
+            if (item.modItem is SkyBustTileItem tileItem && tileItem.isOutOfStock)
+                return false;
+			
+            return true;
+        }
+        
+        #endregion Item Slot Management
     }
 }
