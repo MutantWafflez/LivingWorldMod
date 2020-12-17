@@ -66,9 +66,9 @@ namespace LivingWorldMod.Items
 		
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 		{
-			// buyOnce is only true in the shop window, so we don't want to modify the tooltips outside of that
-			// also, for out of stock items, there is also no need for modification
-			if (!isOriginalShopSlot || isOutOfStock) return;
+			// don't modify tooltips of non-shop slots or slots with only one item (includes out of stock)
+			if (!isOriginalShopSlot || item.stack <= 1)
+				return;
             
 			TooltipLine line = tooltips.FirstOrDefault(l => l.Name == "Price");
 			if (line != null)
