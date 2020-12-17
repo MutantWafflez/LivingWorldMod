@@ -293,7 +293,7 @@ namespace LivingWorldMod
             IList<TagCompound> villagerData = tag.GetList<TagCompound>("VillagerData");
             for (int i = 0; i < villagerData.Count; i++)
             {
-                int villagerType = NPCType<SkyVillager>();
+                int villagerType = ModContent.NPCType<SkyVillager>();
                 int receivedVilType = villagerData[i].GetAsInt("type");
                 //if (recievedVilType == (int)VillagerType.LihzahrdVillager)
                 //Lihzahrd Villager types here
