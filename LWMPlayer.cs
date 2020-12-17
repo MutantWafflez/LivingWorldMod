@@ -225,8 +225,6 @@ namespace LivingWorldMod
 
         public override bool CanBuyItem(NPC vendor, Item[] shopInventory, Item item)
         {
-            Main.NewText("buy item");
-            
             // record the index of the item being purchased
             itemIdx = Array.IndexOf(shopInventory, item);
 			
