@@ -218,6 +218,9 @@ namespace LivingWorldMod
         {
             SpiderSacRegen();
             UpdateReputationAbsorption();
+            
+            if(Main.dayTime && Main.time == 0)
+                RefreshDailyShops();
         }
 
         public void UpdateReputationAbsorption()
@@ -635,5 +638,15 @@ namespace LivingWorldMod
         }
 
         #endregion World Gen
+        
+        #region Shop Stock
+
+        public void RefreshDailyShops()
+        {
+            // fetch each villager and refresh their shop
+            ((SkyVillager) Main.npc[ModContent.NPCType<SkyVillager>()].modNPC).RefreshDailyShop();
+        }
+        
+        #endregion Shop Stock
     }
 }

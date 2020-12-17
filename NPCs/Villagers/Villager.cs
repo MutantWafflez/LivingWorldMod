@@ -81,9 +81,7 @@ namespace LivingWorldMod.NPCs.Villagers
             npc.aiStyle = 7;
             animationType = NPCID.Guide;
 
-            ShopItem[] dailyItems = DailyShopItems;
-            if (dailyItems != null)
-                dailyShop = new DailyShopData(dailyItems);
+            RefreshDailyShop();
         }
 
         #endregion Defaults Methods
@@ -241,6 +239,13 @@ namespace LivingWorldMod.NPCs.Villagers
         public override void SetupShop(Chest shop, ref int nextSlot)
         {
             dailyShop?.SetupShop(shop, ref nextSlot);
+        }
+        
+        public void RefreshDailyShop()
+        {
+            ShopItem[] dailyItems = DailyShopItems;
+            if (dailyItems != null)
+                dailyShop = new DailyShopData(dailyItems);
         }
 
         #endregion Miscellaneous Methods
