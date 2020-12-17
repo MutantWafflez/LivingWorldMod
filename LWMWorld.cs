@@ -15,7 +15,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.World.Generation;
-using static Terraria.ModLoader.ModContent;
 
 namespace LivingWorldMod
 {
@@ -346,7 +345,7 @@ namespace LivingWorldMod
                 int j = k / Main.maxTilesX;
 
                 if (CanSpawnSpiderSac(i, j))
-                    WorldGen.PlaceTile(i, j, TileType<SpiderSacTile>(), forced: true);
+                    WorldGen.PlaceTile(i, j, ModContent.TileType<SpiderSacTile>(), forced: true);
             }
 
             progress.Set(1f);
@@ -384,7 +383,7 @@ namespace LivingWorldMod
             int radius = 30;
             for (int m = j - radius; m < j + radius; m++) //y
                 for (int n = i - radius; n < i + radius; n++) //x
-                    if (Framing.GetTileSafely(n, m).type == TileType<SpiderSacTile>())
+                    if (Framing.GetTileSafely(n, m).type == ModContent.TileType<SpiderSacTile>())
                         return false;
 
             //Making sure the foundation for the Spider Sac aren't cobwebs or other non solid stuff
@@ -434,7 +433,7 @@ namespace LivingWorldMod
                 int x = currentIteration % Main.maxTilesX;
                 int y = currentIteration / Main.maxTilesX;
 
-                if (CanSpawnSpiderSac(x, y) && WorldGen.PlaceTile(x, y, TileType<SpiderSacTile>(), forced: true))
+                if (CanSpawnSpiderSac(x, y) && WorldGen.PlaceTile(x, y, ModContent.TileType<SpiderSacTile>(), forced: true))
                     spiderSacsPlaced++;
 
                 currentIteration++;
@@ -559,9 +558,9 @@ namespace LivingWorldMod
             //Finding shrine top left position
             for (int i = xCoord; i < xCoord + structureWidth; i++)
                 for (int j = yAverage; j < yAverage + structureHeight; j++)
-                    if (Framing.GetTileSafely(i, j).type == TileType<HarpyShrineTile>())
+                    if (Framing.GetTileSafely(i, j).type == ModContent.TileType<HarpyShrineTile>())
                         shrineCoords[(int)VillagerType.Harpy] =
-                            LWMUtils.FindMultiTileTopLeft(i, j, TileType<HarpyShrineTile>());
+                            LWMUtils.FindMultiTileTopLeft(i, j, ModContent.TileType<HarpyShrineTile>());
 
             //This Gen task is in the Sky Village Gen task since the islands are mapped in this method, and we need those
             SkyBudGenTask(progress, islands);
@@ -584,7 +583,7 @@ namespace LivingWorldMod
                 {
                     //3rd and 4th values are strength and steps, adjust later if needed
                     WorldGen.TileRunner(x, y, WorldGen.genRand.Next(3, 5), WorldGen.genRand.Next(2, 4),
-                        TileType<RoseQuartzTile>());
+                        ModContent.TileType<RoseQuartzTile>());
                 }
             }
 
@@ -627,9 +626,9 @@ namespace LivingWorldMod
             {
                 for (int j = 0; j < Main.maxTilesY; j++)
                 {
-                    if (Framing.GetTileSafely(i, j).type == TileType<SkyVillagerHomeTile>())
+                    if (Framing.GetTileSafely(i, j).type == ModContent.TileType<SkyVillagerHomeTile>())
                     {
-                        int npcIndex = NPC.NewNPC(i * 16, j * 16, NPCType<SkyVillager>());
+                        int npcIndex = NPC.NewNPC(i * 16, j * 16, ModContent.NPCType<SkyVillager>());
                         NPC npcAtIndex = Main.npc[npcIndex];
                         ((Villager)npcAtIndex.modNPC).homePosition = new Vector2(i, j);
                     }
