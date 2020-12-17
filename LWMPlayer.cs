@@ -1,4 +1,5 @@
 using LivingWorldMod.ID;
+using LivingWorldMod.Items;
 using LivingWorldMod.Items.Extra;
 using LivingWorldMod.Items.Placeable.Paintings;
 using LivingWorldMod.NPCs.Villagers;
@@ -210,14 +211,11 @@ namespace LivingWorldMod
         
         public override void PostBuyItem(NPC vendor, Item[] shopInventory, Item item)
         {
-            if (vendor.type != ModContent.NPCType<SkyVillager>())
-                return;
-
-            if (shopInventory[itemIdx].type == ItemID.None)
+            if (shopInventory[itemIdx].type == ItemID.None && item.GetGlobalItem<LWMGlobalShopItem>().isOriginalShopSlot)
             {
                 // restore the item to the slot and mark it as not purchasable
                 shopInventory[itemIdx].SetDefaults(item.type);
-                ((SkyBustTileItem) shopInventory[itemIdx].modItem).isOutOfStock = true;
+                shopInventory[itemIdx].GetGlobalItem<LWMGlobalShopItem>().isOutOfStock = true;
             }
 
             item.buyOnce = false;
@@ -228,13 +226,19 @@ namespace LivingWorldMod
             // record the index of the item being purchased
             itemIdx = Array.IndexOf(shopInventory, item);
 			
-            // check if this is a modded item and cannot be purchased
-            if (item.modItem is SkyBustTileItem tileItem && tileItem.isOutOfStock)
+            // check if this item cannot be purchased
+            if (item.GetGlobalItem<LWMGlobalShopItem>().isOutOfStock)
                 return false;
 			
             return true;
         }
-        
+
+        public override void PostSellItem(NPC vendor, Item[] shopInventory, Item item)
+        {
+            // mark it as a non-original slot, so that buying it back does not cross it off
+            item.GetGlobalItem<LWMGlobalShopItem>().isOriginalShopSlot = false;
+        }
+
         #endregion Item Slot Management
     }
 }
