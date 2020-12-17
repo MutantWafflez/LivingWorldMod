@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using LivingWorldMod.Utilities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,12 @@ namespace LivingWorldMod.Items
 		/// </summary>
 		public bool isOriginalShopSlot = true;
 
+		/// <summary>
+		/// The daily shop instance that is managing this particular shop item.
+		/// When the item is purchased, this reference is used to save the stack value for later openings.
+		/// </summary>
+		public DailyShopData shopInstance;
+
 		public override bool InstancePerEntity => true;
 
 		public override void SetDefaults(Item item)
@@ -35,6 +42,7 @@ namespace LivingWorldMod.Items
 			LWMGlobalShopItem myItem = (LWMGlobalShopItem) base.Clone(item, itemClone);
 			myItem.isOutOfStock = isOutOfStock;
 			myItem.isOriginalShopSlot = isOriginalShopSlot;
+			myItem.shopInstance = shopInstance;
 			return myItem;
 		}
 
@@ -67,13 +75,13 @@ namespace LivingWorldMod.Items
 				line.overrideColor = color;
 				line.text = "Buy Price: ";
 				if (platinum > 0)
-					line.text += platinum + " Platinum ";
+					line.text += platinum + " platinum ";
 				if (gold > 0)
-					line.text += gold + " Gold ";
+					line.text += gold + " gold ";
 				if (silver > 0)
-					line.text += silver + " Silver ";
+					line.text += silver + " silver ";
 				if (copper > 0)
-					line.text += copper + " Copper ";
+					line.text += copper + " copper ";
 				/*if (platinum > 0)
 					line.text += "[c/" + Colors.AlphaDarken(Colors.CoinPlatinum).Hex3() + ":" + platinum + " " + Language.GetText("Platinum").Value + "] ";
 				if (gold > 0)

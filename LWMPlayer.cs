@@ -216,9 +216,13 @@ namespace LivingWorldMod
                 // restore the item to the slot and mark it as not purchasable
                 shopInventory[itemIdx].SetDefaults(item.type);
                 shopInventory[itemIdx].GetGlobalItem<LWMGlobalShopItem>().isOutOfStock = true;
+                item.GetGlobalItem<LWMGlobalShopItem>().shopInstance?.UpdateInventory(itemIdx, 0);
             }
-
-            item.buyOnce = false;
+            else
+            {
+                // just update the stack data
+                item.GetGlobalItem<LWMGlobalShopItem>().shopInstance?.UpdateInventory(itemIdx, shopInventory[itemIdx].stack);
+            }
         }
 
         public override bool CanBuyItem(NPC vendor, Item[] shopInventory, Item item)

@@ -1,3 +1,4 @@
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -37,6 +38,10 @@ namespace LivingWorldMod.NPCs.Villagers
             }
         }
 
+        public virtual ShopItem[] DailyShopItems => null;
+
+        private DailyShopData dailyShop;
+
         public Villager()
         {
             possibleNames = GetPossibleNames();
@@ -75,6 +80,10 @@ namespace LivingWorldMod.NPCs.Villagers
             npc.knockBackResist = 0.5f;
             npc.aiStyle = 7;
             animationType = NPCID.Guide;
+
+            ShopItem[] dailyItems = DailyShopItems;
+            if (dailyItems != null)
+                dailyShop = new DailyShopData(dailyItems);
         }
 
         #endregion Defaults Methods
@@ -227,6 +236,11 @@ namespace LivingWorldMod.NPCs.Villagers
                 isPositiveRep = false;
                 isMaxRep = true;
             }
+        }
+
+        public override void SetupShop(Chest shop, ref int nextSlot)
+        {
+            dailyShop?.SetupShop(shop, ref nextSlot);
         }
 
         #endregion Miscellaneous Methods

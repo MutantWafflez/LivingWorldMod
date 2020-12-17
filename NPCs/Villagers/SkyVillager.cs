@@ -21,31 +21,23 @@ namespace LivingWorldMod.NPCs.Villagers
 
         #endregion AI Data
         
-        #region Store Item Stack Info (unused for now)
-        
-        // haven't used this yet, but this is what I'm thinking of doing for defining each store item for a slot for a day
-        public readonly struct StoreItem
-        {
-            public readonly int itemId;
-            public readonly int stackSize;
-
-            public StoreItem(int itemId, int stackSize)
-            {
-                this.itemId = itemId;
-                this.stackSize = stackSize;
-            }
-        }
+        #region Store Item Stack Info
         
         // was thinking of doing something like this for defining the store items; this is one day. Could be a 2D array
         // for all the days? Not sure how frequently its accessed.
         // Anyway, SetupShop() will loop through these and apply them.
-        public StoreItem[] StoreItems => new StoreItem[]
+        private ShopItem[][] allShopItems => new []
         {
-            new StoreItem(ModContent.ItemType<SkyBustTileItem>(), 5),
-            new StoreItem(ModContent.ItemType<OneStarTileItem>(), 5)
+            new [] {
+                new ShopItem(ModContent.ItemType<FeatherBag>(), 1),
+                new ShopItem(ModContent.ItemType<SkyBustTileItem>(), 5),
+                new ShopItem(ModContent.ItemType<OneStarTileItem>(), 5)
+            }
         };
-        
-        #endregion Store Item Stack Info (unused for now)
+
+        public override ShopItem[] DailyShopItems => allShopItems[0];
+
+        #endregion Store Item Stack Info
 
         #region Villager Class Overrides
 
@@ -138,20 +130,6 @@ namespace LivingWorldMod.NPCs.Villagers
         {
             base.SetStaticDefaults();
             Main.npcFrameCount[npc.type] = 27;
-        }
-
-        public override void SetupShop(Chest shop, ref int nextSlot)
-        {
-            shop.item[nextSlot].SetDefaults(ModContent.ItemType<FeatherBag>());
-            nextSlot++;
-            shop.item[nextSlot].SetDefaults(ModContent.ItemType<SkyBustTileItem>());
-            // these are the magic lines lol that make the store items limited supply.
-            // buyOnce is not documented, for some reason.
-            shop.item[nextSlot].buyOnce = true;
-            shop.item[nextSlot].stack = 5;
-            nextSlot++;
-            shop.item[nextSlot].SetDefaults(ModContent.ItemType<OneStarTileItem>());
-            nextSlot++;
         }
 
         public override bool? CanBeHitByProjectile(Projectile projectile)
