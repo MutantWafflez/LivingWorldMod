@@ -16,12 +16,12 @@ namespace LivingWorldMod.Items
 		/// If true, an X is drawn over the sprite in PostDrawInInventory.
 		/// This is set in a PlayerHook after buying the last of an item.
 		/// </summary>
-		public bool isOutOfStock = false;
+		public bool isOutOfStock;
 
 		/// <summary>
-		/// Used to differentiate shop slots that were there upon opening the UI, and those that were created by selling items to an NPC. Set to false explicitly for sold items in the ModPlayer hook.
+		/// Used to differentiate shop slots that were there upon opening the UI, and those that were created by selling items to an NPC. Set to true when setting up shop.
 		/// </summary>
-		public bool isOriginalShopSlot = true;
+		public bool isOriginalShopSlot;
 
 		/// <summary>
 		/// The daily shop instance that is managing this particular shop item.
@@ -35,6 +35,9 @@ namespace LivingWorldMod.Items
 		{
 			// probably not necessary or smart to set this for every single item in the game
 			//item.buyOnce = false;
+			isOutOfStock = false;
+			isOriginalShopSlot = false;
+			shopInstance = null;
 		}
 
 		public override GlobalItem Clone(Item item, Item itemClone)
@@ -49,8 +52,16 @@ namespace LivingWorldMod.Items
 		public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor,
 			Vector2 origin, float scale)
 		{
-			if(isOutOfStock)
-				spriteBatch.Draw(ModContent.GetTexture("Terraria/CoolDown"), position, frame, drawColor, 0, origin, scale, SpriteEffects.None, 0);
+			if (isOutOfStock)
+			{
+				Texture2D itemTexture = Main.itemTexture[item.type];
+				Texture2D overTexture = ModContent.GetTexture("Terraria/CoolDown");
+				position.X += itemTexture.Width / 2f * scale;
+				position.X -= overTexture.Width / 2f;
+				position.Y += itemTexture.Height / 2f * scale;
+				position.Y -= overTexture.Height / 2f;
+				spriteBatch.Draw(overTexture, position, drawColor);
+			}
 		}
 		
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
@@ -73,6 +84,7 @@ namespace LivingWorldMod.Items
 				else if (silver > 0) color = Colors.CoinSilver;
 				else color = Colors.CoinCopper;
 				line.overrideColor = color;
+				// line.text = item.stack > 1 ? "Buy Price (per item): " : "Buy Price: ";
 				line.text = "Buy Price: ";
 				if (platinum > 0)
 					line.text += platinum + " platinum ";
@@ -90,6 +102,8 @@ namespace LivingWorldMod.Items
 					line.text += "[c/" + Colors.AlphaDarken(Colors.CoinSilver).Hex3() + ":" + silver + " " + Language.GetText("Silver").Value + "] ";
 				if (copper > 0)
 					line.text += "[c/" + Colors.AlphaDarken(Colors.CoinCopper).Hex3() + ":" + copper + " " + Language.GetText("Copper").Value + "] ";*/
+				if(item.stack > 1)
+					line.text += "per item";
 			}
 		}
 	}

@@ -51,6 +51,15 @@ namespace LivingWorldMod
         /// </summary>
         private int itemIdx;
 
+        /// <summary>
+        /// A cache for the GlobalItem of the item found during CanBuyItem.
+        /// When the last item in a slot is purchased, the slot is reset, however we need to know if that was an original
+        /// shop slot or not, and have a reference to the DailyShopData instance.
+        /// So, we cache the LWMGlobalShopItem before buying to reference it after.
+        /// We can't use the held item either because that gets reset after the first item in the held stack.
+        /// </summary>
+        private LWMGlobalShopItem prevShopGlobalItem;
+
         public override void PostItemCheck()
         {
             RoseMirrorItem();
@@ -207,21 +216,46 @@ namespace LivingWorldMod
 
         #endregion Helper Methods
         
-        #region Item Slot Management
+        #region Shop Item Management
         
-        public override void PostBuyItem(NPC vendor, Item[] shopInventory, Item item)
+        public override void PostBuyItem(NPC vendor, Item[] shopInventory, Item boughtItem)
         {
-            if (shopInventory[itemIdx].type == ItemID.None && item.GetGlobalItem<LWMGlobalShopItem>().isOriginalShopSlot)
+            Item shopItem = shopInventory[itemIdx];
+            LWMGlobalShopItem boughtGlobalItem = boughtItem.GetGlobalItem<LWMGlobalShopItem>();
+            // Main.NewText("shop slot: "+shopGlobalItem.isOriginalShopSlot);
+            // Main.NewText("held shop slot: "+boughtGlobalItem.isOriginalShopSlot);
+            if (shopItem.type == ItemID.None && prevShopGlobalItem.isOriginalShopSlot)
             {
-                // restore the item to the slot and mark it as not purchasable
-                shopInventory[itemIdx].SetDefaults(item.type);
-                shopInventory[itemIdx].GetGlobalItem<LWMGlobalShopItem>().isOutOfStock = true;
-                item.GetGlobalItem<LWMGlobalShopItem>().shopInstance?.UpdateInventory(itemIdx, 0);
+                // update the shop instance with an empty stack
+                prevShopGlobalItem.shopInstance?.UpdateInventory(itemIdx, 0);
+                // restore the item to the slot
+                shopItem.SetDefaults(boughtItem.type);
+                // after set defaults it has a brand new global item object, so we need to get it
+                LWMGlobalShopItem shopGlobalItem = shopItem.GetGlobalItem<LWMGlobalShopItem>();
+                // preserve global item fields
+                shopGlobalItem.isOriginalShopSlot = true;
+                // probably don't need this one, but we may as well keep it just in case
+                shopGlobalItem.shopInstance = prevShopGlobalItem.shopInstance;
+                // mark it as not purchasable
+                shopGlobalItem.isOutOfStock = true;
             }
             else
             {
                 // just update the stack data
-                item.GetGlobalItem<LWMGlobalShopItem>().shopInstance?.UpdateInventory(itemIdx, shopInventory[itemIdx].stack);
+                prevShopGlobalItem.shopInstance?.UpdateInventory(itemIdx, shopItem.stack);
+            }
+            
+            // remove shop behavior from bought item, if present
+            if (boughtGlobalItem.isOriginalShopSlot)
+            {
+                boughtGlobalItem.isOriginalShopSlot = false;
+                boughtGlobalItem.shopInstance = null;
+                if (boughtItem.value > 0)
+                {
+                    boughtItem.value /= 5;
+                    if (boughtItem.value < 1)
+                        boughtItem.value = 1;
+                }
             }
         }
 
@@ -229,20 +263,17 @@ namespace LivingWorldMod
         {
             // record the index of the item being purchased
             itemIdx = Array.IndexOf(shopInventory, item);
-			
+            
+            // record the original-slot state
+            prevShopGlobalItem = item.GetGlobalItem<LWMGlobalShopItem>();
+            
             // check if this item cannot be purchased
-            if (item.GetGlobalItem<LWMGlobalShopItem>().isOutOfStock)
+            if (prevShopGlobalItem.isOutOfStock)
                 return false;
 			
             return true;
         }
 
-        public override void PostSellItem(NPC vendor, Item[] shopInventory, Item item)
-        {
-            // mark it as a non-original slot, so that buying it back does not cross it off
-            item.GetGlobalItem<LWMGlobalShopItem>().isOriginalShopSlot = false;
-        }
-
-        #endregion Item Slot Management
+        #endregion Shop Item Management
     }
 }
