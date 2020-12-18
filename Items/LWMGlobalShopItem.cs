@@ -36,24 +36,18 @@ namespace LivingWorldMod.Items
 		#region Instance Management
 		
 		public override bool InstancePerEntity => true;
-		
+
+		public override bool CloneNewInstances => true;
+
 		public override void SetDefaults(Item item)
 		{
 			// probably not necessary or smart to set this for every single item in the game
 			//item.buyOnce = false;
 			isOutOfStock = false;
 			isOriginalShopSlot = false;
+			dailyStock = null;
 		}
 
-		public override GlobalItem Clone(Item item, Item itemClone)
-		{
-			LWMGlobalShopItem myItem = (LWMGlobalShopItem) base.Clone(item, itemClone);
-			myItem.isOutOfStock = isOutOfStock;
-			myItem.isOriginalShopSlot = isOriginalShopSlot;
-			myItem.dailyStock = dailyStock;
-			return myItem;
-		}
-		
 		#endregion Instance Management
 
 		// called on opening a shop window
