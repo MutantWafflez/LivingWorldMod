@@ -81,7 +81,6 @@ namespace LivingWorldMod.NPCs.Villagers
             npc.aiStyle = 7;
             animationType = NPCID.Guide;
 
-            LivingWorldMod.instance.Logger.Info("Set defaults; Daily shop before set: "+dailyShop);
             RefreshDailyShop();
         }
 
