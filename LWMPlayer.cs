@@ -218,43 +218,36 @@ namespace LivingWorldMod
         
         #region Shop Item Management
         
-        public override void PostBuyItem(NPC vendor, Item[] shopInventory, Item boughtItem)
+        public override void PostBuyItem(NPC vendor, Item[] shopInventory, Item heldItem)
         {
             Item shopItem = shopInventory[itemIdx];
-            LWMGlobalShopItem boughtGlobalItem = boughtItem.GetGlobalItem<LWMGlobalShopItem>();
-            // Main.NewText("shop slot: "+shopGlobalItem.isOriginalShopSlot);
-            // Main.NewText("held shop slot: "+boughtGlobalItem.isOriginalShopSlot);
+            LWMGlobalShopItem heldGlobalItem = heldItem.GetGlobalItem<LWMGlobalShopItem>();
             if (shopItem.type == ItemID.None && prevShopGlobalItem.isOriginalShopSlot)
             {
-                // update the shop instance with an empty stack
-                prevShopGlobalItem.shopInstance?.UpdateInventory(itemIdx, 0);
+                // update the ShopItem with an empty stack
+                prevShopGlobalItem.UpdateInventory(0);
                 // restore the item to the slot
-                shopItem.SetDefaults(boughtItem.type);
+                shopItem.SetDefaults(heldItem.type);
                 // after set defaults it has a brand new global item object, so we need to get it
                 LWMGlobalShopItem shopGlobalItem = shopItem.GetGlobalItem<LWMGlobalShopItem>();
-                // preserve global item fields
-                shopGlobalItem.isOriginalShopSlot = true;
-                // probably don't need this one, but we may as well keep it just in case
-                shopGlobalItem.shopInstance = prevShopGlobalItem.shopInstance;
                 // mark it as not purchasable
                 shopGlobalItem.isOutOfStock = true;
             }
             else
             {
                 // just update the stack data
-                prevShopGlobalItem.shopInstance?.UpdateInventory(itemIdx, shopItem.stack);
+                prevShopGlobalItem.UpdateInventory(shopItem.stack);
             }
             
             // remove shop behavior from bought item, if present
-            if (boughtGlobalItem.isOriginalShopSlot)
+            if (heldGlobalItem.isOriginalShopSlot)
             {
-                boughtGlobalItem.isOriginalShopSlot = false;
-                boughtGlobalItem.shopInstance = null;
-                if (boughtItem.value > 0)
+                heldGlobalItem.isOriginalShopSlot = false;
+                if (heldItem.value > 0)
                 {
-                    boughtItem.value /= 5;
-                    if (boughtItem.value < 1)
-                        boughtItem.value = 1;
+                    heldItem.value /= 5;
+                    if (heldItem.value < 1)
+                        heldItem.value = 1;
                 }
             }
         }

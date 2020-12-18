@@ -1,6 +1,7 @@
 ﻿using LivingWorldMod.Items.Accessories;
 using LivingWorldMod.Items.Placeable.Paintings;
 using LivingWorldMod.Utilities;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -21,28 +22,17 @@ namespace LivingWorldMod.NPCs.Villagers
 
         #endregion AI Data
         
-        #region Store Item Stack Info
-        
-        // was thinking of doing something like this for defining the store items; this is one day. Could be a 2D array
-        // for all the days? Not sure how frequently its accessed.
-        // Anyway, SetupShop() will loop through these and apply them.
-        
-        public override ShopItem[] DailyShopItems => GetItems();
+        #region Villager Class Overrides
 
-        private ShopItem[] GetItems()
+        public override void RefreshDailyShop()
         {
-            ShopItem[] items = {
+            dailyShop = new [] {
                 new ShopItem(ModContent.ItemType<FeatherBag>(), 1),
                 new ShopItem(ModContent.ItemType<SkyBustTileItem>(), 5),
                 new ShopItem(ModContent.ItemType<OneStarTileItem>(), 5)
             };
-            return items;
         }
-
-        #endregion Store Item Stack Info
-
-        #region Villager Class Overrides
-
+        
         public override WeightedRandom<string> GetDialogueText()
         {
             WeightedRandom<string> chat = new WeightedRandom<string>();

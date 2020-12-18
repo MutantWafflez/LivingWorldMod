@@ -5,11 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Items
 {
+	/// <summary>
+	/// This class is used for Shop items that have a limited stock. The fields are first set in Villager.SetupShop(),
+	/// and then managed further later on in some buy/sell ModPlayer hooks. 
+	/// </summary>
 	public class LWMGlobalShopItem : GlobalItem
 	{
 		/// <summary>
@@ -24,30 +27,39 @@ namespace LivingWorldMod.Items
 		public bool isOriginalShopSlot;
 
 		/// <summary>
-		/// The daily shop instance that is managing this particular shop item.
-		/// When the item is purchased, this reference is used to save the stack value for later openings.
+		/// This is the ShopItem instance stored in the dailyShop array of a Villager. Keeping a reference to it
+		/// means that in the buy/sell ModPlayer hooks, we can decrement the stack size stored in the Villager's shop
+		/// array, so that next time the shop is opened, the remaining stock persists.
 		/// </summary>
-		public DailyShopData shopInstance;
+		private ShopItem dailyStock;
 
+		#region Instance Management
+		
 		public override bool InstancePerEntity => true;
-
+		
 		public override void SetDefaults(Item item)
 		{
 			// probably not necessary or smart to set this for every single item in the game
 			//item.buyOnce = false;
 			isOutOfStock = false;
 			isOriginalShopSlot = false;
-			shopInstance = null;
 		}
+		
+		#endregion Instance Management
 
-		public override GlobalItem Clone(Item item, Item itemClone)
+		// called on opening a shop window
+		public void SetPersistentStack(ShopItem dailyStock)
 		{
-			LWMGlobalShopItem myItem = (LWMGlobalShopItem) base.Clone(item, itemClone);
-			myItem.isOutOfStock = isOutOfStock;
-			myItem.isOriginalShopSlot = isOriginalShopSlot;
-			myItem.shopInstance = shopInstance;
-			return myItem;
+			this.dailyStock = dailyStock;
 		}
+		
+		// called on purchase
+		public void UpdateInventory(int stackSize)
+		{
+			dailyStock.stackSize = stackSize;
+		}
+		
+		#region Display Management
 
 		public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor,
 			Vector2 origin, float scale)
@@ -106,5 +118,7 @@ namespace LivingWorldMod.Items
 					line.text += "per item";
 			}
 		}
+		
+		#endregion Display Management
 	}
 }

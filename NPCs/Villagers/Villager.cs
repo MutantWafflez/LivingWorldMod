@@ -1,3 +1,4 @@
+using LivingWorldMod.Items;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -38,9 +39,7 @@ namespace LivingWorldMod.NPCs.Villagers
             }
         }
 
-        public virtual ShopItem[] DailyShopItems => null;
-
-        private DailyShopData dailyShop;
+        protected ShopItem[] dailyShop;
 
         public Villager()
         {
@@ -62,7 +61,7 @@ namespace LivingWorldMod.NPCs.Villagers
         {
             Villager clonedNPC = (Villager)base.Clone();
             clonedNPC.spriteVariation = Main.rand.Next(0, 3);
-            clonedNPC.dailyShop = dailyShop == null ? null : new DailyShopData(DailyShopItems);
+            clonedNPC.RefreshDailyShop();
             return clonedNPC;
         }
 
@@ -82,6 +81,7 @@ namespace LivingWorldMod.NPCs.Villagers
             npc.aiStyle = 7;
             animationType = NPCID.Guide;
 
+            LivingWorldMod.instance.Logger.Info("Set defaults; Daily shop before set: "+dailyShop);
             RefreshDailyShop();
         }
 
@@ -239,14 +239,29 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public override void SetupShop(Chest shop, ref int nextSlot)
         {
-            dailyShop?.SetupShop(shop, ref nextSlot);
+            if (dailyShop == null)
+                return;
+            
+            foreach (ShopItem itemSlot in dailyShop)
+            {
+                Item item = shop.item[nextSlot];
+                item.SetDefaults(itemSlot.itemId);
+                item.stack = itemSlot.stackSize;
+                item.buyOnce = true;
+                LWMGlobalShopItem globalItem = item.GetGlobalItem<LWMGlobalShopItem>();
+                // give the item a reference to the ShopItem so we can track inventory changes
+                globalItem.SetPersistentStack(itemSlot);
+                globalItem.isOriginalShopSlot = true;
+                globalItem.isOutOfStock = item.stack <= 0;
+                // set stack size to 1 so it doesn't remove the item completely
+                if (item.stack <= 0) item.stack = 1;
+                ++nextSlot;
+            }
         }
         
-        public void RefreshDailyShop()
+        public virtual void RefreshDailyShop()
         {
-            ShopItem[] dailyItems = DailyShopItems;
-            if (dailyItems != null)
-                dailyShop = new DailyShopData(dailyItems);
+            dailyShop = null;
         }
 
         #endregion Miscellaneous Methods
