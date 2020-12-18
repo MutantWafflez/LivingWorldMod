@@ -44,6 +44,15 @@ namespace LivingWorldMod.Items
 			isOutOfStock = false;
 			isOriginalShopSlot = false;
 		}
+
+		public override GlobalItem Clone(Item item, Item itemClone)
+		{
+			LWMGlobalShopItem myItem = (LWMGlobalShopItem) base.Clone(item, itemClone);
+			myItem.isOutOfStock = isOutOfStock;
+			myItem.isOriginalShopSlot = isOriginalShopSlot;
+			myItem.dailyStock = dailyStock;
+			return myItem;
+		}
 		
 		#endregion Instance Management
 
