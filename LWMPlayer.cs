@@ -220,6 +220,10 @@ namespace LivingWorldMod
         
         public override void PostBuyItem(NPC vendor, Item[] shopInventory, Item heldItem)
         {
+            // everything in this method revolves around original shop slots, so ignore everything else
+            if(!prevShopGlobalItem.isOriginalShopSlot)
+                return;
+            
             Item shopItem = shopInventory[itemIdx];
             LWMGlobalShopItem heldGlobalItem = heldItem.GetGlobalItem<LWMGlobalShopItem>();
             if (shopItem.type == ItemID.None && prevShopGlobalItem.isOriginalShopSlot)
@@ -243,6 +247,8 @@ namespace LivingWorldMod
             if (heldGlobalItem.isOriginalShopSlot)
             {
                 heldGlobalItem.isOriginalShopSlot = false;
+                // not sure why I have to reduce the item value manually,
+                // but for some reason it refuses to do it automatically, so here we are
                 if (heldItem.value > 0)
                 {
                     heldItem.value /= 5;
