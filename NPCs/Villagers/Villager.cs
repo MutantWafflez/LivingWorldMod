@@ -238,6 +238,22 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public override void SetupShop(Chest shop, ref int nextSlot)
         {
+            int npcId = Main.player[Main.myPlayer].talkNPC;
+            NPC npc = npcId < 0 ? null : Main.npc[npcId];
+            
+            if (npc == null)
+                return; // nothing we do at this point will make sense if the npc is null, so just return
+
+            if (this.npc != npc)
+            {
+                // This deserves some explanation. All town-related actions are called only on one townNPC, the one
+                // returned from NPCLoader.GetNPC(type). This in all likelihood isn't even in the npc array.
+                // Regardless, we need to call SetupShop on the correct Villager instance, the one we are talking
+                // with, hence we check player.talkNPC and get the villager from that.
+                ((Villager) npc.modNPC).SetupShop(shop, ref nextSlot);
+                return;
+            }
+            
             if (dailyShop == null)
                 return;
             
