@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 
 namespace LivingWorldMod.NPCs.Villagers
@@ -112,6 +113,37 @@ namespace LivingWorldMod.NPCs.Villagers
         }
 
         #endregion Update Methods
+
+        #region Serialization Methods
+
+        public TagCompound Save()
+        {
+            return new TagCompound
+            {
+                {"type", (int) villagerType},
+                {"spriteVar", spriteVariation},
+                {"x", npc.Center.X},
+                {"y", npc.Center.Y},
+                {"name", npc.GivenName},
+                {"homePos", homePosition}
+            };
+        }
+
+        public static void LoadVillager(TagCompound data)
+        {
+            int villagerType = ModContent.NPCType<SkyVillager>();
+            int receivedVilType = data.GetAsInt("type");
+            //if (recievedVilType == (int)VillagerType.LihzahrdVillager)
+            //Lihzahrd Villager types here
+            int npcIndex = NPC.NewNPC((int)data.GetFloat("x"), (int)data.GetFloat("y"),
+                villagerType);
+            NPC npcAtIndex = Main.npc[npcIndex];
+            npcAtIndex.GivenName = data.GetString("name");
+            ((Villager)npcAtIndex.modNPC).spriteVariation = data.GetInt("spriteVar");
+            ((Villager)npcAtIndex.modNPC).homePosition = data.Get<Vector2>("homePos");
+        }
+
+        #endregion Serialization Methods
 
         #region Chat Methods
 

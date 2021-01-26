@@ -253,7 +253,7 @@ namespace LivingWorldMod
             for (int i = 0; i < Main.maxNPCs; i++)
             {
                 NPC npc = Main.npc[i];
-                if (npc.active && npc.modNPC is SkyVillager villager)
+                if (npc.active && npc.modNPC is Villager villager)
                     villager.RefreshDailyShop();
             }
         }
@@ -268,20 +268,9 @@ namespace LivingWorldMod
             for (int i = 0; i < Main.maxNPCs; i++)
             {
                 NPC npcAtIndex = Main.npc[i];
-                if (!LWMUtils.IsTypeOfVillager(npcAtIndex))
-                    continue;
-                else
+                if(npcAtIndex.modNPC is Villager villager)
                 {
-                    TagCompound villagerDataTag = new TagCompound
-                    {
-                        {"type", (int) ((Villager) npcAtIndex.modNPC).villagerType},
-                        {"spriteVar", ((Villager) npcAtIndex.modNPC).spriteVariation},
-                        {"x", npcAtIndex.Center.X},
-                        {"y", npcAtIndex.Center.Y},
-                        {"name", npcAtIndex.GivenName},
-                        {"homePos", ((Villager) npcAtIndex.modNPC).homePosition}
-                    };
-                    villagerData.Add(villagerDataTag);
+                    villagerData.Add(villager.Save());
                 }
             }
 
@@ -304,16 +293,7 @@ namespace LivingWorldMod
             IList<TagCompound> villagerData = tag.GetList<TagCompound>("VillagerData");
             for (int i = 0; i < villagerData.Count; i++)
             {
-                int villagerType = ModContent.NPCType<SkyVillager>();
-                int receivedVilType = villagerData[i].GetAsInt("type");
-                //if (recievedVilType == (int)VillagerType.LihzahrdVillager)
-                //Lihzahrd Villager types here
-                int npcIndex = NPC.NewNPC((int)villagerData[i].GetFloat("x"), (int)villagerData[i].GetFloat("y"),
-                    villagerType);
-                NPC npcAtIndex = Main.npc[npcIndex];
-                npcAtIndex.GivenName = villagerData[i].GetString("name");
-                ((Villager)npcAtIndex.modNPC).spriteVariation = villagerData[i].GetInt("spriteVar");
-                ((Villager)npcAtIndex.modNPC).homePosition = villagerData[i].Get<Vector2>("homePos");
+                Villager.LoadVillager(villagerData[i]);
             }
         }
 
