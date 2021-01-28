@@ -3,6 +3,7 @@ using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -128,11 +129,7 @@ namespace LivingWorldMod.NPCs.Villagers
                 {"homePos", homePosition}
             };
             if (dailyShop != null)
-            {
-                List<ShopItem> list = new List<ShopItem>();
-                list.AddRange(dailyShop);
-                tag.Add("shop", list);
-            }
+                tag.Add("shop", dailyShop.ToList());
             
             return tag;
         }
@@ -151,11 +148,7 @@ namespace LivingWorldMod.NPCs.Villagers
             villager.spriteVariation = tag.GetInt("spriteVar");
             villager.homePosition = tag.Get<Vector2>("homePos");
             if (tag.ContainsKey("shop"))
-            {
-                IList<ShopItem> list = tag.GetList<ShopItem>("shop");
-                villager.dailyShop = new ShopItem[list.Count];
-                list.CopyTo(villager.dailyShop, 0);
-            }
+                villager.dailyShop = tag.GetList<ShopItem>("shop").ToArray();
         }
 
         #endregion Serialization Methods
