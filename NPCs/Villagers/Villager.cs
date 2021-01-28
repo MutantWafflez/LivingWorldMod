@@ -118,7 +118,7 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public TagCompound Save()
         {
-            return new TagCompound
+            TagCompound tag = new TagCompound
             {
                 {"type", (int) villagerType},
                 {"spriteVar", spriteVariation},
@@ -127,20 +127,35 @@ namespace LivingWorldMod.NPCs.Villagers
                 {"name", npc.GivenName},
                 {"homePos", homePosition}
             };
+            if (dailyShop != null)
+            {
+                List<ShopItem> list = new List<ShopItem>();
+                list.AddRange(dailyShop);
+                tag.Add("shop", list);
+            }
+            
+            return tag;
         }
 
-        public static void LoadVillager(TagCompound data)
+        public static void LoadVillager(TagCompound tag)
         {
             int villagerType = ModContent.NPCType<SkyVillager>();
-            int receivedVilType = data.GetAsInt("type");
+            int receivedVilType = tag.GetAsInt("type");
             //if (recievedVilType == (int)VillagerType.LihzahrdVillager)
             //Lihzahrd Villager types here
-            int npcIndex = NPC.NewNPC((int)data.GetFloat("x"), (int)data.GetFloat("y"),
+            int npcIndex = NPC.NewNPC((int)tag.GetFloat("x"), (int)tag.GetFloat("y"),
                 villagerType);
             NPC npcAtIndex = Main.npc[npcIndex];
-            npcAtIndex.GivenName = data.GetString("name");
-            ((Villager)npcAtIndex.modNPC).spriteVariation = data.GetInt("spriteVar");
-            ((Villager)npcAtIndex.modNPC).homePosition = data.Get<Vector2>("homePos");
+            npcAtIndex.GivenName = tag.GetString("name");
+            Villager villager = ((Villager)npcAtIndex.modNPC);
+            villager.spriteVariation = tag.GetInt("spriteVar");
+            villager.homePosition = tag.Get<Vector2>("homePos");
+            if (tag.ContainsKey("shop"))
+            {
+                IList<ShopItem> list = tag.GetList<ShopItem>("shop");
+                villager.dailyShop = new ShopItem[list.Count];
+                list.CopyTo(villager.dailyShop, 0);
+            }
         }
 
         #endregion Serialization Methods
