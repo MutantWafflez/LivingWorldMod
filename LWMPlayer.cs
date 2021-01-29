@@ -1,5 +1,7 @@
 using LivingWorldMod.ID;
+using LivingWorldMod.Items;
 using LivingWorldMod.Items.Extra;
+using LivingWorldMod.Items.Placeable.Paintings;
 using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.Projectiles.Friendly;
 using Microsoft.Xna.Framework;
@@ -42,6 +44,21 @@ namespace LivingWorldMod
         public static readonly FieldInfo[] wingList = typeof(ArmorIDs.Wing).GetFields().Where(field => field.IsLiteral && !field.IsInitOnly).ToArray();
 
         #endregion Feather Bag
+        
+        /// <summary>
+        /// A cache of the item index as found during CanBuyItem. Used in PostBuyItem to update the item slot after
+        /// buying, and put back the item but with an X over it, when the stack runs out.
+        /// </summary>
+        private int itemIdx;
+
+        /// <summary>
+        /// A cache for the GlobalItem of the item found during CanBuyItem.
+        /// When the last item in a slot is purchased, the slot is reset, however we need to know if that was an original
+        /// shop slot or not, and have a reference to the DailyShopData instance.
+        /// So, we cache the LWMGlobalShopItem before buying to reference it after.
+        /// We can't use the held item either because that gets reset after the first item in the held stack.
+        /// </summary>
+        private LWMGlobalShopItem prevShopGlobalItem;
 
         public override void PostItemCheck()
         {
@@ -198,5 +215,64 @@ namespace LivingWorldMod
         }
 
         #endregion Helper Methods
+        
+        #region Shop Item Management
+        
+        public override void PostBuyItem(NPC vendor, Item[] shopInventory, Item heldItem)
+        {
+            // everything in this method revolves around original shop slots, so ignore everything else
+            if(!prevShopGlobalItem.isOriginalShopSlot)
+                return;
+            
+            Item shopItem = shopInventory[itemIdx];
+            LWMGlobalShopItem heldGlobalItem = heldItem.GetGlobalItem<LWMGlobalShopItem>();
+            if (shopItem.type == ItemID.None && prevShopGlobalItem.isOriginalShopSlot)
+            {
+                // update the ShopItem with an empty stack
+                prevShopGlobalItem.UpdateInventory(0);
+                // restore the item to the slot
+                shopItem.SetDefaults(heldItem.type);
+                // after set defaults it has a brand new global item object, so we need to get it
+                LWMGlobalShopItem shopGlobalItem = shopItem.GetGlobalItem<LWMGlobalShopItem>();
+                // mark it as not purchasable
+                shopGlobalItem.isOutOfStock = true;
+            }
+            else
+            {
+                // just update the stack data
+                prevShopGlobalItem.UpdateInventory(shopItem.stack);
+            }
+            
+            // remove shop behavior from bought item, if present
+            if (heldGlobalItem.isOriginalShopSlot)
+            {
+                heldGlobalItem.isOriginalShopSlot = false;
+                // not sure why I have to reduce the item value manually,
+                // but for some reason it refuses to do it automatically, so here we are
+                if (heldItem.value > 0)
+                {
+                    heldItem.value /= 5;
+                    if (heldItem.value < 1)
+                        heldItem.value = 1;
+                }
+            }
+        }
+
+        public override bool CanBuyItem(NPC vendor, Item[] shopInventory, Item item)
+        {
+            // record the index of the item being purchased
+            itemIdx = Array.IndexOf(shopInventory, item);
+            
+            // record the original-slot state
+            prevShopGlobalItem = item.GetGlobalItem<LWMGlobalShopItem>();
+            
+            // check if this item cannot be purchased
+            if (prevShopGlobalItem.isOutOfStock)
+                return false;
+			
+            return true;
+        }
+
+        #endregion Shop Item Management
     }
 }
