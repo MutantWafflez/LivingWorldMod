@@ -4,6 +4,7 @@ using LivingWorldMod.Tiles.Interactables;
 using LivingWorldMod.Tiles.Ores;
 using LivingWorldMod.Tiles.WorldGen;
 using LivingWorldMod.Utilities;
+using LivingWorldMod.Utilities.Quests;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,7 @@ namespace LivingWorldMod
         internal static int[] shrineStage = Enumerable.Repeat(3, (int)VillagerType.VillagerTypeCount).ToArray();
         internal static int[] itemGiftAmount = new int[ItemLoader.ItemCount * (int)VillagerType.VillagerTypeCount];
         internal static Vector2[] shrineCoords = new Vector2[(int)VillagerType.VillagerTypeCount];
+        internal static VillagerQuest[] activeQuests = new VillagerQuest[(int)VillagerType.VillagerTypeCount];
 
         public override void Initialize()
         {
@@ -208,6 +210,32 @@ namespace LivingWorldMod
         public static Vector2 GetShrineWorldPosition(VillagerType villagerType)
         {
             return shrineCoords[(int)villagerType] * 16;
+        }
+
+        /// <summary>
+        /// Returns the quest instance of the given villager type.
+        /// </summary>
+        public static VillagerQuest GetActiveQuest(VillagerType villagerType) {
+            return activeQuests[(int)villagerType];
+        }
+
+        /// <summary>
+        /// Refreshes the current active quest for the quest villagers of given type <paramref name="villagerType"/>
+        /// </summary>
+        /// <param name="villagerType"> The villager type to refresh the quest of. </param>
+        public static void RefreshVillageQuest(VillagerType villagerType) {
+            if (LivingWorldMod.possibleQuests[(int)villagerType].Any()) {
+                activeQuests[(int)villagerType] = LivingWorldMod.possibleQuests[(int)villagerType][Main.rand.Next(0, LivingWorldMod.possibleQuests[(int)villagerType].Count)];
+            }
+        }
+
+        /// <summary>
+        /// Refreshes the current actives quests of ALL of the villagers currently added.
+        /// </summary>
+        public static void RefreshAllVillageQuests() {
+            for (int i = 0; i < activeQuests.Length; i++) {
+                RefreshVillageQuest((VillagerType)i);
+            }
         }
 
         #endregion World Array Modifications
@@ -632,6 +660,8 @@ namespace LivingWorldMod
                     }
                 }
             }
+            //Randomize all villager quests
+            RefreshAllVillageQuests();
         }
 
         #endregion World Gen
