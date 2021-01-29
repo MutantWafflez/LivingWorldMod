@@ -1,10 +1,14 @@
+using LivingWorldMod.Items;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 
 namespace LivingWorldMod.NPCs.Villagers
@@ -37,6 +41,8 @@ namespace LivingWorldMod.NPCs.Villagers
             }
         }
 
+        protected ShopItem[] dailyShop;
+
         public Villager()
         {
             possibleNames = GetPossibleNames();
@@ -57,6 +63,7 @@ namespace LivingWorldMod.NPCs.Villagers
         {
             Villager clonedNPC = (Villager)base.Clone();
             clonedNPC.spriteVariation = Main.rand.Next(0, 3);
+            clonedNPC.RefreshDailyShop();
             return clonedNPC;
         }
 
@@ -75,6 +82,8 @@ namespace LivingWorldMod.NPCs.Villagers
             npc.knockBackResist = 0.5f;
             npc.aiStyle = 7;
             animationType = NPCID.Guide;
+
+            RefreshDailyShop();
         }
 
         #endregion Defaults Methods
@@ -105,6 +114,44 @@ namespace LivingWorldMod.NPCs.Villagers
         }
 
         #endregion Update Methods
+
+        #region Serialization Methods
+
+        public TagCompound Save()
+        {
+            TagCompound tag = new TagCompound
+            {
+                {"type", (int) villagerType},
+                {"spriteVar", spriteVariation},
+                {"x", npc.Center.X},
+                {"y", npc.Center.Y},
+                {"name", npc.GivenName},
+                {"homePos", homePosition}
+            };
+            if (dailyShop != null)
+                tag.Add("shop", dailyShop.ToList());
+            
+            return tag;
+        }
+
+        public static void LoadVillager(TagCompound tag)
+        {
+            int villagerType = ModContent.NPCType<SkyVillager>();
+            int receivedVilType = tag.GetAsInt("type");
+            //if (recievedVilType == (int)VillagerType.LihzahrdVillager)
+            //Lihzahrd Villager types here
+            int npcIndex = NPC.NewNPC((int)tag.GetFloat("x"), (int)tag.GetFloat("y"),
+                villagerType);
+            NPC npcAtIndex = Main.npc[npcIndex];
+            npcAtIndex.GivenName = tag.GetString("name");
+            Villager villager = ((Villager)npcAtIndex.modNPC);
+            villager.spriteVariation = tag.GetInt("spriteVar");
+            villager.homePosition = tag.Get<Vector2>("homePos");
+            if (tag.ContainsKey("shop"))
+                villager.dailyShop = tag.GetList<ShopItem>("shop").ToArray();
+        }
+
+        #endregion Serialization Methods
 
         #region Chat Methods
 
@@ -227,6 +274,49 @@ namespace LivingWorldMod.NPCs.Villagers
                 isPositiveRep = false;
                 isMaxRep = true;
             }
+        }
+
+        public override void SetupShop(Chest shop, ref int nextSlot)
+        {
+            int npcId = Main.player[Main.myPlayer].talkNPC;
+            NPC npc = npcId < 0 ? null : Main.npc[npcId];
+            
+            if (npc == null)
+                return; // nothing we do at this point will make sense if the npc is null, so just return
+
+            if (this.npc != npc)
+            {
+                // This deserves some explanation. All town-related actions are called only on one townNPC, the one
+                // returned from NPCLoader.GetNPC(type). This in all likelihood isn't even in the npc array.
+                // Regardless, we need to call SetupShop on the correct Villager instance, the one we are talking
+                // with, hence we check player.talkNPC and get the villager from that.
+                ((Villager) npc.modNPC).SetupShop(shop, ref nextSlot);
+                return;
+            }
+            
+            if (dailyShop == null)
+                return;
+            
+            foreach (ShopItem itemSlot in dailyShop)
+            {
+                Item item = shop.item[nextSlot];
+                item.SetDefaults(itemSlot.itemId);
+                item.stack = itemSlot.stackSize;
+                item.buyOnce = true;
+                LWMGlobalShopItem globalItem = item.GetGlobalItem<LWMGlobalShopItem>();
+                // give the item a reference to the ShopItem so we can track inventory changes
+                globalItem.SetPersistentStack(itemSlot);
+                globalItem.isOriginalShopSlot = true;
+                globalItem.isOutOfStock = item.stack <= 0;
+                // set stack size to 1 so it doesn't remove the item completely
+                if (item.stack <= 0) item.stack = 1;
+                ++nextSlot;
+            }
+        }
+        
+        public virtual void RefreshDailyShop()
+        {
+            dailyShop = null;
         }
 
         #endregion Miscellaneous Methods

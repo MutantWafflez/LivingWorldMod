@@ -15,7 +15,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.World.Generation;
-using static Terraria.ModLoader.ModContent;
 
 namespace LivingWorldMod
 {
@@ -218,6 +217,9 @@ namespace LivingWorldMod
         {
             SpiderSacRegen();
             UpdateReputationAbsorption();
+            
+            if(Main.dayTime && Main.time == 0)
+                RefreshDailyShops();
         }
 
         public void UpdateReputationAbsorption()
@@ -244,6 +246,17 @@ namespace LivingWorldMod
                 }
             }
         }
+        
+        public void RefreshDailyShops()
+        {
+            // fetch each villager and refresh their shop
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+                if (npc.active && npc.modNPC is Villager villager)
+                    villager.RefreshDailyShop();
+            }
+        }
 
         #endregion Update Methods
 
@@ -255,20 +268,9 @@ namespace LivingWorldMod
             for (int i = 0; i < Main.maxNPCs; i++)
             {
                 NPC npcAtIndex = Main.npc[i];
-                if (!LWMUtils.IsTypeOfVillager(npcAtIndex))
-                    continue;
-                else
+                if(npcAtIndex.modNPC is Villager villager)
                 {
-                    TagCompound villagerDataTag = new TagCompound
-                    {
-                        {"type", (int) ((Villager) npcAtIndex.modNPC).villagerType},
-                        {"spriteVar", ((Villager) npcAtIndex.modNPC).spriteVariation},
-                        {"x", npcAtIndex.Center.X},
-                        {"y", npcAtIndex.Center.Y},
-                        {"name", npcAtIndex.GivenName},
-                        {"homePos", ((Villager) npcAtIndex.modNPC).homePosition}
-                    };
-                    villagerData.Add(villagerDataTag);
+                    villagerData.Add(villager.Save());
                 }
             }
 
@@ -291,16 +293,7 @@ namespace LivingWorldMod
             IList<TagCompound> villagerData = tag.GetList<TagCompound>("VillagerData");
             for (int i = 0; i < villagerData.Count; i++)
             {
-                int villagerType = NPCType<SkyVillager>();
-                int receivedVilType = villagerData[i].GetAsInt("type");
-                //if (recievedVilType == (int)VillagerType.LihzahrdVillager)
-                //Lihzahrd Villager types here
-                int npcIndex = NPC.NewNPC((int)villagerData[i].GetFloat("x"), (int)villagerData[i].GetFloat("y"),
-                    villagerType);
-                NPC npcAtIndex = Main.npc[npcIndex];
-                npcAtIndex.GivenName = villagerData[i].GetString("name");
-                ((Villager)npcAtIndex.modNPC).spriteVariation = villagerData[i].GetInt("spriteVar");
-                ((Villager)npcAtIndex.modNPC).homePosition = villagerData[i].Get<Vector2>("homePos");
+                Villager.LoadVillager(villagerData[i]);
             }
         }
 
@@ -343,7 +336,7 @@ namespace LivingWorldMod
                 int j = k / Main.maxTilesX;
 
                 if (CanSpawnSpiderSac(i, j))
-                    WorldGen.PlaceTile(i, j, TileType<SpiderSacTile>(), forced: true);
+                    WorldGen.PlaceTile(i, j, ModContent.TileType<SpiderSacTile>(), forced: true);
             }
 
             progress.Set(1f);
@@ -381,7 +374,7 @@ namespace LivingWorldMod
             int radius = 30;
             for (int m = j - radius; m < j + radius; m++) //y
                 for (int n = i - radius; n < i + radius; n++) //x
-                    if (Framing.GetTileSafely(n, m).type == TileType<SpiderSacTile>())
+                    if (Framing.GetTileSafely(n, m).type == ModContent.TileType<SpiderSacTile>())
                         return false;
 
             //Making sure the foundation for the Spider Sac aren't cobwebs or other non solid stuff
@@ -431,7 +424,7 @@ namespace LivingWorldMod
                 int x = currentIteration % Main.maxTilesX;
                 int y = currentIteration / Main.maxTilesX;
 
-                if (CanSpawnSpiderSac(x, y) && WorldGen.PlaceTile(x, y, TileType<SpiderSacTile>(), forced: true))
+                if (CanSpawnSpiderSac(x, y) && WorldGen.PlaceTile(x, y, ModContent.TileType<SpiderSacTile>(), forced: true))
                     spiderSacsPlaced++;
 
                 currentIteration++;
@@ -556,9 +549,9 @@ namespace LivingWorldMod
             //Finding shrine top left position
             for (int i = xCoord; i < xCoord + structureWidth; i++)
                 for (int j = yAverage; j < yAverage + structureHeight; j++)
-                    if (Framing.GetTileSafely(i, j).type == TileType<HarpyShrineTile>())
+                    if (Framing.GetTileSafely(i, j).type == ModContent.TileType<HarpyShrineTile>())
                         shrineCoords[(int)VillagerType.Harpy] =
-                            LWMUtils.FindMultiTileTopLeft(i, j, TileType<HarpyShrineTile>());
+                            LWMUtils.FindMultiTileTopLeft(i, j, ModContent.TileType<HarpyShrineTile>());
 
             //This Gen task is in the Sky Village Gen task since the islands are mapped in this method, and we need those
             SkyBudGenTask(progress, islands);
@@ -581,7 +574,7 @@ namespace LivingWorldMod
                 {
                     //3rd and 4th values are strength and steps, adjust later if needed
                     WorldGen.TileRunner(x, y, WorldGen.genRand.Next(3, 5), WorldGen.genRand.Next(2, 4),
-                        TileType<RoseQuartzTile>());
+                        ModContent.TileType<RoseQuartzTile>());
                 }
             }
 
@@ -624,9 +617,9 @@ namespace LivingWorldMod
             {
                 for (int j = 0; j < Main.maxTilesY; j++)
                 {
-                    if (Framing.GetTileSafely(i, j).type == TileType<SkyVillagerHomeTile>())
+                    if (Framing.GetTileSafely(i, j).type == ModContent.TileType<SkyVillagerHomeTile>())
                     {
-                        int npcIndex = NPC.NewNPC(i * 16, j * 16, NPCType<SkyVillager>());
+                        int npcIndex = NPC.NewNPC(i * 16, j * 16, ModContent.NPCType<SkyVillager>());
                         NPC npcAtIndex = Main.npc[npcIndex];
                         ((Villager)npcAtIndex.modNPC).homePosition = new Vector2(i, j);
                     }

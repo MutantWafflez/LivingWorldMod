@@ -1,6 +1,7 @@
 ﻿using LivingWorldMod.Items.Accessories;
 using LivingWorldMod.Items.Placeable.Paintings;
 using LivingWorldMod.Utilities;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -20,9 +21,18 @@ namespace LivingWorldMod.NPCs.Villagers
         private int flightCooldown = 0;
 
         #endregion AI Data
-
+        
         #region Villager Class Overrides
 
+        public override void RefreshDailyShop()
+        {
+            dailyShop = new [] {
+                new ShopItem(ModContent.ItemType<FeatherBag>(), 1),
+                new ShopItem(ModContent.ItemType<SkyBustTileItem>(), 5),
+                new ShopItem(ModContent.ItemType<OneStarTileItem>(), 5)
+            };
+        }
+        
         public override WeightedRandom<string> GetDialogueText()
         {
             WeightedRandom<string> chat = new WeightedRandom<string>();
@@ -112,16 +122,6 @@ namespace LivingWorldMod.NPCs.Villagers
         {
             base.SetStaticDefaults();
             Main.npcFrameCount[npc.type] = 27;
-        }
-
-        public override void SetupShop(Chest shop, ref int nextSlot)
-        {
-            shop.item[nextSlot].SetDefaults(ModContent.ItemType<FeatherBag>());
-            nextSlot++;
-            shop.item[nextSlot].SetDefaults(ModContent.ItemType<SkyBustTileItem>());
-            nextSlot++;
-            shop.item[nextSlot].SetDefaults(ModContent.ItemType<OneStarTileItem>());
-            nextSlot++;
         }
 
         public override bool? CanBeHitByProjectile(Projectile projectile)
