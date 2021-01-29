@@ -17,8 +17,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.World.Generation;
 
-namespace LivingWorldMod
-{
+namespace LivingWorldMod {
     public class LWMWorld : ModWorld
     {
         //After reaching max gifts on the shrine at stage 5, give 20 reputation
@@ -302,6 +301,17 @@ namespace LivingWorldMod
                 }
             }
 
+            IList<TagCompound> questData = new List<TagCompound>();
+            for (int i = 0; i < activeQuests.Length; i++) {
+                for (int x = 0; x < LivingWorldMod.possibleQuests[i].Count; x++) {
+                    if (LivingWorldMod.possibleQuests[i][x] == activeQuests[i]) {
+                        questData.Add(new TagCompound {
+                        {"questData", x}
+                        });
+                    }
+                }
+            }
+
             return new TagCompound
             {
                 {"VillageReputation", reputation},
@@ -309,6 +319,7 @@ namespace LivingWorldMod
                 {"VillageShrineStage", shrineStage},
                 {"VillageShrineCoords", shrineCoords.ToList() },
                 {"VillagerData", villagerData},
+                {"VillagerQuests", questData}
             };
         }
 
@@ -322,6 +333,10 @@ namespace LivingWorldMod
             for (int i = 0; i < villagerData.Count; i++)
             {
                 Villager.LoadVillager(villagerData[i]);
+            }
+            IList<TagCompound> questData = tag.GetList<TagCompound>("VillagerQuests");
+            for (int i = 0; i < questData.Count; i++) {
+                activeQuests[i] = LivingWorldMod.possibleQuests[i][questData[i].GetInt("questID")];
             }
         }
 
