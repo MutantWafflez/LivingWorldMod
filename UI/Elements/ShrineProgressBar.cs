@@ -68,7 +68,7 @@ namespace LivingWorldMod.UI.Elements
                 quotient = shrineStage / (float)maxProgress;
             }
 
-            quotient = Terraria.Utils.Clamp(quotient, 0f, 1f);
+            quotient = Utils.Clamp(quotient, 0f, 1f);
             Rectangle hitbox = barFrame.GetInnerDimensions().ToRectangle();
 
             //Magic numbers to keep everything aligned

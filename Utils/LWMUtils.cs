@@ -1,19 +1,16 @@
-using LivingWorldMod.ID;
 using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.NPCs.Villagers.Quest;
 using LivingWorldMod.Tiles.Interactables;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
-using static Terraria.ModLoader.ModContent;
 
 namespace LivingWorldMod.Utilities
 {
@@ -238,7 +235,7 @@ namespace LivingWorldMod.Utilities
             {
                 for (int l = 0; l < 5; l++)
                 {
-                    if (Framing.GetTileSafely(i - k, j - l).type == TileType<HarpyShrineTile>())
+                    if (Framing.GetTileSafely(i - k, j - l).type == ModContent.TileType<HarpyShrineTile>())
                         topLeftPos = new Vector2(i - k, j - l);
                     else continue;
                 }

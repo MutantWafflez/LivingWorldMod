@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.NPCs.Villagers;
+﻿using LivingWorldMod.Items.Debug;
+using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.UI;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -32,7 +33,7 @@ namespace LivingWorldMod.Tiles.Interactables
         {
             Player player = Main.LocalPlayer;
 
-            player.showItemIcon2 = ItemType<Items.Debug.HarpyShrine>();
+            player.showItemIcon2 = ItemType<HarpyShrine>();
             player.showItemIcon = true;
             player.noThrow = 2;
         }

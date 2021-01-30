@@ -1,7 +1,6 @@
 using LivingWorldMod.ID;
 using LivingWorldMod.Items;
 using LivingWorldMod.Items.Extra;
-using LivingWorldMod.Items.Placeable.Paintings;
 using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.Projectiles.Friendly;
 using LivingWorldMod.Utilities.NetPackets;
@@ -11,7 +10,6 @@ using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.ID;
-using Terraria.Map;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 

@@ -1,7 +1,6 @@
 ﻿using LivingWorldMod.Items.Accessories;
 using LivingWorldMod.Items.Placeable.Paintings;
 using LivingWorldMod.Utilities;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;

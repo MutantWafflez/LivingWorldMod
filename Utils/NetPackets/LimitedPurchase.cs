@@ -1,11 +1,9 @@
 ﻿using LivingWorldMod.ID;
 using LivingWorldMod.NPCs.Villagers;
-using log4net.Repository.Hierarchy;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Utilities.NetPackets
 {

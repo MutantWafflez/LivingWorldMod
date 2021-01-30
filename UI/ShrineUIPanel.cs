@@ -171,7 +171,7 @@ namespace LivingWorldMod.UI
                     undiscoveredGift.Show();
                 }
                 else
-                    color = Microsoft.Xna.Framework.Color.White;
+                    color = Color.White;
 
                 giftItem.SetOverlayColor(color);
 
