@@ -35,13 +35,7 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public int spriteVariation = 0;
 
-        public string VillagerName
-        {
-            get
-            {
-                return villagerType.ToString();
-            }
-        }
+        public string VillagerName => villagerType.ToString();
 
         // shop template for all players, at full stock
         private List<ShopItem> dailyShop;
