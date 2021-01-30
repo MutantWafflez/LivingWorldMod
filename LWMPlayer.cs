@@ -4,18 +4,23 @@ using LivingWorldMod.Items.Extra;
 using LivingWorldMod.Items.Placeable.Paintings;
 using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.Projectiles.Friendly;
+using LivingWorldMod.Utilities.NetPackets;
 using Microsoft.Xna.Framework;
 using System;
 using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.ID;
+using Terraria.Map;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod
 {
     public class LWMPlayer : ModPlayer
     {
+        public Guid guid;
+        
         //Accessory Bools
         public bool featherBag;
 
@@ -59,6 +64,35 @@ namespace LivingWorldMod
         /// We can't use the held item either because that gets reset after the first item in the held stack.
         /// </summary>
         private LWMGlobalShopItem prevShopGlobalItem;
+
+        public LWMPlayer()
+        {
+            guid = Guid.NewGuid();
+        }
+        
+        public override TagCompound Save()
+        {
+            return new TagCompound {{"guid", guid.ToString()}};
+        }
+
+        public override void Load(TagCompound tag)
+        {
+            if(tag.ContainsKey("guid"))
+                guid = Guid.Parse(tag.GetString("guid"));
+        }
+        
+        #region Net Sync Methods
+
+        // note, since guid never changes, clientClone and SendClientChanges are not necessary.
+        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
+        {
+            new PlayerData {
+                guid = guid,
+                pid = player.whoAmI
+            }.Send(mod, toWho, fromWho);
+        }
+
+        #endregion Net Sync Methods
 
         public override void PostItemCheck()
         {
@@ -224,6 +258,14 @@ namespace LivingWorldMod
             if(!prevShopGlobalItem.isOriginalShopSlot)
                 return;
             
+            // send a packet to the server to notify it of the purchase
+            if(Main.netMode == NetmodeID.MultiplayerClient)
+                new LimitedPurchase
+                {
+                    npcId = Main.LocalPlayer.talkNPC,
+                    slotId = itemIdx
+                }.SendToServer(mod);
+            
             Item shopItem = shopInventory[itemIdx];
             LWMGlobalShopItem heldGlobalItem = heldItem.GetGlobalItem<LWMGlobalShopItem>();
             if (shopItem.type == ItemID.None && prevShopGlobalItem.isOriginalShopSlot)
@@ -269,7 +311,7 @@ namespace LivingWorldMod
             // check if this item cannot be purchased
             if (prevShopGlobalItem.isOutOfStock)
                 return false;
-			
+            
             return true;
         }
 

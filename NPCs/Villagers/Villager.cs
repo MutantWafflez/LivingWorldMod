@@ -2,7 +2,9 @@ using LivingWorldMod.Items;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -41,11 +43,15 @@ namespace LivingWorldMod.NPCs.Villagers
             }
         }
 
-        protected ShopItem[] dailyShop;
+        // shop template for all players, at full stock
+        private List<ShopItem> dailyShop;
+        // record of shop data for each player that opened the shop
+        internal Dictionary<Guid, List<ShopItem>> shops;
 
         public Villager()
         {
             possibleNames = GetPossibleNames();
+            shops = new Dictionary<Guid, List<ShopItem>>();
         }
 
         public override string Texture => VILLAGER_SPRITE_PATH + VillagerName + "Style1";
@@ -113,6 +119,26 @@ namespace LivingWorldMod.NPCs.Villagers
             UpdateReputationBools();
         }
 
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            // send shop lists
+            writer.Write(dailyShop != null);
+            if (dailyShop == null)
+                return;
+            LWMUtils.WriteList(writer, dailyShop);
+            LWMUtils.WriteDictionary(writer, shops, (w, id) => w.Write(id.ToString()), LWMUtils.WriteList);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            // read shop lists
+            bool read = reader.ReadBoolean();
+            if (!read)
+                return;
+            dailyShop = LWMUtils.ReadList<ShopItem>(reader);
+            shops = LWMUtils.ReadDictionary(reader, w => Guid.Parse(w.ReadString()), LWMUtils.ReadList<ShopItem>);
+        }
+
         #endregion Update Methods
 
         #region Serialization Methods
@@ -129,7 +155,11 @@ namespace LivingWorldMod.NPCs.Villagers
                 {"homePos", homePosition}
             };
             if (dailyShop != null)
-                tag.Add("shop", dailyShop.ToList());
+            {
+                tag.Add("shop_template", dailyShop);
+                // record the shop state for each player that opened the shop
+                LWMUtils.SaveDictionary(tag, "shops", shops, id => id.ToString());
+            }
             
             return tag;
         }
@@ -147,8 +177,11 @@ namespace LivingWorldMod.NPCs.Villagers
             Villager villager = ((Villager)npcAtIndex.modNPC);
             villager.spriteVariation = tag.GetInt("spriteVar");
             villager.homePosition = tag.Get<Vector2>("homePos");
-            if (tag.ContainsKey("shop"))
-                villager.dailyShop = tag.GetList<ShopItem>("shop").ToArray();
+            if (tag.ContainsKey("shop_template"))
+            {
+                villager.dailyShop = tag.GetList<ShopItem>("shop_template").ToList();
+                villager.shops = LWMUtils.LoadDictionary<Guid, List<ShopItem>, string>(tag, "shops", Guid.Parse);
+            }
         }
 
         #endregion Serialization Methods
@@ -278,7 +311,9 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public override void SetupShop(Chest shop, ref int nextSlot)
         {
-            int npcId = Main.player[Main.myPlayer].talkNPC;
+            Player player = Main.LocalPlayer;
+            
+            int npcId = player.talkNPC;
             NPC npc = npcId < 0 ? null : Main.npc[npcId];
             
             if (npc == null)
@@ -297,7 +332,10 @@ namespace LivingWorldMod.NPCs.Villagers
             if (dailyShop == null)
                 return;
             
-            foreach (ShopItem itemSlot in dailyShop)
+            Guid id = player.GetModPlayer<LWMPlayer>().guid;
+            List<ShopItem> playerShop = GetPlayerShop(id);
+            
+            foreach (ShopItem itemSlot in playerShop)
             {
                 Item item = shop.item[nextSlot];
                 item.SetDefaults(itemSlot.itemId);
@@ -313,10 +351,35 @@ namespace LivingWorldMod.NPCs.Villagers
                 ++nextSlot;
             }
         }
-        
-        public virtual void RefreshDailyShop()
+
+        public List<ShopItem> GetPlayerShop(Guid playerId)
         {
-            dailyShop = null;
+            // fetch the shop for this player
+            shops.TryGetValue(playerId, out List<ShopItem> playerShop);
+            if (playerShop == null)
+            {
+                // clone the daily shop template
+                playerShop = dailyShop.Select(item => item.Clone()).ToList();
+                shops.Add(playerId, playerShop);
+            }
+
+            return playerShop;
+        }
+        
+        public void RefreshDailyShop()
+        {
+            // create a new shop
+            dailyShop = GenerateDailyShop();
+            // clear purchase history
+            shops.Clear();
+            // flag the npc for an update
+            if(Main.netMode == NetmodeID.Server)
+                npc.netUpdate = true;
+        }
+
+        protected virtual List<ShopItem> GenerateDailyShop()
+        {
+            return null;
         }
 
         #endregion Miscellaneous Methods

@@ -24,9 +24,9 @@ namespace LivingWorldMod.NPCs.Villagers
         
         #region Villager Class Overrides
 
-        public override void RefreshDailyShop()
+        protected override List<ShopItem> GenerateDailyShop()
         {
-            dailyShop = new [] {
+            return new List<ShopItem> {
                 new ShopItem(ModContent.ItemType<FeatherBag>(), 1),
                 new ShopItem(ModContent.ItemType<SkyBustTileItem>(), 5),
                 new ShopItem(ModContent.ItemType<OneStarTileItem>(), 5)

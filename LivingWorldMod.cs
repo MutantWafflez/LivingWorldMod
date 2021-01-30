@@ -1,8 +1,10 @@
+using LivingWorldMod.ID;
 using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.UI;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -14,8 +16,16 @@ namespace LivingWorldMod
     {
         internal static bool debugMode = true;
 
+        public static LivingWorldMod mod { get; private set; }
+
         public static readonly int maximumReputationValue = 200; //The upper cap of the reputation value
         internal static int[] villageGiftPreferences;
+
+        public LivingWorldMod()
+        {
+            LWMPacket.RegisterAllHandlers();
+            mod = this;
+        }
 
         #region Update Methods
 
@@ -95,9 +105,17 @@ namespace LivingWorldMod
             SetGiftValue((int)VillagerType.Harpy, ItemID.Feather, -3);
             SetGiftValue((int)VillagerType.Harpy, ItemID.GiantHarpyFeather, -5);
         }
-
+        
+        public override void HandlePacket(BinaryReader reader, int whoAmI)
+        {
+            PacketID type = (PacketID) reader.ReadByte();
+            Logger.Debug("Received packet: "+type);
+            if(!LWMPacket.TryHandlePacket(type, reader, whoAmI))
+                Logger.Error($"Unknown packet type {type}.");
+        }
+        
         #endregion Loading
-
+        
         #region Mod Compatibility
 
         /// <summary>
