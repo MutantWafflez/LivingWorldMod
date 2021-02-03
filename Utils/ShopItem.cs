@@ -37,13 +37,13 @@ namespace LivingWorldMod.Utilities
             return new ShopItem(tag.GetInt("itemid"), tag.GetInt("stack"));
         }
 
-        public void Write(BinaryWriter writer)
+        public void Write(BinaryWriter writer, byte syncMode = default)
         {
             writer.Write(itemId);
             writer.Write(stackSize);
         }
 
-        public void Read(BinaryReader reader)
+        public void Read(BinaryReader reader, byte syncMode = default)
         {
             itemId = reader.ReadInt32();
             stackSize = reader.ReadInt32();

@@ -3,9 +3,11 @@ using LivingWorldMod.Items;
 using LivingWorldMod.Items.Extra;
 using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.Projectiles.Friendly;
+using LivingWorldMod.Utilities;
 using LivingWorldMod.Utilities.NetPackets;
 using Microsoft.Xna.Framework;
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Terraria;
@@ -15,7 +17,7 @@ using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod
 {
-    public class LWMPlayer : ModPlayer
+    public class LWMPlayer : ModPlayer, BinarySerializable
     {
         public Guid guid;
         
@@ -84,10 +86,17 @@ namespace LivingWorldMod
         // note, since guid never changes, clientClone and SendClientChanges are not necessary.
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
         {
-            new PlayerData {
-                guid = guid,
-                pid = player.whoAmI
-            }.Send(mod, toWho, fromWho);
+            new PlayerData(this).Send(mod, toWho, fromWho);
+        }
+
+        public void Write(BinaryWriter writer, byte syncMode = default)
+        {
+            writer.Write(guid.ToString());
+        }
+
+        public void Read(BinaryReader reader, byte syncMode = default)
+        {
+            guid = Guid.Parse(reader.ReadString());
         }
 
         #endregion Net Sync Methods

@@ -5,29 +5,19 @@ using Terraria;
 
 namespace LivingWorldMod.Utilities.NetPackets
 {
-    public class PlayerData : LWMPacket
+    public class PlayerData : ObjectData<LWMPlayer>
     {
-        public int pid;
-        public Guid guid;
+        public PlayerData() : this(null) {} // allow for handler registration
+        public PlayerData(LWMPlayer player) : base(PacketID.PlayerData, player) {}
 
-        public PlayerData() : base(PacketID.PlayerData) {}
-        
-        protected override void Write(BinaryWriter writer)
+        protected override void WriteId(BinaryWriter writer, LWMPlayer obj)
         {
-            writer.Write((byte) pid);
-            writer.Write(guid.ToString());
+            writer.Write((byte) obj.player.whoAmI);
         }
 
-        protected override void Read(BinaryReader reader)
+        protected override LWMPlayer ReadId(BinaryReader reader)
         {
-            pid = reader.ReadByte();
-            guid = Guid.Parse(reader.ReadString());
-        }
-        
-        protected override void Handle(int sentFromPlayer)
-        {
-            LWMPlayer player = Main.player[pid].GetModPlayer<LWMPlayer>();
-            player.guid = guid;
+            return Main.player[reader.ReadByte()].GetModPlayer<LWMPlayer>();
         }
     }
 }

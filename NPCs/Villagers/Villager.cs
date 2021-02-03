@@ -1,5 +1,6 @@
 using LivingWorldMod.Items;
 using LivingWorldMod.Utilities;
+using LivingWorldMod.Utilities.NetPackets;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -15,7 +16,7 @@ using Terraria.Utilities;
 
 namespace LivingWorldMod.NPCs.Villagers
 {
-    public abstract class Villager : ModNPC
+    public abstract class Villager : ModNPC, BinarySerializable
     {
         public static readonly string VILLAGER_SPRITE_PATH = nameof(LivingWorldMod) + "/Textures/NPCs/Villagers/";
 
@@ -50,6 +51,7 @@ namespace LivingWorldMod.NPCs.Villagers
             get => _bodySprite;
             set
             {
+                if (_bodySprite == value) return;
                 _bodySprite = value < 0 ? Main.rand.Next(0, SpriteVariationCount) : value;
                 _bodyTexture = null;
             }
@@ -72,6 +74,7 @@ namespace LivingWorldMod.NPCs.Villagers
             get => _hairSprite;
             set
             {
+                if (_hairSprite == value) return;
                 _hairSprite = value < 0 ? Main.rand.Next(0, SpriteVariationCount) : value;
                 _hairTexture = null;
             }
@@ -133,6 +136,15 @@ namespace LivingWorldMod.NPCs.Villagers
             RefreshDailyShop();
         }
 
+        /*public override ModNPC NewInstance(NPC npcClone)
+        {
+            ModNPC modnpc = base.NewInstance(npcClone);
+            // send one-time info about new NPC to sync custom data
+            if(Main.netMode == NetmodeID.Server)
+                new VillagerData(modnpc as Villager).SendToAll(mod);
+            return modnpc;
+        }*/
+
         #endregion Defaults Methods
 
         #region Update Methods
@@ -154,6 +166,8 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public override void SendExtraAI(BinaryWriter writer)
         {
+            // for now, write this info every time, until a better solution is found
+            Write(writer);
             // send shop lists
             writer.Write(dailyShop != null);
             if (dailyShop == null)
@@ -164,6 +178,8 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
+            // read static info
+            Read(reader);
             // read shop lists
             bool read = reader.ReadBoolean();
             if (!read)
@@ -175,6 +191,20 @@ namespace LivingWorldMod.NPCs.Villagers
         #endregion Update Methods
 
         #region Serialization Methods
+        
+        public void Write(BinaryWriter writer, byte syncMode = default)
+        {
+            writer.Write(npc.GivenName);
+            writer.Write((byte) BodySprite);
+            writer.Write((byte) HairSprite);
+        }
+
+        public void Read(BinaryReader reader, byte syncMode = default)
+        {
+            npc.GivenName = reader.ReadString();
+            BodySprite = reader.ReadByte();
+            HairSprite = reader.ReadByte();
+        }
 
         public TagCompound Save()
         {
