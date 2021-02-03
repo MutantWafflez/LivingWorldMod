@@ -31,11 +31,64 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public bool isMerchant = true;
 
-        public VillagerType villagerType;
+        internal abstract VillagerType VillagerType { get; }
+        
+        #region Sprite Properties
+        
+        public override string Texture => VILLAGER_SPRITE_PATH + VillagerType + "/Body1";
 
-        public int spriteVariation = 0;
+        /*public override string[] AltTextures => new string[] {
+            VILLAGER_SPRITE_PATH + VillagerType + "Style2",
+            VILLAGER_SPRITE_PATH + VillagerType + "Style3"
+        };*/
+        
+        protected abstract int SpriteVariationCount { get; }
 
-        public string VillagerName => villagerType.ToString();
+        private int _bodySprite;
+        private int BodySprite
+        {
+            get => _bodySprite;
+            set
+            {
+                _bodySprite = value < 0 ? Main.rand.Next(0, SpriteVariationCount) : value;
+                _bodyTexture = null;
+            }
+        }
+        private Texture2D _bodyTexture;
+        private Texture2D BodyTexture
+        {
+            get
+            {
+                if (_bodyTexture == null)
+                    _bodyTexture = ModContent.GetTexture(VILLAGER_SPRITE_PATH + VillagerType + "/Body" + (_bodySprite + 1));
+                return _bodyTexture;
+            }
+            set => _bodyTexture = value;
+        }
+
+        private int _hairSprite;
+        private int HairSprite
+        {
+            get => _hairSprite;
+            set
+            {
+                _hairSprite = value < 0 ? Main.rand.Next(0, SpriteVariationCount) : value;
+                _hairTexture = null;
+            }
+        }
+        private Texture2D _hairTexture;
+        private Texture2D HairTexture
+        {
+            get
+            {
+                if (_hairTexture == null)
+                    _hairTexture = ModContent.GetTexture(VILLAGER_SPRITE_PATH + VillagerType + "/Hair" + (_hairSprite + 1));
+                return _hairTexture;
+            }
+            set => _hairTexture = value;
+        }
+
+        #endregion Sprite Properties
 
         // shop template for all players, at full stock
         private List<ShopItem> dailyShop;
@@ -48,13 +101,6 @@ namespace LivingWorldMod.NPCs.Villagers
             shops = new Dictionary<Guid, List<ShopItem>>();
         }
 
-        public override string Texture => VILLAGER_SPRITE_PATH + VillagerName + "Style1";
-
-        public override string[] AltTextures => new string[] {
-            VILLAGER_SPRITE_PATH + VillagerName + "Style2",
-            VILLAGER_SPRITE_PATH + VillagerName + "Style3"
-        };
-
         #region Defaults Methods
 
         public override bool CloneNewInstances => true;
@@ -62,14 +108,15 @@ namespace LivingWorldMod.NPCs.Villagers
         public override ModNPC Clone()
         {
             Villager clonedNPC = (Villager)base.Clone();
-            clonedNPC.spriteVariation = Main.rand.Next(0, 3);
+            clonedNPC.BodySprite = -1; // picks random
+            clonedNPC.HairSprite = -1; // picks random
             clonedNPC.RefreshDailyShop();
             return clonedNPC;
         }
 
         public override void SetStaticDefaults()
         {
-            NPCID.Sets.ExtraTextureCount[npc.type] = 2;
+            NPCID.Sets.ExtraTextureCount[npc.type] = 0;
         }
 
         public override void SetDefaults()
@@ -92,17 +139,9 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            Texture2D textureToDraw;
-            if (spriteVariation == 0)
-            {
-                textureToDraw = Main.npcTexture[npc.type];
-            }
-            else
-            {
-                textureToDraw = Main.npcAltTextures[npc.type][spriteVariation];
-            }
-            SpriteEffects spriteDirection = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            spriteBatch.Draw(textureToDraw, new Rectangle((int)(npc.Right.X - (npc.frame.Width / 1.5) - Main.screenPosition.X), (int)(npc.Bottom.Y - npc.frame.Height - Main.screenPosition.Y + 2f), npc.frame.Width, npc.frame.Height), npc.frame, drawColor, npc.rotation, default(Vector2), spriteDirection, 0);
+            SpriteEffects spriteDirection = npc.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            spriteBatch.Draw(BodyTexture, new Rectangle((int)(npc.Right.X - (npc.frame.Width / 1.5) - Main.screenPosition.X), (int)(npc.Bottom.Y - npc.frame.Height - Main.screenPosition.Y + 2f), npc.frame.Width, npc.frame.Height), npc.frame, drawColor, npc.rotation, default(Vector2), spriteDirection, 0);
+            spriteBatch.Draw(HairTexture, new Rectangle((int)(npc.Right.X - (npc.frame.Width / 1.5) - Main.screenPosition.X), (int)(npc.Bottom.Y - npc.frame.Height - Main.screenPosition.Y + 2f), npc.frame.Width, npc.frame.Height), npc.frame, drawColor, npc.rotation, default(Vector2), spriteDirection, 0);
             return false;
         }
 
@@ -141,8 +180,9 @@ namespace LivingWorldMod.NPCs.Villagers
         {
             TagCompound tag = new TagCompound
             {
-                {"type", (int) villagerType},
-                {"spriteVar", spriteVariation},
+                {"type", (int) VillagerType},
+                {"mainSprite", BodySprite},
+                {"secondarySprite", HairSprite},
                 {"x", npc.Center.X},
                 {"y", npc.Center.Y},
                 {"name", npc.GivenName},
@@ -160,16 +200,21 @@ namespace LivingWorldMod.NPCs.Villagers
 
         public static void LoadVillager(TagCompound tag)
         {
-            int villagerType = ModContent.NPCType<SkyVillager>();
-            int receivedVilType = tag.GetAsInt("type");
-            //if (recievedVilType == (int)VillagerType.LihzahrdVillager)
-            //Lihzahrd Villager types here
+            VillagerType villagerType = (VillagerType) tag.GetAsInt("type");
+            int npcType;
+            switch (villagerType)
+            {
+                case VillagerType.Harpy: default:
+                    npcType = ModContent.NPCType<SkyVillager>();
+                    break;
+            }
             int npcIndex = NPC.NewNPC((int)tag.GetFloat("x"), (int)tag.GetFloat("y"),
-                villagerType);
+                npcType);
             NPC npcAtIndex = Main.npc[npcIndex];
             npcAtIndex.GivenName = tag.GetString("name");
-            Villager villager = ((Villager)npcAtIndex.modNPC);
-            villager.spriteVariation = tag.GetInt("spriteVar");
+            Villager villager = (Villager) npcAtIndex.modNPC;
+            villager.BodySprite = tag.TryGet<int>("mainSprite", -1);
+            villager.HairSprite = tag.TryGet<int>("secondarySprite", -1);
             villager.homePosition = tag.Get<Vector2>("homePos");
             if (tag.ContainsKey("shop_template"))
             {
@@ -221,10 +266,6 @@ namespace LivingWorldMod.NPCs.Villagers
             }
         }
 
-        #endregion Chat Methods
-
-        #region Virtual Methods
-
         /// <summary>
         /// Method used to determine what is said to the player upon right click.
         /// </summary>
@@ -247,61 +288,9 @@ namespace LivingWorldMod.NPCs.Villagers
             return chat;
         }
 
-        public virtual List<string> GetPossibleNames()
-        {
-            List<string> names = new List<string>();
-            names.Add("Villager (Report to Mod Dev!)");
-            return names;
-        }
+        #endregion Chat Methods
 
-        #endregion Virtual Methods
-
-        #region Miscellaneous Methods
-
-        private void UpdateReputationBools()
-        {
-            float reputation = LWMWorld.GetReputation(villagerType);
-            if (reputation <= 0f)
-            {
-                isHatedRep = true;
-                isNegativeRep = false;
-                isNeutralRep = false;
-                isPositiveRep = false;
-                isMaxRep = false;
-            }
-            else if (reputation <= 50f && reputation > 0f)
-            {
-                isHatedRep = false;
-                isNegativeRep = true;
-                isNeutralRep = false;
-                isPositiveRep = false;
-                isMaxRep = false;
-            }
-            else if (reputation >= 100f && reputation <= 150f)
-            {
-                isHatedRep = false;
-                isNegativeRep = false;
-                isNeutralRep = true;
-                isPositiveRep = false;
-                isMaxRep = false;
-            }
-            else if (reputation > 150f && reputation < 200f)
-            {
-                isHatedRep = false;
-                isNegativeRep = false;
-                isNeutralRep = false;
-                isPositiveRep = true;
-                isMaxRep = false;
-            }
-            else if (reputation >= 200f)
-            {
-                isHatedRep = false;
-                isNegativeRep = false;
-                isNeutralRep = false;
-                isPositiveRep = false;
-                isMaxRep = true;
-            }
-        }
+        #region Shop Handling
 
         public override void SetupShop(Chest shop, ref int nextSlot)
         {
@@ -374,6 +363,62 @@ namespace LivingWorldMod.NPCs.Villagers
         protected virtual List<ShopItem> GenerateDailyShop()
         {
             return null;
+        }
+        
+        #endregion Shop Handling
+        
+        #region Miscellaneous Methods
+        
+        public virtual List<string> GetPossibleNames()
+        {
+            List<string> names = new List<string>();
+            names.Add("Villager (Report to Mod Dev!)");
+            return names;
+        }
+        
+        private void UpdateReputationBools()
+        {
+            float reputation = LWMWorld.GetReputation(VillagerType);
+            if (reputation <= 0f)
+            {
+                isHatedRep = true;
+                isNegativeRep = false;
+                isNeutralRep = false;
+                isPositiveRep = false;
+                isMaxRep = false;
+            }
+            else if (reputation <= 50f && reputation > 0f)
+            {
+                isHatedRep = false;
+                isNegativeRep = true;
+                isNeutralRep = false;
+                isPositiveRep = false;
+                isMaxRep = false;
+            }
+            else if (reputation >= 100f && reputation <= 150f)
+            {
+                isHatedRep = false;
+                isNegativeRep = false;
+                isNeutralRep = true;
+                isPositiveRep = false;
+                isMaxRep = false;
+            }
+            else if (reputation > 150f && reputation < 200f)
+            {
+                isHatedRep = false;
+                isNegativeRep = false;
+                isNeutralRep = false;
+                isPositiveRep = true;
+                isMaxRep = false;
+            }
+            else if (reputation >= 200f)
+            {
+                isHatedRep = false;
+                isNegativeRep = false;
+                isNeutralRep = false;
+                isPositiveRep = false;
+                isMaxRep = true;
+            }
         }
 
         #endregion Miscellaneous Methods

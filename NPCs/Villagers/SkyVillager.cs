@@ -11,6 +11,10 @@ namespace LivingWorldMod.NPCs.Villagers
 {
     public class SkyVillager : Villager
     {
+        internal override VillagerType VillagerType => VillagerType.Harpy;
+
+        protected override int SpriteVariationCount => 5;
+
         #region AI Data
 
         public bool isFlying = false;

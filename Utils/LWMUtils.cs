@@ -253,5 +253,17 @@ namespace LivingWorldMod.Utilities
         {
             return dict.Select(pair => pair);
         }
+
+        public static T TryGet<T>(this TagCompound tag, string key, T defaultValue = default)
+        {
+            try
+            {
+                return tag.Get<T>(key);
+            }
+            catch (IOException e)
+            {
+                return defaultValue;
+            }
+        }
     }
 }
