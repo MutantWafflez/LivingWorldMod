@@ -269,9 +269,7 @@ namespace LivingWorldMod
             {
                 NPC npcAtIndex = Main.npc[i];
                 if(npcAtIndex.modNPC is Villager villager)
-                {
                     villagerData.Add(villager.Save());
-                }
             }
 
             return new TagCompound
@@ -292,9 +290,7 @@ namespace LivingWorldMod
             shrineCoords = tag.GetList<Vector2>("VillageShrineCoords").ToArray();
             IList<TagCompound> villagerData = tag.GetList<TagCompound>("VillagerData");
             for (int i = 0; i < villagerData.Count; i++)
-            {
                 Villager.LoadVillager(villagerData[i]);
-            }
         }
 
         #endregion I/O
