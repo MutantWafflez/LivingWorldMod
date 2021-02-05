@@ -1,7 +1,6 @@
 ﻿using LivingWorldMod.Buffs.PotionBuffs;
 using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.Tiles.Interactables;
-using LivingWorldMod.Tiles.Ores;
 using LivingWorldMod.Tiles.WorldGen;
 using LivingWorldMod.Utilities;
 using LivingWorldMod.Utilities.Quests;
@@ -354,10 +353,6 @@ namespace LivingWorldMod {
             int structureGenTask = tasks.FindIndex(task => task.Name.Equals("Micro Biomes"));
             if (structureGenTask != -1)
                 tasks.Insert(structureGenTask + 1, new PassLegacy("Sky Village", SkyVillageGenTask));
-
-            int roseQuartzTask = tasks.FindIndex(task => task.Name.Equals("Gems"));
-            if (roseQuartzTask != -1)
-                tasks.Insert(roseQuartzTask + 1, new PassLegacy("Rose Quartz", RoseQuartzGeneration));
         }
 
         private void CustomSpiderCavernGenTask(GenerationProgress progress)
@@ -593,28 +588,31 @@ namespace LivingWorldMod {
                         shrineCoords[(int)VillagerType.Harpy] =
                             LWMUtils.FindMultiTileTopLeft(i, j, ModContent.TileType<HarpyShrineTile>());
 
-            //This Gen task is in the Sky Village Gen task since the islands are mapped in this method, and we need those
+
+
+            //These Gen tasks is in the Sky Village Gen task since the islands are mapped in this method, and we need those
+            RoseQuartzGeneration(progress, islands);
             SkyBudGenTask(progress, islands);
 
             progress.End();
         }
 
-        private void RoseQuartzGeneration(GenerationProgress progress)
+        private void RoseQuartzGeneration(GenerationProgress progress, List<FloatingIsland> islands)
         {
             progress.Message = "Rose quartz-ifying the sky";
             progress.Start(0f);
 
-            for (int k = 0; k < (int)((Main.maxTilesX * Main.maxTilesY) * 0.005); k++)
-            {
-                int x = WorldGen.genRand.Next(0, Main.maxTilesX);
-                int y = WorldGen.genRand.Next(0, (int)(Main.maxTilesY * 0.15f));
-
-                Tile tile = Framing.GetTileSafely(x, y);
-                if (tile.active() && tile.type == TileID.Dirt)
-                {
-                    //3rd and 4th values are strength and steps, adjust later if needed
-                    WorldGen.TileRunner(x, y, WorldGen.genRand.Next(3, 5), WorldGen.genRand.Next(2, 4),
-                        ModContent.TileType<RoseQuartzTile>());
+            //Goes through each mapped island, then tries to plant on each cloud tile with no water with a 1/15 chance
+            foreach (FloatingIsland island in islands) {
+                for (int i = island.xMin; i < island.xMax; i++) {
+                    for (int j = 2; j < Main.maxTilesY * 0.18f; j++) {
+                        Rectangle aboveSpace = new Rectangle(i, j - 2, 2, 2);
+                        if (Framing.GetTileSafely(i, j).type == TileID.Cloud && LWMUtils.CheckForFreeSpace(aboveSpace) && Framing.GetTileSafely(i + 1, j).active()) {
+                            if (Main.rand.Next(0, 5) == 0) {
+                                WorldGen.PlaceTile(i, j - 2, ModContent.TileType<RoseQuartzCluster>(), style: Main.rand.Next(0, 3));
+                            }
+                        }
+                    }
                 }
             }
 

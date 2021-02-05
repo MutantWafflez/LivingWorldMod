@@ -244,6 +244,26 @@ namespace LivingWorldMod.Utilities
             return topLeftPos;
         }
 
+        /// <summary>
+        /// Returns whether or not the space defined by the rectangle <paramref name="zone"/> has any tiles in it. Make sure zone's position is defined in terms of TILES!
+        /// </summary>
+        /// <param name="zone"> The zone to check. </param>
+        /// <param name="ignoreLiquid"> Whether or not liquid will make this space not "free" space. </param>
+        public static bool CheckForFreeSpace(Rectangle zone, bool ignoreLiquid = true) {
+            for (int i = 0; i < zone.Width; i++) {
+                for (int j = 0; j < zone.Height; j++) {
+                    Tile tileInQuestion = Framing.GetTileSafely((int)zone.TopLeft().X + i, (int)zone.TopLeft().Y + j);
+                    if (!(tileInQuestion.type == 0) && (ignoreLiquid  || tileInQuestion.liquid == 0)) {
+                        continue;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
         //----------Extension Methods----------
         public static Tile ToTile(this TileNode tn) => Framing.GetTileSafely(tn.position);
 
