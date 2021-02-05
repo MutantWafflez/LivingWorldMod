@@ -328,7 +328,7 @@ namespace LivingWorldMod {
             shrineStage = tag.GetIntArray("VillageShrineStage");
             shrineCoords = tag.GetList<Vector2>("VillageShrineCoords").ToArray();
             IList<TagCompound> villagerData = tag.GetList<TagCompound>("VillagerData");
-            for (int i = 0; i < villagerData.Count; i++)
+            for (int i = 0; i < villagerData.Count; i++) {
                 Villager.LoadVillager(villagerData[i]);
             }
             IList<TagCompound> questData = tag.GetList<TagCompound>("VillagerQuests");
