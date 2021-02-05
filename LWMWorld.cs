@@ -4,6 +4,7 @@ using LivingWorldMod.Tiles.Interactables;
 using LivingWorldMod.Tiles.Ores;
 using LivingWorldMod.Tiles.WorldGen;
 using LivingWorldMod.Utilities;
+using LivingWorldMod.Utilities.Quests;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -16,8 +17,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.World.Generation;
 
-namespace LivingWorldMod
-{
+namespace LivingWorldMod {
     public class LWMWorld : ModWorld
     {
         //After reaching max gifts on the shrine at stage 5, give 20 reputation
@@ -30,6 +30,7 @@ namespace LivingWorldMod
         internal static int[] shrineStage = Enumerable.Repeat(3, (int)VillagerType.VillagerTypeCount).ToArray();
         internal static int[] itemGiftAmount = new int[ItemLoader.ItemCount * (int)VillagerType.VillagerTypeCount];
         internal static Vector2[] shrineCoords = new Vector2[(int)VillagerType.VillagerTypeCount];
+        internal static VillagerQuest[] activeQuests = new VillagerQuest[(int)VillagerType.VillagerTypeCount];
 
         public override void Initialize()
         {
@@ -209,6 +210,32 @@ namespace LivingWorldMod
             return shrineCoords[(int)villagerType] * 16;
         }
 
+        /// <summary>
+        /// Returns the quest instance of the given villager type.
+        /// </summary>
+        public static VillagerQuest GetActiveQuest(VillagerType villagerType) {
+            return activeQuests[(int)villagerType];
+        }
+
+        /// <summary>
+        /// Refreshes the current active quest for the quest villagers of given type <paramref name="villagerType"/>
+        /// </summary>
+        /// <param name="villagerType"> The villager type to refresh the quest of. </param>
+        public static void RefreshVillageQuest(VillagerType villagerType) {
+            if (LivingWorldMod.possibleQuests[(int)villagerType].Any()) {
+                activeQuests[(int)villagerType] = LivingWorldMod.possibleQuests[(int)villagerType][Main.rand.Next(0, LivingWorldMod.possibleQuests[(int)villagerType].Count)];
+            }
+        }
+
+        /// <summary>
+        /// Refreshes the current actives quests of ALL of the villagers currently added.
+        /// </summary>
+        public static void RefreshAllVillageQuests() {
+            for (int i = 0; i < activeQuests.Length; i++) {
+                RefreshVillageQuest((VillagerType)i);
+            }
+        }
+
         #endregion World Array Modifications
 
         #region Update Methods
@@ -272,6 +299,17 @@ namespace LivingWorldMod
                     villagerData.Add(villager.Save());
             }
 
+            IList<TagCompound> questData = new List<TagCompound>();
+            for (int i = 0; i < activeQuests.Length; i++) {
+                for (int x = 0; x < LivingWorldMod.possibleQuests[i].Count; x++) {
+                    if (LivingWorldMod.possibleQuests[i][x] == activeQuests[i]) {
+                        questData.Add(new TagCompound {
+                        {"questData", x}
+                        });
+                    }
+                }
+            }
+
             return new TagCompound
             {
                 {"VillageReputation", reputation},
@@ -279,6 +317,7 @@ namespace LivingWorldMod
                 {"VillageShrineStage", shrineStage},
                 {"VillageShrineCoords", shrineCoords.ToList() },
                 {"VillagerData", villagerData},
+                {"VillagerQuests", questData}
             };
         }
 
@@ -291,6 +330,11 @@ namespace LivingWorldMod
             IList<TagCompound> villagerData = tag.GetList<TagCompound>("VillagerData");
             for (int i = 0; i < villagerData.Count; i++)
                 Villager.LoadVillager(villagerData[i]);
+            }
+            IList<TagCompound> questData = tag.GetList<TagCompound>("VillagerQuests");
+            for (int i = 0; i < questData.Count; i++) {
+                activeQuests[i] = LivingWorldMod.possibleQuests[i][questData[i].GetInt("questID")];
+            }
         }
 
         #endregion I/O
@@ -621,6 +665,8 @@ namespace LivingWorldMod
                     }
                 }
             }
+            //Randomize all villager quests
+            RefreshAllVillageQuests();
         }
 
         #endregion World Gen

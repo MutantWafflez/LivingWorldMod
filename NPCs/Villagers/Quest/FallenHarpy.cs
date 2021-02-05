@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
+using Terraria.Utilities;
 
 namespace LivingWorldMod.NPCs.Villagers.Quest
 {
@@ -10,6 +11,20 @@ namespace LivingWorldMod.NPCs.Villagers.Quest
         public bool isUnconscious = false;
 
         private static readonly Texture2D UnconsciousTexture = ModContent.GetTexture("LivingWorldMod/NPCs/Villagers/Quest/FallenHarpy_Unconscious");
+
+        public override WeightedRandom<string> InteractionDialogue {
+            get {
+                WeightedRandom<string> dialogue = new WeightedRandom<string>();
+                dialogue.Add("It’s strange, I was flying through the sky when I saw a strange green beam of light in the distance. I tried flying after it, but it suddenly jolted and knocked into me. I lost consciousness soon after that.");
+                dialogue.Add("The village has been pretty rowdy, all this talk about an awful human causing trouble. The nerve of them! I’m glad you’re better than that, right...?");
+                dialogue.Add("Aw, my hair’s absolutely ruined, and my feathers are all ruffled up and-");
+                dialogue.Add("I wonder if the pain’s gone yet. ...Nope, it’s definitely still there.");
+                dialogue.Add("I’ve really got to get home, I bet all the other harpies are so worried right now!");
+                return dialogue;
+            }
+        }
+
+        public override string QuestCompletetionDialogue => "Thank you so much for helping me, I can finally go back to the village. I’ll tell everyone about the good deed you did for me today. Goodbye human! Make sure you stop by the village sometime, I’m sure you can become great friends with the other harpies if you really try. Seeya around!";
 
         #region Defaults
 
@@ -76,11 +91,11 @@ namespace LivingWorldMod.NPCs.Villagers.Quest
             {
                 isUnconscious = false;
                 npc.position.Y -= 22;
-                return "Huh? Oh. Thanks for helping me up. You know, my friends up in the village really hate your guts. If you could help me get back up there, maybe I could put in a good word for you.";
+                return "Ow ow ow.. You’re asking me if it hurt when I fell from heaven? Of course it did! Thanks for helping me up at least.";
             }
             else
             {
-                return "Test dialogue moment";
+                return InteractionDialogue;
             }
         }
 

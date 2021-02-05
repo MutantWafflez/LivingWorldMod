@@ -1,7 +1,10 @@
 using LivingWorldMod.ID;
+using LivingWorldMod.Items.Materials;
+using LivingWorldMod.Items.Placeable.Ores;
 using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.UI;
 using LivingWorldMod.Utilities;
+using LivingWorldMod.Utilities.Quests;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.IO;
@@ -19,6 +22,7 @@ namespace LivingWorldMod
         public static LivingWorldMod mod { get; private set; }
 
         public static readonly int maximumReputationValue = 200; //The upper cap of the reputation value
+        internal static List<VillagerQuest>[] possibleQuests = new List<VillagerQuest>[(int)VillagerType.VillagerTypeCount];
         internal static int[] villageGiftPreferences;
 
         public LivingWorldMod()
@@ -95,6 +99,7 @@ namespace LivingWorldMod
         {
             villageGiftPreferences = new int[ItemLoader.ItemCount * (int)VillagerType.VillagerTypeCount];
             InitializeDefaultGiftPreferences();
+            InitializeDefaultVillagerQuests();
         }
 
         public void InitializeDefaultGiftPreferences()
@@ -113,7 +118,34 @@ namespace LivingWorldMod
             if(!LWMPacket.TryHandlePacket(type, reader, whoAmI))
                 Logger.Error($"Unknown packet type {type}.");
         }
-        
+
+        public void InitializeDefaultVillagerQuests() {
+
+            //List Initialization
+            for (int i = 0; i < possibleQuests.Length; i++) {
+                possibleQuests[i] = new List<VillagerQuest>();
+            }
+
+            #region Harpy Quests
+            possibleQuests[(int)VillagerType.Harpy].Add(new HarpyQuest(
+                ItemID.HealingPotion,
+                "Ouch… That was a pretty big fall, I think I might’ve messed up my wings. How am I supposed to fly with a broken wing? Human, can you bring me a Health Potion to ease the pain? I don’t think I could make it back home in my current state."
+                ));
+            possibleQuests[(int)VillagerType.Harpy].Add(new HarpyQuest(
+                ModContent.ItemType<SkyBudItem>(),
+                "Oh my gosh, oh my gosh. I am so doomed right now. I told the other harpies that I would bring back some Skybuds for them, and I can’t go back until I have them! Hey, can you bring me a Skybud real quick? I promise I’ll make it up to you."
+                ));
+            possibleQuests[(int)VillagerType.Harpy].Add(new HarpyQuest(
+                ItemID.EnchantedNightcrawler,
+                "Ahh… I’m starving. I just woke up and I’ve had nothing to eat. Oh, I’d do anything for an Enchanted Nightcrawler right about now. They’re a delicacy in our village. Do you think you could catch me a fresh wet, wriggly worm, magically combine it with starpower and bring it to me?!"
+                ));
+            possibleQuests[(int)VillagerType.Harpy].Add(new HarpyQuest(
+                ModContent.ItemType<RoseQuartz>(),
+                "I’m aware I just came out of unconsciousness after falling out of the sky and colliding with the hard ground, but I’d love to have a chunk of Rose Quartz! Imagine all the pretty things I could adorn with it! Could you fetch me some Rose Quartz? If it’s not too much trouble, of course."
+                ));
+            #endregion
+        }
+
         #endregion Loading
         
         #region Mod Compatibility
