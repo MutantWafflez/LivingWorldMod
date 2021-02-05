@@ -60,7 +60,7 @@ namespace LivingWorldMod
             //42.5 block radius around the shrine for the music
             if (myPlayer.Distance(LWMWorld.GetShrineWorldPosition(VillagerType.Harpy)) <= 16 * 95)
             {
-                music = GetSoundSlot(SoundType.Music, "Sounds/Music/SkyVillageMusic");
+                music = GetSoundSlot(SoundType.Music, $"Sounds/Music/HarpyVillage{(Main.dayTime?"Day":"Night")}Music");
                 priority = MusicPriority.Environment;
             }
         }
