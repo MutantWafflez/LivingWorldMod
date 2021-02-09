@@ -1,5 +1,4 @@
-﻿using BuilderEssentials.UI.Elements;
-using Terraria.GameContent.UI.Elements;
+﻿using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
 using Terraria.UI;
 

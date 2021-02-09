@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
-namespace BuilderEssentials.UI.Elements
+namespace LivingWorldMod.UI.Elements
 {
     public class CustomUIImage : CustomUIElement
     {

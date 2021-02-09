@@ -2,7 +2,7 @@
 using Terraria;
 using Terraria.UI;
 
-namespace BuilderEssentials.UI.Elements
+namespace LivingWorldMod.UI.Elements
 {
     public class CustomUIElement : UIElement
     {

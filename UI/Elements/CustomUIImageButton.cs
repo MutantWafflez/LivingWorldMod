@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 
-namespace BuilderEssentials.UI.Elements
+namespace LivingWorldMod.UI.Elements
 {
     public class CustomUIImageButton : CustomUIImage
     {

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace BuilderEssentials.UI.Elements
+namespace LivingWorldMod.UI.Elements
 {
     public class CustomUIPanel : CustomUIElement
     {
