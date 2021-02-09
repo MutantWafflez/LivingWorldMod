@@ -144,7 +144,7 @@ namespace LivingWorldMod {
             else SetGiftProgress(villagerType, giftProgress + giftValue);
 
             //Setting default values and increasing reputation if it reaches max gift progress on last stage
-            if (shrineStage == 5 && giftProgress + giftProgress >= 100)
+            if (shrineStage == 5 && giftProgress + giftValue >= 100)
             {
                 SetGiftProgress(villagerType, 0);
                 SetShrineStage(villagerType, 3);
