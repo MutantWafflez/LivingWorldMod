@@ -1,5 +1,4 @@
-﻿using BuilderEssentials.UI.Elements;
-using LivingWorldMod.NPCs.Villagers;
+﻿using LivingWorldMod.NPCs.Villagers;
 using LivingWorldMod.Tiles.Interactables;
 using LivingWorldMod.UI.Elements;
 using LivingWorldMod.Utilities;
@@ -8,6 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ModLoader;
+using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
 namespace LivingWorldMod.UI
@@ -16,9 +17,10 @@ namespace LivingWorldMod.UI
     {
         public static ShrineUIPanel Instance;
         public static VillagerType shrineType;
-        private const float width = 253f, height = 167f;
+        private const float width = 304f, height = 214f;
         private static CustomItemSlot itemSlot;
         private static Vector2 itemSlotPos = Vector2.Zero;
+        private const string texturePath = "LivingWorldMod/Textures/UIElements/ShrineMenu/";
 
         public ShrineUIPanel(float scale = 1f, float opacity = 1f) : base(scale, opacity)
         {
@@ -36,20 +38,29 @@ namespace LivingWorldMod.UI
 
             //Background
             CustomUIImage background =
-                new CustomUIImage(GetTexture("LivingWorldMod/Textures/UIElements/ShrineMenu/Background"), 1f);
+                new CustomUIImage(GetTexture(texturePath + "Shrine_Base"), 1f);
             background.Width.Set(0, 0);
             background.Height.Set(0f, 0);
-            background.Left.Set(-12f, 0);
-            background.Top.Set(-12f, 0);
             Append(background);
+            
+            //Menu Title
+            CustomUIText title = new CustomUIText("Shrine Offerings", 1.2f);
+            title.Left.Set(10f, 0);
+            title.Top.Set(7f, 0);
+            Append(title);
 
             //Cross to Close Menu
-            CustomUIImage closeMenuCross =
-                new CustomUIImage(GetTexture("LivingWorldMod/Textures/UIElements/ShrineMenu/CloseCross"), 1f);
-            closeMenuCross.Width.Set(19f, 0);
-            closeMenuCross.Height.Set(19f, 0);
-            closeMenuCross.Left.Set(width - 35f, 0);
-            closeMenuCross.Top.Set(-7f, 0);
+            Texture2D crossTexture = GetTexture(texturePath + "Shrine_Exit1");
+            Texture2D crossTexture2 = GetTexture(texturePath + "Shrine_Exit2");
+            CustomUIImage closeMenuCross = new CustomUIImage(crossTexture, 1f);
+            closeMenuCross.Width.Set(22f, 0);
+            closeMenuCross.Height.Set(22f, 0);
+            closeMenuCross.Left.Set(width - 31f, 0);
+            closeMenuCross.Top.Set(6f, 0);
+            closeMenuCross.OnMouseOver += (__, _) => { closeMenuCross.SetImage(crossTexture2); };
+            closeMenuCross.OnMouseOut += (__, _) => { closeMenuCross.SetImage(crossTexture); };
+            closeMenuCross.OnMouseDown += BounceMouseDown;
+            closeMenuCross.OnMouseUp += BounceMouseUp;
             closeMenuCross.OnClick += (__, _) => Hide();
             Append(closeMenuCross);
 
@@ -58,99 +69,125 @@ namespace LivingWorldMod.UI
             //Gift Item Image
             CustomUIImage giftItem = new CustomUIImage(Main.itemTexture[0], 1f);
             giftItem.SetScaleToFit(true);
-            giftItem.Left.Set(165f, 0);
-            giftItem.Top.Set(35f, 0);
+            giftItem.Left.Set(197f, 0);
+            giftItem.Top.Set(62f, 0);
             Append(giftItem);
             giftItem.Hide();
 
             //Undiscovered Gift
             CustomUIText undiscoveredGift = new CustomUIText("?", 1f);
             undiscoveredGift.TextColor = Microsoft.Xna.Framework.Color.LightGray;
-            undiscoveredGift.Left.Set(195f, 0);
-            undiscoveredGift.Top.Set(40f, 0);
+            undiscoveredGift.Left.Set(227f, 0);
+            undiscoveredGift.Top.Set(67f, 0);
             Append(undiscoveredGift);
             undiscoveredGift.Hide();
 
             //Amount gifted
             CustomUIText giftAmount = new CustomUIText("", 0.9f);
-            giftAmount.Left.Set(110f, 0);
-            giftAmount.Top.Set(30f, 0);
+            giftAmount.Left.Set(142f, 0);
+            giftAmount.Top.Set(57f, 0);
             Append(giftAmount);
             giftAmount.Hide();
 
             //Liking Neutral
             CustomUIText giftLiking = new CustomUIText("", 0.9f);
-            giftLiking.Left.Set(110f, 0);
-            giftLiking.Top.Set(50f, 0);
+            giftLiking.Left.Set(142f, 0);
+            giftLiking.Top.Set(77f, 0);
             Append(giftLiking);
             giftLiking.Hide();
 
-            #endregion Item in itemSlot info
+            #endregion Item in itemSlot gift info
 
             //ItemSlot
             itemSlot = new CustomItemSlot();
             itemSlot.Width.Set(54f, 0);
             itemSlot.Height.Set(54f, 0);
-            itemSlot.Left.Set(5f, 0);
-            itemSlot.Top.Set(25f, 0);
+            itemSlot.Left.Set(17f, 0);
+            itemSlot.Top.Set(47f, 0);
             itemSlot.OnItemEquipped += _ => ShowItemSlotInfo();
             itemSlot.OnItemRemoved += _ => HideItemSlotInfo();
-            itemSlot.SetBackgroundTexture(GetTexture("LivingWorldMod/Textures/UIElements/ShrineMenu/ItemSlot"));
+            itemSlot.SetBackgroundTexture(GetTexture(texturePath + "Shrine_Slot"));
             Append(itemSlot);
 
             //Gift
-            Texture2D giftTexture = GetTexture("LivingWorldMod/Textures/UIElements/ShrineMenu/Gift");
-            Texture2D giftTexture2 = GetTexture("LivingWorldMod/Textures/UIElements/ShrineMenu/Gift2");
-            UIImageButton gift = new UIImageButton(giftTexture);
+            Texture2D giftTexture = GetTexture(texturePath + "Shrine_Button1");
+            Texture2D giftTexture2 = GetTexture(texturePath + "Shrine_Button2");
+            Texture2D giftTexture3 = GetTexture(texturePath + "Shrine_Button3");
+            CustomUIImage gift = new CustomUIImage(giftTexture, 1f);
             gift.Width.Set(26f, 0);
             gift.Height.Set(26f, 0);
-            gift.Left.Set(66f, 0);
-            gift.Top.Set(38f, 0);
-            gift.SetVisibility(1f, 1f);
+            gift.Left.Set(78f, 0);
+            gift.Top.Set(56f, 0);
             gift.OnMouseOver += (__, _) => { gift.SetImage(giftTexture2); };
             gift.OnMouseOut += (__, _) => { gift.SetImage(giftTexture); };
-            gift.OnMouseDown += (__, _) =>
+            gift.OnMouseDown += (evt, e) =>
             {
-                gift.Top.Set(gift.Top.Pixels + 1f, 0);
+                BounceMouseDown(evt, e);
+                gift.SetImage(giftTexture3);
+            };
+            gift.OnMouseUp += (evt, e) =>
+            {
+                BounceMouseUp(evt, e);
+                gift.SetImage(gift.IsMouseHovering ? giftTexture2 : giftTexture);
+            };
+            gift.OnClick += (__, _) =>
+            {
                 GiftItem();
                 HideItemSlotInfo();
             };
-            gift.OnMouseUp += (__, _) => { gift.Top.Set(gift.Top.Pixels - 1f, 0); };
             Append(gift);
 
             //Gifts Text
-            CustomUIText repText = new CustomUIText("Gifts: ", 0.8f);
-            repText.Left.Set(8f, 0);
-            repText.Top.Set(95f, 0);
+            CustomUIText repText = new CustomUIText("Gifts: ", 1.1f);
+            repText.Left.Set(23f, 0);
+            repText.Top.Set(125f, 0);
             Append(repText);
 
-            //Gifts ProgressBar
-            Color Color = new Color(63, 113, 169);
-            ShrineProgressBar repFrame = new ShrineProgressBar(true, 100, Color);
-            repFrame.Width.Set(170f, 0);
-            repFrame.Height.Set(16f, 0);
-            repFrame.Left.Set(48f, 0);
-            repFrame.Top.Set(95f, 0);
+            Texture2D repBackground =
+                ModContent.GetTexture(texturePath + "Shrine_Meter1");
+            Texture2D repProgress =
+                ModContent.GetTexture(texturePath + "Shrine_Meter3");
+            CustomProgressBar repFrame = new CustomProgressBar(repBackground, repProgress, 100, true);
+            repFrame.Width.Set(204f, 0);
+            repFrame.Height.Set(24f, 0);
+            repFrame.Left.Set(80f, 0);
+            repFrame.Top.Set(122f, 0);
             repFrame.Activate();
             Append(repFrame);
 
             //Stage Text
-            CustomUIText stageText = new CustomUIText("Stage: ", 0.8f);
-            stageText.Left.Set(5f, 0);
-            stageText.Top.Set(120f, 0);
+            CustomUIText stageText = new CustomUIText("Stage: ", 1.1f);
+            stageText.Left.Set(20f, 0);
+            stageText.Top.Set(165f, 0);
             Append(stageText);
 
             //Stage ProgressBar
-            ShrineProgressBar stageFrame = new ShrineProgressBar(false, 5, Color);
-            stageFrame.Width.Set(170f, 0);
-            stageFrame.Height.Set(16f, 0);
-            stageFrame.Left.Set(48f, 0);
-            stageFrame.Top.Set(120f, 0);
+            Texture2D stageBackground =
+                ModContent.GetTexture(texturePath + "Shrine_Meter2");
+            Texture2D stageProgress =
+                ModContent.GetTexture(texturePath + "Shrine_Meter4");
+            CustomProgressBar stageFrame = new CustomProgressBar(stageBackground, stageProgress, 5, false);
+            stageFrame.Width.Set(204f, 0);
+            stageFrame.Height.Set(24f, 0);
+            stageFrame.Left.Set(80f, 0);
+            stageFrame.Top.Set(162f, 0);
             stageFrame.Activate();
             Append(stageFrame);
 
             #region Methods
-
+            
+            void BounceMouseDown(UIMouseEvent evt, UIElement element)
+            {
+                if (element is CustomUIImage img)
+                    img.Top.Set(img.Top.Pixels + 1f, 0);
+            }
+            
+            void BounceMouseUp(UIMouseEvent evt, UIElement element)
+            {
+                if (element is CustomUIImage img)
+                    img.Top.Set(img.Top.Pixels - 1f, 0);
+            }
+            
             void GiftItem()
             {
                 int itemType = itemSlot.Item.type;
@@ -213,7 +250,7 @@ namespace LivingWorldMod.UI
         {
             shrineType = villageShrineType;
             Instance.Toggle();
-            itemSlotPos = LWMUtils.FindMultiTileTopLeft(i, j, TileType<HarpyShrineTile>()) + new Vector2(-5, -11);
+            itemSlotPos = LWMUtils.FindMultiTileTopLeft(i, j, TileType<HarpyShrineTile>()) + new Vector2(-8, -14);
         }
 
         public void Update()
