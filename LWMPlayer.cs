@@ -24,6 +24,9 @@ namespace LivingWorldMod
         //Accessory Bools
         public bool featherBag;
 
+        //Whether the nimbus pet is active or not
+        public bool nimbusPet;
+
         //Other Accessory Variables
 
         #region Feather Bag
@@ -109,6 +112,7 @@ namespace LivingWorldMod
         public override void ResetEffects()
         {
             featherBag = false;
+            nimbusPet = false;
         }
 
         public override void UpdateDead()
