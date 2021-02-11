@@ -386,7 +386,7 @@ namespace LivingWorldMod.NPCs.Villagers
         public void RefreshDailyShop()
         {
             // create a new shop
-            WeightedRandom<ShopItem> pitems = new WeightedRandom<ShopItem>();
+            WeightedRandom<ShopItem> pitems = new WeightedRandom<ShopItem>(Main.rand.Next());
             int itemCount = GenerateDailyShop(pitems);
             List<ShopItem> items = new List<ShopItem>();
             for (int i = 0; i < itemCount; i++)
