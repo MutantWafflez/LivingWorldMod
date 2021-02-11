@@ -344,15 +344,19 @@ namespace LivingWorldMod.NPCs.Villagers
             
             if (dailyShop == null)
                 return;
-            
-            Guid id = player.GetModPlayer<LWMPlayer>().guid;
+
+            LWMPlayer modPlayer = player.GetModPlayer<LWMPlayer>();
+            Guid id = modPlayer.guid;
             List<ShopItem> playerShop = GetPlayerShop(id);
-            
+
+            float rep = LWMWorld.GetReputation(VillagerType);
             foreach (ShopItem itemSlot in playerShop)
             {
+                if (!itemSlot.CanPurchase(modPlayer, rep))
+                    continue;
+                
                 Item item = shop.item[nextSlot];
-                item.SetDefaults(itemSlot.itemId);
-                item.stack = itemSlot.stackSize;
+                itemSlot.Apply(item);
                 item.buyOnce = true;
                 LWMGlobalShopItem globalItem = item.GetGlobalItem<LWMGlobalShopItem>();
                 // give the item a reference to the ShopItem so we can track inventory changes
@@ -382,7 +386,18 @@ namespace LivingWorldMod.NPCs.Villagers
         public void RefreshDailyShop()
         {
             // create a new shop
-            dailyShop = GenerateDailyShop();
+            WeightedRandom<ShopItem> pitems = new WeightedRandom<ShopItem>();
+            int itemCount = GenerateDailyShop(pitems);
+            List<ShopItem> items = new List<ShopItem>();
+            for (int i = 0; i < itemCount; i++)
+            {
+                ShopItem item = pitems.Get();
+                pitems.elements.Remove(pitems.elements.Find(tuple => tuple.Item1 == item));
+                pitems.needsRefresh = true;
+                items.Add(item);
+            }
+            dailyShop = items;
+            
             // clear purchase history
             shops.Clear();
             // flag the npc for an update
@@ -390,9 +405,14 @@ namespace LivingWorldMod.NPCs.Villagers
                 npc.netUpdate = true;
         }
 
-        protected virtual List<ShopItem> GenerateDailyShop()
+        /// <summary>
+        /// Generates a weighted random of the possible items in the shop.
+        /// </summary>
+        /// <param name="items">The object to add the items to</param>
+        /// <returns>How many items to take out of the weighted random, to put in the actual shop.</returns>
+        protected virtual int GenerateDailyShop(WeightedRandom<ShopItem> items)
         {
-            return null;
+            return 0;
         }
         
         #endregion Shop Handling

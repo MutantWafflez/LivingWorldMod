@@ -23,6 +23,11 @@ namespace LivingWorldMod.Utilities
                 weightedRandom.Add(curType, weight);
             }
         }
+
+        public static T RandFrom<T>(params T[] values)
+        {
+            return values[Main.rand.Next(values.Length)];
+        }
         
         #region IO Utils
 

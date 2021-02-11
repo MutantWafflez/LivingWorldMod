@@ -89,10 +89,11 @@ namespace LivingWorldMod.Items
 			if (line != null)
 			{
 				// construct text
-				int copper = item.value % 100;
-				int silver = (item.value / 100) % 100;
-				int gold = (item.value / 100_00) % 100;
-				int platinum = (item.value / 100_00_00) % 100;
+				int value = item.GetStoreValue();
+				int copper = value % 100;
+				int silver = (value / 100) % 100;
+				int gold = (value / 100_00) % 100;
+				int platinum = (value / 100_00_00) % 100;
 				Color color;
 				if (platinum > 0) color = Colors.CoinPlatinum;
 				else if (gold > 0) color = Colors.CoinGold;

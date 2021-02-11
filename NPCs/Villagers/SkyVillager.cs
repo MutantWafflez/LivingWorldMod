@@ -27,13 +27,48 @@ namespace LivingWorldMod.NPCs.Villagers
         
         #region Villager Class Overrides
 
-        protected override List<ShopItem> GenerateDailyShop()
+        protected override int GenerateDailyShop(WeightedRandom<ShopItem> items)
         {
-            return new List<ShopItem> {
-                new ShopItem(ModContent.ItemType<FeatherBag>(), 1),
-                new ShopItem(ModContent.ItemType<SkyBustTileItem>(), 5),
-                new ShopItem(ModContent.ItemType<OneStarTileItem>(), 5)
-            };
+            items.Add(new ShopItem(
+                ModContent.ItemType<FeatherBag>(),
+                LWMUtils.RandFrom(25, 50, 75)
+            ), .2);
+            
+            items.Add(new ShopItem(
+                ModContent.ItemType<OneStarTileItem>(),
+                Main.rand.Next(10, 30)
+            ), 10);
+            
+            items.Add(new ShopItem(
+                ModContent.ItemType<SkyBustTileItem>(),
+                5,
+                constraints: ShopConstraint.RAINING
+            ), 2);
+            
+            items.Add(new ShopItem(
+                ItemID.Acorn,
+                2,
+                constraints: ShopConstraint.RAINING
+            ), 1);
+            
+            items.Add(new ShopItem(
+                ItemID.ApprenticeBait,
+                5
+            ), 8);
+            
+            items.Add(new ShopItem(
+                ItemID.Beenade,
+                3,
+                Item.buyPrice(gold: 3)
+            ), 3);
+            
+            items.Add(new ShopItem(
+                ItemID.Aglet,
+                1,
+                minRep: 200
+            ), 4);
+            
+            return 6;
         }
         
         public override WeightedRandom<string> GetDialogueText()
