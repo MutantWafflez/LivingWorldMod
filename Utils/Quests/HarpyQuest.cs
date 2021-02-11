@@ -6,23 +6,28 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 
-namespace LivingWorldMod.Utilities.Quests {
-    public class HarpyQuest : VillagerQuest {
-
+namespace LivingWorldMod.Utilities.Quests
+{
+    public class HarpyQuest : VillagerQuest
+    {
         public readonly int requiredItemID;
 
         public override VillagerType PertainedVillager => VillagerType.Harpy;
 
-        public HarpyQuest(int questItem, string questDialogue) {
+        public HarpyQuest(int questItem, string questDialogue)
+        {
             requiredItemID = questItem;
             questText = questDialogue;
         }
 
-        public override bool ActivationCondition(Player player, NPC npc) {
-            if (player.HasItem(requiredItemID)) {
+        public override bool ActivationCondition(Player player, NPC npc)
+        {
+            if (player.HasItem(requiredItemID))
+            {
                 player.inventory.First(item => item.type == requiredItemID).stack--;
                 return true;
             }
+
             return false;
         }
     }

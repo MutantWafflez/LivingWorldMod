@@ -10,10 +10,13 @@ namespace LivingWorldMod.NPCs.Villagers.Quest
     {
         public bool isUnconscious = false;
 
-        private static readonly Texture2D UnconsciousTexture = ModContent.GetTexture("LivingWorldMod/NPCs/Villagers/Quest/FallenHarpy_Unconscious");
+        private static readonly Texture2D UnconsciousTexture =
+            ModContent.GetTexture("LivingWorldMod/NPCs/Villagers/Quest/FallenHarpy_Unconscious");
 
-        public override WeightedRandom<string> InteractionDialogue {
-            get {
+        public override WeightedRandom<string> InteractionDialogue
+        {
+            get
+            {
                 WeightedRandom<string> dialogue = new WeightedRandom<string>();
                 dialogue.Add("It’s strange, I was flying through the sky when I saw a strange green beam of light in the distance. I tried flying after it, but it suddenly jolted and knocked into me. I lost consciousness soon after that.");
                 dialogue.Add("The village has been pretty rowdy, all this talk about an awful human causing trouble. The nerve of them! I’m glad you’re better than that, right...?");
@@ -24,7 +27,8 @@ namespace LivingWorldMod.NPCs.Villagers.Quest
             }
         }
 
-        public override string QuestCompletetionDialogue => "Thank you so much for helping me, I can finally go back to the village. I’ll tell everyone about the good deed you did for me today. Goodbye human! Make sure you stop by the village sometime, I’m sure you can become great friends with the other harpies if you really try. Seeya around!";
+        public override string QuestCompletetionDialogue =>
+            "Thank you so much for helping me, I can finally go back to the village. I’ll tell everyone about the good deed you did for me today. Goodbye human! Make sure you stop by the village sometime, I’m sure you can become great friends with the other harpies if you really try. Seeya around!";
 
         #region Defaults
 
@@ -73,11 +77,12 @@ namespace LivingWorldMod.NPCs.Villagers.Quest
             if (isUnconscious)
             {
                 Rectangle npcRect = npc.getRect();
-                npcRect.X -= (int)Main.screenPosition.X;
-                npcRect.Y -= (int)Main.screenPosition.Y;
+                npcRect.X -= (int) Main.screenPosition.X;
+                npcRect.Y -= (int) Main.screenPosition.Y;
                 spriteBatch.Draw(UnconsciousTexture, npcRect, drawColor);
                 return false;
             }
+
             return base.PreDraw(spriteBatch, drawColor);
         }
 

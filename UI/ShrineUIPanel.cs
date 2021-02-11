@@ -15,6 +15,8 @@ namespace LivingWorldMod.UI
 {
     public class ShrineUIPanel : CustomUIPanel
     {
+        //TODO: FIX MENU MOVING WITH UI ZOOM/SCALE
+
         public static ShrineUIPanel Instance;
         public static VillagerType shrineType;
         private const float width = 304f, height = 214f;
@@ -42,7 +44,7 @@ namespace LivingWorldMod.UI
             background.Width.Set(0, 0);
             background.Height.Set(0f, 0);
             Append(background);
-            
+
             //Menu Title
             CustomUIText title = new CustomUIText("Shrine Offerings", 1.2f);
             title.Left.Set(10f, 0);
@@ -175,19 +177,19 @@ namespace LivingWorldMod.UI
             Append(stageFrame);
 
             #region Methods
-            
+
             void BounceMouseDown(UIMouseEvent evt, UIElement element)
             {
                 if (element is CustomUIImage img)
                     img.Top.Set(img.Top.Pixels + 1f, 0);
             }
-            
+
             void BounceMouseUp(UIMouseEvent evt, UIElement element)
             {
                 if (element is CustomUIImage img)
                     img.Top.Set(img.Top.Pixels - 1f, 0);
             }
-            
+
             void GiftItem()
             {
                 int itemType = itemSlot.Item.type;
@@ -246,6 +248,12 @@ namespace LivingWorldMod.UI
             #endregion UI Initialization
         }
 
+        /// <summary>
+        /// Opens the Shrine UI Menu for the given VillagerType.
+        /// </summary>
+        /// <param name="i">Tile Coordinate in the X axis.</param>
+        /// <param name="j">Tile Coordinate in the Y axis.</param>
+        /// <param name="villageShrineType">Type of villager.</param>
         public static void TileRightClicked(int i, int j, VillagerType villageShrineType)
         {
             shrineType = villageShrineType;
@@ -259,6 +267,7 @@ namespace LivingWorldMod.UI
                 Main.LocalPlayer.mouseInterface = true;
 
             Vector2 itemSlotWorldPos = itemSlotPos.ToWorldCoordinates() - Main.screenPosition;
+
             Left.Set(itemSlotWorldPos.X, 0);
             Top.Set(itemSlotWorldPos.Y, 0);
         }

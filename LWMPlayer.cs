@@ -20,7 +20,7 @@ namespace LivingWorldMod
     public class LWMPlayer : ModPlayer, BinarySerializable
     {
         public Guid guid;
-        
+
         //Accessory Bools
         public bool featherBag;
 
@@ -49,10 +49,11 @@ namespace LivingWorldMod
         /// <summary>
         /// Array for all the possible types of vanilla wings to create the different visuals of the feather bag
         /// </summary>
-        public static readonly FieldInfo[] wingList = typeof(ArmorIDs.Wing).GetFields().Where(field => field.IsLiteral && !field.IsInitOnly).ToArray();
+        public static readonly FieldInfo[] wingList = typeof(ArmorIDs.Wing).GetFields()
+            .Where(field => field.IsLiteral && !field.IsInitOnly).ToArray();
 
         #endregion Feather Bag
-        
+
         /// <summary>
         /// A cache of the item index as found during CanBuyItem. Used in PostBuyItem to update the item slot after
         /// buying, and put back the item but with an X over it, when the stack runs out.
@@ -72,7 +73,7 @@ namespace LivingWorldMod
         {
             guid = Guid.NewGuid();
         }
-        
+
         public override TagCompound Save()
         {
             return new TagCompound {{"guid", guid.ToString()}};
@@ -80,10 +81,10 @@ namespace LivingWorldMod
 
         public override void Load(TagCompound tag)
         {
-            if(tag.ContainsKey("guid"))
+            if (tag.ContainsKey("guid"))
                 guid = Guid.Parse(tag.GetString("guid"));
         }
-        
+
         #region Net Sync Methods
 
         // note, since guid never changes, clientClone and SendClientChanges are not necessary.
@@ -155,11 +156,15 @@ namespace LivingWorldMod
                 int featherDamage;
                 if (wingType <= WingID.SpookyWings)
                 {
-                    featherDamage = (int)Math.Ceiling(Math.Pow(Math.E, ((float)wingType * 0.25f) - 1f) + 20f); //e^((x*0.25) - 1) + 20f
+                    featherDamage =
+                        (int) Math.Ceiling(Math.Pow(Math.E, ((float) wingType * 0.25f) - 1f) +
+                                           20f); //e^((x*0.25) - 1) + 20f
                 }
                 else
                 {
-                    featherDamage = (int)Math.Ceiling(Math.Pow(Math.E, ((float)wingType * 0.15f) + 0.125f) + 31.5f); //e^((x*0.15) + 0.125) + 31.5
+                    featherDamage =
+                        (int) Math.Ceiling(Math.Pow(Math.E, ((float) wingType * 0.15f) + 0.125f) +
+                                           31.5f); //e^((x*0.15) + 0.125) + 31.5
                 }
 
                 if (player.justJumped && featherBagJumpCooldown == 0)
@@ -178,8 +183,11 @@ namespace LivingWorldMod
                     float rotation = MathHelper.ToRadians(180);
                     for (int i = 0; i < numberProjectiles; i++)
                     {
-                        Vector2 perturbedSpeed = new Vector2(6, 6).RotatedBy(MathHelper.Lerp(-rotation, rotation, i / (float)numberProjectiles));
-                        int feather = Projectile.NewProjectile(player.Bottom - new Vector2(0, 5), perturbedSpeed, ModContent.ProjectileType<FeatherBagProjectile>(), featherDamage, 2.5f, player.whoAmI);
+                        Vector2 perturbedSpeed =
+                            new Vector2(6, 6).RotatedBy(MathHelper.Lerp(-rotation, rotation,
+                                i / (float) numberProjectiles));
+                        int feather = Projectile.NewProjectile(player.Bottom - new Vector2(0, 5), perturbedSpeed,
+                            ModContent.ProjectileType<FeatherBagProjectile>(), featherDamage, 2.5f, player.whoAmI);
                         (Main.projectile[feather].modProjectile as FeatherBagProjectile).featherType = wingType;
                         NetMessage.SendData(MessageID.SyncProjectile, number: feather);
                     }
@@ -194,11 +202,15 @@ namespace LivingWorldMod
                     {
                         for (int i = 0; i < numberProjectiles; i++)
                         {
-                            Vector2 perturbedSpeed = new Vector2(6, 6).RotatedBy(MathHelper.Lerp(-rotation, rotation, i / (float)numberProjectiles));
-                            int feather = Projectile.NewProjectile(player.Bottom - new Vector2(0, 5), perturbedSpeed, ModContent.ProjectileType<FeatherBagProjectile>(), featherDamage, 2.5f, player.whoAmI);
+                            Vector2 perturbedSpeed =
+                                new Vector2(6, 6).RotatedBy(MathHelper.Lerp(-rotation, rotation,
+                                    i / (float) numberProjectiles));
+                            int feather = Projectile.NewProjectile(player.Bottom - new Vector2(0, 5), perturbedSpeed,
+                                ModContent.ProjectileType<FeatherBagProjectile>(), featherDamage, 2.5f, player.whoAmI);
                             (Main.projectile[feather].modProjectile as FeatherBagProjectile).featherType = wingType;
                             NetMessage.SendData(MessageID.SyncProjectile, number: feather);
                         }
+
                         timeUntilNextFeather = maxFeatherTimer;
                     }
                 }
@@ -215,20 +227,26 @@ namespace LivingWorldMod
             {
                 if (Main.rand.Next(2) == 0)
                 {
-                    Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard, 0f, 0f, 150, default, 1.1f);
+                    Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard, 0f, 0f, 150,
+                        default, 1.1f);
                 }
+
                 if (player.itemAnimation == player.HeldItem.useAnimation / 2)
                 {
                     for (int j = 0; j < 70; j++)
                     {
-                        Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard, player.velocity.X * 0.5f, player.velocity.Y * 0.5f, 150, default, 1.5f);
+                        Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard,
+                            player.velocity.X * 0.5f, player.velocity.Y * 0.5f, 150, default, 1.5f);
                     }
+
                     if (LWMWorld.GetShrineTilePosition(VillagerType.Harpy) != Vector2.Zero)
                     {
-                        player.UnityTeleport(LWMWorld.GetShrineWorldPosition(VillagerType.Harpy) + new Vector2(player.width, player.height - 5));
+                        player.UnityTeleport(LWMWorld.GetShrineWorldPosition(VillagerType.Harpy) +
+                                             new Vector2(player.width, player.height - 5));
                         for (int k = 0; k < 70; k++)
                         {
-                            Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard, 0f, 0f, 150, default, 1.5f);
+                            Dust.NewDust(player.position, player.width, player.height, DustID.PinkCrystalShard, 0f, 0f,
+                                150, default, 1.5f);
                         }
                     }
                 }
@@ -244,7 +262,7 @@ namespace LivingWorldMod
             int currentWings = player.wings;
             foreach (FieldInfo wingInfo in wingList)
             {
-                if ((sbyte)wingInfo.GetValue(null) == currentWings)
+                if ((sbyte) wingInfo.GetValue(null) == currentWings)
                 {
                     if (Enum.TryParse(wingInfo.Name, true, out WingID returnValue))
                     {
@@ -256,27 +274,28 @@ namespace LivingWorldMod
                     }
                 }
             }
+
             return WingID.Default;
         }
 
         #endregion Helper Methods
-        
+
         #region Shop Item Management
-        
+
         public override void PostBuyItem(NPC vendor, Item[] shopInventory, Item heldItem)
         {
             // everything in this method revolves around original shop slots, so ignore everything else
-            if(!prevShopGlobalItem.isOriginalShopSlot)
+            if (!prevShopGlobalItem.isOriginalShopSlot)
                 return;
-            
+
             // send a packet to the server to notify it of the purchase
-            if(Main.netMode == NetmodeID.MultiplayerClient)
+            if (Main.netMode == NetmodeID.MultiplayerClient)
                 new LimitedPurchase
                 {
                     npcId = Main.LocalPlayer.talkNPC,
                     slotId = itemIdx
                 }.SendToServer(mod);
-            
+
             Item shopItem = shopInventory[itemIdx];
             LWMGlobalShopItem heldGlobalItem = heldItem.GetGlobalItem<LWMGlobalShopItem>();
             if (shopItem.type == ItemID.None && prevShopGlobalItem.isOriginalShopSlot)
@@ -295,7 +314,7 @@ namespace LivingWorldMod
                 // just update the stack data
                 prevShopGlobalItem.UpdateInventory(shopItem.stack);
             }
-            
+
             // remove shop behavior from bought item, if present
             if (heldGlobalItem.isOriginalShopSlot)
             {
@@ -315,14 +334,14 @@ namespace LivingWorldMod
         {
             // record the index of the item being purchased
             itemIdx = Array.IndexOf(shopInventory, item);
-            
+
             // record the original-slot state
             prevShopGlobalItem = item.GetGlobalItem<LWMGlobalShopItem>();
-            
+
             // check if this item cannot be purchased
             if (prevShopGlobalItem.isOutOfStock)
                 return false;
-            
+
             return true;
         }
 
