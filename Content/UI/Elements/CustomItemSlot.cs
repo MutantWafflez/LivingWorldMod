@@ -4,10 +4,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.Elements {
-
-    public class CustomItemSlot : CustomUIElement {
-
+namespace LivingWorldMod.Content.UI.Elements
+{
+    public class CustomItemSlot : CustomUIElement
+    {
         /// <summary>
         /// Create custom condition to filter which items can be placed in the ItemSlot.
         /// </summary>
@@ -36,7 +36,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// <param name="displayOnly">
         /// Whether the ItemSlot is interactable or not. If true, the ItemSlot will not be interactable.
         /// </param>
-        public CustomItemSlot(int itemType = 0, float scale = 1f, float opacity = 1f, bool displayOnly = false) {
+        public CustomItemSlot(int itemType = 0, float scale = 1f, float opacity = 1f, bool displayOnly = false)
+        {
             BackgroundTexture = Main.inventoryBack9Texture;
 
             Item = new Item();
@@ -56,7 +57,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// </summary>
         public event ElementEvent OnItemRemoved;
 
-        public override void SetScale(float scale) {
+        public override void SetScale(float scale)
+        {
             base.SetScale(scale);
             Width.Set(BackgroundTexture.Width * Scale, 0);
             Height.Set(BackgroundTexture.Height * Scale, 0);
@@ -66,7 +68,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// Sets the ItemSlot background texture.
         /// </summary>
         /// <param name="texture"> A XNA Framework Texture2D object. </param>
-        public void SetBackgroundTexture(Texture2D texture) {
+        public void SetBackgroundTexture(Texture2D texture)
+        {
             BackgroundTexture = texture ?? Main.inventoryBack9Texture;
         }
 
@@ -75,7 +78,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// Sets the current Item inside the ItemSlot.
         /// </summary>
         /// <param name="itemType"> </param>
-        public void SetItem(int itemType) {
+        public void SetItem(int itemType)
+        {
             if (itemType >= 0)
                 Item.SetDefaults(itemType);
         }
@@ -84,7 +88,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// Sets the current Item inside the ItemSlot.
         /// </summary>
         /// <param name="item"> </param>
-        public void SetItem(Item item) {
+        public void SetItem(Item item)
+        {
             Item = item ?? new Item();
         }
 
@@ -92,7 +97,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// Sets the ItemSlot to display only or interactable.
         /// </summary>
         /// <param name="displayOnly"> If true, the ItemSlot will not be interactable. </param>
-        public void SetDisplayOnly(bool displayOnly) {
+        public void SetDisplayOnly(bool displayOnly)
+        {
             //Always unsubscribe (to prevent event handler hooked twice)
             UnsubscribeMouseDown();
             if (!displayOnly)
@@ -101,7 +107,8 @@ namespace LivingWorldMod.Content.UI.Elements {
             DisplayOnly = displayOnly;
         }
 
-        protected override void DrawSelf(SpriteBatch spriteBatch) {
+        protected override void DrawSelf(SpriteBatch spriteBatch)
+        {
             //Background of ItemSlot
             Vector2 position = GetDimensions().ToRectangle().TopLeft();
             spriteBatch.Draw(BackgroundTexture, position, BackgroundTexture.Bounds, Color.White * Opacity, 0f, Vector2.Zero, Scale, SpriteEffects.None, 0f);
@@ -130,12 +137,14 @@ namespace LivingWorldMod.Content.UI.Elements {
 
         private void UnsubscribeMouseDown() => OnMouseDown -= CustomItemSlot_OnMouseDown;
 
-        private void CustomItemSlot_OnMouseDown(UIMouseEvent evt, UIElement listeningElement) {
+        private void CustomItemSlot_OnMouseDown(UIMouseEvent evt, UIElement listeningElement)
+        {
             if (ValidItem != null && !ValidItem(Main.mouseItem)) return;
 
             //if mouseItem is stackable, do not allow swapping with itemSlot (unless stack == 1)
             //Maybe send itemSlot Item to the inventory if shift is pressed?
-            if (Main.mouseItem.maxStack > 1 && Item.IsAir) {
+            if (Main.mouseItem.maxStack > 1 && Item.IsAir)
+            {
                 //stack > 0, items can't be reforged. No need to clone
                 Item.SetDefaults(Main.mouseItem.type);
                 Main.mouseItem.stack--;
@@ -145,8 +154,10 @@ namespace LivingWorldMod.Content.UI.Elements {
                 return;
             }
 
-            if (Main.mouseItem.maxStack > 1 && !Item.IsAir) {
-                if (Main.mouseItem.type == Item.type) {
+            if (Main.mouseItem.maxStack > 1 && !Item.IsAir)
+            {
+                if (Main.mouseItem.type == Item.type)
+                {
                     Main.mouseItem.stack++;
                     Item.TurnToAir();
 
@@ -170,12 +181,14 @@ namespace LivingWorldMod.Content.UI.Elements {
         }
 
         //Custom events
-        private void OnItemEquippedEvent() {
+        private void OnItemEquippedEvent()
+        {
             if (!Item.IsAir)
                 OnItemEquipped?.Invoke(this);
         }
 
-        private void OnItemRemovedEvent() {
+        private void OnItemRemovedEvent()
+        {
             if (Item.IsAir)
                 OnItemRemoved?.Invoke(this);
         }

@@ -4,15 +4,17 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Content.Projectiles.Hostile {
-
-    public class SpiderSacProj : ModProjectile {
-
-        public override void SetStaticDefaults() {
+namespace LivingWorldMod.Content.Projectiles.Hostile
+{
+    public class SpiderSacProj : ModProjectile
+    {
+        public override void SetStaticDefaults()
+        {
             DisplayName.SetDefault("Falling Spider Sac");
         }
 
-        public override void SetDefaults() {
+        public override void SetDefaults()
+        {
             projectile.CloneDefaults(ProjectileID.BeeHive); //The hives in the jungle
             projectile.hostile = true;
             projectile.friendly = false;
@@ -28,17 +30,20 @@ namespace LivingWorldMod.Content.Projectiles.Hostile {
 
         public override bool CanHitPlayer(Player target) => false;
 
-        public override bool OnTileCollide(Vector2 oldVelocity) {
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
             Gore.NewGore(projectile.Center, new Vector2(Main.rand.NextFloat(-4, -3), Main.rand.NextFloat(-3, -1)), mod.GetGoreSlot("Gores/SpiderSacGore"));
             Gore.NewGore(projectile.Center, new Vector2(Main.rand.NextFloat(3, 4), Main.rand.NextFloat(-3, -1)), mod.GetGoreSlot("Gores/SpiderSacGore"));
 
-            for (int i = 0; i < 60; i++) {
+            for (int i = 0; i < 60; i++)
+            {
                 Vector2 position = projectile.position;
                 Dust.NewDust(position, 32, 32, 102, 0f, -8f, 0, new Color(255, 255, 255), 1.1f);
             }
 
             int spiderCount = Main.rand.Next(2, 6);
-            for (int i = 0; i < spiderCount; i++) {
+            for (int i = 0; i < spiderCount; i++)
+            {
                 int xDisplacement = Main.rand.Next(-12, 14);
                 int yDisplacement = Main.rand.Next(-8, 0);
                 NPC.NewNPC((int)projectile.Center.X + xDisplacement, (int)projectile.Center.Y + yDisplacement, ModContent.NPCType<SacSpiderWalled>(), ai0: Main.rand.Next(-100, 101));

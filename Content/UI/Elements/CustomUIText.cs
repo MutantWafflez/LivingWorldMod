@@ -2,9 +2,10 @@
 using Terraria.Localization;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.Elements {
-
-    public class CustomUIText : UIText {
+namespace LivingWorldMod.Content.UI.Elements
+{
+    public class CustomUIText : UIText
+    {
         private UIElement _parent;
 
         /// <summary>
@@ -12,16 +13,19 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// </summary>
         public bool Visible { get; private set; }
 
-        public CustomUIText(string text, float textScale = 1, bool large = false) : base(text, textScale, large) {
+        public CustomUIText(string text, float textScale = 1, bool large = false) : base(text, textScale, large)
+        {
         }
 
-        public CustomUIText(LocalizedText text, float textScale = 1, bool large = false) : base(text, textScale, large) {
+        public CustomUIText(LocalizedText text, float textScale = 1, bool large = false) : base(text, textScale, large)
+        {
         }
 
         /// <summary>
         /// Hides the element if visible or shows the element if not.
         /// </summary>
-        public virtual void Toggle() {
+        public virtual void Toggle()
+        {
             if (Visible)
                 Hide();
             else
@@ -39,7 +43,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// <summary>
         /// Makes the element render and re-enables all of its functionality
         /// </summary>
-        public virtual void Show() {
+        public virtual void Show()
+        {
             Visible = true;
             _parent?.Append(this);
 
@@ -49,7 +54,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// <summary>
         /// Makes the element not render and disables all of its functionality. (still takes up space)
         /// </summary>
-        public virtual void Hide() {
+        public virtual void Hide()
+        {
             Visible = false;
             _parent = Parent ?? _parent;
             Remove();

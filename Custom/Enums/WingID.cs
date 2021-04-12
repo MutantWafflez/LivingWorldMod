@@ -1,6 +1,7 @@
-﻿namespace LivingWorldMod.Custom.Enums {
-
-    public enum WingID : int {
+﻿namespace LivingWorldMod.Custom.Enums
+{
+    public enum WingID : int
+    {
         Default = 0,
         AngelWings,
         DemonWings,

@@ -4,10 +4,10 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 
-namespace LivingWorldMod.Content.NPCs.Villagers.Quest {
-
-    public abstract class QuestVillager : ModNPC {
-
+namespace LivingWorldMod.Content.NPCs.Villagers.Quest
+{
+    public abstract class QuestVillager : ModNPC
+    {
         //What type of villager this Quest Villager represents. Villager Count by default.
         public virtual VillagerID VillagerType => VillagerID.VillagerTypeCount;
 
@@ -24,7 +24,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers.Quest {
 
         #region Defaults
 
-        public override void SetDefaults() {
+        public override void SetDefaults()
+        {
             npc.width = 25;
             npc.height = 40;
             npc.friendly = true;
@@ -39,15 +40,20 @@ namespace LivingWorldMod.Content.NPCs.Villagers.Quest {
 
         #region Spawning
 
-        public override float SpawnChance(NPCSpawnInfo spawnInfo) {
-            if (spawnInfo.player.ZoneOverworldHeight) {
-                for (int i = 0; i < Main.maxNPCs; i++) {
-                    if (Main.npc[i].GetType() == GetType()) {
+        public override float SpawnChance(NPCSpawnInfo spawnInfo)
+        {
+            if (spawnInfo.player.ZoneOverworldHeight)
+            {
+                for (int i = 0; i < Main.maxNPCs; i++)
+                {
+                    if (Main.npc[i].GetType() == GetType())
+                    {
                         return 0f;
                     }
                 }
 
-                if (LWMWorld.GetReputation(VillagerType) <= 0f) {
+                if (LWMWorld.GetReputation(VillagerType) <= 0f)
+                {
                     return 0.33f;
                 }
             }
@@ -60,17 +66,21 @@ namespace LivingWorldMod.Content.NPCs.Villagers.Quest {
 
         public override bool CanChat() => true;
 
-        public override void SetChatButtons(ref string button, ref string button2) {
+        public override void SetChatButtons(ref string button, ref string button2)
+        {
             button = "Quest";
         }
 
-        public override void OnChatButtonClicked(bool firstButton, ref bool shop) {
-            if (firstButton && LWMWorld.GetActiveQuest(VillagerType).ActivationCondition(Main.LocalPlayer, npc)) {
+        public override void OnChatButtonClicked(bool firstButton, ref bool shop)
+        {
+            if (firstButton && LWMWorld.GetActiveQuest(VillagerType).ActivationCondition(Main.LocalPlayer, npc))
+            {
                 Main.npcChatText = QuestCompletetionDialogue;
                 LWMWorld.RefreshVillageQuest(VillagerType);
                 LWMWorld.SetReputation(VillagerType, 15);
             }
-            else if (firstButton) {
+            else if (firstButton)
+            {
                 Main.npcChatText = LWMWorld.activeQuests[(int)VillagerType].questText;
             }
         }

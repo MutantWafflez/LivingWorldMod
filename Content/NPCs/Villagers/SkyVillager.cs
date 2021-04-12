@@ -9,9 +9,10 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 
-namespace LivingWorldMod.Content.NPCs.Villagers {
-
-    public class SkyVillager : Villager {
+namespace LivingWorldMod.Content.NPCs.Villagers
+{
+    public class SkyVillager : Villager
+    {
         internal override VillagerID VillagerType => VillagerID.Harpy;
 
         protected override int SpriteVariationCount => 5;
@@ -28,10 +29,12 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         #region Villager Class Overrides
 
-        public override WeightedRandom<string> GetDialogueText() {
+        public override WeightedRandom<string> GetDialogueText()
+        {
             WeightedRandom<string> chat = new WeightedRandom<string>();
 
-            if (isHatedRep || isNegativeRep || Main.bloodMoon) {
+            if (isHatedRep || isNegativeRep || Main.bloodMoon)
+            {
                 chat.Add("Don’t take it personally if we like, rip off your arms and eat you or something.");
                 chat.Add("How do you even live with those repulsive meat sticks in place of wings?");
                 chat.Add("You really ruffle my feathers, landwalker!");
@@ -41,7 +44,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                 chat.Add("Are all the flightless this fowl and annoying...?");
                 chat.Add("Humans... Despicable. Created those foul windows!");
             }
-            else if (isNeutralRep) {
+            else if (isNeutralRep)
+            {
                 chat.Add("I don’t get it, what’s so wrong with being bird-brained?");
                 chat.Add("No, I don’t want any crackers. And stop calling me Polly!", 0.66);
                 chat.Add("I hope I can be at the front of the V formation at least once before I die.");
@@ -50,7 +54,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                 chat.Add("I’m sort of scared of flying too high and floating into space or the sun or something.");
                 chat.Add("You’ll buy something, won’t you? You didn’t come here for nothing, right?");
             }
-            else if (isPositiveRep || isMaxRep) {
+            else if (isPositiveRep || isMaxRep)
+            {
                 chat.Add(Main.LocalPlayer.name + "! You want to buy something, right? Or did you just want to talk to me?");
                 chat.Add("Aren’t my feathers pretty today? I spent all day grooming them.");
                 chat.Add("Does this top make my wings look fat?", 0.66);
@@ -72,7 +77,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             return chat;
         }
 
-        public override WeightedRandom<string> GetReputationText() {
+        public override WeightedRandom<string> GetReputationText()
+        {
             WeightedRandom<string> chat = new WeightedRandom<string>();
 
             chat.ConditionalStringAdd("You totally suck. You’d better make things better, or you’ll be ripped apart limb by limb the next time you even set foot here!", isNegativeRep || isHatedRep);
@@ -83,7 +89,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             return chat;
         }
 
-        public override List<string> GetPossibleNames() {
+        public override List<string> GetPossibleNames()
+        {
             List<string> names = new List<string>
             {
                 "Merel",
@@ -103,7 +110,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public override bool CanChat() => !isFlying;
 
-        protected override int GenerateDailyShop(WeightedRandom<ShopItem> items) {
+        protected override int GenerateDailyShop(WeightedRandom<ShopItem> items)
+        {
             items.Add(new ShopItem(
                 ModContent.ItemType<FeatherBag>(),
                 MiscUtils.RandFrom(25, 50, 75)
@@ -150,13 +158,16 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         #region Normal Overrides
 
-        public override void SetStaticDefaults() {
+        public override void SetStaticDefaults()
+        {
             base.SetStaticDefaults();
             Main.npcFrameCount[npc.type] = 27;
         }
 
-        public override bool? CanBeHitByProjectile(Projectile projectile) {
-            if (projectile.type == ProjectileID.HarpyFeather) {
+        public override bool? CanBeHitByProjectile(Projectile projectile)
+        {
+            if (projectile.type == ProjectileID.HarpyFeather)
+            {
                 return false;
             }
             return base.CanBeHitByProjectile(projectile);
@@ -166,7 +177,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         #region Animation & AI
 
-        public override void AI() {
+        public override void AI()
+        {
             //This check is IMPORTANT. We don't want to use PreAI cause that obstructs functionality of some other mods,
             //so changing aiStyle is a much better way of doing this so that other mods can still properly block this AI from
             //running if need be.
@@ -175,23 +187,28 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             else
                 npc.aiStyle = 7;
 
-            if (isFlying) {
+            if (isFlying)
+            {
                 npc.width = 45;
                 npc.height = 50;
             }
-            else {
+            else
+            {
                 npc.width = 25;
                 npc.height = 40;
             }
 
-            if (!isFlying) {
+            if (!isFlying)
+            {
                 flightCooldown--;
                 if (flightCooldown < 0)
                     flightCooldown = 0;
                 //All of this is for the Transition of being on the Ground to being in the Air
-                if (npc.velocity.X == 0f && npc.ai[0] != 7f && flightCooldown <= 0) {
+                if (npc.velocity.X == 0f && npc.ai[0] != 7f && flightCooldown <= 0)
+                {
                     //Initial Jump
-                    if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.Next(1501) == 0 && npc.ai[0] != 1.1f && npc.ai[0] != 1.2f) {
+                    if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.Next(1501) == 0 && npc.ai[0] != 1.1f && npc.ai[0] != 1.2f)
+                    {
                         npc.velocity.X *= 0f;
                         npc.velocity.Y = -8f;
                         npc.ai[0] = 1.1f;
@@ -200,14 +217,16 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                         return;
                     }
                     //Be in Jump Animation momentarily
-                    if (npc.ai[0] == 1.1f && ++npc.ai[1] > 15) {
+                    if (npc.ai[0] == 1.1f && ++npc.ai[1] > 15)
+                    {
                         npc.ai[0] = 1.2f;
                         npc.ai[1] = 0f;
                         npc.netUpdate = true;
                         return;
                     }
                     //Begin flapping wings, adjusting against gravity
-                    else if (npc.ai[0] == 1.2f && ++npc.ai[1] > 20) {
+                    else if (npc.ai[0] == 1.2f && ++npc.ai[1] > 20)
+                    {
                         npc.ai[0] = 1.3f;
                         npc.ai[1] = 0f;
                         npc.noGravity = true;
@@ -215,13 +234,15 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                         return;
                     }
                     //Has Positive Lift, begin moving upwards against gravity
-                    else if (npc.ai[0] == 1.3f && ++npc.ai[1] < 40) {
+                    else if (npc.ai[0] == 1.3f && ++npc.ai[1] < 40)
+                    {
                         npc.velocity.Y -= 0.1f;
                         npc.netUpdate = true;
                         return;
                     }
                     //Lift has been balanced with gravity, steady out and allow for horizontal movement
-                    else if (npc.ai[0] == 1.3f) {
+                    else if (npc.ai[0] == 1.3f)
+                    {
                         npc.ai[0] = 0f;
                         npc.ai[1] = 0f;
                         npc.ai[2] = 0f;
@@ -233,9 +254,11 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                     }
                 }
             }
-            else {
+            else
+            {
                 //Placeholder conditions for when landing will take place, will be replaced when Village Structures are finished
-                if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.Next(1501) == 0 && npc.ai[0] != -1f) {
+                if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.Next(1501) == 0 && npc.ai[0] != -1f)
+                {
                     npc.velocity *= 0f;
                     npc.velocity.Y = 0.01f;
                     npc.ai[0] = -1f;
@@ -244,14 +267,16 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                     return;
                 }
                 //Begin moving towards ground, slowly
-                if (npc.ai[0] == -1f && (!npc.collideY || npc.velocity.Y != 0f)) {
+                if (npc.ai[0] == -1f && (!npc.collideY || npc.velocity.Y != 0f))
+                {
                     npc.velocity.Y += 0.1f;
                     if (npc.velocity.Y > 1.5f)
                         npc.velocity.Y = 1.5f;
                     return;
                 }
                 //On touching ground, revert back to walking animations, and allow for chat
-                else if (Main.netMode != NetmodeID.MultiplayerClient && npc.ai[0] == -1f && (npc.collideY || npc.velocity.Y == 0f)) {
+                else if (Main.netMode != NetmodeID.MultiplayerClient && npc.ai[0] == -1f && (npc.collideY || npc.velocity.Y == 0f))
+                {
                     npc.ai[0] = 0f;
                     npc.ai[1] = Main.rand.Next(300, 800); //Will stand still for a random interval instead of instant walking
                     npc.ai[2] = 0f;
@@ -266,20 +291,25 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             }
         }
 
-        public override void FindFrame(int frameHeight) {
+        public override void FindFrame(int frameHeight)
+        {
             //Flying animation should take place when flying, obviously, and when the Harpy is adjusting against Gravity when first taking off
-            if (npc.ai[0] != -1f && (isFlying || npc.ai[0] == 1.2f || npc.ai[0] == 1.3f)) {
+            if (npc.ai[0] != -1f && (isFlying || npc.ai[0] == 1.2f || npc.ai[0] == 1.3f))
+            {
                 npc.frame.Y = (21 + flyingFrame) * frameHeight;
-                if (++flyingFrameCounter >= 6) {
+                if (++flyingFrameCounter >= 6)
+                {
                     if (++flyingFrame > 5)
                         flyingFrame = 0;
                     flyingFrameCounter = 0;
                 }
             }
             //Slower flying animation when landing
-            else if (isFlying && npc.ai[0] == -1f) {
+            else if (isFlying && npc.ai[0] == -1f)
+            {
                 npc.frame.Y = (21 + flyingFrame) * frameHeight;
-                if (++flyingFrameCounter >= 12) {
+                if (++flyingFrameCounter >= 12)
+                {
                     if (++flyingFrame > 5)
                         flyingFrame = 0;
                     flyingFrameCounter = 0;

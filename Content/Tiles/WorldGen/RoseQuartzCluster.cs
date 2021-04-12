@@ -7,11 +7,12 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Content.Tiles.WorldGen {
-
-    public class RoseQuartzCluster : ModTile {
-
-        public override void SetDefaults() {
+namespace LivingWorldMod.Content.Tiles.WorldGen
+{
+    public class RoseQuartzCluster : ModTile
+    {
+        public override void SetDefaults()
+        {
             TileID.Sets.Ore[Type] = true;
             Main.tileSpelunker[Type] = true;
             Main.tileValue[Type] = 410;
@@ -36,7 +37,8 @@ namespace LivingWorldMod.Content.Tiles.WorldGen {
             minPick = 30;
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) {
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
             Item.NewItem(new Vector2(i * 16, j * 16), ModContent.ItemType<RoseQuartz>(), Main.rand.Next(1, 5));
         }
     }

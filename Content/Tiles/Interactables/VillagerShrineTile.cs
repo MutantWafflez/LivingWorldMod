@@ -5,12 +5,14 @@ using Terraria.Enums;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Content.Tiles.Interactables {
-
-    public abstract class VillagerShrineTile : ModTile {
+namespace LivingWorldMod.Content.Tiles.Interactables
+{
+    public abstract class VillagerShrineTile : ModTile
+    {
         public VillagerID shrineType;
 
-        public override void SetDefaults() {
+        public override void SetDefaults()
+        {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
             Main.tileTable[Type] = false;
@@ -42,7 +44,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
 
         public override bool CanExplode(int i, int j) => LivingWorldMod.debugMode;
 
-        public override void AnimateTile(ref int frame, ref int frameCounter) {
+        public override void AnimateTile(ref int frame, ref int frameCounter)
+        {
             int giftProgress = LWMWorld.GetGiftProgress(shrineType);
 
             frame = frameCounter = (int)(giftProgress / 6.66f);

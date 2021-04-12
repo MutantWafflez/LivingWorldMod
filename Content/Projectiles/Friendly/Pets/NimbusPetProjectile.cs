@@ -5,18 +5,21 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Content.Projectiles.Friendly.Pets {
-
-    public class NimbusPetProjectile : ModProjectile {
+namespace LivingWorldMod.Content.Projectiles.Friendly.Pets
+{
+    public class NimbusPetProjectile : ModProjectile
+    {
         private int animationTimer;
 
-        public override void SetStaticDefaults() {
+        public override void SetStaticDefaults()
+        {
             DisplayName.SetDefault("Nimbus Pet");
             Main.projFrames[projectile.type] = 5;
             Main.projPet[projectile.type] = true;
         }
 
-        public override void SetDefaults() {
+        public override void SetDefaults()
+        {
             projectile.width = 42;
             projectile.height = 28;
             projectile.penetrate = -1;
@@ -27,10 +30,12 @@ namespace LivingWorldMod.Content.Projectiles.Friendly.Pets {
             projectile.frame = 1;
         }
 
-        public override void AI() {
+        public override void AI()
+        {
             Player player = Main.player[projectile.owner];
 
-            if (!player.active) {
+            if (!player.active)
+            {
                 projectile.active = false;
                 return;
             }
@@ -50,7 +55,8 @@ namespace LivingWorldMod.Content.Projectiles.Friendly.Pets {
             float maxDistSQFromDest = 4;
             if (Vector2.DistanceSquared(projectile.Center, targetPoint) <= maxDistSQFromDest && player.velocity == Vector2.Zero)
                 projectile.frame = 0;
-            else {
+            else
+            {
                 int animationSpeedModulo = 5;
                 if (++animationTimer % animationSpeedModulo == 0)
                     if (++projectile.frame > 4)
@@ -60,7 +66,8 @@ namespace LivingWorldMod.Content.Projectiles.Friendly.Pets {
             projectile.direction = projectile.spriteDirection = projectile.Center.X > player.Center.X ? -1 : 1;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) {
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
             Texture2D texture = Main.projectileTexture[projectile.type];
 
             int frameHeight = texture.Height / Main.projFrames[projectile.type];

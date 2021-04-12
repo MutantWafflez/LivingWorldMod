@@ -6,19 +6,22 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Content.Projectiles.Friendly {
-
-    public class FeatherBagProjectile : ModProjectile {
+namespace LivingWorldMod.Content.Projectiles.Friendly
+{
+    public class FeatherBagProjectile : ModProjectile
+    {
         public WingID featherType;
 
-        public override void SetStaticDefaults() {
+        public override void SetStaticDefaults()
+        {
             DisplayName.SetDefault("Feather");
             ProjectileID.Sets.TrailCacheLength[projectile.type] = 2;
             ProjectileID.Sets.TrailingMode[projectile.type] = 0;
             Main.projFrames[projectile.type] = 26;
         }
 
-        public override void SetDefaults() {
+        public override void SetDefaults()
+        {
             projectile.width = 28;
             projectile.height = 16;
             projectile.aiStyle = -1;
@@ -29,30 +32,37 @@ namespace LivingWorldMod.Content.Projectiles.Friendly {
             projectile.tileCollide = true;
         }
 
-        public override void AI() {
+        public override void AI()
+        {
             projectile.rotation = projectile.velocity.ToRotation();
             projectile.frame = (int)featherType;
         }
 
-        public override void Kill(int timeLeft) {
+        public override void Kill(int timeLeft)
+        {
             Gore.NewGore(projectile.position, Vector2.Zero, Main.rand.Next(11, 14));
         }
 
-        public override void SendExtraAI(BinaryWriter writer) {
+        public override void SendExtraAI(BinaryWriter writer)
+        {
             writer.Write((int)featherType);
         }
 
-        public override void ReceiveExtraAI(BinaryReader reader) {
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
             featherType = (WingID)reader.ReadInt32();
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) {
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
             Texture2D textureToDraw = Main.projectileTexture[projectile.type];
             SpriteEffects spriteEffects = SpriteEffects.None;
-            if (++projectile.frameCounter <= 5) {
+            if (++projectile.frameCounter <= 5)
+            {
                 spriteEffects = SpriteEffects.FlipVertically;
             }
-            else if (projectile.frameCounter > 10) {
+            else if (projectile.frameCounter > 10)
+            {
                 projectile.frameCounter = 0;
             }
             spriteBatch.Draw(textureToDraw, projectile.position - Main.screenPosition, new Rectangle(0, projectile.frame * (textureToDraw.Height / Main.projFrames[projectile.type]), textureToDraw.Width, (textureToDraw.Height / Main.projFrames[projectile.type])), lightColor, projectile.rotation, Vector2.Zero, projectile.scale, spriteEffects, 0f);

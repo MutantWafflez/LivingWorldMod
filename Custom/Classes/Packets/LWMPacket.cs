@@ -4,18 +4,21 @@ using LivingWorldMod.Custom.Enums;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Custom.Classes.Packets {
-
-    public abstract class LWMPacket {
+namespace LivingWorldMod.Custom.Classes.Packets
+{
+    public abstract class LWMPacket
+    {
         public readonly PacketID packetType;
 
         private static readonly Action<BinaryReader, int>[] _packetHandlers = new Action<BinaryReader, int>[(int)PacketID.PacketCount];
 
-        protected LWMPacket(PacketID id) {
+        protected LWMPacket(PacketID id)
+        {
             packetType = id;
         }
 
-        public static bool TryHandlePacket(PacketID packetType, BinaryReader reader, int sentFromPlayer) {
+        public static bool TryHandlePacket(PacketID packetType, BinaryReader reader, int sentFromPlayer)
+        {
             Action<BinaryReader, int> handler = _packetHandlers[(byte)packetType];
             handler?.Invoke(reader, sentFromPlayer);
             return handler != null;
@@ -27,18 +30,21 @@ namespace LivingWorldMod.Custom.Classes.Packets {
         /// <param name="modInstance"> </param>
         /// <param name="toWho"> </param>
         /// <param name="fromWho"> </param>
-        public void Send(Mod modInstance, int toWho, int fromWho) {
+        public void Send(Mod modInstance, int toWho, int fromWho)
+        {
             ModPacket packet = modInstance.GetPacket();
             packet.Write((byte)packetType);
             Write(packet);
             packet.Send(toWho, fromWho);
         }
 
-        public void SendToServer(Mod modInstance) {
+        public void SendToServer(Mod modInstance)
+        {
             Send(modInstance, -1, Main.myPlayer);
         }
 
-        public void SendToAll(Mod modInstance) {
+        public void SendToAll(Mod modInstance)
+        {
             Send(modInstance, -1, -1);
         }
 
@@ -46,7 +52,8 @@ namespace LivingWorldMod.Custom.Classes.Packets {
         /// This method registers all the different classes of packet to their respective PacketIDs,
         /// so that Mod.HandlePacket can use array lookup to find the right handler.
         /// </summary>
-        internal static void RegisterAllHandlers() {
+        internal static void RegisterAllHandlers()
+        {
             RegisterHandler<PlayerData>();
             RegisterHandler<VillagerData>();
             RegisterHandler<LimitedPurchase>();
@@ -70,9 +77,11 @@ namespace LivingWorldMod.Custom.Classes.Packets {
 
         // private static readonly Dictionary<Type, PacketID> _packetTypeToID = new Dictionary<Type, PacketID>();
 
-        private static void RegisterHandler<T>() where T : LWMPacket, new() {
+        private static void RegisterHandler<T>() where T : LWMPacket, new()
+        {
             T dummy = new T();
-            _packetHandlers[(byte)dummy.packetType] = (reader, sender) => {
+            _packetHandlers[(byte)dummy.packetType] = (reader, sender) =>
+            {
                 T packet = new T();
                 packet.Read(reader);
                 packet.Handle(sender);

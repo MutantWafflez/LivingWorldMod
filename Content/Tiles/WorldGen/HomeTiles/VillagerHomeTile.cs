@@ -2,11 +2,12 @@
 using Terraria;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Content.Tiles.WorldGen.HomeTiles {
-
-    public abstract class VillagerHomeTile : ModTile {
-
-        public override void SetDefaults() {
+namespace LivingWorldMod.Content.Tiles.WorldGen.HomeTiles
+{
+    public abstract class VillagerHomeTile : ModTile
+    {
+        public override void SetDefaults()
+        {
             Main.tileSolid[Type] = false;
             Main.tileMergeDirt[Type] = false;
             Main.tileNoAttach[Type] = true;

@@ -10,9 +10,10 @@ using Terraria.ModLoader;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
-namespace LivingWorldMod.Content.UI {
-
-    public class ShrineUIPanel : CustomUIPanel {
+namespace LivingWorldMod.Content.UI
+{
+    public class ShrineUIPanel : CustomUIPanel
+    {
         //TODO: FIX MENU MOVING WITH UI ZOOM/SCALE
 
         public static ShrineUIPanel Instance;
@@ -22,7 +23,8 @@ namespace LivingWorldMod.Content.UI {
         private static CustomItemSlot itemSlot;
         private static Vector2 itemSlotPos = Vector2.Zero;
 
-        public ShrineUIPanel(float scale = 1f, float opacity = 1f) : base(scale, opacity) {
+        public ShrineUIPanel(float scale = 1f, float opacity = 1f) : base(scale, opacity)
+        {
             Instance = this;
 
             Width.Set(width, 0);
@@ -74,7 +76,8 @@ namespace LivingWorldMod.Content.UI {
             giftItem.Hide();
 
             //Undiscovered Gift
-            CustomUIText undiscoveredGift = new CustomUIText("?", 1f) {
+            CustomUIText undiscoveredGift = new CustomUIText("?", 1f)
+            {
                 TextColor = Color.LightGray
             };
             undiscoveredGift.Left.Set(227f, 0);
@@ -120,15 +123,18 @@ namespace LivingWorldMod.Content.UI {
             gift.Top.Set(56f, 0);
             gift.OnMouseOver += (__, _) => { gift.SetImage(giftTexture2); };
             gift.OnMouseOut += (__, _) => { gift.SetImage(giftTexture); };
-            gift.OnMouseDown += (evt, e) => {
+            gift.OnMouseDown += (evt, e) =>
+            {
                 BounceMouseDown(evt, e);
                 gift.SetImage(giftTexture3);
             };
-            gift.OnMouseUp += (evt, e) => {
+            gift.OnMouseUp += (evt, e) =>
+            {
                 BounceMouseUp(evt, e);
                 gift.SetImage(gift.IsMouseHovering ? giftTexture2 : giftTexture);
             };
-            gift.OnClick += (__, _) => {
+            gift.OnClick += (__, _) =>
+            {
                 GiftItem();
                 HideItemSlotInfo();
             };
@@ -173,28 +179,33 @@ namespace LivingWorldMod.Content.UI {
 
             #region Methods
 
-            void BounceMouseDown(UIMouseEvent evt, UIElement element) {
+            void BounceMouseDown(UIMouseEvent evt, UIElement element)
+            {
                 if (element is CustomUIImage img)
                     img.Top.Set(img.Top.Pixels + 1f, 0);
             }
 
-            void BounceMouseUp(UIMouseEvent evt, UIElement element) {
+            void BounceMouseUp(UIMouseEvent evt, UIElement element)
+            {
                 if (element is CustomUIImage img)
                     img.Top.Set(img.Top.Pixels - 1f, 0);
             }
 
-            void GiftItem() {
+            void GiftItem()
+            {
                 int itemType = itemSlot.Item.type;
                 LWMWorld.AddGiftToProgress(shrineType, itemType);
                 itemSlot.Item.TurnToAir();
             }
 
-            void ShowItemSlotInfo() {
+            void ShowItemSlotInfo()
+            {
                 giftItem.SetImage(Main.itemTexture[itemSlot.Item.type]);
                 giftItem.SetSize(24f, 24f);
 
                 Color color;
-                if (LWMWorld.GetGiftAmount(shrineType, itemSlot.Item.type) == 0) {
+                if (LWMWorld.GetGiftAmount(shrineType, itemSlot.Item.type) == 0)
+                {
                     color = new Color(66, 66, 66);
                     giftItem.Show();
                     undiscoveredGift.Show();
@@ -225,7 +236,8 @@ namespace LivingWorldMod.Content.UI {
                 giftLiking.Show();
             }
 
-            void HideItemSlotInfo() {
+            void HideItemSlotInfo()
+            {
                 giftItem.Hide();
                 giftAmount.Hide();
                 giftLiking.Hide();
@@ -243,13 +255,15 @@ namespace LivingWorldMod.Content.UI {
         /// <param name="i"> Tile Coordinate in the X axis. </param>
         /// <param name="j"> Tile Coordinate in the Y axis. </param>
         /// <param name="villageShrineType"> Type of villager. </param>
-        public static void TileRightClicked(int i, int j, VillagerID villageShrineType) {
+        public static void TileRightClicked(int i, int j, VillagerID villageShrineType)
+        {
             shrineType = villageShrineType;
             Instance.Toggle();
             itemSlotPos = WorldGenUtils.FindMultiTileTopLeft(i, j, TileType<HarpyShrineTile>()) + new Vector2(-8, -14);
         }
 
-        public void Update() {
+        public void Update()
+        {
             if (Visible && IsMouseHovering)
                 Main.LocalPlayer.mouseInterface = true;
 

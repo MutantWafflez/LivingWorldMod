@@ -5,16 +5,19 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 
-namespace LivingWorldMod.Content.NPCs.Villagers.Quest {
-
-    public class FallenHarpy : QuestVillager {
+namespace LivingWorldMod.Content.NPCs.Villagers.Quest
+{
+    public class FallenHarpy : QuestVillager
+    {
         public bool isUnconscious = false;
 
         private static readonly Texture2D UnconsciousTexture =
             ModContent.GetTexture("LivingWorldMod/Content/NPCs/Villagers/Quest/FallenHarpy_Unconscious");
 
-        public override WeightedRandom<string> InteractionDialogue {
-            get {
+        public override WeightedRandom<string> InteractionDialogue
+        {
+            get
+            {
                 WeightedRandom<string> dialogue = new WeightedRandom<string>();
                 dialogue.Add("It’s strange, I was flying through the sky when I saw a strange green beam of light in the distance. I tried flying after it, but it suddenly jolted and knocked into me. I lost consciousness soon after that.");
                 dialogue.Add("The village has been pretty rowdy, all this talk about an awful human causing trouble. The nerve of them! I’m glad you’re better than that, right...?");
@@ -32,7 +35,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers.Quest {
 
         public override VillagerID VillagerType => VillagerID.Harpy;
 
-        public override void SetStaticDefaults() {
+        public override void SetStaticDefaults()
+        {
             Main.npcFrameCount[npc.type] = 27;
         }
 
@@ -40,7 +44,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers.Quest {
 
         #region Spawning Related
 
-        public override int SpawnNPC(int tileX, int tileY) {
+        public override int SpawnNPC(int tileX, int tileY)
+        {
             int spawnValue = base.SpawnNPC(tileX, tileY);
             (Main.npc[spawnValue].modNPC as FallenHarpy).isUnconscious = true;
             return spawnValue;
@@ -50,14 +55,17 @@ namespace LivingWorldMod.Content.NPCs.Villagers.Quest {
 
         #region AI/Drawing
 
-        public override void AI() {
-            if (isUnconscious) {
+        public override void AI()
+        {
+            if (isUnconscious)
+            {
                 npc.width = 60;
                 npc.height = 22;
                 npc.aiStyle = -1;
                 npc.rarity = 4;
             }
-            else {
+            else
+            {
                 npc.width = 25;
                 npc.height = 40;
                 npc.aiStyle = 7;
@@ -65,8 +73,10 @@ namespace LivingWorldMod.Content.NPCs.Villagers.Quest {
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) {
-            if (isUnconscious) {
+        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+        {
+            if (isUnconscious)
+            {
                 Rectangle npcRect = npc.getRect();
                 npcRect.X -= (int)Main.screenPosition.X;
                 npcRect.Y -= (int)Main.screenPosition.Y;
@@ -81,13 +91,16 @@ namespace LivingWorldMod.Content.NPCs.Villagers.Quest {
 
         #region Chat
 
-        public override string GetChat() {
-            if (isUnconscious) {
+        public override string GetChat()
+        {
+            if (isUnconscious)
+            {
                 isUnconscious = false;
                 npc.position.Y -= 22;
                 return "Ow ow ow.. You’re asking me if it hurt when I fell from heaven? Of course it did! Thanks for helping me up at least.";
             }
-            else {
+            else
+            {
                 return InteractionDialogue;
             }
         }

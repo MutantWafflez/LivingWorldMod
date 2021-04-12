@@ -3,9 +3,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.Elements {
-
-    public class CustomUIPanel : CustomUIElement {
+namespace LivingWorldMod.Content.UI.Elements
+{
+    public class CustomUIPanel : CustomUIElement
+    {
         private const int CornerSize = 12;
         private const int BarSize = 4;
 
@@ -33,7 +34,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// </summary>
         /// <param name="scale"> UIPanel's drawing scale </param>
         /// <param name="opacity"> UIPanel's opacity. (higher value, higher opacity) </param>
-        public CustomUIPanel(float scale = 1f, float opacity = 1f) {
+        public CustomUIPanel(float scale = 1f, float opacity = 1f)
+        {
             SetScale(scale);
             SetOpacity(opacity);
 
@@ -48,7 +50,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// Sets the UIPanel background texture.
         /// </summary>
         /// <param name="texture"> A XNA Framework Texture2D object. </param>
-        public void SetBackgroundTexture(Texture2D texture) {
+        public void SetBackgroundTexture(Texture2D texture)
+        {
             BackgroundTexture = texture ?? ModContent.GetTexture("Terraria/UI/PanelBackground");
         }
 
@@ -57,11 +60,13 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// Sets the UIPanel border texture.
         /// </summary>
         /// <param name="texture"> A XNA Framework Texture2D object. </param>
-        public void SetBorderTexture(Texture2D texture) {
+        public void SetBorderTexture(Texture2D texture)
+        {
             BorderTexture = texture ?? ModContent.GetTexture("Terraria/UI/PanelBorder");
         }
 
-        protected override void DrawSelf(SpriteBatch spriteBatch) {
+        protected override void DrawSelf(SpriteBatch spriteBatch)
+        {
             if (BackgroundTexture != null)
                 DrawPanel(spriteBatch, BackgroundTexture, BackgroundColor * Opacity);
 
@@ -69,7 +74,8 @@ namespace LivingWorldMod.Content.UI.Elements {
                 DrawPanel(spriteBatch, BorderTexture, BorderColor * Opacity);
         }
 
-        private void DrawPanel(SpriteBatch spriteBatch, Texture2D texture, Color color) {
+        private void DrawPanel(SpriteBatch spriteBatch, Texture2D texture, Color color)
+        {
             //Vanilla code
             CalculatedStyle dimensions = GetDimensions();
             Point point = new Point((int)dimensions.X, (int)dimensions.Y);

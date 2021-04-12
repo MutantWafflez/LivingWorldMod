@@ -3,10 +3,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 
-namespace LivingWorldMod.Content.UI.Elements {
-
-    public class CustomUIImageButton : CustomUIImage {
-
+namespace LivingWorldMod.Content.UI.Elements
+{
+    public class CustomUIImageButton : CustomUIImage
+    {
         /// <summary>
         /// Whether the UIElement will behave like a toggleable or not.
         /// </summary>
@@ -18,13 +18,15 @@ namespace LivingWorldMod.Content.UI.Elements {
         public bool Toggled { get; private set; }
 
         public CustomUIImageButton(Texture2D texture, float scale = 1, float opacity = 1, float imageRotation = 0,
-            Color overlayColor = default) : base(texture, scale, opacity, imageRotation, overlayColor) {
+            Color overlayColor = default) : base(texture, scale, opacity, imageRotation, overlayColor)
+        {
             Init();
         }
 
         public CustomUIImageButton(Texture2D texture, bool scaleToFit = false, float opacity = 1,
             float imageRotation = 0, Color overlayColor = default) : base(texture, scaleToFit, opacity, imageRotation,
-            overlayColor) {
+            overlayColor)
+        {
             Init();
         }
 
@@ -32,7 +34,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// Sets the Toggleable state of the UIElement.
         /// </summary>
         /// <param name="isToggleable"> If true, UIElement is toggleable. </param>
-        public void SetToggleable(bool isToggleable) {
+        public void SetToggleable(bool isToggleable)
+        {
             Toggleable = isToggleable;
         }
 
@@ -40,19 +43,23 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// Used to manually modify the Toggled value. (Should not be used unless necessary)
         /// </summary>
         /// <param name="toggleValue"> If true, UIelement is toggled on. </param>
-        public void SetToggled(bool toggleValue) {
+        public void SetToggled(bool toggleValue)
+        {
             Toggled = toggleValue;
         }
 
-        private void Init() {
-            OnMouseOver += (__, _) => {
+        private void Init()
+        {
+            OnMouseOver += (__, _) =>
+            {
                 if (Main.LocalPlayer.whoAmI != Main.myPlayer) return;
                 Main.PlaySound(SoundID.MenuTick);
             };
 
             SetOpacity(.45f);
 
-            OnMouseDown += (__, _) => {
+            OnMouseDown += (__, _) =>
+            {
                 if (Toggleable) Toggled = !Toggled;
                 SetOpacity(Toggled ? 1f : .75f);
             };

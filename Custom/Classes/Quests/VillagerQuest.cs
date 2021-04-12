@@ -1,10 +1,10 @@
 ﻿using LivingWorldMod.Custom.Enums;
 using Terraria;
 
-namespace LivingWorldMod.Custom.Classes.Quests {
-
-    public abstract class VillagerQuest {
-
+namespace LivingWorldMod.Custom.Classes.Quests
+{
+    public abstract class VillagerQuest
+    {
         /// <summary>
         /// What the villager will say when the "Quest" button is pressed for this specific quest.
         /// </summary>

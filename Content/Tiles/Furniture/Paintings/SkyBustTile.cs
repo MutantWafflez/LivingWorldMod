@@ -4,11 +4,12 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Content.Tiles.Furniture.Paintings {
-
-    public class SkyBustTile : ModTile {
-
-        public override void SetDefaults() {
+namespace LivingWorldMod.Content.Tiles.Furniture.Paintings
+{
+    public class SkyBustTile : ModTile
+    {
+        public override void SetDefaults()
+        {
             Main.tileFrameImportant[Type] = true;
             Main.tileWaterDeath[Type] = true;
             Main.tileLavaDeath[Type] = true;
@@ -23,7 +24,8 @@ namespace LivingWorldMod.Content.Tiles.Furniture.Paintings {
             AddMapEntry(new Color(139, 69, 19), mapName);
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) {
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
             Item.NewItem(new Vector2(i * 16, j * 16), ModContent.ItemType<SkyBustTileItem>(), 1);
         }
     }

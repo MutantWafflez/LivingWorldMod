@@ -1,8 +1,9 @@
 ﻿using Terraria.ModLoader;
 
-namespace LivingWorldMod.Content.Commands {
-
-    public class RefreshShops : ModCommand {
+namespace LivingWorldMod.Content.Commands
+{
+    public class RefreshShops : ModCommand
+    {
         public override string Command => "rshops";
 
         public override CommandType Type => CommandType.World;
@@ -11,7 +12,8 @@ namespace LivingWorldMod.Content.Commands {
 
         public override string Usage => "/rshops";
 
-        public override void Action(CommandCaller caller, string input, string[] args) {
+        public override void Action(CommandCaller caller, string input, string[] args)
+        {
             ModContent.GetInstance<LWMWorld>().RefreshDailyShops();
             caller.Reply("Daily shops have been refreshed.");
         }

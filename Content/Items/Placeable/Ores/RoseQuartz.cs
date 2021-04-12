@@ -1,15 +1,17 @@
 ﻿using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Content.Items.Placeable.Ores {
-
-    internal class RoseQuartz : ModItem {
-
-        public override void SetStaticDefaults() {
+namespace LivingWorldMod.Content.Items.Placeable.Ores
+{
+    internal class RoseQuartz : ModItem
+    {
+        public override void SetStaticDefaults()
+        {
             ItemID.Sets.SortingPriorityMaterials[item.type] = 58;
         }
 
-        public override void SetDefaults() {
+        public override void SetDefaults()
+        {
             item.maxStack = 999;
             item.width = 18;
             item.height = 16;

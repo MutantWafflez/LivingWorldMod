@@ -1,4 +1,3 @@
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.IO;
 using LivingWorldMod.Content.Items.Materials;
@@ -9,14 +8,16 @@ using LivingWorldMod.Custom.Classes.Packets;
 using LivingWorldMod.Custom.Classes.Quests;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace LivingWorldMod {
-
-    public class LivingWorldMod : Mod {
+namespace LivingWorldMod
+{
+    public class LivingWorldMod : Mod
+    {
         public static readonly int maximumReputationValue = 200;
         internal static bool debugMode = true;
 
@@ -27,33 +28,41 @@ namespace LivingWorldMod {
 
         public static LivingWorldMod Instance { get; private set; }
 
-        public LivingWorldMod() {
+        public LivingWorldMod()
+        {
             LWMPacket.RegisterAllHandlers();
             Instance = this;
         }
 
         #region Update Methods
 
-        public override void PostUpdateEverything() {
-            for (int repIndex = 0; repIndex < (int)VillagerID.VillagerTypeCount; repIndex++) {
-                if (LWMWorld.reputation[repIndex] > maximumReputationValue) {
+        public override void PostUpdateEverything()
+        {
+            for (int repIndex = 0; repIndex < (int)VillagerID.VillagerTypeCount; repIndex++)
+            {
+                if (LWMWorld.reputation[repIndex] > maximumReputationValue)
+                {
                     LWMWorld.reputation[repIndex] = maximumReputationValue;
                 }
-                else if (LWMWorld.reputation[repIndex] < 0) {
+                else if (LWMWorld.reputation[repIndex] < 0)
+                {
                     LWMWorld.reputation[repIndex] = 0;
                 }
             }
         }
 
-        public override void UpdateMusic(ref int music, ref MusicPriority priority) {
-            if (Main.myPlayer == -1 || Main.gameMenu || !Main.LocalPlayer.active) {
+        public override void UpdateMusic(ref int music, ref MusicPriority priority)
+        {
+            if (Main.myPlayer == -1 || Main.gameMenu || !Main.LocalPlayer.active)
+            {
                 return;
             }
 
             Player myPlayer = Main.player[Main.myPlayer];
 
             //42.5 block radius around the shrine for the music
-            if (myPlayer.Distance(LWMWorld.GetShrineWorldPosition(VillagerID.Harpy)) <= 16 * 95) {
+            if (myPlayer.Distance(LWMWorld.GetShrineWorldPosition(VillagerID.Harpy)) <= 16 * 95)
+            {
                 music = GetSoundSlot(SoundType.Music,
                     $"Assets/Audio/Music/HarpyVillage{(Main.dayTime ? "Day" : "Night")}Music");
                 priority = MusicPriority.Environment;
@@ -64,8 +73,8 @@ namespace LivingWorldMod {
 
         #region Loading
 
-        public override void Load() {
-
+        public override void Load()
+        {
             #region Villager Related Method Swaps
 
             //Allows our villagers to have NPC names despite not having a map head
@@ -79,7 +88,8 @@ namespace LivingWorldMod {
 
             #region UI Initialization
 
-            if (!Main.dedServ && Main.netMode != NetmodeID.Server) {
+            if (!Main.dedServ && Main.netMode != NetmodeID.Server)
+            {
                 HarpyShrineInterface = new UserInterface();
                 HarpyShrineState = new ShrineUIState();
                 HarpyShrineState.Activate();
@@ -89,13 +99,15 @@ namespace LivingWorldMod {
             #endregion UI Initialization
         }
 
-        public override void PostSetupContent() {
+        public override void PostSetupContent()
+        {
             villageGiftPreferences = new int[ItemLoader.ItemCount * (int)VillagerID.VillagerTypeCount];
             InitializeDefaultGiftPreferences();
             InitializeDefaultVillagerQuests();
         }
 
-        public void InitializeDefaultGiftPreferences() {
+        public void InitializeDefaultGiftPreferences()
+        {
             //Harpy Villagers
             SetGiftValue((int)VillagerID.Harpy, ItemID.Worm, 3);
             SetGiftValue((int)VillagerID.Harpy, ItemID.FallenStar, 5);
@@ -103,16 +115,19 @@ namespace LivingWorldMod {
             SetGiftValue((int)VillagerID.Harpy, ItemID.GiantHarpyFeather, -5);
         }
 
-        public override void HandlePacket(BinaryReader reader, int whoAmI) {
+        public override void HandlePacket(BinaryReader reader, int whoAmI)
+        {
             PacketID type = (PacketID)reader.ReadByte();
             Logger.Debug("Received packet: " + type);
             if (!LWMPacket.TryHandlePacket(type, reader, whoAmI))
                 Logger.Error($"Unknown packet type {type}.");
         }
 
-        public void InitializeDefaultVillagerQuests() {
+        public void InitializeDefaultVillagerQuests()
+        {
             //List Initialization
-            for (int i = 0; i < possibleQuests.Length; i++) {
+            for (int i = 0; i < possibleQuests.Length; i++)
+            {
                 possibleQuests[i] = new List<VillagerQuest>();
             }
 
@@ -150,7 +165,8 @@ namespace LivingWorldMod {
         /// <param name="value">
         /// The new gift value of the given item type. Value between -5 and 5.
         /// </param>
-        public static void SetGiftValue(VillagerID villagerType, int itemType, int value) {
+        public static void SetGiftValue(VillagerID villagerType, int itemType, int value)
+        {
             int index = (int)villagerType * ItemLoader.ItemCount + itemType;
             villageGiftPreferences[index] = Utils.Clamp(value, -5, 5);
         }
@@ -160,7 +176,8 @@ namespace LivingWorldMod {
         /// </summary>
         /// <param name="villagerType"> The villager type to find the specific preference of. </param>
         /// <param name="itemType"> The type of item to have its reputation modifier checked. </param>
-        public static int GetGiftValue(VillagerID villagerType, int itemType) {
+        public static int GetGiftValue(VillagerID villagerType, int itemType)
+        {
             int index = (int)villagerType * ItemLoader.ItemCount + itemType;
             return villageGiftPreferences[index];
         }
@@ -173,19 +190,23 @@ namespace LivingWorldMod {
         internal static ShrineUIState HarpyShrineState;
         private GameTime _lastUpdateUiGameTime;
 
-        public override void UpdateUI(GameTime gameTime) {
+        public override void UpdateUI(GameTime gameTime)
+        {
             _lastUpdateUiGameTime = gameTime;
             if (HarpyShrineInterface?.CurrentState != null)
                 HarpyShrineInterface.Update(gameTime);
         }
 
-        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
+        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+        {
             //https://github.com/tModLoader/tModLoader/wiki/Vanilla-Interface-layers-values
             int interfaceLayer = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Interface Logic 1"));
-            if (interfaceLayer != -1) {
+            if (interfaceLayer != -1)
+            {
                 layers.Insert(interfaceLayer, new LegacyGameInterfaceLayer(
                     "LWM: HarpyShrine",
-                    delegate {
+                    delegate
+                    {
                         if (_lastUpdateUiGameTime != null && HarpyShrineInterface?.CurrentState != null)
                             HarpyShrineInterface.Draw(Main.spriteBatch, _lastUpdateUiGameTime);
 
@@ -199,39 +220,48 @@ namespace LivingWorldMod {
 
         #region Method Swaps
 
-        private int NPC_TypeToHeadIndex(On.Terraria.NPC.orig_TypeToHeadIndex orig, int type) {
-            if (type == ModContent.NPCType<SkyVillager>()) {
+        private int NPC_TypeToHeadIndex(On.Terraria.NPC.orig_TypeToHeadIndex orig, int type)
+        {
+            if (type == ModContent.NPCType<SkyVillager>())
+            {
                 return type;
             }
 
             return orig(type);
         }
 
-        private void NPC_AI_007_TownEntities(On.Terraria.NPC.orig_AI_007_TownEntities orig, NPC self) {
-            if (self.IsTypeOfVillager()) {
+        private void NPC_AI_007_TownEntities(On.Terraria.NPC.orig_AI_007_TownEntities orig, NPC self)
+        {
+            if (self.IsTypeOfVillager())
+            {
                 self.townNPC = true;
                 self.homeTileX = (int)((Villager)self.modNPC).homePosition.X;
                 self.homeTileY = (int)((Villager)self.modNPC).homePosition.Y;
             }
-            else if (self.IsTypeOfQuestVillager()) {
+            else if (self.IsTypeOfQuestVillager())
+            {
                 self.townNPC = true;
                 self.homeTileX = (int)(self.position.X / 16);
                 self.homeTileY = (int)(self.position.Y / 16);
             }
 
             orig(self);
-            if (self.IsTypeOfVillager() || self.IsTypeOfQuestVillager()) {
+            if (self.IsTypeOfVillager() || self.IsTypeOfQuestVillager())
+            {
                 self.townNPC = false;
             }
         }
 
-        private void NPC_VanillaFindFrame(On.Terraria.NPC.orig_VanillaFindFrame orig, NPC self, int frameHeight) {
-            if (self.IsTypeOfVillager() || self.IsTypeOfQuestVillager()) {
+        private void NPC_VanillaFindFrame(On.Terraria.NPC.orig_VanillaFindFrame orig, NPC self, int frameHeight)
+        {
+            if (self.IsTypeOfVillager() || self.IsTypeOfQuestVillager())
+            {
                 self.townNPC = true;
             }
 
             orig(self, frameHeight);
-            if (self.IsTypeOfVillager() || self.IsTypeOfQuestVillager()) {
+            if (self.IsTypeOfVillager() || self.IsTypeOfQuestVillager())
+            {
                 self.townNPC = false;
             }
         }

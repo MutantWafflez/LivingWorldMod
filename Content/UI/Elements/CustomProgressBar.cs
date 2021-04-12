@@ -4,23 +4,26 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.Elements {
-
-    public class CustomProgressBar : CustomUIElement {
+namespace LivingWorldMod.Content.UI.Elements
+{
+    public class CustomProgressBar : CustomUIElement
+    {
         private readonly int _maxProgress;
         private readonly bool _giftMode;
         private readonly Texture2D _backgroundTexture;
         private readonly Texture2D _progressTexture;
         private UIElement _frame;
 
-        public CustomProgressBar(Texture2D backgroundTexture, Texture2D progressTexture, int maxProgress, bool giftMode) {
+        public CustomProgressBar(Texture2D backgroundTexture, Texture2D progressTexture, int maxProgress, bool giftMode)
+        {
             _backgroundTexture = backgroundTexture;
             _progressTexture = progressTexture;
             _maxProgress = maxProgress;
             _giftMode = giftMode;
         }
 
-        public override void OnInitialize() {
+        public override void OnInitialize()
+        {
             _frame = new UIElement();
             _frame.Width.Set(Width.Pixels, 0);
             _frame.Height.Set(Height.Pixels, 0);
@@ -28,11 +31,13 @@ namespace LivingWorldMod.Content.UI.Elements {
             Append(_frame);
         }
 
-        protected override void DrawSelf(SpriteBatch spriteBatch) {
+        protected override void DrawSelf(SpriteBatch spriteBatch)
+        {
             VillagerID shrineType = ShrineUIPanel.shrineType;
 
             float quotient;
-            if (_giftMode) {
+            if (_giftMode)
+            {
                 int giftProgress = LWMWorld.GetGiftProgress(shrineType);
                 quotient = giftProgress / (float)_maxProgress;
             }

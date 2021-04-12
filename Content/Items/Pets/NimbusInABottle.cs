@@ -3,17 +3,19 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Content.Items.Pets {
-
-    public class NimbusInABottle : ModItem {
-
-        public override void SetStaticDefaults() {
+namespace LivingWorldMod.Content.Items.Pets
+{
+    public class NimbusInABottle : ModItem
+    {
+        public override void SetStaticDefaults()
+        {
             // TODO: Localization
             DisplayName.SetDefault("Nimbus in a bottle");
             Tooltip.SetDefault("Summons a pet nimbus to follow you around");
         }
 
-        public override void SetDefaults() {
+        public override void SetDefaults()
+        {
             item.damage = 0;
             item.useStyle = ItemUseStyleID.SwingThrow;
             item.width = 20;
@@ -27,7 +29,8 @@ namespace LivingWorldMod.Content.Items.Pets {
             item.buffType = ModContent.BuffType<NimbusPetBuff>();
         }
 
-        public override void UseStyle(Player player) {
+        public override void UseStyle(Player player)
+        {
             if (player.whoAmI == Main.myPlayer && player.itemTime == 0)
                 player.AddBuff(item.buffType, 20000, true);
         }

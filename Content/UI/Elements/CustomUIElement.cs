@@ -2,9 +2,10 @@
 using Terraria;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.Elements {
-
-    public class CustomUIElement : UIElement {
+namespace LivingWorldMod.Content.UI.Elements
+{
+    public class CustomUIElement : UIElement
+    {
         private UIElement _parent;
 
         private bool _initialized = false;
@@ -34,11 +35,13 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// </summary>
         public bool Visible { get; private set; } = true;
 
-        public override void Update(GameTime gameTime) {
+        public override void Update(GameTime gameTime)
+        {
             base.Update(gameTime);
 
             //TODO: Fix Size and Scale issues
-            if (!_initialized) {
+            if (!_initialized)
+            {
                 SetSize(Width.Pixels, Height.Pixels);
                 _initialized = true;
             }
@@ -56,7 +59,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// <param name="scale">
         /// Negative values will mirror the UIElement drawing by the x and y vertices.
         /// </param>
-        public virtual void SetScale(float scale) {
+        public virtual void SetScale(float scale)
+        {
             Scale = scale;
             SetSize(Size);
         }
@@ -65,7 +69,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// Sets the UIElement opacity.
         /// </summary>
         /// <param name="opacity"> The bigger the value, the more transparent it will seem. </param>
-        public virtual void SetOpacity(float opacity) {
+        public virtual void SetOpacity(float opacity)
+        {
             Opacity = opacity;
         }
 
@@ -74,7 +79,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// </summary>
         /// <param name="width"> Width in pixels. </param>
         /// <param name="height"> Height in pixels. </param>
-        public virtual void SetSize(float width, float height) {
+        public virtual void SetSize(float width, float height)
+        {
             Size = new Vector2(width, height);
             Width.Set(width * Scale, 0);
             Height.Set(height * Scale, 0);
@@ -84,7 +90,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// Sets the UIElement width/height dimensions.
         /// </summary>
         /// <param name="size"> A Vector2 where x: width and y: height. </param>
-        public virtual void SetSize(Vector2 size) {
+        public virtual void SetSize(Vector2 size)
+        {
             Size = size;
             Width.Set(size.X * Scale, 0);
             Height.Set(size.Y * Scale, 0);
@@ -95,7 +102,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// </summary>
         /// <param name="left"> Left offset in pixels. </param>
         /// <param name="top"> Top offset in pixels. </param>
-        public virtual void SetOffset(float left, float top) {
+        public virtual void SetOffset(float left, float top)
+        {
             Offset = new Vector2(left, top);
             Left.Set(left, 0);
             Top.Set(top, 0);
@@ -105,7 +113,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// Sets the UIElement left/top offset dimensions
         /// </summary>
         /// <param name="offset"> A Vector2 where x: left and y: top. </param>
-        public virtual void SetOffset(Vector2 offset) {
+        public virtual void SetOffset(Vector2 offset)
+        {
             Offset = offset;
             Left.Set(offset.X, 0);
             Top.Set(offset.Y, 0);
@@ -114,7 +123,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// <summary>
         /// Hides the element if visible or shows the element if not.
         /// </summary>
-        public virtual void Toggle() {
+        public virtual void Toggle()
+        {
             if (Visible)
                 Hide();
             else
@@ -132,7 +142,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// <summary>
         /// Makes the element render and re-enables all of its functionality.
         /// </summary>
-        public virtual void Show() {
+        public virtual void Show()
+        {
             if (Visible) return;
 
             Visible = true;
@@ -144,7 +155,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// <summary>
         /// Makes the element not render and disables all of its functionality.
         /// </summary>
-        public virtual void Hide() {
+        public virtual void Hide()
+        {
             if (!Visible) return;
 
             Visible = false;

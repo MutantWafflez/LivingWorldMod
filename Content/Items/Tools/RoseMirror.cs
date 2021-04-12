@@ -3,15 +3,17 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Content.Items.Tools {
-
-    internal class RoseMirror : ModItem {
-
-        public override void SetStaticDefaults() {
+namespace LivingWorldMod.Content.Items.Tools
+{
+    internal class RoseMirror : ModItem
+    {
+        public override void SetStaticDefaults()
+        {
             Tooltip.SetDefault("Teleports you to the Harpy Village");
         }
 
-        public override void SetDefaults() {
+        public override void SetDefaults()
+        {
             item.width = 30;
             item.height = 32;
             item.useStyle = ItemUseStyleID.HoldingUp;
@@ -23,7 +25,8 @@ namespace LivingWorldMod.Content.Items.Tools {
             item.value = Item.sellPrice(silver: 15);
         }
 
-        public override void AddRecipes() {
+        public override void AddRecipes()
+        {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ModContent.ItemType<RoseQuartz>(), 10);
             recipe.AddIngredient(ItemID.SunplateBlock, 8);

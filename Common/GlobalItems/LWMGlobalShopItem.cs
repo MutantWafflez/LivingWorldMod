@@ -7,14 +7,14 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Common.GlobalItems {
-
+namespace LivingWorldMod.Common.GlobalItems
+{
     /// <summary>
     /// This class is used for Shop items that have a limited stock. The fields are first set in
     /// Villager.SetupShop(), and then managed further later on in some buy/sell ModPlayer hooks.
     /// </summary>
-    public class LWMGlobalShopItem : GlobalItem {
-
+    public class LWMGlobalShopItem : GlobalItem
+    {
         /// <summary>
         /// If true, an X is drawn over the sprite in PostDrawInInventory. This is set in a
         /// PlayerHook after buying the last of an item.
@@ -41,7 +41,8 @@ namespace LivingWorldMod.Common.GlobalItems {
 
         public override bool CloneNewInstances => true;
 
-        public override void SetDefaults(Item item) {
+        public override void SetDefaults(Item item)
+        {
             // probably not necessary or smart to set this for every single item in the game
             //item.buyOnce = false;
             isOutOfStock = false;
@@ -52,20 +53,24 @@ namespace LivingWorldMod.Common.GlobalItems {
         #endregion Instance Management
 
         // called on opening a shop window
-        public void SetPersistentStack(ShopItem dailyStock) {
+        public void SetPersistentStack(ShopItem dailyStock)
+        {
             this.dailyStock = dailyStock;
         }
 
         // called on purchase
-        public void UpdateInventory(int stackSize) {
+        public void UpdateInventory(int stackSize)
+        {
             dailyStock.stackSize = stackSize;
         }
 
         #region Display Management
 
         public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor,
-            Vector2 origin, float scale) {
-            if (isOutOfStock) {
+            Vector2 origin, float scale)
+        {
+            if (isOutOfStock)
+            {
                 Texture2D itemTexture = Main.itemTexture[item.type];
                 Texture2D overTexture = ModContent.GetTexture("Terraria/CoolDown");
                 position.X += itemTexture.Width / 2f * scale;
@@ -76,13 +81,15 @@ namespace LivingWorldMod.Common.GlobalItems {
             }
         }
 
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+        {
             // don't modify tooltips of non-shop slots or slots with only one item (includes out of stock)
             if (!isOriginalShopSlot || item.stack <= 1)
                 return;
 
             TooltipLine line = tooltips.FirstOrDefault(l => l.Name == "Price");
-            if (line != null) {
+            if (line != null)
+            {
                 // construct text
                 int value = item.GetStoreValue();
                 int copper = value % 100;

@@ -4,15 +4,15 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Content.Tiles.WorldGen {
-
-    public class SpiderSacTile : ModTile {
-
-        public override void SetDefaults() {
+namespace LivingWorldMod.Content.Tiles.WorldGen
+{
+    public class SpiderSacTile : ModTile
+    {
+        public override void SetDefaults()
+        {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
@@ -36,8 +36,10 @@ namespace LivingWorldMod.Content.Tiles.WorldGen {
 
         public override bool Dangersense(int i, int j, Player player) => true;
 
-        public override void PostDraw(int i, int j, SpriteBatch spriteBatch) {
-            if (Main.rand.NextFloat() < 0.075f) {
+        public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+        {
+            if (Main.rand.NextFloat() < 0.075f)
+            {
                 Dust dust;
                 Vector2 position = new Vector2(i * 16, j * 16);
                 dust = Main.dust[Dust.NewDust(position, 16, 16, 102, 0f, 0f, 0, new Color(255, 255, 255), 1f)];
@@ -45,7 +47,8 @@ namespace LivingWorldMod.Content.Tiles.WorldGen {
             }
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) {
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
             Projectile.NewProjectile(new Vector2(i * 16 + 16, j * 16 + frameY + 16), Vector2.Zero, ModContent.ProjectileType<SpiderSacProj>(), 0, 0);
         }
     }
