@@ -15,7 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="StructureHelper">
-      <HintPath>lib\StructureHelper.XNA.dll</HintPath>
+      <HintPath>Custom\Libraries\StructureHelper.XNA.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
