@@ -1,5 +1,4 @@
 displayName = Living World Mod
-author = Living World Dev Team
+author = MutantWafflez
 version = 0.1
 buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*
-modReferences = StructureHelper
