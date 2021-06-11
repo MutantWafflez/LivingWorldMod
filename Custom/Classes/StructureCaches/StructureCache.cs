@@ -3,20 +3,33 @@
     /// <summary>
     /// Okay, full send, I know this is probably a really disgusting way to go about this but I am
     /// really bad at World Gen so this is the best I got with what I know what to do. So, here you
-    /// go. Anyways, as for what this actually does, create an instance of the class and use the
-    /// proper generation method to generate all of the array data needed to generate the given structure.
+    /// go. Anyways, as for what this actually does, there should be a child class for each
+    /// structure that overrides each of the array properties for all the data required in the structure.
     /// </summary>
-    public sealed partial class StructureCache {
-        public int[,] currentTileArray;
+    public abstract class StructureCache {
 
-        public int[,] currentSlopeArray;
+        public abstract int[,] TileTypeArray {
+            get;
+        }
 
-        public int[,] currentWallArray;
+        public abstract int[,] SlopeTypeArray {
+            get;
+        }
 
-        public int[,] currentLiquidArray;
+        public abstract int[,] WallTypeArray {
+            get;
+        }
 
-        public int[,] currentXFrameArray;
+        public abstract int[,] LiquidAmountArray {
+            get;
+        }
 
-        public int[,] currentYFrameArray;
+        public abstract int[,] TileXFrameArray {
+            get;
+        }
+
+        public abstract int[,] TileYFrameArray {
+            get;
+        }
     }
 }

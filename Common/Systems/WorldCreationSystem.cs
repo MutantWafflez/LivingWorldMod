@@ -29,10 +29,9 @@ namespace LivingWorldMod.Common.Systems {
             progress.Message = "Generating Structures... Harpy Village";
             progress.Set(0f);
 
-            StructureCache harpyCache = new StructureCache();
-            harpyCache.GenerateHarpyVillageArrays();
+            StructureCache harpyCache = new HarpyVillageCache();
 
-            int xLocation = (Main.maxTilesX / 2) - (harpyCache.currentTileArray.GetLength(0) / 2);
+            int xLocation = (Main.maxTilesX / 2) - (harpyCache.TileTypeArray.GetLength(0) / 2);
             int yLocation = Main.rand.Next((int)(Main.maxTilesY * 0.05f), (int)(Main.maxTilesY * 0.1f));
 
             WorldGenUtilities.GenerateWithStructureCache(harpyCache, xLocation, yLocation, progress);
