@@ -4,7 +4,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Content.Items.Debug {
+namespace LivingWorldMod.Content.Items.DebugItems {
 
     public class StructureStick : ModItem {
         private Point16 topLeft = Point16.NegativeOne;
