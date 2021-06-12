@@ -60,14 +60,6 @@
             get;
         }
 
-        public abstract bool[,] AreCheckingLiquids {
-            get;
-        }
-
-        public abstract bool[,] AreSkippingLiquids {
-            get;
-        }
-
         public abstract int[,] LiquidTypes {
             get;
         }

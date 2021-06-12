@@ -47,7 +47,7 @@ namespace LivingWorldMod.Content.Items.DebugItems {
         public override bool AltFunctionUse(Player player) => true;
 
         private void SaveStructure() {
-            /* Tile Fields/Properties:
+            /* Relevant Tile Fields/Properties:
             tile.type;
             IsActivated
             IsHalfBlock;
@@ -62,8 +62,6 @@ namespace LivingWorldMod.Content.Items.DebugItems {
             tile.BlueWire;
             tile.GreenWire;
             tile.YellowWire;
-            tile.CheckingLiquid;
-            tile.SkipLiquid;
             tile.LiquidType;
             tile.LiquidAmount;
             tile.wall;
@@ -88,8 +86,6 @@ namespace LivingWorldMod.Content.Items.DebugItems {
             bool[,] haveBlueWires = new bool[xWidth, yHeight];
             bool[,] haveGreenWires = new bool[xWidth, yHeight];
             bool[,] haveYellowWires = new bool[xWidth, yHeight];
-            bool[,] areCheckingLiquids = new bool[xWidth, yHeight];
-            bool[,] areSkippingLiquids = new bool[xWidth, yHeight];
             int[,] liquidTypes = new int[xWidth, yHeight];
             int[,] liquidAmounts = new int[xWidth, yHeight];
             int[,] wallTypes = new int[xWidth, yHeight];
@@ -152,8 +148,6 @@ namespace LivingWorldMod.Content.Items.DebugItems {
                     haveBlueWires[x, y] = requestedTile.BlueWire;
                     haveGreenWires[x, y] = requestedTile.GreenWire;
                     haveYellowWires[x, y] = requestedTile.YellowWire;
-                    areCheckingLiquids[x, y] = requestedTile.CheckingLiquid;
-                    areSkippingLiquids[x, y] = requestedTile.SkipLiquid;
                     liquidTypes[x, y] = requestedTile.LiquidType;
                     liquidAmounts[x, y] = requestedTile.LiquidAmount;
                     wallTypes[x, y] = requestedTile.wall;
@@ -177,8 +171,6 @@ namespace LivingWorldMod.Content.Items.DebugItems {
             PrintBoolToConsole("Tile Have Blue Wire", haveBlueWires);
             PrintBoolToConsole("Tile Have Green Wire", haveGreenWires);
             PrintBoolToConsole("Tile Have Yellow Wire", haveYellowWires);
-            PrintBoolToConsole("Are Checking Liquids", areCheckingLiquids);
-            PrintBoolToConsole("Are Skipping Liquids", areSkippingLiquids);
             PrintIntToConsole("Liquid Types", liquidTypes);
             PrintIntToConsole("Liquid Amounts", liquidAmounts);
             PrintIntToConsole("Wall Types", wallTypes);

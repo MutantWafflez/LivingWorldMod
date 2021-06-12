@@ -574,10 +574,6 @@
 
         public override bool[,] HaveYellowWires => new bool[TileTypes.GetLength(0), TileTypes.GetLength(1)]; //No Tiles With Yellow Wire
 
-        public override bool[,] AreCheckingLiquids => new bool[TileTypes.GetLength(0), TileTypes.GetLength(1)]; //No Tiles Checking Liquids
-
-        public override bool[,] AreSkippingLiquids => new bool[TileTypes.GetLength(0), TileTypes.GetLength(1)]; //No Tiles Skipping Liquids
-
         public override int[,] LiquidTypes => new int[TileTypes.GetLength(0), TileTypes.GetLength(1)]; //No non-water Liquids
 
         public override int[,] LiquidAmounts => new int[,] {

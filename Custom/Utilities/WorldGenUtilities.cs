@@ -38,8 +38,6 @@ namespace LivingWorldMod.Custom.Utilities {
                     selectedTile.BlueWire = cache.HaveBlueWires[y, x];
                     selectedTile.GreenWire = cache.HaveGreenWires[y, x];
                     selectedTile.YellowWire = cache.HaveYellowWires[y, x];
-                    selectedTile.CheckingLiquid = cache.AreCheckingLiquids[y, x];
-                    selectedTile.SkipLiquid = cache.AreSkippingLiquids[y, x];
                     selectedTile.LiquidType = cache.LiquidTypes[y, x];
                     selectedTile.LiquidAmount = (byte)cache.LiquidAmounts[y, x];
                     selectedTile.wall = (ushort)cache.WallTypes[y, x];
