@@ -35,15 +35,9 @@ namespace LivingWorldMod.Content.Items.DebugItems {
                 }
                 return true;
             }
-            else if (player.altFunctionUse == 2) {
-                if (topLeft != Point16.NegativeOne && bottomRight != Point16.NegativeOne) {
-                    Main.NewText("Saving Structure...");
-                    SaveStructure();
-                }
-                else {
-                    Tile selectedTile = Framing.GetTileSafely((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
-                }
-
+            else if (player.altFunctionUse == 2 && topLeft != Point16.NegativeOne && bottomRight != Point16.NegativeOne) {
+                Main.NewText("Saving Structure...");
+                SaveStructure();
                 return true;
             }
 
