@@ -8,27 +8,91 @@
     /// </summary>
     public abstract class StructureCache {
 
-        public abstract int[,] TileTypeArray {
+        public abstract int[,] TileTypes {
             get;
         }
 
-        public abstract int[,] SlopeTypeArray {
+        public abstract bool[,] AreTilesHalfBlocks {
             get;
         }
 
-        public abstract int[,] WallTypeArray {
+        public abstract int[,] TileFrameNumbers {
             get;
         }
 
-        public abstract int[,] LiquidAmountArray {
+        public abstract int[,] TileFrameXs {
             get;
         }
 
-        public abstract int[,] TileXFrameArray {
+        public abstract int[,] TileFrameYs {
             get;
         }
 
-        public abstract int[,] TileYFrameArray {
+        public abstract int[,] TileSlopeTypes {
+            get;
+        }
+
+        public abstract int[,] TileColors {
+            get;
+        }
+
+        public abstract bool[,] AreTilesActuated {
+            get;
+        }
+
+        public abstract bool[,] HaveActuators {
+            get;
+        }
+
+        public abstract bool[,] HaveRedWires {
+            get;
+        }
+
+        public abstract bool[,] HaveBlueWires {
+            get;
+        }
+
+        public abstract bool[,] HaveGreenWires {
+            get;
+        }
+
+        public abstract bool[,] HaveYellowWires {
+            get;
+        }
+
+        public abstract bool[,] AreCheckingLiquids {
+            get;
+        }
+
+        public abstract bool[,] AreSkippingLiquids {
+            get;
+        }
+
+        public abstract int[,] LiquidTypes {
+            get;
+        }
+
+        public abstract int[,] LiquidAmounts {
+            get;
+        }
+
+        public abstract int[,] WallTypes {
+            get;
+        }
+
+        public abstract int[,] WallColors {
+            get;
+        }
+
+        public abstract int[,] WallFrameNumbers {
+            get;
+        }
+
+        public abstract int[,] WallFrameXs {
+            get;
+        }
+
+        public abstract int[,] WallFrameYs {
             get;
         }
     }
