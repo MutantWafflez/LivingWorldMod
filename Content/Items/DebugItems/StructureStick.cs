@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Text;
+using LivingWorldMod.Custom.Utilities;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -95,48 +97,62 @@ namespace LivingWorldMod.Content.Items.DebugItems {
             int[,] wallFrameXs = new int[xWidth, yHeight];
             int[,] wallFrameYs = new int[xWidth, yHeight];
 
-            string PrintIntArray(int[,] array) {
-                string fullLine = "";
+            string PrintIntArray(int[,] array, string fieldName) {
+                string fullLine = "        public override int[,] " + fieldName + " => new int[,] {\n";
+                bool hasNonDefaultValue = false;
+
                 for (int y = 0; y < yHeight; y++) {
-                    string line = "{";
+                    string line = "            {";
                     for (int x = 0; x < xWidth; x++) {
+                        if (array[x, y] != default) {
+                            hasNonDefaultValue = true;
+                        }
                         if (x == 0) {
                             line = String.Concat(line, array[x, y]);
                         }
                         else if (x != xWidth - 1) {
-                            line = String.Concat(line, "," + array[x, y]);
+                            line = String.Concat(line, ", " + array[x, y]);
                         }
                         else {
-                            line = String.Concat(line, "," + array[x, y] + "},");
+                            line = String.Concat(line, ", " + array[x, y] + "},");
                         }
                     }
 
                     fullLine = String.Concat(fullLine, line + "\n");
                 }
 
-                return fullLine;
+                fullLine += "        };\n\n";
+
+                return hasNonDefaultValue ? fullLine : $"        public override int[,] {fieldName} => new int[TileTypes.GetLength(0),TileTypes.GetLength(1)]; //All default values\n\n";
             }
 
-            string PrintBoolArray(bool[,] array) {
-                string fullLine = "";
+            string PrintBoolArray(bool[,] array, string fieldName) {
+                string fullLine = "        public override bool[,] " + fieldName + " => new bool[,] {\n";
+                bool hasNonDefaultValue = false;
+
                 for (int y = 0; y < yHeight; y++) {
-                    string line = "{";
+                    string line = "            {";
                     for (int x = 0; x < xWidth; x++) {
+                        if (array[x, y] != default) {
+                            hasNonDefaultValue = true;
+                        }
                         if (x == 0) {
                             line = String.Concat(line, array[x, y].ToString().ToLower());
                         }
                         else if (x != xWidth - 1) {
-                            line = String.Concat(line, "," + array[x, y].ToString().ToLower());
+                            line = String.Concat(line, ", " + array[x, y].ToString().ToLower());
                         }
                         else {
-                            line = String.Concat(line, "," + array[x, y].ToString().ToLower() + "},");
+                            line = String.Concat(line, ", " + array[x, y].ToString().ToLower() + "},");
                         }
                     }
 
                     fullLine = String.Concat(fullLine, line + "\n");
                 }
 
-                return fullLine;
+                fullLine += "        };\n\n";
+
+                return hasNonDefaultValue ? fullLine : $"        public override bool[,] {fieldName} => new bool[TileTypes.GetLength(0),TileTypes.GetLength(1)]; //All default values\n\n";
             }
 
             for (int x = 0; x < xWidth; x++) {
@@ -168,32 +184,40 @@ namespace LivingWorldMod.Content.Items.DebugItems {
             StringBuilder stringCreator = new StringBuilder();
 
             stringCreator.Append("namespace LivingWorldMod.Custom.Classes.StructureCaches {" + Environment.NewLine);
-            stringCreator.Append("public sealed class InsertCacheNameHere : StructureCache {" + Environment.NewLine);
+            stringCreator.Append("    public sealed class InsertCacheNameHere : StructureCache {" + Environment.NewLine);
 
-            stringCreator.Append("public override int[,] TileTypes => new int[,] {\n" + PrintIntArray(tileTypes) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override bool[,] AreTilesHalfBlocks => new bool[,] {\n" + PrintBoolArray(areTilesHalfBlocks) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override int[,] TileFrameNumbers => new int[,] {\n" + PrintIntArray(tileFrameNumbers) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override int[,] TileFrameXs => new int[,] {\n" + PrintIntArray(tileFrameXs) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override int[,] TileFrameYs => new int[,] {\n" + PrintIntArray(tileFrameYs) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override int[,] TileSlopeTypes => new int[,] {\n" + PrintIntArray(tileSlopeTypes) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override int[,] TileColors => new int[,] {\n" + PrintIntArray(tileColors) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override bool[,] AreTilesActuated => new bool[,] {\n" + PrintBoolArray(areTilesActuated) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override bool[,] HaveActuators => new bool[,] {\n" + PrintBoolArray(haveActuators) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override bool[,] HaveRedWires => new bool[,] {\n" + PrintBoolArray(haveRedWires) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override bool[,] HaveBlueWires => new bool[,] {\n" + PrintBoolArray(haveBlueWires) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override bool[,] HaveGreenWires => new bool[,] {\n" + PrintBoolArray(haveGreenWires) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override bool[,] HaveYellowWires => new bool[,] {\n" + PrintBoolArray(haveYellowWires) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override int[,] LiquidTypes => new int[,] {\n" + PrintIntArray(liquidTypes) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override int[,] LiquidAmounts => new int[,] {\n" + PrintIntArray(liquidAmounts) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override int[,] WallTypes => new int[,] {\n" + PrintIntArray(wallTypes) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override int[,] WallColors => new int[,] {\n" + PrintIntArray(wallColors) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override int[,] WallFrameNumbers => new int[,] {\n" + PrintIntArray(wallFrameNumbers) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override int[,] WallFrameXs => new int[,] {\n" + PrintIntArray(wallFrameXs) + "\n};" + Environment.NewLine);
-            stringCreator.Append("public override int[,] WallFrameYs => new int[,] {\n" + PrintIntArray(wallFrameYs) + "\n};" + Environment.NewLine);
+            stringCreator.Append(PrintIntArray(tileTypes, "TileTypes"));
+            stringCreator.Append(PrintBoolArray(areTilesHalfBlocks, "AreTilesHalfBlocks"));
+            stringCreator.Append(PrintIntArray(tileFrameNumbers, "TileFrameNumbers"));
+            stringCreator.Append(PrintIntArray(tileFrameXs, "TileFrameXs"));
+            stringCreator.Append(PrintIntArray(tileFrameYs, "TileFrameYs"));
+            stringCreator.Append(PrintIntArray(tileSlopeTypes, "TileSlopeTypes"));
+            stringCreator.Append(PrintIntArray(tileColors, "TileColors"));
+            stringCreator.Append(PrintBoolArray(areTilesActuated, "AreTilesActuated"));
+            stringCreator.Append(PrintBoolArray(haveActuators, "HaveActuators"));
+            stringCreator.Append(PrintBoolArray(haveRedWires, "HaveRedWires"));
+            stringCreator.Append(PrintBoolArray(haveBlueWires, "HaveBlueWires"));
+            stringCreator.Append(PrintBoolArray(haveGreenWires, "HaveGreenWires"));
+            stringCreator.Append(PrintBoolArray(haveYellowWires, "HaveYellowWires"));
+            stringCreator.Append(PrintIntArray(liquidTypes, "LiquidTypes"));
+            stringCreator.Append(PrintIntArray(liquidAmounts, "LiquidAmounts"));
+            stringCreator.Append(PrintIntArray(wallTypes, "WallTypes"));
+            stringCreator.Append(PrintIntArray(wallColors, "WallColors"));
+            stringCreator.Append(PrintIntArray(wallFrameNumbers, "WallFrameNumbers"));
+            stringCreator.Append(PrintIntArray(wallFrameXs, "WallFrameXs"));
+            stringCreator.Append(PrintIntArray(wallFrameYs, "WallFrameYs"));
 
-            stringCreator.Append("}\n}");
+            stringCreator.Append("    }\n}");
 
-            Main.NewText("Structure Copied to Clipboard!");
+            string outputPath = IOUtilities.GetLWMFilePath() + "/StructureOutput.txt";
+
+            if (File.Exists(outputPath)) {
+                File.Delete(outputPath);
+            }
+
+            File.AppendAllText(outputPath, stringCreator.ToString());
+
+            Main.NewText("Structure Copied to File!");
         }
     }
 }
