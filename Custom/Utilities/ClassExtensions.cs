@@ -1,4 +1,6 @@
 ﻿using System;
+using LivingWorldMod.Content.NPCs.Villagers;
+using Terraria;
 using Terraria.Utilities;
 
 namespace LivingWorldMod.Custom.Utilities {
@@ -7,6 +9,16 @@ namespace LivingWorldMod.Custom.Utilities {
     /// Class that holds all of the class extending methods that this mod uses.
     /// </summary>
     public static class ClassExtensions {
+
+        /// <summary>
+        /// Returns whether or not this npc is any type of Villager.
+        /// </summary>
+        /// <param name="npc"></param>
+        /// <returns></returns>
+        public static bool IsTypeOfVillager(this NPC npc) {
+            return npc.ModNPC?.GetType().IsSubclassOf(typeof(Villager)) ?? false;
+        }
+
 
         /// <summary>
         /// Adds all of the objects and their weights within another list into this list.
