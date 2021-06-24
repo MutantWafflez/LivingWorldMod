@@ -1,6 +1,10 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using System.Collections.Generic;
+using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Utilities;
@@ -78,6 +82,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// Threshold that the reputation must cross in order for these villagers to LOVE the players.
         /// </summary>
         public virtual int LoveThreshold => 95;
+
+        public virtual List<string> PossibleNames => new List<string>();
 
         /// <summary>
         /// Dialogue that is added to the list of reputation dialogue depending on the current
@@ -158,6 +164,17 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             }
         }
 
+        public override string Texture => IOUtilities.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/{VillagerType}Style1";
+
+        public override void SetStaticDefaults() {
+            NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0) {
+                Velocity = 1f,
+                Direction = -1
+            };
+
+            NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
+        }
+
         public override void SetDefaults() {
             NPC.width = 25;
             NPC.height = 40;
@@ -170,6 +187,10 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         //public override void ActsLikeTownNPC => true;
+
+        //public override bool? SpawnsWithCustomName => true;
+
+        public override string TownNPCName() => PossibleNames[WorldGen.genRand.Next(0, PossibleNames.Count)];
 
         public override bool CanChat() => RelationshipStatus != VillagerRelationship.Hate;
 
@@ -208,6 +229,12 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             returnedList.AddList(EventDialogue);
 
             return returnedList;
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            SpriteEffects spriteDirection = NPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            spriteBatch.Draw(Mod.Assets.Request<Texture2D>(Texture.Replace("LivingWorldMod/", "")).Value, new Rectangle((int)(NPC.Right.X - (NPC.frame.Width / 1.5) - screenPos.X), (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f), NPC.frame.Width, NPC.frame.Height), NPC.frame, drawColor, NPC.rotation, default, spriteDirection, 0);
+            return false;
         }
     }
 }
