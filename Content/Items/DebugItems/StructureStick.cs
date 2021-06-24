@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.DebugItems {
 
-    public class StructureStick : ModItem {
+    public class StructureStick : BaseItem {
         private Point16 topLeft = Point16.NegativeOne;
 
         private Point16 bottomRight = Point16.NegativeOne;
