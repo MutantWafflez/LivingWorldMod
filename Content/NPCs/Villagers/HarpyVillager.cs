@@ -2,6 +2,7 @@
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Terraria;
+using Terraria.GameContent.Bestiary;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 
@@ -125,6 +126,14 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             base.SetStaticDefaults();
 
             Main.npcFrameCount[NPC.type] = 27;
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
+                BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Sky,
+
+                new FlavorTextBestiaryInfoElement("A villager from the Harpy Village in the sky. Don't ruffle their feathers or attempt flirtation if you value your life.")
+            });
         }
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo) {

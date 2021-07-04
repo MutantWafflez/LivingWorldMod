@@ -1,7 +1,10 @@
-﻿using LivingWorldMod.Custom.Utilities;
+﻿using System;
+using System.Collections.Generic;
+using LivingWorldMod.Custom.Utilities;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using MonoMod.Cil;
 
 namespace LivingWorldMod.Common.Patches {
 
@@ -18,6 +21,8 @@ namespace LivingWorldMod.Common.Patches {
             On.Terraria.GameContent.ShopHelper.IsNotReallyTownNPC += ShopHelperTownNPCStatus;
 
             On.Terraria.NPC.GiveTownUniqueDataToNPCsThatNeedIt += TownNPCNames;
+
+            IL.Terraria.GameContent.Bestiary.BestiaryDatabaseNPCsPopulator.AddEmptyEntries_CrittersAndEnemies_Automated += TownNPCBestiaryPopulate;
         }
 
         public void Unload() { }
@@ -56,6 +61,20 @@ namespace LivingWorldMod.Common.Patches {
 
         private void TownNPCNames(On.Terraria.NPC.orig_GiveTownUniqueDataToNPCsThatNeedIt orig, int Type, int nextNPC) {
             orig(NPCUtilities.IsTypeOfVillager(Type) ? NPCID.SkeletonMerchant : Type, nextNPC);
+        }
+
+        private void TownNPCBestiaryPopulate(ILContext il) {
+            ILCursor c = new ILCursor(il);
+
+            int isTownNPCLocalNumber = 6;
+
+            if (c.TryGotoNext(i => i.MatchStloc(isTownNPCLocalNumber))) {
+                c.Emit(Mono.Cecil.Cil.OpCodes.Pop);
+
+                c.Emit(Mono.Cecil.Cil.OpCodes.Ldloca_S);
+
+                c.EmitDelegate<Func<KeyValuePair<int, NPC>, bool>>(keyPair => keyPair.Value.isLikeATownNPC || keyPair.Value.IsTypeOfVillager());
+            }
         }
     }
 }
