@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using LivingWorldMod.Common.Systems;
+using LivingWorldMod.Common.Systems.UI;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 
@@ -83,6 +85,9 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// </summary>
         public virtual int LoveThreshold => 95;
 
+        /// <summary>
+        /// List of possible names that these villagers can have.
+        /// </summary>
         public virtual List<string> PossibleNames => new List<string>();
 
         /// <summary>
@@ -191,6 +196,21 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         //public override bool? SpawnsWithCustomName => true;
 
         public override string TownNPCName() => PossibleNames[WorldGen.genRand.Next(0, PossibleNames.Count)];
+
+        public override void SetChatButtons(ref string button, ref string button2) {
+            button = Language.GetTextValue("LegacyInterface.28"); //"Shop"
+            button2 = "Reputation"; //TODO: Localization
+        }
+
+        public override void OnChatButtonClicked(bool firstButton, ref bool shop) {
+            //Shop Screen
+            if (firstButton) {
+                ShopUISystem.Instance.OpenShopUI(this);
+            }
+            //Reputation Screen
+            else {
+            }
+        }
 
         public override bool CanChat() => RelationshipStatus != VillagerRelationship.Hate;
 
