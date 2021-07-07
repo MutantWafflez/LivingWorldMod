@@ -59,20 +59,19 @@ namespace LivingWorldMod.Content.UI {
             backFrame.Append(dialogueFrame);
 
             dialogueText = villager.ShopDialogue;
+
+            RecalculateChildren();
         }
 
         protected override void DrawChildren(SpriteBatch spriteBatch) {
             base.DrawChildren(spriteBatch);
             //Manually draw dialogue text cause UIText is funky with wrapping
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            CalculatedStyle innerDimensions = dialogueFrame.GetInnerDimensions();
-            Vector2 stringPos = innerDimensions.Position();
 
-            float dialoguePadding = 24f;
+            //Hardcoded values here because getting InnerDimensions() and calculating position with it for some reason changes values when closing then re-opening the UI?? Terraria's UI code perplexes me
+            Vector2 stringPos = new Vector2(1134f, 574f);
+
             string visibleText = font.CreateWrappedText(dialogueText, 260f);
-
-            stringPos.X += innerDimensions.Width + dialoguePadding;
-            stringPos.Y += innerDimensions.Height + dialoguePadding;
 
             Utils.DrawBorderString(spriteBatch, visibleText, stringPos, Color.White);
         }
