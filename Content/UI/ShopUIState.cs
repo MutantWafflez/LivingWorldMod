@@ -11,23 +11,43 @@ namespace LivingWorldMod.Content.UI {
     public class ShopUIState : UIState {
         public VillagerType shopType;
 
+        public UIImage backFrame;
         public UIImage shopFrame;
         public UIImage portraitFrame;
+        public UIImage nameFrame;
+        public UIImage dialogueFrame;
 
         public void ReloadUI(Villager villager) {
-            string shopUIPath = IOUtilities.LWMSpritePath + "/UI/ShopUI/";
-
             shopType = villager.VillagerType;
 
-            shopFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + shopType + "ShopFrame"));
-            shopFrame.Left.Set(475f, 0f);
-            shopFrame.Top.Set(200f, 0f);
-            Append(shopFrame);
+            string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/{shopType}/{shopType}";
 
-            portraitFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + shopType + "PortraitFrame"));
-            portraitFrame.Left.Set(625f, 0f);
+            backFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackFrame"));
+            backFrame.Left.Set(475f, 0f);
+            backFrame.Top.Set(175f, 0f);
+            Append(backFrame);
+
+            shopFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "ShopFrame"));
+            shopFrame.Left.Set(50f, 0f);
+            shopFrame.Top.Set(42.5f, 0f);
+            backFrame.Append(shopFrame);
+
+            portraitFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "PortraitFrame"));
+            portraitFrame.Left.Set(675f, 0f);
             portraitFrame.Top.Set(50f, 0f);
-            shopFrame.Append(portraitFrame);
+            backFrame.Append(portraitFrame);
+
+            nameFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "NameFrame"));
+            nameFrame.Left.Set(portraitFrame.Left.Pixels, 0f);
+            nameFrame.Top.Set(275f, 0f);
+            backFrame.Append(nameFrame);
+
+            dialogueFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "DialogueFrame"));
+            dialogueFrame.Left.Set(portraitFrame.Left.Pixels - 40f, 0f);
+            dialogueFrame.Top.Set(375f, 0f);
+            backFrame.Append(dialogueFrame);
+
+            Recalculate();
         }
     }
 }
