@@ -40,6 +40,31 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             }
         }
 
+        public override WeightedRandom<string> ShopDialogue {
+            get {
+                WeightedRandom<string> list = new WeightedRandom<string>();
+                VillagerRelationship currentRelationship = RelationshipStatus;
+
+                //Severe Dislike
+                list.AddConditionally("You're lucky I am even letting you speak to me, let alone buy my stuff. Just know there'll be a markup for anything you buy due to all the trouble you've caused us.", currentRelationship == VillagerRelationship.SevereDislike);
+                list.AddConditionally("You filthy landwalkers coming around the world barging into places like you own them. Just tell me what you want and I'll decide how much to mark it up by.", currentRelationship == VillagerRelationship.SevereDislike);
+                //Dislike
+                list.AddConditionally("You know, since there aren't any laws regulating prices and there really isn't any competition, due to the minor trouble you've put us through, I think your next product will cost a little extra.", currentRelationship == VillagerRelationship.Dislike);
+                list.AddConditionally("Tread carefully, landwalker. Keep slipping up like you have been lately, and soon it'll cost an entire platinum to buy my wares!", currentRelationship == VillagerRelationship.Dislike);
+                //Neutral
+                list.AddConditionally("Nice of you to stop by, landwalker. Would appreciate the extra coin right now, everything is at the standard price!", currentRelationship == VillagerRelationship.Neutral);
+                list.AddConditionally("What kind of harpy would I be to give you unfair prices if you really haven't made an impression?", currentRelationship == VillagerRelationship.Neutral);
+                //Like
+                list.AddConditionally("I wonder if my friends wanna go practice feather shooting later today... Erm- right, anything I got pique your interest landwalker?", currentRelationship == VillagerRelationship.Like);
+                list.AddConditionally("You know, when you first came here, I thought you were like all the other landwalkers, but I was pleasantly surprised that's not the case. Have, like, a small discount, on me!", currentRelationship == VillagerRelationship.Like);
+                //Love
+                list.AddConditionally("Before you even mention it- no, actually, before you even THINK it, this discount I'm giving you is cause you've helped the village so much and not because I'm interested in you!", currentRelationship == VillagerRelationship.Love);
+                list.AddConditionally("You know landwalker, have this discount on me. I guess you deserve it for helping the village so much, or whatever. Just buy something!", currentRelationship == VillagerRelationship.Love);
+
+                return list;
+            }
+        }
+
         public override WeightedRandom<string> SevereDislikeDialogue {
             get {
                 WeightedRandom<string> list = new WeightedRandom<string>();

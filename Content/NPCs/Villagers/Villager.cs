@@ -105,6 +105,19 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         /// <summary>
+        /// Possible dialogue that these villagers will say in the shop screen when opened by the player.
+        /// </summary>
+        public virtual WeightedRandom<string> ShopDialogue {
+            get {
+                WeightedRandom<string> list = new WeightedRandom<string>();
+
+                list.Add("This dialogue box is a bit too small and empty.. Hurry, contact a Mod Dev!");
+
+                return list;
+            }
+        }
+
+        /// <summary>
         /// Possible dialogue that these villagers will say when they SEVERELY DISLIKE the players.
         /// </summary>
         public virtual WeightedRandom<string> SevereDislikeDialogue {

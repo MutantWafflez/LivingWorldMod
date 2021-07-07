@@ -58,7 +58,7 @@ namespace LivingWorldMod.Content.UI {
             dialogueFrame.Top.Set(375f, 0f);
             backFrame.Append(dialogueFrame);
 
-            dialogueText = villager.GetChat();
+            dialogueText = villager.ShopDialogue;
         }
 
         protected override void DrawChildren(SpriteBatch spriteBatch) {
