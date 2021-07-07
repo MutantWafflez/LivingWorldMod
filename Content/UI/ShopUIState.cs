@@ -1,8 +1,11 @@
 ﻿using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -20,7 +23,7 @@ namespace LivingWorldMod.Content.UI {
         public UIText nameText;
 
         public UIImage dialogueFrame;
-        public UIText dialogueText;
+        public string dialogueText;
 
         public void ReloadUI(Villager villager) {
             shopType = villager.VillagerType;
@@ -55,14 +58,23 @@ namespace LivingWorldMod.Content.UI {
             dialogueFrame.Top.Set(375f, 0f);
             backFrame.Append(dialogueFrame);
 
-            float dialogueTextPadding = 24f;
-            dialogueText = new UIText(villager.GetChat());
-            dialogueText.SetPadding(dialogueTextPadding);
-            dialogueText.Width.Set(0, 1f);
-            dialogueText.Height.Set(0, 1f);
-            dialogueText.IsWrapped = true;
-            dialogueText.DynamicallyScaleDownToWidth = true;
-            dialogueFrame.Append(dialogueText);
+            dialogueText = villager.GetChat();
+        }
+
+        protected override void DrawChildren(SpriteBatch spriteBatch) {
+            base.DrawChildren(spriteBatch);
+            //Manually draw dialogue text cause UIText is funky with wrapping
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            CalculatedStyle innerDimensions = dialogueFrame.GetInnerDimensions();
+            Vector2 stringPos = innerDimensions.Position();
+
+            float dialoguePadding = 24f;
+            string visibleText = font.CreateWrappedText(dialogueText, 260f);
+
+            stringPos.X += innerDimensions.Width + dialoguePadding;
+            stringPos.Y += innerDimensions.Height + dialoguePadding;
+
+            Utils.DrawBorderString(spriteBatch, visibleText, stringPos, Color.White);
         }
     }
 }
