@@ -29,6 +29,7 @@ namespace LivingWorldMod.Content.UI {
             shopType = villager.VillagerType;
 
             string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/{shopType}/{shopType}";
+            DynamicSpriteFont deathFont = FontAssets.DeathText.Value;
 
             backFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackFrame"));
             backFrame.Left.Set(475f, 0f);
@@ -50,7 +51,10 @@ namespace LivingWorldMod.Content.UI {
             nameFrame.Top.Set(275f, 0f);
             backFrame.Append(nameFrame);
 
-            nameText = new UIText(villager.NPC.GivenName);
+            nameText = new UIText(villager.NPC.GivenName, large: true);
+            //Hardcoded because getting dimensions in general just seems to be extremely weird and inconsistent
+            nameText.Left.Set(111f - (deathFont.MeasureString(villager.NPC.GivenName).X / 2f), 0f);
+            nameText.Top.Set(24f + (deathFont.MeasureString(villager.NPC.GivenName).Y / 8f), 0f);
             nameFrame.Append(nameText);
 
             dialogueFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "DialogueFrame"));
