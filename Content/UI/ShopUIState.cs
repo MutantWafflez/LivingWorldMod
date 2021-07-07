@@ -2,6 +2,7 @@
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -14,8 +15,12 @@ namespace LivingWorldMod.Content.UI {
         public UIImage backFrame;
         public UIImage shopFrame;
         public UIImage portraitFrame;
+
         public UIImage nameFrame;
+        public UIText nameText;
+
         public UIImage dialogueFrame;
+        public UIText dialogueText;
 
         public void ReloadUI(Villager villager) {
             shopType = villager.VillagerType;
@@ -42,12 +47,22 @@ namespace LivingWorldMod.Content.UI {
             nameFrame.Top.Set(275f, 0f);
             backFrame.Append(nameFrame);
 
+            nameText = new UIText(villager.NPC.GivenName);
+            nameFrame.Append(nameText);
+
             dialogueFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "DialogueFrame"));
             dialogueFrame.Left.Set(portraitFrame.Left.Pixels - 40f, 0f);
             dialogueFrame.Top.Set(375f, 0f);
             backFrame.Append(dialogueFrame);
 
-            Recalculate();
+            float dialogueTextPadding = 24f;
+            dialogueText = new UIText(villager.GetChat());
+            dialogueText.SetPadding(dialogueTextPadding);
+            dialogueText.Width.Set(0, 1f);
+            dialogueText.Height.Set(0, 1f);
+            dialogueText.IsWrapped = true;
+            dialogueText.DynamicallyScaleDownToWidth = true;
+            dialogueFrame.Append(dialogueText);
         }
     }
 }
