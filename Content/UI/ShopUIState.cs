@@ -8,6 +8,7 @@ using ReLogic.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -70,7 +71,7 @@ namespace LivingWorldMod.Content.UI {
             shopList.Width.Set(470f, 0f);
             shopList.Height.Set(490f, 0f);
             shopList.PaddingLeft = 26f;
-            shopList.PaddingTop = 28f;
+            shopList.PaddingTop = 20f;
             shopList.ListPadding = 4f;
             shopList.SetScrollbar(shopScrollbar);
             shopFrame.Append(shopList);
@@ -100,6 +101,15 @@ namespace LivingWorldMod.Content.UI {
             dialogueText = villager.ShopDialogue;
 
             PopulateShopList(villager);
+
+            RecalculateChildren();
+        }
+
+        public override void Update(GameTime gameTime) {
+            base.Update(gameTime);
+            if (backFrame.ContainsPoint(Main.MouseScreen)) {
+                Main.LocalPlayer.mouseInterface = true;
+            }
         }
 
         protected override void DrawChildren(SpriteBatch spriteBatch) {
@@ -119,7 +129,13 @@ namespace LivingWorldMod.Content.UI {
             shopList.Clear();
 
             for (int i = 0; i < 6; i++) {
-                shopList.Add(new ShopItemUIElement(Main.Assets.Request<Texture2D>("Item_1"), "Test", 5, 5, VillagerType.Harpy));
+                Vector2 position = shopList.GetDimensions().Position();
+
+                shopList.Add(new ShopItemUIElement(ItemID.TerraBlade,
+                    15,
+                    5,
+                    villager.VillagerType,
+                    new Rectangle((int)position.X, (int)position.Y, (int)shopList.Width.Pixels, (int)shopList.Height.Pixels)));
             }
             shopScrollbar.Activate();
         }
