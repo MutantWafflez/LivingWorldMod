@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Content.NPCs.Villagers;
+using LivingWorldMod.Content.UI.Elements;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
@@ -25,11 +26,11 @@ namespace LivingWorldMod.Content.UI {
         public UIImage dialogueFrame;
         public string dialogueText;
 
-        public void ReloadUI(Villager villager) {
-            shopType = villager.VillagerType;
+        public UIScrollbar shopScrollbar;
+        public UIList shopList;
 
-            string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/{shopType}/{shopType}";
-            DynamicSpriteFont deathFont = FontAssets.DeathText.Value;
+        public override void OnInitialize() {
+            string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/Harpy/Harpy";
 
             backFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackFrame"));
             backFrame.Left.Set(475f, 0f);
@@ -51,10 +52,7 @@ namespace LivingWorldMod.Content.UI {
             nameFrame.Top.Set(275f, 0f);
             backFrame.Append(nameFrame);
 
-            nameText = new UIText(villager.NPC.GivenName, large: true);
-            //Hardcoded because getting dimensions in general just seems to be extremely weird and inconsistent
-            nameText.Left.Set(111f - (deathFont.MeasureString(villager.NPC.GivenName).X / 2f), 0f);
-            nameText.Top.Set(24f + (deathFont.MeasureString(villager.NPC.GivenName).Y / 8f), 0f);
+            nameText = new UIText("null", large: true);
             nameFrame.Append(nameText);
 
             dialogueFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "DialogueFrame"));
@@ -62,9 +60,46 @@ namespace LivingWorldMod.Content.UI {
             dialogueFrame.Top.Set(375f, 0f);
             backFrame.Append(dialogueFrame);
 
+            shopScrollbar = new UIScrollbar();
+            shopScrollbar.Left.Set(472f, 0f);
+            shopScrollbar.Top.Set(32f, 0f);
+            shopScrollbar.Height.Set(448f, 0f);
+            shopFrame.Append(shopScrollbar);
+
+            shopList = new UIList();
+            shopList.Width.Set(470f, 0f);
+            shopList.Height.Set(490f, 0f);
+            shopList.PaddingLeft = 26f;
+            shopList.PaddingTop = 28f;
+            shopList.ListPadding = 4f;
+            shopList.SetScrollbar(shopScrollbar);
+            shopFrame.Append(shopList);
+        }
+
+        public void ReloadUI(Villager villager) {
+            shopType = villager.VillagerType;
+
+            string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/{shopType}/{shopType}";
+            DynamicSpriteFont deathFont = FontAssets.DeathText.Value;
+
+            backFrame.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BackFrame"));
+
+            shopFrame.SetImage(ModContent.Request<Texture2D>(shopUIPath + "ShopFrame"));
+
+            portraitFrame.SetImage(ModContent.Request<Texture2D>(shopUIPath + "PortraitFrame"));
+
+            nameFrame.SetImage(ModContent.Request<Texture2D>(shopUIPath + "NameFrame"));
+
+            nameText.SetText(villager.NPC.GivenName, 1f, true);
+            //Hardcoded because getting dimensions in general just seems to be extremely weird and inconsistent
+            nameText.Left.Set(111f - (deathFont.MeasureString(villager.NPC.GivenName).X / 2f), 0f);
+            nameText.Top.Set(24f + (deathFont.MeasureString(villager.NPC.GivenName).Y / 8f), 0f);
+
+            dialogueFrame.SetImage(ModContent.Request<Texture2D>(shopUIPath + "DialogueFrame"));
+
             dialogueText = villager.ShopDialogue;
 
-            RecalculateChildren();
+            PopulateShopList(villager);
         }
 
         protected override void DrawChildren(SpriteBatch spriteBatch) {
@@ -78,6 +113,15 @@ namespace LivingWorldMod.Content.UI {
             string visibleText = font.CreateWrappedText(dialogueText, 260f);
 
             Utils.DrawBorderString(spriteBatch, visibleText, stringPos, Color.White);
+        }
+
+        private void PopulateShopList(Villager villager) {
+            shopList.Clear();
+
+            for (int i = 0; i < 6; i++) {
+                shopList.Add(new ShopItemUIElement(Main.Assets.Request<Texture2D>("Item_1"), "Test", 5, 5, VillagerType.Harpy));
+            }
+            shopScrollbar.Activate();
         }
     }
 }
