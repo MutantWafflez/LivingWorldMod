@@ -15,7 +15,7 @@ namespace LivingWorldMod.Content.UI.Elements {
     /// </summary>
     public class ShopItemUIElement : UIElement {
         public UIImage shopItemFrame;
-        public UIItemIcon itemImage;
+        public UIBetterItemIcon itemImage;
 
         public UIText itemNameText;
         public UIText stockText;
@@ -31,7 +31,7 @@ namespace LivingWorldMod.Content.UI.Elements {
             shopItemFrame = new UIImage(ModContent.Request<Texture2D>($"{IOUtilities.LWMSpritePath}/UI/ShopUI/{villagerType}/{villagerType}ShopItemFrame"));
             displayedItem = new Item();
             displayedItem.SetDefaults(itemType);
-            itemImage = new UIItemIcon(displayedItem, false);
+            itemImage = new UIBetterItemIcon(displayedItem, false);
             itemNameText = new UIText(displayedItem.HoverName, 1.25f);
             stockText = new UIText(remainingStock.ToString(), large: true);
             this.costPerItem = costPerItem;
@@ -67,6 +67,7 @@ namespace LivingWorldMod.Content.UI.Elements {
             //This has been a headache, I have not the SLIGHTEST clue why this was so difficult, but this luckily works so I will use it even if it's kinda disgusting/hardcoded
             Rectangle dimensions = new Rectangle((int)style.X - 16, (int)style.Y - 16, 32, 32);
             if (dimensions.Contains(Main.mouseX, Main.mouseY) && visibleListArea.Contains(Main.mouseX, Main.mouseY)) {
+                Main.HoverItem = displayedItem;
             }
         }
     }
