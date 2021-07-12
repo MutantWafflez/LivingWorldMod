@@ -67,7 +67,6 @@ namespace LivingWorldMod.Content.UI.Elements {
             //This has been a headache, I have not the SLIGHTEST clue why this was so difficult, but this luckily works so I will use it even if it's kinda disgusting/hardcoded
             Rectangle dimensions = new Rectangle((int)style.X - 16, (int)style.Y - 16, 32, 32);
             if (dimensions.Contains(Main.mouseX, Main.mouseY) && visibleListArea.Contains(Main.mouseX, Main.mouseY)) {
-                Main.HoverItem = displayedItem;
             }
         }
     }
