@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Content.NPCs.Villagers;
+﻿using LivingWorldMod.Common.Systems.UI;
+using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.UI.Elements;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
@@ -105,22 +106,20 @@ namespace LivingWorldMod.Content.UI {
             RecalculateChildren();
         }
 
-        public override void Update(GameTime gameTime) {
-            base.Update(gameTime);
+        protected override void DrawChildren(SpriteBatch spriteBatch) {
+            base.DrawChildren(spriteBatch);
+
             if (backFrame.ContainsPoint(Main.MouseScreen)) {
                 Main.LocalPlayer.mouseInterface = true;
             }
-        }
 
-        protected override void DrawChildren(SpriteBatch spriteBatch) {
-            base.DrawChildren(spriteBatch);
             //Manually draw dialogue text cause UIText is funky with wrapping
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
             //Hardcoded values here because getting InnerDimensions() and calculating position with it for some reason changes values when closing then re-opening the UI?? Terraria's UI code perplexes me
-            Vector2 stringPos = new Vector2(1134f, 574f);
+            Vector2 stringPos = new Vector2(1138f, 578f);
 
-            string visibleText = font.CreateWrappedText(dialogueText, 260f);
+            string visibleText = font.CreateWrappedText(dialogueText, 256f);
 
             Utils.DrawBorderString(spriteBatch, visibleText, stringPos, Color.White);
         }

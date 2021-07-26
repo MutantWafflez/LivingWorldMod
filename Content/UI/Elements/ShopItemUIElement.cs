@@ -31,7 +31,7 @@ namespace LivingWorldMod.Content.UI.Elements {
             shopItemFrame = new UIImage(ModContent.Request<Texture2D>($"{IOUtilities.LWMSpritePath}/UI/ShopUI/{villagerType}/{villagerType}ShopItemFrame"));
             displayedItem = new Item();
             displayedItem.SetDefaults(itemType);
-            itemImage = new UIBetterItemIcon(displayedItem, false);
+            itemImage = new UIBetterItemIcon(displayedItem);
             itemNameText = new UIText(displayedItem.HoverName, 1.25f);
             stockText = new UIText(remainingStock.ToString(), large: true);
             this.costPerItem = costPerItem;
@@ -58,15 +58,14 @@ namespace LivingWorldMod.Content.UI.Elements {
             shopItemFrame.Append(stockText);
         }
 
-        public override void Update(GameTime gameTime) {
-            base.Update(gameTime);
-
+        protected override void DrawSelf(SpriteBatch spriteBatch) {
             CalculatedStyle style = itemImage.GetDimensions();
 
             //So trying to figure out how to get hover functionality has been extremely messy. No idea why simply using the OnHover delegate didn't work, so I eventually arrived at this
             //This has been a headache, I have not the SLIGHTEST clue why this was so difficult, but this luckily works so I will use it even if it's kinda disgusting/hardcoded
             Rectangle dimensions = new Rectangle((int)style.X - 16, (int)style.Y - 16, 32, 32);
             if (dimensions.Contains(Main.mouseX, Main.mouseY) && visibleListArea.Contains(Main.mouseX, Main.mouseY)) {
+                ItemSlot.MouseHover(ref displayedItem, itemImage.context);
             }
         }
     }

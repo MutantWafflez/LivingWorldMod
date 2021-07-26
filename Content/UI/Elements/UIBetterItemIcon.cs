@@ -7,21 +7,22 @@ namespace LivingWorldMod.Content.UI.Elements {
 
     /// <summary>
     /// A better version of Vanilla's UIItemIcon class. Uses the position to draw instead of the
-    /// center, which causes offset upon reloading the UI this element is in.
+    /// center. Very simple. I know.
     /// </summary>
     public class UIBetterItemIcon : UIElement {
-        private Item item;
-        private bool blackedOut;
+        public readonly int context = ItemSlot.Context.InventoryItem;
 
-        public UIBetterItemIcon(Item item, bool blackedOut) {
-            this.item = item;
+        private Item displayedItem;
+
+        public UIBetterItemIcon(Item displayedItem) {
+            this.displayedItem = displayedItem;
+
             Width.Set(32f, 0f);
             Height.Set(32f, 0f);
-            this.blackedOut = blackedOut;
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
-            Main.DrawItemIcon(spriteBatch, item, GetDimensions().Position(), blackedOut ? Color.Black : Color.White, 32f);
+            Main.DrawItemIcon(spriteBatch, displayedItem, GetDimensions().Position(), Color.White, 32f);
         }
     }
 }
