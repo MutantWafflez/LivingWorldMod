@@ -8,7 +8,7 @@ namespace LivingWorldMod.Content.UI.Elements {
 
     /// <summary>
     /// A better version of Vanilla's UIItemIcon class. Uses the position to draw instead of the
-    /// center. Very simple. I know.
+    /// center, and displays the tooltip when hovering over the icon, as well.
     /// </summary>
     public class UIBetterItemIcon : UIElement {
         public readonly int context = ItemSlot.Context.InventoryItem;
@@ -44,6 +44,11 @@ namespace LivingWorldMod.Content.UI.Elements {
             sizeConstraint *= displayedItem.scale;
 
             spriteBatch.Draw(itemTexture, drawPos, itemAnimFrame, currentColor, 0f, default, sizeConstraint, SpriteEffects.None, 0f);
+
+            //Non-vanilla code
+            if (ContainsPoint(Main.MouseScreen)) {
+                ItemSlot.MouseHover(ref displayedItem, context);
+            }
         }
     }
 }

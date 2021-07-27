@@ -35,8 +35,7 @@ namespace LivingWorldMod.Content.UI {
             string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/Harpy/Harpy";
 
             backFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackFrame"));
-            backFrame.Left.Set(475f, 0f);
-            backFrame.Top.Set(175f, 0f);
+            backFrame.HAlign = backFrame.VAlign = 0.5f;
             Append(backFrame);
 
             shopFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "ShopFrame"));
@@ -54,7 +53,9 @@ namespace LivingWorldMod.Content.UI {
             nameFrame.Top.Set(275f, 0f);
             backFrame.Append(nameFrame);
 
-            nameText = new UIText("null", large: true);
+            nameText = new UIText("null", large: true) {
+                HAlign = 0.5f
+            };
             nameFrame.Append(nameText);
 
             dialogueFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "DialogueFrame"));
@@ -76,6 +77,8 @@ namespace LivingWorldMod.Content.UI {
             shopList.ListPadding = 4f;
             shopList.SetScrollbar(shopScrollbar);
             shopFrame.Append(shopList);
+
+            DummyPopulateShopList();
         }
 
         public void ReloadUI(Villager villager) {
@@ -94,7 +97,6 @@ namespace LivingWorldMod.Content.UI {
 
             nameText.SetText(villager.NPC.GivenName, 1f, true);
             //Hardcoded because getting dimensions in general just seems to be extremely weird and inconsistent
-            nameText.Left.Set(111f - (deathFont.MeasureString(villager.NPC.GivenName).X / 2f), 0f);
             nameText.Top.Set(24f + (deathFont.MeasureString(villager.NPC.GivenName).Y / 8f), 0f);
 
             dialogueFrame.SetImage(ModContent.Request<Texture2D>(shopUIPath + "DialogueFrame"));
@@ -106,20 +108,23 @@ namespace LivingWorldMod.Content.UI {
             RecalculateChildren();
         }
 
-        protected override void DrawChildren(SpriteBatch spriteBatch) {
-            base.DrawChildren(spriteBatch);
-
+        public override void Update(GameTime gameTime) {
             if (backFrame.ContainsPoint(Main.MouseScreen)) {
                 Main.LocalPlayer.mouseInterface = true;
             }
 
+            base.Update(gameTime);
+        }
+
+        protected override void DrawChildren(SpriteBatch spriteBatch) {
+            base.DrawChildren(spriteBatch);
+
             //Manually draw dialogue text cause UIText is funky with wrapping
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
-            //Hardcoded values here because getting InnerDimensions() and calculating position with it for some reason changes values when closing then re-opening the UI?? Terraria's UI code perplexes me
-            Vector2 stringPos = new Vector2(1138f, 578f);
+            Vector2 stringPos = dialogueFrame.GetDimensions().Position() + new Vector2(28f, 28f);
 
-            string visibleText = font.CreateWrappedText(dialogueText, 256f);
+            string visibleText = font.CreateWrappedText(dialogueText, 240f);
 
             Utils.DrawBorderString(spriteBatch, visibleText, stringPos, Color.White);
         }
@@ -128,14 +133,39 @@ namespace LivingWorldMod.Content.UI {
             shopList.Clear();
 
             for (int i = 0; i < 6; i++) {
-                Vector2 position = shopList.GetDimensions().Position();
-
-                shopList.Add(new ShopItemUIElement(ItemID.TerraBlade,
+                UIShopItem element = new UIShopItem(ItemID.TerraBlade,
                     15,
                     5,
-                    villager.VillagerType,
-                    new Rectangle((int)position.X, (int)position.Y, (int)shopList.Width.Pixels, (int)shopList.Height.Pixels)));
+                    villager.VillagerType);
+
+                element.Activate();
+
+                shopList.Add(element);
             }
+
+            shopScrollbar.Activate();
+        }
+
+        /// <summary>
+        /// Almost a carbon copy of PopulateShopList, that purely exists for the purposes of UI
+        /// initialization. The elements in the list are created upon mod load so when the player
+        /// actually opens the UI, the list is properly initialized and the elements within them
+        /// will b e properly scaled in PopulateShopList(). Also used for debug purposes.
+        /// </summary>
+        private void DummyPopulateShopList() {
+            shopList.Clear();
+
+            for (int i = 0; i < 6; i++) {
+                UIShopItem element = new UIShopItem(ItemID.TerraBlade,
+                    15,
+                    5,
+                    VillagerType.Harpy);
+
+                element.Activate();
+
+                shopList.Add(element);
+            }
+
             shopScrollbar.Activate();
         }
     }
