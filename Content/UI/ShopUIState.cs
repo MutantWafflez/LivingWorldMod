@@ -28,8 +28,14 @@ namespace LivingWorldMod.Content.UI {
         public UIImage dialogueFrame;
         public string dialogueText;
 
+        public UICoinDisplay savingsDisplay;
+
         public UIScrollbar shopScrollbar;
         public UIList shopList;
+
+        public UIText itemHeader;
+        public UIText costHeader;
+        public UIText stockHeader;
 
         public override void OnInitialize() {
             string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/Harpy/Harpy";
@@ -69,6 +75,11 @@ namespace LivingWorldMod.Content.UI {
             shopScrollbar.Height.Set(448f, 0f);
             shopFrame.Append(shopScrollbar);
 
+            savingsDisplay = new UICoinDisplay();
+            savingsDisplay.Left.Set(580f, 0f);
+            savingsDisplay.Top.Set(326f, 0f);
+            backFrame.Append(savingsDisplay);
+
             shopList = new UIList();
             shopList.Width.Set(470f, 0f);
             shopList.Height.Set(490f, 0f);
@@ -77,6 +88,21 @@ namespace LivingWorldMod.Content.UI {
             shopList.ListPadding = 4f;
             shopList.SetScrollbar(shopScrollbar);
             shopFrame.Append(shopList);
+
+            itemHeader = new UIText("Item", 1.15f);
+            itemHeader.Left.Set(122f, 0f);
+            itemHeader.Top.Set(24f, 0f);
+            backFrame.Append(itemHeader);
+
+            costHeader = new UIText("Price", 1.15f);
+            costHeader.Left.Set(254f, 0f);
+            costHeader.Top.Set(itemHeader.Top.Pixels, 0f);
+            backFrame.Append(costHeader);
+
+            stockHeader = new UIText("Stock", 1.15f);
+            stockHeader.Left.Set(396f, 0f);
+            stockHeader.Top.Set(itemHeader.Top.Pixels, 0f);
+            backFrame.Append(stockHeader);
 
             DummyPopulateShopList();
         }
@@ -135,7 +161,7 @@ namespace LivingWorldMod.Content.UI {
             for (int i = 0; i < 6; i++) {
                 UIShopItem element = new UIShopItem(ItemID.TerraBlade,
                     15,
-                    5,
+                    (ulong)Item.buyPrice(gold: 35, silver: 68, copper: 99),
                     villager.VillagerType);
 
                 element.Activate();
@@ -147,10 +173,10 @@ namespace LivingWorldMod.Content.UI {
         }
 
         /// <summary>
-        /// Almost a carbon copy of PopulateShopList, that purely exists for the purposes of UI
+        /// Almost a carbon copy of PopulateShopList that purely exists for the purposes of UI
         /// initialization. The elements in the list are created upon mod load so when the player
         /// actually opens the UI, the list is properly initialized and the elements within them
-        /// will b e properly scaled in PopulateShopList(). Also used for debug purposes.
+        /// will be properly scaled in PopulateShopList(). Also used for debug purposes.
         /// </summary>
         private void DummyPopulateShopList() {
             shopList.Clear();
@@ -158,7 +184,7 @@ namespace LivingWorldMod.Content.UI {
             for (int i = 0; i < 6; i++) {
                 UIShopItem element = new UIShopItem(ItemID.TerraBlade,
                     15,
-                    5,
+                    (ulong)Item.buyPrice(gold: 35, silver: 68, copper: 99),
                     VillagerType.Harpy);
 
                 element.Activate();
