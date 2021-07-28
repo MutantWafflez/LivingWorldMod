@@ -34,8 +34,8 @@ namespace LivingWorldMod.Content.UI {
         public UIList shopList;
 
         public UIText itemHeader;
-        public UIText costHeader;
         public UIText stockHeader;
+        public UIText costHeader;
 
         public override void OnInitialize() {
             string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/Harpy/Harpy";
@@ -90,19 +90,19 @@ namespace LivingWorldMod.Content.UI {
             shopFrame.Append(shopList);
 
             itemHeader = new UIText("Item", 1.15f);
-            itemHeader.Left.Set(122f, 0f);
+            itemHeader.Left.Set(156f, 0f);
             itemHeader.Top.Set(24f, 0f);
             backFrame.Append(itemHeader);
 
-            costHeader = new UIText("Price", 1.15f);
-            costHeader.Left.Set(254f, 0f);
-            costHeader.Top.Set(itemHeader.Top.Pixels, 0f);
-            backFrame.Append(costHeader);
-
             stockHeader = new UIText("Stock", 1.15f);
-            stockHeader.Left.Set(396f, 0f);
+            stockHeader.Left.Set(276f, 0f);
             stockHeader.Top.Set(itemHeader.Top.Pixels, 0f);
             backFrame.Append(stockHeader);
+
+            costHeader = new UIText("Price", 1.15f);
+            costHeader.Left.Set(382f, 0f);
+            costHeader.Top.Set(itemHeader.Top.Pixels, 0f);
+            backFrame.Append(costHeader);
 
             DummyPopulateShopList();
         }

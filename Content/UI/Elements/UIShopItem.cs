@@ -13,38 +13,53 @@ namespace LivingWorldMod.Content.UI.Elements {
     /// </summary>
     public class UIShopItem : UIImage {
         public UIBetterItemIcon itemImage;
+        public UIText itemNameText;
         public UIText stockText;
         public UICoinDisplay itemCostDisplay;
 
-        public VillagerType villagerType;
+        public Item displayedItem;
 
-        private Item displayedItem;
-        private ulong costPerItem;
+        public int remainingStock;
+        public ulong costPerItem;
+
+        public VillagerType villagerType;
 
         public UIShopItem(int itemType, int remainingStock, ulong costPerItem, VillagerType villagerType) : base(ModContent.Request<Texture2D>($"{IOUtilities.LWMSpritePath}/UI/ShopUI/{villagerType}/{villagerType}ShopItemFrame")) {
             displayedItem = new Item();
             displayedItem.SetDefaults(itemType);
-            itemImage = new UIBetterItemIcon(displayedItem, 32f);
-            stockText = new UIText(remainingStock.ToString(), large: true);
-            itemCostDisplay = new UICoinDisplay(costPerItem, 1.34f, true);
+            this.remainingStock = remainingStock;
             this.costPerItem = costPerItem;
             this.villagerType = villagerType;
         }
 
         public override void OnInitialize() {
-            itemImage.VAlign = 0.5f;
-            itemImage.Left.Set(50f, 0f);
+            itemImage = new UIBetterItemIcon(displayedItem, 32f) {
+                VAlign = 0.5f
+            };
+            itemImage.Left.Set(28f, 0f);
             itemImage.Width.Set(32f, 0f);
             itemImage.Height.Set(32f, 0f);
             Append(itemImage);
 
-            itemCostDisplay.VAlign = 0.5f;
-            itemCostDisplay.Left.Set(138f, 0f);
-            Append(itemCostDisplay);
+            itemNameText = new UIText(displayedItem.HoverName, 1.25f) {
+                DynamicallyScaleDownToWidth = true
+            };
+            itemNameText.Width.Set(30f, 0f);
+            itemNameText.VAlign = 0.5f;
+            itemNameText.Left.Set(66f, 0f);
+            Append(itemNameText);
 
-            stockText.VAlign = 0.5f;
-            stockText.Left.Set(324f, 0f);
+            stockText = new UIText(remainingStock.ToString(), 1.25f) {
+                VAlign = 0.5f
+            };
+            stockText.Left.Set(216f, 0f);
             Append(stockText);
+
+            itemCostDisplay = new UICoinDisplay(costPerItem, 1.34f, true) {
+                VAlign = 0.5f
+            };
+            itemCostDisplay.Left.Set(260f, 0f);
+            Append(itemCostDisplay);
         }
     }
 }
