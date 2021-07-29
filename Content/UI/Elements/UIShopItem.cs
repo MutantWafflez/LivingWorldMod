@@ -33,7 +33,7 @@ namespace LivingWorldMod.Content.UI.Elements {
         }
 
         public override void OnInitialize() {
-            itemImage = new UIBetterItemIcon(displayedItem, 32f) {
+            itemImage = new UIBetterItemIcon(displayedItem, 32f, true) {
                 VAlign = 0.5f
             };
             itemImage.Left.Set(28f, 0f);
@@ -42,8 +42,8 @@ namespace LivingWorldMod.Content.UI.Elements {
             Append(itemImage);
 
             itemNameText = new UIBetterText(displayedItem.HoverName, 1.25f) {
-                horizontalTextConstraint = 140f,
-                VAlign = 0.5f
+                VAlign = 0.5f,
+                horizontalTextConstraint = 140f
             };
             itemNameText.Left.Set(66f, 0f);
             Append(itemNameText);

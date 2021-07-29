@@ -149,7 +149,7 @@ namespace LivingWorldMod.Content.UI {
             shopList.Clear();
 
             for (int i = 0; i < 6; i++) {
-                UIShopItem element = new UIShopItem(ItemID.TerraBlade,
+                UIShopItem element = new UIShopItem(ItemID.LivingUltrabrightFireBlock,
                     15,
                     (ulong)Item.buyPrice(gold: 35, silver: 68, copper: 99),
                     villager.VillagerType);
