@@ -14,7 +14,6 @@ namespace LivingWorldMod.Content.UI.Elements {
     public class UIShopItem : UIImage {
         public UIBetterItemIcon itemImage;
         public UIBetterText itemNameText;
-        public UIText stockText;
         public UICoinDisplay itemCostDisplay;
 
         public Item displayedItem;
@@ -43,16 +42,10 @@ namespace LivingWorldMod.Content.UI.Elements {
 
             itemNameText = new UIBetterText(displayedItem.HoverName, 1.25f) {
                 VAlign = 0.5f,
-                horizontalTextConstraint = 140f
+                horizontalTextConstraint = 176f
             };
             itemNameText.Left.Set(66f, 0f);
             Append(itemNameText);
-
-            stockText = new UIText(remainingStock.ToString(), 1.25f) {
-                VAlign = 0.5f
-            };
-            stockText.Left.Set(224f, 0f);
-            Append(stockText);
 
             itemCostDisplay = new UICoinDisplay(costPerItem, 1.34f, true) {
                 VAlign = 0.5f
