@@ -1,8 +1,12 @@
-﻿using LivingWorldMod.Custom.Enums;
+﻿using System.Runtime.CompilerServices;
+using LivingWorldMod.Common.Systems.UI;
+using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
+using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.UI.Elements {
@@ -52,6 +56,23 @@ namespace LivingWorldMod.Content.UI.Elements {
             };
             itemCostDisplay.Left.Set(260f, 0f);
             Append(itemCostDisplay);
+        }
+
+        protected override void DrawSelf(SpriteBatch spriteBatch) {
+            if (ContainsPoint(Main.MouseScreen)) {
+                RasterizerState defaultRasterizerState = new RasterizerState { CullMode = CullMode.None, ScissorTestEnable = true };
+
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, defaultRasterizerState, ShopUISystem.hoverFlashShader.Value, Main.UIScaleMatrix);
+
+                base.DrawSelf(spriteBatch);
+
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, defaultRasterizerState, null, Main.UIScaleMatrix);
+            }
+            else {
+                base.DrawSelf(spriteBatch);
+            }
         }
     }
 }

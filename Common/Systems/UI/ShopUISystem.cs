@@ -2,8 +2,9 @@
 using LivingWorldMod.Content.UI;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -12,7 +13,10 @@ namespace LivingWorldMod.Common.Systems.UI {
     /// <summary>
     /// System that handles the initialization and opening/closing of the Shop UI for Villagers.
     /// </summary>
+    [Autoload(Side = ModSide.Client)]
     public class ShopUISystem : ModSystem {
+        public static Asset<Effect> hoverFlashShader;
+
         public UserInterface shopInterface;
         public ShopUIState shopState;
         public GameTime lastGameTime;
@@ -27,17 +31,19 @@ namespace LivingWorldMod.Common.Systems.UI {
         }
 
         public override void Load() {
-            if (Main.netMode != NetmodeID.Server) {
-                shopInterface = new UserInterface();
-                shopState = new ShopUIState();
+            shopInterface = new UserInterface();
+            shopState = new ShopUIState();
 
-                shopState.Activate();
-            }
+            shopState.Activate();
+
+            hoverFlashShader = Mod.Assets.Request<Effect>("Assets/Shaders/UI/ShopItemHoverFlash");
         }
 
         public override void Unload() {
             shopInterface = null;
             shopState = null;
+
+            hoverFlashShader = null;
 
             Instance = null;
         }
