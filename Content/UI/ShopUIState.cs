@@ -146,20 +146,7 @@ namespace LivingWorldMod.Content.UI {
         }
 
         private void PopulateShopList(Villager villager) {
-            shopList.Clear();
-
-            for (int i = 0; i < 6; i++) {
-                UIShopItem element = new UIShopItem(ItemID.LivingUltrabrightFireBlock,
-                    15,
-                    (ulong)Item.buyPrice(gold: 35, silver: 68, copper: 99),
-                    villager.VillagerType);
-
-                element.Activate();
-
-                shopList.Add(element);
-            }
-
-            shopScrollbar.Activate();
+            DummyPopulateShopList();
         }
 
         /// <summary>
@@ -171,10 +158,10 @@ namespace LivingWorldMod.Content.UI {
         private void DummyPopulateShopList() {
             shopList.Clear();
 
-            for (int i = 0; i < 6; i++) {
-                UIShopItem element = new UIShopItem(ItemID.TerraBlade,
-                    15,
-                    (ulong)Item.buyPrice(gold: 35, silver: 68, copper: 99),
+            for (int i = 0; i < Main.rand.Next(10, 51); i++) {
+                UIShopItem element = new UIShopItem(Main.rand.Next(ItemID.DirtBlock, ItemID.Count),
+                    Main.rand.Next(1000),
+                    (ulong)Main.rand.Next(10000000),
                     VillagerType.Harpy);
 
                 element.Activate();
