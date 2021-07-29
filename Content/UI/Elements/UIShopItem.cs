@@ -27,6 +27,8 @@ namespace LivingWorldMod.Content.UI.Elements {
 
         public VillagerType villagerType;
 
+        private float manualUpdateTime;
+
         public UIShopItem(int itemType, int remainingStock, ulong costPerItem, VillagerType villagerType) : base(ModContent.Request<Texture2D>($"{IOUtilities.LWMSpritePath}/UI/ShopUI/{villagerType}/{villagerType}ShopItemFrame")) {
             displayedItem = new Item();
             displayedItem.SetDefaults(itemType);
@@ -62,9 +64,20 @@ namespace LivingWorldMod.Content.UI.Elements {
             if (ContainsPoint(Main.MouseScreen)) {
                 RasterizerState defaultRasterizerState = new RasterizerState { CullMode = CullMode.None, ScissorTestEnable = true };
 
-                spriteBatch.End();
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, defaultRasterizerState, ShopUISystem.hoverFlashShader.Value, Main.UIScaleMatrix);
+                Effect shader = ShopUISystem.hoverFlashShader.Value;
 
+                manualUpdateTime += 1f / 45f;
+                if (manualUpdateTime >= MathHelper.TwoPi) {
+                    manualUpdateTime = 0f;
+                }
+
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, defaultRasterizerState, shader, Main.UIScaleMatrix);
+
+                //So I am unsure as to why exactly this needed to be done, cause this is definitely the definition of a band-aid fix.
+                //In short, when using this shader, uTime isn't being updated at all, causing the shader to just stay one color instead of breathing in a sine wave fashion like intended.
+                //Thus, for the time being, until I can figure out why uTime isn't being automatically updated, I am manually setting this new Parameter
+                shader.Parameters["manualUTime"].SetValue(manualUpdateTime);
                 base.DrawSelf(spriteBatch);
 
                 spriteBatch.End();
