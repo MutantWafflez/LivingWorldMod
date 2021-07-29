@@ -23,19 +23,19 @@ namespace LivingWorldMod.Content.UI {
         public UIImage portraitFrame;
 
         public UIImage nameFrame;
-        public UIText nameText;
+        public UIBetterText nameText;
 
         public UIImage dialogueFrame;
-        public string dialogueText;
+        public UIBetterText dialogueText;
 
         public UICoinDisplay savingsDisplay;
 
         public UIScrollbar shopScrollbar;
         public UIList shopList;
 
-        public UIText itemHeader;
-        public UIText stockHeader;
-        public UIText costHeader;
+        public UIBetterText itemHeader;
+        public UIBetterText stockHeader;
+        public UIBetterText costHeader;
 
         public override void OnInitialize() {
             string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/Harpy/Harpy";
@@ -59,8 +59,10 @@ namespace LivingWorldMod.Content.UI {
             nameFrame.Top.Set(275f, 0f);
             backFrame.Append(nameFrame);
 
-            nameText = new UIText("null", large: true) {
-                HAlign = 0.5f
+            nameText = new UIBetterText("", large: true) {
+                HAlign = 0.5f,
+                VAlign = 0.5f,
+                horizontalTextConstraint = 170f
             };
             nameFrame.Append(nameText);
 
@@ -68,6 +70,13 @@ namespace LivingWorldMod.Content.UI {
             dialogueFrame.Left.Set(portraitFrame.Left.Pixels - 40f, 0f);
             dialogueFrame.Top.Set(375f, 0f);
             backFrame.Append(dialogueFrame);
+
+            dialogueText = new UIBetterText("") {
+                IsWrapped = true,
+                horizontalWrapConstraint = 240f
+            };
+            dialogueText.SetPadding(28f);
+            dialogueFrame.Append(dialogueText);
 
             shopScrollbar = new UIScrollbar();
             shopScrollbar.Left.Set(472f, 0f);
@@ -89,17 +98,17 @@ namespace LivingWorldMod.Content.UI {
             shopList.SetScrollbar(shopScrollbar);
             shopFrame.Append(shopList);
 
-            itemHeader = new UIText("Item", 1.15f);
+            itemHeader = new UIBetterText("Item", 1.15f);
             itemHeader.Left.Set(156f, 0f);
             itemHeader.Top.Set(24f, 0f);
             backFrame.Append(itemHeader);
 
-            stockHeader = new UIText("Stock", 1.15f);
+            stockHeader = new UIBetterText("Stock", 1.15f);
             stockHeader.Left.Set(276f, 0f);
             stockHeader.Top.Set(itemHeader.Top.Pixels, 0f);
             backFrame.Append(stockHeader);
 
-            costHeader = new UIText("Price", 1.15f);
+            costHeader = new UIBetterText("Price", 1.15f);
             costHeader.Left.Set(382f, 0f);
             costHeader.Top.Set(itemHeader.Top.Pixels, 0f);
             backFrame.Append(costHeader);
@@ -111,7 +120,6 @@ namespace LivingWorldMod.Content.UI {
             shopType = villager.VillagerType;
 
             string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/{shopType}/{shopType}";
-            DynamicSpriteFont deathFont = FontAssets.DeathText.Value;
 
             backFrame.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BackFrame"));
 
@@ -121,13 +129,11 @@ namespace LivingWorldMod.Content.UI {
 
             nameFrame.SetImage(ModContent.Request<Texture2D>(shopUIPath + "NameFrame"));
 
-            nameText.SetText(villager.NPC.GivenName, 1f, true);
-            //Hardcoded because getting dimensions in general just seems to be extremely weird and inconsistent
-            nameText.Top.Set(24f + (deathFont.MeasureString(villager.NPC.GivenName).Y / 8f), 0f);
+            nameText.SetText(villager.NPC.GivenName, large: true);
 
             dialogueFrame.SetImage(ModContent.Request<Texture2D>(shopUIPath + "DialogueFrame"));
 
-            dialogueText = villager.ShopDialogue;
+            dialogueText.SetText(villager.ShopDialogue);
 
             PopulateShopList(villager);
 
@@ -140,19 +146,6 @@ namespace LivingWorldMod.Content.UI {
             }
 
             base.Update(gameTime);
-        }
-
-        protected override void DrawChildren(SpriteBatch spriteBatch) {
-            base.DrawChildren(spriteBatch);
-
-            //Manually draw dialogue text cause UIText is funky with wrapping
-            DynamicSpriteFont font = FontAssets.MouseText.Value;
-
-            Vector2 stringPos = dialogueFrame.GetDimensions().Position() + new Vector2(28f, 28f);
-
-            string visibleText = font.CreateWrappedText(dialogueText, 240f);
-
-            Utils.DrawBorderString(spriteBatch, visibleText, stringPos, Color.White);
         }
 
         private void PopulateShopList(Villager villager) {
