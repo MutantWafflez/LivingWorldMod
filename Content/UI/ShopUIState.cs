@@ -56,7 +56,7 @@ namespace LivingWorldMod.Content.UI {
             nameFrame.Top.Set(275f, 0f);
             backFrame.Append(nameFrame);
 
-            nameText = new UIBetterText("", large: true) {
+            nameText = new UIBetterText(large: true) {
                 HAlign = 0.5f,
                 VAlign = 0.5f,
                 horizontalTextConstraint = 170f
@@ -68,7 +68,7 @@ namespace LivingWorldMod.Content.UI {
             dialogueFrame.Top.Set(375f, 0f);
             backFrame.Append(dialogueFrame);
 
-            dialogueText = new UIBetterText("") {
+            dialogueText = new UIBetterText() {
                 IsWrapped = true,
                 horizontalWrapConstraint = 240f
             };

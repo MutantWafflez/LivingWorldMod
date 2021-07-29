@@ -70,7 +70,7 @@ namespace LivingWorldMod.Content.UI.Elements {
             set => color = value;
         }
 
-        public UIBetterText(string text, float textScale = 1f, bool large = false) {
+        public UIBetterText(string text = "", float textScale = 1f, bool large = false) {
             TextOriginX = 0.5f;
             TextOriginY = 0f;
             IsWrapped = false;
