@@ -50,14 +50,15 @@ namespace LivingWorldMod.Content.UI.Elements {
                 //Here in vanilla, not sure why, but it is necessary for CoinsCount to work so here it is.
                 bool _;
 
+                long playerInvCashCount = Utils.CoinsCount(out _, player.inventory);
                 long piggyCashCount = Utils.CoinsCount(out _, player.bank.item);
                 long safeCashCount = Utils.CoinsCount(out _, player.bank2.item);
                 long defForgeCashCount = Utils.CoinsCount(out _, player.bank3.item);
                 long voidVaultCashCount = Utils.CoinsCount(out _, player.bank4.item);
-                long combinedCashCount = Utils.CoinsCombineStacks(out _, piggyCashCount, safeCashCount, defForgeCashCount, voidVaultCashCount);
+                long combinedCashCount = Utils.CoinsCombineStacks(out _, playerInvCashCount, piggyCashCount, safeCashCount, defForgeCashCount, voidVaultCashCount);
 
                 if (combinedCashCount > 0) {
-                    int[] splitCoinArray = Utils.CoinsSplit((long)moneyToDisplay);
+                    int[] splitCoinArray = Utils.CoinsSplit(combinedCashCount);
                     string savingsText = Language.GetTextValue("LegacyInterface.66");
 
                     Main.instance.LoadItem(ItemID.PiggyBank);
@@ -108,7 +109,7 @@ namespace LivingWorldMod.Content.UI.Elements {
                         for (int i = 0; i < 4; i++) {
                             int platinumOverflowDisplacement = i == 0 && splitCoinArray[3 - i] > 99 ? -6 : 0;
 
-                            Main.instance.LoadItem(74 - i);
+                            Main.instance.LoadItem(ItemID.PlatinumCoin - i);
 
                             spriteBatch.Draw(TextureAssets.Item[ItemID.PlatinumCoin - i].Value,
                                 new Vector2(startPos.X + 11f + (24f * displayScale * i), startPos.Y + 35f),
