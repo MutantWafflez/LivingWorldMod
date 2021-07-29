@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using LivingWorldMod.Custom.Enums;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -36,14 +37,14 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// the player only has 43 gold exactly, this UI won't draw the platinum coin and its
         /// respective text.
         /// </summary>
-        public bool drawCoinsWithNoValue;
+        public CoinDrawStyle coinDrawStyle;
 
         public UICoinDisplay(ulong moneyToDisplay = 0, float displayScale = 1f, bool drawHorizontally = false) {
             this.moneyToDisplay = moneyToDisplay;
             this.displayScale = displayScale;
             this.drawHorizontally = drawHorizontally;
 
-            drawCoinsWithNoValue = true;
+            coinDrawStyle = CoinDrawStyle.Vanilla;
 
             MinWidth.Set((drawHorizontally ? (moneyToDisplay == 0 ? 192f : 98f) : 92f) * displayScale, 0f);
             MinHeight.Set((drawHorizontally ? 30f : 52f) * displayScale, 0f);
@@ -89,12 +90,14 @@ namespace LivingWorldMod.Content.UI.Elements {
                         displayScale);
 
                     if (drawHorizontally) {
+                        bool largerCoinHasValue = false;
                         for (int i = 0; i < 4; i++) {
                             Vector2 position = new Vector2(startPos.X + ChatManager.GetStringSize(FontAssets.MouseText.Value, savingsText, Vector2.One * displayScale).X + (24f * displayScale * i) + 45f, startPos.Y + (50f * displayScale));
 
                             Main.instance.LoadItem(74 - i);
 
-                            if (drawCoinsWithNoValue || splitCoinArray[3 - i] > 0f) {
+                            if (coinDrawStyle == CoinDrawStyle.Vanilla || (coinDrawStyle == CoinDrawStyle.LargerCoinsForceDrawLesserCoins && largerCoinHasValue) || splitCoinArray[3 - i] > 0f) {
+                                largerCoinHasValue = true;
                                 spriteBatch.Draw(TextureAssets.Item[ItemID.PlatinumCoin - i].Value,
                                     position,
                                     null,
@@ -117,12 +120,14 @@ namespace LivingWorldMod.Content.UI.Elements {
                         }
                     }
                     else {
+                        bool largerCoinHasValue = false;
                         for (int i = 0; i < 4; i++) {
                             int platinumOverflowDisplacement = i == 0 && splitCoinArray[3 - i] > 99 ? -6 : 0;
 
                             Main.instance.LoadItem(ItemID.PlatinumCoin - i);
 
-                            if (drawCoinsWithNoValue || splitCoinArray[3 - i] > 0f) {
+                            if (coinDrawStyle == CoinDrawStyle.Vanilla || (coinDrawStyle == CoinDrawStyle.LargerCoinsForceDrawLesserCoins && largerCoinHasValue) || splitCoinArray[3 - i] > 0f) {
+                                largerCoinHasValue = true;
                                 spriteBatch.Draw(TextureAssets.Item[ItemID.PlatinumCoin - i].Value,
                                     new Vector2(startPos.X + 11f + (24f * displayScale * i), startPos.Y + 35f),
                                     null,
@@ -151,12 +156,14 @@ namespace LivingWorldMod.Content.UI.Elements {
                 //Also Adapted Vanilla Code
                 int[] splitCoinArray = Utils.CoinsSplit((long)moneyToDisplay);
 
+                bool largerCoinHasValue = false;
                 for (int i = 0; i < 4; i++) {
                     Vector2 position = new Vector2(startPos.X + (24f * displayScale * i) + (14f * displayScale), startPos.Y + (14f * displayScale));
 
                     Main.instance.LoadItem(ItemID.PlatinumCoin - i);
 
-                    if (drawCoinsWithNoValue || splitCoinArray[3 - i] > 0f) {
+                    if (coinDrawStyle == CoinDrawStyle.Vanilla || (coinDrawStyle == CoinDrawStyle.LargerCoinsForceDrawLesserCoins && largerCoinHasValue) || splitCoinArray[3 - i] > 0f) {
+                        largerCoinHasValue = true;
                         spriteBatch.Draw(TextureAssets.Item[ItemID.PlatinumCoin - i].Value,
                             position,
                             null,

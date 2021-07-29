@@ -55,7 +55,7 @@ namespace LivingWorldMod.Content.UI.Elements {
 
             itemCostDisplay = new UICoinDisplay(costPerItem, 1.34f, true) {
                 VAlign = 0.5f,
-                drawCoinsWithNoValue = false
+                coinDrawStyle = CoinDrawStyle.NoCoinsWithZeroValue
             };
             itemCostDisplay.Left.Set(260f, 0f);
             Append(itemCostDisplay);

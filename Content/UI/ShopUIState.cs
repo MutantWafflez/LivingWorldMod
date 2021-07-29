@@ -142,7 +142,7 @@ namespace LivingWorldMod.Content.UI {
             for (int i = 0; i < Main.rand.Next(10, 51); i++) {
                 UIShopItem element = new UIShopItem(Main.rand.Next(ItemID.DirtBlock, ItemID.Count),
                     Main.rand.Next(1000),
-                    (ulong)Main.rand.Next(10000000),
+                    (ulong)Item.buyPrice(gold: 1),
                     VillagerType.Harpy);
 
                 element.Activate();
