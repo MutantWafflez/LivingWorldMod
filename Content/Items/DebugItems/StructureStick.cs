@@ -1,11 +1,10 @@
-﻿using System;
+﻿using LivingWorldMod.Custom.Utilities;
+using System;
 using System.IO;
 using System.Text;
-using LivingWorldMod.Custom.Utilities;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.DebugItems {
 

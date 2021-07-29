@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using LivingWorldMod.Custom.Classes.StructureCaches;
+﻿using LivingWorldMod.Custom.Classes.StructureCaches;
 using LivingWorldMod.Custom.Utilities;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.Generation;
 using Terraria.IO;

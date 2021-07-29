@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using LivingWorldMod.Content.NPCs.Villagers;
+﻿using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.UI;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

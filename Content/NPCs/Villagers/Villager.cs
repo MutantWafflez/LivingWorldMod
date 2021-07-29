@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using LivingWorldMod.Common.Systems;
+﻿using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Common.Systems.UI;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;

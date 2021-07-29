@@ -1,5 +1,5 @@
-﻿using System;
-using LivingWorldMod.Content.NPCs.Villagers;
+﻿using LivingWorldMod.Content.NPCs.Villagers;
+using System;
 using Terraria;
 using Terraria.Utilities;
 
@@ -13,12 +13,11 @@ namespace LivingWorldMod.Custom.Utilities {
         /// <summary>
         /// Returns whether or not this npc is any type of Villager.
         /// </summary>
-        /// <param name="npc"></param>
-        /// <returns></returns>
+        /// <param name="npc"> </param>
+        /// <returns> </returns>
         public static bool IsTypeOfVillager(this NPC npc) {
             return npc.ModNPC?.GetType().IsSubclassOf(typeof(Villager)) ?? false;
         }
-
 
         /// <summary>
         /// Adds all of the objects and their weights within another list into this list.

@@ -1,13 +1,10 @@
-﻿using LivingWorldMod.Common.Systems.UI;
-using LivingWorldMod.Content.NPCs.Villagers;
+﻿using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.UI.Elements;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.ModLoader;

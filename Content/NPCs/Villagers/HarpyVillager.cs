@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using LivingWorldMod.Custom.Enums;
+﻿using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ModLoader;

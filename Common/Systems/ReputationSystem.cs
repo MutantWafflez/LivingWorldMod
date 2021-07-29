@@ -1,6 +1,6 @@
-﻿using System;
-using LivingWorldMod.Custom.Enums;
+﻿using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
+using System;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 

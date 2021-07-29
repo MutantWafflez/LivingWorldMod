@@ -1,8 +1,8 @@
-﻿using Terraria.GameContent.UI.Elements;
-using LivingWorldMod.Custom.Enums;
+﻿using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.UI.Elements {
