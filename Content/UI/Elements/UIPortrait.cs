@@ -1,7 +1,14 @@
-﻿using LivingWorldMod.Custom.Enums;
+﻿using System;
+using System.Collections.Generic;
+using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
+using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -14,9 +21,17 @@ namespace LivingWorldMod.Content.UI.Elements {
         public UIImage portraitBase;
         public UIImage portraitClothing;
         public UIImage portraitHair;
-        public UIImage portraitFace;
+        public UIImage portraitExpression;
+
+        public Dictionary<VillagerPortraitExpression, Asset<Texture2D>> expressionDictionary;
+
+        public VillagerPortraitExpression currentExpression;
+        public VillagerPortraitExpression temporaryExpression;
+        public float temporaryExpressionTimer;
 
         private VillagerType villagerType;
+
+        private string PortraitSpritePath => $"{IOUtilities.LWMSpritePath}/UI/ShopUI/{villagerType}/Portraits/";
 
         public UIPortrait(VillagerType villagerType) {
             this.villagerType = villagerType;
@@ -25,19 +40,22 @@ namespace LivingWorldMod.Content.UI.Elements {
         }
 
         public override void OnInitialize() {
-            string portraitSpritePath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/{villagerType}/Portraits/";
-
-            portraitBase = new UIImage(ModContent.Request<Texture2D>(portraitSpritePath + "Base"));
+            portraitBase = new UIImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Base"));
             Append(portraitBase);
 
-            portraitClothing = new UIImage(ModContent.Request<Texture2D>(portraitSpritePath + "Body1"));
+            portraitClothing = new UIImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Body1"));
             Append(portraitClothing);
 
-            portraitHair = new UIImage(ModContent.Request<Texture2D>(portraitSpritePath + "Hair1"));
+            portraitHair = new UIImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Hair1"));
             Append(portraitHair);
 
-            portraitFace = new UIImage(ModContent.Request<Texture2D>(portraitSpritePath + "FaceNeutral"));
-            Append(portraitFace);
+            PopulateExpressionDictionary();
+
+            currentExpression = VillagerPortraitExpression.Neutral;
+            portraitExpression = new UIImage(expressionDictionary[currentExpression].Value);
+            Append(portraitExpression);
+
+            OnClick += ClickedElement;
         }
 
         public void ChangePortraitType(VillagerType newType) {
@@ -46,15 +64,48 @@ namespace LivingWorldMod.Content.UI.Elements {
         }
 
         public void ReloadPortrait() {
-            string portraitSpritePath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/{villagerType}/Portraits/";
+            PopulateExpressionDictionary();
 
-            portraitBase.SetImage(ModContent.Request<Texture2D>(portraitSpritePath + "Base"));
+            portraitBase.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Base"));
 
-            portraitClothing.SetImage(ModContent.Request<Texture2D>(portraitSpritePath + "Body1"));
+            portraitClothing.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Body1"));
 
-            portraitHair.SetImage(ModContent.Request<Texture2D>(portraitSpritePath + "Hair1"));
+            portraitHair.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Hair1"));
 
-            portraitFace.SetImage(ModContent.Request<Texture2D>(portraitSpritePath + "FaceNeutral"));
+            portraitExpression.SetImage(expressionDictionary[currentExpression]);
+        }
+
+        public override void Update(GameTime gameTime) {
+            //Allows for temporary expressions, for whatever reason that it may need
+            if (temporaryExpression != currentExpression && temporaryExpressionTimer > 0f) {
+                temporaryExpressionTimer--;
+                portraitExpression.SetImage(expressionDictionary[temporaryExpression]);
+            }
+            else if (temporaryExpression != currentExpression && temporaryExpressionTimer == 0f) {
+                temporaryExpressionTimer = -1f;
+                portraitExpression.SetImage(expressionDictionary[currentExpression]);
+            }
+            else {
+                temporaryExpression = currentExpression;
+                temporaryExpressionTimer = -1f;
+            }
+
+            base.Update(gameTime);
+        }
+
+        private void PopulateExpressionDictionary() {
+            expressionDictionary = new Dictionary<VillagerPortraitExpression, Asset<Texture2D>>();
+
+            foreach (VillagerPortraitExpression expression in Enum.GetValues(typeof(VillagerPortraitExpression))) {
+                expressionDictionary.Add(expression, ModContent.Request<Texture2D>(PortraitSpritePath + $"Expression{expression}"));
+            }
+        }
+
+        private void ClickedElement(UIMouseEvent evt, UIElement listeningElement) {
+            //Little Easter Egg where clicking on the Portrait will make them smile for a half a second
+            temporaryExpression = VillagerPortraitExpression.Happy;
+            temporaryExpressionTimer = 30f;
+            SoundEngine.PlaySound(SoundID.Item16);
         }
     }
 }

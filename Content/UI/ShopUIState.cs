@@ -104,7 +104,9 @@ namespace LivingWorldMod.Content.UI {
             savingsZone.Top.Set(260f, 0f);
             backImage.Append(savingsZone);
 
-            savingsDisplay = new UICoinDisplay();
+            savingsDisplay = new UICoinDisplay() {
+                moneyToDisplay = Main.LocalPlayer.CalculateTotalSavings()
+            };
             savingsDisplay.HAlign = savingsDisplay.VAlign = 0.5f;
             savingsZone.Append(savingsDisplay);
 
@@ -132,6 +134,8 @@ namespace LivingWorldMod.Content.UI {
             nameText.SetText(villager.NPC.GivenName, large: true);
 
             dialogueText.SetText(villager.ShopDialogue);
+
+            savingsDisplay.moneyToDisplay = Main.LocalPlayer.CalculateTotalSavings();
 
             PopulateShopList(villager);
 
@@ -162,7 +166,7 @@ namespace LivingWorldMod.Content.UI {
             for (int i = 0; i < Main.rand.Next(10, 51); i++) {
                 UIShopItem element = new UIShopItem(Main.rand.Next(ItemID.DirtBlock, ItemID.Count),
                     Main.rand.Next(1000),
-                    (ulong)Main.rand.Next(0, 10000000),
+                    Main.rand.Next(0, 10000000),
                     VillagerType.Harpy);
 
                 element.Activate();

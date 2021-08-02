@@ -21,13 +21,13 @@ namespace LivingWorldMod.Content.UI.Elements {
         public Item displayedItem;
 
         public int remainingStock;
-        public ulong costPerItem;
+        public long costPerItem;
 
         public VillagerType villagerType;
 
         private float manualUpdateTime;
 
-        public UIShopItem(int itemType, int remainingStock, ulong costPerItem, VillagerType villagerType) : base(ModContent.Request<Texture2D>($"{IOUtilities.LWMSpritePath}/UI/ShopUI/{villagerType}/ShopItemBox")) {
+        public UIShopItem(int itemType, int remainingStock, long costPerItem, VillagerType villagerType) : base(ModContent.Request<Texture2D>($"{IOUtilities.LWMSpritePath}/UI/ShopUI/{villagerType}/ShopItemBox")) {
             displayedItem = new Item();
             displayedItem.SetDefaults(itemType);
             this.remainingStock = remainingStock;
@@ -52,7 +52,7 @@ namespace LivingWorldMod.Content.UI.Elements {
             itemNameText.Left.Set(94f, 0f);
             Append(itemNameText);
 
-            itemCostDisplay = new UICoinDisplay(costPerItem, 1.34f, true) {
+            itemCostDisplay = new UICoinDisplay(costPerItem, 1.34f) {
                 VAlign = 0.5f,
                 coinDrawStyle = CoinDrawStyle.LargerCoinsForceDrawLesserCoins
             };

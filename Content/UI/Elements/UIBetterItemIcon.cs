@@ -48,7 +48,7 @@ namespace LivingWorldMod.Content.UI.Elements {
                 itemAnimFrame,
                 currentColor,
                 0f,
-                drawFromCenter ? new Vector2(itemTexture.Width / 2f, itemTexture.Height / 2f) : default,
+                drawFromCenter ? new Vector2(itemAnimFrame.Width / 2f, itemAnimFrame.Height / 2f) : default,
                 sizeConstraint,
                 SpriteEffects.None,
                 0f);
