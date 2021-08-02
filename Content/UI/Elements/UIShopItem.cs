@@ -1,12 +1,10 @@
-﻿using System.Runtime.CompilerServices;
-using LivingWorldMod.Common.Systems.UI;
+﻿using LivingWorldMod.Common.Systems.UI;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
-using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.UI.Elements {
@@ -29,7 +27,7 @@ namespace LivingWorldMod.Content.UI.Elements {
 
         private float manualUpdateTime;
 
-        public UIShopItem(int itemType, int remainingStock, ulong costPerItem, VillagerType villagerType) : base(ModContent.Request<Texture2D>($"{IOUtilities.LWMSpritePath}/UI/ShopUI/{villagerType}/{villagerType}ShopItemFrame")) {
+        public UIShopItem(int itemType, int remainingStock, ulong costPerItem, VillagerType villagerType) : base(ModContent.Request<Texture2D>($"{IOUtilities.LWMSpritePath}/UI/ShopUI/{villagerType}/ShopItemBox")) {
             displayedItem = new Item();
             displayedItem.SetDefaults(itemType);
             this.remainingStock = remainingStock;
@@ -38,26 +36,27 @@ namespace LivingWorldMod.Content.UI.Elements {
         }
 
         public override void OnInitialize() {
-            itemImage = new UIBetterItemIcon(displayedItem, 32f, true) {
+            float itemImageSize = 32f;
+            itemImage = new UIBetterItemIcon(displayedItem, itemImageSize, true) {
                 VAlign = 0.5f
             };
-            itemImage.Left.Set(28f, 0f);
-            itemImage.Width.Set(32f, 0f);
-            itemImage.Height.Set(32f, 0f);
+            itemImage.Left.Set(38f, 0f);
+            itemImage.Width.Set(itemImageSize, 0f);
+            itemImage.Height.Set(itemImageSize, 0f);
             Append(itemImage);
 
             itemNameText = new UIBetterText(displayedItem.HoverName, 1.25f) {
                 VAlign = 0.5f,
-                horizontalTextConstraint = 176f
+                horizontalTextConstraint = 194f
             };
-            itemNameText.Left.Set(66f, 0f);
+            itemNameText.Left.Set(94f, 0f);
             Append(itemNameText);
 
             itemCostDisplay = new UICoinDisplay(costPerItem, 1.34f, true) {
                 VAlign = 0.5f,
-                coinDrawStyle = CoinDrawStyle.NoCoinsWithZeroValue
+                coinDrawStyle = CoinDrawStyle.LargerCoinsForceDrawLesserCoins
             };
-            itemCostDisplay.Left.Set(260f, 0f);
+            itemCostDisplay.Left.Set(306f, 0f);
             Append(itemCostDisplay);
         }
 

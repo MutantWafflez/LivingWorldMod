@@ -15,81 +15,106 @@ namespace LivingWorldMod.Content.UI {
     public class ShopUIState : UIState {
         public VillagerType shopType;
 
-        public UIImage backFrame;
-        public UIImage shopFrame;
-        public UIImage portraitFrame;
+        public UIImage backImage;
+        public UIImage shopOverlay;
 
-        public UIImage nameFrame;
+        public UIElement shopZone;
+
+        public UIElement portraitZone;
+        public UIPortrait portrait;
+
+        public UIElement nameZone;
         public UIBetterText nameText;
 
-        public UIImage dialogueFrame;
+        public UIElement dialogueZone;
         public UIBetterText dialogueText;
 
+        public UIElement savingsZone;
         public UICoinDisplay savingsDisplay;
 
         public UIScrollbar shopScrollbar;
         public UIList shopList;
 
         public override void OnInitialize() {
-            string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/Harpy/Harpy";
+            string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/Harpy/";
 
-            backFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackFrame"));
-            backFrame.HAlign = backFrame.VAlign = 0.5f;
-            Append(backFrame);
+            backImage = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage"));
+            backImage.HAlign = backImage.VAlign = 0.5f;
+            Append(backImage);
 
-            shopFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "ShopFrame"));
-            shopFrame.Left.Set(50f, 0f);
-            shopFrame.Top.Set(42.5f, 0f);
-            backFrame.Append(shopFrame);
+            shopOverlay = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay"));
+            backImage.Append(shopOverlay);
 
-            portraitFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "PortraitFrame"));
-            portraitFrame.Left.Set(675f, 0f);
-            portraitFrame.Top.Set(50f, 0f);
-            backFrame.Append(portraitFrame);
+            shopZone = new UIElement();
+            shopZone.Width.Set(504f, 0f);
+            shopZone.Height.Set(504f, 0f);
+            shopZone.Left.Set(56f, 0f);
+            shopZone.Top.Set(50f, 0f);
+            backImage.Append(shopZone);
 
-            nameFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "NameFrame"));
-            nameFrame.Left.Set(portraitFrame.Left.Pixels, 0f);
-            nameFrame.Top.Set(275f, 0f);
-            backFrame.Append(nameFrame);
+            portraitZone = new UIElement();
+            portraitZone.Width.Set(196f, 0f);
+            portraitZone.Height.Set(196f, 0f);
+            portraitZone.Left.Set(732f, 0f);
+            portraitZone.Top.Set(120f, 0f);
+            backImage.Append(portraitZone);
+
+            portrait = new UIPortrait(VillagerType.Harpy);
+            portrait.Left.Set(101f, 0f);
+            portrait.Top.Set(101f, 0f);
+            portraitZone.Append(portrait);
+
+            nameZone = new UIElement();
+            nameZone.Width.Set(196f, 0f);
+            nameZone.Height.Set(60f, 0f);
+            nameZone.Left.Set(734f, 0f);
+            nameZone.Top.Set(322f, 0f);
+            backImage.Append(nameZone);
 
             nameText = new UIBetterText(large: true) {
                 HAlign = 0.5f,
                 VAlign = 0.5f,
-                horizontalTextConstraint = 170f
+                horizontalTextConstraint = 184
             };
-            nameFrame.Append(nameText);
+            nameZone.Append(nameText);
 
-            dialogueFrame = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "DialogueFrame"));
-            dialogueFrame.Left.Set(portraitFrame.Left.Pixels - 40f, 0f);
-            dialogueFrame.Top.Set(375f, 0f);
-            backFrame.Append(dialogueFrame);
+            dialogueZone = new UIElement();
+            dialogueZone.Width.Set(410f, 0f);
+            dialogueZone.Height.Set(166f, 0f);
+            dialogueZone.Left.Set(584f, 0f);
+            dialogueZone.Top.Set(388f, 0f);
+            backImage.Append(dialogueZone);
 
             dialogueText = new UIBetterText() {
                 IsWrapped = true,
-                horizontalWrapConstraint = 240f
+                horizontalWrapConstraint = 388f
             };
-            dialogueText.SetPadding(28f);
-            dialogueFrame.Append(dialogueText);
+            dialogueText.SetPadding(12f);
+            dialogueZone.Append(dialogueText);
 
             shopScrollbar = new UIScrollbar();
             shopScrollbar.Left.Set(472f, 0f);
-            shopScrollbar.Top.Set(32f, 0f);
-            shopScrollbar.Height.Set(448f, 0f);
-            shopFrame.Append(shopScrollbar);
+            shopScrollbar.Top.Set(16f, 0f);
+            shopScrollbar.Height.Set(464f, 0f);
+            shopZone.Append(shopScrollbar);
+
+            savingsZone = new UIElement();
+            savingsZone.Width.Set(126f, 0f);
+            savingsZone.Height.Set(84f, 0f);
+            savingsZone.Left.Set(576f, 0f);
+            savingsZone.Top.Set(260f, 0f);
+            backImage.Append(savingsZone);
 
             savingsDisplay = new UICoinDisplay();
-            savingsDisplay.Left.Set(580f, 0f);
-            savingsDisplay.Top.Set(326f, 0f);
-            backFrame.Append(savingsDisplay);
+            savingsDisplay.HAlign = savingsDisplay.VAlign = 0.5f;
+            savingsZone.Append(savingsDisplay);
 
             shopList = new UIList();
             shopList.Width.Set(470f, 0f);
-            shopList.Height.Set(490f, 0f);
-            shopList.PaddingLeft = 26f;
-            shopList.PaddingTop = 20f;
-            shopList.ListPadding = 4f;
+            shopList.Height.Set(512f, 0f);
+            shopList.SetPadding(6f);
             shopList.SetScrollbar(shopScrollbar);
-            shopFrame.Append(shopList);
+            shopZone.Append(shopList);
 
             DummyPopulateShopList();
         }
@@ -97,19 +122,15 @@ namespace LivingWorldMod.Content.UI {
         public void ReloadUI(Villager villager) {
             shopType = villager.VillagerType;
 
-            string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/{shopType}/{shopType}";
+            string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/{shopType}/";
 
-            backFrame.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BackFrame"));
+            backImage.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage"));
 
-            shopFrame.SetImage(ModContent.Request<Texture2D>(shopUIPath + "ShopFrame"));
+            shopOverlay.SetImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay"));
 
-            portraitFrame.SetImage(ModContent.Request<Texture2D>(shopUIPath + "PortraitFrame"));
-
-            nameFrame.SetImage(ModContent.Request<Texture2D>(shopUIPath + "NameFrame"));
+            portrait.ChangePortraitType(shopType);
 
             nameText.SetText(villager.NPC.GivenName, large: true);
-
-            dialogueFrame.SetImage(ModContent.Request<Texture2D>(shopUIPath + "DialogueFrame"));
 
             dialogueText.SetText(villager.ShopDialogue);
 
@@ -119,7 +140,7 @@ namespace LivingWorldMod.Content.UI {
         }
 
         public override void Update(GameTime gameTime) {
-            if (backFrame.ContainsPoint(Main.MouseScreen)) {
+            if (backImage.ContainsPoint(Main.MouseScreen)) {
                 Main.LocalPlayer.mouseInterface = true;
             }
 
@@ -142,7 +163,7 @@ namespace LivingWorldMod.Content.UI {
             for (int i = 0; i < Main.rand.Next(10, 51); i++) {
                 UIShopItem element = new UIShopItem(Main.rand.Next(ItemID.DirtBlock, ItemID.Count),
                     Main.rand.Next(1000),
-                    (ulong)Item.buyPrice(gold: 1),
+                    (ulong)Main.rand.Next(0, 10000000),
                     VillagerType.Harpy);
 
                 element.Activate();
