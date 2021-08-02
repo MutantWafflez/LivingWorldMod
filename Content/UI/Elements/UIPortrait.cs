@@ -20,8 +20,8 @@ namespace LivingWorldMod.Content.UI.Elements {
 
         public UIPortrait(VillagerType villagerType) {
             this.villagerType = villagerType;
-            Width.Set(95f, 0f);
-            Height.Set(95f, 0f);
+            Width.Set(190f, 0f);
+            Height.Set(190f, 0f);
         }
 
         public override void OnInitialize() {

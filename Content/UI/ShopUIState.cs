@@ -60,8 +60,7 @@ namespace LivingWorldMod.Content.UI {
             backImage.Append(portraitZone);
 
             portrait = new UIPortrait(VillagerType.Harpy);
-            portrait.Left.Set(101f, 0f);
-            portrait.Top.Set(101f, 0f);
+            portrait.Top.Set(4f, 0f);
             portraitZone.Append(portrait);
 
             nameZone = new UIElement();
