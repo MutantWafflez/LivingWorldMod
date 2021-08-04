@@ -22,7 +22,7 @@ namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
             TileObjectData.newTile.CoordinateHeights = new int[] {16, 16, 16};
             TileObjectData.addTile(Type);
 
-            AddMapEntry(Color.LightBlue);
+            AddMapEntry(Color.MediumPurple);
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) {

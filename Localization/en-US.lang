@@ -2,6 +2,8 @@
 VillagerType.Harpy=Harpy
 
 #Item Names
+ItemName.NimbusJarItem=Nimbus in a Jar
+
 ItemName.GravityTapestryItem=Gravity Tapestry
 
 ItemName.SunTapestryItem=Sun Tapestry
