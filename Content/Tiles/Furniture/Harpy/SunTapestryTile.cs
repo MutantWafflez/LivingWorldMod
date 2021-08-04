@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
@@ -14,6 +15,8 @@ namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
             Main.tileWaterDeath[Type] = true;
             Main.tileLavaDeath[Type] = true;
             Main.tileFrameImportant[Type] = true;
+            //TODO: Fix wind sway
+            //TileID.Sets.SwaysInWindBasic[Type] = true;
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style1x2Top);
             TileObjectData.newTile.Width = 3;
@@ -21,6 +24,9 @@ namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
             TileObjectData.newTile.Origin = new Point16(1, 0);
             TileObjectData.newTile.CoordinateHeights = new int[] {16, 16, 16};
             TileObjectData.addTile(Type);
+
+            ModTranslation mapName = CreateMapEntryName();
+            mapName.SetDefault("Tapestry");
 
             AddMapEntry(Color.MediumPurple);
         }
