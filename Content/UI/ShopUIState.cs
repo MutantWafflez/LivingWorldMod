@@ -99,7 +99,7 @@ namespace LivingWorldMod.Content.UI {
             dialogueZone.Append(dialogueText);
 
             shopScrollbar = new UIScrollbar();
-            shopScrollbar.Left.Set(460f, 0f);
+            shopScrollbar.Left.Set(466f, 0f);
             shopScrollbar.Top.Set(16f, 0f);
             shopScrollbar.Height.Set(464f, 0f);
             shopZone.Append(shopScrollbar);
