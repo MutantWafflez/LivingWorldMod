@@ -7,3 +7,6 @@ ItemName.NimbusJarItem=Nimbus in a Jar
 ItemName.GravityTapestryItem=Gravity Tapestry
 
 ItemName.SunTapestryItem=Sun Tapestry
+
+ItemName.StarTorchItem=Star Torch
+ItemTooltip.StarTorchItem='Light the way with the essence of the cosmos'
