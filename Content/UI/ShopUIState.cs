@@ -42,11 +42,15 @@ namespace LivingWorldMod.Content.UI {
             backImage = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage")) {
                 HAlign = 0.5f,
                 VAlign = 0.5f
-            };;
+            };
             Append(backImage);
 
-            shopOverlay = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay"));
-            backImage.Append(shopOverlay);
+            shopOverlay = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay")){
+                HAlign = 0.5f,
+                VAlign = 0.5f,
+                IgnoresMouseInteraction = true
+            };
+            Append(shopOverlay);
 
             shopZone = new UIElement();
             shopZone.Width.Set(504f, 0f);
