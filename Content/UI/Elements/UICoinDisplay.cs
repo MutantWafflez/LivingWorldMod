@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Custom.Enums;
+﻿using System;
+using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -15,7 +16,7 @@ namespace LivingWorldMod.Content.UI.Elements {
     public class UICoinDisplay : UIElement {
 
         /// <summary>
-        /// Money to display. If 0, displays the player's savings instead.
+        /// The total monetary value to display on this element.
         /// </summary>
         public long moneyToDisplay;
 
@@ -25,56 +26,175 @@ namespace LivingWorldMod.Content.UI.Elements {
         public float displayScale;
 
         /// <summary>
-        /// Whether or not to draw coins that have a value of 0 attributed to them. For example, if
-        /// the player only has 43 gold exactly, this UI won't draw the platinum coin and its
-        /// respective text.
+        /// Controls the method by which the coins in this display are drawn. Read each of the enum's summary to understand in more detail. Defaults to vanilla's drawing style.
         /// </summary>
         public CoinDrawStyle coinDrawStyle;
 
-        public UICoinDisplay(long moneyToDisplay = 0, float displayScale = 1f) {
+        public UICoinDisplay(long moneyToDisplay, CoinDrawStyle coinDrawStyle = CoinDrawStyle.Vanilla, float displayScale = 1f) {
             this.moneyToDisplay = moneyToDisplay;
+            this.coinDrawStyle = coinDrawStyle;
             this.displayScale = displayScale;
 
-            coinDrawStyle = CoinDrawStyle.Vanilla;
-
-            MinWidth.Set(92f * displayScale, 0f);
-            MinHeight.Set(30f * displayScale, 0f);
+            CalculateDimensions();
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
             Vector2 startPos = GetDimensions().Position();
 
-            //Adapted Vanilla Code
             int[] splitCoinArray = Utils.CoinsSplit(moneyToDisplay);
 
-            bool largerCoinHasValue = false;
-            for (int i = 0; i < 4; i++) {
-                Vector2 position = new Vector2(startPos.X + (24f * displayScale * i) + (14f * displayScale), startPos.Y + (14f * displayScale));
+            switch (coinDrawStyle) {
+                case CoinDrawStyle.Vanilla:
+                    //Adapted Vanilla Code
 
-                Main.instance.LoadItem(ItemID.PlatinumCoin - i);
+                    for (int i = 0; i < splitCoinArray.Length; i++) {
+                        Vector2 position = new Vector2(startPos.X + (24f * displayScale * i) + (14f * displayScale), startPos.Y + (14f * displayScale));
 
-                if (coinDrawStyle == CoinDrawStyle.Vanilla || (coinDrawStyle == CoinDrawStyle.LargerCoinsForceDrawLesserCoins && largerCoinHasValue) || splitCoinArray[3 - i] > 0f) {
-                    largerCoinHasValue = true;
-                    spriteBatch.Draw(TextureAssets.Item[ItemID.PlatinumCoin - i].Value,
-                        position,
-                        null,
-                        Color.White,
-                        0f,
-                        TextureAssets.Item[ItemID.PlatinumCoin - i].Value.Size() / 2f,
-                        displayScale,
-                        SpriteEffects.None,
-                        0f);
+                        Main.instance.LoadItem(ItemID.PlatinumCoin - i);
 
-                    Utils.DrawBorderStringFourWay(spriteBatch,
-                        FontAssets.ItemStack.Value,
-                        splitCoinArray[3 - i].ToString(),
-                        position.X - (10f * displayScale),
-                        position.Y,
-                        Color.White,
-                        Color.Black,
-                        default,
-                        0.75f * displayScale);
-                }
+                        spriteBatch.Draw(TextureAssets.Item[ItemID.PlatinumCoin - i].Value,
+                            position, 
+                            null,
+                            Color.White,
+                            0f,
+                            TextureAssets.Item[ItemID.PlatinumCoin - i].Value.Size() / 2f,
+                            displayScale,
+                            SpriteEffects.None,
+                            0f);
+
+                        Utils.DrawBorderStringFourWay(spriteBatch,
+                            FontAssets.ItemStack.Value,
+                            splitCoinArray[3 - i].ToString(),
+                            position.X - (10f * displayScale),
+                            position.Y,
+                            Color.White,
+                            Color.Black,
+                            default,
+                            0.75f * displayScale);
+                    }
+
+                    break;
+                case CoinDrawStyle.NoCoinsWithZeroValue:
+                    int actuallyDrawnCoins = 0;
+
+                    for (int i = 0; i < splitCoinArray.Length; i++) {
+                        if (splitCoinArray[i] != 0f) {
+                            Vector2 position = new Vector2(startPos.X + (24f * displayScale * actuallyDrawnCoins) + (14f * displayScale), startPos.Y + (14f * displayScale));
+
+                            Main.instance.LoadItem(ItemID.PlatinumCoin - i);
+
+                            spriteBatch.Draw(TextureAssets.Item[ItemID.PlatinumCoin - i].Value,
+                                position, 
+                                null,
+                                Color.White,
+                                0f,
+                                TextureAssets.Item[ItemID.PlatinumCoin - i].Value.Size() / 2f,
+                                displayScale,
+                                SpriteEffects.None,
+                                0f);
+
+                            Utils.DrawBorderStringFourWay(spriteBatch,
+                                FontAssets.ItemStack.Value,
+                                splitCoinArray[3 - i].ToString(),
+                                position.X - (10f * displayScale),
+                                position.Y,
+                                Color.White,
+                                Color.Black,
+                                default,
+                                0.75f * displayScale);
+
+                            actuallyDrawnCoins++;
+                        }
+                    }
+
+                    break;
+                case CoinDrawStyle.LargerCoinsForceDrawLesserCoins:
+                    bool largerCoinHasValue = false;
+                    actuallyDrawnCoins = 0;
+
+                    for (int i = 0; i < splitCoinArray.Length; i++) {
+                        if (splitCoinArray[i] != 0f || largerCoinHasValue) {
+                            Vector2 position = new Vector2(startPos.X + (24f * displayScale * actuallyDrawnCoins) + (14f * displayScale), startPos.Y + (14f * displayScale));
+
+                            Main.instance.LoadItem(ItemID.PlatinumCoin - i);
+
+                            spriteBatch.Draw(TextureAssets.Item[ItemID.PlatinumCoin - i].Value,
+                                position, 
+                                null,
+                                Color.White,
+                                0f,
+                                TextureAssets.Item[ItemID.PlatinumCoin - i].Value.Size() / 2f,
+                                displayScale,
+                                SpriteEffects.None,
+                                0f);
+
+                            Utils.DrawBorderStringFourWay(spriteBatch,
+                                FontAssets.ItemStack.Value,
+                                splitCoinArray[3 - i].ToString(),
+                                position.X - (10f * displayScale),
+                                position.Y,
+                                Color.White,
+                                Color.Black,
+                                default,
+                                0.75f * displayScale);
+
+                            actuallyDrawnCoins++;
+                            largerCoinHasValue = true;
+                        }
+                    }
+
+                    break;
+                default:
+                    LivingWorldMod.Instance.Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
+                    break;
+            }
+
+        }
+
+        /// <summary>
+        /// Calculates & reloads the dimensions of this display depending on the current money being displayed.
+        /// </summary>
+        public void CalculateDimensions() {
+            int[] splitCoinArray = Utils.CoinsSplit(moneyToDisplay);
+
+            //Since height is not a factor that changes between styles, we can define height here
+            Height.Set(30 * displayScale, 0f);
+
+            switch (coinDrawStyle) {
+                case CoinDrawStyle.Vanilla:
+                    Width.Set(94f * displayScale, 0f);
+
+                    break;
+                case CoinDrawStyle.NoCoinsWithZeroValue:
+                    float finalWidth = 0f;
+
+                    for (int i = 0; i < splitCoinArray.Length; i++) {
+                        if (splitCoinArray[i] != 0f) {
+                            finalWidth += 24; //Coin + padding size
+                        }
+                    }
+
+                    Width.Set(finalWidth * displayScale, 0f);
+
+                    break;
+                case CoinDrawStyle.LargerCoinsForceDrawLesserCoins:
+                    bool largerCoinHasValue = false;
+                    finalWidth = 0f;
+
+                    for (int i = 0; i < splitCoinArray.Length; i++) {
+                        if (splitCoinArray[i] != 0f || largerCoinHasValue) {
+                            largerCoinHasValue = true;
+                            finalWidth += 24; //Coin + padding size
+                        }
+                    }
+
+                    Width.Set(finalWidth * displayScale, 0f);
+
+                    break;
+                default:
+                    LivingWorldMod.Instance.Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
+
+                    break;
             }
         }
     }

@@ -104,9 +104,7 @@ namespace LivingWorldMod.Content.UI {
             savingsZone.Top.Set(260f, 0f);
             backImage.Append(savingsZone);
 
-            savingsDisplay = new UICoinDisplay() {
-                moneyToDisplay = Main.LocalPlayer.CalculateTotalSavings()
-            };
+            savingsDisplay = new UICoinDisplay(Main.LocalPlayer.CalculateTotalSavings());
             savingsDisplay.HAlign = savingsDisplay.VAlign = 0.5f;
             savingsZone.Append(savingsDisplay);
 
