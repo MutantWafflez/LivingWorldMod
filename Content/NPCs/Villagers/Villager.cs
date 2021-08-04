@@ -144,6 +144,12 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public override string Texture => IOUtilities.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/{VillagerType}Style1";
 
+        public override bool CloneNewInstances => true;
+
+        public override ModNPC Clone() {
+            return base.Clone();
+        }
+
         public override void AutoStaticDefaults() {
             base.AutoStaticDefaults();
             NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0) {
