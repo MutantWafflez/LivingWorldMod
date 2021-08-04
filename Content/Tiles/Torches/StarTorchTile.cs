@@ -19,6 +19,7 @@ namespace LivingWorldMod.Content.Tiles.Torches {
             Main.tileLavaDeath[Type] = true;
             Main.tileFrameImportant[Type] = true;
             TileID.Sets.FramesOnKillWall[Type] = true;
+            TileID.Sets.Torch[Type] = true;
 
             TileObjectData.newTile.CopyFrom(TileObjectData.StyleTorch);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
