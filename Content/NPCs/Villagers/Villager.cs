@@ -88,98 +88,58 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// <summary>
         /// List of possible names that these villagers can have.
         /// </summary>
-        public virtual List<string> PossibleNames => new List<string>();
+        public abstract List<string> PossibleNames {
+            get;
+        }
 
         /// <summary>
         /// Dialogue that is added to the list of reputation dialogue depending on the current
         /// event, if any, that is occurring.
         /// </summary>
-        public virtual WeightedRandom<string> EventDialogue {
-            get {
-                WeightedRandom<string> list = new WeightedRandom<string>();
-
-                list.Add("It is quite an event to see this message... Someone messed up! Contact a Mod Dev!");
-
-                return list;
-            }
+        public abstract WeightedRandom<string> EventDialogue {
+            get;
         }
 
         /// <summary>
         /// Possible dialogue that these villagers will say in the shop screen when opened by the player.
         /// </summary>
-        public virtual WeightedRandom<string> ShopDialogue {
-            get {
-                WeightedRandom<string> list = new WeightedRandom<string>();
-
-                list.Add("This dialogue box is a bit too small and empty.. Hurry, contact a Mod Dev!");
-
-                return list;
-            }
+        public abstract WeightedRandom<string> ShopDialogue {
+            get;
         }
 
         /// <summary>
         /// Possible dialogue that these villagers will say when they SEVERELY DISLIKE the players.
         /// </summary>
-        public virtual WeightedRandom<string> SevereDislikeDialogue {
-            get {
-                WeightedRandom<string> list = new WeightedRandom<string>();
-
-                list.Add("I DISLIKE the fact that this is empty... Hurry, contact a Mod Dev!");
-
-                return list;
-            }
+        public abstract WeightedRandom<string> SevereDislikeDialogue {
+            get;
         }
 
         /// <summary>
         /// Possible dialogue that these villagers will say when they DISLIKE the players.
         /// </summary>
-        public virtual WeightedRandom<string> DislikeDialogue {
-            get {
-                WeightedRandom<string> list = new WeightedRandom<string>();
-
-                list.Add("I DISLIKE the fact that this is empty... Hurry, contact a Mod Dev!");
-
-                return list;
-            }
+        public abstract WeightedRandom<string> DislikeDialogue {
+            get;
         }
 
         /// <summary>
         /// Possible dialogue that these villagers will say when they are NEUTRAL to the players.
         /// </summary>
-        public virtual WeightedRandom<string> NeutralDialogue {
-            get {
-                WeightedRandom<string> list = new WeightedRandom<string>();
-
-                list.Add("I feel NEUTRAL about the fact that this is empty... Hurry, contact a Mod Dev!");
-
-                return list;
-            }
+        public abstract WeightedRandom<string> NeutralDialogue {
+            get;
         }
 
         /// <summary>
         /// Possible dialogue that these villagers will say when they LIKE the players.
         /// </summary>
-        public virtual WeightedRandom<string> LikeDialogue {
-            get {
-                WeightedRandom<string> list = new WeightedRandom<string>();
-
-                list.Add("I usually would LIKE the emptiness, but in this case it's not making me happy... Hurry, contact a Mod Dev!");
-
-                return list;
-            }
+        public abstract WeightedRandom<string> LikeDialogue {
+            get;
         }
 
         /// <summary>
         /// Possible dialogue that these villagers will say when they LOVE the players.
         /// </summary>
-        public virtual WeightedRandom<string> LoveDialogue {
-            get {
-                WeightedRandom<string> list = new WeightedRandom<string>();
-
-                list.Add("I usually LOVE emptiness like this, but in this case it's not making me happy... Hurry, contact a Mod Dev!");
-
-                return list;
-            }
+        public abstract WeightedRandom<string> LoveDialogue {
+            get;
         }
 
         public override string Texture => IOUtilities.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/{VillagerType}Style1";
