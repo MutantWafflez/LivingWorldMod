@@ -77,8 +77,8 @@ namespace LivingWorldMod.Content.UI.Elements {
                 case CoinDrawStyle.NoCoinsWithZeroValue:
                     int actuallyDrawnCoins = 0;
 
-                    for (int i = 0; i < splitCoinArray.Length; i++) {
-                        if (splitCoinArray[i] != 0f) {
+                    for (int i = 0; i < 4; i++) {
+                        if (splitCoinArray[3 - i] != 0f) {
                             Vector2 position = new Vector2(startPos.X + (24f * displayScale * actuallyDrawnCoins) + (14f * displayScale), startPos.Y + (14f * displayScale));
 
                             Main.instance.LoadItem(ItemID.PlatinumCoin - i);
@@ -112,8 +112,8 @@ namespace LivingWorldMod.Content.UI.Elements {
                     bool largerCoinHasValue = false;
                     actuallyDrawnCoins = 0;
 
-                    for (int i = 0; i < splitCoinArray.Length; i++) {
-                        if (splitCoinArray[i] != 0f || largerCoinHasValue) {
+                    for (int i = 0; i < 4; i++) {
+                        if (splitCoinArray[3 - i] != 0f || largerCoinHasValue) {
                             Vector2 position = new Vector2(startPos.X + (24f * displayScale * actuallyDrawnCoins) + (14f * displayScale), startPos.Y + (14f * displayScale));
 
                             Main.instance.LoadItem(ItemID.PlatinumCoin - i);
