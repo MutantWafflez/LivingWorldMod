@@ -184,7 +184,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public override string Texture => IOUtilities.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/{VillagerType}Style1";
 
-        public override void SetStaticDefaults() {
+        public override void AutoStaticDefaults() {
+            base.AutoStaticDefaults();
             NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0) {
                 Velocity = 1f,
                 Direction = -1

@@ -148,8 +148,6 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         public override void SetStaticDefaults() {
-            base.SetStaticDefaults();
-
             Main.npcFrameCount[NPC.type] = 27;
         }
 
