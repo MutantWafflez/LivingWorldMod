@@ -20,6 +20,8 @@ namespace LivingWorldMod.Content.Tiles.Furniture.Critter {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0);
             TileObjectData.addTile(Type);
 
+            AnimationFrameHeight = 36;
+
             AddMapEntry(Color.FloralWhite);
         }
 
@@ -30,18 +32,13 @@ namespace LivingWorldMod.Content.Tiles.Furniture.Critter {
         public override void AnimateTile(ref int frame, ref int frameCounter) {
             if (frame > 25) {
                 frame = 0;
+                frameCounter = 0;
             }
 
             if (++frameCounter > 6) {
                 frameCounter = 0;
                 frame++;
             }
-        }
-
-        public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
-            int frame = Main.tileFrame[type];
-
-            frameYOffset = frame * 36;
         }
     }
 }
