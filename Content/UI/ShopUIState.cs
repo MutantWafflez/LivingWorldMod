@@ -30,6 +30,7 @@ namespace LivingWorldMod.Content.UI {
         public UIBetterText dialogueText;
 
         public UIElement savingsZone;
+        public UIBetterText savingsText;
         public UICoinDisplay savingsDisplay;
 
         public UIScrollbar shopScrollbar;
@@ -38,8 +39,10 @@ namespace LivingWorldMod.Content.UI {
         public override void OnInitialize() {
             string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/Harpy/";
 
-            backImage = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage"));
-            backImage.HAlign = backImage.VAlign = 0.5f;
+            backImage = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage")) {
+                HAlign = 0.5f,
+                VAlign = 0.5f
+            };;
             Append(backImage);
 
             shopOverlay = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay"));
@@ -92,7 +95,7 @@ namespace LivingWorldMod.Content.UI {
             dialogueZone.Append(dialogueText);
 
             shopScrollbar = new UIScrollbar();
-            shopScrollbar.Left.Set(472f, 0f);
+            shopScrollbar.Left.Set(460f, 0f);
             shopScrollbar.Top.Set(16f, 0f);
             shopScrollbar.Height.Set(464f, 0f);
             shopZone.Append(shopScrollbar);
@@ -104,8 +107,16 @@ namespace LivingWorldMod.Content.UI {
             savingsZone.Top.Set(260f, 0f);
             backImage.Append(savingsZone);
 
-            savingsDisplay = new UICoinDisplay(Main.LocalPlayer.CalculateTotalSavings());
-            savingsDisplay.HAlign = savingsDisplay.VAlign = 0.5f;
+            savingsText = new UIBetterText("Savings") {
+                HAlign = 0.5f
+            };
+            savingsText.Top.Set(-26f, 0f);
+            savingsZone.Append(savingsText);
+
+            savingsDisplay = new UICoinDisplay(Main.LocalPlayer.CalculateTotalSavings()) {
+                HAlign = 0.5f,
+                VAlign = 0.5f
+            };
             savingsZone.Append(savingsDisplay);
 
             shopList = new UIList();
