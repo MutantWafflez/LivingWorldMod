@@ -52,11 +52,10 @@ namespace LivingWorldMod.Content.UI.Elements {
             itemNameText.Left.Set(94f, 0f);
             Append(itemNameText);
 
-            itemCostDisplay = new UICoinDisplay(costPerItem, 1.34f) {
+            itemCostDisplay = new UICoinDisplay(costPerItem, CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) {
                 VAlign = 0.5f,
-                coinDrawStyle = CoinDrawStyle.LargerCoinsForceDrawLesserCoins
             };
-            itemCostDisplay.Left.Set(306f, 0f);
+            itemCostDisplay.Left.Set(-itemCostDisplay.Width.Pixels - 12f, 1f);
             Append(itemCostDisplay);
         }
 
