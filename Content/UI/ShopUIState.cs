@@ -1,6 +1,7 @@
 ﻿using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.UI.Elements;
 using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -164,7 +165,18 @@ namespace LivingWorldMod.Content.UI {
         }
 
         private void PopulateShopList(Villager villager) {
-            DummyPopulateShopList();
+            shopList.Clear();
+
+            foreach (ShopItem item in villager.currentShopItems) {
+                UIShopItem element = new UIShopItem(item.itemType,
+                    item.remainingStock,
+                    item.ItemPrice,
+                    villager.VillagerType);
+
+                element.Activate();
+
+                shopList.Add(element);
+            }
         }
 
         /// <summary>

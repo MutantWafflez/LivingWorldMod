@@ -5,6 +5,8 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Linq;
+using LivingWorldMod.Custom.Structs;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -142,12 +144,30 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             get;
         }
 
+        /// <summary>
+        /// A list of ALL POSSIBLE shop items that villagers of this given type can ever sell. This list is checked upon every restock.
+        /// </summary>
+        public abstract WeightedRandom<ShopItem> ShopPool {
+            get;
+        }
+
+        /// <summary>
+        /// A list of shop items that this specific villager is selling at this very moment.
+        /// </summary>
+        public List<ShopItem> currentShopItems;
+
+        public Villager() {
+            RestockShop();
+        }
+
         public override string Texture => IOUtilities.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/{VillagerType}Style1";
 
         public override bool CloneNewInstances => true;
 
         public override ModNPC Clone() {
-            return base.Clone();
+            Villager clone = (Villager)base.Clone();
+            currentShopItems = clone.currentShopItems;
+            return clone;
         }
 
         public override void AutoStaticDefaults() {
@@ -235,6 +255,26 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             SpriteEffects spriteDirection = NPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             spriteBatch.Draw(Mod.Assets.Request<Texture2D>(Texture.Replace("LivingWorldMod/", "")).Value, new Rectangle((int)(NPC.Right.X - (NPC.frame.Width / 1.5) - screenPos.X), (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f), NPC.frame.Width, NPC.frame.Height), NPC.frame, drawColor, NPC.rotation, default, spriteDirection, 0);
             return false;
+        }
+
+        /// <summary>
+        /// Restocks the shop of this villager, drawing from the SpawnPool property.
+        /// </summary>
+        public void RestockShop() {
+            WeightedRandom<ShopItem> pool = ShopPool;
+            currentShopItems = new List<ShopItem>();
+
+            int shopLength = Main.rand.Next(6, 8);
+
+            do {
+                ShopItem returnedItem = ShopPool;
+
+                if (currentShopItems.All(item => item != returnedItem)) {
+                    currentShopItems.Add(returnedItem);
+                }
+
+            }
+            while (currentShopItems.Count < shopLength);
         }
     }
 }
