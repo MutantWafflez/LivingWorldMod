@@ -68,7 +68,7 @@ namespace LivingWorldMod.Content.UI {
             portraitZone.Top.Set(120f, 0f);
             backImage.Append(portraitZone);
 
-            portrait = new UIPortrait(VillagerType.Harpy);
+            portrait = new UIPortrait(new HarpyVillager());
             portrait.Top.Set(4f, 0f);
             portraitZone.Append(portrait);
 
@@ -144,7 +144,7 @@ namespace LivingWorldMod.Content.UI {
 
             shopOverlay.SetImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay"));
 
-            portrait.ChangePortraitType(shopType);
+            portrait.ChangePortraitType(villager);
 
             nameText.SetText(villager.NPC.GivenName, large: true);
 

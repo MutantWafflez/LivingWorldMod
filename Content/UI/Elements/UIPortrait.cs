@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -29,12 +31,12 @@ namespace LivingWorldMod.Content.UI.Elements {
         public VillagerPortraitExpression temporaryExpression;
         public float temporaryExpressionTimer;
 
-        private VillagerType villagerType;
+        private Villager villager;
 
-        private string PortraitSpritePath => $"{IOUtilities.LWMSpritePath}/UI/ShopUI/{villagerType}/Portraits/";
+        private string PortraitSpritePath => $"{IOUtilities.LWMSpritePath}/UI/ShopUI/{villager.VillagerType}/Portraits/";
 
-        public UIPortrait(VillagerType villagerType) {
-            this.villagerType = villagerType;
+        public UIPortrait(Villager villager) {
+            this.villager = villager;
             Width.Set(190f, 0f);
             Height.Set(190f, 0f);
         }
@@ -58,13 +60,25 @@ namespace LivingWorldMod.Content.UI.Elements {
             OnClick += ClickedElement;
         }
 
-        public void ChangePortraitType(VillagerType newType) {
-            villagerType = newType;
+        public void ChangePortraitType(Villager newVillager) {
+            villager = newVillager;
             ReloadPortrait();
         }
 
         public void ReloadPortrait() {
             PopulateExpressionDictionary();
+
+            switch (villager.RelationshipStatus) {
+                case <= VillagerRelationship.SevereDislike:
+                    currentExpression = VillagerPortraitExpression.Angered;
+                    break;
+                case > VillagerRelationship.SevereDislike and < VillagerRelationship.Love:
+                    currentExpression = VillagerPortraitExpression.Neutral;
+                    break;
+                case >= VillagerRelationship.Love:
+                    currentExpression = VillagerPortraitExpression.Happy;
+                    break;
+            }
 
             portraitBase.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Base"));
 
@@ -76,7 +90,7 @@ namespace LivingWorldMod.Content.UI.Elements {
         }
 
         public override void Update(GameTime gameTime) {
-            //Allows for temporary expressions, for whatever reason that it may need
+            //Allows for temporary expressions, for whatever reason that it may be applicable
             if (temporaryExpression != currentExpression && temporaryExpressionTimer > 0f) {
                 temporaryExpressionTimer--;
                 portraitExpression.SetImage(expressionDictionary[temporaryExpression]);
