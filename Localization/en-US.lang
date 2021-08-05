@@ -1,9 +1,11 @@
 ﻿# Villager Types
 VillagerType.Harpy=Harpy
 
-#Item Names/Tooltips
+#Tile Item Names/Tooltips
 ItemName.StarshardCloudItem=Starshard Cloud
 ItemTooltip.StarshardCloudItem='Shards of fallen stars permeate throughout this cloud'
+
+ItemName.SunslabBlockItem=Sunslab Block
 
 ItemName.NimbusJarItem=Nimbus in a Jar
 
