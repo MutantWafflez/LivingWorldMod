@@ -2,6 +2,9 @@
 VillagerType.Harpy=Harpy
 
 #Item Names/Tooltips
+ItemName.StarshardCloudItem=Starshard Cloud
+ItemTooltip.StarshardCloudItem='Shards of fallen stars permeate throughout this cloud'
+
 ItemName.NimbusJarItem=Nimbus in a Jar
 
 ItemName.GravityTapestryItem=Gravity Tapestry
