@@ -1,12 +1,14 @@
 ﻿# Villager Types
 VillagerType.Harpy=Harpy
 
-#Item Names
+#Item Names/Tooltips
 ItemName.NimbusJarItem=Nimbus in a Jar
 
 ItemName.GravityTapestryItem=Gravity Tapestry
 
 ItemName.SkywareAnvilItem=Skyware Anvil
+
+ItemName.SkywareLoomItem=Skyware Loom
 
 ItemName.SunTapestryItem=Sun Tapestry
 
