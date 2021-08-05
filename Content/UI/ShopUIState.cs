@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Content.NPCs.Villagers;
+﻿using System;
+using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.UI.Elements;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
@@ -167,10 +168,12 @@ namespace LivingWorldMod.Content.UI {
         private void PopulateShopList(Villager villager) {
             shopList.Clear();
 
+            float priceMult = NPCUtilities.GetPriceMultiplierFromRep(villager);
+
             foreach (ShopItem item in villager.currentShopItems) {
                 UIShopItem element = new UIShopItem(item.itemType,
                     item.remainingStock,
-                    item.ItemPrice,
+                    (long)Math.Round(item.ItemPrice * priceMult),
                     villager.VillagerType);
 
                 element.Activate();
