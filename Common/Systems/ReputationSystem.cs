@@ -14,8 +14,6 @@ namespace LivingWorldMod.Common.Systems {
 
         private static int[] villageReputation;
 
-        #region Loading Methods
-
         public override void Load() {
             villageReputation = new int[(int)VillagerType.TypeCount];
         }
@@ -23,10 +21,6 @@ namespace LivingWorldMod.Common.Systems {
         public override void Unload() {
             villageReputation = null;
         }
-
-        #endregion
-
-        #region Get & Set Methods
 
         /// <summary> Gets & returns the reputation value of the given villager type specified.
         /// </summary> <returns></returns>
@@ -37,36 +31,32 @@ namespace LivingWorldMod.Common.Systems {
         public static int GetVillageReputation(int villagerType) => villageReputation[villagerType];
 
         /// <summary>
-        /// Changes the value of the specified village type's reputation by the specified amount.
+        /// Changes the value of the specified village type's reputation BY the specified amount.
         /// </summary>
         public static void ChangeVillageReputation(VillagerType villagerType, int changeAmount) {
             villageReputation[(int)villagerType] += changeAmount;
         }
 
         /// <summary>
-        /// Changes the value of the specified village type's reputation by the specified amount.
+        /// Changes the value of the specified village type's reputation BY the specified amount.
         /// </summary>
         public static void ChangeVillageReputation(int villagerType, int changeAmount) {
             villageReputation[villagerType] += changeAmount;
         }
 
         /// <summary>
-        /// Sets the value of the specified village type's reputation to the specified amount.
+        /// Sets the value of the specified village type's reputation TO the specified amount.
         /// </summary>
         public static void SetVillageReputation(VillagerType villagerType, int setValue) {
             villageReputation[(int)villagerType] = setValue;
         }
 
         /// <summary>
-        /// Sets the value of the specified village type's reputation to the specified amount.
+        /// Sets the value of the specified village type's reputation TO the specified amount.
         /// </summary>
         public static void SetVillageReputation(int villagerType, int setValue) {
             villageReputation[villagerType] = setValue;
         }
-
-        #endregion
-
-        #region Update Methods
 
         public override void PostUpdateEverything() {
             //Clamp Village Reputation
@@ -74,10 +64,6 @@ namespace LivingWorldMod.Common.Systems {
                 villageReputation[i] = (int)MathHelper.Clamp(villageReputation[i], -VillageReputationConstraint, VillageReputationConstraint);
             }
         }
-
-        #endregion
-
-        #region I/O
 
         public override TagCompound SaveWorldData() {
             return new TagCompound() {
@@ -97,6 +83,5 @@ namespace LivingWorldMod.Common.Systems {
             }
         }
 
-        #endregion
     }
 }
