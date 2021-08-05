@@ -19,3 +19,6 @@ ItemName.SunTapestryItem=Sun Tapestry
 
 ItemName.StarTorchItem=Star Torch
 ItemTooltip.StarTorchItem='Light the way with the essence of the cosmos'
+
+#Wall Item Names/Tooltips
+ItemName.SkywareFenceItem=Skyware Fence
