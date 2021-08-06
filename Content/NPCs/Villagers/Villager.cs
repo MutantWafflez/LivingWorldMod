@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Custom.Structs;
+using ReLogic.Content;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -28,6 +29,16 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         public abstract VillagerType VillagerType {
             get;
         }
+
+        /// <summary>
+        /// Count of the total amount of variation in terms of body sprites for this specific villager type. Defaults to 5.
+        /// </summary>
+        public virtual int BodyAssetVariations => 5;
+
+        /// <summary>
+        /// Count of the total amount of variation in terms of head sprites for this specific villager type. Defaults to 5.
+        /// </summary>
+        public virtual int HeadAssetVariations => 5;
 
         /// <summary>
         /// The current status of the "relationship" between these villagers and the players.
@@ -156,17 +167,45 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// </summary>
         public List<ShopItem> currentShopItems;
 
+        /// <summary>
+        /// An array that holds all of the assets for the body sprites of this type of villager.
+        /// </summary>
+        public Asset<Texture2D>[] bodyAssets;
+
+        /// <summary>
+        /// Any array that holds all of the assets for the head sprites of this type of villager. What a "head" asset for a villager means depends on the type of villager. For the Harpy Villagers, for example, the head assets are different types of hair.
+        /// </summary>
+        public Asset<Texture2D>[] headAssets;
+
+        /// <summary>
+        /// The body sprite type that this specific villager has.
+        /// </summary>
+        public int bodySpriteType;
+
+        /// <summary>
+        /// The head sprite type that this specific villager has.
+        /// </summary>
+        public int headSpriteType;
+
         public Villager() {
-            RestockShop();
+            InitializeAssetData();
         }
 
-        public override string Texture => IOUtilities.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/{VillagerType}Style1";
+        public override string Texture => IOUtilities.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/DefaultStyle";
 
         public override bool CloneNewInstances => true;
 
         public override ModNPC Clone() {
             Villager clone = (Villager)base.Clone();
-            currentShopItems = clone.currentShopItems;
+
+            clone.RestockShop();
+
+            clone.bodyAssets = bodyAssets;
+            clone.headAssets = headAssets;
+
+            bodySpriteType = Main.rand.Next(BodyAssetVariations);
+            headSpriteType = Main.rand.Next(HeadAssetVariations);
+
             return clone;
         }
 
@@ -252,8 +291,14 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            SpriteEffects spriteDirection = NPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            spriteBatch.Draw(Mod.Assets.Request<Texture2D>(Texture.Replace("LivingWorldMod/", "")).Value, new Rectangle((int)(NPC.Right.X - (NPC.frame.Width / 1.5) - screenPos.X), (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f), NPC.frame.Width, NPC.frame.Height), NPC.frame, drawColor, NPC.rotation, default, spriteDirection, 0);
+            SpriteEffects spriteDirection = NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+            Texture2D bodyTexture = bodyAssets[bodySpriteType].Value;
+            Texture2D headTexture = headAssets[headSpriteType].Value;
+
+            spriteBatch.Draw(bodyTexture, new Rectangle((int)(NPC.Right.X - (NPC.frame.Width / 1.5) - screenPos.X), (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f), NPC.frame.Width, NPC.frame.Height), NPC.frame, drawColor, NPC.rotation, default, spriteDirection, 0);
+            spriteBatch.Draw(headTexture, new Rectangle((int)(NPC.Right.X - (NPC.frame.Width / 1.5) - screenPos.X), (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f), NPC.frame.Width, NPC.frame.Height), NPC.frame, drawColor, NPC.rotation, default, spriteDirection, 0);
+            
             return false;
         }
 
@@ -275,6 +320,23 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
             }
             while (currentShopItems.Count < shopLength);
+        }
+
+        /// <summary>
+        /// Loads the Asset Arrays that contain the body and head assets for this given villager, and selects one at random.
+        /// </summary>
+        private void InitializeAssetData() {
+            bodyAssets = new Asset<Texture2D>[BodyAssetVariations];
+            headAssets = new Asset<Texture2D>[HeadAssetVariations];
+
+            for (int i = 0; i < BodyAssetVariations; i++) {
+                bodyAssets[i] = ModContent.Request<Texture2D>(IOUtilities.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/Body{i}");
+            }
+
+            for (int i = 0; i < HeadAssetVariations; i++) {
+                headAssets[i] = ModContent.Request<Texture2D>(IOUtilities.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/Head{i}");
+            }
+
         }
     }
 }
