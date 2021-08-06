@@ -22,7 +22,7 @@ namespace LivingWorldMod.Content.UI.Elements {
     public class UIPortrait : UIElement {
         public UIImage portraitBase;
         public UIImage portraitClothing;
-        public UIImage portraitHair;
+        public UIImage portraitHead;
         public UIImage portraitExpression;
 
         public Dictionary<VillagerPortraitExpression, Asset<Texture2D>> expressionDictionary;
@@ -48,8 +48,8 @@ namespace LivingWorldMod.Content.UI.Elements {
             portraitClothing = new UIImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Body1"));
             Append(portraitClothing);
 
-            portraitHair = new UIImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Hair1"));
-            Append(portraitHair);
+            portraitHead = new UIImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Head1"));
+            Append(portraitHead);
 
             PopulateExpressionDictionary();
 
@@ -82,9 +82,9 @@ namespace LivingWorldMod.Content.UI.Elements {
 
             portraitBase.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Base"));
 
-            portraitClothing.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Body1"));
+            portraitClothing.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Body{villager.bodySpriteType}"));
 
-            portraitHair.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Hair1"));
+            portraitHead.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Head{villager.headSpriteType}"));
 
             portraitExpression.SetImage(expressionDictionary[currentExpression]);
         }
