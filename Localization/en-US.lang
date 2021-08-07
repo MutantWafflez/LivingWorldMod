@@ -1,6 +1,14 @@
 ﻿# Villager Types
 VillagerType.Harpy=Harpy
 
+#Buff Names/Tooltips
+BuffName.NimbusPetBuff=Nimbus Pet
+BuffDescription.NimbusPetBuff=I bet it tastes like cotton candy...
+
+#Pet Item Names/Tooltips
+ItemName.NimbusInABottle=Nimbus in a Bottle
+ItemTooltip.NimbusInABottle=Summons a pet nimbus that follows you around
+
 #Tile Item Names/Tooltips
 ItemName.StarshardCloudItem=Starshard Cloud
 ItemTooltip.StarshardCloudItem='Shards of fallen stars permeate throughout this cloud'
@@ -19,6 +27,9 @@ ItemName.SunTapestryItem=Sun Tapestry
 
 ItemName.StarTorchItem=Star Torch
 ItemTooltip.StarTorchItem='Light the way with the essence of the cosmos'
+
+#Projectile Names
+ProjectileName.NimbusPetProjectile=Nimbus Pet
 
 #Wall Item Names/Tooltips
 ItemName.SkywareFenceItem=Skyware Fence
