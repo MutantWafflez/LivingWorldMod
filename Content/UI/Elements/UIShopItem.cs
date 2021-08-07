@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
+using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.Elements {
 
@@ -37,6 +38,7 @@ namespace LivingWorldMod.Content.UI.Elements {
 
         public override void OnInitialize() {
             float itemImageSize = 32f;
+
             itemImage = new UIBetterItemIcon(displayedItem, itemImageSize, true) {
                 VAlign = 0.5f
             };
@@ -53,10 +55,12 @@ namespace LivingWorldMod.Content.UI.Elements {
             Append(itemNameText);
 
             itemCostDisplay = new UICoinDisplay(costPerItem, CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) {
-                VAlign = 0.5f,
+                VAlign = 0.5f
             };
             itemCostDisplay.Left.Set(-itemCostDisplay.Width.Pixels - 12f, 1f);
             Append(itemCostDisplay);
+
+            OnClick += OnShopItemClick;
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
@@ -85,6 +89,11 @@ namespace LivingWorldMod.Content.UI.Elements {
             else {
                 base.DrawSelf(spriteBatch);
             }
+        }
+
+        private void OnShopItemClick(UIMouseEvent evt, UIElement listeningElement) {
+
+
         }
     }
 }

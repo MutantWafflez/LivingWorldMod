@@ -31,6 +31,8 @@ namespace LivingWorldMod.Content.UI {
         public UIElement dialogueZone;
         public UIBetterText dialogueText;
 
+        public UIElement buyItemZone;
+
         public UIElement savingsZone;
         public UIBetterText savingsText;
         public UICoinDisplay savingsDisplay;
@@ -105,6 +107,12 @@ namespace LivingWorldMod.Content.UI {
             shopScrollbar.Top.Set(16f, 0f);
             shopScrollbar.Height.Set(464f, 0f);
             shopZone.Append(shopScrollbar);
+
+            buyItemZone = new UIElement();
+            buyItemZone.Width.Set(158f, 0f);
+            buyItemZone.Height.Set(136f, 0f);
+            buyItemZone.Left.Set(562f, 0f);
+            buyItemZone.Top.Set(90f, 0f);
 
             savingsZone = new UIElement();
             savingsZone.Width.Set(126f, 0f);
