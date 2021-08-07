@@ -1,7 +1,9 @@
 ﻿using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using System.Collections.Generic;
+using LivingWorldMod.Content.Items.Pets;
 using LivingWorldMod.Content.Items.Placeables.Building;
+using LivingWorldMod.Content.Items.Placeables.Furniture.Critter;
 using LivingWorldMod.Content.Items.Placeables.Furniture.Harpy;
 using LivingWorldMod.Custom.Structs;
 using Terraria;
@@ -165,10 +167,14 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                 pool.Add(new ShopItem(ItemID.SkywareChair, 3, null));
                 pool.Add(new ShopItem(ItemID.SkywareTable, 3, null));
                 pool.Add(new ShopItem(ItemID.SkyMill, 1, null));
+                pool.AddConditionally(new ShopItem(ModContent.ItemType<NimbusJarItem>(), 2, null), relationship >= VillagerRelationship.Like);
 
                 //Weapons & Accessories
                 pool.AddConditionally(new ShopItem(ItemID.ShinyRedBalloon, 1, Item.buyPrice(gold: 5)), relationship >= VillagerRelationship.Like);
                 pool.AddConditionally(new ShopItem(ItemID.Starfury, 1, Item.buyPrice(gold: 5)), relationship >= VillagerRelationship.Like);
+
+                //Vanity/Pets
+                pool.AddConditionally(new ShopItem(ModContent.ItemType<NimbusInABottle>(), 2, null), relationship >= VillagerRelationship.Like);
 
                 //Materials
                 pool.AddConditionally(new ShopItem(ItemID.WhitePearl, 3, Item.buyPrice(gold: 1)), relationship >= VillagerRelationship.Like);
