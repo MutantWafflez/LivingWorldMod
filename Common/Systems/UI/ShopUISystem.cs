@@ -1,9 +1,9 @@
 ﻿using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.UI;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

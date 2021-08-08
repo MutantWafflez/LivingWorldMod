@@ -1,11 +1,12 @@
-﻿using System;
-using LivingWorldMod.Common.Players;
+﻿using LivingWorldMod.Common.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Projectiles.Friendly.Pets {
+
     //Thanks Trivaxy for the code! :-)
     public class NimbusPetProjectile : BaseProjectile {
         private int animationTimer;
@@ -86,7 +87,5 @@ namespace LivingWorldMod.Content.Projectiles.Friendly.Pets {
 
             return false;
         }
-
-
     }
 }

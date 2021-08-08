@@ -4,8 +4,10 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.Pets {
+
     //Thanks Trivaxy for the code! :-)
     public class NimbusInABottle : BaseItem {
+
         public override void SetDefaults() {
             Item.damage = 0;
             Item.useStyle = ItemUseStyleID.Swing;

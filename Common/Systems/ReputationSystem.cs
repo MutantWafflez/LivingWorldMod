@@ -14,14 +14,6 @@ namespace LivingWorldMod.Common.Systems {
 
         private static int[] villageReputation;
 
-        public override void Load() {
-            villageReputation = new int[(int)VillagerType.TypeCount];
-        }
-
-        public override void Unload() {
-            villageReputation = null;
-        }
-
         /// <summary> Gets & returns the reputation value of the given villager type specified.
         /// </summary> <returns></returns>
         public static int GetVillageReputation(VillagerType villagerType) => villageReputation[(int)villagerType];
@@ -58,6 +50,14 @@ namespace LivingWorldMod.Common.Systems {
             villageReputation[villagerType] = setValue;
         }
 
+        public override void Load() {
+            villageReputation = new int[(int)VillagerType.TypeCount];
+        }
+
+        public override void Unload() {
+            villageReputation = null;
+        }
+
         public override void PostUpdateEverything() {
             //Clamp Village Reputation
             for (int i = 0; i < (int)VillagerType.TypeCount; i++) {
@@ -82,6 +82,5 @@ namespace LivingWorldMod.Common.Systems {
                 villageReputation = savedVillageRep;
             }
         }
-
     }
 }

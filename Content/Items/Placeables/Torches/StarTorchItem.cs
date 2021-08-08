@@ -5,7 +5,9 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.Placeables.Torches {
+
     public class StarTorchItem : BaseItem {
+
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.IchorTorch);
             Item.rare = ItemRarityID.Blue;
@@ -25,7 +27,6 @@ namespace LivingWorldMod.Content.Items.Placeables.Torches {
 
         public override void PostUpdate() {
             Lighting.AddLight((int)((Item.position.X + Item.width / 2f) / 16f), (int)((Item.position.Y + Item.height / 2f) / 16f), 1.25f, 1.25f, 0f);
-            
         }
 
         public override void AutoLightSelect(ref bool dryTorch, ref bool wetTorch, ref bool glowstick) {

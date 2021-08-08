@@ -2,12 +2,13 @@
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
+
     public class SunTapestryTile : BaseTile {
+
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = false;
             Main.tileNoSunLight[Type] = false;
@@ -22,7 +23,7 @@ namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
             TileObjectData.newTile.Width = 3;
             TileObjectData.newTile.Height = 3;
             TileObjectData.newTile.Origin = new Point16(1, 0);
-            TileObjectData.newTile.CoordinateHeights = new int[] {16, 16, 16};
+            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
             TileObjectData.addTile(Type);
 
             ModTranslation mapName = CreateMapEntryName();

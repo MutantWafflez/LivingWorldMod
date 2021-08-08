@@ -3,7 +3,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.Placeables.Furniture.Harpy {
-    public class SkywareAnvilItem : BaseItem{
+
+    public class SkywareAnvilItem : BaseItem {
 
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.IronAnvil);
@@ -11,6 +12,5 @@ namespace LivingWorldMod.Content.Items.Placeables.Furniture.Harpy {
             Item.value = Terraria.Item.buyPrice(silver: 5);
             Item.createTile = ModContent.TileType<SkywareAnvilTile>();
         }
-
     }
 }

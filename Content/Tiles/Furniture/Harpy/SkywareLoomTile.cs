@@ -1,12 +1,13 @@
-﻿using Terraria.ID;
-using LivingWorldMod.Content.Items.Placeables.Furniture.Harpy;
+﻿using LivingWorldMod.Content.Items.Placeables.Furniture.Harpy;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
+
     public class SkywareLoomTile : BaseTile {
 
         public override void SetStaticDefaults() {
@@ -34,5 +35,4 @@ namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
             Item.NewItem(i * 16, j * 16, 32, 48, ModContent.ItemType<SkywareLoomItem>());
         }
     }
-
 }

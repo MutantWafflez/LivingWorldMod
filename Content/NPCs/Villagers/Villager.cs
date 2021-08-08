@@ -1,13 +1,13 @@
 ﻿using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Common.Systems.UI;
+using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Custom.Classes;
-using ReLogic.Content;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;

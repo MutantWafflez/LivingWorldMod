@@ -6,8 +6,10 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Buffs.Pets {
+
     //Thanks Trivaxy for the code! :-)
     public class NimbusPetBuff : BaseBuff {
+
         public override void SetStaticDefaults() {
             Main.buffNoTimeDisplay[Type] = true;
             Main.vanityPet[Type] = true;
@@ -25,7 +27,7 @@ namespace LivingWorldMod.Content.Buffs.Pets {
                     Dust.NewDustPerfect(player.Center, 16, Main.rand.NextVector2Unit() * 3, Scale: Main.rand.NextFloat(0.8f, 1.5f));
                 }
 
-                Projectile.NewProjectile(new ProjectileSource_Buff(player, Type, buffIndex),player.Center - Vector2.UnitY * 5, Vector2.UnitX * player.direction * 5, nimbusProjectileID, 0, 0, player.whoAmI);
+                Projectile.NewProjectile(new ProjectileSource_Buff(player, Type, buffIndex), player.Center - Vector2.UnitY * 5, Vector2.UnitX * player.direction * 5, nimbusProjectileID, 0, 0, player.whoAmI);
             }
         }
     }

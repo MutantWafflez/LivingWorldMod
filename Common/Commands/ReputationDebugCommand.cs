@@ -1,10 +1,12 @@
 ﻿#if DEBUG
-using System;
+
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Custom.Enums;
+using System;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Commands {
+
     public class ReputationDebugCommand : ModCommand {
         public override string Command => "rep";
 
@@ -14,36 +16,29 @@ namespace LivingWorldMod.Common.Commands {
 
         public override CommandType Type => CommandType.Chat;
 
-        public override void Action(CommandCaller caller, string input, string[] args)
-        {
-            if (args.Length == 2 && int.TryParse(args[0], out int type))
-            {
-                if (type >= 0 && type < (int)VillagerType.TypeCount)
-                {
-                    if (int.TryParse(args[1], out int repValue))
-                    {
-                        if (Math.Abs(repValue) > ReputationSystem.VillageReputationConstraint)
-                        {
+        public override void Action(CommandCaller caller, string input, string[] args) {
+            if (args.Length == 2 && int.TryParse(args[0], out int type)) {
+                if (type >= 0 && type < (int)VillagerType.TypeCount) {
+                    if (int.TryParse(args[1], out int repValue)) {
+                        if (Math.Abs(repValue) > ReputationSystem.VillageReputationConstraint) {
                             throw new UsageException("Inputted reputation value is greater than 100 or less than -100.");
                         }
                         ReputationSystem.SetVillageReputation(type, repValue);
                         caller.Reply("Village type " + (VillagerType)type + "'s reputation successfully changed to " + repValue);
                     }
-                    else
-                    {
+                    else {
                         throw new UsageException("Reputation value was not an Integer.");
                     }
                 }
-                else
-                {
+                else {
                     throw new UsageException("Did not input correct Village Type: " + type);
                 }
             }
-            else
-            {
+            else {
                 throw new UsageException("Did not input a Reputation Value or Village Type.");
             }
         }
     }
 }
+
 #endif

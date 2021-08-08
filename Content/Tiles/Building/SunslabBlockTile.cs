@@ -5,8 +5,10 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Tiles.Building {
+
     //TODO: Figure out weird tile framing with this tile. It mismatches the intended pattern
     public class SunslabBlockTile : BaseTile {
+
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = true;
             Main.tileNoSunLight[Type] = true;

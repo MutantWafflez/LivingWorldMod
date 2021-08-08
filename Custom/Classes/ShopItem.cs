@@ -1,7 +1,4 @@
-﻿using LivingWorldMod.Content.NPCs.Villagers;
-using LivingWorldMod.Custom.Enums;
-using LivingWorldMod.Custom.Utilities;
-using Terraria;
+﻿using Terraria;
 
 namespace LivingWorldMod.Custom.Classes {
 

@@ -21,10 +21,9 @@ namespace LivingWorldMod.Custom.Utilities {
         }
 
         /// <summary>
-        /// Returns the price multiplier that will affect shop prices depending on the status of a villager's relationship with the players.
+        /// Returns the price multiplier that will affect shop prices depending on the status of a
+        /// villager's relationship with the players.
         /// </summary>
-        /// <param name="currentRelationship"></param>
-        /// <returns></returns>
         public static float GetPriceMultiplierFromRep(Villager villager) {
             if (villager.RelationshipStatus == VillagerRelationship.Neutral) {
                 return 1f;

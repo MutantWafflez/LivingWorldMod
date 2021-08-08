@@ -1,5 +1,4 @@
-﻿using System;
-using LivingWorldMod.Custom.Enums;
+﻿using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -26,7 +25,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         public float displayScale;
 
         /// <summary>
-        /// Controls the method by which the coins in this display are drawn. Read each of the enum's summary to understand in more detail. Defaults to vanilla's drawing style.
+        /// Controls the method by which the coins in this display are drawn. Read each of the
+        /// enum's summary to understand in more detail. Defaults to vanilla's drawing style.
         /// </summary>
         public CoinDrawStyle coinDrawStyle;
 
@@ -36,6 +36,55 @@ namespace LivingWorldMod.Content.UI.Elements {
             this.displayScale = displayScale;
 
             CalculateDimensions();
+        }
+
+        /// <summary> Calculates & reloads the dimensions of this display depending on the current
+        /// money being displayed. </summary>
+        public void CalculateDimensions() {
+            int[] splitCoinArray = Utils.CoinsSplit(moneyToDisplay);
+
+            //Since height is not a factor that changes between styles, we can define height here
+            Height.Set(30 * displayScale, 0f);
+
+            switch (coinDrawStyle) {
+                case CoinDrawStyle.Vanilla:
+                    Width.Set(94f * displayScale, 0f);
+
+                    break;
+
+                case CoinDrawStyle.NoCoinsWithZeroValue:
+                    float finalWidth = 0f;
+
+                    for (int i = 0; i < splitCoinArray.Length; i++) {
+                        if (splitCoinArray[i] != 0f) {
+                            finalWidth += 24; //Coin + padding size
+                        }
+                    }
+
+                    Width.Set(finalWidth * displayScale, 0f);
+
+                    break;
+
+                case CoinDrawStyle.LargerCoinsForceDrawLesserCoins:
+                    bool largerCoinHasValue = false;
+                    finalWidth = 0f;
+
+                    for (int i = 0; i < splitCoinArray.Length; i++) {
+                        if (splitCoinArray[i] != 0f || largerCoinHasValue) {
+                            largerCoinHasValue = true;
+                            finalWidth += 24; //Coin + padding size
+                        }
+                    }
+
+                    Width.Set(finalWidth * displayScale, 0f);
+
+                    break;
+
+                default:
+                    LivingWorldMod.Instance.Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
+
+                    break;
+            }
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
@@ -53,7 +102,7 @@ namespace LivingWorldMod.Content.UI.Elements {
                         Main.instance.LoadItem(ItemID.PlatinumCoin - i);
 
                         spriteBatch.Draw(TextureAssets.Item[ItemID.PlatinumCoin - i].Value,
-                            position, 
+                            position,
                             null,
                             Color.White,
                             0f,
@@ -74,6 +123,7 @@ namespace LivingWorldMod.Content.UI.Elements {
                     }
 
                     break;
+
                 case CoinDrawStyle.NoCoinsWithZeroValue:
                     int actuallyDrawnCoins = 0;
 
@@ -84,7 +134,7 @@ namespace LivingWorldMod.Content.UI.Elements {
                             Main.instance.LoadItem(ItemID.PlatinumCoin - i);
 
                             spriteBatch.Draw(TextureAssets.Item[ItemID.PlatinumCoin - i].Value,
-                                position, 
+                                position,
                                 null,
                                 Color.White,
                                 0f,
@@ -108,6 +158,7 @@ namespace LivingWorldMod.Content.UI.Elements {
                     }
 
                     break;
+
                 case CoinDrawStyle.LargerCoinsForceDrawLesserCoins:
                     bool largerCoinHasValue = false;
                     actuallyDrawnCoins = 0;
@@ -119,7 +170,7 @@ namespace LivingWorldMod.Content.UI.Elements {
                             Main.instance.LoadItem(ItemID.PlatinumCoin - i);
 
                             spriteBatch.Draw(TextureAssets.Item[ItemID.PlatinumCoin - i].Value,
-                                position, 
+                                position,
                                 null,
                                 Color.White,
                                 0f,
@@ -144,56 +195,9 @@ namespace LivingWorldMod.Content.UI.Elements {
                     }
 
                     break;
+
                 default:
                     LivingWorldMod.Instance.Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
-                    break;
-            }
-
-        }
-
-        /// <summary>
-        /// Calculates & reloads the dimensions of this display depending on the current money being displayed.
-        /// </summary>
-        public void CalculateDimensions() {
-            int[] splitCoinArray = Utils.CoinsSplit(moneyToDisplay);
-
-            //Since height is not a factor that changes between styles, we can define height here
-            Height.Set(30 * displayScale, 0f);
-
-            switch (coinDrawStyle) {
-                case CoinDrawStyle.Vanilla:
-                    Width.Set(94f * displayScale, 0f);
-
-                    break;
-                case CoinDrawStyle.NoCoinsWithZeroValue:
-                    float finalWidth = 0f;
-
-                    for (int i = 0; i < splitCoinArray.Length; i++) {
-                        if (splitCoinArray[i] != 0f) {
-                            finalWidth += 24; //Coin + padding size
-                        }
-                    }
-
-                    Width.Set(finalWidth * displayScale, 0f);
-
-                    break;
-                case CoinDrawStyle.LargerCoinsForceDrawLesserCoins:
-                    bool largerCoinHasValue = false;
-                    finalWidth = 0f;
-
-                    for (int i = 0; i < splitCoinArray.Length; i++) {
-                        if (splitCoinArray[i] != 0f || largerCoinHasValue) {
-                            largerCoinHasValue = true;
-                            finalWidth += 24; //Coin + padding size
-                        }
-                    }
-
-                    Width.Set(finalWidth * displayScale, 0f);
-
-                    break;
-                default:
-                    LivingWorldMod.Instance.Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
-
                     break;
             }
         }

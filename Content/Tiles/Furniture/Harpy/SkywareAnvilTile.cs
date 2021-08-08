@@ -8,7 +8,9 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
+
     public class SkywareAnvilTile : BaseTile {
+
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = false;
             Main.tileNoSunLight[Type] = false;
@@ -21,7 +23,7 @@ namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
             TileObjectData.addTile(Type);
 
-            AdjTiles = new int[] {TileID.Anvils};
+            AdjTiles = new int[] { TileID.Anvils };
 
             ModTranslation mapName = CreateMapEntryName();
             mapName.SetDefault("Skyware Anvil");

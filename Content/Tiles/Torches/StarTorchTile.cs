@@ -9,7 +9,9 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Torches {
+
     public class StarTorchTile : BaseTile {
+
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = false;
             Main.tileNoSunLight[Type] = false;
@@ -35,7 +37,6 @@ namespace LivingWorldMod.Content.Tiles.Torches {
             TileObjectData.newAlternate.AnchorWall = true;
             TileObjectData.addAlternate(0);
             TileObjectData.addTile(Type);
-
 
             ItemDrop = ModContent.ItemType<StarTorchItem>();
 

@@ -3,7 +3,9 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.Placeables.Furniture.Harpy {
+
     public class SunTapestryItem : BaseItem {
+
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.BlueBanner);
             Item.rare = ItemRarityID.Blue;

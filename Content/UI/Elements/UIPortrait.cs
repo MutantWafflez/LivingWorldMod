@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using LivingWorldMod.Content.NPCs.Villagers;
+﻿using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using Terraria;
+using System;
+using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
@@ -72,9 +70,11 @@ namespace LivingWorldMod.Content.UI.Elements {
                 case <= VillagerRelationship.SevereDislike:
                     currentExpression = VillagerPortraitExpression.Angered;
                     break;
+
                 case > VillagerRelationship.SevereDislike and < VillagerRelationship.Love:
                     currentExpression = VillagerPortraitExpression.Neutral;
                     break;
+
                 case >= VillagerRelationship.Love:
                     currentExpression = VillagerPortraitExpression.Happy;
                     break;

@@ -3,6 +3,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.Placeables.Furniture.Harpy {
+
     public class SkywareLoomItem : BaseItem {
 
         public override void SetDefaults() {
@@ -11,6 +12,5 @@ namespace LivingWorldMod.Content.Items.Placeables.Furniture.Harpy {
             Item.value = Terraria.Item.buyPrice(silver: 40);
             Item.createTile = ModContent.TileType<SkywareLoomTile>();
         }
-
     }
 }
