@@ -24,15 +24,6 @@ namespace LivingWorldMod.Common.Systems.UI {
         public ShopUIState shopState;
         public GameTime lastGameTime;
 
-        public static ShopUISystem Instance {
-            get;
-            private set;
-        }
-
-        public ShopUISystem() {
-            Instance = this;
-        }
-
         public override void Load() {
             shopInterface = new UserInterface();
             shopState = new ShopUIState();
@@ -48,8 +39,7 @@ namespace LivingWorldMod.Common.Systems.UI {
             shopState = null;
 
             hoverFlashShader = null;
-
-            Instance = null;
+            grayScaleShader = null;
         }
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {

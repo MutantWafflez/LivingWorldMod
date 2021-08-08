@@ -23,8 +23,6 @@ namespace LivingWorldMod.Common.Systems {
             }
         }
 
-        #region Generation Methods
-
         private void GenerateHarpyVillage(GenerationProgress progress, GameConfiguration gameConfig) {
             progress.Message = "Generating Structures... Harpy Village";
             progress.Set(0f);
@@ -36,7 +34,5 @@ namespace LivingWorldMod.Common.Systems {
 
             WorldGenUtilities.GenerateWithStructureCache(harpyCache, xLocation, yLocation, progress);
         }
-
-        #endregion
     }
 }

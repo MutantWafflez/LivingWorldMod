@@ -257,7 +257,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         public override void OnChatButtonClicked(bool firstButton, ref bool shop) {
             //Shop Screen
             if (firstButton) {
-                ShopUISystem.Instance.OpenShopUI(this);
+                ModContent.GetInstance<ShopUISystem>().OpenShopUI(this);
             }
             //Reputation Screen
             else {
@@ -294,7 +294,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                     break;
 
                 default:
-                    LivingWorldMod.Instance.Logger.Error("Villager Reputation isn't within the normal bounds!");
+                    ModContent.GetInstance<LivingWorldMod>().Logger.Error("Villager Reputation isn't within the normal bounds!");
                     return "Somehow your reputation with us is broken. Contact a mod dev immediately!";
             }
 

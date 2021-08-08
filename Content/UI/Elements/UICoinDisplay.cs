@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.Elements {
@@ -81,7 +82,7 @@ namespace LivingWorldMod.Content.UI.Elements {
                     break;
 
                 default:
-                    LivingWorldMod.Instance.Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
+                    ModContent.GetInstance<LivingWorldMod>().Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
 
                     break;
             }
@@ -197,7 +198,7 @@ namespace LivingWorldMod.Content.UI.Elements {
                     break;
 
                 default:
-                    LivingWorldMod.Instance.Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
+                    ModContent.GetInstance<LivingWorldMod>().Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
                     break;
             }
         }
