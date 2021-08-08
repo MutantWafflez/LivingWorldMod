@@ -5,7 +5,7 @@ using LivingWorldMod.Content.Items.Pets;
 using LivingWorldMod.Content.Items.Placeables.Building;
 using LivingWorldMod.Content.Items.Placeables.Furniture.Critter;
 using LivingWorldMod.Content.Items.Placeables.Furniture.Harpy;
-using LivingWorldMod.Custom.Structs;
+using LivingWorldMod.Custom.Classes;
 using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -66,6 +66,31 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                 //Love
                 list.AddConditionally("Before you even mention it- no, actually, before you even THINK it, this discount I'm giving you is cause you've helped the village so much and not because I'm interested in you!", currentRelationship == VillagerRelationship.Love);
                 list.AddConditionally("You know landwalker, have this discount on me. I guess you deserve it for helping the village so much, or whatever. Just buy something!", currentRelationship == VillagerRelationship.Love);
+
+                return list;
+            }
+        }
+
+        public override WeightedRandom<string> ShopBuyDialogue {
+            get {
+                WeightedRandom<string> list = new WeightedRandom<string>();
+                VillagerRelationship currentRelationship = RelationshipStatus;
+
+                //Severe Dislike
+                list.AddConditionally("How stupid are you to buy something at such a massive price markup? I guess humans really are all stupid!", currentRelationship == VillagerRelationship.SevereDislike);
+                list.AddConditionally("Like I was saying before, you're lucky I am even giving you the liberty of speaking to me. Thanks for the purchase I guess.", currentRelationship == VillagerRelationship.SevereDislike);
+                //Dislike
+                list.AddConditionally("If you thought this markup was a lot, you haven't seen anything yet. Watch yourself, landwalker. Thanks for the purchase.", currentRelationship == VillagerRelationship.Dislike);
+                list.AddConditionally("You must think you're so rich being able to buy all this stuff no matter the price. Whatever. Thanks for the money I guess.", currentRelationship == VillagerRelationship.Dislike);
+                //Neutral
+                list.AddConditionally("Like, thanks for the purchase, landwalker.", currentRelationship == VillagerRelationship.Neutral);
+                list.AddConditionally("Thanks for the purchase, landwalker. Couldn't be keeping this economy alive without purchases like these!", currentRelationship == VillagerRelationship.Neutral);
+                //Like
+                list.AddConditionally("Hey, thanks for the purchase! It means alot. We don't get a whole lot of inter-species commerce up here, so it's nice to have you around.", currentRelationship == VillagerRelationship.Like);
+                list.AddConditionally("Keep up the good work and the discount you just got might become even better. You didn't hear that from me, though, landwalker.", currentRelationship == VillagerRelationship.Like);
+                //Love
+                list.AddConditionally("We can like, never thank you enough for purchases like these. No other human has ever gotten discounts like these!", currentRelationship == VillagerRelationship.Love);
+                list.AddConditionally("So you ended up buying something then? Whatever. Just kidding, thank you very much for the purchase, landwalker!", currentRelationship == VillagerRelationship.Love);
 
                 return list;
             }

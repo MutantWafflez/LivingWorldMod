@@ -1,8 +1,8 @@
 ﻿using System;
 using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.UI.Elements;
+using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
-using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,8 +15,11 @@ using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI {
 
+    /// <summary>
+    /// UIState that handles the entire UI portion of the shop system for all villager types.
+    /// </summary>
     public class ShopUIState : UIState {
-        public VillagerType shopType;
+        public Villager currentVillager;
 
         public UIImage backImage;
         public UIImage shopOverlay;
@@ -202,26 +205,26 @@ namespace LivingWorldMod.Content.UI {
             DummyPopulateShopList();
         }
 
-        public void ReloadUI(Villager villager) {
-            shopType = villager.VillagerType;
+        public void ReloadUI(Villager newVillager) {
+            currentVillager = newVillager;
 
-            string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/{shopType}/";
+            string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/{currentVillager.VillagerType}/";
 
             backImage.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage"));
 
             shopOverlay.SetImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay"));
 
-            portrait.ChangePortraitType(villager);
+            portrait.ChangePortraitType(currentVillager);
 
-            nameText.SetText(villager.NPC.GivenName, large: true);
+            nameText.SetText(currentVillager.NPC.GivenName, large: true);
 
-            dialogueText.SetText(villager.ShopDialogue);
+            dialogueText.SetText(currentVillager.ShopDialogue);
 
             buyItemButton.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BuyButton"));
 
             savingsDisplay.moneyToDisplay = Main.LocalPlayer.CalculateTotalSavings();
 
-            PopulateShopList(villager);
+            PopulateShopList();
 
             RecalculateChildren();
         }
@@ -233,6 +236,7 @@ namespace LivingWorldMod.Content.UI {
 
             if (selectedItem != null && buyItemButton.IsMouseHovering && Main.mouseLeft) {
                 Player player = Main.LocalPlayer;
+                ShopItem shopItem = selectedItem.pertainedInventoryItem;
 
                 if (--buyDelay < 0f) {
                     buyDelay = 0f;
@@ -244,18 +248,25 @@ namespace LivingWorldMod.Content.UI {
 
                 buyDelay *= buySpeed;
 
-                if (selectedItem.remainingStock > 0) {
-                    if (player.CanBuyItem((int)selectedItem.costPerItem) && player.CanAcceptItemIntoInventory(selectedItem.displayedItem) && buyDelay <= 0f) {
+                if (shopItem.remainingStock > 0) {
+                    if (player.CanBuyItem((int)selectedItem.displayedCost) && player.CanAcceptItemIntoInventory(selectedItem.displayedItem) && buyDelay <= 0f) {
                         buyDelay = maxBuyDelay;
 
-                        selectedItem.remainingStock--;
+                        shopItem.remainingStock--;
 
-                        player.BuyItem((int)selectedItem.costPerItem);
+                        player.BuyItem((int)selectedItem.displayedCost);
                         player.QuickSpawnItem(selectedItem.displayedItem);
 
-                        buyItemStock.SetText(selectedItem.remainingStock.ToString());
+                        buyItemStock.SetText(shopItem.remainingStock.ToString());
 
                         savingsDisplay.moneyToDisplay = player.CalculateTotalSavings();
+
+                        if (currentVillager.RelationshipStatus >= VillagerRelationship.Dislike) {
+                            portrait.temporaryExpression = VillagerPortraitExpression.Happy;
+                            portrait.temporaryExpressionTimer = 120f;
+                        }
+
+                        dialogueText.SetText(currentVillager.ShopBuyDialogue);
 
                         SoundEngine.PlaySound(SoundID.Coins);
                     }
@@ -278,7 +289,9 @@ namespace LivingWorldMod.Content.UI {
         /// player. Passing in null will unselect all of the indices.
         /// </summary>
         /// <param name="newSelectedItem"> The newly selected shop item. </param>
-        /// <param name="playSound"> Whether or not to play the sound of opening/closing the menu. </param>
+        /// <param name="playSound">
+        /// Whether or not to play the sound of opening/closing the menu.
+        /// </param>
         public void SetSelectedItem(UIShopItem newSelectedItem, bool playSound = true) {
             selectedItem = newSelectedItem;
 
@@ -292,7 +305,7 @@ namespace LivingWorldMod.Content.UI {
                 selectedItem.isSelected = true;
 
                 buyItemIcon.SetItem(selectedItem.displayedItem);
-                buyItemStock.SetText(selectedItem.remainingStock.ToString());
+                buyItemStock.SetText(selectedItem.pertainedInventoryItem.remainingStock.ToString());
 
                 buyItemHeader.isVisible = true;
                 buyItemIcon.isVisible = true;
@@ -321,17 +334,15 @@ namespace LivingWorldMod.Content.UI {
         /// Populates the shop list full of entries of whatever the given villager being spoken to
         /// is selling at the given moment.
         /// </summary>
-        /// <param name="villager"> </param>
-        private void PopulateShopList(Villager villager) {
+        private void PopulateShopList() {
             shopList.Clear();
 
-            float priceMult = NPCUtilities.GetPriceMultiplierFromRep(villager);
+            float priceMult = NPCUtilities.GetPriceMultiplierFromRep(currentVillager);
 
-            foreach (ShopItem item in villager.currentShopItems) {
-                UIShopItem element = new UIShopItem(item.itemType,
-                    item.remainingStock,
+            foreach (ShopItem item in currentVillager.shopInventory) {
+                UIShopItem element = new UIShopItem(item,
                     (long)Math.Round(item.ItemPrice * priceMult),
-                    villager.VillagerType);
+                    currentVillager.VillagerType);
 
                 element.Activate();
 
@@ -349,8 +360,7 @@ namespace LivingWorldMod.Content.UI {
             shopList.Clear();
 
             for (int i = 0; i < Main.rand.Next(10, 51); i++) {
-                UIShopItem element = new UIShopItem(Main.rand.Next(ItemID.DirtBlock, ItemID.Count),
-                    Main.rand.Next(1000),
+                UIShopItem element = new UIShopItem(new ShopItem(Main.rand.Next(ItemID.Count), 1000, 0),
                     Main.rand.Next(0, 10000000),
                     VillagerType.Harpy);
 

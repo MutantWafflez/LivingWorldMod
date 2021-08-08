@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Common.Systems.UI;
+using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
@@ -21,22 +22,27 @@ namespace LivingWorldMod.Content.UI.Elements {
         public UIBetterText itemNameText;
         public UICoinDisplay itemCostDisplay;
 
+        /// <summary>
+        /// The ShopItem class object that this element is tied to. Is used to sync the villager's
+        /// inventory with the UI properly.
+        /// </summary>
+        public ShopItem pertainedInventoryItem;
+
         public Item displayedItem;
 
-        public int remainingStock;
-        public long costPerItem;
-
         public VillagerType villagerType;
+
+        public long displayedCost;
 
         public bool isSelected;
 
         private float manualUpdateTime;
 
-        public UIShopItem(int itemType, int remainingStock, long costPerItem, VillagerType villagerType) : base(ModContent.Request<Texture2D>($"{IOUtilities.LWMSpritePath}/UI/ShopUI/{villagerType}/ShopItemBox")) {
+        public UIShopItem(ShopItem pertainedInventoryItem, long displayedCost, VillagerType villagerType) : base(ModContent.Request<Texture2D>($"{IOUtilities.LWMSpritePath}/UI/ShopUI/{villagerType}/ShopItemBox")) {
+            this.pertainedInventoryItem = pertainedInventoryItem;
             displayedItem = new Item();
-            displayedItem.SetDefaults(itemType);
-            this.remainingStock = remainingStock;
-            this.costPerItem = costPerItem;
+            displayedItem.SetDefaults(pertainedInventoryItem.itemType);
+            this.displayedCost = displayedCost;
             this.villagerType = villagerType;
         }
 
@@ -58,7 +64,7 @@ namespace LivingWorldMod.Content.UI.Elements {
             itemNameText.Left.Set(94f, 0f);
             Append(itemNameText);
 
-            itemCostDisplay = new UICoinDisplay(costPerItem, CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) {
+            itemCostDisplay = new UICoinDisplay(displayedCost, CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) {
                 VAlign = 0.5f
             };
             itemCostDisplay.Left.Set(-itemCostDisplay.Width.Pixels - 12f, 1f);
@@ -82,13 +88,13 @@ namespace LivingWorldMod.Content.UI.Elements {
         public override void Click(UIMouseEvent evt) {
             ShopUIState shopState = ModContent.GetInstance<ShopUISystem>().shopState;
 
-            shopState.SetSelectedItem(!isSelected && remainingStock > 0 ? this : null);
+            shopState.SetSelectedItem(!isSelected && pertainedInventoryItem.remainingStock > 0 ? this : null);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
             RasterizerState defaultRasterizerState = new RasterizerState { CullMode = CullMode.None, ScissorTestEnable = true };
 
-            if (remainingStock <= 0) {
+            if (pertainedInventoryItem.remainingStock <= 0) {
                 Effect shader = ShopUISystem.grayScaleShader.Value;
 
                 spriteBatch.End();

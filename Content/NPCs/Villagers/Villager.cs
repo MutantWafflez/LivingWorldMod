@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Custom.Structs;
+using LivingWorldMod.Custom.Classes;
 using ReLogic.Content;
 using Terraria;
 using Terraria.ID;
@@ -23,6 +23,33 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
     public abstract class Villager : ModNPC {
 
         /// <summary>
+        /// A list of shop items that this specific villager is selling at this very moment.
+        /// </summary>
+        public List<ShopItem> shopInventory;
+
+        /// <summary>
+        /// An array that holds all of the assets for the body sprites of this type of villager.
+        /// </summary>
+        public Asset<Texture2D>[] bodyAssets;
+
+        /// <summary>
+        /// Any array that holds all of the assets for the head sprites of this type of villager.
+        /// What a "head" asset for a villager means depends on the type of villager. For the Harpy
+        /// Villagers, for example, the head assets are different types of hair.
+        /// </summary>
+        public Asset<Texture2D>[] headAssets;
+
+        /// <summary>
+        /// The body sprite type that this specific villager has.
+        /// </summary>
+        public int bodySpriteType;
+
+        /// <summary>
+        /// The head sprite type that this specific villager has.
+        /// </summary>
+        public int headSpriteType;
+
+        /// <summary>
         /// What type of villager this class pertains to. Vital for several functions in the class
         /// and must be defined.
         /// </summary>
@@ -31,12 +58,14 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         /// <summary>
-        /// Count of the total amount of variation in terms of body sprites for this specific villager type. Defaults to 5.
+        /// Count of the total amount of variation in terms of body sprites for this specific
+        /// villager type. Defaults to 5.
         /// </summary>
         public virtual int BodyAssetVariations => 5;
 
         /// <summary>
-        /// Count of the total amount of variation in terms of head sprites for this specific villager type. Defaults to 5.
+        /// Count of the total amount of variation in terms of head sprites for this specific
+        /// villager type. Defaults to 5.
         /// </summary>
         public virtual int HeadAssetVariations => 5;
 
@@ -114,9 +143,17 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         /// <summary>
-        /// Possible dialogue that these villagers will say in the shop screen when opened by the player.
+        /// Possible dialogue that these villagers will say in the shop screen when FIRST opened by
+        /// the player.
         /// </summary>
         public abstract WeightedRandom<string> ShopDialogue {
+            get;
+        }
+
+        /// <summary>
+        /// Possible dialogue that these villagers will say whenever the player buys something from them.
+        /// </summary>
+        public abstract WeightedRandom<string> ShopBuyDialogue {
             get;
         }
 
@@ -156,44 +193,20 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         /// <summary>
-        /// A list of ALL POSSIBLE shop items that villagers of this given type can ever sell. This list is checked upon every restock.
+        /// A list of ALL POSSIBLE shop items that villagers of this given type can ever sell. This
+        /// list is checked upon every restock.
         /// </summary>
         public abstract WeightedRandom<ShopItem> ShopPool {
             get;
         }
 
-        /// <summary>
-        /// A list of shop items that this specific villager is selling at this very moment.
-        /// </summary>
-        public List<ShopItem> currentShopItems;
+        public override string Texture => IOUtilities.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/DefaultStyle";
 
-        /// <summary>
-        /// An array that holds all of the assets for the body sprites of this type of villager.
-        /// </summary>
-        public Asset<Texture2D>[] bodyAssets;
-
-        /// <summary>
-        /// Any array that holds all of the assets for the head sprites of this type of villager. What a "head" asset for a villager means depends on the type of villager. For the Harpy Villagers, for example, the head assets are different types of hair.
-        /// </summary>
-        public Asset<Texture2D>[] headAssets;
-
-        /// <summary>
-        /// The body sprite type that this specific villager has.
-        /// </summary>
-        public int bodySpriteType;
-
-        /// <summary>
-        /// The head sprite type that this specific villager has.
-        /// </summary>
-        public int headSpriteType;
+        public override bool CloneNewInstances => true;
 
         public Villager() {
             InitializeAssetData();
         }
-
-        public override string Texture => IOUtilities.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/DefaultStyle";
-
-        public override bool CloneNewInstances => true;
 
         public override ModNPC Clone() {
             Villager clone = (Villager)base.Clone();
@@ -298,7 +311,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
             spriteBatch.Draw(bodyTexture, new Rectangle((int)(NPC.Right.X - (NPC.frame.Width / 1.5) - screenPos.X), (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f), NPC.frame.Width, NPC.frame.Height), NPC.frame, drawColor, NPC.rotation, default, spriteDirection, 0);
             spriteBatch.Draw(headTexture, new Rectangle((int)(NPC.Right.X - (NPC.frame.Width / 1.5) - screenPos.X), (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f), NPC.frame.Width, NPC.frame.Height), NPC.frame, drawColor, NPC.rotation, default, spriteDirection, 0);
-            
+
             return false;
         }
 
@@ -307,23 +320,23 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// </summary>
         public void RestockShop() {
             WeightedRandom<ShopItem> pool = ShopPool;
-            currentShopItems = new List<ShopItem>();
+            shopInventory = new List<ShopItem>();
 
             int shopLength = Main.rand.Next(6, 8);
 
             do {
                 ShopItem returnedItem = ShopPool;
 
-                if (currentShopItems.All(item => item != returnedItem)) {
-                    currentShopItems.Add(returnedItem);
+                if (shopInventory.All(item => item != returnedItem)) {
+                    shopInventory.Add(returnedItem);
                 }
-
             }
-            while (currentShopItems.Count < shopLength);
+            while (shopInventory.Count < shopLength);
         }
 
         /// <summary>
-        /// Loads the Asset Arrays that contain the body and head assets for this given villager, and selects one at random.
+        /// Loads the Asset Arrays that contain the body and head assets for this given villager,
+        /// and selects one at random.
         /// </summary>
         private void InitializeAssetData() {
             bodyAssets = new Asset<Texture2D>[BodyAssetVariations];
@@ -336,7 +349,6 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             for (int i = 0; i < HeadAssetVariations; i++) {
                 headAssets[i] = ModContent.Request<Texture2D>(IOUtilities.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/Head{i}");
             }
-
         }
     }
 }
