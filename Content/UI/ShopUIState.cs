@@ -7,6 +7,7 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -32,6 +33,11 @@ namespace LivingWorldMod.Content.UI {
         public UIBetterText dialogueText;
 
         public UIElement buyItemZone;
+        public UIBetterText buyItemHeader;
+        public UIBetterItemIcon buyItemIcon;
+        public UIBetterText buyItemStockHeader;
+        public UIBetterText buyItemStock;
+        public UIBetterImageButton buyItemButton;
 
         public UIElement savingsZone;
         public UIBetterText savingsText;
@@ -40,22 +46,30 @@ namespace LivingWorldMod.Content.UI {
         public UIScrollbar shopScrollbar;
         public UIList shopList;
 
+        private readonly float maxBuyDelay = 60f;
+        private float buySpeed;
+        private float buyDelay;
+
+        private UIShopItem selectedItem;
+
         public override void OnInitialize() {
             string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/Harpy/";
 
+            //Background Zone
             backImage = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage")) {
                 HAlign = 0.5f,
                 VAlign = 0.5f
             };
             Append(backImage);
 
-            shopOverlay = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay")){
+            shopOverlay = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay")) {
                 HAlign = 0.5f,
                 VAlign = 0.5f,
                 IgnoresMouseInteraction = true
             };
             Append(shopOverlay);
 
+            //Shop Zone
             shopZone = new UIElement();
             shopZone.Width.Set(504f, 0f);
             shopZone.Height.Set(504f, 0f);
@@ -63,6 +77,7 @@ namespace LivingWorldMod.Content.UI {
             shopZone.Top.Set(50f, 0f);
             backImage.Append(shopZone);
 
+            //Portrait Zone
             portraitZone = new UIElement();
             portraitZone.Width.Set(196f, 0f);
             portraitZone.Height.Set(196f, 0f);
@@ -74,6 +89,7 @@ namespace LivingWorldMod.Content.UI {
             portrait.Top.Set(4f, 0f);
             portraitZone.Append(portrait);
 
+            //Name Zone
             nameZone = new UIElement();
             nameZone.Width.Set(196f, 0f);
             nameZone.Height.Set(60f, 0f);
@@ -88,6 +104,7 @@ namespace LivingWorldMod.Content.UI {
             };
             nameZone.Append(nameText);
 
+            //Dialogue Zone
             dialogueZone = new UIElement();
             dialogueZone.Width.Set(410f, 0f);
             dialogueZone.Height.Set(166f, 0f);
@@ -102,18 +119,53 @@ namespace LivingWorldMod.Content.UI {
             dialogueText.SetPadding(12f);
             dialogueZone.Append(dialogueText);
 
-            shopScrollbar = new UIScrollbar();
-            shopScrollbar.Left.Set(466f, 0f);
-            shopScrollbar.Top.Set(16f, 0f);
-            shopScrollbar.Height.Set(464f, 0f);
-            shopZone.Append(shopScrollbar);
-
+            //Buy Item Zone
             buyItemZone = new UIElement();
             buyItemZone.Width.Set(158f, 0f);
             buyItemZone.Height.Set(136f, 0f);
             buyItemZone.Left.Set(562f, 0f);
             buyItemZone.Top.Set(90f, 0f);
+            backImage.Append(buyItemZone);
 
+            buyItemHeader = new UIBetterText("Buying:", 1.25f) {
+                isVisible = false,
+                HAlign = 0.5f
+            };
+            buyItemHeader.Top.Set(4f, 0f);
+            buyItemZone.Append(buyItemHeader);
+
+            buyItemIcon = new UIBetterItemIcon(new Item(ItemID.Acorn), 32f, true) {
+                isVisible = false,
+                HAlign = 0.5f
+            };
+            buyItemIcon.Width.Set(32f, 0f);
+            buyItemIcon.Height.Set(32f, 0f);
+            buyItemIcon.Top.Set(26f, 0f);
+            buyItemZone.Append(buyItemIcon);
+
+            buyItemStockHeader = new UIBetterText("Stock:", 1.25f) {
+                isVisible = false,
+                HAlign = 0.5f
+            };
+            buyItemStockHeader.Top.Set(56f, 0f);
+            buyItemZone.Append(buyItemStockHeader);
+
+            buyItemStock = new UIBetterText("1000", textScale: 1.25f) {
+                isVisible = false,
+                horizontalTextConstraint = 150,
+                HAlign = 0.5f
+            };
+            buyItemStock.Top.Set(80f, 0f);
+            buyItemZone.Append(buyItemStock);
+
+            buyItemButton = new UIBetterImageButton(ModContent.Request<Texture2D>(shopUIPath + "BuyButton"), "Buy") {
+                isVisible = false,
+                HAlign = 0.5f
+            };
+            buyItemButton.Top.Set(102f, 0f);
+            buyItemZone.Append(buyItemButton);
+
+            //Savings Zone
             savingsZone = new UIElement();
             savingsZone.Width.Set(126f, 0f);
             savingsZone.Height.Set(84f, 0f);
@@ -132,6 +184,13 @@ namespace LivingWorldMod.Content.UI {
                 VAlign = 0.5f
             };
             savingsZone.Append(savingsDisplay);
+
+            //List Zone
+            shopScrollbar = new UIScrollbar();
+            shopScrollbar.Left.Set(466f, 0f);
+            shopScrollbar.Top.Set(16f, 0f);
+            shopScrollbar.Height.Set(464f, 0f);
+            shopZone.Append(shopScrollbar);
 
             shopList = new UIList();
             shopList.Width.Set(470f, 0f);
@@ -158,6 +217,8 @@ namespace LivingWorldMod.Content.UI {
 
             dialogueText.SetText(villager.ShopDialogue);
 
+            buyItemButton.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BuyButton"));
+
             savingsDisplay.moneyToDisplay = Main.LocalPlayer.CalculateTotalSavings();
 
             PopulateShopList(villager);
@@ -166,13 +227,101 @@ namespace LivingWorldMod.Content.UI {
         }
 
         public override void Update(GameTime gameTime) {
-            if (backImage.ContainsPoint(Main.MouseScreen)) {
+            if (backImage.IsMouseHovering) {
                 Main.LocalPlayer.mouseInterface = true;
+            }
+
+            if (selectedItem != null && buyItemButton.IsMouseHovering && Main.mouseLeft) {
+                Player player = Main.LocalPlayer;
+
+                if (--buyDelay < 0f) {
+                    buyDelay = 0f;
+                }
+
+                if ((buySpeed -= 1f / 60f) < 0f) {
+                    buySpeed = 0f;
+                }
+
+                buyDelay *= buySpeed;
+
+                if (selectedItem.remainingStock > 0) {
+                    if (player.CanBuyItem((int)selectedItem.costPerItem) && player.CanAcceptItemIntoInventory(selectedItem.displayedItem) && buyDelay <= 0f) {
+                        buyDelay = maxBuyDelay;
+
+                        selectedItem.remainingStock--;
+
+                        player.BuyItem((int)selectedItem.costPerItem);
+                        player.QuickSpawnItem(selectedItem.displayedItem);
+
+                        buyItemStock.SetText(selectedItem.remainingStock.ToString());
+
+                        savingsDisplay.moneyToDisplay = player.CalculateTotalSavings();
+
+                        SoundEngine.PlaySound(SoundID.Coins);
+                    }
+                }
+                else {
+                    SetSelectedItem(null);
+                }
+            }
+            else {
+                buySpeed = 1f;
+                //Set to zero so on the very first initial buy the purchase goes through instantly
+                buyDelay = 0f;
             }
 
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Changes the currently selected shop item index in order to be potentially bought by the
+        /// player. Passing in null will unselect all of the indices.
+        /// </summary>
+        /// <param name="newSelectedItem"> The newly selected shop item. </param>
+        /// <param name="playSound"> Whether or not to play the sound of opening/closing the menu. </param>
+        public void SetSelectedItem(UIShopItem newSelectedItem, bool playSound = true) {
+            selectedItem = newSelectedItem;
+
+            foreach (UIElement element in shopList) {
+                if (element is UIShopItem shopItem) {
+                    shopItem.isSelected = false;
+                }
+            }
+
+            if (selectedItem != null) {
+                selectedItem.isSelected = true;
+
+                buyItemIcon.SetItem(selectedItem.displayedItem);
+                buyItemStock.SetText(selectedItem.remainingStock.ToString());
+
+                buyItemHeader.isVisible = true;
+                buyItemIcon.isVisible = true;
+                buyItemStockHeader.isVisible = true;
+                buyItemStock.isVisible = true;
+                buyItemButton.isVisible = true;
+
+                if (playSound) {
+                    SoundEngine.PlaySound(SoundID.MenuOpen);
+                }
+            }
+            else {
+                buyItemHeader.isVisible = false;
+                buyItemIcon.isVisible = false;
+                buyItemStockHeader.isVisible = false;
+                buyItemStock.isVisible = false;
+                buyItemButton.isVisible = false;
+
+                if (playSound) {
+                    SoundEngine.PlaySound(SoundID.MenuClose);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Populates the shop list full of entries of whatever the given villager being spoken to
+        /// is selling at the given moment.
+        /// </summary>
+        /// <param name="villager"> </param>
         private void PopulateShopList(Villager villager) {
             shopList.Clear();
 

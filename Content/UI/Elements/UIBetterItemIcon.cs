@@ -13,6 +13,12 @@ namespace LivingWorldMod.Content.UI.Elements {
     public class UIBetterItemIcon : UIElement {
         public readonly int context = ItemSlot.Context.InventoryItem;
 
+        /// <summary>
+        /// Whether or not this element is currently visible, which is to say, whether or not it
+        /// will be drawn. Defaults to true.
+        /// </summary>
+        public bool isVisible = true;
+
         private Item displayedItem;
         private float sizeLimit;
         private bool drawFromCenter;
@@ -23,7 +29,16 @@ namespace LivingWorldMod.Content.UI.Elements {
             this.drawFromCenter = drawFromCenter;
         }
 
+        public void SetItem(Item newItem) {
+            displayedItem = newItem;
+            Recalculate();
+        }
+
         protected override void DrawSelf(SpriteBatch spriteBatch) {
+            if (!isVisible) {
+                return;
+            }
+
             //Adapted Vanilla Code
             Main.instance.LoadItem(displayedItem.type);
 

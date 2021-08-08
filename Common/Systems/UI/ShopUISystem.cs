@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -16,6 +18,7 @@ namespace LivingWorldMod.Common.Systems.UI {
     [Autoload(Side = ModSide.Client)]
     public class ShopUISystem : ModSystem {
         public static Asset<Effect> hoverFlashShader;
+        public static Asset<Effect> grayScaleShader;
 
         public UserInterface shopInterface;
         public ShopUIState shopState;
@@ -37,6 +40,7 @@ namespace LivingWorldMod.Common.Systems.UI {
             shopState.Activate();
 
             hoverFlashShader = Mod.Assets.Request<Effect>("Assets/Shaders/UI/ShopItemHoverFlash");
+            grayScaleShader = Mod.Assets.Request<Effect>("Assets/Shaders/UI/Grayscale");
         }
 
         public override void Unload() {
@@ -85,14 +89,18 @@ namespace LivingWorldMod.Common.Systems.UI {
         public void OpenShopUI(Villager villager) {
             Main.npcChatText = "";
             shopState.ReloadUI(villager);
+            shopState.SetSelectedItem(null, false);
             shopInterface.SetState(shopState);
+            SoundEngine.PlaySound(SoundID.MenuOpen);
         }
 
         /// <summary>
         /// Closes the shop UI. That is all for now.
         /// </summary>
         public void CloseShopUI() {
+            shopState.SetSelectedItem(null, false);
             shopInterface.SetState(null);
+            SoundEngine.PlaySound(SoundID.MenuClose);
         }
     }
 }

@@ -4,7 +4,9 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -25,6 +27,8 @@ namespace LivingWorldMod.Content.UI.Elements {
         public long costPerItem;
 
         public VillagerType villagerType;
+
+        public bool isSelected;
 
         private float manualUpdateTime;
 
@@ -59,14 +63,45 @@ namespace LivingWorldMod.Content.UI.Elements {
             };
             itemCostDisplay.Left.Set(-itemCostDisplay.Width.Pixels - 12f, 1f);
             Append(itemCostDisplay);
+        }
 
-            OnClick += OnShopItemClick;
+        public override void MouseOver(UIMouseEvent evt) {
+            base.MouseOver(evt);
+
+            SoundEngine.PlaySound(SoundID.MenuTick);
+        }
+
+        public override void MouseOut(UIMouseEvent evt) {
+            base.MouseOut(evt);
+
+            if (!isSelected) {
+                manualUpdateTime = 0f;
+            }
+        }
+
+        public override void Click(UIMouseEvent evt) {
+            ShopUIState shopState = ModContent.GetInstance<ShopUISystem>().shopState;
+
+            shopState.SetSelectedItem(!isSelected && remainingStock > 0 ? this : null);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
-            if (ContainsPoint(Main.MouseScreen)) {
-                RasterizerState defaultRasterizerState = new RasterizerState { CullMode = CullMode.None, ScissorTestEnable = true };
+            RasterizerState defaultRasterizerState = new RasterizerState { CullMode = CullMode.None, ScissorTestEnable = true };
 
+            if (remainingStock <= 0) {
+                Effect shader = ShopUISystem.grayScaleShader.Value;
+
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, defaultRasterizerState, shader, Main.UIScaleMatrix);
+
+                base.DrawSelf(spriteBatch);
+
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, defaultRasterizerState, null, Main.UIScaleMatrix);
+                return;
+            }
+
+            if (ContainsPoint(Main.MouseScreen) || isSelected) {
                 Effect shader = ShopUISystem.hoverFlashShader.Value;
 
                 manualUpdateTime += 1f / 45f;
@@ -89,11 +124,6 @@ namespace LivingWorldMod.Content.UI.Elements {
             else {
                 base.DrawSelf(spriteBatch);
             }
-        }
-
-        private void OnShopItemClick(UIMouseEvent evt, UIElement listeningElement) {
-
-
         }
     }
 }

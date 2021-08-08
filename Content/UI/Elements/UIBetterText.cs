@@ -28,6 +28,12 @@ namespace LivingWorldMod.Content.UI.Elements {
         /// </summary>
         public float horizontalWrapConstraint;
 
+        /// <summary>
+        /// Whether or not this element is visible or not, basically meaning whether or not it will
+        /// be drawn or not. Defaults to true.
+        /// </summary>
+        public bool isVisible = true;
+
         public object innerText = "";
         private float initialTextScale = 1f;
         private float dynamicTextScale = 1f;
@@ -102,6 +108,10 @@ namespace LivingWorldMod.Content.UI.Elements {
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
+            if (!isVisible) {
+                return;
+            }
+
             base.DrawSelf(spriteBatch);
             VerifyTextState();
 
