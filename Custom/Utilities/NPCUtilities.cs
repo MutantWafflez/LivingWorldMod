@@ -1,7 +1,9 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using System;
+using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Custom.Utilities {
@@ -33,6 +35,17 @@ namespace LivingWorldMod.Custom.Utilities {
             float centerPoint = (villager.LikeThreshold - villager.DislikeThreshold) / 2f;
 
             return MathHelper.Clamp(1 - reputationValue / (ReputationSystem.VillageReputationConstraint - centerPoint) / 2f, 0.67f, 1.67f);
+        }
+
+        /// <summary>
+        /// Invokes an action specified by whatever is passed in the parameter on every NPC in the
+        /// Main.npc[] array.
+        /// </summary>
+        /// <param name="action"> The action to invoke on every given NPC. </param>
+        public static void DoActionForEachNPC(Action<NPC> action) {
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                action.Invoke(Main.npc[i]);
+            }
         }
     }
 }

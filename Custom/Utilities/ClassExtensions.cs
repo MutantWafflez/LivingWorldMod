@@ -20,6 +20,16 @@ namespace LivingWorldMod.Custom.Utilities {
         }
 
         /// <summary>
+        /// Returns whether or not this npc is any type of Villager and has an out parameter for
+        /// returning the villager ModNPC class pertaining to this NPC if applicable.
+        /// </summary>
+        public static bool IsTypeOfVillager(this NPC npc, out Villager villager) {
+            bool isVillager = npc.ModNPC?.GetType().IsSubclassOf(typeof(Villager)) ?? false;
+            villager = isVillager ? (Villager)npc.ModNPC : null;
+            return isVillager;
+        }
+
+        /// <summary>
         /// Adds all of the objects and their weights within another list into this list.
         /// </summary>
         /// <param name="originalList"> List that will be added to. </param>
