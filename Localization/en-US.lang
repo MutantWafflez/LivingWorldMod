@@ -10,8 +10,12 @@ ItemName.NimbusInABottle=Nimbus in a Bottle
 ItemTooltip.NimbusInABottle=Summons a pet nimbus that follows you around
 
 #Tile Item Names/Tooltips
+ItemName.SkywareBlockItem=Skyware Block
+
 ItemName.StarshardCloudItem=Starshard Cloud
 ItemTooltip.StarshardCloudItem='Shards of fallen stars permeate throughout this cloud'
+
+ItemName.StarshineBlockItem=Starshine Block
 
 ItemName.SunslabBlockItem=Sunslab Block
 
@@ -32,4 +36,6 @@ ItemTooltip.StarTorchItem='Light the way with the essence of the cosmos'
 ProjectileName.NimbusPetProjectile=Nimbus Pet
 
 #Wall Item Names/Tooltips
+ItemName.SkywareWallItem=Skyware Wall
+
 ItemName.SkywareFenceItem=Skyware Fence
