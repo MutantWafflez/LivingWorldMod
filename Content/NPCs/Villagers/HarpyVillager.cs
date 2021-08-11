@@ -187,6 +187,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                 pool.Add(new ShopItem(ModContent.ItemType<GravityTapestryItem>(), 3, null));
                 pool.Add(new ShopItem(ModContent.ItemType<SunTapestryItem>(), 3, null));
                 pool.Add(new ShopItem(ModContent.ItemType<StarshardCloudItem>(), 75, null));
+                pool.Add(new ShopItem(ModContent.ItemType<StarshineBlockItem>(), 75, null));
+                pool.Add((new ShopItem(ModContent.ItemType<SkywareBlockItem>(), 75, null)));
                 pool.Add(new ShopItem(ModContent.ItemType<SkywareLoomItem>(), 3, null));
                 pool.Add(new ShopItem(ModContent.ItemType<SkywareAnvilItem>(), 3, null));
                 pool.Add(new ShopItem(ItemID.SkywareChair, 3, null));
