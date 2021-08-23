@@ -9,6 +9,7 @@ namespace LivingWorldMod.Common.Systems {
     /// Small ModSystem that handles color changing for blocks, or potentially other applications.
     /// Has a couple of static fields that pertain to specific block colors.
     /// </summary>
+    [Autoload(Side = ModSide.Client)]
     public class BlockLightSystem : ModSystem {
 
         /// <summary>
