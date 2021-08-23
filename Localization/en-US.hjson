@@ -32,8 +32,8 @@ Mods: {
 
 		ItemTooltip: {
 			NimbusInABottle: Summons a pet nimbus that follows you around
-			StarshardCloudItem: 'Shards of fallen stars permeate throughout this cloud'
-			StarTorchItem: 'Light the way with the essence of the cosmos'
+			StarshardCloudItem: "'Shards of fallen stars permeate throughout this cloud'"
+			StarTorchItem: "'Light the way with the essence of the cosmos'"
 		}
 
 		ProjectileName: {
