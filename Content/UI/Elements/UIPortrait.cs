@@ -31,7 +31,7 @@ namespace LivingWorldMod.Content.UI.Elements {
 
         private Villager villager;
 
-        private string PortraitSpritePath => $"{IOUtilities.LWMSpritePath}/UI/ShopUI/{villager.VillagerType}/Portraits/";
+        private string PortraitSpritePath => $"{LivingWorldMod.LWMSpritePath}/UI/ShopUI/{villager.VillagerType}/Portraits/";
 
         public UIPortrait(Villager villager) {
             this.villager = villager;

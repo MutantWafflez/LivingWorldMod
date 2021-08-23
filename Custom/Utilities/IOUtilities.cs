@@ -9,11 +9,6 @@ namespace LivingWorldMod.Custom.Utilities {
     public static class IOUtilities {
 
         /// <summary>
-        /// Directory of the Sprites for LivingWorldMod.
-        /// </summary>
-        public static string LWMSpritePath => nameof(LivingWorldMod) + "/Assets/Sprites";
-
-        /// <summary>
         /// Returns the LWM File path in the ModLoader folder, and creates the directory if it does
         /// not exist.
         /// </summary>

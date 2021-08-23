@@ -56,7 +56,7 @@ namespace LivingWorldMod.Content.UI {
         private UIShopItem selectedItem;
 
         public override void OnInitialize() {
-            string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/Harpy/";
+            string shopUIPath = $"{LivingWorldMod.LWMSpritePath}/UI/ShopUI/Harpy/";
 
             //Background Zone
             backImage = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage")) {
@@ -208,7 +208,7 @@ namespace LivingWorldMod.Content.UI {
         public void ReloadUI(Villager newVillager) {
             currentVillager = newVillager;
 
-            string shopUIPath = $"{IOUtilities.LWMSpritePath}/UI/ShopUI/{currentVillager.VillagerType}/";
+            string shopUIPath = $"{LivingWorldMod.LWMSpritePath}/UI/ShopUI/{currentVillager.VillagerType}/";
 
             backImage.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage"));
 
@@ -289,9 +289,7 @@ namespace LivingWorldMod.Content.UI {
         /// player. Passing in null will unselect all of the indices.
         /// </summary>
         /// <param name="newSelectedItem"> The newly selected shop item. </param>
-        /// <param name="playSound">
-        /// Whether or not to play the sound of opening/closing the menu.
-        /// </param>
+        /// <param name="playSound"> Whether or not to play the sound of opening/closing the menu. </param>
         public void SetSelectedItem(UIShopItem newSelectedItem, bool playSound = true) {
             selectedItem = newSelectedItem;
 

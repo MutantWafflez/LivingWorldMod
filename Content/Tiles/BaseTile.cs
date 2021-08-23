@@ -10,7 +10,7 @@ namespace LivingWorldMod.Content.Tiles {
     public abstract class BaseTile : ModTile {
 
         public override string Texture => GetType().Namespace?
-            .Replace($"{nameof(LivingWorldMod)}.Content", IOUtilities.LWMSpritePath)
+            .Replace($"{nameof(LivingWorldMod)}.Content", LivingWorldMod.LWMSpritePath)
             .Replace('.', '/')
             + $"/{Name}";
     }

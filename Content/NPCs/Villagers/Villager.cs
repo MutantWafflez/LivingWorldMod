@@ -200,7 +200,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             get;
         }
 
-        public override string Texture => IOUtilities.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/DefaultStyle";
+        public override string Texture => LivingWorldMod.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/DefaultStyle";
 
         public override bool CloneNewInstances => true;
 
@@ -343,11 +343,11 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             headAssets = new Asset<Texture2D>[HeadAssetVariations];
 
             for (int i = 0; i < BodyAssetVariations; i++) {
-                bodyAssets[i] = ModContent.Request<Texture2D>(IOUtilities.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/Body{i}");
+                bodyAssets[i] = ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/Body{i}");
             }
 
             for (int i = 0; i < HeadAssetVariations; i++) {
-                headAssets[i] = ModContent.Request<Texture2D>(IOUtilities.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/Head{i}");
+                headAssets[i] = ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/Head{i}");
             }
         }
     }
