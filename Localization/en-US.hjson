@@ -1,0 +1,43 @@
+Mods: {
+	LivingWorldMod: {
+		VillagerType: {
+			Harpy: Harpy
+		}
+
+		BuffName: {
+			NimbusPetBuff: Nimbus Pet
+		}
+
+		BuffDescription: {
+			NimbusPetBuff: I bet it tastes like cotton candy...
+		}
+
+		ItemName: {
+		//Tile Item Names
+			SkywareBlockItem: Skyware Block
+			StarshardCloudItem: Starshard Cloud
+			StarshineBlockItem: Starshine Block
+			SunslabBlockItem: Sunslab Block
+			NimbusJarItem: Nimbus in a Jar
+			GravityTapestryItem: Gravity Tapestry
+			SkywareAnvilItem: Skyware Anvil
+			SkywareLoomItem: Skyware Loom
+			SunTapestryItem: Sun Tapestry
+			StarTorchItem: Star Torch
+			SkywareWallItem: Skyware Wall
+			SkywareFenceItem: Skyware Fence
+		//Accessory Item Names
+			NimbusInABottle: Nimbus in a Bottle
+		}
+
+		ItemTooltip: {
+			NimbusInABottle: Summons a pet nimbus that follows you around
+			StarshardCloudItem: 'Shards of fallen stars permeate throughout this cloud'
+			StarTorchItem: 'Light the way with the essence of the cosmos'
+		}
+
+		ProjectileName: {
+			NimbusPetProjectile: Nimbus Pet
+		}
+	}
+}
