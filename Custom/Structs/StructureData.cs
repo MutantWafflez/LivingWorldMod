@@ -15,9 +15,9 @@ namespace LivingWorldMod.Custom.Structs {
 
         public readonly int structureHeight;
 
-        public readonly List<TileData> structureTileData;
+        public readonly List<List<TileData>> structureTileData;
 
-        public StructureData(int structureWidth, int structureHeight, List<TileData> structureTileData) {
+        public StructureData(int structureWidth, int structureHeight, List<List<TileData>> structureTileData) {
             this.structureWidth = structureWidth;
             this.structureHeight = structureHeight;
             this.structureTileData = structureTileData;
@@ -27,7 +27,7 @@ namespace LivingWorldMod.Custom.Structs {
             return new StructureData(
                 tag.GetInt(nameof(structureWidth)),
                 tag.GetInt(nameof(structureHeight)),
-                tag.Get<List<TileData>>(nameof(structureTileData))
+                tag.Get<List<List<TileData>>>(nameof(structureTileData))
             );
         }
 

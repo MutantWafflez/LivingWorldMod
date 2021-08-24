@@ -83,7 +83,7 @@ namespace LivingWorldMod.Custom.Structs {
         public readonly string modTileName;
 
         public TileData(Tile tile) {
-            type = tile.type > 0 ? tile.type : -1;
+            type = tile.IsActive ? tile.type : -1;
             isActivated = tile.IsActive;
             isHalfBlock = tile.IsHalfBlock;
             frameNumber = tile.FrameNumber;
@@ -113,7 +113,7 @@ namespace LivingWorldMod.Custom.Structs {
         public TileData(int type, bool isActivated, bool isHalfBlock, int frameNumber, int frameX, int frameY, int slopeType, int color, bool isActuated, bool hasActuator,
             bool hasRedWire, bool hasBlueWire, bool hasGreenWire, bool hasYellowWire, int liquidType, int liquidAmount, int wallType, int wallColor, int wallFrame,
             int wallFrameX, int wallFrameY) {
-            this.type = type > 0 ? type : -1;
+            this.type = isActivated ? type : -1;
             this.isActivated = isActivated;
             this.isHalfBlock = isHalfBlock;
             this.frameNumber = frameNumber;
@@ -143,7 +143,7 @@ namespace LivingWorldMod.Custom.Structs {
         public TileData(int type, bool isActivated, bool isHalfBlock, int frameNumber, int frameX, int frameY, int slopeType, int color, bool isActuated, bool hasActuator,
             bool hasRedWire, bool hasBlueWire, bool hasGreenWire, bool hasYellowWire, int liquidType, int liquidAmount, int wallType, int wallColor, int wallFrame,
             int wallFrameX, int wallFrameY, string modName, string modTileName) {
-            this.type = type > 0 ? type : -1;
+            this.type = isActivated ? type : -1;
             this.isActivated = isActivated;
             this.isHalfBlock = isHalfBlock;
             this.frameNumber = frameNumber;

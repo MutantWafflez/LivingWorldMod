@@ -12,17 +12,17 @@ namespace LivingWorldMod.Custom.Utilities {
         /// Generates a given Structure into the world using a StructureData struct.
         /// </summary>
         /// <param name="data"> The struct containing data for the structure. </param>
-        /// <param name="xLocation"> Far left location of where the structure will begin to generate. </param>
-        /// <param name="yLocation"> Top-most location of where the structure will begin to generate. </param>
+        /// <param name="startingX"> Far left location of where the structure will begin to generate. </param>
+        /// <param name="startingY"> Top-most location of where the structure will begin to generate. </param>
         /// <param name="progress">
         /// Progress of the loops to show the player how far along the generation is.
         /// </param>
-        public static void GenerateStructure(StructureData data, int xLocation, int yLocation, GenerationProgress progress) {
+        public static void GenerateStructure(StructureData data, int startingX, int startingY, GenerationProgress progress = null) {
             for (int y = 0; y < data.structureHeight; y++) {
-                progress.Set((float)y / data.structureHeight);
+                progress?.Set((float)y / data.structureHeight);
                 for (int x = 0; x < data.structureWidth; x++) {
-                    Tile selectedTile = Framing.GetTileSafely(xLocation + x, yLocation + y);
-                    TileData tileData = data.structureTileData[y + x];
+                    Tile selectedTile = Framing.GetTileSafely(startingX + x, startingY + y);
+                    TileData tileData = data.structureTileData[x][y];
 
                     if (tileData.type != -1) {
                         if (ModContent.TryFind(tileData.modName, tileData.modTileName, out ModTile modTile)) {
@@ -31,6 +31,7 @@ namespace LivingWorldMod.Custom.Utilities {
                         else {
                             selectedTile.type = (ushort)tileData.type;
                         }
+
                         selectedTile.IsActive = true;
                     }
 

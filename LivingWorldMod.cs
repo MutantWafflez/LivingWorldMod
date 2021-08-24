@@ -8,5 +8,10 @@ namespace LivingWorldMod {
         /// Directory of the Sprites for LivingWorldMod.
         /// </summary>
         public static string LWMSpritePath => nameof(LivingWorldMod) + "/Assets/Sprites";
+
+        /// <summary>
+        /// Directory of the Structure files for LivingWorldMod.
+        /// </summary>
+        public static string LWMStructurePath => "Content/Structures";
     }
 }

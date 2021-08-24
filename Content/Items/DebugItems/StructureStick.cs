@@ -58,12 +58,13 @@ namespace LivingWorldMod.Content.Items.DebugItems {
             int width = bottomRight.X - topLeft.X;
             int height = bottomRight.Y - topLeft.Y;
 
-            List<TileData> tileData = new List<TileData>();
+            List<List<TileData>> tileData = new List<List<TileData>>();
 
             for (int x = 0; x < width; x++) {
+                tileData.Add(new List<TileData>());
                 for (int y = 0; y < height; y++) {
                     Tile requestedTile = Framing.GetTileSafely(x + topLeft.X, y + topLeft.Y);
-                    tileData.Add(new TileData(requestedTile));
+                    tileData[x].Add(new TileData(requestedTile));
                 }
             }
 
