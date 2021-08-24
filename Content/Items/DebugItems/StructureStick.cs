@@ -1,8 +1,8 @@
-﻿using LivingWorldMod.Custom.Utilities;
+﻿#if DEBUG
+
+using LivingWorldMod.Custom.Utilities;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using LivingWorldMod.Custom.Structs;
 using Terraria;
 using Terraria.DataStructures;
@@ -17,6 +17,8 @@ namespace LivingWorldMod.Content.Items.DebugItems {
         private Point16 bottomRight = Point16.NegativeOne;
 
         private bool isSaving;
+
+        public override string Texture => "Terraria/Images/Item_" + ItemID.DrumStick;
 
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.DrumStick);
@@ -79,3 +81,5 @@ namespace LivingWorldMod.Content.Items.DebugItems {
         }
     }
 }
+
+#endif
