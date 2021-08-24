@@ -16,6 +16,8 @@ namespace LivingWorldMod.Content.Items.DebugItems {
 
         private Point16 bottomRight = Point16.NegativeOne;
 
+        private bool isSaving;
+
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.DrumStick);
             Item.autoReuse = false;
@@ -40,7 +42,7 @@ namespace LivingWorldMod.Content.Items.DebugItems {
                 }
                 return true;
             }
-            else if (player.altFunctionUse == 2 && player.itemAnimation == 30 && topLeft != Point16.NegativeOne && bottomRight != Point16.NegativeOne) {
+            else if (player.altFunctionUse == 2 && !isSaving && topLeft != Point16.NegativeOne && bottomRight != Point16.NegativeOne) {
                 Main.NewText("Saving Structure...");
                 SaveStructure();
                 return true;
@@ -52,6 +54,7 @@ namespace LivingWorldMod.Content.Items.DebugItems {
         public override bool AltFunctionUse(Player player) => true;
 
         private void SaveStructure() {
+            isSaving = true;
             int width = bottomRight.X - topLeft.X;
             int height = bottomRight.Y - topLeft.Y;
 
@@ -66,16 +69,12 @@ namespace LivingWorldMod.Content.Items.DebugItems {
 
             StructureData structData = new StructureData(width, height, tileData);
 
-            string outputPath = IOUtilities.GetLWMFilePath() + "/StructureOutput.struct";
-
-            if (File.Exists(outputPath)) {
-                File.Delete(outputPath);
-                File.Create(outputPath);
-            }
+            string outputPath = IOUtilities.GetLWMFilePath() + $"/StructureOutput_{DateTime.Now.ToShortTimeString().Replace(':', '_').Replace(' ', '_')}.struct";
 
             TagIO.ToFile(new TagCompound() { { "structureData", structData } }, outputPath);
 
             Main.NewText("Structure Copied to File!");
+            isSaving = false;
         }
     }
 }

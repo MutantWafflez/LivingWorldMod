@@ -54,6 +54,8 @@ namespace LivingWorldMod.Custom.Structs {
 
         public readonly bool isActuated;
 
+        public readonly bool hasActuator;
+
         public readonly bool hasRedWire;
 
         public readonly bool hasBlueWire;
@@ -90,6 +92,7 @@ namespace LivingWorldMod.Custom.Structs {
             slopeType = (int)tile.Slope;
             color = tile.Color;
             isActuated = tile.IsActuated;
+            hasActuator = tile.HasActuator;
             hasRedWire = tile.RedWire;
             hasBlueWire = tile.BlueWire;
             hasGreenWire = tile.GreenWire;
@@ -107,7 +110,7 @@ namespace LivingWorldMod.Custom.Structs {
             modTileName = modTile?.Name;
         }
 
-        public TileData(int type, bool isActivated, bool isHalfBlock, int frameNumber, int frameX, int frameY, int slopeType, int color, bool isActuated,
+        public TileData(int type, bool isActivated, bool isHalfBlock, int frameNumber, int frameX, int frameY, int slopeType, int color, bool isActuated, bool hasActuator,
             bool hasRedWire, bool hasBlueWire, bool hasGreenWire, bool hasYellowWire, int liquidType, int liquidAmount, int wallType, int wallColor, int wallFrame,
             int wallFrameX, int wallFrameY) {
             this.type = type > 0 ? type : -1;
@@ -119,6 +122,7 @@ namespace LivingWorldMod.Custom.Structs {
             this.slopeType = slopeType;
             this.color = color;
             this.isActuated = isActuated;
+            this.hasActuator = hasActuator;
             this.hasRedWire = hasRedWire;
             this.hasBlueWire = hasBlueWire;
             this.hasGreenWire = hasGreenWire;
@@ -136,7 +140,7 @@ namespace LivingWorldMod.Custom.Structs {
             modTileName = modTile?.Name;
         }
 
-        public TileData(int type, bool isActivated, bool isHalfBlock, int frameNumber, int frameX, int frameY, int slopeType, int color, bool isActuated,
+        public TileData(int type, bool isActivated, bool isHalfBlock, int frameNumber, int frameX, int frameY, int slopeType, int color, bool isActuated, bool hasActuator,
             bool hasRedWire, bool hasBlueWire, bool hasGreenWire, bool hasYellowWire, int liquidType, int liquidAmount, int wallType, int wallColor, int wallFrame,
             int wallFrameX, int wallFrameY, string modName, string modTileName) {
             this.type = type > 0 ? type : -1;
@@ -148,6 +152,7 @@ namespace LivingWorldMod.Custom.Structs {
             this.slopeType = slopeType;
             this.color = color;
             this.isActuated = isActuated;
+            this.hasActuator = hasActuator;
             this.hasRedWire = hasRedWire;
             this.hasBlueWire = hasBlueWire;
             this.hasGreenWire = hasGreenWire;
@@ -174,6 +179,7 @@ namespace LivingWorldMod.Custom.Structs {
                 tag.GetInt(nameof(slopeType)),
                 tag.GetInt(nameof(color)),
                 tag.GetBool(nameof(isActuated)),
+                tag.GetBool(nameof(hasActuator)),
                 tag.GetBool(nameof(hasRedWire)),
                 tag.GetBool(nameof(hasBlueWire)),
                 tag.GetBool(nameof(hasGreenWire)),
@@ -201,6 +207,7 @@ namespace LivingWorldMod.Custom.Structs {
                 {nameof(slopeType), slopeType},
                 {nameof(color), color},
                 {nameof(isActuated), isActuated},
+                {nameof(hasActuator), hasActuator},
                 {nameof(hasRedWire), hasRedWire},
                 {nameof(hasBlueWire), hasBlueWire},
                 {nameof(hasGreenWire), hasGreenWire},
