@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using System;
+using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -8,7 +9,7 @@ namespace LivingWorldMod.Custom.Structs {
     /// Struct that holds Tile Data, mainly usage being for structures. Used for generating
     /// pre-determined structures.
     /// </summary>
-    public readonly struct TileData {
+    public readonly struct TileData : TagSerializable {
         /* Relevant Tile Fields/Properties:
             tile.type;
             IsActivated
@@ -32,6 +33,8 @@ namespace LivingWorldMod.Custom.Structs {
             ile.WallFrameX;
             tile.WallFrameY;
             */
+
+        public static readonly Func<TagCompound, TileData> DESERIALIZER = Deserialize;
 
         public readonly int type;
 
@@ -133,7 +136,61 @@ namespace LivingWorldMod.Custom.Structs {
             modTileName = modTile?.Name;
         }
 
-        public TagCompound ToCompound() {
+        public TileData(int type, bool isActivated, bool isHalfBlock, int frameNumber, int frameX, int frameY, int slopeType, int color, bool isActuated,
+            bool hasRedWire, bool hasBlueWire, bool hasGreenWire, bool hasYellowWire, int liquidType, int liquidAmount, int wallType, int wallColor, int wallFrame,
+            int wallFrameX, int wallFrameY, string modName, string modTileName) {
+            this.type = type > 0 ? type : -1;
+            this.isActivated = isActivated;
+            this.isHalfBlock = isHalfBlock;
+            this.frameNumber = frameNumber;
+            this.frameX = frameX;
+            this.frameY = frameY;
+            this.slopeType = slopeType;
+            this.color = color;
+            this.isActuated = isActuated;
+            this.hasRedWire = hasRedWire;
+            this.hasBlueWire = hasBlueWire;
+            this.hasGreenWire = hasGreenWire;
+            this.hasYellowWire = hasYellowWire;
+            this.liquidType = liquidType;
+            this.liquidAmount = liquidAmount;
+            this.wallType = wallType;
+            this.wallColor = wallColor;
+            this.wallFrame = wallFrame;
+            this.wallFrameX = wallFrameX;
+            this.wallFrameY = wallFrameY;
+            this.modName = modName;
+            this.modTileName = modTileName;
+        }
+
+        public static TileData Deserialize(TagCompound tag) {
+            return new TileData(
+                tag.GetInt(nameof(type)),
+                tag.GetBool(nameof(isActivated)),
+                tag.GetBool(nameof(isHalfBlock)),
+                tag.GetInt(nameof(frameNumber)),
+                tag.GetInt(nameof(frameX)),
+                tag.GetInt(nameof(frameY)),
+                tag.GetInt(nameof(slopeType)),
+                tag.GetInt(nameof(color)),
+                tag.GetBool(nameof(isActuated)),
+                tag.GetBool(nameof(hasRedWire)),
+                tag.GetBool(nameof(hasBlueWire)),
+                tag.GetBool(nameof(hasGreenWire)),
+                tag.GetBool(nameof(hasYellowWire)),
+                tag.GetInt(nameof(liquidType)),
+                tag.GetInt(nameof(liquidAmount)),
+                tag.GetInt(nameof(wallType)),
+                tag.GetInt(nameof(wallColor)),
+                tag.GetInt(nameof(wallFrame)),
+                tag.GetInt(nameof(wallFrameX)),
+                tag.GetInt(nameof(wallFrameY)),
+                tag.GetString(nameof(modName)),
+                tag.GetString(nameof(modTileName))
+            );
+        }
+
+        public TagCompound SerializeData() {
             return new TagCompound() {
                 {nameof(type), type},
                 {nameof(isActivated), isActivated},

@@ -1,5 +1,7 @@
 ﻿using System.IO;
+using LivingWorldMod.Custom.Structs;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Custom.Utilities {
 

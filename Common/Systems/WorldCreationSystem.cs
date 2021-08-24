@@ -1,5 +1,4 @@
-﻿using LivingWorldMod.Custom.Classes.StructureCaches;
-using LivingWorldMod.Custom.Utilities;
+﻿using LivingWorldMod.Custom.Utilities;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.Generation;
@@ -26,13 +25,6 @@ namespace LivingWorldMod.Common.Systems {
         private void GenerateHarpyVillage(GenerationProgress progress, GameConfiguration gameConfig) {
             progress.Message = "Generating Structures... Harpy Village";
             progress.Set(0f);
-
-            StructureCache harpyCache = new HarpyVillageCache();
-
-            int xLocation = (Main.maxTilesX / 2) - (harpyCache.TileTypes.GetLength(0) / 2);
-            int yLocation = Main.rand.Next((int)(Main.maxTilesY * 0.05f), (int)(Main.maxTilesY * 0.1f));
-
-            WorldGenUtilities.GenerateWithStructureCache(harpyCache, xLocation, yLocation, progress);
         }
     }
 }
