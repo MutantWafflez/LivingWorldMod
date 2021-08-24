@@ -40,7 +40,7 @@ namespace LivingWorldMod.Common.Systems {
             int startingX = Main.spawnTileX - (harpyVillageData.structureWidth / 2);
             int startingY = Main.rand.Next((int)(Main.maxTilesY * 0.0125f), (int)(Main.maxTilesY * 0.05f));
 
-            WorldGenUtilities.GenerateStructure(harpyVillageData, startingX, startingY, progress);
+            WorldGenUtilities.GenerateStructure(harpyVillageData, startingX, startingY, ref progress);
         }
     }
 }
