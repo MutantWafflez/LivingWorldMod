@@ -22,11 +22,18 @@ namespace LivingWorldMod.Common.Systems {
         /// </summary>
         public static Color targetStarCloudColor;
 
+        /// <summary>
+        /// The glow color of the star torches.
+        /// </summary>
+        public static Color starTorchColor;
+
         private static int starCloudTimer;
 
         public override void Load() {
             starCloudColor = targetStarCloudColor = Color.Yellow;
             starCloudTimer = 5 * 60;
+
+            starTorchColor = new Color(0.97f, 0.84f, 0.41f);
         }
 
         public override void PostUpdateEverything() {

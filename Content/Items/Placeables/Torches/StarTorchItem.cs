@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Content.Tiles.Torches;
+﻿using LivingWorldMod.Common.Systems;
+using LivingWorldMod.Content.Tiles.Torches;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -22,11 +23,11 @@ namespace LivingWorldMod.Content.Items.Placeables.Torches {
                 Dust.NewDust(new Vector2(player.itemLocation.X + 16f * player.direction, player.itemLocation.Y - 14f * player.gravDir), 4, 4, DustID.YellowStarDust);
             }
             Vector2 position = player.RotatedRelativePoint(new Vector2(player.itemLocation.X + 12f * player.direction + player.velocity.X, player.itemLocation.Y - 14f + player.velocity.Y), true);
-            Lighting.AddLight(position, 1.25f, 1.25f, 0f);
+            Lighting.AddLight(position, BlockLightSystem.starTorchColor.ToVector3());
         }
 
         public override void PostUpdate() {
-            Lighting.AddLight((int)((Item.position.X + Item.width / 2f) / 16f), (int)((Item.position.Y + Item.height / 2f) / 16f), 1.25f, 1.25f, 0f);
+            Lighting.AddLight(new Vector2((Item.position.X + Item.width / 2f) / 16f, (Item.position.Y + Item.height / 2f) / 16f), BlockLightSystem.starTorchColor.ToVector3());
         }
 
         public override void AutoLightSelect(ref bool dryTorch, ref bool wetTorch, ref bool glowstick) {

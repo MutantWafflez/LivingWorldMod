@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Content.Items.Placeables.Torches;
+﻿using LivingWorldMod.Common.Systems;
+using LivingWorldMod.Content.Items.Placeables.Torches;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -53,8 +54,9 @@ namespace LivingWorldMod.Content.Tiles.Torches {
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) {
             if (Framing.GetTileSafely(i, j).frameX < 66) {
-                r = 1.25f;
-                g = 1.25f;
+                r = BlockLightSystem.starTorchColor.R / 255f;
+                g = BlockLightSystem.starTorchColor.G / 255f;
+                b = BlockLightSystem.starTorchColor.B / 255f;
             }
         }
 
