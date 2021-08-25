@@ -13,7 +13,7 @@ namespace LivingWorldMod.Content.Tiles.Building {
             Main.tileSolid[Type] = true;
             Main.tileNoSunLight[Type] = true;
             Main.tileLighted[Type] = true;
-            Main.tileMergeDirt[Type] = true;
+            Main.tileMergeDirt[Type] = false;
             Main.tileMerge[Type][TileID.Cloud] = true;
             Main.tileMerge[Type][TileID.RainCloud] = true;
             Main.tileMerge[Type][TileID.SnowCloud] = true;
