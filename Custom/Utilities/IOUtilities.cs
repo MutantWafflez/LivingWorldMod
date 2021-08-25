@@ -24,5 +24,25 @@ namespace LivingWorldMod.Custom.Utilities {
 
             return LWMPath;
         }
+
+        /// <summary>
+        /// Shorthand method for getting a StructureData instance from a file. The path parameter
+        /// should not include the mod folder. For example, in the path
+        /// "LivingWorldMod/Content/Structures/ExampeStructure.struct" it should not include the
+        /// "LivngWorldMod" part, it just needs the "Content/Structures/ExampleStructure.struct" part.
+        /// </summary>
+        /// <param name="structurePath"> The path in the LivingWorldMod folder to go to. </param>
+        /// <returns> </returns>
+        public static StructureData GetStructureFromFile(string path) {
+            LivingWorldMod modInstance = ModContent.GetInstance<LivingWorldMod>();
+
+            Stream fileStream = modInstance.GetFileStream(path);
+
+            StructureData structureData = TagIO.FromStream(fileStream).Get<StructureData>("structureData");
+
+            fileStream.Close();
+
+            return structureData;
+        }
     }
 }

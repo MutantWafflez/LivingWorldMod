@@ -57,20 +57,17 @@ namespace LivingWorldMod.Content.Items.DebugItems {
 
         private void SaveStructure() {
             isSaving = true;
-            int width = bottomRight.X - topLeft.X;
-            int height = bottomRight.Y - topLeft.Y;
-
             List<List<TileData>> tileData = new List<List<TileData>>();
 
-            for (int x = 0; x < width; x++) {
+            for (int x = 0; x <= bottomRight.X - topLeft.X; x++) {
                 tileData.Add(new List<TileData>());
-                for (int y = 0; y < height; y++) {
+                for (int y = 0; y <= bottomRight.Y - topLeft.Y; y++) {
                     Tile requestedTile = Framing.GetTileSafely(x + topLeft.X, y + topLeft.Y);
                     tileData[x].Add(new TileData(requestedTile));
                 }
             }
 
-            StructureData structData = new StructureData(width, height, tileData);
+            StructureData structData = new StructureData(tileData.Count, tileData[0].Count, tileData);
 
             string outputPath = IOUtilities.GetLWMFilePath() + $"/StructureOutput_{DateTime.Now.ToShortTimeString().Replace(':', '_').Replace(' ', '_')}.struct";
 

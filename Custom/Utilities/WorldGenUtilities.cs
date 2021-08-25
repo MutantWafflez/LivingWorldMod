@@ -14,7 +14,11 @@ namespace LivingWorldMod.Custom.Utilities {
         /// <param name="data"> The struct containing data for the structure. </param>
         /// <param name="startingX"> Far left location of where the structure will begin to generate. </param>
         /// <param name="startingY"> Top-most location of where the structure will begin to generate. </param>
-        public static void GenerateStructure(StructureData data, int startingX, int startingY) {
+        /// <param name="placeAir">
+        /// Whether or not to place the air that is held within the structure data, potentially
+        /// replacing blocks within the structure's generation area.
+        /// </param>
+        public static void GenerateStructure(StructureData data, int startingX, int startingY, bool placeAir = false) {
             for (int y = 0; y < data.structureHeight; y++) {
                 for (int x = 0; x < data.structureWidth; x++) {
                     Tile selectedTile = Framing.GetTileSafely(startingX + x, startingY + y);
@@ -29,6 +33,10 @@ namespace LivingWorldMod.Custom.Utilities {
                         }
 
                         selectedTile.IsActive = true;
+                    }
+                    else if (placeAir) {
+                        selectedTile.type = 0;
+                        selectedTile.IsActive = false;
                     }
 
                     selectedTile.IsHalfBlock = tileData.isHalfBlock;
@@ -64,7 +72,11 @@ namespace LivingWorldMod.Custom.Utilities {
         /// Progress of the loops to show the player how far along the generation is, with its
         /// primary usage being during world creation.
         /// </param>
-        public static void GenerateStructure(StructureData data, int startingX, int startingY, ref GenerationProgress progress) {
+        /// <param name="placeAir">
+        /// Whether or not to place the air that is held within the structure data, potentially
+        /// replacing blocks within the structure's generation area.
+        /// </param>
+        public static void GenerateStructure(StructureData data, int startingX, int startingY, ref GenerationProgress progress, bool placeAir = false) {
             for (int y = 0; y < data.structureHeight; y++) {
                 progress.Set((float)y / data.structureHeight);
                 for (int x = 0; x < data.structureWidth; x++) {
@@ -80,6 +92,10 @@ namespace LivingWorldMod.Custom.Utilities {
                         }
 
                         selectedTile.IsActive = true;
+                    }
+                    else if (placeAir) {
+                        selectedTile.type = 0;
+                        selectedTile.IsActive = false;
                     }
 
                     selectedTile.IsHalfBlock = tileData.isHalfBlock;
