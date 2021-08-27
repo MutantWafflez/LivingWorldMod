@@ -104,7 +104,7 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
             ));
 
             //Place ground houses
-            List<int> possibleRandomChoices = new List<int>() {
+            List<int> possibleGroundHouses = new List<int>() {
                 0,
                 1
             };
@@ -112,14 +112,14 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
             for (int i = 0; i < 2; i++) {
                 List<Point> possiblePlacementPoints = new List<Point>();
 
-                int selectedHouseType = WorldGen.genRand.Next(possibleRandomChoices);
+                int selectedHouseType = WorldGen.genRand.Next(possibleGroundHouses);
 
-                possibleRandomChoices.Remove(selectedHouseType);
+                possibleGroundHouses.Remove(selectedHouseType);
 
-                StructureData houseData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/House{selectedHouseType}.struct");
+                StructureData groundHouseData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/GroundHouse{selectedHouseType}.struct");
 
                 for (int xOffset = leftOffset * (1 - i); xOffset <= 0 + i * Math.Abs(leftOffset); xOffset++) {
-                    if (WorldUtils.Find(new Point(originPoint.X + xOffset, originPoint.Y), Searches.Chain(new Searches.Up(25), new Conditions.IsTile(TileID.Grass).AreaAnd(houseData.structureWidth, 1)), out Point result)) {
+                    if (WorldUtils.Find(new Point(originPoint.X + xOffset, originPoint.Y), Searches.Chain(new Searches.Up(25), new Conditions.IsTile(TileID.Grass).AreaAnd(groundHouseData.structureWidth, 1)), out Point result)) {
                         //Slowly populates a list of possible placement points where the house can be placed
                         possiblePlacementPoints.Add(result);
                     }
@@ -129,7 +129,7 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
                 if (possiblePlacementPoints.Any()) {
                     Point middlePlacement = possiblePlacementPoints.ElementAt(possiblePlacementPoints.Count / 2);
 
-                    WorldGenUtilities.GenerateStructure(houseData, middlePlacement.X, middlePlacement.Y - houseData.structureHeight);
+                    WorldGenUtilities.GenerateStructure(groundHouseData, middlePlacement.X, middlePlacement.Y - groundHouseData.structureHeight);
                 }
             }
 
@@ -146,6 +146,24 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
                 new Actions.SetFrames(true),
                 new Actions.Smooth(true)
             ));
+
+            //Place cloud houses
+            List<int> possibleCloudHouses = new List<int>() {
+                0,
+                1
+            };
+
+            for (int i = 0; i < 3; i += 2) {
+                int selectedHouseType = WorldGen.genRand.Next(possibleCloudHouses);
+
+                possibleCloudHouses.Remove(selectedHouseType);
+
+                StructureData cloudHouseData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/CloudHouse{selectedHouseType}.struct");
+
+                if (WorldUtils.Find(new Point(originPoint.X + (leftOffset * (1 - i)), originPoint.Y + (int)(upOffset * 3.25f)), Searches.Chain(new Searches.Down(5), new Conditions.IsSolid().Not().AreaAnd(cloudHouseData.structureWidth, cloudHouseData.structureHeight)), out Point result)) {
+                    WorldGenUtilities.GenerateStructure(cloudHouseData, result.X - (cloudHouseData.structureWidth / 2), result.Y);
+                }
+            }
         }
     }
 }
