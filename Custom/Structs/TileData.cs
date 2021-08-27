@@ -1,4 +1,6 @@
 ﻿using System;
+using LivingWorldMod.Content.Tiles.DebugTiles;
+using LivingWorldMod.Content.Walls.DebugWalls;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -84,6 +86,7 @@ namespace LivingWorldMod.Custom.Structs {
 
         public TileData(Tile tile) {
             type = tile.IsActive ? tile.type : -1;
+            type = tile.type == ModContent.TileType<SkipTile>() ? -2 : type;
             isActivated = tile.IsActive;
             isHalfBlock = tile.IsHalfBlock;
             frameNumber = tile.FrameNumber;
@@ -99,7 +102,7 @@ namespace LivingWorldMod.Custom.Structs {
             hasYellowWire = tile.YellowWire;
             liquidType = tile.LiquidType;
             liquidAmount = tile.LiquidAmount;
-            wallType = tile.wall;
+            wallType = tile.wall == ModContent.WallType<SkipWall>() ? -1 : tile.wall;
             wallColor = tile.WallColor;
             wallFrame = tile.WallFrameNumber;
             wallFrameX = tile.WallFrameX;
@@ -114,6 +117,7 @@ namespace LivingWorldMod.Custom.Structs {
             bool hasRedWire, bool hasBlueWire, bool hasGreenWire, bool hasYellowWire, int liquidType, int liquidAmount, int wallType, int wallColor, int wallFrame,
             int wallFrameX, int wallFrameY) {
             this.type = isActivated ? type : -1;
+            this.type = type == ModContent.TileType<SkipTile>() ? -2 : this.type;
             this.isActivated = isActivated;
             this.isHalfBlock = isHalfBlock;
             this.frameNumber = frameNumber;
@@ -129,7 +133,7 @@ namespace LivingWorldMod.Custom.Structs {
             this.hasYellowWire = hasYellowWire;
             this.liquidType = liquidType;
             this.liquidAmount = liquidAmount;
-            this.wallType = wallType;
+            this.wallType = wallType == ModContent.WallType<SkipWall>() ? -1 : wallType;
             this.wallColor = wallColor;
             this.wallFrame = wallFrame;
             this.wallFrameX = wallFrameX;
@@ -144,6 +148,7 @@ namespace LivingWorldMod.Custom.Structs {
             bool hasRedWire, bool hasBlueWire, bool hasGreenWire, bool hasYellowWire, int liquidType, int liquidAmount, int wallType, int wallColor, int wallFrame,
             int wallFrameX, int wallFrameY, string modName, string modTileName) {
             this.type = isActivated ? type : -1;
+            this.type = type == ModContent.TileType<SkipTile>() ? -2 : this.type;
             this.isActivated = isActivated;
             this.isHalfBlock = isHalfBlock;
             this.frameNumber = frameNumber;
@@ -159,7 +164,7 @@ namespace LivingWorldMod.Custom.Structs {
             this.hasYellowWire = hasYellowWire;
             this.liquidType = liquidType;
             this.liquidAmount = liquidAmount;
-            this.wallType = wallType;
+            this.wallType = wallType == ModContent.WallType<SkipWall>() ? -1 : wallType;
             this.wallColor = wallColor;
             this.wallFrame = wallFrame;
             this.wallFrameX = wallFrameX;

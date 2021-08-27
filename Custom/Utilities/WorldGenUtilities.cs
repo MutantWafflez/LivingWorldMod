@@ -14,50 +14,50 @@ namespace LivingWorldMod.Custom.Utilities {
         /// <param name="data"> The struct containing data for the structure. </param>
         /// <param name="startingX"> Far left location of where the structure will begin to generate. </param>
         /// <param name="startingY"> Top-most location of where the structure will begin to generate. </param>
-        /// <param name="placeAir">
-        /// Whether or not to place the air that is held within the structure data, potentially
-        /// replacing blocks within the structure's generation area.
-        /// </param>
-        public static void GenerateStructure(StructureData data, int startingX, int startingY, bool placeAir = false) {
+        public static void GenerateStructure(StructureData data, int startingX, int startingY) {
             for (int y = 0; y < data.structureHeight; y++) {
                 for (int x = 0; x < data.structureWidth; x++) {
                     Tile selectedTile = Framing.GetTileSafely(startingX + x, startingY + y);
                     TileData tileData = data.structureTileData[x][y];
 
-                    if (tileData.type != -1) {
-                        if (ModContent.TryFind(tileData.modName, tileData.modTileName, out ModTile modTile)) {
-                            selectedTile.type = modTile.Type;
-                        }
-                        else {
-                            selectedTile.type = (ushort)tileData.type;
-                        }
+                    switch (tileData.type) {
+                        case > 0: {
+                                if (ModContent.TryFind(tileData.modName, tileData.modTileName, out ModTile modTile)) {
+                                    selectedTile.type = modTile.Type;
+                                }
+                                else {
+                                    selectedTile.type = (ushort)tileData.type;
+                                }
+                                selectedTile.IsActive = true;
 
-                        selectedTile.IsActive = true;
-                    }
-                    else if (placeAir) {
-                        selectedTile.type = 0;
-                        selectedTile.IsActive = false;
+                                selectedTile.IsHalfBlock = tileData.isHalfBlock;
+                                selectedTile.FrameNumber = (byte)tileData.frameNumber;
+                                selectedTile.frameX = (short)tileData.frameX;
+                                selectedTile.frameY = (short)tileData.frameY;
+                                selectedTile.Slope = (SlopeType)tileData.slopeType;
+                                selectedTile.Color = (byte)tileData.color;
+                                selectedTile.IsActuated = tileData.isActuated;
+                                selectedTile.HasActuator = tileData.hasActuator;
+                                selectedTile.RedWire = tileData.hasRedWire;
+                                selectedTile.BlueWire = tileData.hasBlueWire;
+                                selectedTile.GreenWire = tileData.hasGreenWire;
+                                selectedTile.YellowWire = tileData.hasYellowWire;
+                                selectedTile.LiquidType = tileData.liquidType;
+                                selectedTile.LiquidAmount = (byte)tileData.liquidAmount;
+                                break;
+                            }
+                        case -1:
+                            selectedTile.ClearEverything();
+                            break;
                     }
 
-                    selectedTile.IsHalfBlock = tileData.isHalfBlock;
-                    selectedTile.FrameNumber = (byte)tileData.frameNumber;
-                    selectedTile.frameX = (short)tileData.frameX;
-                    selectedTile.frameY = (short)tileData.frameY;
-                    selectedTile.Slope = (SlopeType)tileData.slopeType;
-                    selectedTile.Color = (byte)tileData.color;
-                    selectedTile.IsActuated = tileData.isActuated;
-                    selectedTile.HasActuator = tileData.hasActuator;
-                    selectedTile.RedWire = tileData.hasRedWire;
-                    selectedTile.BlueWire = tileData.hasBlueWire;
-                    selectedTile.GreenWire = tileData.hasGreenWire;
-                    selectedTile.YellowWire = tileData.hasYellowWire;
-                    selectedTile.LiquidType = tileData.liquidType;
-                    selectedTile.LiquidAmount = (byte)tileData.liquidAmount;
-                    selectedTile.wall = (ushort)tileData.wallType;
-                    selectedTile.WallColor = (byte)tileData.wallColor;
-                    selectedTile.WallFrameNumber = (byte)tileData.wallFrame;
-                    selectedTile.WallFrameX = tileData.wallFrameX;
-                    selectedTile.WallFrameY = tileData.wallFrameY;
+                    if (tileData.wallType != -1) {
+                        selectedTile.wall = (ushort)tileData.wallType;
+                        selectedTile.WallColor = (byte)tileData.wallColor;
+                        selectedTile.WallFrameNumber = (byte)tileData.wallFrame;
+                        selectedTile.WallFrameX = tileData.wallFrameX;
+                        selectedTile.WallFrameY = tileData.wallFrameY;
+                    }
                 }
             }
         }
@@ -72,51 +72,51 @@ namespace LivingWorldMod.Custom.Utilities {
         /// Progress of the loops to show the player how far along the generation is, with its
         /// primary usage being during world creation.
         /// </param>
-        /// <param name="placeAir">
-        /// Whether or not to place the air that is held within the structure data, potentially
-        /// replacing blocks within the structure's generation area.
-        /// </param>
-        public static void GenerateStructure(StructureData data, int startingX, int startingY, ref GenerationProgress progress, bool placeAir = false) {
+        public static void GenerateStructure(StructureData data, int startingX, int startingY, ref GenerationProgress progress) {
             for (int y = 0; y < data.structureHeight; y++) {
                 progress.Set((float)y / data.structureHeight);
                 for (int x = 0; x < data.structureWidth; x++) {
                     Tile selectedTile = Framing.GetTileSafely(startingX + x, startingY + y);
                     TileData tileData = data.structureTileData[x][y];
 
-                    if (tileData.type != -1) {
-                        if (ModContent.TryFind(tileData.modName, tileData.modTileName, out ModTile modTile)) {
-                            selectedTile.type = modTile.Type;
-                        }
-                        else {
-                            selectedTile.type = (ushort)tileData.type;
-                        }
+                    switch (tileData.type) {
+                        case > 0: {
+                                if (ModContent.TryFind(tileData.modName, tileData.modTileName, out ModTile modTile)) {
+                                    selectedTile.type = modTile.Type;
+                                }
+                                else {
+                                    selectedTile.type = (ushort)tileData.type;
+                                }
+                                selectedTile.IsActive = true;
 
-                        selectedTile.IsActive = true;
-                    }
-                    else if (placeAir) {
-                        selectedTile.type = 0;
-                        selectedTile.IsActive = false;
+                                selectedTile.IsHalfBlock = tileData.isHalfBlock;
+                                selectedTile.FrameNumber = (byte)tileData.frameNumber;
+                                selectedTile.frameX = (short)tileData.frameX;
+                                selectedTile.frameY = (short)tileData.frameY;
+                                selectedTile.Slope = (SlopeType)tileData.slopeType;
+                                selectedTile.Color = (byte)tileData.color;
+                                selectedTile.IsActuated = tileData.isActuated;
+                                selectedTile.HasActuator = tileData.hasActuator;
+                                selectedTile.RedWire = tileData.hasRedWire;
+                                selectedTile.BlueWire = tileData.hasBlueWire;
+                                selectedTile.GreenWire = tileData.hasGreenWire;
+                                selectedTile.YellowWire = tileData.hasYellowWire;
+                                selectedTile.LiquidType = tileData.liquidType;
+                                selectedTile.LiquidAmount = (byte)tileData.liquidAmount;
+                                break;
+                            }
+                        case -1:
+                            selectedTile.ClearEverything();
+                            break;
                     }
 
-                    selectedTile.IsHalfBlock = tileData.isHalfBlock;
-                    selectedTile.FrameNumber = (byte)tileData.frameNumber;
-                    selectedTile.frameX = (short)tileData.frameX;
-                    selectedTile.frameY = (short)tileData.frameY;
-                    selectedTile.Slope = (SlopeType)tileData.slopeType;
-                    selectedTile.Color = (byte)tileData.color;
-                    selectedTile.IsActuated = tileData.isActuated;
-                    selectedTile.HasActuator = tileData.hasActuator;
-                    selectedTile.RedWire = tileData.hasRedWire;
-                    selectedTile.BlueWire = tileData.hasBlueWire;
-                    selectedTile.GreenWire = tileData.hasGreenWire;
-                    selectedTile.YellowWire = tileData.hasYellowWire;
-                    selectedTile.LiquidType = tileData.liquidType;
-                    selectedTile.LiquidAmount = (byte)tileData.liquidAmount;
-                    selectedTile.wall = (ushort)tileData.wallType;
-                    selectedTile.WallColor = (byte)tileData.wallColor;
-                    selectedTile.WallFrameNumber = (byte)tileData.wallFrame;
-                    selectedTile.WallFrameX = tileData.wallFrameX;
-                    selectedTile.WallFrameY = tileData.wallFrameY;
+                    if (tileData.wallType != -1) {
+                        selectedTile.wall = (ushort)tileData.wallType;
+                        selectedTile.WallColor = (byte)tileData.wallColor;
+                        selectedTile.WallFrameNumber = (byte)tileData.wallFrame;
+                        selectedTile.WallFrameX = tileData.wallFrameX;
+                        selectedTile.WallFrameY = tileData.wallFrameY;
+                    }
                 }
             }
         }

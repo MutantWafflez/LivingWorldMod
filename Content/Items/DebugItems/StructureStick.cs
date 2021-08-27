@@ -22,6 +22,7 @@ namespace LivingWorldMod.Content.Items.DebugItems {
 
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.DrumStick);
+            Item.rare = ItemRarityID.Quest;
             Item.autoReuse = false;
             Item.useTime = 30;
             Item.useAnimation = 30;
