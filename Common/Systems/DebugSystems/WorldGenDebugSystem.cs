@@ -3,14 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
+using LivingWorldMod.Content.Tiles.Building;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Terraria.ID;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Terraria;
-using Terraria.GameContent.Generation;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
@@ -21,13 +20,9 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
     /// </summary>
     public class WorldGenDebugSystem : ModSystem {
 
-        public static bool JustPressed(Keys key) {
-            return Main.keyState.IsKeyDown(key) && !Main.oldKeyState.IsKeyDown(key);
-        }
-
         public override void PostUpdateEverything() {
             //Trigger the generation method by pressing 0 on the numpad
-            if (JustPressed(Keys.NumPad0)) {
+            if (Main.keyState.IsKeyDown(Keys.NumPad0) && !Main.oldKeyState.IsKeyDown(Keys.NumPad0)) {
                 GenerationMethod((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
             }
         }
@@ -119,9 +114,9 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
                 StructureData groundHouseData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/GroundHouse{selectedHouseType}.struct");
 
                 for (int xOffset = leftOffset * (1 - i); xOffset <= 0 + i * Math.Abs(leftOffset); xOffset++) {
-                    if (WorldUtils.Find(new Point(originPoint.X + xOffset, originPoint.Y), Searches.Chain(new Searches.Up(25), new Conditions.IsTile(TileID.Grass).AreaAnd(groundHouseData.structureWidth, 1)), out Point result)) {
+                    if (WorldUtils.Find(new Point(originPoint.X + xOffset, originPoint.Y), Searches.Chain(new Searches.Up(25), new Conditions.IsTile(TileID.Grass).AreaAnd(groundHouseData.structureWidth, 1)), out Point groundHouseResult)) {
                         //Slowly populates a list of possible placement points where the house can be placed
-                        possiblePlacementPoints.Add(result);
+                        possiblePlacementPoints.Add(groundHouseResult);
                     }
                 }
 
@@ -160,10 +155,26 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
 
                 StructureData cloudHouseData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/CloudHouse{selectedHouseType}.struct");
 
-                if (WorldUtils.Find(new Point(originPoint.X + (leftOffset * (1 - i)), originPoint.Y + (int)(upOffset * 3.25f)), Searches.Chain(new Searches.Down(5), new Conditions.IsSolid().Not().AreaAnd(cloudHouseData.structureWidth, cloudHouseData.structureHeight)), out Point result)) {
-                    WorldGenUtilities.GenerateStructure(cloudHouseData, result.X - (cloudHouseData.structureWidth / 2), result.Y);
+                if (WorldUtils.Find(new Point(originPoint.X + (leftOffset * (1 - i)) - (cloudHouseData.structureWidth / 2), originPoint.Y + (int)(upOffset * 3.25f)), Searches.Chain(new Searches.Down(5), new Conditions.IsSolid().Not().AreaAnd(cloudHouseData.structureWidth, cloudHouseData.structureHeight)), out Point cloudHouseResult)) {
+                    WorldGenUtilities.GenerateStructure(cloudHouseData, cloudHouseResult.X, cloudHouseResult.Y);
                 }
             }
+
+            //Place "church" building
+            StructureData churchBuildingData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/ChurchBuilding{WorldGen.genRand.Next(1)}.struct");
+
+            if (WorldUtils.Find(new Point(originPoint.X - (churchBuildingData.structureWidth / 2), originPoint.Y + (int)(upOffset * 7.25f)), Searches.Chain(new Searches.Down(5), new Conditions.IsSolid().Not().AreaAnd(churchBuildingData.structureWidth, churchBuildingData.structureHeight)), out Point churchResult)) {
+                WorldGenUtilities.GenerateStructure(churchBuildingData, churchResult.X, churchResult.Y);
+            }
+
+            //Place starshard cloud blotches
+            WorldUtils.Gen(originPoint, new ModShapes.All(fullShapeData), Actions.Chain(
+                new Modifiers.Offset(-2, -2),
+                new Modifiers.Conditions(new Conditions.IsTile(TileID.Cloud).AreaAnd(5, 5)),
+                new Modifiers.Offset(2, 2),
+                new Modifiers.Blotches(chance: 0.125f),
+                new Actions.SetTileKeepWall((ushort)ModContent.TileType<StarshardCloudTile>(), true)
+            ));
         }
     }
 }
