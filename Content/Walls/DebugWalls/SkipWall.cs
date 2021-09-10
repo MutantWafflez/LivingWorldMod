@@ -19,8 +19,6 @@ namespace LivingWorldMod.Content.Walls.DebugWalls {
             Main.wallLight[Type] = true;
 
             WallID.Sets.AllowsWind[Type] = false;
-
-            ItemDrop = ModContent.ItemType<SkipWallItem>();
         }
     }
 }

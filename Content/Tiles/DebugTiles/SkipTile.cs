@@ -23,8 +23,6 @@ namespace LivingWorldMod.Content.Tiles.DebugTiles {
             Main.tileMergeDirt[Type] = false;
 
             TileID.Sets.HousingWalls[Type] = false;
-
-            ItemDrop = ModContent.ItemType<SkipTileItem>();
         }
     }
 }
