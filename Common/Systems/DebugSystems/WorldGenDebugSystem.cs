@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Content.Tiles.Building;
+using LivingWorldMod.Custom.Classes.WorldGen.GenConditions;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Terraria.ID;
@@ -32,7 +33,7 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
 
             // Code to test placed here:
             float xScale = WorldGen.genRand.NextFloat(1.6f, 1.75f);
-            float yScale = WorldGen.genRand.NextFloat(0.5f, 0.8f);
+            float yScale = WorldGen.genRand.NextFloat(0.6f, 0.8f);
             int radius = 35;
             Point originPoint = new Point(x, y);
 
@@ -155,7 +156,7 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
 
                 StructureData cloudHouseData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/CloudHouse{selectedHouseType}.struct");
 
-                if (WorldUtils.Find(new Point(originPoint.X + (leftOffset * (1 - i)) - (cloudHouseData.structureWidth / 2), originPoint.Y + (int)(upOffset * 3.25f)), Searches.Chain(new Searches.Down(5), new Conditions.IsSolid().Not().AreaAnd(cloudHouseData.structureWidth, cloudHouseData.structureHeight)), out Point cloudHouseResult)) {
+                if (WorldUtils.Find(new Point(originPoint.X + (leftOffset * (1 - i)) - (cloudHouseData.structureWidth / 2), originPoint.Y + (int)(upOffset * 3.25f)), Searches.Chain(new Searches.Down(5), new IsAir().AreaAnd(cloudHouseData.structureWidth, cloudHouseData.structureHeight)), out Point cloudHouseResult)) {
                     WorldGenUtilities.GenerateStructure(cloudHouseData, cloudHouseResult.X, cloudHouseResult.Y);
                 }
             }
@@ -163,7 +164,7 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
             //Place "church" building
             StructureData churchBuildingData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/ChurchBuilding{WorldGen.genRand.Next(1)}.struct");
 
-            if (WorldUtils.Find(new Point(originPoint.X - (churchBuildingData.structureWidth / 2), originPoint.Y + (int)(upOffset * 7.25f)), Searches.Chain(new Searches.Down(5), new Conditions.IsSolid().Not().AreaAnd(churchBuildingData.structureWidth, churchBuildingData.structureHeight)), out Point churchResult)) {
+            if (WorldUtils.Find(new Point(originPoint.X - (churchBuildingData.structureWidth / 2), originPoint.Y + upOffset - 60), Searches.Chain(new Searches.Down(5), new IsAir().AreaAnd(churchBuildingData.structureWidth, churchBuildingData.structureHeight)), out Point churchResult)) {
                 WorldGenUtilities.GenerateStructure(churchBuildingData, churchResult.X, churchResult.Y);
             }
 

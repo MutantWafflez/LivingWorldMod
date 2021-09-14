@@ -1,4 +1,4 @@
-﻿using LivingWorldMod.Content.Tiles.Interactables;
+﻿using LivingWorldMod.Content.Tiles.Interactables.VillageShrines;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -16,7 +16,7 @@ namespace LivingWorldMod.Content.Items.Placeables.Interactables {
             Item.rare = ItemRarityID.Orange;
             Item.consumable = true;
             Item.placeStyle = 0;
-            Item.createTile = ModContent.TileType<VillageShrineTile>();
+            Item.createTile = ModContent.TileType<HarpyShrineTile>();
         }
     }
 }

@@ -1,21 +1,24 @@
-﻿using System.Collections.Generic;
-using LivingWorldMod.Content.Items.Placeables.Interactables;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Content.Tiles.Interactables {
+namespace LivingWorldMod.Content.Tiles.Interactables.VillageShrines {
 
-    public class VillageShrineTile : BaseTile {
+    /// <summary>
+    /// Abstract class that exists to be inherited from to create different type of shrines for each
+    /// type of existing villager type.
+    /// </summary>
+    public abstract class VillageShrineTile : BaseTile {
 
         /// <summary>
-        /// Handle little dictionary used to determine what item should be dropped based on the
-        /// frameX of the tile.
+        /// The item that will drop from this shrine tile when it is broken.
         /// </summary>
-        public Dictionary<int, int> placeStyleToItemType;
+        public abstract int ItemDropType {
+            get;
+        }
 
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
@@ -41,10 +44,6 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0);
             TileObjectData.addTile(Type);
 
-            placeStyleToItemType = new Dictionary<int, int>() {
-                {0, ModContent.ItemType<HarpyShrineItem>()}
-            };
-
             AnimationFrameHeight = 90;
 
             //TODO: Proper localization
@@ -58,7 +57,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         public override void KillMultiTile(int i, int j, int frameX, int frameY) {
             Rectangle dropZone = new Rectangle(i * 16, (j + 4) * 16, 4, 5);
 
-            Item.NewItem(dropZone, placeStyleToItemType[frameX]);
+            Item.NewItem(dropZone, ItemDropType);
         }
     }
 }
