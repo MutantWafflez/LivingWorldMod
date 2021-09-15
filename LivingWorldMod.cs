@@ -13,5 +13,10 @@ namespace LivingWorldMod {
         /// Directory of the Structure files for LivingWorldMod.
         /// </summary>
         public static string LWMStructurePath => "Content/Structures";
+
+        /// <summary>
+        /// Directory of the Music files for LivingWorldMod.
+        /// </summary>
+        public static string LWMMusicPath => "Assets/Audio/Music/";
     }
 }
