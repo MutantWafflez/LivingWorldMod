@@ -8,6 +8,6 @@ namespace LivingWorldMod.Content.TileEntities.VillageShrines {
     public class HarpyShrineEntity : VillageShrineEntity {
         public override VillagerType VillageType => VillagerType.Harpy;
 
-        public override int ShrineTileID => ModContent.TileType<HarpyShrineTile>();
+        public override int ValidTileID => ModContent.TileType<HarpyShrineTile>();
     }
 }
