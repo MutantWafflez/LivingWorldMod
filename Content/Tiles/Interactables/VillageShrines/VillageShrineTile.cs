@@ -1,5 +1,6 @@
 ﻿using System;
 using LivingWorldMod.Content.TileEntities.VillageShrines;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -67,29 +68,41 @@ namespace LivingWorldMod.Content.Tiles.Interactables.VillageShrines {
             AddMapEntry(new Color(255, 255, 0), name);
         }
 
-        public override bool HasSmartInteract() => true;
+        public sealed override bool HasSmartInteract() => true;
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) {
-            Rectangle dropZone = new Rectangle(i * 16, j * 16, 4, 5);
+        public sealed override void KillMultiTile(int i, int j, int frameX, int frameY) {
+            Rectangle dropZone = new Rectangle(i * 16, (j + 4) * 16, 4, 5);
 
             Item.NewItem(dropZone, ItemDropType);
 
             VillageShrineEntity entity = ShrineEntity;
 
-            //The i and j coordinates when breaking are the top left of the tile, and upon placing the entity is centered around the tile origin, so we must adjust the coordinates to be where the entity actually is
-            entity.Kill(i + TileOrigin.X, j + TileOrigin.Y);
+            entity.Kill(i, j);
         }
 
-        public override void PlaceInWorld(int i, int j, Item item) {
+        public sealed override void PlaceInWorld(int i, int j, Item item) {
             VillageShrineEntity entity = ShrineEntity;
 
-            if (entity.Find(i, j) < 0) {
-                int entityID = entity.Place(i, j);
+            //The i and j coordinates when breaking are the top left of the tile; upon placing, the entity is centered around the tile origin, so we must adjust the coordinates to place the entity in the top left of the tile.
+            if (!entity.EntityExistsHere(i - TileOrigin.X, j - TileOrigin.Y)) {
+                int entityID = entity.Place(i - TileOrigin.X, j - TileOrigin.Y);
 
                 if (Main.netMode == NetmodeID.MultiplayerClient) {
                     NetMessage.SendData(MessageID.TileEntitySharing, ignoreClient: Main.myPlayer, number: entityID);
                 }
             }
+        }
+
+        public sealed override bool RightClick(int i, int j) {
+            //Since the x & y coordinate passed into this method do not point to the top left of the shrine multi-tile, we must calculate it ourselves
+            Point16 topLeft = TileUtilities.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
+
+            if (TileEntityUtilities.TryFindModEntity(topLeft.X, topLeft.Y, out VillageShrineEntity foundEntity)) {
+                foundEntity.RightClicked();
+                return true;
+            }
+
+            return false;
         }
     }
 }

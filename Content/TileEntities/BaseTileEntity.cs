@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -16,6 +16,8 @@ namespace LivingWorldMod.Content.TileEntities {
         public abstract int ValidTileID {
             get;
         }
+
+        public Vector2 WorldPosition => Position.ToWorldCoordinates(0, 0);
 
         public override bool ValidTile(int i, int j) {
             Tile tile = Framing.GetTileSafely(i, j);

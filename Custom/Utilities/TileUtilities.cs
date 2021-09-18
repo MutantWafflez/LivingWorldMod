@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace LivingWorldMod.Custom.Utilities {
@@ -34,5 +35,14 @@ namespace LivingWorldMod.Custom.Utilities {
                    || (TileID.Sets.MergesWithClouds[tileType] && TileID.Sets.Clouds[otherTile.type])
                    || (TileID.Sets.OreMergesWithMud[tileType] && TileID.Sets.Mud[otherTile.type]);
         }
+
+        /// <summary>
+        /// Returns the top left coordinate of the passed in tile which should be a type of multi-tile.
+        /// </summary>
+        /// <param name="tile"> A tile within the multi-tile. </param>
+        /// <param name="x"> The x coordinate of the specified tile. </param>
+        /// <param name="y"> The y coordinate of the specified tile. </param>
+        /// <returns> </returns>
+        public static Point16 GetTopLeftOfMultiTile(Tile tile, int x, int y) => new Point16(x - tile.frameX / 18, y - tile.frameY / 18);
     }
 }
