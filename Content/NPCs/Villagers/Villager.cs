@@ -98,6 +98,18 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         /// <summary>
+        /// Gets and returns a random shop dialogue line from the "initial shop dialogue" pool.
+        /// </summary>
+        /// <returns> </returns>
+        public string InitialShopChat => LocalizationUtilities.GetAllStringsFromCategory($"VillagerDialogue.{VillagerType}.Shop.Initial.{RelationshipStatus}");
+
+        /// <summary>
+        /// Gets and returns a random shop dialogue line from the "buy shop dialogue" pool.
+        /// </summary>
+        /// <returns> </returns>
+        public string BuyShopChat => LocalizationUtilities.GetAllStringsFromCategory($"VillagerDialogue.{VillagerType}.Shop.Buy.{RelationshipStatus}");
+
+        /// <summary>
         /// Threshold that the reputation must cross in order for these villagers to HATE the players.
         /// </summary>
         public virtual int HateThreshold => -95;
@@ -143,56 +155,6 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         /// <summary>
-        /// Possible dialogue that these villagers will say in the shop screen when FIRST opened by
-        /// the player.
-        /// </summary>
-        public abstract WeightedRandom<string> ShopDialogue {
-            get;
-        }
-
-        /// <summary>
-        /// Possible dialogue that these villagers will say whenever the player buys something from them.
-        /// </summary>
-        public abstract WeightedRandom<string> ShopBuyDialogue {
-            get;
-        }
-
-        /// <summary>
-        /// Possible dialogue that these villagers will say when they SEVERELY DISLIKE the players.
-        /// </summary>
-        public abstract WeightedRandom<string> SevereDislikeDialogue {
-            get;
-        }
-
-        /// <summary>
-        /// Possible dialogue that these villagers will say when they DISLIKE the players.
-        /// </summary>
-        public abstract WeightedRandom<string> DislikeDialogue {
-            get;
-        }
-
-        /// <summary>
-        /// Possible dialogue that these villagers will say when they are NEUTRAL to the players.
-        /// </summary>
-        public abstract WeightedRandom<string> NeutralDialogue {
-            get;
-        }
-
-        /// <summary>
-        /// Possible dialogue that these villagers will say when they LIKE the players.
-        /// </summary>
-        public abstract WeightedRandom<string> LikeDialogue {
-            get;
-        }
-
-        /// <summary>
-        /// Possible dialogue that these villagers will say when they LOVE the players.
-        /// </summary>
-        public abstract WeightedRandom<string> LoveDialogue {
-            get;
-        }
-
-        /// <summary>
         /// A list of ALL POSSIBLE shop items that villagers of this given type can ever sell. This
         /// list is checked upon every restock.
         /// </summary>
@@ -200,15 +162,15 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             get;
         }
 
-        public override string Texture => LivingWorldMod.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/DefaultStyle";
+        public sealed override string Texture => LivingWorldMod.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/DefaultStyle";
 
-        public override bool CloneNewInstances => true;
+        public sealed override bool CloneNewInstances => true;
 
         public Villager() {
             InitializeAssetData();
         }
 
-        public override ModNPC Clone() {
+        public sealed override ModNPC Clone() {
             Villager clone = (Villager)base.Clone();
 
             clone.RestockShop();
@@ -222,7 +184,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             return clone;
         }
 
-        public override void AutoStaticDefaults() {
+        public sealed override void AutoStaticDefaults() {
             base.AutoStaticDefaults();
             NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0) {
                 Velocity = 1f,
@@ -251,7 +213,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public override void SetChatButtons(ref string button, ref string button2) {
             button = Language.GetTextValue("LegacyInterface.28"); //"Shop"
-            button2 = "Reputation"; //TODO: Localization
+            button2 = Language.GetTextValue("Mods.LivingWorldMod.Common.Reputation");
         }
 
         public override void OnChatButtonClicked(bool firstButton, ref bool shop) {
@@ -266,41 +228,17 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public override bool CanChat() => RelationshipStatus != VillagerRelationship.Hate;
 
-        public override string GetChat() {
-            WeightedRandom<string> returnedList;
-
-            switch (RelationshipStatus) {
-                case VillagerRelationship.Hate:
-                    return "..."; //The player will be unable to chat with any villagers if they are hated, but *just in case* they somehow do, make sure to have some kind of dialogue so an error isn't thrown
-
-                case VillagerRelationship.SevereDislike:
-                    returnedList = SevereDislikeDialogue;
-                    break;
-
-                case VillagerRelationship.Dislike:
-                    returnedList = DislikeDialogue;
-                    break;
-
-                case VillagerRelationship.Neutral:
-                    returnedList = NeutralDialogue;
-                    break;
-
-                case VillagerRelationship.Like:
-                    returnedList = LikeDialogue;
-                    break;
-
-                case VillagerRelationship.Love:
-                    returnedList = LoveDialogue;
-                    break;
-
-                default:
-                    ModContent.GetInstance<LivingWorldMod>().Logger.Error("Villager Reputation isn't within the normal bounds!");
-                    return "Somehow your reputation with us is broken. Contact a mod dev immediately!";
+        public sealed override string GetChat() {
+            if (RelationshipStatus == VillagerRelationship.Hate) {
+                return "..."; //The player should be unable to chat with the villagers if they are hated, but just in case that occurs, return something in order to prevent a error thrown
             }
 
-            returnedList.AddList(EventDialogue);
+            WeightedRandom<string> list = LocalizationUtilities.GetAllStringsFromCategory($"VillagerDialogue.{VillagerType}.{RelationshipStatus}");
 
-            return returnedList;
+            //Add event dialogue, if any events are occurring
+            list.AddList(EventDialogue);
+
+            return list;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {

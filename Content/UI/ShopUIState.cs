@@ -218,7 +218,7 @@ namespace LivingWorldMod.Content.UI {
 
             nameText.SetText(currentVillager.NPC.GivenName, large: true);
 
-            dialogueText.SetText(currentVillager.ShopDialogue);
+            dialogueText.SetText(currentVillager.InitialShopChat);
 
             buyItemButton.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BuyButton"));
 
@@ -266,7 +266,7 @@ namespace LivingWorldMod.Content.UI {
                             portrait.temporaryExpressionTimer = 120f;
                         }
 
-                        dialogueText.SetText(currentVillager.ShopBuyDialogue);
+                        dialogueText.SetText(currentVillager.BuyShopChat);
 
                         SoundEngine.PlaySound(SoundID.Coins);
                     }
@@ -289,7 +289,9 @@ namespace LivingWorldMod.Content.UI {
         /// player. Passing in null will unselect all of the indices.
         /// </summary>
         /// <param name="newSelectedItem"> The newly selected shop item. </param>
-        /// <param name="playSound"> Whether or not to play the sound of opening/closing the menu. </param>
+        /// <param name="playSound">
+        /// Whether or not to play the sound of opening/closing the menu.
+        /// </param>
         public void SetSelectedItem(UIShopItem newSelectedItem, bool playSound = true) {
             selectedItem = newSelectedItem;
 
