@@ -1,11 +1,11 @@
 Mods: {
 	LivingWorldMod: {
 		VillagerType: {
-			Harpy: Harpy
+			Harpy: "Harpy"
 		}
 
 		Common: {
-			Reputation: Reputation
+			Reputation: "Reputation"
 		}
 
 		VillagerDialogue: {
@@ -146,44 +146,44 @@ Mods: {
 		}
 
 		BuffName: {
-			NimbusPetBuff: Nimbus Pet
+			NimbusPetBuff: "Nimbus Pet"
 		}
 
 		BuffDescription: {
-			NimbusPetBuff: I bet it tastes like cotton candy...
+			NimbusPetBuff: "I bet it tastes like cotton candy..."
 		}
 
 		ItemName: {
 		//Tile Item Names
 			//Building
-			SkywareBlockItem: Skyware Block
-			StarshardCloudItem: Starshard Cloud
-			StarshineBlockItem: Starshine Block
-			SunslabBlockItem: Sunslab Block
+			SkywareBlockItem: "Skyware Block"
+			StarshardCloudItem: "Starshard Cloud"
+			StarshineBlockItem: "Starshine Block"
+			SunslabBlockItem: "Sunslab Block"
 
 			//Furniture
-			NimbusJarItem: Nimbus in a Jar
-			GravityTapestryItem: Gravity Tapestry
-			SkywareAnvilItem: Skyware Anvil
-			SkywareLoomItem: Skyware Loom
-			SunTapestryItem: Sun Tapestry
+			NimbusJarItem: "Nimbus in a Jar"
+			GravityTapestryItem: "Gravity Tapestry"
+			SkywareAnvilItem: "Skyware Anvil"
+			SkywareLoomItem: "Skyware Loom"
+			SunTapestryItem: "Sun Tapestry"
 
 			//Interactables
 				//Shrines
-				HarpyShrineItem: Harpy Village Shrine
+				HarpyShrineItem: "Harpy Village Shrine"
 
 			//Torches
-			StarTorchItem: Star Torch
+			StarTorchItem: "Star Torch"
 
 		//Wall Item Names
-			SkywareWallItem: Skyware Wall
-			SkywareFenceItem: Skyware Fence
+			SkywareWallItem: "Skyware Wall"
+			SkywareFenceItem: "Skyware Fence"
 		//Accessory Item Names
-			NimbusInABottle: Nimbus in a Bottle
+			NimbusInABottle: "Nimbus in a Bottle"
 		}
 
 		ItemTooltip: {
-			NimbusInABottle: Summons a pet nimbus that follows you around
+			NimbusInABottle: "Summons a pet nimbus that follows you around"
 		//Tile Item Tooltips
 
 			//Building
@@ -198,8 +198,13 @@ Mods: {
 			StarTorchItem: "'Light the way with the essence of the cosmos'"
 		}
 
+		NPCName: {
+			//Villagers
+			HarpyVillager: "Harpy Villager"
+		}
+
 		ProjectileName: {
-			NimbusPetProjectile: Nimbus Pet
+			NimbusPetProjectile: "Nimbus Pet"
 		}
 	}
 }
