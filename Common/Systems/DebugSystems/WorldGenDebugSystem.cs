@@ -99,10 +99,39 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
                 ))
             ));
 
-            //Place ground houses
+            //Place ground houses below the high rises
+            List<int> possibleHighRises = new List<int>() {
+                0, 1
+            };
+
+            //Place high rises
+            for (int i = 0; i < 2; i++) {
+                List<Point> possiblePlacementPoints = new List<Point>();
+
+                int selectedHighRise = WorldGen.genRand.Next(possibleHighRises);
+
+                possibleHighRises.Remove(selectedHighRise);
+
+                StructureData highRiseData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/HighRise{selectedHighRise}.struct");
+
+                for (int xOffset = leftOffset * (1 - i); xOffset <= 0 + i * Math.Abs(leftOffset); xOffset++) {
+                    if (WorldUtils.Find(new Point(originPoint.X + xOffset, originPoint.Y), Searches.Chain(new Searches.Up(25), new Conditions.IsTile(TileID.Grass).AreaAnd(highRiseData.structureWidth, 1)), out Point highRiseResult)) {
+                        //Populates a list of possible placement points where the high rise can be placed
+                        possiblePlacementPoints.Add(highRiseResult);
+                    }
+                }
+
+                //If there is anywhere possible for the high rise to be placed, it takes the middle element in order to center the house as much as possible
+                if (possiblePlacementPoints.Any()) {
+                    Point middlePlacement = possiblePlacementPoints.ElementAt(possiblePlacementPoints.Count / 2);
+
+                    WorldGenUtilities.GenerateStructure(highRiseData, middlePlacement.X, middlePlacement.Y - highRiseData.structureHeight);
+                }
+            }
+
+            //Place ground houses below the high rises. Basically the same way as the high rises
             List<int> possibleGroundHouses = new List<int>() {
-                0,
-                1
+                0, 1, 2, 3, 4, 5, 6
             };
 
             for (int i = 0; i < 2; i++) {
@@ -116,7 +145,7 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
 
                 for (int xOffset = leftOffset * (1 - i); xOffset <= 0 + i * Math.Abs(leftOffset); xOffset++) {
                     if (WorldUtils.Find(new Point(originPoint.X + xOffset, originPoint.Y), Searches.Chain(new Searches.Up(25), new Conditions.IsTile(TileID.Grass).AreaAnd(groundHouseData.structureWidth, 1)), out Point groundHouseResult)) {
-                        //Slowly populates a list of possible placement points where the house can be placed
+                        //Populates a list of possible placement points where the house can be placed
                         possiblePlacementPoints.Add(groundHouseResult);
                     }
                 }
@@ -129,7 +158,7 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
                 }
             }
 
-            //Change grass tiles below the building to dirt, and promptly smooth & frame the tiles properly
+            //Change grass tiles below any buildings to dirt, and promptly smooth & frame the tiles properly
             WorldUtils.Gen(originPoint, new ModShapes.All(fullShapeData), Actions.Chain(
                 new Actions.ContinueWrapper(Actions.Chain(
                     new Modifiers.Conditions(new Conditions.IsTile(TileID.Grass)),
@@ -145,8 +174,7 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
 
             //Place cloud houses
             List<int> possibleCloudHouses = new List<int>() {
-                0,
-                1
+                0, 1
             };
 
             for (int i = 0; i < 3; i += 2) {
@@ -162,9 +190,9 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
             }
 
             //Place "church" building
-            StructureData churchBuildingData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/ChurchBuilding{WorldGen.genRand.Next(1)}.struct");
+            StructureData churchBuildingData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/ChurchBuilding{WorldGen.genRand.Next(2)}.struct");
 
-            if (WorldUtils.Find(new Point(originPoint.X - (churchBuildingData.structureWidth / 2), originPoint.Y + upOffset - 60), Searches.Chain(new Searches.Down(5), new IsAir().AreaAnd(churchBuildingData.structureWidth, churchBuildingData.structureHeight)), out Point churchResult)) {
+            if (WorldUtils.Find(new Point(originPoint.X - (churchBuildingData.structureWidth / 2), originPoint.Y + upOffset - 85), Searches.Chain(new Searches.Down(5), new IsAir().AreaAnd(churchBuildingData.structureWidth, churchBuildingData.structureHeight)), out Point churchResult)) {
                 WorldGenUtilities.GenerateStructure(churchBuildingData, churchResult.X, churchResult.Y);
             }
 
