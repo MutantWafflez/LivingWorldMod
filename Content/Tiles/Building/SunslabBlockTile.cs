@@ -1,13 +1,17 @@
 ﻿using LivingWorldMod.Content.Items.Placeables.Building;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Tiles.Building {
 
     public class SunslabBlockTile : BaseTile {
+        private Asset<Texture2D> baseTexture;
 
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = true;
@@ -27,6 +31,8 @@ namespace LivingWorldMod.Content.Tiles.Building {
             SoundType = SoundID.Tink;
 
             AddMapEntry(Color.Yellow);
+
+            baseTexture = Mod.Assets.Request<Texture2D>(Texture.Replace("LivingWorldMod/", ""));
         }
 
         public override bool HasWalkDust() => true;
@@ -162,6 +168,50 @@ namespace LivingWorldMod.Content.Tiles.Building {
             thisTile.frameY = (short)(18 * verticalFrame);
 
             return false;
+        }
+
+        //Since we use a custom sprite sheet for this tile, we also must patch up any issues hammering can cause
+
+        public override void PostDraw(int i, int j, SpriteBatch spriteBatch) {
+            Tile thisTile = Framing.GetTileSafely(i, j);
+
+            Point thisTilePosition = new Point(i, j);
+
+            //Merge-able tiles. In this array, the 0th index is above, 1st index is the right, 2nd index is the left, 3rd index is below
+            bool[] directionsWithMergableTiles = new bool[] {
+                TileUtilities.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, -1)),
+                TileUtilities.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(1, 0)),
+                TileUtilities.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(-1, 0)),
+                TileUtilities.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, 1))
+            };
+
+            //Vertical frame to begin drawing from
+            int verticalFrame = 0;
+
+            //ExampleMod always has something to save the day
+            Vector2 additionalDisplacement = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
+
+            if (!thisTile.IsHalfBlock && thisTile.Slope == SlopeType.Solid) {
+                if (directionsWithMergableTiles[1] && Framing.GetTileSafely(i + 1, j).IsHalfBlock && directionsWithMergableTiles[2] && Framing.GetTileSafely(i - 1, j).IsHalfBlock) {
+                    verticalFrame = 16;
+                }
+                else if (directionsWithMergableTiles[1] && Framing.GetTileSafely(i + 1, j).IsHalfBlock) {
+                    verticalFrame = 17;
+                }
+                else if (directionsWithMergableTiles[2] && Framing.GetTileSafely(i - 1, j).IsHalfBlock) {
+                    verticalFrame = 18;
+                }
+            }
+            else if (thisTile.IsHalfBlock && !TileUtilities.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, 1))) {
+                verticalFrame = 19;
+            }
+
+            if (verticalFrame >= 16) {
+                Main.spriteBatch.Draw(baseTexture.Value,
+                    new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + additionalDisplacement,
+                    new Rectangle(thisTile.frameX, 18 * verticalFrame, 16, 16),
+                    Lighting.GetColor(i, j), 0f, default, 1f, SpriteEffects.None, 0f);
+            }
         }
     }
 }
