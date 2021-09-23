@@ -65,10 +65,8 @@ namespace LivingWorldMod.Common.Systems {
             }
         }
 
-        public override TagCompound SaveWorldData() {
-            return new TagCompound() {
-                {"VillageReputation", villageReputation}
-            };
+        public override void SaveWorldData(TagCompound tag) {
+            tag["VillageReputation"] = villageReputation;
         }
 
         public override void LoadWorldData(TagCompound tag) {
