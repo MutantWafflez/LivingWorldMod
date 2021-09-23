@@ -47,7 +47,8 @@ namespace LivingWorldMod.Custom.Utilities {
                                 break;
                             }
                         case -1:
-                            selectedTile.ClearEverything();
+                            selectedTile.type = 0;
+                            selectedTile.IsActive = false;
                             break;
                     }
 
