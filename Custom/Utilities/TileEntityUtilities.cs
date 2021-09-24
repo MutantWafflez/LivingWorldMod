@@ -1,4 +1,6 @@
-﻿using Terraria.DataStructures;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Custom.Utilities {
@@ -17,7 +19,7 @@ namespace LivingWorldMod.Custom.Utilities {
         /// <param name="y"> The y coordinate of the potential entity. </param>
         /// <param name="entity"> The potential entity. </param>
         public static bool TryFindModEntity<T>(int x, int y, out T entity) where T : ModTileEntity {
-            TileEntity retrievedEntity = TileEntity.ByPosition[new Point16(x, y)];
+            TileEntity.ByPosition.TryGetValue(new Point16(x, y), out TileEntity retrievedEntity);
 
             if (retrievedEntity is T castEntity) {
                 entity = castEntity;
