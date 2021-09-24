@@ -14,7 +14,11 @@ namespace LivingWorldMod.Custom.Utilities {
         /// <param name="data"> The struct containing data for the structure. </param>
         /// <param name="startingX"> Far left location of where the structure will begin to generate. </param>
         /// <param name="startingY"> Top-most location of where the structure will begin to generate. </param>
-        public static void GenerateStructure(StructureData data, int startingX, int startingY) {
+        /// <param name="autoFrame">
+        /// Whether or not the entire structure should be framed, in terms of both walls and tiles,
+        /// when finished being generated.
+        /// </param>
+        public static void GenerateStructure(StructureData data, int startingX, int startingY, bool autoFrame = true) {
             for (int y = 0; y < data.structureHeight; y++) {
                 for (int x = 0; x < data.structureWidth; x++) {
                     Tile selectedTile = Framing.GetTileSafely(startingX + x, startingY + y);
@@ -61,6 +65,17 @@ namespace LivingWorldMod.Custom.Utilities {
                     }
                 }
             }
+
+            if (!autoFrame) {
+                return;
+            }
+
+            for (int y = 0; y < data.structureHeight; y++) {
+                for (int x = 0; x < data.structureWidth; x++) {
+                    WorldGen.TileFrame(startingX + x, startingY + y, true, true);
+                    WorldGen.SquareWallFrame(startingX + x, startingY + y);
+                }
+            }
         }
 
         /// <summary>
@@ -73,7 +88,11 @@ namespace LivingWorldMod.Custom.Utilities {
         /// Progress of the loops to show the player how far along the generation is, with its
         /// primary usage being during world creation.
         /// </param>
-        public static void GenerateStructure(StructureData data, int startingX, int startingY, ref GenerationProgress progress) {
+        /// <param name="autoFrame">
+        /// Whether or not the entire structure should be framed, in terms of both walls and tiles,
+        /// when finished being generated.
+        /// </param>
+        public static void GenerateStructure(StructureData data, int startingX, int startingY, ref GenerationProgress progress, bool autoFrame = true) {
             for (int y = 0; y < data.structureHeight; y++) {
                 progress.Set((float)y / data.structureHeight);
                 for (int x = 0; x < data.structureWidth; x++) {
@@ -107,7 +126,8 @@ namespace LivingWorldMod.Custom.Utilities {
                                 break;
                             }
                         case -1:
-                            selectedTile.ClearEverything();
+                            selectedTile.type = 0;
+                            selectedTile.IsActive = false;
                             break;
                     }
 
@@ -118,6 +138,17 @@ namespace LivingWorldMod.Custom.Utilities {
                         selectedTile.WallFrameX = tileData.wallFrameX;
                         selectedTile.WallFrameY = tileData.wallFrameY;
                     }
+                }
+            }
+
+            if (!autoFrame) {
+                return;
+            }
+
+            for (int y = 0; y < data.structureHeight; y++) {
+                for (int x = 0; x < data.structureWidth; x++) {
+                    WorldGen.TileFrame(startingX + x, startingY + y, true, true);
+                    WorldGen.SquareWallFrame(startingX + x, startingY + y);
                 }
             }
         }
