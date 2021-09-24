@@ -11,6 +11,8 @@ namespace LivingWorldMod.Content.Biomes {
     public class HarpyVillageBiome : ModBiome {
         public override int Music => MusicLoader.GetMusicSlot(Mod, LivingWorldMod.LWMMusicPath + $"Village/Harpy{(Main.dayTime ? "Day" : "Night")}");
 
+        public override SceneEffectPriority Priority => SceneEffectPriority.Environment;
+
         public override void SetStaticDefaults() {
             DisplayName.SetDefault("Harpy Village");
         }

@@ -19,9 +19,25 @@ namespace LivingWorldMod.Content.TileEntities {
 
         public Vector2 WorldPosition => Position.ToWorldCoordinates(0, 0);
 
-        public override bool ValidTile(int i, int j) {
-            Tile tile = Framing.GetTileSafely(i, j);
-            return tile.IsActive && tile.type == ValidTileID && tile.frameX == 0 && tile.frameY == 0;
+        /// <summary>
+        /// Called before <seealso cref="ValidTile"/> that can be used for overriding the default
+        /// valid tile check for some kind of special functionality. True means the tile will always
+        /// be valid regardless of normal conditions, null means the tile will be valid based on the
+        /// normal pre-defined conditions, and false will prevent the tile from being valid
+        /// regardless of normal conditions.
+        /// </summary>
+        public virtual bool? PreValidTile(int i, int j) => null;
+
+        public sealed override bool ValidTile(int i, int j) {
+            bool? preCheck = PreValidTile(i, j);
+
+            if (!preCheck.HasValue) {
+                Tile tile = Framing.GetTileSafely(i, j);
+                return tile.IsActive && tile.type == ValidTileID && tile.frameX == 0 && tile.frameY == 0;
+            }
+            else {
+                return preCheck.Value;
+            }
         }
     }
 }
