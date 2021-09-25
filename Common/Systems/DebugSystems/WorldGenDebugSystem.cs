@@ -99,49 +99,20 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
                 ))
             ));
 
-            //Place ground houses below the high rises
-            List<int> possibleHighRises = new List<int>() {
-                0, 1
-            };
-
-            //Place high rises
-            for (int i = 0; i < 2; i++) {
-                List<Point> possiblePlacementPoints = new List<Point>();
-
-                int selectedHighRise = WorldGen.genRand.Next(possibleHighRises);
-
-                possibleHighRises.Remove(selectedHighRise);
-
-                StructureData highRiseData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/HighRise{selectedHighRise}.struct");
-
-                for (int xOffset = leftOffset * (1 - i); xOffset <= 0 + i * Math.Abs(leftOffset); xOffset++) {
-                    if (WorldUtils.Find(new Point(originPoint.X + xOffset, originPoint.Y), Searches.Chain(new Searches.Up(25), new Conditions.IsTile(TileID.Grass).AreaAnd(highRiseData.structureWidth, 1)), out Point highRiseResult)) {
-                        //Populates a list of possible placement points where the high rise can be placed
-                        possiblePlacementPoints.Add(highRiseResult);
-                    }
-                }
-
-                //If there is anywhere possible for the high rise to be placed, it takes the middle element in order to center the house as much as possible
-                if (possiblePlacementPoints.Any()) {
-                    Point middlePlacement = possiblePlacementPoints.ElementAt(possiblePlacementPoints.Count / 2);
-
-                    WorldGenUtilities.GenerateStructure(highRiseData, middlePlacement.X, middlePlacement.Y - highRiseData.structureHeight);
-                }
-            }
-
-            //Place ground houses below the high rises. Basically the same way as the high rises
-            List<int> possibleGroundHouses = new List<int>() {
-                0, 1, 2, 3, 4, 5, 6
+            //Place ground houses on main island
+            List<string> possibleHouses = new List<string>() {
+                "HighRise0", "HighRise1", "HighRise2",
+                "GroundHouse0", "GroundHouse1", "GroundHouse2", "GroundHouse3", "GroundHouse4", "GroundHouse5", "GroundHouse6"
             };
 
             for (int i = 0; i < 2; i++) {
                 List<Point> possiblePlacementPoints = new List<Point>();
 
-                int selectedHouseType = WorldGen.genRand.Next(possibleGroundHouses);
+                string selectedHouseType = WorldGen.genRand.Next(possibleHouses);
 
-                possibleGroundHouses.Remove(selectedHouseType);
+                possibleHouses.Remove(selectedHouseType);
 
-                StructureData groundHouseData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/GroundHouse{selectedHouseType}.struct");
+                StructureData groundHouseData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/{selectedHouseType}.struct");
 
                 for (int xOffset = leftOffset * (1 - i); xOffset <= 0 + i * Math.Abs(leftOffset); xOffset++) {
                     if (WorldUtils.Find(new Point(originPoint.X + xOffset, originPoint.Y), Searches.Chain(new Searches.Up(25), new Conditions.IsTile(TileID.Grass).AreaAnd(groundHouseData.structureWidth, 1)), out Point groundHouseResult)) {
@@ -172,27 +143,57 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
                 new Actions.Smooth(true)
             ));
 
-            //Place cloud houses
-            List<int> possibleCloudHouses = new List<int>() {
-                0, 1
-            };
+            //"High Rise" houses are not allowed to generate on the mini islands, so they are removed before the mini islands are generated
+            possibleHouses = possibleHouses.Where(house => !house.Contains("HighRise")).ToList();
 
-            for (int i = 0; i < 3; i += 2) {
-                int selectedHouseType = WorldGen.genRand.Next(possibleCloudHouses);
+            //Place smaller island clouds and houses on top of them
+            for (int i = -1; i < 2; i += 2) {
+                for (int j = 0; j < 2; j++) {
+                    string selectedHouseType = WorldGen.genRand.Next(possibleHouses);
+                    possibleHouses.Remove(selectedHouseType);
 
-                possibleCloudHouses.Remove(selectedHouseType);
+                    StructureData cloudHouseData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/{selectedHouseType}.struct");
+                    Point miniIslandOrigin = new Point(originPoint.X + (int)(leftOffset * i * (j == 0 ? 1.15f : 0.775f)), originPoint.Y + (upOffset * (int)(j == 0 ? 2f : 6.25f)));
 
-                StructureData cloudHouseData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/CloudHouse{selectedHouseType}.struct");
+                    float miniYScale = 0.34f;
+                    //Diameter will be the radius of the struct plus 5 extra "padding"
+                    int miniRadius = (cloudHouseData.structureWidth / 2) + 5;
 
-                if (WorldUtils.Find(new Point(originPoint.X + (leftOffset * (1 - i)) - (cloudHouseData.structureWidth / 2), originPoint.Y + (int)(upOffset * 3.25f)), Searches.Chain(new Searches.Down(5), new IsAir().AreaAnd(cloudHouseData.structureWidth, cloudHouseData.structureHeight)), out Point cloudHouseResult)) {
-                    WorldGenUtilities.GenerateStructure(cloudHouseData, cloudHouseResult.X, cloudHouseResult.Y);
+                    ShapeData miniIslandData = new ShapeData();
+
+                    //Generate base cloud
+                    WorldUtils.Gen(miniIslandOrigin, new Shapes.Slime(miniRadius, 1f, miniYScale), Actions.Chain(
+                        new Modifiers.Flip(false, true),
+                        new Modifiers.Blotches(2, 1, 2, 3, 0.125f),
+                        new Actions.PlaceTile(TileID.Cloud),
+                        new Actions.Blank().Output(miniIslandData)
+                    ));
+
+                    WorldUtils.Gen(miniIslandOrigin, new ModShapes.All(miniIslandData), Actions.Chain(
+                        new Actions.ContinueWrapper(Actions.Chain(
+                            new Modifiers.Dither(),
+                            new Actions.Smooth()
+                        )),
+                        new Actions.ContinueWrapper(Actions.Chain(
+                            new Modifiers.IsTouchingAir(),
+                            new Modifiers.Dither(0.9),
+                            new Modifiers.Blotches(3, 1f),
+                            new Modifiers.Conditions(new Conditions.IsSolid()),
+                            new Actions.SetTile(TileID.RainCloud, true)
+                        ))
+                    ));
+
+                    //Generate building
+                    WorldGenUtilities.GenerateStructure(cloudHouseData,
+                        miniIslandOrigin.X - (cloudHouseData.structureWidth / 2),
+                        miniIslandOrigin.Y + miniIslandData.GetData().Min(point => point.Y) - cloudHouseData.structureHeight);
                 }
             }
 
             //Place "church" building
             StructureData churchBuildingData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/ChurchBuilding{WorldGen.genRand.Next(2)}.struct");
 
-            if (WorldUtils.Find(new Point(originPoint.X - (churchBuildingData.structureWidth / 2), originPoint.Y + upOffset - 85), Searches.Chain(new Searches.Down(5), new IsAir().AreaAnd(churchBuildingData.structureWidth, churchBuildingData.structureHeight)), out Point churchResult)) {
+            if (WorldUtils.Find(new Point(originPoint.X - (churchBuildingData.structureWidth / 2), originPoint.Y + upOffset), Searches.Chain(new Searches.Up(75), new IsAir().AreaAnd(churchBuildingData.structureWidth, churchBuildingData.structureHeight)), out Point churchResult)) {
                 WorldGenUtilities.GenerateStructure(churchBuildingData, churchResult.X, churchResult.Y);
             }
 
