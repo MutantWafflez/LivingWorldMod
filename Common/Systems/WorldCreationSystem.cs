@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using LivingWorldMod.Custom.Structs;
@@ -17,12 +19,34 @@ namespace LivingWorldMod.Common.Systems {
     /// </summary>
     public class WorldCreationSystem : ModSystem {
 
+        /// <summary>
+        /// List of actions that will be run after world gen is completed per world.
+        /// </summary>
+        private List<Action> postWorldGenActions;
+
+        public override void Load() {
+            postWorldGenActions = new List<Action>();
+        }
+
+        public override void Unload() {
+            postWorldGenActions = null;
+        }
+
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight) {
             //Harpy Villages
             int microBiomeIndex = tasks.FindIndex(pass => pass.Name.Equals("Micro Biomes"));
             if (microBiomeIndex != -1) {
                 tasks.Insert(microBiomeIndex + 1, new PassLegacy("Harpy Village", GenerateHarpyVillage));
             }
+        }
+
+        public override void PostWorldGen() {
+            //Invoke all post-world-gen actions then reset the list
+            foreach (Action action in postWorldGenActions) {
+                action.Invoke();
+            }
+
+            postWorldGenActions = new List<Action>();
         }
 
         private void GenerateHarpyVillage(GenerationProgress progress, GameConfiguration gameConfig) {

@@ -27,9 +27,15 @@ namespace LivingWorldMod.Content.TileEntities.VillageShrines {
         }
 
         /// <summary>
-        /// The distance (in TILES) from the center of the shrine that is considered within the village.
+        /// The distance (in PIXELS) from the center of the shrine that is considered within the village.
         /// </summary>
-        public virtual float VillageTileRadius => 75;
+        public virtual float VillageRadius => 1200; //75 tiles (75 * 16)
+
+        /// <summary>
+        /// The displacement distance (in PIXELS) from the original center of the shrine that will
+        /// be considered the "origin" of the village.
+        /// </summary>
+        public virtual Vector2 VillageOriginDisplacement => Vector2.Zero;
 
         /// <summary>
         /// The type of dust to be used when drawing the dust circle that denotes what is inside of
@@ -40,11 +46,17 @@ namespace LivingWorldMod.Content.TileEntities.VillageShrines {
         /// <summary>
         /// The "dimensions" of the entity, in pixels.
         /// </summary>
-        public Vector2 EntityDimensions => new Vector2(4 * 16, 5 * 16);
+        public Vector2 EntityDimensions => new Vector2(64f, 80f); // 4 x 5 tiles
+
+        /// <summary>
+        /// The origin of the village. Without any displacement, this is in the center of this
+        /// entity's respective shrine tile.
+        /// </summary>
+        public Vector2 VillageOriginPosition => WorldPosition + (EntityDimensions / 2f) + VillageOriginDisplacement;
 
         public override void Update() {
             for (int i = 0; i < Main.maxPlayers; i++) {
-                if (Main.player[i].Distance(WorldPosition + EntityDimensions / 2f) <= VillageTileRadius * 16) {
+                if (Main.player[i].Distance(VillageOriginPosition) <= VillageRadius * 16) {
                     Main.player[i].GetModPlayer<BiomePlayer>().currentVillageBiome = VillageType;
                 }
             }
@@ -55,10 +67,10 @@ namespace LivingWorldMod.Content.TileEntities.VillageShrines {
         }
 
         public void CreateVillageZoneCircle() {
-            Dust dust = Dust.NewDustPerfect(WorldPosition + EntityDimensions / 2f, VillageZoneDustType);
+            Dust dust = Dust.NewDustPerfect(VillageOriginPosition, VillageZoneDustType);
             dust.noGravity = true;
             dust.scale = 1.25f;
-            DustUtilities.CreateCircle(dust.position, VillageTileRadius * 16, dust);
+            DustUtilities.CreateCircle(dust.position, VillageRadius, dust);
         }
 
         public void RightClicked() {
