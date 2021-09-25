@@ -21,7 +21,7 @@ namespace LivingWorldMod.Custom.Utilities {
         public static void GenerateStructure(StructureData data, int startingX, int startingY, bool autoFrame = true) {
             for (int y = 0; y < data.structureHeight; y++) {
                 for (int x = 0; x < data.structureWidth; x++) {
-                    Tile selectedTile = Framing.GetTileSafely(startingX + x, startingY + y);
+                    Tile selectedTile = Framing.GetTileSafely(startingX + x + data.structureDisplacement.X, startingY + y + data.structureDisplacement.Y);
                     TileData tileData = data.structureTileData[x][y];
 
                     switch (tileData.type) {
@@ -53,6 +53,13 @@ namespace LivingWorldMod.Custom.Utilities {
                         case -1:
                             selectedTile.type = 0;
                             selectedTile.IsActive = false;
+                            selectedTile.HasActuator = tileData.hasActuator;
+                            selectedTile.RedWire = tileData.hasRedWire;
+                            selectedTile.BlueWire = tileData.hasBlueWire;
+                            selectedTile.GreenWire = tileData.hasGreenWire;
+                            selectedTile.YellowWire = tileData.hasYellowWire;
+                            selectedTile.LiquidType = tileData.liquidType;
+                            selectedTile.LiquidAmount = (byte)tileData.liquidAmount;
                             break;
                     }
 
@@ -72,7 +79,7 @@ namespace LivingWorldMod.Custom.Utilities {
 
             for (int y = 0; y < data.structureHeight; y++) {
                 for (int x = 0; x < data.structureWidth; x++) {
-                    WorldGen.TileFrame(startingX + x, startingY + y, true, true);
+                    WorldGen.TileFrame(startingX + x + data.structureDisplacement.X, startingY + y + data.structureDisplacement.Y, true, true);
                     WorldGen.SquareWallFrame(startingX + x, startingY + y);
                 }
             }
@@ -96,7 +103,7 @@ namespace LivingWorldMod.Custom.Utilities {
             for (int y = 0; y < data.structureHeight; y++) {
                 progress.Set((float)y / data.structureHeight);
                 for (int x = 0; x < data.structureWidth; x++) {
-                    Tile selectedTile = Framing.GetTileSafely(startingX + x, startingY + y);
+                    Tile selectedTile = Framing.GetTileSafely(startingX + x + data.structureDisplacement.X, startingY + y + data.structureDisplacement.Y);
                     TileData tileData = data.structureTileData[x][y];
 
                     switch (tileData.type) {
@@ -128,6 +135,13 @@ namespace LivingWorldMod.Custom.Utilities {
                         case -1:
                             selectedTile.type = 0;
                             selectedTile.IsActive = false;
+                            selectedTile.HasActuator = tileData.hasActuator;
+                            selectedTile.RedWire = tileData.hasRedWire;
+                            selectedTile.BlueWire = tileData.hasBlueWire;
+                            selectedTile.GreenWire = tileData.hasGreenWire;
+                            selectedTile.YellowWire = tileData.hasYellowWire;
+                            selectedTile.LiquidType = tileData.liquidType;
+                            selectedTile.LiquidAmount = (byte)tileData.liquidAmount;
                             break;
                     }
 
@@ -147,7 +161,7 @@ namespace LivingWorldMod.Custom.Utilities {
 
             for (int y = 0; y < data.structureHeight; y++) {
                 for (int x = 0; x < data.structureWidth; x++) {
-                    WorldGen.TileFrame(startingX + x, startingY + y, true, true);
+                    WorldGen.TileFrame(startingX + x + data.structureDisplacement.X, startingY + y + data.structureDisplacement.Y, true, true);
                     WorldGen.SquareWallFrame(startingX + x, startingY + y);
                 }
             }
