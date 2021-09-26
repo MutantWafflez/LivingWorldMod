@@ -37,16 +37,15 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
             int radius = 35;
             Point originPoint = new Point(x, y);
 
-            ShapeData fullShapeData = new ShapeData();
+            ShapeData mainIslandData = new ShapeData();
 
             //Generate base-cloud structure
             WorldUtils.Gen(originPoint, new Shapes.Slime(radius, xScale, yScale), Actions.Chain(
                 new Modifiers.Flip(false, true),
                 new Actions.SetTile(TileID.Cloud, true),
-                new Modifiers.Blotches(2, 1, 0.9f),
                 new Actions.PlaceWall(WallID.Cloud),
                 new Actions.SetFrames(),
-                new Actions.Blank().Output(fullShapeData)
+                new Actions.Blank().Output(mainIslandData)
             ));
 
             //Generate dirt within cloud base
@@ -57,19 +56,19 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
                 new Actions.SetTile(TileID.Dirt),
                 new Actions.PlaceWall(WallID.Cloud),
                 new Actions.SetFrames(),
-                new Actions.Blank().Output(fullShapeData)
+                new Actions.Blank().Output(mainIslandData)
             ));
 
             //Flatten Surface
             WorldUtils.Gen(originPoint, new Shapes.Rectangle((int)(radius * xScale) * 2, 3), Actions.Chain(
-                new Modifiers.Offset(fullShapeData.GetData().Min(point => point.X), fullShapeData.GetData().Min(point => point.Y)),
+                new Modifiers.Offset(mainIslandData.GetData().Min(point => point.X), mainIslandData.GetData().Min(point => point.Y)),
                 new Actions.ClearTile(true),
-                new Actions.Blank().Output(fullShapeData)
+                new Actions.Blank().Output(mainIslandData)
             ));
 
             //These two fields represent the left and upper offset that you must move from the origin of the island to reach the top left of it
-            int leftOffset = fullShapeData.GetData().Min(point => point.X);
-            int upOffset = fullShapeData.GetData().Min(point => point.Y);
+            int leftOffset = mainIslandData.GetData().Min(point => point.X);
+            int upOffset = mainIslandData.GetData().Min(point => point.Y);
 
             //Generate small pond/lake
             WorldUtils.Gen(originPoint, new Shapes.Slime(radius, xScale * 0.125f, yScale * 0.25f), Actions.Chain(
@@ -79,14 +78,15 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
                 new Actions.ClearTile(true),
                 new Actions.ClearWall(true),
                 new Actions.SetLiquid(),
-                new Actions.Blank().Output(fullShapeData)
+                new Actions.Blank().Output(mainIslandData)
             ));
 
-            WorldUtils.Gen(originPoint, new ModShapes.All(fullShapeData), Actions.Chain(
+            WorldUtils.Gen(originPoint, new ModShapes.All(mainIslandData), Actions.Chain(
                 //Remove walls on outer-most tiles
                 new Actions.ContinueWrapper(Actions.Chain(
                     new Modifiers.IsTouchingAir(),
-                    new Actions.RemoveWall()
+                    new Actions.RemoveWall(),
+                    new Actions.Blank().Output(mainIslandData)
                 )),
                 //Create Grass on dirt tiles
                 new Actions.ContinueWrapper(Actions.Chain(
@@ -95,8 +95,29 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
                     new Actions.Custom((i, j, args) => {
                         WorldGen.SpreadGrass(i, j, repeat: false);
                         return true;
-                    })
+                    }),
+                    new Actions.Blank().Output(mainIslandData)
                 ))
+            ));
+
+            //Place stone blotches in main island dirt
+            WorldUtils.Gen(originPoint, new ModShapes.All(mainIslandData), Actions.Chain(
+                new Modifiers.Dither(0.967),
+                new Modifiers.Conditions(new Conditions.IsTile(TileID.Dirt)),
+                new Actions.Custom((i, j, args) => {
+                    WorldGen.TileRunner(i, j, WorldGen.genRand.Next(2, 5), 5, TileID.Stone, ignoreTileType: TileID.Grass);
+                    return true;
+                }),
+                new Actions.Blank().Output(mainIslandData)
+            ));
+
+            //Place starshard cloud blotches on main island
+            WorldUtils.Gen(originPoint, new ModShapes.All(mainIslandData), Actions.Chain(
+                new Modifiers.Offset(-2, -2),
+                new Modifiers.Conditions(new Conditions.IsTile(TileID.Cloud).AreaAnd(5, 5)),
+                new Modifiers.Offset(2, 2),
+                new Modifiers.Blotches(chance: 0.125f),
+                new Actions.SetTileKeepWall((ushort)ModContent.TileType<StarshardCloudTile>(), true)
             ));
 
             //Place ground houses on main island
@@ -129,8 +150,8 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
                 }
             }
 
-            //Change grass tiles below any buildings to dirt, and promptly smooth & frame the tiles properly
-            WorldUtils.Gen(originPoint, new ModShapes.All(fullShapeData), Actions.Chain(
+            //Change grass tiles below any buildings to dirt, and promptly frame the tiles and smooth 50% of them
+            WorldUtils.Gen(originPoint, new ModShapes.All(mainIslandData), Actions.Chain(
                 new Actions.ContinueWrapper(Actions.Chain(
                     new Modifiers.Conditions(new Conditions.IsTile(TileID.Grass)),
                     new Modifiers.Offset(0, -1),
@@ -140,7 +161,8 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
                     new Actions.SetTile(TileID.Dirt, true)
                     )),
                 new Actions.SetFrames(true),
-                new Actions.Smooth(true)
+                new Modifiers.Dither(0.4f),
+                new Actions.Smooth()
             ));
 
             //"High Rise" houses are not allowed to generate on the mini islands, so they are removed before the mini islands are generated
@@ -170,16 +192,24 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
                     ));
 
                     WorldUtils.Gen(miniIslandOrigin, new ModShapes.All(miniIslandData), Actions.Chain(
+                        //Smooth 50% of applicable blocks
                         new Actions.ContinueWrapper(Actions.Chain(
                             new Modifiers.Dither(),
                             new Actions.Smooth()
                         )),
+                        //Place rain cloud blotches in clouds touching air
                         new Actions.ContinueWrapper(Actions.Chain(
                             new Modifiers.IsTouchingAir(),
                             new Modifiers.Dither(0.9),
                             new Modifiers.Blotches(3, 1f),
                             new Modifiers.Conditions(new Conditions.IsSolid()),
                             new Actions.SetTile(TileID.RainCloud, true)
+                        )),
+                        //Place starshard cloud tiles throughout cloud
+                        new Actions.ContinueWrapper(Actions.Chain(
+                            new Modifiers.Dither(0.975),
+                            new Modifiers.Conditions(new Conditions.IsSolid()),
+                            new Actions.SetTile((ushort)ModContent.TileType<StarshardCloudTile>(), true)
                         ))
                     ));
 
@@ -196,15 +226,6 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
             if (WorldUtils.Find(new Point(originPoint.X - (churchBuildingData.structureWidth / 2), originPoint.Y + upOffset), Searches.Chain(new Searches.Up(75), new IsAir().AreaAnd(churchBuildingData.structureWidth, churchBuildingData.structureHeight)), out Point churchResult)) {
                 WorldGenUtilities.GenerateStructure(churchBuildingData, churchResult.X, churchResult.Y);
             }
-
-            //Place starshard cloud blotches
-            WorldUtils.Gen(originPoint, new ModShapes.All(fullShapeData), Actions.Chain(
-                new Modifiers.Offset(-2, -2),
-                new Modifiers.Conditions(new Conditions.IsTile(TileID.Cloud).AreaAnd(5, 5)),
-                new Modifiers.Offset(2, 2),
-                new Modifiers.Blotches(chance: 0.125f),
-                new Actions.SetTileKeepWall((ushort)ModContent.TileType<StarshardCloudTile>(), true)
-            ));
         }
     }
 }
