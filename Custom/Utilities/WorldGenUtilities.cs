@@ -1,4 +1,6 @@
-﻿using LivingWorldMod.Custom.Structs;
+﻿using System.Reflection;
+using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.Custom.Structs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -6,7 +8,31 @@ using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Custom.Utilities {
 
+    /// <summary>
+    /// Class that holds methods and properties that assist with world generation or world related matters.
+    /// </summary>
     public static class WorldGenUtilities {
+
+        /// <summary>
+        /// Returns world size of the current world being played.
+        /// </summary>
+        public static WorldSize CurrentWorldSize {
+            get {
+                switch (Main.maxTilesX) {
+                    case 4200: //Small
+                        return WorldSize.Small;
+
+                    case 6300: //Medium
+                        return WorldSize.Medium;
+
+                    case 8400: //Large
+                        return WorldSize.Large;
+
+                    default: //Non-vanilla world size
+                        return WorldSize.Custom;
+                }
+            }
+        }
 
         /// <summary>
         /// Generates a given Structure into the world using a StructureData struct.
@@ -64,7 +90,12 @@ namespace LivingWorldMod.Custom.Utilities {
                     }
 
                     if (tileData.wallType != -1) {
-                        selectedTile.wall = (ushort)tileData.wallType;
+                        if (ModContent.TryFind(tileData.modName, tileData.modWallName, out ModWall modWall)) {
+                            selectedTile.wall = modWall.Type;
+                        }
+                        else {
+                            selectedTile.wall = (ushort)tileData.wallType;
+                        }
                         selectedTile.WallColor = (byte)tileData.wallColor;
                         selectedTile.WallFrameNumber = (byte)tileData.wallFrame;
                         selectedTile.WallFrameX = tileData.wallFrameX;
@@ -80,7 +111,7 @@ namespace LivingWorldMod.Custom.Utilities {
             for (int y = 0; y < data.structureHeight; y++) {
                 for (int x = 0; x < data.structureWidth; x++) {
                     WorldGen.TileFrame(startingX + x + data.structureDisplacement.X, startingY + y + data.structureDisplacement.Y, true, true);
-                    WorldGen.SquareWallFrame(startingX + x, startingY + y);
+                    Framing.WallFrame(startingX + x + data.structureDisplacement.X, startingY + y + data.structureDisplacement.Y, true);
                 }
             }
         }
@@ -146,7 +177,12 @@ namespace LivingWorldMod.Custom.Utilities {
                     }
 
                     if (tileData.wallType != -1) {
-                        selectedTile.wall = (ushort)tileData.wallType;
+                        if (ModContent.TryFind(tileData.modName, tileData.modWallName, out ModWall modWall)) {
+                            selectedTile.wall = modWall.Type;
+                        }
+                        else {
+                            selectedTile.wall = (ushort)tileData.wallType;
+                        }
                         selectedTile.WallColor = (byte)tileData.wallColor;
                         selectedTile.WallFrameNumber = (byte)tileData.wallFrame;
                         selectedTile.WallFrameX = tileData.wallFrameX;
@@ -162,7 +198,7 @@ namespace LivingWorldMod.Custom.Utilities {
             for (int y = 0; y < data.structureHeight; y++) {
                 for (int x = 0; x < data.structureWidth; x++) {
                     WorldGen.TileFrame(startingX + x + data.structureDisplacement.X, startingY + y + data.structureDisplacement.Y, true, true);
-                    WorldGen.SquareWallFrame(startingX + x, startingY + y);
+                    Framing.WallFrame(startingX + x + data.structureDisplacement.X, startingY + y + data.structureDisplacement.Y, true);
                 }
             }
         }

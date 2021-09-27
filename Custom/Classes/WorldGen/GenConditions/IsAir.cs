@@ -8,7 +8,7 @@ namespace LivingWorldMod.Custom.Classes.WorldGen.GenConditions {
     public class IsAir : GenCondition {
 
         protected override bool CheckValidity(int x, int y) {
-            return _tiles[x, y].type == 0 && !_tiles[x, y].IsActive;
+            return !_tiles[x, y].IsActive;
         }
     }
 }
