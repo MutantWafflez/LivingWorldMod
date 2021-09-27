@@ -1,17 +1,9 @@
 ﻿#if DEBUG
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using LivingWorldMod.Content.Tiles.Building;
-using LivingWorldMod.Custom.Structs;
-using LivingWorldMod.Custom.Utilities;
-using Terraria.ID;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Terraria;
 using Terraria.ModLoader;
-using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Common.Systems.DebugSystems {
 

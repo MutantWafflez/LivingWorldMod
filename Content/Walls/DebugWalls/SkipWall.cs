@@ -1,9 +1,7 @@
 ﻿#if DEBUG
 
-using LivingWorldMod.Content.Items.DebugItems;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Walls.DebugWalls {
 

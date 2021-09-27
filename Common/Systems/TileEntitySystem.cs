@@ -1,8 +1,8 @@
-﻿using System;
+﻿using LivingWorldMod.Content.TileEntities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using LivingWorldMod.Content.TileEntities;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Systems {

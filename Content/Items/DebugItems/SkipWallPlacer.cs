@@ -1,15 +1,10 @@
 ﻿#if DEBUG
 
-using LivingWorldMod.Custom.Utilities;
-using System;
-using System.Collections.Generic;
 using LivingWorldMod.Content.Walls.DebugWalls;
-using LivingWorldMod.Custom.Structs;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Content.Items.DebugItems {
 

@@ -1,5 +1,5 @@
-﻿using System.IO;
-using LivingWorldMod.Custom.Structs;
+﻿using LivingWorldMod.Custom.Structs;
+using System.IO;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 

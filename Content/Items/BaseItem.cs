@@ -1,5 +1,4 @@
-﻿using LivingWorldMod.Custom.Utilities;
-using Terraria.ModLoader;
+﻿using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items {
 

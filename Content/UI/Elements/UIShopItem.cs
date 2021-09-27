@@ -1,7 +1,6 @@
 ﻿using LivingWorldMod.Common.Systems.UI;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
-using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

@@ -1,5 +1,4 @@
-﻿using System;
-using LivingWorldMod.Content.TileEntities.VillageShrines;
+﻿using LivingWorldMod.Content.TileEntities.VillageShrines;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;

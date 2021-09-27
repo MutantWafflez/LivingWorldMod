@@ -1,9 +1,9 @@
-﻿using System;
-using LivingWorldMod.Common.Systems;
+﻿using LivingWorldMod.Common.Systems;
 using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
 using MonoMod.Cil;
+using System;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Patches {
 

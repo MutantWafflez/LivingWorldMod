@@ -1,6 +1,4 @@
-﻿using System;
-using System.Globalization;
-using Terraria.Localization;
+﻿using Terraria.Localization;
 using Terraria.Utilities;
 
 namespace LivingWorldMod.Custom.Utilities {

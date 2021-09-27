@@ -1,9 +1,9 @@
 ﻿#if DEBUG
 
+using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using System;
 using System.Collections.Generic;
-using LivingWorldMod.Custom.Structs;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
