@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using LivingWorldMod.Content.Tiles.Building;
+﻿using LivingWorldMod.Content.Tiles.Building;
 using LivingWorldMod.Custom.Classes.WorldGen.GenConditions;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
