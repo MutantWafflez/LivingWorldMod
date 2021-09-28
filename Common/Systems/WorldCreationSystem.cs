@@ -7,11 +7,15 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Content.TileEntities.VillageShrines;
+using Terraria.DataStructures;
+using LivingWorldMod.Content.Tiles.Interactables.VillageShrines;
 using Terraria;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Common.Systems {
@@ -23,11 +27,10 @@ namespace LivingWorldMod.Common.Systems {
     public class WorldCreationSystem : ModSystem {
 
         /// <summary>
-        /// Field that only has a proper value after a Harpy Village has been generated. Primary
-        /// usage is to prevent vanilla WorldGen from filling the intentional wall gaps in some of
-        /// the Harpy's buildings. Has no value when the mod is loaded and no world has been generated.
+        /// List of all the areas which are the "zones" belonging to each village. Different for
+        /// each world.
         /// </summary>
-        public Rectangle? harpyVillageZone;
+        public Rectangle[] villageZones;
 
         /// <summary>
         /// List of actions that will be run after world gen is completed per world.
@@ -36,18 +39,18 @@ namespace LivingWorldMod.Common.Systems {
 
         public override void Load() {
             postWorldGenActions = new List<Action>();
-            harpyVillageZone = new Rectangle();
+            villageZones = new Rectangle[(int)VillagerType.TypeCount];
         }
 
         public override void Unload() {
-            postWorldGenActions = null;
-            harpyVillageZone = null;
         }
 
-        public override void PostUpdateEverything() {
-            if (harpyVillageZone is { } rectangle) {
-                Dust.QuickBox(new Vector2(rectangle.X, rectangle.Y) * 16, new Vector2(rectangle.X + rectangle.Width, rectangle.Y + rectangle.Height) * 16, 6, Color.Yellow, dust => { });
-            }
+        public override void SaveWorldData(TagCompound tag) {
+            tag["VillageZones"] = villageZones.ToList();
+        }
+
+        public override void LoadWorldData(TagCompound tag) {
+            villageZones = tag.Get<List<Rectangle>>("VillageZones").ToArray();
         }
 
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight) {
@@ -104,7 +107,7 @@ namespace LivingWorldMod.Common.Systems {
                 originPoint = possibleIslandPlacements.ElementAt(possibleIslandPlacements.Count / 2);
 
                 //Set Harpy Village Zone
-                harpyVillageZone = new Rectangle(originPoint.X, originPoint.Y, originHorizontalDisplacement, originVerticalDisplacement);
+                villageZones[(int)VillagerType.Harpy] = new Rectangle(originPoint.X, originPoint.Y, originHorizontalDisplacement, originVerticalDisplacement);
 
                 //Adjust origin point to be placed correctly within the village "zone" and actually an origin rather than the top corner
                 originPoint.X += (int)(originHorizontalDisplacement * (0.88f / 1.75f));
@@ -309,6 +312,33 @@ namespace LivingWorldMod.Common.Systems {
                         miniIslandOrigin.Y + miniIslandData.GetData().Min(point => point.Y) - cloudHouseData.structureHeight);
                 }
             }
+
+            //Adds method to spawn shrine tile entity (To be added later, when tile entity saving is fixed)
+            /*postWorldGenActions.Add(() => {
+                if (villageZones[(int)VillagerType.Harpy] is Rectangle rectangle) {
+                    for (int i = 0; i < rectangle.Width; i++) {
+                        for (int j = 0; j < rectangle.Height; j++) {
+                            Point currentPos = new Point(rectangle.X + i, rectangle.Y + j);
+
+                            Tile currentTile = Framing.GetTileSafely(currentPos);
+
+                            if (currentTile.type != ModContent.TileType<HarpyShrineTile>()) {
+                                continue;
+                            }
+
+                            VillageShrineEntity entity = ((HarpyShrineTile)ModContent.GetModTile(ModContent.TileType<HarpyShrineTile>())).ShrineEntity;
+
+                            Point16 topLeft = TileUtilities.GetTopLeftOfMultiTile(currentTile, currentPos.X, currentPos.Y);
+
+                            entity.Place(topLeft.X, topLeft.Y);
+                        }
+                    }
+                }
+            });*/
+
+            //Add method to spawn Harpies themselves
+            postWorldGenActions.Add(() => {
+            });
         }
     }
 }

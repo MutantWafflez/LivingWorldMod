@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using MonoMod.Cil;
 using System;
+using LivingWorldMod.Custom.Enums;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -31,7 +32,7 @@ namespace LivingWorldMod.Common.Patches {
                 c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, itemLocalNumber);
                 c.EmitDelegate<Func<Point, bool>>(point => {
                     //Checks if Harpy village zone is not null
-                    if (ModContent.GetInstance<WorldCreationSystem>().harpyVillageZone is { } rectangle) {
+                    if (ModContent.GetInstance<WorldCreationSystem>().villageZones[(int)VillagerType.Harpy] is Rectangle rectangle) {
                         return rectangle.Contains(point);
                     }
 
