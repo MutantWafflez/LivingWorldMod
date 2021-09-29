@@ -205,6 +205,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             AnimationType = NPCID.Guide;
         }
 
+        public override bool CheckActive() => false;
+
         //public override void ActsLikeTownNPC => true;
 
         //public override bool? SpawnsWithCustomName => true;

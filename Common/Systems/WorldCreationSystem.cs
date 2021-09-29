@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.TileEntities.VillageShrines;
 using Terraria.DataStructures;
 using LivingWorldMod.Content.Tiles.Interactables.VillageShrines;
@@ -336,9 +337,30 @@ namespace LivingWorldMod.Common.Systems {
                 }
             });*/
 
-            //Add method to spawn Harpies themselves
-            postWorldGenActions.Add(() => {
-            });
+            //Add method to spawn Harpies themselves (Also to be added later when NPC Save & Load PR gets merged)
+            /*postWorldGenActions.Add(() => {
+                if (villageZones[(int)VillagerType.Harpy] is Rectangle rectangle) {
+                    for (int i = 0; i < rectangle.Width; i++) {
+                        for (int j = 0; j < rectangle.Height; j++) {
+                            Point position = new Point(rectangle.X + i, rectangle.Y + j);
+                            int harpyType = ModContent.NPCType<HarpyVillager>();
+
+                            if (WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(harpyType)) {
+                                WorldGen.ScoreRoom(npcTypeAskingToScoreRoom: harpyType);
+
+                                if (Main.npc.Any(npc => npc.homeTileX == WorldGen.bestX && npc.homeTileY == WorldGen.bestY)) {
+                                    continue;
+                                }
+
+                                int npc = NPC.NewNPC(WorldGen.bestX * 16, WorldGen.bestY * 16, harpyType);
+
+                                Main.npc[npc].homeTileX = WorldGen.bestX;
+                                Main.npc[npc].homeTileY = WorldGen.bestY;
+                            }
+                        }
+                    }
+                }
+            });*/
         }
     }
 }
