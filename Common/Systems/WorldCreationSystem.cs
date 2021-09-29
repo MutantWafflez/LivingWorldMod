@@ -103,9 +103,9 @@ namespace LivingWorldMod.Common.Systems {
             }
 
             Point originPoint;
-            //Get point closest to middle of the world
             if (possibleIslandPlacements.Any()) {
-                originPoint = possibleIslandPlacements.ElementAt(possibleIslandPlacements.Count / 2);
+                //Get point closest to middle of the world: order the list by distance to the center of the world (ascending), then grab the first element in said list
+                originPoint = possibleIslandPlacements.OrderBy(point => Math.Abs(point.X - (Main.maxTilesX / 2))).First();
 
                 //Set Harpy Village Zone
                 villageZones[(int)VillagerType.Harpy] = new Rectangle(originPoint.X, originPoint.Y, originHorizontalDisplacement, originVerticalDisplacement);
