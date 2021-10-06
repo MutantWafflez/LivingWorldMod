@@ -28,11 +28,11 @@ namespace LivingWorldMod.Content.TileEntities {
         /// </summary>
         public virtual bool? PreValidTile(int i, int j) => null;
 
-        public sealed override bool ValidTile(int i, int j) {
-            bool? preCheck = PreValidTile(i, j);
+        public sealed override bool IsTileValidForEntity(int x, int y) {
+            bool? preCheck = PreValidTile(x, y);
 
             if (!preCheck.HasValue) {
-                Tile tile = Framing.GetTileSafely(i, j);
+                Tile tile = Framing.GetTileSafely(x, y);
                 return tile.IsActive && tile.type == ValidTileID && tile.frameX == 0 && tile.frameY == 0;
             }
             else {
