@@ -11,7 +11,7 @@ namespace LivingWorldMod.Custom.Utilities {
     /// <summary>
     /// Class that handles all utility functions for NPCs.
     /// </summary>
-    public static class NPCUtilities {
+    public static class NPCUtils {
 
         /// <summary>
         /// Returns whether or not an NPC of the given type is a Villager NPC type.

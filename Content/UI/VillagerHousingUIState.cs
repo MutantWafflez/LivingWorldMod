@@ -78,7 +78,7 @@ namespace LivingWorldMod.Content.UI {
         }
 
         private void WhileHovering() {
-            Main.instance.MouseText(LocalizationUtilities.GetLWMTextValue("UI.VillagerHousing.ButtonHoverText"));
+            Main.instance.MouseText(LocalizationUtils.GetLWMTextValue("UI.VillagerHousing.ButtonHoverText"));
         }
     }
 }

@@ -96,9 +96,9 @@ namespace LivingWorldMod.Content.Tiles.Interactables.VillageShrines {
 
         public sealed override bool RightClick(int i, int j) {
             //Since the x & y coordinate passed into this method do not point to the top left of the shrine multi-tile, we must calculate it ourselves
-            Point16 topLeft = TileUtilities.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
+            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
 
-            if (TileEntityUtilities.TryFindModEntity(topLeft.X, topLeft.Y, out VillageShrineEntity foundEntity)) {
+            if (TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out VillageShrineEntity foundEntity)) {
                 foundEntity.RightClicked();
                 return true;
             }

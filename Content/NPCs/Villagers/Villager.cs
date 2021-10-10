@@ -101,13 +101,13 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// Gets and returns a random shop dialogue line from the "initial shop dialogue" pool.
         /// </summary>
         /// <returns> </returns>
-        public string InitialShopChat => LocalizationUtilities.GetAllStringsFromCategory($"VillagerDialogue.{VillagerType}.Shop.Initial.{RelationshipStatus}");
+        public string InitialShopChat => LocalizationUtils.GetAllStringsFromCategory($"VillagerDialogue.{VillagerType}.Shop.Initial.{RelationshipStatus}");
 
         /// <summary>
         /// Gets and returns a random shop dialogue line from the "buy shop dialogue" pool.
         /// </summary>
         /// <returns> </returns>
-        public string BuyShopChat => LocalizationUtilities.GetAllStringsFromCategory($"VillagerDialogue.{VillagerType}.Shop.Buy.{RelationshipStatus}");
+        public string BuyShopChat => LocalizationUtils.GetAllStringsFromCategory($"VillagerDialogue.{VillagerType}.Shop.Buy.{RelationshipStatus}");
 
         /// <summary>
         /// Threshold that the reputation must cross in order for these villagers to HATE the players.
@@ -215,7 +215,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public override void SetChatButtons(ref string button, ref string button2) {
             button = Language.GetTextValue("LegacyInterface.28"); //"Shop"
-            button2 = LocalizationUtilities.GetLWMTextValue("Common.Reputation");
+            button2 = LocalizationUtils.GetLWMTextValue("Common.Reputation");
         }
 
         public override void OnChatButtonClicked(bool firstButton, ref bool shop) {
@@ -235,7 +235,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                 return "..."; //The player should be unable to chat with the villagers if they are hated, but just in case that occurs, return something in order to prevent a error thrown
             }
 
-            WeightedRandom<string> list = LocalizationUtilities.GetAllStringsFromCategory($"VillagerDialogue.{VillagerType}.{RelationshipStatus}");
+            WeightedRandom<string> list = LocalizationUtils.GetAllStringsFromCategory($"VillagerDialogue.{VillagerType}.{RelationshipStatus}");
 
             //Add event dialogue, if any events are occurring
             list.AddList(EventDialogue);

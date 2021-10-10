@@ -63,7 +63,7 @@ namespace LivingWorldMod.Common.Patches {
         }
 
         private void TownNPCNames(On.Terraria.NPC.orig_GiveTownUniqueDataToNPCsThatNeedIt orig, int Type, int nextNPC) {
-            orig(NPCUtilities.IsTypeOfVillager(Type) ? NPCID.SkeletonMerchant : Type, nextNPC);
+            orig(NPCUtils.IsTypeOfVillager(Type) ? NPCID.SkeletonMerchant : Type, nextNPC);
         }
 
         private void PreventNonVillagersFromTakingVillageHouses(ILContext il) {

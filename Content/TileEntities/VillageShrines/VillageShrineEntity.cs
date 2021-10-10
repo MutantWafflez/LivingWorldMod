@@ -70,7 +70,7 @@ namespace LivingWorldMod.Content.TileEntities.VillageShrines {
             Dust dust = Dust.NewDustPerfect(VillageOriginPosition, VillageZoneDustType);
             dust.noGravity = true;
             dust.scale = 1.25f;
-            DustUtilities.CreateCircle(dust.position, VillageRadius, dust);
+            DustUtils.CreateCircle(dust.position, VillageRadius, dust);
         }
 
         public void RightClicked() {

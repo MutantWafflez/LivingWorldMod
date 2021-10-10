@@ -72,10 +72,10 @@ namespace LivingWorldMod.Content.Tiles.Building {
 
             //Merge-able tiles. In this array, the 0th index is above, 1st index is the right, 2nd index is the left, 3rd index is below
             bool[] directionsWithMergableTiles = new bool[] {
-                TileUtilities.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, -1)),
-                TileUtilities.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(1, 0)),
-                TileUtilities.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(-1, 0)),
-                TileUtilities.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, 1))
+                TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, -1)),
+                TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(1, 0)),
+                TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(-1, 0)),
+                TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, 1))
             };
 
             //The corner type is determined based on this tile's position in the world, based on odds and evens.
@@ -178,10 +178,10 @@ namespace LivingWorldMod.Content.Tiles.Building {
 
             //Merge-able tiles. In this array, the 0th index is above, 1st index is the right, 2nd index is the left, 3rd index is below
             bool[] directionsWithMergableTiles = new bool[] {
-                TileUtilities.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, -1)),
-                TileUtilities.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(1, 0)),
-                TileUtilities.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(-1, 0)),
-                TileUtilities.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, 1))
+                TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, -1)),
+                TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(1, 0)),
+                TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(-1, 0)),
+                TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, 1))
             };
 
             //Vertical frame to begin drawing from
@@ -201,7 +201,7 @@ namespace LivingWorldMod.Content.Tiles.Building {
                     verticalFrame = 18;
                 }
             }
-            else if (thisTile.IsHalfBlock && !TileUtilities.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, 1))) {
+            else if (thisTile.IsHalfBlock && !TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, 1))) {
                 verticalFrame = 19;
             }
 

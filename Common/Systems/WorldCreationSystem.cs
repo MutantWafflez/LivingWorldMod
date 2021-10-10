@@ -75,7 +75,7 @@ namespace LivingWorldMod.Common.Systems {
             progress.Message = "Generating Structures... Harpy Village";
             progress.Set(0f);
 
-            WorldSize currentWorldSize = WorldGenUtilities.CurrentWorldSize;
+            WorldSize currentWorldSize = WorldGenUtils.CurrentWorldSize;
 
             //Used to define the rectangle to search and to displace the origin to the actual correct position when generating the village so it doesn't generate on the top left of the rectangle
             int originHorizontalDisplacement = 175;
@@ -220,7 +220,7 @@ namespace LivingWorldMod.Common.Systems {
 
                 possibleHouses.Remove(selectedHouseType);
 
-                StructureData groundHouseData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/{selectedHouseType}.struct");
+                StructureData groundHouseData = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/{selectedHouseType}.struct");
 
                 for (int xOffset = leftOffset * (1 - i); xOffset <= 0 + i * Math.Abs(leftOffset); xOffset++) {
                     if (WorldUtils.Find(new Point(originPoint.X + xOffset, originPoint.Y), Searches.Chain(new Searches.Up(25), new Conditions.IsTile(TileID.Grass).AreaAnd(groundHouseData.structureWidth, 1)), out Point groundHouseResult)) {
@@ -233,7 +233,7 @@ namespace LivingWorldMod.Common.Systems {
                 if (possiblePlacementPoints.Any()) {
                     Point middlePlacement = possiblePlacementPoints.ElementAt(possiblePlacementPoints.Count / 2);
 
-                    WorldGenUtilities.GenerateStructure(groundHouseData, middlePlacement.X, middlePlacement.Y - groundHouseData.structureHeight);
+                    WorldGenUtils.GenerateStructure(groundHouseData, middlePlacement.X, middlePlacement.Y - groundHouseData.structureHeight);
                 }
             }
 
@@ -253,10 +253,10 @@ namespace LivingWorldMod.Common.Systems {
             ));
 
             //Place "church" building
-            StructureData churchBuildingData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/ChurchBuilding{WorldGen.genRand.Next(2)}.struct");
+            StructureData churchBuildingData = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/ChurchBuilding{WorldGen.genRand.Next(2)}.struct");
 
             if (WorldUtils.Find(new Point(originPoint.X - (churchBuildingData.structureWidth / 2), originPoint.Y + upOffset), Searches.Chain(new Searches.Up(75), new IsAir().AreaAnd(churchBuildingData.structureWidth, churchBuildingData.structureHeight)), out Point churchResult)) {
-                WorldGenUtilities.GenerateStructure(churchBuildingData, churchResult.X, churchResult.Y);
+                WorldGenUtils.GenerateStructure(churchBuildingData, churchResult.X, churchResult.Y);
             }
 
             //"High Rise" houses are not allowed to generate on the mini islands, so they are removed before the mini islands are generated
@@ -268,7 +268,7 @@ namespace LivingWorldMod.Common.Systems {
                     string selectedHouseType = WorldGen.genRand.Next(possibleHouses);
                     possibleHouses.Remove(selectedHouseType);
 
-                    StructureData cloudHouseData = IOUtilities.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/{selectedHouseType}.struct");
+                    StructureData cloudHouseData = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/{selectedHouseType}.struct");
                     Point miniIslandOrigin = new Point(originPoint.X + (int)(leftOffset * i * (j == 0 ? 1.15f : 0.775f)), originPoint.Y + (upOffset * (int)(j == 0 ? 2f : 6.25f)));
 
                     float miniYScale = 0.34f;
@@ -308,7 +308,7 @@ namespace LivingWorldMod.Common.Systems {
                     ));
 
                     //Generate building
-                    WorldGenUtilities.GenerateStructure(cloudHouseData,
+                    WorldGenUtils.GenerateStructure(cloudHouseData,
                         miniIslandOrigin.X - (cloudHouseData.structureWidth / 2),
                         miniIslandOrigin.Y + miniIslandData.GetData().Min(point => point.Y) - cloudHouseData.structureHeight);
                 }

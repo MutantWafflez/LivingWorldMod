@@ -70,7 +70,7 @@ namespace LivingWorldMod.Content.Items.DebugItems {
 
             StructureData structData = new StructureData(tileData.Count, tileData[0].Count, tileData);
 
-            string outputPath = IOUtilities.GetLWMFilePath() + $"/StructureOutput_{DateTime.Now.ToShortTimeString().Replace(':', '_').Replace(' ', '_')}.struct";
+            string outputPath = IOUtils.GetLWMFilePath() + $"/StructureOutput_{DateTime.Now.ToShortTimeString().Replace(':', '_').Replace(' ', '_')}.struct";
 
             TagIO.ToFile(new TagCompound() { { "structureData", structData } }, outputPath);
 

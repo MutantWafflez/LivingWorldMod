@@ -6,7 +6,7 @@ namespace LivingWorldMod.Custom.Utilities {
     /// <summary>
     /// Utilities class that handles mathematical methods. Anything to do with Math can be used anywhere.
     /// </summary>
-    public static class MathUtilities {
+    public static class MathUtils {
 
         /// <summary>
         /// Linearly interpolates (lerps) the starting color towards the specified target color with

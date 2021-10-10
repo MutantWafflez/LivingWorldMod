@@ -289,9 +289,7 @@ namespace LivingWorldMod.Content.UI {
         /// player. Passing in null will unselect all of the indices.
         /// </summary>
         /// <param name="newSelectedItem"> The newly selected shop item. </param>
-        /// <param name="playSound">
-        /// Whether or not to play the sound of opening/closing the menu.
-        /// </param>
+        /// <param name="playSound"> Whether or not to play the sound of opening/closing the menu. </param>
         public void SetSelectedItem(UIShopItem newSelectedItem, bool playSound = true) {
             selectedItem = newSelectedItem;
 
@@ -337,7 +335,7 @@ namespace LivingWorldMod.Content.UI {
         private void PopulateShopList() {
             shopList.Clear();
 
-            float priceMult = NPCUtilities.GetPriceMultiplierFromRep(currentVillager);
+            float priceMult = NPCUtils.GetPriceMultiplierFromRep(currentVillager);
 
             foreach (ShopItem item in currentVillager.shopInventory) {
                 UIShopItem element = new UIShopItem(item,

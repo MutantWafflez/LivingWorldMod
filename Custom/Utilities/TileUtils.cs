@@ -8,7 +8,7 @@ namespace LivingWorldMod.Custom.Utilities {
     /// <summary>
     /// Utilities class that deals with the Tile class and tiles in general.
     /// </summary>
-    public static class TileUtilities {
+    public static class TileUtils {
 
         /// <summary>
         /// Checks and returns whether or not the given tile type at the given position can merge

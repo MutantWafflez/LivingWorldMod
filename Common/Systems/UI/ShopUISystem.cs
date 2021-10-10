@@ -67,7 +67,7 @@ namespace LivingWorldMod.Common.Systems.UI {
 
         public override void PostUpdateTime() {
             if (Main.time >= 32400.0 && !Main.dayTime && (!Main.gameMenu || Main.netMode == NetmodeID.Server)) {
-                NPCUtilities.DoActionForEachNPC(npc => {
+                NPCUtils.DoActionForEachNPC(npc => {
                     if (npc.active && npc.IsTypeOfVillager(out Villager villager)) {
                         villager.RestockShop();
                     }

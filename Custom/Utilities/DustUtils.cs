@@ -6,7 +6,7 @@ namespace LivingWorldMod.Custom.Utilities {
     /// <summary>
     /// Utilities class that holds methods which deal with specifically dust.
     /// </summary>
-    public static class DustUtilities {
+    public static class DustUtils {
 
         /// <summary>
         /// Creates a circle of dust at the specified origin with the passed in radius, dust, and

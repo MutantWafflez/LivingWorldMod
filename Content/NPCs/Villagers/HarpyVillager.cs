@@ -35,12 +35,12 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             get {
                 //Rain
                 if (Main.raining) {
-                    return LocalizationUtilities.GetAllStringsFromCategory("VillagerDialogue.Harpy.Event.Rain");
+                    return LocalizationUtils.GetAllStringsFromCategory("VillagerDialogue.Harpy.Event.Rain");
                 }
 
                 //Solar Eclipse
                 if (Main.eclipse) {
-                    return LocalizationUtilities.GetAllStringsFromCategory("VillagerDialogue.Harpy.Event.Eclipse");
+                    return LocalizationUtils.GetAllStringsFromCategory("VillagerDialogue.Harpy.Event.Eclipse");
                 }
 
                 return new WeightedRandom<string>();
