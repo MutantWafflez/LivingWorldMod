@@ -215,7 +215,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public override void SetChatButtons(ref string button, ref string button2) {
             button = Language.GetTextValue("LegacyInterface.28"); //"Shop"
-            button2 = Language.GetTextValue("Mods.LivingWorldMod.Common.Reputation");
+            button2 = LocalizationUtilities.GetLWMTextValue("Common.Reputation");
         }
 
         public override void OnChatButtonClicked(bool firstButton, ref bool shop) {

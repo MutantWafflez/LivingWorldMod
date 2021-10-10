@@ -9,6 +9,18 @@ namespace LivingWorldMod.Custom.Utilities {
     public static class LocalizationUtilities {
 
         /// <summary>
+        /// Shortcut for getting LivingWorldMod localization strings, where the "key" is the
+        /// direction within the Mods.LivingWorldMod. For example, to get a Villager name
+        /// localization string, you would normally have to use the key
+        /// "Mods.LivingWorldMod.VillagerType.Harpy", but with this method all you need to use for
+        /// the key is "VillagerType.Harpy".
+        /// </summary>
+        /// <param name="key">
+        /// The key for the specified localization string starting at the LivingWorldMod base directory.
+        /// </param>
+        public static string GetLWMTextValue(string key, params object[] args) => Language.GetTextValue("Mods.LivingWorldMod." + key, args);
+
+        /// <summary>
         /// Retrieves a list of strings from a category within the localization file. The
         /// "categoryPath" parameter should be the path of the category starting from
         /// "LivingWorldMod" category in the .hjson file. For example, if you want to retrieve the
