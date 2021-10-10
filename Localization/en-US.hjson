@@ -145,6 +145,12 @@ Mods: {
 			}
 		}
 
+		UI: {
+			VillagerHousing: {
+				ButtonHoverText: "Villager Housing"
+			}
+		}
+
 		BuffName: {
 			NimbusPetBuff: "Nimbus Pet"
 		}
