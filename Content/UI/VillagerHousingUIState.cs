@@ -4,7 +4,8 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
-using Terraria.Localization;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -31,7 +32,7 @@ namespace LivingWorldMod.Content.UI {
         public UIBetterImageButton openMenuButton;
 
         /// <summary>
-        /// The displacement of the menu icon based on the map and it's current mode/placement.
+        /// The displacement of the menu icon based on the map and its current mode/placement.
         /// </summary>
         private int mapDisplacement;
 
@@ -46,9 +47,10 @@ namespace LivingWorldMod.Content.UI {
             openMenuButton = new UIBetterImageButton(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off", AssetRequestMode.ImmediateLoad)) {
                 isVisible = false
             };
-            openMenuButton.SetHoverImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_On", AssetRequestMode.ImmediateLoad));
+            openMenuButton.SetHoverImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off_Hovered", AssetRequestMode.ImmediateLoad));
             openMenuButton.SetVisibility(1f, 1f);
-            openMenuButton.WhileHovering += WhileHovering;
+            openMenuButton.WhileHovering += WhileHoveringButton;
+            openMenuButton.OnClick += ClickedButton;
 
             Append(openMenuButton);
         }
@@ -60,7 +62,7 @@ namespace LivingWorldMod.Content.UI {
             mapDisplacement = 0;
 
             if (Main.mapEnabled) {
-                if (!Main.mapFullscreen && Main.mapStyle == 1) {
+                if (isMiniMapEnabled) {
                     mapDisplacement = 256;
                 }
 
@@ -71,14 +73,38 @@ namespace LivingWorldMod.Content.UI {
 
             openMenuButton.isVisible = Main.playerInventory;
 
-            openMenuButton.Left.Set(Main.screenWidth - (isMiniMapEnabled ? 220f : 175f), 0f);
-            openMenuButton.Top.Set((isMiniMapEnabled ? 145f : 116f) + mapDisplacement, 0f);
+            openMenuButton.Left.Set(Main.screenWidth - (isMiniMapEnabled ? 220f : 177f), 0f);
+            openMenuButton.Top.Set((isMiniMapEnabled ? 143f : 114f) + mapDisplacement, 0f);
+
+            //Disable Menu Visibility when any other equip page buttons are pressed
+            if (isMenuVisible && Main.EquipPageSelected != -1) {
+                isMenuVisible = false;
+                openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off"));
+            }
 
             base.DrawChildren(spriteBatch);
         }
 
-        private void WhileHovering() {
+        private void ClickedButton(UIMouseEvent evt, UIElement listeningElement) {
+            isMenuVisible = !isMenuVisible;
+
+            if (isMenuVisible) {
+                SoundEngine.PlaySound(SoundID.MenuOpen);
+                openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Selected", AssetRequestMode.ImmediateLoad));
+                Main.EquipPageSelected = -1;
+                Main.EquipPage = -1;
+            }
+            else {
+                SoundEngine.PlaySound(SoundID.MenuClose);
+                openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off"));
+                Main.EquipPageSelected = 0;
+                Main.EquipPage = 0;
+            }
+        }
+
+        private void WhileHoveringButton() {
             Main.instance.MouseText(LocalizationUtils.GetLWMTextValue("UI.VillagerHousing.ButtonHoverText"));
+            Main.LocalPlayer.mouseInterface = true;
         }
     }
 }

@@ -69,7 +69,11 @@ namespace LivingWorldMod.Content.UI.Elements {
             buttonTexture = texture;
             Width.Set(buttonTexture.Width(), 0f);
             Height.Set(buttonTexture.Height(), 0f);
-            buttonText.horizontalTextConstraint = buttonTexture.Width();
+
+            if (buttonText is not null) {
+                buttonText.horizontalTextConstraint = buttonTexture.Width();
+            }
+
             RecalculateChildren();
         }
 
