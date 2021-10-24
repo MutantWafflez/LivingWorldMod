@@ -47,7 +47,7 @@ namespace LivingWorldMod.Content.UI {
             openMenuButton = new UIBetterImageButton(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off", AssetRequestMode.ImmediateLoad)) {
                 isVisible = false
             };
-            openMenuButton.SetHoverImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off_Hovered", AssetRequestMode.ImmediateLoad));
+            openMenuButton.SetHoverImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Hovered", AssetRequestMode.ImmediateLoad));
             openMenuButton.SetVisibility(1f, 1f);
             openMenuButton.WhileHovering += WhileHoveringButton;
             openMenuButton.OnClick += ClickedButton;
@@ -90,7 +90,7 @@ namespace LivingWorldMod.Content.UI {
 
             if (isMenuVisible) {
                 SoundEngine.PlaySound(SoundID.MenuOpen);
-                openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Selected", AssetRequestMode.ImmediateLoad));
+                openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_On", AssetRequestMode.ImmediateLoad));
                 Main.EquipPageSelected = -1;
                 Main.EquipPage = -1;
             }
