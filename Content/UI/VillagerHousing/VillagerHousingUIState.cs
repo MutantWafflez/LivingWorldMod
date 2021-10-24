@@ -1,18 +1,15 @@
-﻿using System;
-using Extensions;
-using LivingWorldMod.Content.UI.Elements;
+﻿using LivingWorldMod.Content.UI.CommonElements;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI {
+namespace LivingWorldMod.Content.UI.VillagerHousing {
 
     /// <summary>
     /// UIState that handles the visuals of the Housing UI.

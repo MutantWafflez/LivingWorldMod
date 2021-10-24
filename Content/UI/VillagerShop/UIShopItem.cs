@@ -1,4 +1,6 @@
 ﻿using LivingWorldMod.Common.Systems.UI;
+using LivingWorldMod.Content.UI.CommonElements;
+using LivingWorldMod.Content.UI.Elements;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
@@ -10,7 +12,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.Elements {
+namespace LivingWorldMod.Content.UI.VillagerShop {
 
     /// <summary>
     /// UIImage class that holds different UITexts and UIElements that is the index in a given shop

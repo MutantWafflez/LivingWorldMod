@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.Elements {
+namespace LivingWorldMod.Content.UI.CommonElements {
 
     /// <summary>
     /// A better version of Vanilla's UIItemIcon class. Can use position or the center to draw from,

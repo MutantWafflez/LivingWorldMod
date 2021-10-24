@@ -1,13 +1,13 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
-using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.Elements {
+namespace LivingWorldMod.Content.UI.CommonElements {
 
     /// <summary>
     /// Slightly better version of UIText that will properly scale based on width specified in a
@@ -46,6 +46,9 @@ namespace LivingWorldMod.Content.UI.Elements {
 
         private string visibleText;
         private string lastTextReference;
+
+        public event Action OnInternalTextChange;
+
         public string Text => innerText.ToString();
 
         public float TextOriginX {
@@ -91,8 +94,6 @@ namespace LivingWorldMod.Content.UI.Elements {
             WrappedTextBottomPadding = 20f;
             InternalSetText(text, textScale, large);
         }
-
-        public event Action OnInternalTextChange;
 
         public override void Recalculate() {
             InternalSetText(Text, initialTextScale, isLarge);

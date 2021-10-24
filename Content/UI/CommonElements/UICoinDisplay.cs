@@ -7,7 +7,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.Elements {
+namespace LivingWorldMod.Content.UI.CommonElements {
 
     /// <summary>
     /// UIElement class that draws coins as either the monetary savings of the player or as some

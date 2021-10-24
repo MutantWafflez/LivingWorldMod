@@ -1,11 +1,12 @@
-﻿using LivingWorldMod.Content.NPCs.Villagers;
+﻿using System;
+using LivingWorldMod.Content.NPCs.Villagers;
+using LivingWorldMod.Content.UI.CommonElements;
 using LivingWorldMod.Content.UI.Elements;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
@@ -14,7 +15,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI {
+namespace LivingWorldMod.Content.UI.VillagerShop {
 
     /// <summary>
     /// UIState that handles the entire UI portion of the shop system for all villager types.
