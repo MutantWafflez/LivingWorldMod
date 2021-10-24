@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -32,6 +33,21 @@ namespace LivingWorldMod.Content.UI {
         public UIBetterImageButton openMenuButton;
 
         /// <summary>
+        /// Button that enumerates to the right (up) when clicked when swapping through villager types.
+        /// </summary>
+        public UIBetterImageButton enumerateRightButton;
+
+        /// <summary>
+        /// Button that enumerates to the left (down) when clicked when swapping through villager types.
+        /// </summary>
+        public UIBetterImageButton enumerateLeftButton;
+
+        /// <summary>
+        /// Text that displays what type of villager is currently selected for housing.
+        /// </summary>
+        public UIBetterText villagerTypeText;
+
+        /// <summary>
         /// The displacement of the menu icon based on the map and its current mode/placement.
         /// </summary>
         private int mapDisplacement;
@@ -51,8 +67,24 @@ namespace LivingWorldMod.Content.UI {
             openMenuButton.SetVisibility(1f, 1f);
             openMenuButton.WhileHovering += WhileHoveringButton;
             openMenuButton.OnClick += ClickedButton;
-
             Append(openMenuButton);
+
+            enumerateRightButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Forward", AssetRequestMode.ImmediateLoad)) {
+                isVisible = false
+            };
+            enumerateRightButton.SetVisibility(1f, 0.7f);
+            Append(enumerateRightButton);
+
+            enumerateLeftButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Back", AssetRequestMode.ImmediateLoad)) {
+                isVisible = false
+            };
+            enumerateLeftButton.SetVisibility(1f, 0.7f);
+            Append(enumerateLeftButton);
+
+            villagerTypeText = new UIBetterText(typeToShow.ToString(), 1.25f) {
+                isVisible = false
+            };
+            Append(villagerTypeText);
         }
 
         protected override void DrawChildren(SpriteBatch spriteBatch) {
@@ -81,6 +113,8 @@ namespace LivingWorldMod.Content.UI {
                 isMenuVisible = false;
                 openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off"));
             }
+
+            enumerateRightButton.isVisible = enumerateLeftButton.isVisible = villagerTypeText.isVisible = isMenuVisible;
 
             base.DrawChildren(spriteBatch);
         }

@@ -41,7 +41,7 @@ namespace LivingWorldMod.Content.UI.Elements {
         public event Action WhileHovering;
 
         //Remember to use ImmediateLoad request mode if you request the texture in the parameter!
-        public UIBetterImageButton(Asset<Texture2D> buttonTexture, string text = "", float textSize = 1f) {
+        public UIBetterImageButton(Asset<Texture2D> buttonTexture, string text = null, float textSize = 1f) {
             this.buttonTexture = buttonTexture;
             this.text = text;
             this.textSize = textSize;
@@ -50,7 +50,7 @@ namespace LivingWorldMod.Content.UI.Elements {
         }
 
         public override void OnInitialize() {
-            if (string.IsNullOrEmpty(text)) {
+            if (text is not null) {
                 return;
             }
 
