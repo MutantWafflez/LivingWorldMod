@@ -25,6 +25,12 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         /// </summary>
         public bool isVisible = true;
 
+        /// <summary>
+        /// Whether or not, while the mousing is hovering over this element, the player can use an
+        /// item (mouseInterface = true). Defaults to true.
+        /// </summary>
+        public bool preventItemUsageWhileHovering = true;
+
         private string text;
 
         private Asset<Texture2D> buttonTexture;
@@ -40,6 +46,12 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         /// hovering over this element.
         /// </summary>
         public event Action WhileHovering;
+
+        /// <summary>
+        /// An "override" of the normal OnClick event that takes into account visibility of this
+        /// button. USE THIS INSTEAD OF THE VANILLA EVENT!
+        /// </summary>
+        public event MouseEvent ProperOnClick;
 
         //Remember to use ImmediateLoad request mode if you request the texture in the parameter!
         public UIBetterImageButton(Asset<Texture2D> buttonTexture, string text = null, float textSize = 1f) {
@@ -92,6 +104,14 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             SoundEngine.PlaySound(SoundID.MenuTick);
         }
 
+        public override void Click(UIMouseEvent evt) {
+            if (!isVisible) {
+                return;
+            }
+
+            ProperOnClick?.Invoke(evt, this);
+        }
+
         public void SetVisibility(float whenActive, float whenInactive) {
             activeVisibility = MathHelper.Clamp(whenActive, 0.0f, 1f);
             inactiveVisibility = MathHelper.Clamp(whenInactive, 0.0f, 1f);
@@ -108,11 +128,16 @@ namespace LivingWorldMod.Content.UI.CommonElements {
 
             CalculatedStyle dimensions = GetDimensions();
             spriteBatch.Draw(buttonTexture.Value, dimensions.Position(), Color.White * (IsMouseHovering ? activeVisibility : inactiveVisibility));
+
+            //Hovering functionality
             if (!IsMouseHovering) {
                 return;
             }
 
             WhileHovering?.Invoke();
+            if (preventItemUsageWhileHovering) {
+                Main.LocalPlayer.mouseInterface = preventItemUsageWhileHovering;
+            }
 
             if (borderTexture != null) {
                 spriteBatch.Draw(borderTexture.Value, dimensions.Position(), Color.White);

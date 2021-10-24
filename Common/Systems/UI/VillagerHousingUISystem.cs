@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using LivingWorldMod.Content.UI;
 using LivingWorldMod.Content.UI.VillagerHousing;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -22,8 +21,6 @@ namespace LivingWorldMod.Common.Systems.UI {
             housingState = new VillagerHousingUIState();
 
             housingState.Activate();
-
-            housingInterface.SetState(housingState);
         }
 
         public override void Unload() {
@@ -52,6 +49,16 @@ namespace LivingWorldMod.Common.Systems.UI {
             lastGameTime = gameTime;
             if (housingInterface?.CurrentState != null) {
                 housingInterface.Update(gameTime);
+            }
+        }
+
+        public override void PostUpdateEverything() {
+            //Only have the state be changed when the inventory is open, to prevent accidental clicking even if the element is invisible.
+            if (Main.playerInventory && housingInterface.CurrentState is null) {
+                housingInterface.SetState(housingState);
+            }
+            else if (!Main.playerInventory && housingInterface is not null) {
+                housingInterface.SetState(null);
             }
         }
     }
