@@ -1,4 +1,6 @@
-﻿using LivingWorldMod.Content.UI.Elements;
+﻿using System;
+using Extensions;
+using LivingWorldMod.Content.UI.Elements;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework.Graphics;
@@ -43,6 +45,11 @@ namespace LivingWorldMod.Content.UI {
         public UIBetterImageButton enumerateLeftButton;
 
         /// <summary>
+        /// Element that exists to center the villager type display text.
+        /// </summary>
+        public UIElement villagerTypeCenterElement;
+
+        /// <summary>
         /// Text that displays what type of villager is currently selected for housing.
         /// </summary>
         public UIBetterText villagerTypeText;
@@ -66,25 +73,35 @@ namespace LivingWorldMod.Content.UI {
             openMenuButton.SetHoverImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Hovered", AssetRequestMode.ImmediateLoad));
             openMenuButton.SetVisibility(1f, 1f);
             openMenuButton.WhileHovering += WhileHoveringButton;
-            openMenuButton.OnClick += ClickedButton;
+            openMenuButton.OnClick += MenuButtonClicked;
             Append(openMenuButton);
 
             enumerateRightButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Forward", AssetRequestMode.ImmediateLoad)) {
                 isVisible = false
             };
             enumerateRightButton.SetVisibility(1f, 0.7f);
+            enumerateRightButton.OnClick += EnumerateTypeButtonClicked;
             Append(enumerateRightButton);
 
             enumerateLeftButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Back", AssetRequestMode.ImmediateLoad)) {
                 isVisible = false
             };
             enumerateLeftButton.SetVisibility(1f, 0.7f);
+            enumerateLeftButton.OnClick += EnumerateTypeButtonClicked;
             Append(enumerateLeftButton);
 
-            villagerTypeText = new UIBetterText(typeToShow.ToString(), 1.25f) {
-                isVisible = false
+            villagerTypeCenterElement = new UIElement();
+            villagerTypeCenterElement.Width.Set(82f, 0f);
+            villagerTypeCenterElement.Height.Set(28f, 0f);
+            Append(villagerTypeCenterElement);
+
+            villagerTypeText = new UIBetterText(typeToShow.ToString(), 1.1f) {
+                isVisible = false,
+                horizontalTextConstraint = villagerTypeCenterElement.Width.Pixels,
+                HAlign = 0.5f,
+                VAlign = 0.5f
             };
-            Append(villagerTypeText);
+            villagerTypeCenterElement.Append(villagerTypeText);
         }
 
         protected override void DrawChildren(SpriteBatch spriteBatch) {
@@ -105,8 +122,18 @@ namespace LivingWorldMod.Content.UI {
 
             openMenuButton.isVisible = Main.playerInventory;
 
+            //Update positions
             openMenuButton.Left.Set(Main.screenWidth - (isMiniMapEnabled ? 220f : 177f), 0f);
             openMenuButton.Top.Set((isMiniMapEnabled ? 143f : 114f) + mapDisplacement, 0f);
+
+            enumerateLeftButton.Left.Set(Main.screenWidth - 190f, 0f);
+            enumerateLeftButton.Top.Set(180f + mapDisplacement, 0f);
+
+            villagerTypeCenterElement.Left.Set(Main.screenWidth - 157f, 0f);
+            villagerTypeCenterElement.Top.Set(180f + mapDisplacement, 0f);
+
+            enumerateRightButton.Left.Set(Main.screenWidth - 70f, 0f);
+            enumerateRightButton.Top.Set(180f + mapDisplacement, 0f);
 
             //Disable Menu Visibility when any other equip page buttons are pressed
             if (isMenuVisible && Main.EquipPageSelected != -1) {
@@ -119,7 +146,26 @@ namespace LivingWorldMod.Content.UI {
             base.DrawChildren(spriteBatch);
         }
 
-        private void ClickedButton(UIMouseEvent evt, UIElement listeningElement) {
+        private void EnumerateTypeButtonClicked(UIMouseEvent evt, UIElement listeningElement) {
+            //Up = true, Down = false
+            bool enumerateDirection = listeningElement == enumerateRightButton;
+
+            //Make sure to wrap around properly when necessary
+            if (enumerateDirection) {
+                VillagerType nextValue = typeToShow.NextEnum();
+                typeToShow = nextValue == VillagerType.TypeCount ? VillagerType.Harpy : nextValue;
+            }
+            else {
+                VillagerType previousValue = typeToShow.PreviousEnum();
+                typeToShow = previousValue == VillagerType.TypeCount ? VillagerType.TypeCount - 1 : previousValue;
+            }
+
+            //Change to proper villager type text
+            villagerTypeText.SetText(LocalizationUtils.GetLWMTextValue($"VillagerType.{typeToShow}"));
+        }
+
+        private void MenuButtonClicked(UIMouseEvent evt, UIElement listeningElement) {
+            //Opening/closing the housing menu
             isMenuVisible = !isMenuVisible;
 
             if (isMenuVisible) {
