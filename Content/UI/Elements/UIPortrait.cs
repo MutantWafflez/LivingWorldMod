@@ -39,13 +39,13 @@ namespace LivingWorldMod.Content.UI.Elements {
         }
 
         public override void OnInitialize() {
-            portraitBase = new UIImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Base"));
+            portraitBase = new UIImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Base", AssetRequestMode.ImmediateLoad));
             Append(portraitBase);
 
-            portraitClothing = new UIImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Body1"));
+            portraitClothing = new UIImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Body1", AssetRequestMode.ImmediateLoad));
             Append(portraitClothing);
 
-            portraitHead = new UIImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Head1"));
+            portraitHead = new UIImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Head1", AssetRequestMode.ImmediateLoad));
             Append(portraitHead);
 
             PopulateExpressionDictionary();
@@ -79,11 +79,11 @@ namespace LivingWorldMod.Content.UI.Elements {
                     break;
             }
 
-            portraitBase.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Base"));
+            portraitBase.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Base", AssetRequestMode.ImmediateLoad));
 
-            portraitClothing.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Body{villager.bodySpriteType}"));
+            portraitClothing.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Body{villager.bodySpriteType}", AssetRequestMode.ImmediateLoad));
 
-            portraitHead.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Head{villager.headSpriteType}"));
+            portraitHead.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Head{villager.headSpriteType}", AssetRequestMode.ImmediateLoad));
 
             portraitExpression.SetImage(expressionDictionary[currentExpression]);
         }
@@ -110,7 +110,7 @@ namespace LivingWorldMod.Content.UI.Elements {
             expressionDictionary = new Dictionary<VillagerPortraitExpression, Asset<Texture2D>>();
 
             foreach (VillagerPortraitExpression expression in Enum.GetValues(typeof(VillagerPortraitExpression))) {
-                expressionDictionary.Add(expression, ModContent.Request<Texture2D>(PortraitSpritePath + $"Expression{expression}"));
+                expressionDictionary.Add(expression, ModContent.Request<Texture2D>(PortraitSpritePath + $"Expression{expression}", AssetRequestMode.ImmediateLoad));
             }
         }
 

@@ -50,7 +50,7 @@ namespace LivingWorldMod.Content.UI.Elements {
         }
 
         public override void OnInitialize() {
-            if (text is not null) {
+            if (text is null) {
                 return;
             }
 
@@ -111,7 +111,7 @@ namespace LivingWorldMod.Content.UI.Elements {
                 return;
             }
 
-            WhileHovering.Invoke();
+            WhileHovering?.Invoke();
 
             if (borderTexture != null) {
                 spriteBatch.Draw(borderTexture.Value, dimensions.Position(), Color.White);
