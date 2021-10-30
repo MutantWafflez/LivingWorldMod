@@ -221,7 +221,7 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             gridOfVillagers.Clear();
 
             for (int i = 0; i < Main.maxNPCs; i++) {
-                if (Main.npc[i].IsTypeOfVillager(out Villager villager) && villager.VillagerType == typeToShow) {
+                if (Main.npc[i].ModNPC is Villager villager && villager.VillagerType == typeToShow) {
                     UIHousingVillagerDisplay element = new UIHousingVillagerDisplay(villager);
 
                     element.Activate();

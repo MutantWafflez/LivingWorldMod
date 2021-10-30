@@ -31,7 +31,7 @@ namespace LivingWorldMod.Common.Patches {
         public void Unload() { }
 
         private void TownNPCAI(On.Terraria.NPC.orig_AI_007_TownEntities orig, NPC self) {
-            bool isVillager = self.IsTypeOfVillager();
+            bool isVillager = self.ModNPC is Villager;
 
             if (isVillager) {
                 self.townNPC = true;
@@ -45,7 +45,7 @@ namespace LivingWorldMod.Common.Patches {
         }
 
         private void TownNPCFindFrame(On.Terraria.NPC.orig_VanillaFindFrame orig, NPC self, int num) {
-            bool isVillager = self.IsTypeOfVillager();
+            bool isVillager = self.ModNPC is Villager;
 
             if (isVillager) {
                 self.townNPC = true;
@@ -59,7 +59,7 @@ namespace LivingWorldMod.Common.Patches {
         }
 
         private bool ShopHelperTownNPCStatus(On.Terraria.GameContent.ShopHelper.orig_IsNotReallyTownNPC orig, Terraria.GameContent.ShopHelper self, NPC npc) {
-            return npc.IsTypeOfVillager() || orig(self, npc);
+            return npc.ModNPC is Villager || orig(self, npc);
         }
 
         private void TownNPCNames(On.Terraria.NPC.orig_GiveTownUniqueDataToNPCsThatNeedIt orig, int Type, int nextNPC) {
