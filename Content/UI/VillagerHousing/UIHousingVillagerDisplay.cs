@@ -3,8 +3,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.VillagerHousing {
@@ -22,6 +24,11 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
 
         public UIImage backingPanel;
 
+        /// <summary>
+        /// Whether or not this villager is currently selected.
+        /// </summary>
+        public bool IsSelected => myVillager.NPC.whoAmI == Main.instance.mouseNPCIndex;
+
         public UIHousingVillagerDisplay(Villager villager) {
             myVillager = villager;
 
@@ -34,6 +41,17 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             Height.Set(backingAsset.Height() * backingPanel.ImageScale, 0f);
 
             Append(backingPanel);
+        }
+
+        public override void Click(UIMouseEvent evt) {
+            //Change the mouse type properly
+            if (IsSelected) {
+                Main.instance.SetMouseNPC(-1, -1);
+            }
+            else {
+                Main.instance.SetMouseNPC(myVillager.NPC.whoAmI, myVillager.Type);
+                SoundEngine.PlaySound(SoundID.MenuTick);
+            }
         }
 
         public override void Update(GameTime gameTime) {
@@ -59,10 +77,12 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             Rectangle textureDrawRegion = new Rectangle(0, 0, bodyTexture.Width, frameHeight);
             Vector2 drawOrigin = new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f * 1.25f);
 
+            Color drawColor = IsSelected ? Color.Yellow : Color.White;
+
             spriteBatch.Draw(bodyTexture,
                 drawPos,
                 textureDrawRegion,
-                Color.White,
+                drawColor,
                 0f,
                 drawOrigin,
                 drawScale,
@@ -72,7 +92,7 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             spriteBatch.Draw(headTexture,
                 drawPos,
                 textureDrawRegion,
-                Color.White,
+                drawColor,
                 0f,
                 drawOrigin,
                 drawScale,
