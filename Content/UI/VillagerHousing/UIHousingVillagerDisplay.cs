@@ -49,16 +49,15 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
         protected override void DrawChildren(SpriteBatch spriteBatch) {
             base.DrawChildren(spriteBatch);
 
-            Rectangle drawArea = GetDimensions().ToRectangle();
+            Vector2 drawPos = GetDimensions().Center();
 
             Texture2D bodyTexture = myVillager.bodyAssets[myVillager.bodySpriteType].Value;
             Texture2D headTexture = myVillager.headAssets[myVillager.headSpriteType].Value;
 
             Rectangle textureDrawRegion = new Rectangle(0, 0, bodyTexture.Width, bodyTexture.Height / Main.npcFrameCount[myVillager.Type]);
 
-            //TODO: Figure out why in god's name the NPCs aren't drawing here
-            spriteBatch.Draw(bodyTexture, drawArea, textureDrawRegion, default, 0f, Vector2.Zero, SpriteEffects.None, 0f);
-            spriteBatch.Draw(headTexture, drawArea, textureDrawRegion, default, 0f, Vector2.Zero, SpriteEffects.None, 0f);
+            spriteBatch.Draw(bodyTexture, drawPos, textureDrawRegion, Color.White, 0f, new Vector2(bodyTexture.Width / 2f, textureDrawRegion.Height / 2f), 0.67f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(headTexture, drawPos, textureDrawRegion, Color.White, 0f, new Vector2(bodyTexture.Width / 2f, textureDrawRegion.Height / 2f), 0.67f, SpriteEffects.None, 0f);
         }
     }
 }
