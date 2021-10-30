@@ -159,7 +159,10 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             enumerateRightButton.Top.Set(180f + mapDisplacement, 0f);
 
             gridScrollbar.Top.Set(214f + mapDisplacement, 0f);
+            gridScrollbar.Height.Set(390f - mapDisplacement, 0f);
+
             gridOfVillagers.Top.Set(214f + mapDisplacement, 0f);
+            gridOfVillagers.Height.Set(gridScrollbar.Height.Pixels, 0f);
 
             //Disable Menu Visibility when any other equip page buttons are pressed
             if (isMenuVisible && Main.EquipPageSelected != -1) {
