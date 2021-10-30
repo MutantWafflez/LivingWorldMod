@@ -249,8 +249,13 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             Texture2D bodyTexture = bodyAssets[bodySpriteType].Value;
             Texture2D headTexture = headAssets[headSpriteType].Value;
 
-            spriteBatch.Draw(bodyTexture, new Rectangle((int)(NPC.Right.X - (NPC.frame.Width / 1.5) - screenPos.X), (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f), NPC.frame.Width, NPC.frame.Height), NPC.frame, drawColor, NPC.rotation, default, spriteDirection, 0);
-            spriteBatch.Draw(headTexture, new Rectangle((int)(NPC.Right.X - (NPC.frame.Width / 1.5) - screenPos.X), (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f), NPC.frame.Width, NPC.frame.Height), NPC.frame, drawColor, NPC.rotation, default, spriteDirection, 0);
+            Rectangle drawArea = new Rectangle((int)(NPC.Right.X - (NPC.frame.Width / 1.5) - screenPos.X), 
+                (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f), 
+                NPC.frame.Width, 
+                NPC.frame.Height);
+
+            spriteBatch.Draw(bodyTexture, drawArea, NPC.frame, drawColor, NPC.rotation, default, spriteDirection, 0);
+            spriteBatch.Draw(headTexture, drawArea, NPC.frame, drawColor, NPC.rotation, default, spriteDirection, 0);
 
             return false;
         }

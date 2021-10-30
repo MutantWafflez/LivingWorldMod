@@ -49,15 +49,36 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
         protected override void DrawChildren(SpriteBatch spriteBatch) {
             base.DrawChildren(spriteBatch);
 
-            Vector2 drawPos = GetDimensions().Center();
-
             Texture2D bodyTexture = myVillager.bodyAssets[myVillager.bodySpriteType].Value;
             Texture2D headTexture = myVillager.headAssets[myVillager.headSpriteType].Value;
 
-            Rectangle textureDrawRegion = new Rectangle(0, 0, bodyTexture.Width, bodyTexture.Height / Main.npcFrameCount[myVillager.Type]);
+            float drawScale = 0.67f;
+            int frameHeight = bodyTexture.Height / Main.npcFrameCount[myVillager.Type];
 
-            spriteBatch.Draw(bodyTexture, drawPos, textureDrawRegion, Color.White, 0f, new Vector2(bodyTexture.Width / 2f, textureDrawRegion.Height / 2f), 0.67f, SpriteEffects.None, 0f);
-            spriteBatch.Draw(headTexture, drawPos, textureDrawRegion, Color.White, 0f, new Vector2(bodyTexture.Width / 2f, textureDrawRegion.Height / 2f), 0.67f, SpriteEffects.None, 0f);
+            // Make sure to draw from center!
+            Vector2 drawPos = GetDimensions().Center();
+            Rectangle textureDrawRegion = new Rectangle(0, 0, bodyTexture.Width, frameHeight);
+            Vector2 drawOrigin = new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f * 1.25f);
+
+            spriteBatch.Draw(bodyTexture,
+                drawPos,
+                textureDrawRegion,
+                Color.White,
+                0f,
+                drawOrigin,
+                drawScale,
+                SpriteEffects.None,
+                0f);
+
+            spriteBatch.Draw(headTexture,
+                drawPos,
+                textureDrawRegion,
+                Color.White,
+                0f,
+                drawOrigin,
+                drawScale,
+                SpriteEffects.None,
+                0f);
         }
     }
 }
