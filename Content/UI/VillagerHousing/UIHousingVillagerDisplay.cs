@@ -57,6 +57,7 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
                 Main.instance.SetMouseNPC(-1, -1);
             }
             else {
+                //Our IL edit in NPCHousingPatches.cs handles the drawing here.
                 Main.instance.SetMouseNPC(myVillager.NPC.whoAmI, myVillager.Type);
                 SoundEngine.PlaySound(SoundID.MenuTick);
             }

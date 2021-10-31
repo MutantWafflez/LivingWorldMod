@@ -58,6 +58,9 @@ namespace LivingWorldMod.Common.Systems.UI {
                 housingInterface.SetState(housingState);
             }
             else if (!Main.playerInventory && housingInterface is not null) {
+                //We manually set isMenuVisible false here because when the state is null, the value is not updated
+                housingState.CloseMenu();
+
                 housingInterface.SetState(null);
             }
         }

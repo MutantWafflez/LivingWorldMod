@@ -132,6 +132,15 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             Append(gridOfVillagers);
         }
 
+        /// <summary>
+        /// Simple method that closes the menu. Public for the parent system to use.
+        /// </summary>
+        public void CloseMenu() {
+            isMenuVisible = false;
+            openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off"));
+            gridOfVillagers.Clear();
+        }
+
         protected override void DrawChildren(SpriteBatch spriteBatch) {
             bool isMiniMapEnabled = !Main.mapFullscreen && Main.mapStyle == 1;
 
@@ -166,9 +175,7 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
 
             //Disable Menu Visibility when any other equip page buttons are pressed
             if (isMenuVisible && Main.EquipPageSelected != -1) {
-                isMenuVisible = false;
-                openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off"));
-                gridOfVillagers.Clear();
+                CloseMenu();
             }
 
             enumerateRightButton.isVisible = enumerateLeftButton.isVisible = villagerTypeText.isVisible = gridScrollbar.isVisible = isMenuVisible;
