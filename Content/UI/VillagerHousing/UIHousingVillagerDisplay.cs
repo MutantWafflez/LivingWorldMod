@@ -1,4 +1,7 @@
-﻿using LivingWorldMod.Content.NPCs.Villagers;
+﻿using LivingWorldMod.Common.Systems;
+using LivingWorldMod.Content.NPCs.Villagers;
+using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -7,6 +10,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.VillagerHousing {
@@ -22,28 +26,32 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
         /// </summary>
         public Villager myVillager;
 
-        public UIImage backingPanel;
-
         /// <summary>
         /// Whether or not this villager is currently selected.
         /// </summary>
         public bool IsSelected => myVillager.NPC.whoAmI == Main.instance.mouseNPCIndex;
 
+        /// <summary>
+        /// Whether or not this NPC is "allowed" to be housed, which is to say whether or not the
+        /// village that the villager belongs to likes the player.
+        /// </summary>
+        public bool IsAllowed => myVillager.RelationshipStatus >= VillagerRelationship.Like;
+
         public UIHousingVillagerDisplay(Villager villager) {
             myVillager = villager;
 
-            Asset<Texture2D> backingAsset = TextureAssets.InventoryBack11;
-            backingPanel = new UIImage(backingAsset) {
-                ImageScale = 0.967f
-            };
-
-            Width.Set(backingAsset.Width() * backingPanel.ImageScale, 0f);
-            Height.Set(backingAsset.Height() * backingPanel.ImageScale, 0f);
-
-            Append(backingPanel);
+            // Very arbitrary number, I know, but this is about the smallest we can get the
+            // width/height while keeping 3 objects in a row in the grid
+            Width.Set(50.284f, 0f);
+            Height.Set(50.284f, 0f);
         }
 
         public override void Click(UIMouseEvent evt) {
+            //Prevent any interaction if the villagers do not like the player
+            if (!IsAllowed) {
+                return;
+            }
+
             //Change the mouse type properly
             if (IsSelected) {
                 Main.instance.SetMouseNPC(-1, -1);
@@ -60,11 +68,20 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             }
 
             Main.LocalPlayer.mouseInterface = true;
-            Main.instance.MouseText(myVillager.NPC.GivenName);
+            Main.instance.MouseText(IsAllowed ? myVillager.NPC.GivenName : LocalizationUtils.GetLWMTextValue("UI.VillagerHousing.VillagerTypeLocked", myVillager.VillagerType.ToString()));
         }
 
         protected override void DrawChildren(SpriteBatch spriteBatch) {
             base.DrawChildren(spriteBatch);
+
+            spriteBatch.Draw(TextureAssets.InventoryBack11.Value,
+                GetDimensions().ToRectangle(),
+                null,
+                !IsAllowed ? Color.Gray : Color.White,
+                0f,
+                default,
+                SpriteEffects.None,
+                0f);
 
             Texture2D bodyTexture = myVillager.bodyAssets[myVillager.bodySpriteType].Value;
             Texture2D headTexture = myVillager.headAssets[myVillager.headSpriteType].Value;
@@ -98,6 +115,21 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
                 drawScale,
                 SpriteEffects.None,
                 0f);
+
+            //Draw lock icon if not "allowed" (player is not high enough rep)
+            if (!IsAllowed) {
+                int lockSize = 22;
+
+                spriteBatch.Draw(TextureAssets.HbLock[0].Value,
+                    GetDimensions().Center(),
+                    new Rectangle(0, 0, lockSize, lockSize),
+                    Color.White,
+                    0f,
+                    new Vector2(lockSize / 2f, lockSize / 2f),
+                    1.25f,
+                    SpriteEffects.None,
+                    0f);
+            }
         }
     }
 }
