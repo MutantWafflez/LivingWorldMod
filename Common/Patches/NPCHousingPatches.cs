@@ -4,10 +4,12 @@ using System.Reflection.Metadata.Ecma335;
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Common.Systems.UI;
 using LivingWorldMod.Content.NPCs.Villagers;
+using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Cil;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Patches {
@@ -22,7 +24,7 @@ namespace LivingWorldMod.Common.Patches {
 
             IL.Terraria.Main.DrawInterface_38_MouseCarriedObject += DrawSelectedVillagerOnMouse;
 
-            IL.Terraria.Main.DrawInterface_7_TownNPCHouseBanners += ShowBannersInVillagerHousingMenu;
+            IL.Terraria.Main.DrawInterface_7_TownNPCHouseBanners += BannersVisibleWhileInVillagerHousingMenu;
 
             IL.Terraria.Main.DrawNPCHousesInWorld += DrawVillagerBannerInHouses;
         }
@@ -115,7 +117,7 @@ namespace LivingWorldMod.Common.Patches {
             }
         }
 
-        private void ShowBannersInVillagerHousingMenu(ILContext il) {
+        private void BannersVisibleWhileInVillagerHousingMenu(ILContext il) {
             //Edit rundown:
             //Very simple this time. We need to simply allow for the banners to be drawn while in the villager housing menu along with the normal
             // vanilla housing menu.
@@ -153,10 +155,10 @@ namespace LivingWorldMod.Common.Patches {
         }
 
         private void DrawVillagerBannerInHouses(ILContext il) {
-            //Edit rundown:
+            //Edit rundown (this one is kinda long):
             //We need to have the villagers who are living in villager homes be displayed on their banners, like they are for normal town NPCs
             //We will do this by hijacking the if statement that tests if the NPC is a town NPC and also test whether or not they are a villager
-            //If they are a villager, move to our code for drawing, otherwise, do normal vanilla code
+            //If they are a villager, modify vanilla draw statements, and make sure to transfer the code to draw the villager in their entirety
 
             ILCursor c = new ILCursor(il);
 
@@ -188,6 +190,142 @@ namespace LivingWorldMod.Common.Patches {
             // /* 0x0010180E 1105         */ IL_00D6: ldloc.s   nPC
             // /* 0x00101810 7BE3070004   */ IL_00D8: ldfld     bool Terraria.NPC::townNPC
             // /* 0x00101815 2C2A         */ IL_00DD: brfalse.s IL_0109
+
+            //Next, we will swap out the background banners for our own
+
+            byte npcLocalNumber = 5;
+            byte bannerAssetLocalNumber = 18;
+            byte framingRectangleLocalNumber = 19;
+
+            //Navigate to the asset of the background banner
+            if (c.TryGotoNext(i => i.MatchStloc(bannerAssetLocalNumber))) {
+                //Replace the normal call with our own if the npc is a villager
+
+                //Pop the normal texture asset off the stack
+                c.Emit(Mono.Cecil.Cil.OpCodes.Pop);
+
+                //Load this NPC to stack
+                c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, npcLocalNumber);
+
+                //If this NPC is a villager, use our own modded banners. If not, return the normal one
+                c.EmitDelegate<Func<NPC, Texture2D>>(npc => {
+                    if (npc.ModNPC is Villager) {
+                        return ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + "/UI/VillagerHousingUI/VillagerHousing_Banners").Value;
+                    }
+
+                    return TextureAssets.HouseBanner.Value;
+                });
+            }
+
+            //Navigate to the banner framing rectangle
+            if (c.TryGotoNext(i => i.MatchStloc(framingRectangleLocalNumber))) {
+                //In order for the drawing to be framed properly, we must take into account whether or not it's our modded banners or not
+
+                //Pop the normal framing rectangle off the stack
+                c.Emit(Mono.Cecil.Cil.OpCodes.Pop);
+
+                //Load this NPC to stack
+                c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, npcLocalNumber);
+
+                //Load the current texture to the stack
+                c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, bannerAssetLocalNumber);
+
+                //If this NPC is a villager, adjust the framing rectangle to use our modded proportions. If not, return the normal vanilla value
+                c.EmitDelegate<Func<NPC, Texture2D, Rectangle>>((npc, texture) => {
+                    if (npc.ModNPC is Villager) {
+                        return texture.Frame(2, (int)VillagerType.TypeCount);
+                    }
+
+                    return texture.Frame(2, 2);
+                });
+            }
+
+            //IL block for the above two edits ^:
+            /*/* (30124,5)-(30124,55) tModLoader\src\tModLoader\Terraria\Main.cs #1#
+            /* 0x001019F0 7E59490004   #1# IL_02B8: ldsfld    class [ReLogic]ReLogic.Content.Asset`1<class [FNA]Microsoft.Xna.Framework.Graphics.Texture2D> Terraria.GameContent.TextureAssets::HouseBanner
+            /* 0x001019F5 6F6F02000A   #1# IL_02BD: callvirt  instance !0 class [ReLogic]ReLogic.Content.Asset`1<class [FNA]Microsoft.Xna.Framework.Graphics.Texture2D>::get_Value()
+            /* 0x001019FA 1312         #1# IL_02C2: stloc.s   'value'
+            /* (30125,5)-(30125,66) tModLoader\src\tModLoader\Terraria\Main.cs #1#
+            /* 0x001019FC 1112         #1# IL_02C4: ldloc.s   'value'
+            /* 0x001019FE 18           #1# IL_02C6: ldc.i4.2
+            /* 0x001019FF 18           #1# IL_02C7: ldc.i4.2
+            /* 0x00101A00 16           #1# IL_02C8: ldc.i4.0
+            /* 0x00101A01 16           #1# IL_02C9: ldc.i4.0
+            /* 0x00101A02 16           #1# IL_02CA: ldc.i4.0
+            /* 0x00101A03 16           #1# IL_02CB: ldc.i4.0
+            /* 0x00101A04 28DF0C0006   #1# IL_02CC: call      valuetype [FNA]Microsoft.Xna.Framework.Rectangle Terraria.Utils::Frame(class [FNA]Microsoft.Xna.Framework.Graphics.Texture2D, int32, int32, int32, int32, int32, int32)
+            /* 0x00101A09 1313         #1# IL_02D1: stloc.s   value2*/
+
+            //Finally, we must skip over the head drawing code if the NPC in question is a villager
+
+            //Navigate to our exit instruction in order to skip over the head drawing
+            ILLabel exitInstruction = c.DefineLabel();
+            bool foundExitInstruction = false;
+            int preExitJumpIndex = c.Index;
+
+            byte homeTileXLocalNumber = 8;
+            byte homeTileYLocalNumber = 9;
+            byte homeTileYInWorldLocalNumber = 16;
+            byte npcProfileLocalNumber = 20;
+
+            //Grab exit instruction & do custom drawing code
+            if (c.TryGotoNext(i => i.MatchStloc(homeTileXLocalNumber))) {
+                foundExitInstruction = true;
+
+                c.Index -= 14;
+
+                //Load this NPC to stack
+                c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, npcLocalNumber);
+
+                //Place exit instruction on the new instruction we just emitted ^ then return to old instruction
+                c.Index--;
+                exitInstruction = c.MarkLabel();
+                c.Index++;
+
+                //Load local variable 8, or homeTileX in tile coordinates
+                c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, homeTileXLocalNumber);
+
+                //Load local variable 9, or homeTileY in tile coordinates
+                c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, homeTileYLocalNumber);
+
+                //Load local variable 16, or num11, or homeTileY in pixels
+                c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, homeTileYInWorldLocalNumber);
+
+                c.EmitDelegate<Action<NPC, int, int, float>>((npc, homeTileX, homeTileY, homeTileYPixels) => {
+                    if (npc.ModNPC is Villager villager) {
+                        float drawScale = 0.5f;
+
+                        Texture2D bodyTexture = villager.bodyAssets[villager.bodySpriteType].Value;
+                        Texture2D headTexture = villager.headAssets[villager.headSpriteType].Value;
+
+                        Rectangle textureDrawRegion = new Rectangle(0, 0, bodyTexture.Width, bodyTexture.Height / Main.npcFrameCount[villager.Type]);
+                        Vector2 drawPos = new Vector2(homeTileX * 16f - Main.screenPosition.X + 10f, homeTileYPixels - Main.screenPosition.Y + 14f);
+                        Vector2 drawOrigin = new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f);
+
+                        Main.spriteBatch.Draw(bodyTexture, drawPos, textureDrawRegion, Lighting.GetColor(homeTileX, homeTileY), 0f, drawOrigin, drawScale, SpriteEffects.None, 0f);
+                        Main.spriteBatch.Draw(headTexture, drawPos, textureDrawRegion, Lighting.GetColor(homeTileX, homeTileY), 0f, drawOrigin, drawScale, SpriteEffects.None, 0f);
+                    }
+                });
+            }
+
+            c.Index = preExitJumpIndex;
+
+            //Apply exit instruction transfer if the NPC is a villager
+            if (c.TryGotoNext(i => i.MatchLdloca(npcProfileLocalNumber)) && foundExitInstruction) {
+                //Move to IL instruction that denotes the beginning of the line
+                c.Index -= 3;
+
+                //Load this NPC to stack
+                c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, npcLocalNumber);
+
+                //Test for villager status
+                c.EmitDelegate<Func<NPC, bool>>(npc => npc.ModNPC is Villager);
+
+                c.Emit(Mono.Cecil.Cil.OpCodes.Brtrue_S, exitInstruction);
+            }
+
+            //I would put the IL block in question here, but it is a very small edit and the IL block is really big due to it including
+            // a lot of math instructions and a spritebatch call
         }
     }
 }
