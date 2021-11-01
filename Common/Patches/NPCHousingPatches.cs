@@ -20,7 +20,7 @@ namespace LivingWorldMod.Common.Patches {
     public class NPCHousingPatches : ILoadable {
 
         public void Load(Mod mod) {
-            IL.Terraria.WorldGen.CheckSpecialTownNPCSpawningConditions += PreventNonVillagersFromTakingVillageHouses;
+            IL.Terraria.WorldGen.CheckSpecialTownNPCSpawningConditions += TestForVillageHouse;
 
             IL.Terraria.Main.DrawInterface_38_MouseCarriedObject += DrawSelectedVillagerOnMouse;
 
@@ -31,7 +31,7 @@ namespace LivingWorldMod.Common.Patches {
 
         public void Unload() { }
 
-        private void PreventNonVillagersFromTakingVillageHouses(ILContext il) {
+        private void TestForVillageHouse(ILContext il) {
             ILCursor c = new ILCursor(il);
 
             //We do not want non-villagers spawning in villager homes, which is what this patch is for
@@ -53,8 +53,12 @@ namespace LivingWorldMod.Common.Patches {
 
                     Rectangle roomInQuestion = new Rectangle(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1, WorldGen.roomY2 - WorldGen.roomY1);
 
+                    ModNPC modNPC = ModContent.GetModNPC(type);
+                    Rectangle[] villageZones = ModContent.GetInstance<WorldCreationSystem>().villageZones;
+
                     //HOWEVER, if the Town NPC can spawn here, we need to do additional checks to make sure it's not a non-villager spawning in a villager home
-                    if (ModContent.GetModNPC(type) is not Villager && ModContent.GetInstance<WorldCreationSystem>().villageZones.Any(zone => zone.Contains(roomInQuestion))) {
+                    //Additionally, we can't have villagers in a non-village home, which is the second check after  V  this OR statement.
+                    if ((modNPC is not Villager && villageZones.Any(zone => zone.Contains(roomInQuestion))) || (modNPC is Villager && !villageZones.Any(zone => zone.Contains(roomInQuestion)))) {
                         return false;
                     }
 
