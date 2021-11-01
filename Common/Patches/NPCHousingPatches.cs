@@ -5,6 +5,7 @@ using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Common.Systems.UI;
 using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Cil;
@@ -163,6 +164,7 @@ namespace LivingWorldMod.Common.Patches {
             //We need to have the villagers who are living in villager homes be displayed on their banners, like they are for normal town NPCs
             //We will do this by hijacking the if statement that tests if the NPC is a town NPC and also test whether or not they are a villager
             //If they are a villager, modify vanilla draw statements, and make sure to transfer the code to draw the villager in their entirety
+            //Next, and lastly, make it so the player cannot modify the housing of the villagers if they are not well-liked enough
 
             ILCursor c = new ILCursor(il);
 
@@ -212,13 +214,7 @@ namespace LivingWorldMod.Common.Patches {
                 c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, npcLocalNumber);
 
                 //If this NPC is a villager, use our own modded banners. If not, return the normal one
-                c.EmitDelegate<Func<NPC, Texture2D>>(npc => {
-                    if (npc.ModNPC is Villager) {
-                        return ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + "/UI/VillagerHousingUI/VillagerHousing_Banners").Value;
-                    }
-
-                    return TextureAssets.HouseBanner.Value;
-                });
+                c.EmitDelegate<Func<NPC, Texture2D>>(npc => npc.ModNPC is Villager ? ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + "/UI/VillagerHousingUI/VillagerHousing_Banners").Value : TextureAssets.HouseBanner.Value);
             }
 
             //Navigate to the banner framing rectangle
@@ -235,13 +231,7 @@ namespace LivingWorldMod.Common.Patches {
                 c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, bannerAssetLocalNumber);
 
                 //If this NPC is a villager, adjust the framing rectangle to use our modded proportions. If not, return the normal vanilla value
-                c.EmitDelegate<Func<NPC, Texture2D, Rectangle>>((npc, texture) => {
-                    if (npc.ModNPC is Villager) {
-                        return texture.Frame(2, (int)VillagerType.TypeCount);
-                    }
-
-                    return texture.Frame(2, 2);
-                });
+                c.EmitDelegate<Func<NPC, Texture2D, Rectangle>>((npc, texture) => npc.ModNPC is Villager ? texture.Frame(2, (int)VillagerType.TypeCount) : texture.Frame(2, 2));
             }
 
             //IL block for the above two edits ^:
@@ -260,7 +250,7 @@ namespace LivingWorldMod.Common.Patches {
             /* 0x00101A04 28DF0C0006   #1# IL_02CC: call      valuetype [FNA]Microsoft.Xna.Framework.Rectangle Terraria.Utils::Frame(class [FNA]Microsoft.Xna.Framework.Graphics.Texture2D, int32, int32, int32, int32, int32, int32)
             /* 0x00101A09 1313         #1# IL_02D1: stloc.s   value2*/
 
-            //Finally, we must skip over the head drawing code if the NPC in question is a villager
+            //Second to last, we must skip over the head drawing code if the NPC in question is a villager
 
             //Navigate to our exit instruction in order to skip over the head drawing
             ILLabel exitInstruction = c.DefineLabel();
@@ -333,6 +323,80 @@ namespace LivingWorldMod.Common.Patches {
 
             //I would put the IL block in question here, but it is a very small edit and the IL block is really big due to it including
             // a lot of math instructions and a spritebatch call
+
+            //Finally, we are going to change the hover text and prevent the player from un-housing villagers if they are not well-liked enough
+            byte bannerHoverTextLocalNumber = 42;
+            byte rightClickCheckLocalNumber = 43;
+
+            //Navigate to banner hover text variable allocation
+            if (c.TryGotoNext(i => i.MatchStloc(bannerHoverTextLocalNumber))) {
+                //Load this NPC to stack
+                c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, npcLocalNumber);
+
+                //Add onto the normal text if villager and not well-liked enough
+                c.EmitDelegate<Func<string, NPC, string>>((normalText, npc) =>
+                    normalText + (npc.ModNPC is Villager { RelationshipStatus: < VillagerRelationship.Like } villager ?
+                        $"\n{LocalizationUtils.GetLWMTextValue("UI.VillagerHousing.VillagerTypeLocked", villager.VillagerType.ToString())}" :
+                        "")
+                    );
+            }
+
+            //Navigate to right-click boolean loading instruction
+            if (c.TryGotoNext(i => i.MatchLdloc(rightClickCheckLocalNumber))) {
+                //Move past local load instruction
+                c.Index++;
+
+                //Load this NPC to stack
+                c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, npcLocalNumber);
+
+                //Remember that we moved after the right click loading instruction, so we have two things on the stack now
+                c.EmitDelegate<Func<bool, NPC, bool>>((didRightClick, npc) => {
+                    //If not right clicking, then return false, no checking needed
+                    if (!didRightClick) {
+                        return false;
+                    }
+
+                    //Check if the npc is a villager, then return based on whether or not the player is well-liked enough
+                    if (npc.ModNPC is Villager villager) {
+                        return villager.RelationshipStatus >= VillagerRelationship.Like;
+                    }
+
+                    //If the npc is not a villager, then assume vanilla functionality
+                    return true;
+                });
+            }
+
+            //IL block for above two edits ^:
+            /*/* (30154,6)-(30154,72) tModLoader\src\tModLoader\Terraria\Main.cs #1#
+            /* 0x00101CD3 1105         #1# IL_059B: ldloc.s   nPC
+            /* 0x00101CD5 1106         #1# IL_059D: ldloc.s   num2
+            /* 0x00101CD7 2891020006   #1# IL_059F: call      string Terraria.Lang::GetNPCHouseBannerText(class Terraria.NPC, int32)
+            /* 0x00101CDC 132A         #1# IL_05A4: stloc.s   nPCHouseBannerText
+            /* (30155,6)-(30155,42) tModLoader\src\tModLoader\Terraria\Main.cs #1#
+            /* 0x00101CDE 02           #1# IL_05A6: ldarg.0
+            /* 0x00101CDF 112A         #1# IL_05A7: ldloc.s   nPCHouseBannerText
+            /* 0x00101CE1 16           #1# IL_05A9: ldc.i4.0
+            /* 0x00101CE2 16           #1# IL_05AA: ldc.i4.0
+            /* 0x00101CE3 15           #1# IL_05AB: ldc.i4.m1
+            /* 0x00101CE4 15           #1# IL_05AC: ldc.i4.m1
+            /* 0x00101CE5 15           #1# IL_05AD: ldc.i4.m1
+            /* 0x00101CE6 15           #1# IL_05AE: ldc.i4.m1
+            /* 0x00101CE7 16           #1# IL_05AF: ldc.i4.0
+            /* 0x00101CE8 28C3030006   #1# IL_05B0: call      instance void Terraria.Main::MouseText(string, int32, uint8, int32, int32, int32, int32, int32)
+            /* 0x00101CED 00           #1# IL_05B5: nop
+            /* (30156,6)-(30156,42) tModLoader\src\tModLoader\Terraria\Main.cs #1#
+            /* 0x00101CEE 7EFC040004   #1# IL_05B6: ldsfld    bool Terraria.Main::mouseRightRelease
+            /* 0x00101CF3 2C07         #1# IL_05BB: brfalse.s IL_05C4
+
+            /* 0x00101CF5 7ECA020004   #1# IL_05BD: ldsfld    bool Terraria.Main::mouseRight
+            /* 0x00101CFA 2B01         #1# IL_05C2: br.s      IL_05C5
+
+            /* 0x00101CFC 16           #1# IL_05C4: ldc.i4.0
+
+            /* 0x00101CFD 132B         #1# IL_05C5: stloc.s   V_43
+            /* (hidden)-(hidden) tModLoader\src\tModLoader\Terraria\Main.cs #1#
+            /* 0x00101CFF 112B         #1# IL_05C7: ldloc.s   V_43
+            /* 0x00101D01 2C25         #1# IL_05C9: brfalse.s IL_05F0*/
         }
     }
 }
