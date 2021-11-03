@@ -1,10 +1,5 @@
-﻿using System;
-using System.Linq;
-using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Content.NPCs.Villagers;
+﻿using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Utilities;
-using Microsoft.Xna.Framework;
-using MonoMod.Cil;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

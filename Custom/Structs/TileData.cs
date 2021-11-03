@@ -1,6 +1,6 @@
-﻿using System;
-using LivingWorldMod.Content.Tiles.DebugTiles;
+﻿using LivingWorldMod.Content.Tiles.DebugTiles;
 using LivingWorldMod.Content.Walls.DebugWalls;
+using System;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;

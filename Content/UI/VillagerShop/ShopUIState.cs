@@ -1,5 +1,4 @@
-﻿using System;
-using LivingWorldMod.Content.NPCs.Villagers;
+﻿using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.UI.CommonElements;
 using LivingWorldMod.Content.UI.Elements;
 using LivingWorldMod.Custom.Classes;
@@ -8,6 +7,7 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;

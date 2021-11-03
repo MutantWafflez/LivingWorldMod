@@ -1,6 +1,5 @@
 ﻿using LivingWorldMod.Common.Systems.UI;
 using LivingWorldMod.Content.UI.CommonElements;
-using LivingWorldMod.Content.UI.Elements;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;

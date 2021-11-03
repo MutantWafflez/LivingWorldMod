@@ -1,11 +1,10 @@
 ﻿using LivingWorldMod.Content.NPCs.Villagers;
-using LivingWorldMod.Content.UI;
+using LivingWorldMod.Content.UI.VillagerShop;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Collections.Generic;
-using LivingWorldMod.Content.UI.VillagerShop;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

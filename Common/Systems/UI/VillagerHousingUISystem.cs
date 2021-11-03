@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using LivingWorldMod.Content.UI.VillagerHousing;
+﻿using LivingWorldMod.Content.UI.VillagerHousing;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
