@@ -48,12 +48,17 @@ namespace LivingWorldMod.Common.Systems {
             List<WorldGenFeature> listOfFeatures = ModContent.GetContent<WorldGenFeature>().ToList();
 
             foreach (WorldGenFeature feature in listOfFeatures) {
+                feature.ModifyTaskList(tasks);
+            }
+
+            foreach (WorldGenFeature feature in listOfFeatures) {
                 int passIndex = tasks.FindIndex(pass => pass.Name == feature.InsertionPassNameForFeature);
                 if (passIndex != -1) {
                     tasks.Insert(passIndex + feature.PlaceBeforeInsertionPoint.ToInt(), new PassLegacy(feature.InternalGenerationName, feature.Generate));
                 }
                 else {
-                    throw new ArgumentNullException(feature.InsertionPassNameForFeature, "This pass feature does not exist, or otherwise has been removed!");
+                    tasks.Add(new PassLegacy(feature.InternalGenerationName, feature.Generate));
+                    ModContent.GetInstance<LivingWorldMod>().Logger.Warn($"Pass Named {feature.InsertionPassNameForFeature} not found, feature {feature.InternalGenerationName} placed at end of task list!");
                 }
             }
         }

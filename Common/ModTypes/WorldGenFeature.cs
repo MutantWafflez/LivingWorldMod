@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using System.Collections.Generic;
+using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Terraria.IO;
@@ -46,6 +47,14 @@ namespace LivingWorldMod.Common.ModTypes {
         /// <see cref="InsertionPassNameForFeature"/> value. Defaults to true.
         /// </summary>
         public virtual bool PlaceBeforeInsertionPoint => true;
+
+        /// <summary>
+        /// Allows for modification of the list directly. Do not use this to add new passes, only
+        /// use this if you want to remove/move other established passes.
+        /// </summary>
+        /// <param name="tasks"> Lists of tasks when this method is run. </param>
+        public virtual void ModifyTaskList(List<GenPass> tasks) {
+        }
 
         /// <summary>
         /// Method that should generate this feature.
