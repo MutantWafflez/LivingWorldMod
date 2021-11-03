@@ -39,7 +39,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
 
         private float manualUpdateTime;
 
-        public UIShopItem(ShopItem pertainedInventoryItem, long displayedCost, VillagerType villagerType) : base(ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}/UI/ShopUI/{villagerType}/ShopItemBox")) {
+        public UIShopItem(ShopItem pertainedInventoryItem, long displayedCost, VillagerType villagerType) : base(ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}UI/ShopUI/{villagerType}/ShopItemBox")) {
             this.pertainedInventoryItem = pertainedInventoryItem;
             displayedItem = new Item();
             displayedItem.SetDefaults(pertainedInventoryItem.itemType);

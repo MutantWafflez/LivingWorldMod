@@ -162,7 +162,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             get;
         }
 
-        public sealed override string Texture => LivingWorldMod.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/DefaultStyle";
+        public sealed override string Texture => LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/DefaultStyle";
 
         public sealed override bool CloneNewInstances => true;
 
@@ -249,9 +249,9 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             Texture2D bodyTexture = bodyAssets[bodySpriteType].Value;
             Texture2D headTexture = headAssets[headSpriteType].Value;
 
-            Rectangle drawArea = new Rectangle((int)(NPC.Right.X - (NPC.frame.Width / 1.5) - screenPos.X), 
-                (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f), 
-                NPC.frame.Width, 
+            Rectangle drawArea = new Rectangle((int)(NPC.Right.X - (NPC.frame.Width / 1.5) - screenPos.X),
+                (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f),
+                NPC.frame.Width,
                 NPC.frame.Height);
 
             spriteBatch.Draw(bodyTexture, drawArea, NPC.frame, drawColor, NPC.rotation, default, spriteDirection, 0);
@@ -288,11 +288,11 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             headAssets = new Asset<Texture2D>[HeadAssetVariations];
 
             for (int i = 0; i < BodyAssetVariations; i++) {
-                bodyAssets[i] = ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/Body{i}");
+                bodyAssets[i] = ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/Body{i}");
             }
 
             for (int i = 0; i < HeadAssetVariations; i++) {
-                headAssets[i] = ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + $"/NPCs/Villagers/{VillagerType}/Head{i}");
+                headAssets[i] = ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/Head{i}");
             }
         }
     }

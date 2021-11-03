@@ -58,7 +58,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
         private UIShopItem selectedItem;
 
         public override void OnInitialize() {
-            string shopUIPath = $"{LivingWorldMod.LWMSpritePath}/UI/ShopUI/Harpy/";
+            string shopUIPath = $"{LivingWorldMod.LWMSpritePath}UI/ShopUI/Harpy/";
 
             //Background Zone
             backImage = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage", AssetRequestMode.ImmediateLoad)) {
@@ -210,7 +210,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
         public void ReloadUI(Villager newVillager) {
             currentVillager = newVillager;
 
-            string shopUIPath = $"{LivingWorldMod.LWMSpritePath}/UI/ShopUI/{currentVillager.VillagerType}/";
+            string shopUIPath = $"{LivingWorldMod.LWMSpritePath}UI/ShopUI/{currentVillager.VillagerType}/";
 
             backImage.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage", AssetRequestMode.ImmediateLoad));
 

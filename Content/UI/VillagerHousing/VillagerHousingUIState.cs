@@ -73,7 +73,7 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
         /// <summary>
         /// Path to the sprites for this UI.
         /// </summary>
-        private string HousingTexturePath => LivingWorldMod.LWMSpritePath + "/UI/VillagerHousingUI/";
+        private string HousingTexturePath => LivingWorldMod.LWMSpritePath + "UI/VillagerHousingUI/";
 
         public override void OnInitialize() {
             typeToShow = VillagerType.Harpy;

@@ -9,7 +9,7 @@ namespace LivingWorldMod.Content.Items {
     public abstract class BaseItem : ModItem {
 
         public override string Texture => GetType().Namespace?
-            .Replace($"{nameof(LivingWorldMod)}.Content", LivingWorldMod.LWMSpritePath)
+            .Replace($"{nameof(LivingWorldMod)}.Content.", LivingWorldMod.LWMSpritePath)
             .Replace('.', '/')
             + $"/{Name}";
     }

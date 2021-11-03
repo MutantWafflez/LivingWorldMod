@@ -9,7 +9,7 @@ namespace LivingWorldMod.Content.Walls {
     public abstract class BaseWall : ModWall {
 
         public override string Texture => GetType().Namespace?
-            .Replace($"{nameof(LivingWorldMod)}.Content", LivingWorldMod.LWMSpritePath)
+            .Replace($"{nameof(LivingWorldMod)}.Content.", LivingWorldMod.LWMSpritePath)
             .Replace('.', '/')
             + $"/{Name}";
     }

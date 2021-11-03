@@ -209,7 +209,7 @@ namespace LivingWorldMod.Common.Patches {
             //Load this NPC to stack
             c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, npcLocalNumber);
             //If this NPC is a villager, use our own modded banners. If not, return the normal one
-            c.EmitDelegate<Func<NPC, Texture2D>>(npc => npc.ModNPC is Villager ? ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + "/UI/VillagerHousingUI/VillagerHousing_Banners").Value : TextureAssets.HouseBanner.Value);
+            c.EmitDelegate<Func<NPC, Texture2D>>(npc => npc.ModNPC is Villager ? ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + "UI/VillagerHousingUI/VillagerHousing_Banners").Value : TextureAssets.HouseBanner.Value);
 
             //Navigate to the banner framing rectangle
             c.ErrorOnFailedGotoNext(i => i.MatchStloc(framingRectangleLocalNumber));

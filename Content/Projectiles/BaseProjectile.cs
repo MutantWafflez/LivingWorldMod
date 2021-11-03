@@ -9,7 +9,7 @@ namespace LivingWorldMod.Content.Projectiles {
     public abstract class BaseProjectile : ModProjectile {
 
         public override string Texture => GetType().Namespace?
-            .Replace($"{nameof(LivingWorldMod)}.Content", LivingWorldMod.LWMSpritePath)
+            .Replace($"{nameof(LivingWorldMod)}.Content.", LivingWorldMod.LWMSpritePath)
             .Replace('.', '/')
             + $"/{Name}";
     }
