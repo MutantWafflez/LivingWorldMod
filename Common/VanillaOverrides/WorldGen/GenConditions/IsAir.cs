@@ -1,6 +1,6 @@
 ﻿using Terraria.WorldBuilding;
 
-namespace LivingWorldMod.Custom.Classes.WorldGen.GenConditions {
+namespace LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions {
 
     /// <summary>
     /// Simple GenCondition that checks whether or not the specified tile is air.
