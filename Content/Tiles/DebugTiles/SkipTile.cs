@@ -1,6 +1,4 @@
-﻿#if DEBUG
-
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 
 namespace LivingWorldMod.Content.Tiles.DebugTiles {
@@ -9,7 +7,7 @@ namespace LivingWorldMod.Content.Tiles.DebugTiles {
     /// Tile used for "skipping" over certain tile positions when used in conjunction with the
     /// structure stick.
     /// </summary>
-    public class SkipTile : BaseTile {
+    public class SkipTile : DebugTile {
         public override string Texture => "Terraria/Images/Tiles_" + TileID.TeamBlockWhite;
 
         public override void SetStaticDefaults() {
@@ -24,5 +22,3 @@ namespace LivingWorldMod.Content.Tiles.DebugTiles {
         }
     }
 }
-
-#endif

@@ -1,13 +1,11 @@
-﻿#if DEBUG
-
+﻿using System;
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Custom.Enums;
-using System;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Common.Commands {
+namespace LivingWorldMod.Common.Commands.DebugCommands {
 
-    public class ReputationDebugCommand : ModCommand {
+    public class ReputationCommand : DebugCommand {
         public override string Command => "rep";
 
         public override string Description => "Modifies a given village's reputation. Cannot go below -100 or above 100.";
@@ -40,5 +38,3 @@ namespace LivingWorldMod.Common.Commands {
         }
     }
 }
-
-#endif

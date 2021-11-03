@@ -1,12 +1,10 @@
-﻿#if DEBUG
-
-using LivingWorldMod.Content.Tiles.DebugTiles;
+﻿using LivingWorldMod.Content.Tiles.DebugTiles;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.DebugItems {
 
-    public class SkipTileItem : BaseItem {
+    public class SkipTileItem : DebugItem {
         public override string Texture => "Terraria/Images/Item_" + ItemID.TeamBlockWhite;
 
         public override void SetDefaults() {
@@ -15,10 +13,7 @@ namespace LivingWorldMod.Content.Items.DebugItems {
             Item.consumable = false;
             Item.useTime = 4;
             Item.useAnimation = 4;
-            Item.rare = ItemRarityID.Quest;
             Item.createTile = ModContent.TileType<SkipTile>();
         }
     }
 }
-
-#endif

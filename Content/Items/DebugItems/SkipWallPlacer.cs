@@ -1,6 +1,4 @@
-﻿#if DEBUG
-
-using LivingWorldMod.Content.Walls.DebugWalls;
+﻿using LivingWorldMod.Content.Walls.DebugWalls;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -11,7 +9,7 @@ namespace LivingWorldMod.Content.Items.DebugItems {
     /// <summary>
     /// Debug tool that can place debug walls
     /// </summary>
-    public class SkipWallPlacer : BaseItem {
+    public class SkipWallPlacer : DebugItem {
         private Point16 topLeft = Point16.NegativeOne;
 
         private Point16 bottomRight = Point16.NegativeOne;
@@ -22,7 +20,6 @@ namespace LivingWorldMod.Content.Items.DebugItems {
 
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.DrumStick);
-            Item.rare = ItemRarityID.Quest;
             Item.autoReuse = false;
             Item.useTime = 30;
             Item.useAnimation = 30;
@@ -73,5 +70,3 @@ namespace LivingWorldMod.Content.Items.DebugItems {
         }
     }
 }
-
-#endif

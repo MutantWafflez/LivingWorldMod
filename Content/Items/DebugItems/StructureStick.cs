@@ -1,6 +1,4 @@
-﻿#if DEBUG
-
-using LivingWorldMod.Custom.Structs;
+﻿using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using System;
 using System.Collections.Generic;
@@ -11,7 +9,7 @@ using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Content.Items.DebugItems {
 
-    public class StructureStick : BaseItem {
+    public class StructureStick : DebugItem {
         private Point16 topLeft = Point16.NegativeOne;
 
         private Point16 bottomRight = Point16.NegativeOne;
@@ -22,7 +20,6 @@ namespace LivingWorldMod.Content.Items.DebugItems {
 
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.DrumStick);
-            Item.rare = ItemRarityID.Quest;
             Item.autoReuse = false;
             Item.useTime = 30;
             Item.useAnimation = 30;
@@ -79,5 +76,3 @@ namespace LivingWorldMod.Content.Items.DebugItems {
         }
     }
 }
-
-#endif

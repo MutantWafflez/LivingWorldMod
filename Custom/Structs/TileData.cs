@@ -1,12 +1,6 @@
 ﻿using System;
-
-#if DEBUG
-
 using LivingWorldMod.Content.Tiles.DebugTiles;
 using LivingWorldMod.Content.Walls.DebugWalls;
-
-#endif
-
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;

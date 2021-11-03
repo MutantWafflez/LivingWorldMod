@@ -1,13 +1,11 @@
-﻿#if DEBUG
-
-using LivingWorldMod.Content.NPCs.Villagers;
+﻿using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Enums;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Common.Commands {
+namespace LivingWorldMod.Common.Commands.DebugCommands {
 
-    public class ShopRestockDebugCommand : ModCommand {
+    public class ShopRestockCommand : DebugCommand {
         public override string Command => "restock";
 
         public override string Description => "Restocks all the shops of the given villager type.";
@@ -36,5 +34,3 @@ namespace LivingWorldMod.Common.Commands {
         }
     }
 }
-
-#endif

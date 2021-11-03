@@ -1,6 +1,4 @@
-﻿#if DEBUG
-
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 
 namespace LivingWorldMod.Content.Walls.DebugWalls {
@@ -9,7 +7,7 @@ namespace LivingWorldMod.Content.Walls.DebugWalls {
     /// Wall used for "skipping" over certain wall positions when used in conjunction with the
     /// structure stick.
     /// </summary>
-    public class SkipWall : BaseWall {
+    public class SkipWall : DebugWall {
         public override string Texture => "Terraria/Images/Wall_" + WallID.StarsWallpaper;
 
         public override void SetStaticDefaults() {
@@ -20,5 +18,3 @@ namespace LivingWorldMod.Content.Walls.DebugWalls {
         }
     }
 }
-
-#endif

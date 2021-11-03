@@ -1,6 +1,4 @@
-﻿#if DEBUG
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Terraria;
 using Terraria.ModLoader;
@@ -11,6 +9,8 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
     /// Debug ModSystem used for testing world generation code.
     /// </summary>
     public class WorldGenDebugSystem : ModSystem {
+
+        public override bool IsLoadingEnabled(Mod mod) => LivingWorldMod.IsDebug;
 
         public override void PostUpdateEverything() {
             //Trigger the generation method by pressing 0 on the numpad
@@ -26,5 +26,3 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
         }
     }
 }
-
-#endif

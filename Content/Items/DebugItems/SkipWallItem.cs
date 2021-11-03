@@ -1,12 +1,10 @@
-﻿#if DEBUG
-
-using LivingWorldMod.Content.Walls.DebugWalls;
+﻿using LivingWorldMod.Content.Walls.DebugWalls;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.DebugItems {
 
-    public class SkipWallItem : BaseItem {
+    public class SkipWallItem : DebugItem {
         public override string Texture => "Terraria/Images/Item_" + ItemID.StarsWallpaper;
 
         public override void SetDefaults() {
@@ -15,10 +13,7 @@ namespace LivingWorldMod.Content.Items.DebugItems {
             Item.consumable = false;
             Item.useTime = 4;
             Item.useAnimation = 4;
-            Item.rare = ItemRarityID.Quest;
             Item.createWall = ModContent.WallType<SkipWall>();
         }
     }
 }
-
-#endif
