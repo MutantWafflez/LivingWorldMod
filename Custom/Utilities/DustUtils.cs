@@ -24,5 +24,21 @@ namespace LivingWorldMod.Custom.Utilities {
                 newDust.position = origin - new Vector2(0, radius).RotatedBy(MathHelper.ToRadians(i));
             }
         }
+        
+        /// <summary>
+        /// Creates a circle of dust at the specified origin with the passed in radius, dust, and
+        /// optional angle change. Radius is in terms of pixels.
+        /// </summary>
+        /// <param name="origin"> The origin of the dust circle in world coordinates. </param>
+        /// <param name="radius"> The radius of the dust circle. </param>
+        /// <param name="dustID"> The ID of the dust to compose the circle of. </param>
+        /// <param name="angleChange">
+        /// The angle change between each dust particle in the circle. Defaults to 5 degrees.
+        /// </param>
+        public static void CreateCircle(Vector2 origin, float radius, int dustID, float angleChange = 5) {
+            for (float i = 0; i < 360f; i += angleChange) {
+                Dust.NewDustPerfect(origin - new Vector2(0, radius).RotatedBy(MathHelper.ToRadians(i)), dustID);
+            }
+        }
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 
-namespace LivingWorldMod.Content.TileEntities.VillageShrines {
+namespace LivingWorldMod.Content.TileEntities.Interactables.VillageShrines {
 
     /// <summary>
     /// Tile Entity within each village shrine of each type, which mainly handles whether or not a

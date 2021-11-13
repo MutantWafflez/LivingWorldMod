@@ -151,6 +151,10 @@ Mods: {
 				VillagerTypeLocked: "{0} Villagers cannot be re-housed until you are liked by them!"
 			}
 		}
+		
+		Event: {
+		    WaystoneActivation: "Waystone Activated!"
+		}
 
 		BuffName: {
 			NimbusPetBuff: "Nimbus Pet"
