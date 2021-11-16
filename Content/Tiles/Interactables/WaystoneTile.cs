@@ -8,6 +8,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent.Tile_Entities;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -35,11 +36,15 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             TileObjectData.newTile.LavaPlacement = LiquidPlacement.NotAllowed;
             
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
-            TileObjectData.newTile.Origin = new Point16(0, 0);
+            TileObjectData.newTile.Origin = new Point16(1, 2);
             TileObjectData.newTile.Height = 3;
             TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.DrawYOffset = 2;
+
+            //To add pylon network fuctionality
+            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(TETeleportationPylon.PlacementPreviewHook_AfterPlacement, -1, 0, processedCoordinates: false);
+
             TileObjectData.addTile(Type);
 
             AnimationFrameHeight = 54;
@@ -76,6 +81,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             if (TileEntity.EntityExistsHere(i, j)) {
                 return;
             }
+
+            return;
 
             int entityID = TileEntity.Place(i, j);
 
