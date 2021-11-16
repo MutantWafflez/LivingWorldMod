@@ -6,6 +6,7 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Cil;
+using Mono.Cecil.Cil;
 using System;
 using System.Linq;
 using Terraria;
@@ -44,9 +45,9 @@ namespace LivingWorldMod.Common.Patches {
             c.ErrorOnFailedGotoNext(i => i.MatchRet());
 
             //Get original value off stack, load required variables afterwards
-            c.Emit(Mono.Cecil.Cil.OpCodes.Pop);
-            c.Emit(Mono.Cecil.Cil.OpCodes.Ldarg_0);
-            c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_1);
+            c.Emit(OpCodes.Pop);
+            c.Emit(OpCodes.Ldarg_0);
+            c.Emit(OpCodes.Ldloc_1);
             //Do villager testing
             c.EmitDelegate<Func<int, bool, bool>>((type, result) => {
                 //If the Town NPC already isn't allowed to spawn here for whatever reason, no need to do any additional fancy stuff
@@ -116,7 +117,7 @@ namespace LivingWorldMod.Common.Patches {
                 return false;
             });
             //Actual instruction that causes the "skipping." This instruction is why the exit label is necessary, since without it, the IL literally won't function and the head will draw.
-            c.Emit(Mono.Cecil.Cil.OpCodes.Brtrue_S, exitLabel);
+            c.Emit(OpCodes.Brtrue_S, exitLabel);
         }
 
         private void BannersVisibleWhileInVillagerHousingMenu(ILContext il) {
@@ -130,7 +131,7 @@ namespace LivingWorldMod.Common.Patches {
             c.ErrorOnFailedGotoNext(i => i.MatchLdsfld<Main>(nameof(Main.EquipPage)));
 
             //If we correctly navigated to the EquipPage, we need to get the label of the beq_s that is associated with it (see IL block below)
-            if (c.Instrs[c.Index + 2].OpCode == Mono.Cecil.Cil.OpCodes.Beq_S) {
+            if (c.Instrs[c.Index + 2].OpCode == OpCodes.Beq_S) {
                 //Steal the label from the beq_s
                 ILLabel stolenLabel = (ILLabel)c.Instrs[c.Index + 2].Operand;
 
@@ -143,7 +144,7 @@ namespace LivingWorldMod.Common.Patches {
                 // but since we took control of the instructions, we can test based on if it's true or not for easy understanding
                 c.EmitDelegate<Func<bool>>(() => Main.EquipPage == 1 || ModContent.GetInstance<VillagerHousingUISystem>().housingState.isMenuVisible);
 
-                c.Emit(Mono.Cecil.Cil.OpCodes.Brtrue_S, stolenLabel);
+                c.Emit(OpCodes.Brtrue_S, stolenLabel);
             }
             else {
                 //Throw error is the code does not match, since this IL edit is kind of a necessary functionality of the mod
@@ -204,9 +205,9 @@ namespace LivingWorldMod.Common.Patches {
 
             //Replace the normal call with our own if the npc is a villager
             //Pop the normal texture asset off the stack
-            c.Emit(Mono.Cecil.Cil.OpCodes.Pop);
+            c.Emit(OpCodes.Pop);
             //Load this NPC to stack
-            c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, npcLocalNumber);
+            c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
             //If this NPC is a villager, use our own modded banners. If not, return the normal one
             c.EmitDelegate<Func<NPC, Texture2D>>(npc => npc.ModNPC is Villager ? ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + "UI/VillagerHousingUI/VillagerHousing_Banners").Value : TextureAssets.HouseBanner.Value);
 
@@ -215,11 +216,11 @@ namespace LivingWorldMod.Common.Patches {
 
             //In order for the drawing to be framed properly, we must take into account whether or not it's our modded banners or not
             //Pop the normal framing rectangle off the stack
-            c.Emit(Mono.Cecil.Cil.OpCodes.Pop);
+            c.Emit(OpCodes.Pop);
             //Load this NPC to stack
-            c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, npcLocalNumber);
+            c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
             //Load the current texture to the stack
-            c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, bannerAssetLocalNumber);
+            c.Emit(OpCodes.Ldloc_S, bannerAssetLocalNumber);
             //If this NPC is a villager, adjust the framing rectangle to use our modded proportions. If not, return the normal vanilla value
             c.EmitDelegate<Func<NPC, Texture2D, Rectangle>>((npc, texture) => npc.ModNPC is Villager ? texture.Frame(2, (int)VillagerType.TypeCount) : texture.Frame(2, 2));
 
@@ -256,17 +257,17 @@ namespace LivingWorldMod.Common.Patches {
             //Move to instruction right AFTER the normal spritebatch call
             c.Index -= 14;
             //Load this NPC to stack
-            c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, npcLocalNumber);
+            c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
             //Place exit instruction on the new instruction we just emitted ^ then return to old instruction
             c.Index--;
             exitInstruction = c.MarkLabel();
             c.Index++;
             //Load local variable 8, or homeTileX in tile coordinates
-            c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, homeTileXLocalNumber);
+            c.Emit(OpCodes.Ldloc_S, homeTileXLocalNumber);
             //Load local variable 9, or homeTileY in tile coordinates
-            c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, homeTileYLocalNumber);
+            c.Emit(OpCodes.Ldloc_S, homeTileYLocalNumber);
             //Load local variable 16, or num11, or homeTileY in pixels
-            c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, homeTileYInWorldLocalNumber);
+            c.Emit(OpCodes.Ldloc_S, homeTileYInWorldLocalNumber);
             //Apply custom draw code
             c.EmitDelegate<Action<NPC, int, int, float>>((npc, homeTileX, homeTileY, homeTileYPixels) => {
                 if (npc.ModNPC is Villager villager) {
@@ -295,10 +296,10 @@ namespace LivingWorldMod.Common.Patches {
             //Move to IL instruction that denotes the beginning of the line
             c.Index -= 3;
             //Load this NPC to stack
-            c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, npcLocalNumber);
+            c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
             //Test for villager status
             c.EmitDelegate<Func<NPC, bool>>(npc => npc.ModNPC is Villager);
-            c.Emit(Mono.Cecil.Cil.OpCodes.Brtrue_S, exitInstruction);
+            c.Emit(OpCodes.Brtrue_S, exitInstruction);
 
             //I would put the IL block in question here, but it is a very small edit and the IL block is really big due to it including
             // a lot of math instructions and a spritebatch call
@@ -311,7 +312,7 @@ namespace LivingWorldMod.Common.Patches {
             c.ErrorOnFailedGotoNext(i => i.MatchStloc(bannerHoverTextLocalNumber));
 
             //Load this NPC to stack
-            c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, npcLocalNumber);
+            c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
             //Add onto the normal text if villager and not well-liked enough
             c.EmitDelegate<Func<string, NPC, string>>((normalText, npc) =>
                 normalText + (npc.ModNPC is Villager { RelationshipStatus: < VillagerRelationship.Like } villager ?
@@ -325,7 +326,7 @@ namespace LivingWorldMod.Common.Patches {
             //Move past local load instruction
             c.Index++;
             //Load this NPC to stack
-            c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, npcLocalNumber);
+            c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
             //Remember that we moved after the right click loading instruction, so we have two things on the stack now
             c.EmitDelegate<Func<bool, NPC, bool>>((didRightClick, npc) => {
                 //If not right clicking, then return false, no checking needed

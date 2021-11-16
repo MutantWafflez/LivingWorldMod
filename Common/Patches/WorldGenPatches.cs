@@ -3,6 +3,7 @@ using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using MonoMod.Cil;
+using Mono.Cecil.Cil;
 using System;
 using Terraria;
 using Terraria.ModLoader;
@@ -32,8 +33,8 @@ namespace LivingWorldMod.Common.Patches {
             // hole area is going to be filled or not. All we do it return true if the point in question is in the Harpy village zone, which prevents the filling at that point
             c.ErrorOnFailedGotoNext(i => i.MatchStloc(flagFiveLocalNumber));
 
-            c.Emit(Mono.Cecil.Cil.OpCodes.Pop);
-            c.Emit(Mono.Cecil.Cil.OpCodes.Ldloc_S, itemLocalNumber);
+            c.Emit(OpCodes.Pop);
+            c.Emit(OpCodes.Ldloc_S, itemLocalNumber);
             c.EmitDelegate<Func<Point, bool>>(point => {
                 //Checks if Harpy village zone is not null
                 if (ModContent.GetInstance<WorldCreationSystem>().villageZones[(int)VillagerType.Harpy] is Rectangle rectangle) {
