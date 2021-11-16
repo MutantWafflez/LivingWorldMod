@@ -1,5 +1,10 @@
 using System;
+using System.Linq;
+using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.Tiles.Interactables;
+using LivingWorldMod.Custom.Classes;
+using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -16,13 +21,36 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
     public class WaystoneEntity : BaseTileEntity {
 
         public bool isActivated;
-        
+
+        public WaystoneType waystoneType;
+
+        /// <summary>
+        /// Base entity of WaystoneEntity, used for placing more instances of itself.
+        /// </summary>
+        public static WaystoneEntity BaseEntity => TileEntitySystem.GetBaseEntityInstance<WaystoneEntity>();
+
         private int activationVFXStage;
         private int activationVFXTimer;
         private int activationVFXSecondaryTimer;
         private bool doingActivationVFX;
         
         public override int ValidTileID => ModContent.TileType<WaystoneTile>();
+
+        /// <summary>
+        /// Called when a waystone tile is placed. Places a waystone entity at the tile's location.
+        /// </summary>
+        public static int WaystonePlaced(int i, int j, int type, int style, int direction, int alternate) {
+            WaystoneSystem waystoneSystem = ModContent.GetInstance<WaystoneSystem>();
+
+            // Place tile entity and assign its type
+            int waystoneEntityID = BaseEntity.Place(i, j);
+            ((WaystoneEntity)ByID[waystoneEntityID]).waystoneType = (WaystoneType)style;
+
+            // Add to data list
+            waystoneSystem.waystoneData.Add(new WaystoneInfo(new Point16(i, j), (WaystoneType)style, false));
+
+            return waystoneEntityID;
+        }
 
         public override void Update() {
             // Only run code during the activation sequence (and the player is tabbed in)
@@ -72,7 +100,11 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                     SoundEngine.PlaySound(SoundID.Item113, tileCenter);
                     
                     Main.NewText(LocalizationUtils.GetLWMTextValue("Event.WaystoneActivation"), Color.Yellow);
-                    
+
+                    //Activate this waystone on the map
+                    if (ModContent.GetInstance<WaystoneSystem>().waystoneData.FirstOrDefault(waystone => waystone.tileLocation == Position) is { } info) {
+                        info.isActivated = true;
+                    }
                     isActivated = true;
                 }
                 else if (activationVFXTimer > circlePullThreshold + finaleThreshold) {
@@ -85,8 +117,16 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             }
         }
 
+        public override void OnKill() {
+            // Remove this entry when the tile is killed. Shouldn't be possible, but if it *does* happen, we handle it
+            WaystoneSystem waystoneSystem = ModContent.GetInstance<WaystoneSystem>();
+            if (waystoneSystem.waystoneData.FirstOrDefault(waystone => waystone.tileLocation == Position) is { } info) {
+                waystoneSystem.waystoneData.Remove(info);
+            }
+        }
+
         public void RightClicked() {
-            if (isActivated) {
+            if (isActivated || doingActivationVFX) {
                 return;
             }
             

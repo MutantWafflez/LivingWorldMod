@@ -1,14 +1,11 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using System.Linq;
+using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.TileEntities.Interactables;
-using LivingWorldMod.Content.Tiles.Interactables.VillageShrines;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.GameContent.Tile_Entities;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -19,8 +16,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
     /// Class for Waystone tiles, which are basically Pylons but in the wild.
     /// </summary>
     public class WaystoneTile : BaseTile {
-        
-        public WaystoneEntity TileEntity => (WaystoneEntity)TileEntitySystem.tileEntities.Find(entity => entity.ValidTileID == ModContent.TileType<WaystoneTile>());
+
+        public WaystoneEntity TileEntity => TileEntitySystem.GetBaseEntityInstance<WaystoneEntity>();
 
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
@@ -36,14 +33,13 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             TileObjectData.newTile.LavaPlacement = LiquidPlacement.NotAllowed;
             
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
-            TileObjectData.newTile.Origin = new Point16(1, 2);
+            TileObjectData.newTile.Origin = Point16.Zero;
             TileObjectData.newTile.Height = 3;
             TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.DrawYOffset = 2;
 
-            //To add pylon network fuctionality
-            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(TETeleportationPylon.PlacementPreviewHook_AfterPlacement, -1, 0, processedCoordinates: false);
+            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(WaystoneEntity.WaystonePlaced, 1, 0, true);
 
             TileObjectData.addTile(Type);
 
@@ -74,22 +70,6 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
                 g = 0.5f;
                 b = 0;
             }
-        }
-
-        public override void PlaceInWorld(int i, int j, Item item) {
-#if DEBUG
-            if (TileEntity.EntityExistsHere(i, j)) {
-                return;
-            }
-
-            return;
-
-            int entityID = TileEntity.Place(i, j);
-
-            if (Main.netMode == NetmodeID.MultiplayerClient) {
-                NetMessage.SendData(MessageID.TileEntitySharing, ignoreClient: Main.myPlayer, number: entityID);
-            }
-#endif
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => TileEntity.Kill(i, j);

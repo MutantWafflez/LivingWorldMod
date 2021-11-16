@@ -14,6 +14,14 @@ namespace LivingWorldMod.Common.Systems {
     public class TileEntitySystem : ModSystem {
         public static List<BaseTileEntity> tileEntities;
 
+        /// <summary>
+        /// Searches and returns the base tile entity of the specified type.
+        /// Use this instance to place entities of said type.
+        /// </summary>
+        public static T GetBaseEntityInstance<T>() where T : BaseTileEntity {
+            return (T)tileEntities.Find(entity => entity.GetType() == typeof(T));
+        }
+
         public override void Load() {
             tileEntities = new List<BaseTileEntity>();
 
