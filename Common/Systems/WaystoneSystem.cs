@@ -2,7 +2,6 @@
 using System.Linq;
 using LivingWorldMod.Common.VanillaOverrides;
 using LivingWorldMod.Custom.Classes;
-using LivingWorldMod.Custom.Structs;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
