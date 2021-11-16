@@ -2,7 +2,7 @@
     public enum WaystoneType : int {
         Desert,
         Jungle,
-        GlowingMushroom,
+        Mushroom,
         Caverns,
         Ice
     }
