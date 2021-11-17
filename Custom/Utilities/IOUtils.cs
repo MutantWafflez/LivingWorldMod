@@ -14,13 +14,13 @@ namespace LivingWorldMod.Custom.Utilities {
         /// </summary>
         /// <returns> </returns>
         public static string GetLWMFilePath() {
-            string LWMPath = ModLoader.ModPath.Replace("Mods", "LivingWorldMod");
+            string lwmPath = ModLoader.ModPath.Replace("Mods", "LivingWorldMod");
 
-            if (!Directory.Exists(LWMPath)) {
-                Directory.CreateDirectory(LWMPath);
+            if (!Directory.Exists(lwmPath)) {
+                Directory.CreateDirectory(lwmPath);
             }
 
-            return LWMPath;
+            return lwmPath;
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace LivingWorldMod.Custom.Utilities {
         /// "LivingWorldMod/Content/Structures/ExampeStructure.struct" it should not include the
         /// "LivngWorldMod" part, it just needs the "Content/Structures/ExampleStructure.struct" part.
         /// </summary>
-        /// <param name="structurePath"> The path in the LivingWorldMod folder to go to. </param>
+        /// <param name="path"> The path in the LivingWorldMod folder to go to. </param>
         /// <returns> </returns>
         public static StructureData GetStructureFromFile(string path) {
             LivingWorldMod modInstance = ModContent.GetInstance<LivingWorldMod>();

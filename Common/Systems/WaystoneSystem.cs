@@ -17,6 +17,7 @@ namespace LivingWorldMod.Common.Systems {
         public override void Load() {
             // Initialize Waystone data list
             waystoneData = new List<WaystoneInfo>();
+
             // Add Waystone layer to map
             Main.MapIcons.AddLayer(new WaystoneMapLayer());
         }

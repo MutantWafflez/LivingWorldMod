@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 namespace LivingWorldMod.Content.Projectiles.Friendly.Pets {
     //Thanks Trivaxy for the code! :-)
     public class NimbusPetProjectile : BaseProjectile {
-        private int animationTimer;
+        private int _animationTimer;
 
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 5;
@@ -54,7 +54,7 @@ namespace LivingWorldMod.Content.Projectiles.Friendly.Pets {
             }
             else {
                 int animationSpeedModulo = 5;
-                if (++animationTimer % animationSpeedModulo == 0) {
+                if (++_animationTimer % animationSpeedModulo == 0) {
                     if (++Projectile.frame > 4) {
                         Projectile.frame = 1;
                     }

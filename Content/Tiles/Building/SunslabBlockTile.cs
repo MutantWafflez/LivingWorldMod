@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Tiles.Building {
     public class SunslabBlockTile : BaseTile {
-        private Asset<Texture2D> baseTexture;
+        private Asset<Texture2D> _baseTexture;
 
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = true;
@@ -30,7 +30,7 @@ namespace LivingWorldMod.Content.Tiles.Building {
 
             AddMapEntry(Color.Yellow);
 
-            baseTexture = Mod.Assets.Request<Texture2D>(Texture.Replace("LivingWorldMod/", ""));
+            _baseTexture = Mod.Assets.Request<Texture2D>(Texture.Replace("LivingWorldMod/", ""));
         }
 
         public override bool HasWalkDust() => true;
@@ -205,7 +205,7 @@ namespace LivingWorldMod.Content.Tiles.Building {
             }
 
             if (verticalFrame >= 16) {
-                Main.spriteBatch.Draw(baseTexture.Value,
+                Main.spriteBatch.Draw(_baseTexture.Value,
                     new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + additionalDisplacement,
                     new Rectangle(thisTile.frameX, 18 * verticalFrame, 16, 16),
                     Lighting.GetColor(i, j), 0f, default, 1f, SpriteEffects.None, 0f);

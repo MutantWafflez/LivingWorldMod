@@ -18,7 +18,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         /// <summary>
         /// The tile width of Waystones. Used for tile entity placement/destroying calculations.
         /// </summary>
-        private int fullTileWidth = 2;
+        private readonly int _fullTileWidth = 2;
 
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
@@ -55,7 +55,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         public override bool CanKillTile(int i, int j, ref bool blockDamaged) => LivingWorldMod.IsDebug;
 
         public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
-            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, fullTileWidth);
+            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
 
             if (TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity foundEntity) && foundEntity.isActivated) {
                 frameYOffset += AnimationFrameHeight;
@@ -64,7 +64,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) {
             // Lightly glow while activated
-            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, fullTileWidth);
+            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
 
             if (TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity foundEntity) && foundEntity.isActivated) {
                 r = 0.5f;
@@ -76,7 +76,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => TileEntity.Kill(i, j);
 
         public override bool RightClick(int i, int j) {
-            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, fullTileWidth);
+            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
 
             if (TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity foundEntity)) {
                 foundEntity.RightClicked();

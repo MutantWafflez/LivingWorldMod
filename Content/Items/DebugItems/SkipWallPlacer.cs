@@ -10,11 +10,11 @@ namespace LivingWorldMod.Content.Items.DebugItems {
     /// </summary>
     public class SkipWallPlacer : DebugItem {
         public override string Texture => "Terraria/Images/Item_" + ItemID.ActuationRod;
-        private Point16 topLeft = Point16.NegativeOne;
+        private Point16 _topLeft = Point16.NegativeOne;
 
-        private Point16 bottomRight = Point16.NegativeOne;
+        private Point16 _bottomRight = Point16.NegativeOne;
 
-        private bool isPlacingWalls;
+        private bool _isPlacingWalls;
 
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.DrumStick);
@@ -25,22 +25,22 @@ namespace LivingWorldMod.Content.Items.DebugItems {
 
         public override bool? UseItem(Player player) {
             if (player.altFunctionUse == 0) {
-                if (topLeft == Point16.NegativeOne) {
-                    topLeft = new Point16((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
-                    Main.NewText("Top Left Set to: " + topLeft.X + ", " + topLeft.Y);
+                if (_topLeft == Point16.NegativeOne) {
+                    _topLeft = new Point16((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
+                    Main.NewText("Top Left Set to: " + _topLeft.X + ", " + _topLeft.Y);
                 }
-                else if (bottomRight == Point16.NegativeOne) {
-                    bottomRight = new Point16((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
-                    Main.NewText("Bottom Right Set to: " + bottomRight.X + ", " + bottomRight.Y);
+                else if (_bottomRight == Point16.NegativeOne) {
+                    _bottomRight = new Point16((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
+                    Main.NewText("Bottom Right Set to: " + _bottomRight.X + ", " + _bottomRight.Y);
                 }
                 else {
-                    topLeft = Point16.NegativeOne;
-                    bottomRight = Point16.NegativeOne;
+                    _topLeft = Point16.NegativeOne;
+                    _bottomRight = Point16.NegativeOne;
                     Main.NewText("Points Reset");
                 }
                 return true;
             }
-            else if (player.altFunctionUse == 2 && !isPlacingWalls && topLeft != Point16.NegativeOne && bottomRight != Point16.NegativeOne) {
+            else if (player.altFunctionUse == 2 && !_isPlacingWalls && _topLeft != Point16.NegativeOne && _bottomRight != Point16.NegativeOne) {
                 Main.NewText("Placing Skip Walls...");
                 PlaceSkipWalls();
                 return true;
@@ -52,18 +52,18 @@ namespace LivingWorldMod.Content.Items.DebugItems {
         public override bool AltFunctionUse(Player player) => true;
 
         private void PlaceSkipWalls() {
-            isPlacingWalls = true;
+            _isPlacingWalls = true;
 
-            for (int x = 0; x <= bottomRight.X - topLeft.X; x++) {
-                for (int y = 0; y <= bottomRight.Y - topLeft.Y; y++) {
-                    Tile requestedTile = Framing.GetTileSafely(x + topLeft.X, y + topLeft.Y);
+            for (int x = 0; x <= _bottomRight.X - _topLeft.X; x++) {
+                for (int y = 0; y <= _bottomRight.Y - _topLeft.Y; y++) {
+                    Tile requestedTile = Framing.GetTileSafely(x + _topLeft.X, y + _topLeft.Y);
                     if (requestedTile.wall == WallID.None) {
-                        WorldGen.PlaceWall(x + topLeft.X, y + topLeft.Y, ModContent.WallType<SkipWall>());
+                        WorldGen.PlaceWall(x + _topLeft.X, y + _topLeft.Y, ModContent.WallType<SkipWall>());
                     }
                 }
             }
 
-            isPlacingWalls = false;
+            _isPlacingWalls = false;
             Main.NewText("Walls Placed!");
         }
     }

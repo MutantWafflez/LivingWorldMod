@@ -29,15 +29,15 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         /// </summary>
         public bool preventItemUsageWhileHovering = true;
 
-        private string text;
+        private string _text;
 
-        private Asset<Texture2D> buttonTexture;
+        private Asset<Texture2D> _buttonTexture;
 
-        private Asset<Texture2D> borderTexture;
+        private Asset<Texture2D> _borderTexture;
 
-        private float activeVisibility = 1f;
+        private float _activeVisibility = 1f;
 
-        private float inactiveVisibility = 0.4f;
+        private float _inactiveVisibility = 0.4f;
 
         /// <summary>
         /// Simple action/event that triggers after every frame while the mouse is currently
@@ -53,22 +53,22 @@ namespace LivingWorldMod.Content.UI.CommonElements {
 
         //Remember to use ImmediateLoad request mode if you request the texture in the parameter!
         public UIBetterImageButton(Asset<Texture2D> buttonTexture, string text = null, float textSize = 1f) {
-            this.buttonTexture = buttonTexture;
-            this.text = text;
+            _buttonTexture = buttonTexture;
+            _text = text;
             this.textSize = textSize;
             Width.Set(buttonTexture.Value.Width, 0f);
             Height.Set(buttonTexture.Value.Height, 0f);
         }
 
         public override void OnInitialize() {
-            if (text is null) {
+            if (_text is null) {
                 return;
             }
 
-            buttonText = new UIBetterText(text, textSize) {
+            buttonText = new UIBetterText(_text, textSize) {
                 HAlign = 0.5f,
                 VAlign = 0.5f,
-                horizontalTextConstraint = buttonTexture.Value.Width
+                horizontalTextConstraint = _buttonTexture.Value.Width
             };
 
             Append(buttonText);
@@ -101,7 +101,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             }
 
             CalculatedStyle dimensions = GetDimensions();
-            spriteBatch.Draw(buttonTexture.Value, dimensions.Position(), Color.White * (IsMouseHovering ? activeVisibility : inactiveVisibility));
+            spriteBatch.Draw(_buttonTexture.Value, dimensions.Position(), Color.White * (IsMouseHovering ? _activeVisibility : _inactiveVisibility));
 
             //Hovering functionality
             if (!IsMouseHovering) {
@@ -113,33 +113,33 @@ namespace LivingWorldMod.Content.UI.CommonElements {
                 Main.LocalPlayer.mouseInterface = preventItemUsageWhileHovering;
             }
 
-            if (borderTexture != null) {
-                spriteBatch.Draw(borderTexture.Value, dimensions.Position(), Color.White);
+            if (_borderTexture != null) {
+                spriteBatch.Draw(_borderTexture.Value, dimensions.Position(), Color.White);
             }
         }
 
-        public void SetHoverImage(Asset<Texture2D> texture) => borderTexture = texture;
+        public void SetHoverImage(Asset<Texture2D> texture) => _borderTexture = texture;
 
         public void SetImage(Asset<Texture2D> texture) {
-            buttonTexture = texture;
-            Width.Set(buttonTexture.Width(), 0f);
-            Height.Set(buttonTexture.Height(), 0f);
+            _buttonTexture = texture;
+            Width.Set(_buttonTexture.Width(), 0f);
+            Height.Set(_buttonTexture.Height(), 0f);
 
             if (buttonText is not null) {
-                buttonText.horizontalTextConstraint = buttonTexture.Width();
+                buttonText.horizontalTextConstraint = _buttonTexture.Width();
             }
 
             RecalculateChildren();
         }
 
         public void SetText(string text) {
-            this.text = text;
+            _text = text;
             RecalculateChildren();
         }
 
         public void SetVisibility(float whenActive, float whenInactive) {
-            activeVisibility = MathHelper.Clamp(whenActive, 0.0f, 1f);
-            inactiveVisibility = MathHelper.Clamp(whenInactive, 0.0f, 1f);
+            _activeVisibility = MathHelper.Clamp(whenActive, 0.0f, 1f);
+            _inactiveVisibility = MathHelper.Clamp(whenInactive, 0.0f, 1f);
         }
     }
 }

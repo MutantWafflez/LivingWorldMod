@@ -6,20 +6,20 @@ namespace LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes {
     /// GenShape that generates an "equilateral" triangle with the passed in side length.
     /// </summary>
     public class EqualTriangle : GenShape {
-        private readonly int sideLength;
+        private readonly int _sideLength;
 
         public EqualTriangle(int sideLength) {
-            this.sideLength = sideLength;
+            _sideLength = sideLength;
         }
 
         public override bool Perform(Point origin, GenAction action) {
-            bool hasCenter = sideLength % 2 == 1;
+            bool hasCenter = _sideLength % 2 == 1;
 
             int x = 0;
             int y = 0;
             int layerWidthExcludingCenter = 0;
 
-            while (layerWidthExcludingCenter * 2 + (hasCenter ? 1 : 2) <= sideLength) {
+            while (layerWidthExcludingCenter * 2 + (hasCenter ? 1 : 2) <= _sideLength) {
                 //Do action on the left side of the center
                 for (; x <= 0; x++) {
                     if (!UnitApply(action, origin, origin.X + x, origin.Y + y)) {

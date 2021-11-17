@@ -27,12 +27,12 @@ namespace LivingWorldMod.Content.UI.Elements {
         public VillagerPortraitExpression temporaryExpression;
         public float temporaryExpressionTimer;
 
-        private Villager villager;
+        private Villager _villager;
 
-        private string PortraitSpritePath => $"{LivingWorldMod.LWMSpritePath}UI/ShopUI/{villager.VillagerType}/Portraits/";
+        private string PortraitSpritePath => $"{LivingWorldMod.LWMSpritePath}UI/ShopUI/{_villager.VillagerType}/Portraits/";
 
         public UIPortrait(Villager villager) {
-            this.villager = villager;
+            _villager = villager;
             Width.Set(190f, 0f);
             Height.Set(190f, 0f);
         }
@@ -75,14 +75,14 @@ namespace LivingWorldMod.Content.UI.Elements {
         }
 
         public void ChangePortraitType(Villager newVillager) {
-            villager = newVillager;
+            _villager = newVillager;
             ReloadPortrait();
         }
 
         public void ReloadPortrait() {
             PopulateExpressionDictionary();
 
-            switch (villager.RelationshipStatus) {
+            switch (_villager.RelationshipStatus) {
                 case <= VillagerRelationship.SevereDislike:
                     currentExpression = VillagerPortraitExpression.Angered;
                     break;
@@ -98,9 +98,9 @@ namespace LivingWorldMod.Content.UI.Elements {
 
             portraitBase.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Base", AssetRequestMode.ImmediateLoad));
 
-            portraitClothing.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Body{villager.bodySpriteType}", AssetRequestMode.ImmediateLoad));
+            portraitClothing.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Body{_villager.bodySpriteType}", AssetRequestMode.ImmediateLoad));
 
-            portraitHead.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Head{villager.headSpriteType}", AssetRequestMode.ImmediateLoad));
+            portraitHead.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Head{_villager.headSpriteType}", AssetRequestMode.ImmediateLoad));
 
             portraitExpression.SetImage(expressionDictionary[currentExpression]);
         }

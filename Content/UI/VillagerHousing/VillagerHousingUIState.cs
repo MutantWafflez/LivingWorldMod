@@ -64,7 +64,7 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
         /// <summary>
         /// The displacement of the menu icon based on the map and its current mode/placement.
         /// </summary>
-        private int mapDisplacement;
+        private int _mapDisplacement;
 
         /// <summary>
         /// Path to the sprites for this UI.
@@ -132,32 +132,32 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             bool isMiniMapEnabled = !Main.mapFullscreen && Main.mapStyle == 1;
 
             //Adapted vanilla code since "Main.mH" is private, and I do not want to use reflection every frame
-            mapDisplacement = 0;
+            _mapDisplacement = 0;
 
             if (Main.mapEnabled) {
                 if (isMiniMapEnabled) {
-                    mapDisplacement = 256;
+                    _mapDisplacement = 256;
                 }
 
-                if (mapDisplacement + Main.instance.RecommendedEquipmentAreaPushUp > Main.screenHeight) {
-                    mapDisplacement = Main.screenHeight - Main.instance.RecommendedEquipmentAreaPushUp;
+                if (_mapDisplacement + Main.instance.RecommendedEquipmentAreaPushUp > Main.screenHeight) {
+                    _mapDisplacement = Main.screenHeight - Main.instance.RecommendedEquipmentAreaPushUp;
                 }
             }
 
             //Update positions
             openMenuButton.Left.Set(Main.screenWidth - (isMiniMapEnabled ? 220f : 177f), 0f);
-            openMenuButton.Top.Set((isMiniMapEnabled ? 143f : 114f) + mapDisplacement, 0f);
+            openMenuButton.Top.Set((isMiniMapEnabled ? 143f : 114f) + _mapDisplacement, 0f);
 
-            enumerateLeftButton.Top.Set(180f + mapDisplacement, 0f);
+            enumerateLeftButton.Top.Set(180f + _mapDisplacement, 0f);
 
-            villagerTypeCenterElement.Top.Set(180f + mapDisplacement, 0f);
+            villagerTypeCenterElement.Top.Set(180f + _mapDisplacement, 0f);
 
-            enumerateRightButton.Top.Set(180f + mapDisplacement, 0f);
+            enumerateRightButton.Top.Set(180f + _mapDisplacement, 0f);
 
-            gridScrollbar.Top.Set(214f + mapDisplacement, 0f);
-            gridScrollbar.Height.Set(390f - mapDisplacement, 0f);
+            gridScrollbar.Top.Set(214f + _mapDisplacement, 0f);
+            gridScrollbar.Height.Set(390f - _mapDisplacement, 0f);
 
-            gridOfVillagers.Top.Set(214f + mapDisplacement, 0f);
+            gridOfVillagers.Top.Set(214f + _mapDisplacement, 0f);
             gridOfVillagers.Height.Set(gridScrollbar.Height.Pixels, 0f);
 
             //Disable Menu Visibility when any other equip page buttons are pressed

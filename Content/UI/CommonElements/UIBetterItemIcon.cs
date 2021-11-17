@@ -18,14 +18,14 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         /// </summary>
         public bool isVisible = true;
 
-        private Item displayedItem;
-        private float sizeLimit;
-        private bool drawFromCenter;
+        private Item _displayedItem;
+        private float _sizeLimit;
+        private bool _drawFromCenter;
 
         public UIBetterItemIcon(Item displayedItem, float sizeLimit, bool drawFromCenter) {
-            this.displayedItem = displayedItem;
-            this.sizeLimit = sizeLimit;
-            this.drawFromCenter = drawFromCenter;
+            _displayedItem = displayedItem;
+            _sizeLimit = sizeLimit;
+            _drawFromCenter = drawFromCenter;
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
@@ -34,42 +34,42 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             }
 
             //Adapted Vanilla Code
-            Main.instance.LoadItem(displayedItem.type);
+            Main.instance.LoadItem(_displayedItem.type);
 
-            Texture2D itemTexture = TextureAssets.Item[displayedItem.type].Value;
-            Rectangle itemAnimFrame = Main.itemAnimations[displayedItem.type] == null ? itemTexture.Frame() : Main.itemAnimations[displayedItem.type].GetFrame(itemTexture);
+            Texture2D itemTexture = TextureAssets.Item[_displayedItem.type].Value;
+            Rectangle itemAnimFrame = Main.itemAnimations[_displayedItem.type] == null ? itemTexture.Frame() : Main.itemAnimations[_displayedItem.type].GetFrame(itemTexture);
 
             Color currentColor = Color.White;
             float itemLightScale = 1f;
             float sizeConstraint = 1f;
 
-            ItemSlot.GetItemLight(ref currentColor, ref itemLightScale, displayedItem);
+            ItemSlot.GetItemLight(ref currentColor, ref itemLightScale, _displayedItem);
             sizeConstraint *= itemLightScale;
 
-            if (itemAnimFrame.Width > sizeLimit || itemAnimFrame.Height > sizeLimit) {
-                sizeConstraint = itemAnimFrame.Width <= itemAnimFrame.Height ? sizeLimit / itemAnimFrame.Height : sizeLimit / itemAnimFrame.Width;
+            if (itemAnimFrame.Width > _sizeLimit || itemAnimFrame.Height > _sizeLimit) {
+                sizeConstraint = itemAnimFrame.Width <= itemAnimFrame.Height ? _sizeLimit / itemAnimFrame.Height : _sizeLimit / itemAnimFrame.Width;
             }
 
-            sizeConstraint *= displayedItem.scale;
+            sizeConstraint *= _displayedItem.scale;
 
             spriteBatch.Draw(itemTexture,
-                drawFromCenter ? GetDimensions().Center() : GetDimensions().Position(),
+                _drawFromCenter ? GetDimensions().Center() : GetDimensions().Position(),
                 itemAnimFrame,
                 currentColor,
                 0f,
-                drawFromCenter ? new Vector2(itemAnimFrame.Width / 2f, itemAnimFrame.Height / 2f) : default,
+                _drawFromCenter ? new Vector2(itemAnimFrame.Width / 2f, itemAnimFrame.Height / 2f) : default,
                 sizeConstraint,
                 SpriteEffects.None,
                 0f);
 
             //Non-vanilla code
             if (ContainsPoint(Main.MouseScreen)) {
-                ItemSlot.MouseHover(ref displayedItem, context);
+                ItemSlot.MouseHover(ref _displayedItem, context);
             }
         }
 
         public void SetItem(Item newItem) {
-            displayedItem = newItem;
+            _displayedItem = newItem;
             Recalculate();
         }
     }

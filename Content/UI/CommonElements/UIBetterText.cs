@@ -52,29 +52,29 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         }
 
         public bool IsWrapped {
-            get => isWrapped;
+            get => _isWrapped;
             set {
-                isWrapped = value;
-                InternalSetText(Text, initialTextScale, isLarge);
+                _isWrapped = value;
+                InternalSetText(Text, _initialTextScale, _isLarge);
             }
         }
 
         public Color TextColor {
-            get => color;
-            set => color = value;
+            get => _color;
+            set => _color = value;
         }
 
-        private float initialTextScale = 1f;
-        private float dynamicTextScale = 1f;
-        private Vector2 initialTextSize = Vector2.Zero;
-        private Vector2 dynamicTextSize = Vector2.Zero;
-        private Color color = Color.White;
+        private float _initialTextScale = 1f;
+        private float _dynamicTextScale = 1f;
+        private Vector2 _initialTextSize = Vector2.Zero;
+        private Vector2 _dynamicTextSize = Vector2.Zero;
+        private Color _color = Color.White;
 
-        private bool isLarge;
-        private bool isWrapped;
+        private bool _isLarge;
+        private bool _isWrapped;
 
-        private string visibleText;
-        private string lastTextReference;
+        private string _visibleText;
+        private string _lastTextReference;
 
         public event Action OnInternalTextChange;
 
@@ -95,7 +95,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         }
 
         public override void Recalculate() {
-            InternalSetText(Text, initialTextScale, isLarge);
+            InternalSetText(Text, _initialTextScale, _isLarge);
             base.Recalculate();
         }
 
@@ -110,35 +110,35 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             CalculatedStyle innerDimensions = GetInnerDimensions();
             Vector2 pos = innerDimensions.Position();
 
-            if (isLarge) {
-                pos.Y -= 10f * dynamicTextScale;
+            if (_isLarge) {
+                pos.Y -= 10f * _dynamicTextScale;
             }
             else {
-                pos.Y -= 2f * dynamicTextScale;
+                pos.Y -= 2f * _dynamicTextScale;
             }
 
-            pos.X += (innerDimensions.Width - dynamicTextSize.X) * TextOriginX;
-            pos.Y += (innerDimensions.Height - dynamicTextSize.Y) * TextOriginY;
+            pos.X += (innerDimensions.Width - _dynamicTextSize.X) * TextOriginX;
+            pos.Y += (innerDimensions.Height - _dynamicTextSize.Y) * TextOriginY;
 
-            if (isLarge) {
-                Utils.DrawBorderStringBig(spriteBatch, visibleText, pos, color, dynamicTextScale);
+            if (_isLarge) {
+                Utils.DrawBorderStringBig(spriteBatch, _visibleText, pos, _color, _dynamicTextScale);
             }
             else {
-                Utils.DrawBorderString(spriteBatch, visibleText, pos, color, dynamicTextScale);
+                Utils.DrawBorderString(spriteBatch, _visibleText, pos, _color, _dynamicTextScale);
             }
         }
 
         public void SetText(string text, float scaledText = 0f, bool? large = null) {
-            InternalSetText(text, scaledText == 0f ? initialTextScale : scaledText, large ?? isLarge);
+            InternalSetText(text, scaledText == 0f ? _initialTextScale : scaledText, large ?? _isLarge);
         }
 
         public void SetText(LocalizedText text, float scaledText = 0f, bool? large = null) {
-            InternalSetText(text, scaledText == 0f ? initialTextScale : scaledText, large ?? isLarge);
+            InternalSetText(text, scaledText == 0f ? _initialTextScale : scaledText, large ?? _isLarge);
         }
 
         private void VerifyTextState() {
-            if (!ReferenceEquals(lastTextReference, Text)) {
-                InternalSetText(Text, initialTextScale, isLarge);
+            if (!ReferenceEquals(_lastTextReference, Text)) {
+                InternalSetText(Text, _initialTextScale, _isLarge);
             }
         }
 
@@ -146,34 +146,34 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             DynamicSpriteFont dynamicSpriteFont = large ? FontAssets.DeathText.Value : FontAssets.MouseText.Value;
 
             innerText = text;
-            isLarge = large;
-            initialTextScale = textScale;
-            dynamicTextScale = textScale;
-            lastTextReference = Text;
+            _isLarge = large;
+            _initialTextScale = textScale;
+            _dynamicTextScale = textScale;
+            _lastTextReference = Text;
 
-            visibleText = IsWrapped ? dynamicSpriteFont.CreateWrappedText(lastTextReference, horizontalWrapConstraint) : lastTextReference;
+            _visibleText = IsWrapped ? dynamicSpriteFont.CreateWrappedText(_lastTextReference, horizontalWrapConstraint) : _lastTextReference;
 
-            Vector2 stringSize = dynamicSpriteFont.MeasureString(visibleText);
+            Vector2 stringSize = dynamicSpriteFont.MeasureString(_visibleText);
 
-            initialTextSize = !IsWrapped ? new Vector2(stringSize.X, isLarge ? 32f : 16f) * initialTextScale : new Vector2(stringSize.X, stringSize.Y + WrappedTextBottomPadding) * initialTextScale;
+            _initialTextSize = !IsWrapped ? new Vector2(stringSize.X, _isLarge ? 32f : 16f) * _initialTextScale : new Vector2(stringSize.X, stringSize.Y + WrappedTextBottomPadding) * _initialTextScale;
 
-            if (horizontalTextConstraint > 0f && initialTextSize.X > horizontalTextConstraint) {
-                dynamicTextScale *= horizontalTextConstraint / initialTextSize.X;
-                dynamicTextSize = !IsWrapped ? new Vector2(stringSize.X, isLarge ? 32f : 16f) * dynamicTextScale : new Vector2(stringSize.X, stringSize.Y + WrappedTextBottomPadding) * dynamicTextScale;
+            if (horizontalTextConstraint > 0f && _initialTextSize.X > horizontalTextConstraint) {
+                _dynamicTextScale *= horizontalTextConstraint / _initialTextSize.X;
+                _dynamicTextSize = !IsWrapped ? new Vector2(stringSize.X, _isLarge ? 32f : 16f) * _dynamicTextScale : new Vector2(stringSize.X, stringSize.Y + WrappedTextBottomPadding) * _dynamicTextScale;
             }
             else {
-                dynamicTextScale = initialTextScale;
-                dynamicTextSize = initialTextSize;
+                _dynamicTextScale = _initialTextScale;
+                _dynamicTextSize = _initialTextSize;
             }
 
             if (horizontalTextConstraint > 0f) {
-                MaxWidth.Set(initialTextSize.X + PaddingLeft + PaddingRight, 0f);
+                MaxWidth.Set(_initialTextSize.X + PaddingLeft + PaddingRight, 0f);
                 Width.Set(horizontalTextConstraint, 0f);
-                Height = MaxHeight = new StyleDimension(dynamicTextSize.Y + PaddingTop + PaddingBottom, 0f);
+                Height = MaxHeight = new StyleDimension(_dynamicTextSize.Y + PaddingTop + PaddingBottom, 0f);
             }
             else {
-                Width = MaxWidth = new StyleDimension(initialTextSize.X + PaddingLeft + PaddingRight, 0f);
-                Height = MaxHeight = new StyleDimension(initialTextSize.Y + PaddingTop + PaddingBottom, 0f);
+                Width = MaxWidth = new StyleDimension(_initialTextSize.X + PaddingLeft + PaddingRight, 0f);
+                Height = MaxHeight = new StyleDimension(_initialTextSize.Y + PaddingTop + PaddingBottom, 0f);
             }
 
             OnInternalTextChange?.Invoke();

@@ -50,11 +50,11 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
         public UIScrollbar shopScrollbar;
         public UIList shopList;
 
-        private readonly float maxBuyDelay = 60f;
-        private float buySpeed;
-        private float buyDelay;
+        private readonly float _maxBuyDelay = 60f;
+        private float _buySpeed;
+        private float _buyDelay;
 
-        private UIShopItem selectedItem;
+        private UIShopItem _selectedItem;
 
         public override void OnInitialize() {
             string shopUIPath = $"{LivingWorldMod.LWMSpritePath}UI/ShopUI/Harpy/";
@@ -211,28 +211,28 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
                 Main.LocalPlayer.mouseInterface = true;
             }
 
-            if (selectedItem != null && buyItemButton.IsMouseHovering && Main.mouseLeft) {
+            if (_selectedItem != null && buyItemButton.IsMouseHovering && Main.mouseLeft) {
                 Player player = Main.LocalPlayer;
-                ShopItem shopItem = selectedItem.pertainedInventoryItem;
+                ShopItem shopItem = _selectedItem.pertainedInventoryItem;
 
-                if (--buyDelay < 0f) {
-                    buyDelay = 0f;
+                if (--_buyDelay < 0f) {
+                    _buyDelay = 0f;
                 }
 
-                if ((buySpeed -= 1f / 60f) < 0f) {
-                    buySpeed = 0f;
+                if ((_buySpeed -= 1f / 60f) < 0f) {
+                    _buySpeed = 0f;
                 }
 
-                buyDelay *= buySpeed;
+                _buyDelay *= _buySpeed;
 
                 if (shopItem.remainingStock > 0) {
-                    if (player.CanBuyItem((int)selectedItem.displayedCost) && player.CanAcceptItemIntoInventory(selectedItem.displayedItem) && buyDelay <= 0f) {
-                        buyDelay = maxBuyDelay;
+                    if (player.CanBuyItem((int)_selectedItem.displayedCost) && player.CanAcceptItemIntoInventory(_selectedItem.displayedItem) && _buyDelay <= 0f) {
+                        _buyDelay = _maxBuyDelay;
 
                         shopItem.remainingStock--;
 
-                        player.BuyItem((int)selectedItem.displayedCost);
-                        player.QuickSpawnItem(selectedItem.displayedItem);
+                        player.BuyItem((int)_selectedItem.displayedCost);
+                        player.QuickSpawnItem(_selectedItem.displayedItem);
 
                         buyItemStock.SetText(shopItem.remainingStock.ToString());
 
@@ -253,9 +253,9 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
                 }
             }
             else {
-                buySpeed = 1f;
+                _buySpeed = 1f;
                 //Set to zero so on the very first initial buy the purchase goes through instantly
-                buyDelay = 0f;
+                _buyDelay = 0f;
             }
 
             base.Update(gameTime);
@@ -292,7 +292,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
         /// <param name="newSelectedItem"> The newly selected shop item. </param>
         /// <param name="playSound"> Whether or not to play the sound of opening/closing the menu. </param>
         public void SetSelectedItem(UIShopItem newSelectedItem, bool playSound = true) {
-            selectedItem = newSelectedItem;
+            _selectedItem = newSelectedItem;
 
             foreach (UIElement element in shopList) {
                 if (element is UIShopItem shopItem) {
@@ -300,11 +300,11 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
                 }
             }
 
-            if (selectedItem != null) {
-                selectedItem.isSelected = true;
+            if (_selectedItem != null) {
+                _selectedItem.isSelected = true;
 
-                buyItemIcon.SetItem(selectedItem.displayedItem);
-                buyItemStock.SetText(selectedItem.pertainedInventoryItem.remainingStock.ToString());
+                buyItemIcon.SetItem(_selectedItem.displayedItem);
+                buyItemStock.SetText(_selectedItem.pertainedInventoryItem.remainingStock.ToString());
 
                 buyItemHeader.isVisible = true;
                 buyItemIcon.isVisible = true;

@@ -21,8 +21,8 @@ namespace LivingWorldMod.Custom.Classes {
         /// </summary>
         public long ItemPrice {
             get {
-                if (internalPrice.HasValue) {
-                    return internalPrice.Value;
+                if (_internalPrice.HasValue) {
+                    return _internalPrice.Value;
                 }
                 else {
                     Item item = new Item();
@@ -36,12 +36,12 @@ namespace LivingWorldMod.Custom.Classes {
         /// The price of the item type pertaining to this shop index. If null, uses the default
         /// vanilla value of the item.
         /// </summary>
-        private readonly long? internalPrice;
+        private readonly long? _internalPrice;
 
         public ShopItem(int itemType, int remainingStock, long? internalPrice) {
             this.itemType = itemType;
             this.remainingStock = remainingStock;
-            this.internalPrice = internalPrice;
+            _internalPrice = internalPrice;
         }
 
         public static bool operator ==(ShopItem shopItem1, ShopItem shopItem2) => shopItem1.itemType == shopItem2.itemType;

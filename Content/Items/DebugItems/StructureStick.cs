@@ -10,11 +10,11 @@ using Terraria.ModLoader.IO;
 namespace LivingWorldMod.Content.Items.DebugItems {
     public class StructureStick : DebugItem {
         public override string Texture => "Terraria/Images/Item_" + ItemID.DrumStick;
-        private Point16 topLeft = Point16.NegativeOne;
+        private Point16 _topLeft = Point16.NegativeOne;
 
-        private Point16 bottomRight = Point16.NegativeOne;
+        private Point16 _bottomRight = Point16.NegativeOne;
 
-        private bool isSaving;
+        private bool _isSaving;
 
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.DrumStick);
@@ -25,22 +25,22 @@ namespace LivingWorldMod.Content.Items.DebugItems {
 
         public override bool? UseItem(Player player) {
             if (player.altFunctionUse == 0) {
-                if (topLeft == Point16.NegativeOne) {
-                    topLeft = new Point16((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
-                    Main.NewText("Top Left Set to: " + topLeft.X + ", " + topLeft.Y);
+                if (_topLeft == Point16.NegativeOne) {
+                    _topLeft = new Point16((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
+                    Main.NewText("Top Left Set to: " + _topLeft.X + ", " + _topLeft.Y);
                 }
-                else if (bottomRight == Point16.NegativeOne) {
-                    bottomRight = new Point16((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
-                    Main.NewText("Bottom Right Set to: " + bottomRight.X + ", " + bottomRight.Y);
+                else if (_bottomRight == Point16.NegativeOne) {
+                    _bottomRight = new Point16((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
+                    Main.NewText("Bottom Right Set to: " + _bottomRight.X + ", " + _bottomRight.Y);
                 }
                 else {
-                    topLeft = Point16.NegativeOne;
-                    bottomRight = Point16.NegativeOne;
+                    _topLeft = Point16.NegativeOne;
+                    _bottomRight = Point16.NegativeOne;
                     Main.NewText("Points Reset");
                 }
                 return true;
             }
-            else if (player.altFunctionUse == 2 && !isSaving && topLeft != Point16.NegativeOne && bottomRight != Point16.NegativeOne) {
+            else if (player.altFunctionUse == 2 && !_isSaving && _topLeft != Point16.NegativeOne && _bottomRight != Point16.NegativeOne) {
                 Main.NewText("Saving Structure...");
                 SaveStructure();
                 return true;
@@ -52,13 +52,13 @@ namespace LivingWorldMod.Content.Items.DebugItems {
         public override bool AltFunctionUse(Player player) => true;
 
         private void SaveStructure() {
-            isSaving = true;
+            _isSaving = true;
             List<List<TileData>> tileData = new List<List<TileData>>();
 
-            for (int x = 0; x <= bottomRight.X - topLeft.X; x++) {
+            for (int x = 0; x <= _bottomRight.X - _topLeft.X; x++) {
                 tileData.Add(new List<TileData>());
-                for (int y = 0; y <= bottomRight.Y - topLeft.Y; y++) {
-                    Tile requestedTile = Framing.GetTileSafely(x + topLeft.X, y + topLeft.Y);
+                for (int y = 0; y <= _bottomRight.Y - _topLeft.Y; y++) {
+                    Tile requestedTile = Framing.GetTileSafely(x + _topLeft.X, y + _topLeft.Y);
                     tileData[x].Add(new TileData(requestedTile));
                 }
             }
@@ -70,7 +70,7 @@ namespace LivingWorldMod.Content.Items.DebugItems {
             TagIO.ToFile(new TagCompound() { { "structureData", structData } }, outputPath);
 
             Main.NewText("Structure Copied to File!");
-            isSaving = false;
+            _isSaving = false;
         }
     }
 }

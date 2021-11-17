@@ -30,10 +30,10 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
         public override int ValidTileID => ModContent.TileType<WaystoneTile>();
 
-        private int activationVFXStage;
-        private int activationVFXTimer;
-        private int activationVFXSecondaryTimer;
-        private bool doingActivationVFX;
+        private int _activationVFXStage;
+        private int _activationVFXTimer;
+        private int _activationVFXSecondaryTimer;
+        private bool _doingActivationVFX;
 
         /// <summary>
         /// Called when a waystone tile is placed. Places a waystone entity at the tile's location.
@@ -53,7 +53,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
         public override void Update() {
             // Only run code during the activation sequence (and the player is tabbed in)
-            if (!doingActivationVFX) {
+            if (!_doingActivationVFX) {
                 return;
             }
 
@@ -71,39 +71,39 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                 _ => Color.White
             };
 
-            if (activationVFXStage == 0) {
+            if (_activationVFXStage == 0) {
                 // Generate circle of dust. Would use the Utils method that was made for this, but this is "special" drawing
-                for (int x = 0; x <= activationVFXTimer; x++) {
+                for (int x = 0; x <= _activationVFXTimer; x++) {
                     Dust.NewDustPerfect(tileCenter - new Vector2(0, circleRadius).RotatedBy(MathHelper.ToRadians(x * 20f)), DustID.GoldCoin, newColor: activationDustColor);
                 }
 
-                if (++activationVFXSecondaryTimer > 18) {
+                if (++_activationVFXSecondaryTimer > 18) {
                     // Every 18 frames, add a particle to the circle
-                    activationVFXSecondaryTimer = 0;
-                    activationVFXTimer++;
+                    _activationVFXSecondaryTimer = 0;
+                    _activationVFXTimer++;
 
-                    SoundEngine.PlaySound(SoundID.Item100, tileCenter - new Vector2(0, circleRadius).RotatedBy(MathHelper.ToRadians(activationVFXTimer * 20f)));
+                    SoundEngine.PlaySound(SoundID.Item100, tileCenter - new Vector2(0, circleRadius).RotatedBy(MathHelper.ToRadians(_activationVFXTimer * 20f)));
                 }
 
-                if (activationVFXTimer >= 18) {
+                if (_activationVFXTimer >= 18) {
                     // After 18 particles are created, move to next stage
-                    activationVFXStage = 1;
-                    activationVFXTimer = 0;
-                    activationVFXSecondaryTimer = 0;
+                    _activationVFXStage = 1;
+                    _activationVFXTimer = 0;
+                    _activationVFXSecondaryTimer = 0;
                 }
             }
-            else if (activationVFXStage == 1) {
+            else if (_activationVFXStage == 1) {
                 // Drag circle to the center of the tile
                 int circlePullThreshold = 30;
                 int finaleThreshold = 5;
 
-                DustUtils.CreateCircle(tileCenter, circleRadius * (1f - activationVFXTimer / (float)circlePullThreshold), DustID.GoldCoin, newColor: activationDustColor, angleChange: 20f);
+                DustUtils.CreateCircle(tileCenter, circleRadius * (1f - _activationVFXTimer / (float)circlePullThreshold), DustID.GoldCoin, newColor: activationDustColor, angleChange: 20f);
 
                 // Step RAPIDLY closer
-                activationVFXTimer++;
+                _activationVFXTimer++;
 
                 // After center of tile is reached, complete activation
-                if (activationVFXTimer == circlePullThreshold) {
+                if (_activationVFXTimer == circlePullThreshold) {
                     // Play finale sound and give text confirmation
                     SoundEngine.PlaySound(SoundID.Item113, tileCenter);
 
@@ -115,12 +115,12 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                     }
                     isActivated = true;
                 }
-                else if (activationVFXTimer > circlePullThreshold + finaleThreshold) {
+                else if (_activationVFXTimer > circlePullThreshold + finaleThreshold) {
                     // Internally end sequence
-                    doingActivationVFX = false;
-                    activationVFXStage = 0;
-                    activationVFXTimer = 0;
-                    activationVFXSecondaryTimer = 0;
+                    _doingActivationVFX = false;
+                    _activationVFXStage = 0;
+                    _activationVFXTimer = 0;
+                    _activationVFXSecondaryTimer = 0;
                 }
             }
         }
@@ -134,14 +134,14 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         }
 
         public void RightClicked() {
-            if (isActivated || doingActivationVFX) {
+            if (isActivated || _doingActivationVFX) {
                 return;
             }
 
-            doingActivationVFX = true;
-            activationVFXStage = 0;
-            activationVFXTimer = 0;
-            activationVFXSecondaryTimer = 0;
+            _doingActivationVFX = true;
+            _activationVFXStage = 0;
+            _activationVFXTimer = 0;
+            _activationVFXSecondaryTimer = 0;
         }
     }
 }

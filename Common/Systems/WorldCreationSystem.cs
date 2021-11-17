@@ -22,13 +22,7 @@ namespace LivingWorldMod.Common.Systems {
         /// </summary>
         public Rectangle[] villageZones;
 
-        /// <summary>
-        /// List of actions that will be run after world gen is completed per world.
-        /// </summary>
-        private List<Action> postWorldGenActions;
-
         public override void Load() {
-            postWorldGenActions = new List<Action>();
             villageZones = new Rectangle[(int)VillagerType.TypeCount];
         }
 

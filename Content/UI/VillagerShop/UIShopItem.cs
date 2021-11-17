@@ -35,7 +35,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
 
         public bool isSelected;
 
-        private float manualUpdateTime;
+        private float _manualUpdateTime;
 
         public UIShopItem(ShopItem pertainedInventoryItem, long displayedCost, VillagerType villagerType) : base(ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}UI/ShopUI/{villagerType}/ShopItemBox")) {
             this.pertainedInventoryItem = pertainedInventoryItem;
@@ -80,7 +80,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             base.MouseOut(evt);
 
             if (!isSelected) {
-                manualUpdateTime = 0f;
+                _manualUpdateTime = 0f;
             }
         }
 
@@ -109,9 +109,9 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             if (ContainsPoint(Main.MouseScreen) || isSelected) {
                 Effect shader = ShopUISystem.hoverFlashShader.Value;
 
-                manualUpdateTime += 1f / 45f;
-                if (manualUpdateTime >= MathHelper.TwoPi) {
-                    manualUpdateTime = 0f;
+                _manualUpdateTime += 1f / 45f;
+                if (_manualUpdateTime >= MathHelper.TwoPi) {
+                    _manualUpdateTime = 0f;
                 }
 
                 spriteBatch.End();
@@ -120,7 +120,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
                 //So I am unsure as to why exactly this needed to be done, cause this is definitely the definition of a band-aid fix.
                 //In short, when using this shader, uTime isn't being updated at all, causing the shader to just stay one color instead of breathing in a sine wave fashion like intended.
                 //Thus, for the time being, until I can figure out why uTime isn't being automatically updated, I am manually setting this new Parameter
-                shader.Parameters["manualUTime"].SetValue(manualUpdateTime);
+                shader.Parameters["manualUTime"].SetValue(_manualUpdateTime);
                 base.DrawSelf(spriteBatch);
 
                 spriteBatch.End();
