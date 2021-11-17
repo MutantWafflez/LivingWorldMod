@@ -2,12 +2,10 @@
 using Terraria;
 
 namespace LivingWorldMod.Custom.Utilities {
-
     /// <summary>
     /// Utilities class that holds methods which deal with specifically dust.
     /// </summary>
     public static class DustUtils {
-
         /// <summary>
         /// Creates a circle of dust at the specified origin with the passed in radius, dust, and
         /// optional angle change. Radius is in terms of pixels.
@@ -33,7 +31,7 @@ namespace LivingWorldMod.Custom.Utilities {
                 newDust.customData = dust.customData;
             }
         }
-        
+
         /// <summary>
         /// Creates a circle of dust at the specified origin with the passed in radius, dust, and
         /// optional angle change. Radius is in terms of pixels.

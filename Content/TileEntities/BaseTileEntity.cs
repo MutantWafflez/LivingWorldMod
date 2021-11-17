@@ -3,13 +3,11 @@ using Terraria;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.TileEntities {
-
     /// <summary>
     /// Base Tile Entity for all other Tile Entities in the mod, which has a ValidTileID property
     /// for easy matching of tile to entity and vice-versa.
     /// </summary>
     public abstract class BaseTileEntity : ModTileEntity {
-
         /// <summary>
         /// The ID of the tile that this tile entity attaches to.
         /// </summary>

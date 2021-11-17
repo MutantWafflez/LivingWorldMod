@@ -8,7 +8,6 @@ using Terraria.ID;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.CommonElements {
-
     /// <summary>
     /// A better version of vanilla's UIImage Button, with much more functionality than the vanilla
     /// counterpart has, for a larger range of uses.
@@ -75,25 +74,6 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             Append(buttonText);
         }
 
-        public void SetHoverImage(Asset<Texture2D> texture) => borderTexture = texture;
-
-        public void SetImage(Asset<Texture2D> texture) {
-            buttonTexture = texture;
-            Width.Set(buttonTexture.Width(), 0f);
-            Height.Set(buttonTexture.Height(), 0f);
-
-            if (buttonText is not null) {
-                buttonText.horizontalTextConstraint = buttonTexture.Width();
-            }
-
-            RecalculateChildren();
-        }
-
-        public void SetText(string text) {
-            this.text = text;
-            RecalculateChildren();
-        }
-
         public override void MouseOver(UIMouseEvent evt) {
             if (!isVisible) {
                 return;
@@ -109,11 +89,6 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             }
 
             ProperOnClick?.Invoke(evt, this);
-        }
-
-        public void SetVisibility(float whenActive, float whenInactive) {
-            activeVisibility = MathHelper.Clamp(whenActive, 0.0f, 1f);
-            inactiveVisibility = MathHelper.Clamp(whenInactive, 0.0f, 1f);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
@@ -141,6 +116,30 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             if (borderTexture != null) {
                 spriteBatch.Draw(borderTexture.Value, dimensions.Position(), Color.White);
             }
+        }
+
+        public void SetHoverImage(Asset<Texture2D> texture) => borderTexture = texture;
+
+        public void SetImage(Asset<Texture2D> texture) {
+            buttonTexture = texture;
+            Width.Set(buttonTexture.Width(), 0f);
+            Height.Set(buttonTexture.Height(), 0f);
+
+            if (buttonText is not null) {
+                buttonText.horizontalTextConstraint = buttonTexture.Width();
+            }
+
+            RecalculateChildren();
+        }
+
+        public void SetText(string text) {
+            this.text = text;
+            RecalculateChildren();
+        }
+
+        public void SetVisibility(float whenActive, float whenInactive) {
+            activeVisibility = MathHelper.Clamp(whenActive, 0.0f, 1f);
+            inactiveVisibility = MathHelper.Clamp(whenInactive, 0.0f, 1f);
         }
     }
 }

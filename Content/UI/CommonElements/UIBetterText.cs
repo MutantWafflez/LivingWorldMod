@@ -8,14 +8,12 @@ using Terraria.Localization;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.CommonElements {
-
     /// <summary>
     /// Slightly better version of UIText that will properly scale based on width specified in a
     /// different parameter rather than using InnerDimensions, and other better functionality.
     /// Mostly mimics vanilla's UIText though.
     /// </summary>
     public class UIBetterText : UIElement {
-
         /// <summary>
         /// If set to a value greater than zero, it will constrain the text to fix within the value
         /// set, in pixels. Replaces DynamicallyScaleDownToWidth in UIText.
@@ -35,19 +33,6 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         public bool isVisible = true;
 
         public object innerText = "";
-        private float initialTextScale = 1f;
-        private float dynamicTextScale = 1f;
-        private Vector2 initialTextSize = Vector2.Zero;
-        private Vector2 dynamicTextSize = Vector2.Zero;
-        private Color color = Color.White;
-
-        private bool isLarge;
-        private bool isWrapped;
-
-        private string visibleText;
-        private string lastTextReference;
-
-        public event Action OnInternalTextChange;
 
         public string Text => innerText.ToString();
 
@@ -79,6 +64,20 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             set => color = value;
         }
 
+        private float initialTextScale = 1f;
+        private float dynamicTextScale = 1f;
+        private Vector2 initialTextSize = Vector2.Zero;
+        private Vector2 dynamicTextSize = Vector2.Zero;
+        private Color color = Color.White;
+
+        private bool isLarge;
+        private bool isWrapped;
+
+        private string visibleText;
+        private string lastTextReference;
+
+        public event Action OnInternalTextChange;
+
         public UIBetterText(string text = "", float textScale = 1f, bool large = false) {
             TextOriginX = 0.5f;
             TextOriginY = 0f;
@@ -98,14 +97,6 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         public override void Recalculate() {
             InternalSetText(Text, initialTextScale, isLarge);
             base.Recalculate();
-        }
-
-        public void SetText(string text, float scaledText = 0f, bool? large = null) {
-            InternalSetText(text, scaledText == 0f ? initialTextScale : scaledText, large ?? isLarge);
-        }
-
-        public void SetText(LocalizedText text, float scaledText = 0f, bool? large = null) {
-            InternalSetText(text, scaledText == 0f ? initialTextScale : scaledText, large ?? isLarge);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
@@ -135,6 +126,14 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             else {
                 Utils.DrawBorderString(spriteBatch, visibleText, pos, color, dynamicTextScale);
             }
+        }
+
+        public void SetText(string text, float scaledText = 0f, bool? large = null) {
+            InternalSetText(text, scaledText == 0f ? initialTextScale : scaledText, large ?? isLarge);
+        }
+
+        public void SetText(LocalizedText text, float scaledText = 0f, bool? large = null) {
+            InternalSetText(text, scaledText == 0f ? initialTextScale : scaledText, large ?? isLarge);
         }
 
         private void VerifyTextState() {

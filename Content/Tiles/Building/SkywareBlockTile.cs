@@ -5,9 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Tiles.Building {
-
     public class SkywareBlockTile : BaseTile {
-
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = true;
             Main.tileNoSunLight[Type] = true;

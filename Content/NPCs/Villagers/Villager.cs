@@ -15,13 +15,11 @@ using Terraria.ModLoader;
 using Terraria.Utilities;
 
 namespace LivingWorldMod.Content.NPCs.Villagers {
-
     /// <summary>
     /// Base class for all of the villager NPCs in the mod. Has several properties that can be
     /// modified depending on the "personality" of the villagers.
     /// </summary>
     public abstract class Villager : ModNPC {
-
         /// <summary>
         /// A list of shop items that this specific villager is selling at this very moment.
         /// </summary>
@@ -58,6 +56,29 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         /// <summary>
+        /// List of possible names that these villagers can have.
+        /// </summary>
+        public abstract List<string> PossibleNames {
+            get;
+        }
+
+        /// <summary>
+        /// Dialogue that is added to the list of reputation dialogue depending on the current
+        /// event, if any, that is occurring.
+        /// </summary>
+        public abstract WeightedRandom<string> EventDialogue {
+            get;
+        }
+
+        /// <summary>
+        /// A list of ALL POSSIBLE shop items that villagers of this given type can ever sell. This
+        /// list is checked upon every restock.
+        /// </summary>
+        public abstract WeightedRandom<ShopItem> ShopPool {
+            get;
+        }
+
+        /// <summary>
         /// Count of the total amount of variation in terms of body sprites for this specific
         /// villager type. Defaults to 5.
         /// </summary>
@@ -68,6 +89,36 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// villager type. Defaults to 5.
         /// </summary>
         public virtual int HeadAssetVariations => 5;
+
+        /// <summary>
+        /// Threshold that the reputation must cross in order for these villagers to HATE the players.
+        /// </summary>
+        public virtual int HateThreshold => -95;
+
+        /// <summary>
+        /// Threshold that the reputation must cross in order for these villagers to SEVERELY
+        /// DISLIKE the players.
+        /// </summary>
+        public virtual int SevereDislikeThreshold => -45;
+
+        /// <summary>
+        /// Threshold that the reputation must cross in order for these villagers to DISLIKE the
+        /// players. The villagers will be considered "neutral" towards the players if the
+        /// reputation is in-between the Dislike and Like thresholds.
+        /// </summary>
+        public virtual int DislikeThreshold => -15;
+
+        /// <summary>
+        /// Threshold that the reputation must cross in order for these villagers to LIKE the
+        /// players. The villagers will be considered "neutral" towards the players if the
+        /// reputation is in-between the Dislike and Like thresholds.
+        /// </summary>
+        public virtual int LikeThreshold => 15;
+
+        /// <summary>
+        /// Threshold that the reputation must cross in order for these villagers to LOVE the players.
+        /// </summary>
+        public virtual int LoveThreshold => 95;
 
         /// <summary>
         /// The current status of the "relationship" between these villagers and the players.
@@ -108,59 +159,6 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// </summary>
         /// <returns> </returns>
         public string BuyShopChat => LocalizationUtils.GetAllStringsFromCategory($"VillagerDialogue.{VillagerType}.Shop.Buy.{RelationshipStatus}");
-
-        /// <summary>
-        /// Threshold that the reputation must cross in order for these villagers to HATE the players.
-        /// </summary>
-        public virtual int HateThreshold => -95;
-
-        /// <summary>
-        /// Threshold that the reputation must cross in order for these villagers to SEVERELY
-        /// DISLIKE the players.
-        /// </summary>
-        public virtual int SevereDislikeThreshold => -45;
-
-        /// <summary>
-        /// Threshold that the reputation must cross in order for these villagers to DISLIKE the
-        /// players. The villagers will be considered "neutral" towards the players if the
-        /// reputation is in-between the Dislike and Like thresholds.
-        /// </summary>
-        public virtual int DislikeThreshold => -15;
-
-        /// <summary>
-        /// Threshold that the reputation must cross in order for these villagers to LIKE the
-        /// players. The villagers will be considered "neutral" towards the players if the
-        /// reputation is in-between the Dislike and Like thresholds.
-        /// </summary>
-        public virtual int LikeThreshold => 15;
-
-        /// <summary>
-        /// Threshold that the reputation must cross in order for these villagers to LOVE the players.
-        /// </summary>
-        public virtual int LoveThreshold => 95;
-
-        /// <summary>
-        /// List of possible names that these villagers can have.
-        /// </summary>
-        public abstract List<string> PossibleNames {
-            get;
-        }
-
-        /// <summary>
-        /// Dialogue that is added to the list of reputation dialogue depending on the current
-        /// event, if any, that is occurring.
-        /// </summary>
-        public abstract WeightedRandom<string> EventDialogue {
-            get;
-        }
-
-        /// <summary>
-        /// A list of ALL POSSIBLE shop items that villagers of this given type can ever sell. This
-        /// list is checked upon every restock.
-        /// </summary>
-        public abstract WeightedRandom<ShopItem> ShopPool {
-            get;
-        }
 
         public sealed override string Texture => LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/DefaultStyle";
 
@@ -224,8 +222,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                 ModContent.GetInstance<ShopUISystem>().OpenShopUI(this);
             }
             //Reputation Screen
-            else {
-            }
+            else { }
         }
 
         public override bool CanChat() => RelationshipStatus != VillagerRelationship.Hate;
@@ -249,7 +246,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             Texture2D bodyTexture = bodyAssets[bodySpriteType].Value;
             Texture2D headTexture = headAssets[headSpriteType].Value;
 
-            Rectangle drawArea = new Rectangle((int)(NPC.Right.X - (NPC.frame.Width / 1.5) - screenPos.X),
+            Rectangle drawArea = new Rectangle((int)(NPC.Right.X - NPC.frame.Width / 1.5 - screenPos.X),
                 (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f),
                 NPC.frame.Width,
                 NPC.frame.Height);

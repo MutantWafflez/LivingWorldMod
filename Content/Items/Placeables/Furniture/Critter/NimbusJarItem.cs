@@ -3,9 +3,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.Placeables.Furniture.Critter {
-
     public class NimbusJarItem : BaseItem {
-
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.BirdCage);
             Item.rare = ItemRarityID.Blue;

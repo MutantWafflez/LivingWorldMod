@@ -1,10 +1,8 @@
 ﻿namespace LivingWorldMod.Custom.Enums {
-
     /// <summary>
     /// The style of how coins are drawn in a UICoinDisplay.
     /// </summary>
     public enum CoinDrawStyle {
-
         /// <summary>
         /// Vanilla drawing style. This means that all coins will be drawn regardless of what their
         /// value is.

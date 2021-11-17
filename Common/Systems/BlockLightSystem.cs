@@ -4,14 +4,12 @@ using Terraria;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Systems {
-
     /// <summary>
     /// Small ModSystem that handles color changing for blocks, or potentially other applications.
     /// Has a couple of static fields that pertain to specific block colors.
     /// </summary>
     [Autoload(Side = ModSide.Client)]
     public class BlockLightSystem : ModSystem {
-
         /// <summary>
         /// The current glow color of the Starshard Cloud blocks.
         /// </summary>

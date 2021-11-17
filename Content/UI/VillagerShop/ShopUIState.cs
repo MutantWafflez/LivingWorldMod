@@ -16,7 +16,6 @@ using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.VillagerShop {
-
     /// <summary>
     /// UIState that handles the entire UI portion of the shop system for all villager types.
     /// </summary>
@@ -155,7 +154,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             buyItemStockHeader.Top.Set(56f, 0f);
             buyItemZone.Append(buyItemStockHeader);
 
-            buyItemStock = new UIBetterText("1000", textScale: 1.25f) {
+            buyItemStock = new UIBetterText("1000", 1.25f) {
                 isVisible = false,
                 horizontalTextConstraint = 150,
                 HAlign = 0.5f
@@ -205,30 +204,6 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             shopZone.Append(shopList);
 
             DummyPopulateShopList();
-        }
-
-        public void ReloadUI(Villager newVillager) {
-            currentVillager = newVillager;
-
-            string shopUIPath = $"{LivingWorldMod.LWMSpritePath}UI/ShopUI/{currentVillager.VillagerType}/";
-
-            backImage.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage", AssetRequestMode.ImmediateLoad));
-
-            shopOverlay.SetImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay", AssetRequestMode.ImmediateLoad));
-
-            portrait.ChangePortraitType(currentVillager);
-
-            nameText.SetText(currentVillager.NPC.GivenName, large: true);
-
-            dialogueText.SetText(currentVillager.InitialShopChat);
-
-            buyItemButton.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BuyButton", AssetRequestMode.ImmediateLoad));
-
-            savingsDisplay.moneyToDisplay = Main.LocalPlayer.CalculateTotalSavings();
-
-            PopulateShopList();
-
-            RecalculateChildren();
         }
 
         public override void Update(GameTime gameTime) {
@@ -284,6 +259,30 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             }
 
             base.Update(gameTime);
+        }
+
+        public void ReloadUI(Villager newVillager) {
+            currentVillager = newVillager;
+
+            string shopUIPath = $"{LivingWorldMod.LWMSpritePath}UI/ShopUI/{currentVillager.VillagerType}/";
+
+            backImage.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage", AssetRequestMode.ImmediateLoad));
+
+            shopOverlay.SetImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay", AssetRequestMode.ImmediateLoad));
+
+            portrait.ChangePortraitType(currentVillager);
+
+            nameText.SetText(currentVillager.NPC.GivenName, large: true);
+
+            dialogueText.SetText(currentVillager.InitialShopChat);
+
+            buyItemButton.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BuyButton", AssetRequestMode.ImmediateLoad));
+
+            savingsDisplay.moneyToDisplay = Main.LocalPlayer.CalculateTotalSavings();
+
+            PopulateShopList();
+
+            RecalculateChildren();
         }
 
         /// <summary>

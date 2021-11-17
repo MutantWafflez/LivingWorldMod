@@ -12,7 +12,6 @@ using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.VillagerShop {
-
     /// <summary>
     /// UIImage class that holds different UITexts and UIElements that is the index in a given shop
     /// UI list. Holds data on the entire entry for the given item.

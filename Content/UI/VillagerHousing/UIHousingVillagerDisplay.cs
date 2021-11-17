@@ -10,13 +10,11 @@ using Terraria.ID;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.VillagerHousing {
-
     /// <summary>
     /// Element that shows a specific villager in the housing menu. An instance of this is created
     /// per villager that exists in the world of a given type when the player is in the housing menu.
     /// </summary>
     public class UIHousingVillagerDisplay : UIElement {
-
         /// <summary>
         /// The villager instance that this element is displaying.
         /// </summary>

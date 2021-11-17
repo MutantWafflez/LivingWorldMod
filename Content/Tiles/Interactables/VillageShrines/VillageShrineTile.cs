@@ -9,13 +9,11 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Interactables.VillageShrines {
-
     /// <summary>
     /// Abstract class that exists to be inherited from to create different type of shrines for each
     /// type of existing villager type.
     /// </summary>
     public abstract class VillageShrineTile : BaseTile {
-
         /// <summary>
         /// The item that will drop from this shrine tile when it is broken.
         /// </summary>
@@ -82,7 +80,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables.VillageShrines {
         public sealed override void PlaceInWorld(int i, int j, Item item) {
             VillageShrineEntity entity = ShrineEntity;
 
-#if DEBUG
+            #if DEBUG
             //The i and j coordinates when breaking are the top left of the tile; upon placing, the entity is centered around the tile origin, so we must adjust the coordinates to place the entity in the top left of the tile.
             if (!entity.EntityExistsHere(i - TileOrigin.X, j - TileOrigin.Y)) {
                 int entityID = entity.Place(i - TileOrigin.X, j - TileOrigin.Y);
@@ -91,7 +89,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables.VillageShrines {
                     NetMessage.SendData(MessageID.TileEntitySharing, ignoreClient: Main.myPlayer, number: entityID);
                 }
             }
-#endif
+            #endif
         }
 
         public sealed override bool RightClick(int i, int j) {

@@ -2,7 +2,6 @@
 using Terraria.ID;
 
 namespace LivingWorldMod.Content.Tiles.DebugTiles {
-
     /// <summary>
     /// Tile used for "skipping" over certain tile positions when used in conjunction with the
     /// structure stick.

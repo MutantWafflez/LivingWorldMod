@@ -9,12 +9,10 @@ using Terraria;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Patches {
-
     /// <summary>
     /// Class that contains the IL/On methods for patching various worldgen methods.
     /// </summary>
     public class WorldGenPatches : ILoadable {
-
         public void Load(Mod mod) {
             IL.Terraria.WorldGen.FillWallHolesInSpot += FillHolesInSpotPatch;
         }

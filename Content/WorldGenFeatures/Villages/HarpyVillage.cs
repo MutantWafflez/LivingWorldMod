@@ -15,7 +15,6 @@ using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
-
     /// <summary>
     /// The Harpy Village structure, generated in the sky as close to the middle of the world as possible.
     /// </summary>
@@ -43,14 +42,14 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
 
             List<Point> possibleIslandPlacements = new List<Point>();
 
-            for (int i = (Main.maxTilesX / 2) - 1000; i < (Main.maxTilesX / 2) + 1000; i++) {
-                progress.Set((float)(i - ((Main.maxTilesX / 2) - 1000)) / (float)((Main.maxTilesX / 2) + 1000));
+            for (int i = Main.maxTilesX / 2 - 1000; i < Main.maxTilesX / 2 + 1000; i++) {
+                progress.Set((float)(i - (Main.maxTilesX / 2 - 1000)) / (float)(Main.maxTilesX / 2 + 1000));
 
                 if (WorldUtils.Find(new Point(i, yLevel), Searches.Chain(
-                        new Searches.Down(5),
-                        new IsAir().AreaAnd(originHorizontalDisplacement, originVerticalDisplacement)
-                    ),
-                    out Point result)) {
+                            new Searches.Down(5),
+                            new IsAir().AreaAnd(originHorizontalDisplacement, originVerticalDisplacement)
+                        ),
+                        out Point result)) {
                     possibleIslandPlacements.Add(result);
                 }
             }
@@ -58,7 +57,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
             Point originPoint;
             if (possibleIslandPlacements.Any()) {
                 //Get point closest to middle of the world: order the list by distance to the center of the world (ascending), then grab the first element in said list
-                originPoint = possibleIslandPlacements.OrderBy(point => Math.Abs(point.X - (Main.maxTilesX / 2))).First();
+                originPoint = possibleIslandPlacements.OrderBy(point => Math.Abs(point.X - Main.maxTilesX / 2)).First();
 
                 //Set Harpy Village Zone
                 CreationSystem.villageZones[(int)VillagerType.Harpy] = new Rectangle(originPoint.X, originPoint.Y, originHorizontalDisplacement, originVerticalDisplacement);
@@ -208,7 +207,8 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
             //Place "church" building
             StructureData churchBuildingData = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/ChurchBuilding{WorldGen.genRand.Next(2)}.struct");
 
-            if (WorldUtils.Find(new Point(originPoint.X - (churchBuildingData.structureWidth / 2), originPoint.Y + upOffset), Searches.Chain(new Searches.Up(75), new IsAir().AreaAnd(churchBuildingData.structureWidth, churchBuildingData.structureHeight)), out Point churchResult)) {
+            if (WorldUtils.Find(new Point(originPoint.X - churchBuildingData.structureWidth / 2, originPoint.Y + upOffset),
+                    Searches.Chain(new Searches.Up(75), new IsAir().AreaAnd(churchBuildingData.structureWidth, churchBuildingData.structureHeight)), out Point churchResult)) {
                 WorldGenUtils.GenerateStructure(churchBuildingData, churchResult.X, churchResult.Y);
             }
 
@@ -223,11 +223,11 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
                     possibleHouses.Remove(selectedHouseType);
 
                     StructureData cloudHouseData = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/{selectedHouseType}.struct");
-                    Point miniIslandOrigin = new Point(originPoint.X + (int)(leftOffset * i * (j == 0 ? 1.15f : 0.775f)), originPoint.Y + (upOffset * (int)(j == 0 ? 2f : 6.25f)));
+                    Point miniIslandOrigin = new Point(originPoint.X + (int)(leftOffset * i * (j == 0 ? 1.15f : 0.775f)), originPoint.Y + upOffset * (int)(j == 0 ? 2f : 6.25f));
 
                     float miniYScale = 0.34f;
                     //Diameter will be the radius of the struct plus 5 extra "padding"
-                    int miniRadius = (cloudHouseData.structureWidth / 2) + 5;
+                    int miniRadius = cloudHouseData.structureWidth / 2 + 5;
 
                     ShapeData miniIslandData = new ShapeData();
 
@@ -263,7 +263,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
 
                     //Generate building
                     WorldGenUtils.GenerateStructure(cloudHouseData,
-                        miniIslandOrigin.X - (cloudHouseData.structureWidth / 2),
+                        miniIslandOrigin.X - cloudHouseData.structureWidth / 2,
                         miniIslandOrigin.Y + miniIslandData.GetData().Min(point => point.Y) - cloudHouseData.structureHeight);
                 }
             }

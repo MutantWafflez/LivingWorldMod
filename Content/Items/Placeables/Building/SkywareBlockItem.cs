@@ -5,9 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.Placeables.Building {
-
     public class SkywareBlockItem : BaseItem {
-
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.DirtBlock);
             Item.value = Item.buyPrice(copper: 75);

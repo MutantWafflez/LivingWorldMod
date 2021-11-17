@@ -6,7 +6,6 @@ using Terraria;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Projectiles.Friendly.Pets {
-
     //Thanks Trivaxy for the code! :-)
     public class NimbusPetProjectile : BaseProjectile {
         private int animationTimer;

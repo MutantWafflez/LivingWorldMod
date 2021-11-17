@@ -6,7 +6,6 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Custom.Structs {
-
     /// <summary>
     /// Struct that holds Tile Data, mainly usage being for structures. Used for generating
     /// pre-determined structures.
@@ -88,9 +87,9 @@ namespace LivingWorldMod.Custom.Structs {
 
         public TileData(Tile tile) {
             type = tile.IsActive ? tile.type : -1;
-#if DEBUG
+            #if DEBUG
             type = tile.type == ModContent.TileType<SkipTile>() ? -2 : type;
-#endif
+            #endif
             isActivated = tile.IsActive;
             isHalfBlock = tile.IsHalfBlock;
             frameNumber = tile.FrameNumber;
@@ -106,11 +105,11 @@ namespace LivingWorldMod.Custom.Structs {
             hasYellowWire = tile.YellowWire;
             liquidType = tile.LiquidType;
             liquidAmount = tile.LiquidAmount;
-#if DEBUG
+            #if DEBUG
             wallType = tile.wall == ModContent.WallType<SkipWall>() ? -1 : tile.wall;
-#else
+            #else
             wallType = tile.wall;
-#endif
+            #endif
             wallColor = tile.WallColor;
             wallFrame = tile.WallFrameNumber;
             wallFrameX = tile.WallFrameX;
@@ -125,11 +124,12 @@ namespace LivingWorldMod.Custom.Structs {
 
         public TileData(int type, bool isActivated, bool isHalfBlock, int frameNumber, int frameX, int frameY, int slopeType, int color, bool isActuated, bool hasActuator,
             bool hasRedWire, bool hasBlueWire, bool hasGreenWire, bool hasYellowWire, int liquidType, int liquidAmount, int wallType, int wallColor, int wallFrame,
-            int wallFrameX, int wallFrameY) {
+            int wallFrameX, int wallFrameY
+        ) {
             this.type = isActivated ? type : -1;
-#if DEBUG
+            #if DEBUG
             this.type = type == ModContent.TileType<SkipTile>() ? -2 : this.type;
-#endif
+            #endif
             this.isActivated = isActivated;
             this.isHalfBlock = isHalfBlock;
             this.frameNumber = frameNumber;
@@ -145,11 +145,11 @@ namespace LivingWorldMod.Custom.Structs {
             this.hasYellowWire = hasYellowWire;
             this.liquidType = liquidType;
             this.liquidAmount = liquidAmount;
-#if DEBUG
+            #if DEBUG
             this.wallType = wallType == ModContent.WallType<SkipWall>() ? -1 : wallType;
-#else
+            #else
             this.wallType = wallType;
-#endif
+            #endif
             this.wallColor = wallColor;
             this.wallFrame = wallFrame;
             this.wallFrameX = wallFrameX;
@@ -164,11 +164,12 @@ namespace LivingWorldMod.Custom.Structs {
 
         public TileData(int type, bool isActivated, bool isHalfBlock, int frameNumber, int frameX, int frameY, int slopeType, int color, bool isActuated, bool hasActuator,
             bool hasRedWire, bool hasBlueWire, bool hasGreenWire, bool hasYellowWire, int liquidType, int liquidAmount, int wallType, int wallColor, int wallFrame,
-            int wallFrameX, int wallFrameY, string modName, string modTileName, string modWallName) {
+            int wallFrameX, int wallFrameY, string modName, string modTileName, string modWallName
+        ) {
             this.type = isActivated ? type : -1;
-#if DEBUG
+            #if DEBUG
             this.type = type == ModContent.TileType<SkipTile>() ? -2 : this.type;
-#endif
+            #endif
             this.isActivated = isActivated;
             this.isHalfBlock = isHalfBlock;
             this.frameNumber = frameNumber;
@@ -184,11 +185,11 @@ namespace LivingWorldMod.Custom.Structs {
             this.hasYellowWire = hasYellowWire;
             this.liquidType = liquidType;
             this.liquidAmount = liquidAmount;
-#if DEBUG
+            #if DEBUG
             this.wallType = wallType == ModContent.WallType<SkipWall>() ? -1 : wallType;
-#else
+            #else
             this.wallType = wallType;
-#endif
+            #endif
             this.wallColor = wallColor;
             this.wallFrame = wallFrame;
             this.wallFrameX = wallFrameX;
@@ -198,62 +199,58 @@ namespace LivingWorldMod.Custom.Structs {
             this.modWallName = modWallName;
         }
 
-        public static TileData Deserialize(TagCompound tag) {
-            return new TileData(
-                tag.GetInt(nameof(type)),
-                tag.GetBool(nameof(isActivated)),
-                tag.GetBool(nameof(isHalfBlock)),
-                tag.GetInt(nameof(frameNumber)),
-                tag.GetInt(nameof(frameX)),
-                tag.GetInt(nameof(frameY)),
-                tag.GetInt(nameof(slopeType)),
-                tag.GetInt(nameof(color)),
-                tag.GetBool(nameof(isActuated)),
-                tag.GetBool(nameof(hasActuator)),
-                tag.GetBool(nameof(hasRedWire)),
-                tag.GetBool(nameof(hasBlueWire)),
-                tag.GetBool(nameof(hasGreenWire)),
-                tag.GetBool(nameof(hasYellowWire)),
-                tag.GetInt(nameof(liquidType)),
-                tag.GetInt(nameof(liquidAmount)),
-                tag.GetInt(nameof(wallType)),
-                tag.GetInt(nameof(wallColor)),
-                tag.GetInt(nameof(wallFrame)),
-                tag.GetInt(nameof(wallFrameX)),
-                tag.GetInt(nameof(wallFrameY)),
-                tag.GetString(nameof(modName)),
-                tag.GetString(nameof(modTileName)),
-                tag.GetString(nameof(modWallName))
-            );
-        }
+        public static TileData Deserialize(TagCompound tag) => new TileData(
+            tag.GetInt(nameof(type)),
+            tag.GetBool(nameof(isActivated)),
+            tag.GetBool(nameof(isHalfBlock)),
+            tag.GetInt(nameof(frameNumber)),
+            tag.GetInt(nameof(frameX)),
+            tag.GetInt(nameof(frameY)),
+            tag.GetInt(nameof(slopeType)),
+            tag.GetInt(nameof(color)),
+            tag.GetBool(nameof(isActuated)),
+            tag.GetBool(nameof(hasActuator)),
+            tag.GetBool(nameof(hasRedWire)),
+            tag.GetBool(nameof(hasBlueWire)),
+            tag.GetBool(nameof(hasGreenWire)),
+            tag.GetBool(nameof(hasYellowWire)),
+            tag.GetInt(nameof(liquidType)),
+            tag.GetInt(nameof(liquidAmount)),
+            tag.GetInt(nameof(wallType)),
+            tag.GetInt(nameof(wallColor)),
+            tag.GetInt(nameof(wallFrame)),
+            tag.GetInt(nameof(wallFrameX)),
+            tag.GetInt(nameof(wallFrameY)),
+            tag.GetString(nameof(modName)),
+            tag.GetString(nameof(modTileName)),
+            tag.GetString(nameof(modWallName))
+        );
 
-        public TagCompound SerializeData() {
-            return new TagCompound() {
-                {nameof(type), type},
-                {nameof(isActivated), isActivated},
-                {nameof(isHalfBlock), isHalfBlock},
-                {nameof(frameNumber), frameNumber},
-                {nameof(frameX), frameX},
-                {nameof(frameY), frameY},
-                {nameof(slopeType), slopeType},
-                {nameof(color), color},
-                {nameof(isActuated), isActuated},
-                {nameof(hasActuator), hasActuator},
-                {nameof(hasRedWire), hasRedWire},
-                {nameof(hasBlueWire), hasBlueWire},
-                {nameof(hasGreenWire), hasGreenWire},
-                {nameof(hasYellowWire), hasYellowWire},
-                {nameof(liquidType), liquidType},
-                {nameof(liquidAmount), liquidAmount},
-                {nameof(wallType), wallType},
-                {nameof(wallColor), wallColor},
-                {nameof(wallFrame), wallFrame},
-                {nameof(wallFrameX), wallFrameX},
-                {nameof(wallFrameY), wallFrameY},
-                {nameof(modName), modName},
-                {nameof(modTileName), modTileName},
-                {nameof(modWallName), modWallName}
-            };
-        }
+        public TagCompound SerializeData() => new TagCompound() {
+            { nameof(type), type },
+            { nameof(isActivated), isActivated },
+            { nameof(isHalfBlock), isHalfBlock },
+            { nameof(frameNumber), frameNumber },
+            { nameof(frameX), frameX },
+            { nameof(frameY), frameY },
+            { nameof(slopeType), slopeType },
+            { nameof(color), color },
+            { nameof(isActuated), isActuated },
+            { nameof(hasActuator), hasActuator },
+            { nameof(hasRedWire), hasRedWire },
+            { nameof(hasBlueWire), hasBlueWire },
+            { nameof(hasGreenWire), hasGreenWire },
+            { nameof(hasYellowWire), hasYellowWire },
+            { nameof(liquidType), liquidType },
+            { nameof(liquidAmount), liquidAmount },
+            { nameof(wallType), wallType },
+            { nameof(wallColor), wallColor },
+            { nameof(wallFrame), wallFrame },
+            { nameof(wallFrameX), wallFrameX },
+            { nameof(wallFrameY), wallFrameY },
+            { nameof(modName), modName },
+            { nameof(modTileName), modTileName },
+            { nameof(modWallName), modWallName }
+        };
     }
 }

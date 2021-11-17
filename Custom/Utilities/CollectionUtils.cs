@@ -2,12 +2,10 @@
 using Terraria.Utilities;
 
 namespace LivingWorldMod.Custom.Utilities {
-
     /// <summary>
     /// Utilities class that holds methods for Collections.
     /// </summary>
     public static class CollectionUtils {
-
         /// <summary>
         /// Adds all of the objects and their weights within another list into this list.
         /// </summary>

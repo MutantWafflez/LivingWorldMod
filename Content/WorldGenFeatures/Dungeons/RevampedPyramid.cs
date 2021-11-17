@@ -6,7 +6,6 @@ using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Content.WorldGenFeatures.Dungeons {
-
     /// <summary>
     /// The completely revamped pyramid structure, now with curses!
     /// </summary>

@@ -6,9 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Tiles.Building {
-
     public class StarshardCloudTile : BaseTile {
-
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = true;
             Main.tileNoSunLight[Type] = true;
@@ -36,9 +34,9 @@ namespace LivingWorldMod.Content.Tiles.Building {
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) {
             //All-multiplied by 0.5f since the color at full capacity is a bit overbearing
-            r = (BlockLightSystem.starCloudColor.R / 255f) * 0.5f;
-            g = (BlockLightSystem.starCloudColor.G / 255f) * 0.5f;
-            b = (BlockLightSystem.starCloudColor.B / 255f) * 0.5f;
+            r = BlockLightSystem.starCloudColor.R / 255f * 0.5f;
+            g = BlockLightSystem.starCloudColor.G / 255f * 0.5f;
+            b = BlockLightSystem.starCloudColor.B / 255f * 0.5f;
         }
     }
 }

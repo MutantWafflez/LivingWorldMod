@@ -4,13 +4,11 @@ using Terraria;
 using Terraria.GameContent.UI.Elements;
 
 namespace LivingWorldMod.Content.UI.CommonElements {
-
     /// <summary>
     /// "Better" version of the vanilla scrollbar. Right now, all it does is allow for visibility
     /// toggling and prevents item usage.
     /// </summary>
     public class UIBetterScrollbar : UIScrollbar {
-
         /// <summary>
         /// Whether or not this element is currently visible, which is to say, whether or not it
         /// will be drawn. Defaults to true.

@@ -7,20 +7,16 @@ using Terraria;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Custom.Utilities {
-
     /// <summary>
     /// Class that handles all utility functions for NPCs.
     /// </summary>
     public static class NPCUtils {
-
         /// <summary>
         /// Returns whether or not an NPC of the given type is a Villager NPC type.
         /// </summary>
         /// <param name="type"> NPC type to check the Villager status of. </param>
         /// <returns> </returns>
-        public static bool IsTypeOfVillager(int type) {
-            return NPCLoader.GetNPC(type)?.GetType().IsSubclassOf(typeof(Villager)) ?? false;
-        }
+        public static bool IsTypeOfVillager(int type) => NPCLoader.GetNPC(type)?.GetType().IsSubclassOf(typeof(Villager)) ?? false;
 
         /// <summary>
         /// Returns the price multiplier that will affect shop prices depending on the status of a

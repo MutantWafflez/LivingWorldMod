@@ -6,13 +6,11 @@ using Terraria;
 using Terraria.ID;
 
 namespace LivingWorldMod.Content.TileEntities.Interactables.VillageShrines {
-
     /// <summary>
     /// Tile Entity within each village shrine of each type, which mainly handles whether or not a
     /// specified player is close enough to the specified shrine to be considered "within the village."
     /// </summary>
     public abstract class VillageShrineEntity : BaseTileEntity {
-
         /// <summary>
         /// Whether or not to draw the outline of the area that is considered within the village. Is
         /// client-side/single player only.
@@ -52,7 +50,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables.VillageShrines {
         /// The origin of the village. Without any displacement, this is in the center of this
         /// entity's respective shrine tile.
         /// </summary>
-        public Vector2 VillageOriginPosition => WorldPosition + (EntityDimensions / 2f) + VillageOriginDisplacement;
+        public Vector2 VillageOriginPosition => WorldPosition + EntityDimensions / 2f + VillageOriginDisplacement;
 
         public override void Update() {
             for (int i = 0; i < Main.maxPlayers; i++) {

@@ -7,12 +7,10 @@ using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Common.Systems.DebugSystems {
-
     /// <summary>
     /// Debug ModSystem used for testing world generation code.
     /// </summary>
     public class WorldGenDebugSystem : ModSystem {
-
         public override bool IsLoadingEnabled(Mod mod) => LivingWorldMod.IsDebug;
 
         public override void PostUpdateEverything() {

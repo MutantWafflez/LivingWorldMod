@@ -12,12 +12,10 @@ using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.VillagerHousing {
-
     /// <summary>
     /// UIState that handles the visuals of the Housing UI.
     /// </summary>
     public class VillagerHousingUIState : UIState {
-
         /// <summary>
         /// Whether or not the menu that shows each of the villagers is visible (open).
         /// </summary>
@@ -130,15 +128,6 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             Append(gridOfVillagers);
         }
 
-        /// <summary>
-        /// Simple method that closes the menu. Public for the parent system to use.
-        /// </summary>
-        public void CloseMenu() {
-            isMenuVisible = false;
-            openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off"));
-            gridOfVillagers.Clear();
-        }
-
         protected override void DrawChildren(SpriteBatch spriteBatch) {
             bool isMiniMapEnabled = !Main.mapFullscreen && Main.mapStyle == 1;
 
@@ -179,6 +168,15 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             enumerateRightButton.isVisible = enumerateLeftButton.isVisible = villagerTypeText.isVisible = gridScrollbar.isVisible = isMenuVisible;
 
             base.DrawChildren(spriteBatch);
+        }
+
+        /// <summary>
+        /// Simple method that closes the menu. Public for the parent system to use.
+        /// </summary>
+        public void CloseMenu() {
+            isMenuVisible = false;
+            openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off"));
+            gridOfVillagers.Clear();
         }
 
         private void EnumerateTypeButtonClicked(UIMouseEvent evt, UIElement listeningElement) {

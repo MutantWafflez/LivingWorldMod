@@ -5,9 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Walls.Fences {
-
     public class SkywareFenceWall : BaseWall {
-
         public override void SetStaticDefaults() {
             Main.wallHouse[Type] = true;
             WallID.Sets.AllowsWind[Type] = true;

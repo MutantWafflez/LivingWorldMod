@@ -4,7 +4,6 @@ using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Custom.Structs {
-
     /// <summary>
     /// Struct that holds the data for a specified structure, used for loading and saving structures
     /// from files to generate in the world.
@@ -34,22 +33,18 @@ namespace LivingWorldMod.Custom.Structs {
             this.structureDisplacement = structureDisplacement;
         }
 
-        public static StructureData Deserialize(TagCompound tag) {
-            return new StructureData(
-                tag.GetInt(nameof(structureWidth)),
-                tag.GetInt(nameof(structureHeight)),
-                tag.Get<List<List<TileData>>>(nameof(structureTileData)),
-                tag.Get<Point16>(nameof(structureDisplacement))
-            );
-        }
+        public static StructureData Deserialize(TagCompound tag) => new StructureData(
+            tag.GetInt(nameof(structureWidth)),
+            tag.GetInt(nameof(structureHeight)),
+            tag.Get<List<List<TileData>>>(nameof(structureTileData)),
+            tag.Get<Point16>(nameof(structureDisplacement))
+        );
 
-        public TagCompound SerializeData() {
-            return new TagCompound() {
-                {nameof(structureWidth), structureWidth},
-                {nameof(structureHeight), structureHeight},
-                {nameof(structureTileData), structureTileData},
-                {nameof(structureDisplacement), structureDisplacement}
-            };
-        }
+        public TagCompound SerializeData() => new TagCompound() {
+            { nameof(structureWidth), structureWidth },
+            { nameof(structureHeight), structureHeight },
+            { nameof(structureTileData), structureTileData },
+            { nameof(structureDisplacement), structureDisplacement }
+        };
     }
 }

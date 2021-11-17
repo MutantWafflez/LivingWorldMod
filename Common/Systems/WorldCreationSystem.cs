@@ -11,13 +11,11 @@ using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Common.Systems {
-
     /// <summary>
     /// System that handles the INITIAL world generation steps. This system does NOT handle world
     /// events that occur AFTER the world is created.
     /// </summary>
     public class WorldCreationSystem : ModSystem {
-
         /// <summary>
         /// List of all the areas which are the "zones" belonging to each village. Different for
         /// each world.

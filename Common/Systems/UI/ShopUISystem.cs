@@ -12,7 +12,6 @@ using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LivingWorldMod.Common.Systems.UI {
-
     /// <summary>
     /// System that handles the initialization and opening/closing of the Shop UI for Villagers.
     /// </summary>

@@ -3,11 +3,11 @@ using MonoMod.Cil;
 using System;
 
 namespace LivingWorldMod.Custom.Utilities {
-
     /// <summary>
     /// Utilities class that holds methods that deals with patching, whether it be IL or detouring
     /// </summary>
     public static class PatchingUtils {
+        public class InstructionNotFoundException : Exception { }
 
         /// <summary>
         /// Calls <seealso cref="ILCursor.TryGotoNext"/> normally, but will throw an exception if
@@ -32,7 +32,5 @@ namespace LivingWorldMod.Custom.Utilities {
 
             throw new InstructionNotFoundException();
         }
-
-        public class InstructionNotFoundException : Exception { }
     }
 }

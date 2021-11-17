@@ -6,9 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.Placeables.Torches {
-
     public class StarTorchItem : BaseItem {
-
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.IchorTorch);
             Item.rare = ItemRarityID.Blue;

@@ -4,7 +4,6 @@ using System;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Commands.DebugCommands {
-
     public class ReputationCommand : DebugCommand {
         public override string Command => "rep";
 

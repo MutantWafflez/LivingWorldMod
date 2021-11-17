@@ -5,12 +5,10 @@ using Terraria;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.DebugItems {
-
     /// <summary>
     /// Item that is only loaded when in Debug mode.
     /// </summary>
     public abstract class DebugItem : ModItem {
-
         public override bool IsLoadingEnabled(Mod mod) => LivingWorldMod.IsDebug;
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {

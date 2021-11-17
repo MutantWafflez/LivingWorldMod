@@ -12,7 +12,6 @@ using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.Elements {
-
     /// <summary>
     /// UIElement class extension that handles and creates portraits for villagers in the shop UI, primarily.
     /// </summary>
@@ -57,6 +56,24 @@ namespace LivingWorldMod.Content.UI.Elements {
             OnClick += ClickedElement;
         }
 
+        public override void Update(GameTime gameTime) {
+            //Allows for temporary expressions, for whatever reason that it may be applicable
+            if (temporaryExpression != currentExpression && temporaryExpressionTimer > 0f) {
+                temporaryExpressionTimer--;
+                portraitExpression.SetImage(expressionDictionary[temporaryExpression]);
+            }
+            else if (temporaryExpression != currentExpression && temporaryExpressionTimer == 0f) {
+                temporaryExpressionTimer = -1f;
+                portraitExpression.SetImage(expressionDictionary[currentExpression]);
+            }
+            else {
+                temporaryExpression = currentExpression;
+                temporaryExpressionTimer = -1f;
+            }
+
+            base.Update(gameTime);
+        }
+
         public void ChangePortraitType(Villager newVillager) {
             villager = newVillager;
             ReloadPortrait();
@@ -86,24 +103,6 @@ namespace LivingWorldMod.Content.UI.Elements {
             portraitHead.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Head{villager.headSpriteType}", AssetRequestMode.ImmediateLoad));
 
             portraitExpression.SetImage(expressionDictionary[currentExpression]);
-        }
-
-        public override void Update(GameTime gameTime) {
-            //Allows for temporary expressions, for whatever reason that it may be applicable
-            if (temporaryExpression != currentExpression && temporaryExpressionTimer > 0f) {
-                temporaryExpressionTimer--;
-                portraitExpression.SetImage(expressionDictionary[temporaryExpression]);
-            }
-            else if (temporaryExpression != currentExpression && temporaryExpressionTimer == 0f) {
-                temporaryExpressionTimer = -1f;
-                portraitExpression.SetImage(expressionDictionary[currentExpression]);
-            }
-            else {
-                temporaryExpression = currentExpression;
-                temporaryExpressionTimer = -1f;
-            }
-
-            base.Update(gameTime);
         }
 
         private void PopulateExpressionDictionary() {

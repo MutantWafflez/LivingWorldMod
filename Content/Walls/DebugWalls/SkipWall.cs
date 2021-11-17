@@ -2,7 +2,6 @@
 using Terraria.ID;
 
 namespace LivingWorldMod.Content.Walls.DebugWalls {
-
     /// <summary>
     /// Wall used for "skipping" over certain wall positions when used in conjunction with the
     /// structure stick.

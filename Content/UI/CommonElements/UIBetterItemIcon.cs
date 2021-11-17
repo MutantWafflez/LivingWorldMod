@@ -5,7 +5,6 @@ using Terraria.GameContent;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.CommonElements {
-
     /// <summary>
     /// A better version of Vanilla's UIItemIcon class. Can use position or the center to draw from,
     /// and has hover tooltip functionality.
@@ -29,11 +28,6 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             this.drawFromCenter = drawFromCenter;
         }
 
-        public void SetItem(Item newItem) {
-            displayedItem = newItem;
-            Recalculate();
-        }
-
         protected override void DrawSelf(SpriteBatch spriteBatch) {
             if (!isVisible) {
                 return;
@@ -43,7 +37,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             Main.instance.LoadItem(displayedItem.type);
 
             Texture2D itemTexture = TextureAssets.Item[displayedItem.type].Value;
-            Rectangle itemAnimFrame = (Main.itemAnimations[displayedItem.type] == null) ? itemTexture.Frame() : Main.itemAnimations[displayedItem.type].GetFrame(itemTexture);
+            Rectangle itemAnimFrame = Main.itemAnimations[displayedItem.type] == null ? itemTexture.Frame() : Main.itemAnimations[displayedItem.type].GetFrame(itemTexture);
 
             Color currentColor = Color.White;
             float itemLightScale = 1f;
@@ -72,6 +66,11 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             if (ContainsPoint(Main.MouseScreen)) {
                 ItemSlot.MouseHover(ref displayedItem, context);
             }
+        }
+
+        public void SetItem(Item newItem) {
+            displayedItem = newItem;
+            Recalculate();
         }
     }
 }

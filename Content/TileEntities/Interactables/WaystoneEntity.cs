@@ -15,12 +15,10 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.TileEntities.Interactables {
-    
     /// <summary>
     /// Tile Entity for the Waystone tiles.
     /// </summary>
     public class WaystoneEntity : BaseTileEntity {
-
         public bool isActivated;
 
         public WaystoneType waystoneType;
@@ -30,12 +28,12 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         /// </summary>
         public static WaystoneEntity BaseEntity => TileEntitySystem.GetBaseEntityInstance<WaystoneEntity>();
 
+        public override int ValidTileID => ModContent.TileType<WaystoneTile>();
+
         private int activationVFXStage;
         private int activationVFXTimer;
         private int activationVFXSecondaryTimer;
         private bool doingActivationVFX;
-        
-        public override int ValidTileID => ModContent.TileType<WaystoneTile>();
 
         /// <summary>
         /// Called when a waystone tile is placed. Places a waystone entity at the tile's location.
@@ -78,12 +76,12 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                 for (int x = 0; x <= activationVFXTimer; x++) {
                     Dust.NewDustPerfect(tileCenter - new Vector2(0, circleRadius).RotatedBy(MathHelper.ToRadians(x * 20f)), DustID.GoldCoin, newColor: activationDustColor);
                 }
-                
+
                 if (++activationVFXSecondaryTimer > 18) {
                     // Every 18 frames, add a particle to the circle
                     activationVFXSecondaryTimer = 0;
                     activationVFXTimer++;
-                    
+
                     SoundEngine.PlaySound(SoundID.Item100, tileCenter - new Vector2(0, circleRadius).RotatedBy(MathHelper.ToRadians(activationVFXTimer * 20f)));
                 }
 
@@ -99,7 +97,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                 int circlePullThreshold = 30;
                 int finaleThreshold = 5;
 
-                DustUtils.CreateCircle(tileCenter, circleRadius * (1f - (activationVFXTimer / (float)circlePullThreshold)), DustID.GoldCoin, newColor: activationDustColor, angleChange: 20f);
+                DustUtils.CreateCircle(tileCenter, circleRadius * (1f - activationVFXTimer / (float)circlePullThreshold), DustID.GoldCoin, newColor: activationDustColor, angleChange: 20f);
 
                 // Step RAPIDLY closer
                 activationVFXTimer++;
@@ -108,7 +106,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                 if (activationVFXTimer == circlePullThreshold) {
                     // Play finale sound and give text confirmation
                     SoundEngine.PlaySound(SoundID.Item113, tileCenter);
-                    
+
                     Main.NewText(LocalizationUtils.GetLWMTextValue("Event.WaystoneActivation"), Color.Yellow);
 
                     //Activate this waystone on the map
@@ -139,7 +137,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             if (isActivated || doingActivationVFX) {
                 return;
             }
-            
+
             doingActivationVFX = true;
             activationVFXStage = 0;
             activationVFXTimer = 0;

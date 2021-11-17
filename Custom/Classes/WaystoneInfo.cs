@@ -6,14 +6,10 @@ using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Custom.Classes {
-
     /// <summary>
     /// Class that holds data on a given Waystone, including position and type.
     /// </summary>
     public class WaystoneInfo : TagSerializable {
-
-        public static readonly Func<TagCompound, WaystoneInfo> DESERIALIZER = Deserialize;
-
         /// <summary>
         /// Actual position of the tile, for adding, removing, and handling.
         /// </summary>
@@ -34,23 +30,21 @@ namespace LivingWorldMod.Custom.Classes {
         /// </summary>
         public bool isActivated;
 
+        public static readonly Func<TagCompound, WaystoneInfo> DESERIALIZER = Deserialize;
+
         public WaystoneInfo(Point16 tileLocation, WaystoneType waystoneType, bool isActivated) {
             this.tileLocation = tileLocation;
-            this.iconLocation = tileLocation.ToVector2() + new Vector2(1f, 1.5f);
+            iconLocation = tileLocation.ToVector2() + new Vector2(1f, 1.5f);
             this.waystoneType = waystoneType;
             this.isActivated = isActivated;
         }
 
-        public TagCompound SerializeData() {
-            return new TagCompound() {
-                { "location", tileLocation },
-                { "type", waystoneType },
-                { "isActive", isActivated }
-            };
-        }
+        public TagCompound SerializeData() => new TagCompound() {
+            { "location", tileLocation },
+            { "type", waystoneType },
+            { "isActive", isActivated }
+        };
 
-        public static WaystoneInfo Deserialize(TagCompound tag) {
-            return new WaystoneInfo(tag.Get<Point16>("location"), (WaystoneType)tag.GetAsInt("type"), tag.GetBool("isActive"));
-        }
+        public static WaystoneInfo Deserialize(TagCompound tag) => new WaystoneInfo(tag.Get<Point16>("location"), (WaystoneType)tag.GetAsInt("type"), tag.GetBool("isActive"));
     }
 }

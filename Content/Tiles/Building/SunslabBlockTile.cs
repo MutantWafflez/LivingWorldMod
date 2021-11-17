@@ -8,7 +8,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Tiles.Building {
-
     public class SunslabBlockTile : BaseTile {
         private Asset<Texture2D> baseTexture;
 

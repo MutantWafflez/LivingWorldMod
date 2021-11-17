@@ -9,7 +9,6 @@ using Terraria.ModLoader;
 using MonoMod.Cil;
 
 namespace LivingWorldMod.Common.Patches {
-
     /// <summary>
     /// Class that handles patches within the realm of Pylons.
     /// </summary>
@@ -22,10 +21,9 @@ namespace LivingWorldMod.Common.Patches {
 
         public void Unload() { }
 
-        private bool PlayerNearPylon(On.Terraria.GameContent.TeleportPylonsSystem.orig_IsPlayerNearAPylon orig, Terraria.Player player) {
+        private bool PlayerNearPylon(On.Terraria.GameContent.TeleportPylonsSystem.orig_IsPlayerNearAPylon orig, Player player) =>
             // Count waystones as "pylons" for teleportation
-            return player.IsTileTypeInInteractionRange(ModContent.TileType<WaystoneTile>()) || orig(player);
-        }
+            player.IsTileTypeInInteractionRange(ModContent.TileType<WaystoneTile>()) || orig(player);
 
         private void IsInInteractionRange(ILContext il) {
             // Simple edit here. Just need to add Waystone tiles to the Interaction check, by navigating to where

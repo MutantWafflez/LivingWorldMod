@@ -4,7 +4,6 @@ using Terraria;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Commands.DebugCommands {
-
     public class ShopRestockCommand : DebugCommand {
         public override string Command => "restock";
 

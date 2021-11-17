@@ -5,9 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.Walls.Building {
-
     public class SkywareWallItem : BaseItem {
-
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.DirtWall);
             Item.placeStyle = 0;

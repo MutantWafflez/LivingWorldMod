@@ -6,12 +6,10 @@ using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Custom.Utilities {
-
     /// <summary>
     /// Class that holds methods and properties that assist with world generation or world related matters.
     /// </summary>
     public static class WorldGenUtils {
-
         /// <summary>
         /// Returns world size of the current world being played.
         /// </summary>
@@ -51,30 +49,30 @@ namespace LivingWorldMod.Custom.Utilities {
 
                     switch (tileData.type) {
                         case > 0: {
-                                if (ModContent.TryFind(tileData.modName, tileData.modTileName, out ModTile modTile)) {
-                                    selectedTile.type = modTile.Type;
-                                }
-                                else {
-                                    selectedTile.type = (ushort)tileData.type;
-                                }
-                                selectedTile.IsActive = true;
-
-                                selectedTile.IsHalfBlock = tileData.isHalfBlock;
-                                selectedTile.FrameNumber = (byte)tileData.frameNumber;
-                                selectedTile.frameX = (short)tileData.frameX;
-                                selectedTile.frameY = (short)tileData.frameY;
-                                selectedTile.Slope = (SlopeType)tileData.slopeType;
-                                selectedTile.Color = (byte)tileData.color;
-                                selectedTile.IsActuated = tileData.isActuated;
-                                selectedTile.HasActuator = tileData.hasActuator;
-                                selectedTile.RedWire = tileData.hasRedWire;
-                                selectedTile.BlueWire = tileData.hasBlueWire;
-                                selectedTile.GreenWire = tileData.hasGreenWire;
-                                selectedTile.YellowWire = tileData.hasYellowWire;
-                                selectedTile.LiquidType = tileData.liquidType;
-                                selectedTile.LiquidAmount = (byte)tileData.liquidAmount;
-                                break;
+                            if (ModContent.TryFind(tileData.modName, tileData.modTileName, out ModTile modTile)) {
+                                selectedTile.type = modTile.Type;
                             }
+                            else {
+                                selectedTile.type = (ushort)tileData.type;
+                            }
+                            selectedTile.IsActive = true;
+
+                            selectedTile.IsHalfBlock = tileData.isHalfBlock;
+                            selectedTile.FrameNumber = (byte)tileData.frameNumber;
+                            selectedTile.frameX = (short)tileData.frameX;
+                            selectedTile.frameY = (short)tileData.frameY;
+                            selectedTile.Slope = (SlopeType)tileData.slopeType;
+                            selectedTile.Color = (byte)tileData.color;
+                            selectedTile.IsActuated = tileData.isActuated;
+                            selectedTile.HasActuator = tileData.hasActuator;
+                            selectedTile.RedWire = tileData.hasRedWire;
+                            selectedTile.BlueWire = tileData.hasBlueWire;
+                            selectedTile.GreenWire = tileData.hasGreenWire;
+                            selectedTile.YellowWire = tileData.hasYellowWire;
+                            selectedTile.LiquidType = tileData.liquidType;
+                            selectedTile.LiquidAmount = (byte)tileData.liquidAmount;
+                            break;
+                        }
                         case -1:
                             selectedTile.type = 0;
                             selectedTile.IsActive = false;
@@ -138,30 +136,30 @@ namespace LivingWorldMod.Custom.Utilities {
 
                     switch (tileData.type) {
                         case > 0: {
-                                if (ModContent.TryFind(tileData.modName, tileData.modTileName, out ModTile modTile)) {
-                                    selectedTile.type = modTile.Type;
-                                }
-                                else {
-                                    selectedTile.type = (ushort)tileData.type;
-                                }
-                                selectedTile.IsActive = true;
-
-                                selectedTile.IsHalfBlock = tileData.isHalfBlock;
-                                selectedTile.FrameNumber = (byte)tileData.frameNumber;
-                                selectedTile.frameX = (short)tileData.frameX;
-                                selectedTile.frameY = (short)tileData.frameY;
-                                selectedTile.Slope = (SlopeType)tileData.slopeType;
-                                selectedTile.Color = (byte)tileData.color;
-                                selectedTile.IsActuated = tileData.isActuated;
-                                selectedTile.HasActuator = tileData.hasActuator;
-                                selectedTile.RedWire = tileData.hasRedWire;
-                                selectedTile.BlueWire = tileData.hasBlueWire;
-                                selectedTile.GreenWire = tileData.hasGreenWire;
-                                selectedTile.YellowWire = tileData.hasYellowWire;
-                                selectedTile.LiquidType = tileData.liquidType;
-                                selectedTile.LiquidAmount = (byte)tileData.liquidAmount;
-                                break;
+                            if (ModContent.TryFind(tileData.modName, tileData.modTileName, out ModTile modTile)) {
+                                selectedTile.type = modTile.Type;
                             }
+                            else {
+                                selectedTile.type = (ushort)tileData.type;
+                            }
+                            selectedTile.IsActive = true;
+
+                            selectedTile.IsHalfBlock = tileData.isHalfBlock;
+                            selectedTile.FrameNumber = (byte)tileData.frameNumber;
+                            selectedTile.frameX = (short)tileData.frameX;
+                            selectedTile.frameY = (short)tileData.frameY;
+                            selectedTile.Slope = (SlopeType)tileData.slopeType;
+                            selectedTile.Color = (byte)tileData.color;
+                            selectedTile.IsActuated = tileData.isActuated;
+                            selectedTile.HasActuator = tileData.hasActuator;
+                            selectedTile.RedWire = tileData.hasRedWire;
+                            selectedTile.BlueWire = tileData.hasBlueWire;
+                            selectedTile.GreenWire = tileData.hasGreenWire;
+                            selectedTile.YellowWire = tileData.hasYellowWire;
+                            selectedTile.LiquidType = tileData.liquidType;
+                            selectedTile.LiquidAmount = (byte)tileData.liquidAmount;
+                            break;
+                        }
                         case -1:
                             selectedTile.type = 0;
                             selectedTile.IsActive = false;

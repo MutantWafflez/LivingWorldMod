@@ -7,13 +7,11 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Common.Systems {
-
     /// <summary>
     /// System that handles some Waystone functionality, in tandem with the Waystone tile entity
     /// and tiles.
     /// </summary>
     public class WaystoneSystem : ModSystem {
-
         public List<WaystoneInfo> waystoneData;
 
         public override void Load() {

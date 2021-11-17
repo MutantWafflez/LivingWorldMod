@@ -8,15 +8,13 @@ using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Content.Items.DebugItems {
-
     public class StructureStick : DebugItem {
+        public override string Texture => "Terraria/Images/Item_" + ItemID.DrumStick;
         private Point16 topLeft = Point16.NegativeOne;
 
         private Point16 bottomRight = Point16.NegativeOne;
 
         private bool isSaving;
-
-        public override string Texture => "Terraria/Images/Item_" + ItemID.DrumStick;
 
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.DrumStick);

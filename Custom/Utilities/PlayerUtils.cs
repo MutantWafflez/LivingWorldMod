@@ -1,12 +1,10 @@
 ﻿using Terraria;
 
 namespace LivingWorldMod.Custom.Utilities {
-
     /// <summary>
     /// Utilities class that holds methods that pertains to players.
     /// </summary>
     public static class PlayerUtils {
-
         /// <summary>
         /// Calculates and returns the entirety of the savings of the player in all applicable inventories.
         /// </summary>

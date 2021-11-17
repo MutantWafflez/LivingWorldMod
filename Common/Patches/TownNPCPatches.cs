@@ -5,12 +5,10 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Patches {
-
     /// <summary>
     /// Class that adds/loads all of the patches for TownNPC-specific methods.
     /// </summary>
     public class TownNPCPatches : ILoadable {
-
         public void Load(Mod mod) {
             On.Terraria.NPC.AI_007_TownEntities += TownNPCAI;
 
@@ -51,9 +49,7 @@ namespace LivingWorldMod.Common.Patches {
             }
         }
 
-        private bool ShopHelperTownNPCStatus(On.Terraria.GameContent.ShopHelper.orig_IsNotReallyTownNPC orig, Terraria.GameContent.ShopHelper self, NPC npc) {
-            return npc.ModNPC is Villager || orig(self, npc);
-        }
+        private bool ShopHelperTownNPCStatus(On.Terraria.GameContent.ShopHelper.orig_IsNotReallyTownNPC orig, Terraria.GameContent.ShopHelper self, NPC npc) => npc.ModNPC is Villager || orig(self, npc);
 
         private void TownNPCNames(On.Terraria.NPC.orig_GiveTownUniqueDataToNPCsThatNeedIt orig, int Type, int nextNPC) {
             orig(NPCUtils.IsTypeOfVillager(Type) ? NPCID.SkeletonMerchant : Type, nextNPC);

@@ -13,7 +13,6 @@ using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LivingWorldMod.Common.VanillaOverrides {
-
     /// <summary>
     /// IMapLayer class implementation for drawing waystone icons on the map.
     /// </summary>

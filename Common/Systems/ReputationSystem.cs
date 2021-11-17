@@ -5,14 +5,12 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Common.Systems {
-
     /// <summary>
     /// System that handles reputations for all of the villages in the mod.
     /// </summary>
     public class ReputationSystem : ModSystem {
-        public const int VillageReputationConstraint = 100;
-
         private static int[] villageReputation;
+        public const int VillageReputationConstraint = 100;
 
         /// <summary> Gets & returns the reputation value of the given villager type specified.
         /// </summary> <returns></returns>

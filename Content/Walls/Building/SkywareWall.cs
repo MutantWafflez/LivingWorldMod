@@ -5,9 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Walls.Building {
-
     public class SkywareWall : BaseWall {
-
         public override void SetStaticDefaults() {
             Main.wallHouse[Type] = true;
 

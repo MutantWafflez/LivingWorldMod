@@ -4,7 +4,6 @@ using Terraria;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Biomes {
-
     /// <summary>
     /// "Biome" that surrounds a given harpy shrine.
     /// </summary>
@@ -17,8 +16,6 @@ namespace LivingWorldMod.Content.Biomes {
             DisplayName.SetDefault("Harpy Village");
         }
 
-        public override bool IsBiomeActive(Player player) {
-            return player.GetModPlayer<BiomePlayer>().currentVillageBiome == VillagerType.Harpy;
-        }
+        public override bool IsBiomeActive(Player player) => player.GetModPlayer<BiomePlayer>().currentVillageBiome == VillagerType.Harpy;
     }
 }

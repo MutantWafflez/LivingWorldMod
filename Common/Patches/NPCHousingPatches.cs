@@ -14,12 +14,10 @@ using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Patches {
-
     /// <summary>
     /// Class that contains IL/On patches for NPC housing-related manners.
     /// </summary>
     public class NPCHousingPatches : ILoadable {
-
         public void Load(Mod mod) {
             IL.Terraria.WorldGen.CheckSpecialTownNPCSpawningConditions += TestForVillageHouse;
 
@@ -62,7 +60,7 @@ namespace LivingWorldMod.Common.Patches {
 
                 //HOWEVER, if the Town NPC can spawn here, we need to do additional checks to make sure it's not a non-villager spawning in a villager home
                 //Additionally, we can't have villagers in a non-village home, which is the second check after  V  this OR statement.
-                if ((modNPC is not Villager && villageZones.Any(zone => zone.Contains(roomInQuestion))) || (modNPC is Villager && !villageZones.Any(zone => zone.Contains(roomInQuestion)))) {
+                if (modNPC is not Villager && villageZones.Any(zone => zone.Contains(roomInQuestion)) || modNPC is Villager && !villageZones.Any(zone => zone.Contains(roomInQuestion))) {
                     return false;
                 }
 
@@ -315,10 +313,8 @@ namespace LivingWorldMod.Common.Patches {
             c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
             //Add onto the normal text if villager and not well-liked enough
             c.EmitDelegate<Func<string, NPC, string>>((normalText, npc) =>
-                normalText + (npc.ModNPC is Villager { RelationshipStatus: < VillagerRelationship.Like } villager ?
-                    $"\n{LocalizationUtils.GetLWMTextValue("UI.VillagerHousing.VillagerTypeLocked", villager.VillagerType.ToString())}" :
-                    "")
-                );
+                normalText + (npc.ModNPC is Villager { RelationshipStatus: < VillagerRelationship.Like } villager ? $"\n{LocalizationUtils.GetLWMTextValue("UI.VillagerHousing.VillagerTypeLocked", villager.VillagerType.ToString())}" : "")
+            );
 
             //Navigate to right-click boolean loading instruction
             c.ErrorOnFailedGotoNext(i => i.MatchLdloc(rightClickCheckLocalNumber));

@@ -6,7 +6,6 @@ using System.Reflection;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Systems {
-
     /// <summary>
     /// ModSystem that handles Tile Entities and their functionality beyond what is already defined
     /// in the specified tile entity classes.

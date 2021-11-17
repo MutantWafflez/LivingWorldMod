@@ -9,12 +9,10 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Interactables {
-
     /// <summary>
     /// Class for Waystone tiles, which are basically Pylons but in the wild.
     /// </summary>
     public class WaystoneTile : BaseTile {
-
         public WaystoneEntity TileEntity => TileEntitySystem.GetBaseEntityInstance<WaystoneEntity>();
 
         /// <summary>
@@ -34,7 +32,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             TileObjectData.newTile.LavaDeath = false;
             TileObjectData.newTile.WaterPlacement = LiquidPlacement.NotAllowed;
             TileObjectData.newTile.LavaPlacement = LiquidPlacement.NotAllowed;
-            
+
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
             TileObjectData.newTile.Origin = Point16.Zero;
             TileObjectData.newTile.Height = 3;
@@ -53,7 +51,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             name.SetDefault("Waystone");
             AddMapEntry(Color.White, name);
         }
-        
+
         public override bool CanKillTile(int i, int j, ref bool blockDamaged) => LivingWorldMod.IsDebug;
 
         public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
@@ -88,4 +86,4 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             return false;
         }
     }
-} 
+}

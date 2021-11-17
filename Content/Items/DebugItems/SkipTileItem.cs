@@ -3,7 +3,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.DebugItems {
-
     public class SkipTileItem : DebugItem {
         public override string Texture => "Terraria/Images/Item_" + ItemID.TeamBlockWhite;
 

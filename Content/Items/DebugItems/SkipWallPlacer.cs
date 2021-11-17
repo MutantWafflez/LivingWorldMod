@@ -5,18 +5,16 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.DebugItems {
-
     /// <summary>
     /// Debug tool that can place debug walls
     /// </summary>
     public class SkipWallPlacer : DebugItem {
+        public override string Texture => "Terraria/Images/Item_" + ItemID.ActuationRod;
         private Point16 topLeft = Point16.NegativeOne;
 
         private Point16 bottomRight = Point16.NegativeOne;
 
         private bool isPlacingWalls;
-
-        public override string Texture => "Terraria/Images/Item_" + ItemID.ActuationRod;
 
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.DrumStick);

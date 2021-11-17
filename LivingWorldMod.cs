@@ -1,20 +1,18 @@
 using Terraria.ModLoader;
 
 namespace LivingWorldMod {
-
     public class LivingWorldMod : Mod {
-
         /// <summary>
         /// Whether or not the mod is in Debug, which is determined by if you are building from some
         /// IDE as Debug.
         /// </summary>
         public static bool IsDebug {
             get {
-#if DEBUG
+                #if DEBUG
                 return true;
-#else
+                #else
                 return false;
-#endif
+                #endif
             }
         }
 

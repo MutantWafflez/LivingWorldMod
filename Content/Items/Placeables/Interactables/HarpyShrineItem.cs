@@ -3,9 +3,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.Placeables.Interactables {
-
     public class HarpyShrineItem : BaseItem {
-
         public override void SetDefaults() {
             Item.maxStack = 99;
             Item.useTurn = true;
