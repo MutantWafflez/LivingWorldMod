@@ -1,12 +1,10 @@
-﻿using System.Linq;
-using LivingWorldMod.Common.Systems;
+﻿using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
@@ -18,6 +16,11 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
     public class WaystoneTile : BaseTile {
 
         public WaystoneEntity TileEntity => TileEntitySystem.GetBaseEntityInstance<WaystoneEntity>();
+
+        /// <summary>
+        /// The tile width of Waystones. Used for tile entity placement/destroying calculations.
+        /// </summary>
+        private int fullTileWidth = 2;
 
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
@@ -39,7 +42,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.DrawYOffset = 2;
 
-            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(WaystoneEntity.WaystonePlaced, 1, 0, true);
+            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(WaystoneEntity.WaystonePlaced, -1, 0, true);
 
             TileObjectData.addTile(Type);
 
@@ -54,7 +57,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         public override bool CanKillTile(int i, int j, ref bool blockDamaged) => LivingWorldMod.IsDebug;
 
         public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
-            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
+            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, fullTileWidth);
 
             if (TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity foundEntity) && foundEntity.isActivated) {
                 frameYOffset += AnimationFrameHeight;
@@ -63,7 +66,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) {
             // Lightly glow while activated
-            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
+            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, fullTileWidth);
 
             if (TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity foundEntity) && foundEntity.isActivated) {
                 r = 0.5f;
@@ -75,7 +78,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => TileEntity.Kill(i, j);
 
         public override bool RightClick(int i, int j) {
-            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
+            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, fullTileWidth);
 
             if (TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity foundEntity)) {
                 foundEntity.RightClicked();

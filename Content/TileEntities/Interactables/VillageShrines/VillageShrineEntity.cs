@@ -68,6 +68,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables.VillageShrines {
 
         public void CreateVillageZoneCircle() {
             Dust dust = Dust.NewDustPerfect(VillageOriginPosition, VillageZoneDustType);
+            dust.active = false;
             dust.noGravity = true;
             dust.scale = 1.25f;
             DustUtils.CreateCircle(dust.position, VillageRadius, dust);

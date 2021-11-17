@@ -42,7 +42,25 @@ namespace LivingWorldMod.Custom.Utilities {
         /// <param name="tile"> A tile within the multi-tile. </param>
         /// <param name="x"> The x coordinate of the specified tile. </param>
         /// <param name="y"> The y coordinate of the specified tile. </param>
-        /// <returns> </returns>
         public static Point16 GetTopLeftOfMultiTile(Tile tile, int x, int y) => new Point16(x - tile.frameX / 18, y - tile.frameY / 18);
+
+        /// <summary>
+        /// Returns the top left coordinate of the passed in tile which should be a type of multi-tile. This overload takes into account multi-
+        /// styled multi-tiles.
+        /// </summary>
+        /// <param name="tile"> A tile within the multi-tile. </param>
+        /// <param name="x"> The x coordinate of the specified tile. </param>
+        /// <param name="y"> The y coordinate of the specified tile. </param>
+        /// <param name="pixelWidthOfFullTile">
+        /// The width of the full multi-tile, in tiles.
+        /// Assumes multi-tile sprite uses 16x16 for each tile frame, with 2 pixels worth of padding.
+        /// </param>
+        public static Point16 GetTopLeftOfMultiTile(Tile tile, int x, int y, int multiTileWidth) {
+            int pixelWidthOfFullTile = multiTileWidth * 18;
+            //Calculate proper displacement
+            int frameXDisplacement = tile.frameX >= pixelWidthOfFullTile ? (int)(tile.frameX / (float)pixelWidthOfFullTile) * pixelWidthOfFullTile : 0;
+
+            return new Point16(x - (tile.frameX - frameXDisplacement) / 18, y - tile.frameY / 18);
+        }
     }
 }

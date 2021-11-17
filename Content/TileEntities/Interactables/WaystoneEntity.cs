@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.Tiles.Interactables;
@@ -44,7 +45,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
             // Place tile entity and assign its type
             int waystoneEntityID = BaseEntity.Place(i, j);
-            ((WaystoneEntity)ByID[waystoneEntityID]).waystoneType = (WaystoneType)style;
+            ((WaystoneEntity)ByPosition[new Point16(i, j)]).waystoneType = (WaystoneType)style;
 
             // Add to data list
             waystoneSystem.waystoneData.Add(new WaystoneInfo(new Point16(i, j), (WaystoneType)style, false));
@@ -63,10 +64,19 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
             float circleRadius = 160f;
 
+            Color activationDustColor = waystoneType switch {
+                WaystoneType.Desert => default,
+                WaystoneType.Jungle => Color.LimeGreen,
+                WaystoneType.Mushroom => Color.DarkBlue,
+                WaystoneType.Caverns => Color.Lavender,
+                WaystoneType.Ice => Color.LightBlue,
+                _ => Color.White
+            };
+
             if (activationVFXStage == 0) {
                 // Generate circle of dust. Would use the Utils method that was made for this, but this is "special" drawing
                 for (int x = 0; x <= activationVFXTimer; x++) {
-                    Dust.NewDustPerfect(tileCenter - new Vector2(0, circleRadius).RotatedBy(MathHelper.ToRadians(x * 20f)), DustID.GoldCoin);
+                    Dust.NewDustPerfect(tileCenter - new Vector2(0, circleRadius).RotatedBy(MathHelper.ToRadians(x * 20f)), DustID.GoldCoin, newColor: activationDustColor);
                 }
                 
                 if (++activationVFXSecondaryTimer > 18) {
@@ -88,8 +98,8 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                 // Drag circle to the center of the tile
                 int circlePullThreshold = 30;
                 int finaleThreshold = 5;
-                
-                DustUtils.CreateCircle(tileCenter, circleRadius * (1f - (activationVFXTimer / (float)circlePullThreshold)), DustID.GoldCoin, 20f);
+
+                DustUtils.CreateCircle(tileCenter, circleRadius * (1f - (activationVFXTimer / (float)circlePullThreshold)), DustID.GoldCoin, newColor: activationDustColor, angleChange: 20f);
 
                 // Step RAPIDLY closer
                 activationVFXTimer++;

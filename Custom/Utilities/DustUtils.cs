@@ -20,8 +20,17 @@ namespace LivingWorldMod.Custom.Utilities {
         /// </param>
         public static void CreateCircle(Vector2 origin, float radius, Dust dust, float angleChange = 5) {
             for (float i = 0; i < 360f; i += angleChange) {
-                Dust newDust = Dust.CloneDust(dust);
-                newDust.position = origin - new Vector2(0, radius).RotatedBy(MathHelper.ToRadians(i));
+                Vector2 newPos = origin - new Vector2(0, radius).RotatedBy(MathHelper.ToRadians(i));
+
+                Dust newDust = Dust.NewDustPerfect(newPos, dust.type, dust.velocity, dust.alpha, dust.color, dust.scale);
+
+                newDust.fadeIn = dust.fadeIn;
+                newDust.noGravity = dust.noGravity;
+                newDust.rotation = dust.rotation;
+                newDust.noLight = dust.noLight;
+                newDust.frame = dust.frame;
+                newDust.shader = dust.shader;
+                newDust.customData = dust.customData;
             }
         }
         
@@ -35,9 +44,9 @@ namespace LivingWorldMod.Custom.Utilities {
         /// <param name="angleChange">
         /// The angle change between each dust particle in the circle. Defaults to 5 degrees.
         /// </param>
-        public static void CreateCircle(Vector2 origin, float radius, int dustID, float angleChange = 5) {
+        public static void CreateCircle(Vector2 origin, float radius, int dustID, Vector2? velocity = null, int alpha = 0, Color newColor = default, float scale = 1f, float angleChange = 5) {
             for (float i = 0; i < 360f; i += angleChange) {
-                Dust.NewDustPerfect(origin - new Vector2(0, radius).RotatedBy(MathHelper.ToRadians(i)), dustID);
+                Dust.NewDustPerfect(origin - new Vector2(0, radius).RotatedBy(MathHelper.ToRadians(i)), dustID, velocity, alpha, newColor, scale);
             }
         }
     }
