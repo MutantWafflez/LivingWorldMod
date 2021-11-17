@@ -13,7 +13,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
     /// Class for Waystone tiles, which are basically Pylons but in the wild.
     /// </summary>
     public class WaystoneTile : BaseTile {
-        public WaystoneEntity TileEntity => TileEntitySystem.GetBaseEntityInstance<WaystoneEntity>();
+        public WaystoneEntity TileEntity => ModContent.GetInstance<WaystoneEntity>();
 
         /// <summary>
         /// The tile width of Waystones. Used for tile entity placement/destroying calculations.

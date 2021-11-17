@@ -26,7 +26,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         /// <summary>
         /// Base entity of WaystoneEntity, used for placing more instances of itself.
         /// </summary>
-        public static WaystoneEntity BaseEntity => TileEntitySystem.GetBaseEntityInstance<WaystoneEntity>();
+        public static WaystoneEntity BaseEntity => ModContent.GetInstance<WaystoneEntity>();
 
         public override int ValidTileID => ModContent.TileType<WaystoneTile>();
 

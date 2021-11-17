@@ -7,6 +7,6 @@ namespace LivingWorldMod.Content.Tiles.Interactables.VillageShrines {
     public class HarpyShrineTile : VillageShrineTile {
         public override int ItemDropType => ModContent.ItemType<HarpyShrineItem>();
 
-        public override VillageShrineEntity ShrineEntity => TileEntitySystem.GetBaseEntityInstance<HarpyShrineEntity>();
+        public override VillageShrineEntity ShrineEntity => ModContent.GetInstance<HarpyShrineEntity>();
     }
 }
