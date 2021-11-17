@@ -1,6 +1,7 @@
 ﻿using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Structs;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -33,7 +34,7 @@ namespace LivingWorldMod.Common.VanillaOverrides {
                     continue;
                 }
 
-                text = $"{info.waystoneType} Waystone";
+                text = LocalizationUtils.GetLWMTextValue($"MapInfo.Waystones.{info.waystoneType}");
 
                 if (!Main.mouseLeft || !Main.mouseLeftRelease) {
                     continue;

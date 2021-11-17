@@ -156,6 +156,16 @@ Mods: {
 		    WaystoneActivation: "Waystone Activated!"
 		}
 
+		MapInfo: {
+			Waystones: {
+				Desert: "Desert Waystone"
+				Jungle: "Jungle Waystone"
+				Mushroom: "Glowing Mushroom Waystone"
+				Caverns: "Caverns Waystone"
+				Ice: "Tundra Waystone"
+			}
+		}
+
 		BuffName: {
 			NimbusPetBuff: "Nimbus Pet"
 		}
