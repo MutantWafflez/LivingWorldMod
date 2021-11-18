@@ -8,6 +8,7 @@ using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -130,7 +131,12 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
             // Place tile entity and assign its type
             int waystoneEntityID = WaystoneSystem.BaseWaystoneEntity.Place(i, j);
-            ((WaystoneEntity)ByPosition[new Point16(i, j)]).waystoneType = (WaystoneType)style;
+            if (TileEntityUtils.TryFindModEntity(i, j, out WaystoneEntity retrievedEntity)) {
+                retrievedEntity.waystoneType = (WaystoneType)style;
+            }
+            else {
+                return -1;
+            }
 
             if (addToWaystoneData) {
                 // Add to data list if specified

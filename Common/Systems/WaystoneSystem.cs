@@ -3,6 +3,8 @@ using System.Linq;
 using LivingWorldMod.Common.VanillaOverrides;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Classes;
+using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.Custom.Utilities;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
@@ -39,7 +41,9 @@ namespace LivingWorldMod.Common.Systems {
                 Point16 entityLocation = new Point16(info.tileLocation.X, info.tileLocation.Y);
                 BaseWaystoneEntity.PlaceEntity(entityLocation.X, entityLocation.Y, (int)info.waystoneType, false);
 
-                ((WaystoneEntity)TileEntity.ByPosition[entityLocation]).isActivated = info.isActivated;
+                if (TileEntityUtils.TryFindModEntity(entityLocation.X, entityLocation.Y, out WaystoneEntity retrievedEntity)) {
+                    retrievedEntity.isActivated = info.isActivated;
+                }
             }
         }
     }
