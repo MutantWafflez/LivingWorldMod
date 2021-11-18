@@ -23,11 +23,6 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
         public WaystoneType waystoneType;
 
-        /// <summary>
-        /// Base entity of WaystoneEntity, used for placing more instances of itself.
-        /// </summary>
-        public static WaystoneEntity BaseEntity => ModContent.GetInstance<WaystoneEntity>();
-
         public override int ValidTileID => ModContent.TileType<WaystoneTile>();
 
         private int _activationVFXStage;
@@ -36,20 +31,9 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         private bool _doingActivationVFX;
 
         /// <summary>
-        /// Called when a waystone tile is placed. Places a waystone entity at the tile's location.
+        /// Called when a waystone tile is placed. Transfers control to the WaystoneEntity to place itself.
         /// </summary>
-        public static int WaystonePlaced(int i, int j, int type, int style, int direction, int alternate) {
-            WaystoneSystem waystoneSystem = ModContent.GetInstance<WaystoneSystem>();
-
-            // Place tile entity and assign its type
-            int waystoneEntityID = BaseEntity.Place(i, j);
-            ((WaystoneEntity)ByPosition[new Point16(i, j)]).waystoneType = (WaystoneType)style;
-
-            // Add to data list
-            waystoneSystem.waystoneData.Add(new WaystoneInfo(new Point16(i, j), (WaystoneType)style, false));
-
-            return waystoneEntityID;
-        }
+        public static int WaystonePlaced(int i, int j, int type, int style, int direction, int alternate) => WaystoneSystem.BaseWaystoneEntity.PlaceEntity(i, j, style);
 
         public override void Update() {
             // Only run code during the activation sequence (and the player is tabbed in)
@@ -133,6 +117,33 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             }
         }
 
+        /// <summary>
+        /// Places a <see cref="WaystoneEntity"/> at this location and returns the <see cref="ModTileEntity.Place"/> value.
+        /// </summary>
+        /// <param name="i"> Position x of the tile entity. </param>
+        /// <param name="j"> Position y of the tile entity. </param>
+        /// <param name="style"> What style/type of waystone entity is to be placed. </param>
+        /// <param name="addToWaystoneData"> Whether or not the new tile entity to the <see cref="WaystoneSystem.waystoneData"/> list.</param>
+        /// <returns></returns>
+        public int PlaceEntity(int i, int j, int style, bool addToWaystoneData = true) {
+            WaystoneSystem waystoneSystem = ModContent.GetInstance<WaystoneSystem>();
+
+            // Place tile entity and assign its type
+            int waystoneEntityID = WaystoneSystem.BaseWaystoneEntity.Place(i, j);
+            ((WaystoneEntity)ByPosition[new Point16(i, j)]).waystoneType = (WaystoneType)style;
+
+            if (addToWaystoneData) {
+                // Add to data list if specified
+                waystoneSystem.waystoneData.Add(new WaystoneInfo(new Point16(i, j), (WaystoneType)style, false));
+            }
+
+            return waystoneEntityID;
+        }
+
+        /// <summary>
+        /// Should be called whenever the tile that is entity is associated with is right clicked. Does different things depending on if
+        /// this Waystone is activated or not.
+        /// </summary>
         public void RightClicked() {
             if (isActivated || _doingActivationVFX) {
                 return;

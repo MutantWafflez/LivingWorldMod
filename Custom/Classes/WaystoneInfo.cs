@@ -41,10 +41,10 @@ namespace LivingWorldMod.Custom.Classes {
 
         public TagCompound SerializeData() => new TagCompound() {
             { "location", tileLocation },
-            { "type", waystoneType },
+            { "type", (int)waystoneType },
             { "isActive", isActivated }
         };
 
-        public static WaystoneInfo Deserialize(TagCompound tag) => new WaystoneInfo(tag.Get<Point16>("location"), (WaystoneType)tag.GetAsInt("type"), tag.GetBool("isActive"));
+        public static WaystoneInfo Deserialize(TagCompound tag) => new WaystoneInfo(tag.Get<Point16>("location"), (WaystoneType)tag.GetInt("type"), tag.GetBool("isActive"));
     }
 }

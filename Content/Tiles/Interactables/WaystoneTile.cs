@@ -13,8 +13,6 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
     /// Class for Waystone tiles, which are basically Pylons but in the wild.
     /// </summary>
     public class WaystoneTile : BaseTile {
-        public WaystoneEntity TileEntity => ModContent.GetInstance<WaystoneEntity>();
-
         /// <summary>
         /// The tile width of Waystones. Used for tile entity placement/destroying calculations.
         /// </summary>
@@ -73,7 +71,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             }
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) => TileEntity.Kill(i, j);
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => WaystoneSystem.BaseWaystoneEntity.Kill(i, j);
 
         public override bool RightClick(int i, int j) {
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
