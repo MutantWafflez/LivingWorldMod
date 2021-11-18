@@ -1,11 +1,9 @@
 ﻿using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
-using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
 using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 

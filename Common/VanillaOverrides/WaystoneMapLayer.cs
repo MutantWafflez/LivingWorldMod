@@ -1,6 +1,5 @@
 ﻿using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Custom.Classes;
-using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

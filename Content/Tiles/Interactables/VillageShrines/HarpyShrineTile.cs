@@ -1,5 +1,4 @@
-﻿using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Content.Items.Placeables.Interactables;
+﻿using LivingWorldMod.Content.Items.Placeables.Interactables;
 using LivingWorldMod.Content.TileEntities.Interactables.VillageShrines;
 using Terraria.ModLoader;
 

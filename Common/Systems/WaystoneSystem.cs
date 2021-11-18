@@ -3,7 +3,6 @@ using System.Linq;
 using LivingWorldMod.Common.VanillaOverrides;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Classes;
-using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Terraria;
 using Terraria.DataStructures;
