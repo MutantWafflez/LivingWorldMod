@@ -1,14 +1,10 @@
-using System;
-using System.Diagnostics;
 using System.Linq;
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
-using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using Newtonsoft.Json.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -24,6 +20,19 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
         public WaystoneType waystoneType;
 
+        public Color WaystoneColor {
+            get {
+                return waystoneType switch {
+                    WaystoneType.Desert => Color.Yellow,
+                    WaystoneType.Jungle => Color.LimeGreen,
+                    WaystoneType.Mushroom => Color.DarkBlue,
+                    WaystoneType.Caverns => Color.Lavender,
+                    WaystoneType.Ice => Color.LightBlue,
+                    _ => Color.White
+                };
+            }
+        }
+
         public override int ValidTileID => ModContent.TileType<WaystoneTile>();
 
         private int _activationVFXStage;
@@ -34,7 +43,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         /// <summary>
         /// Called when a waystone tile is placed. Transfers control to the WaystoneEntity to place itself.
         /// </summary>
-        public static int WaystonePlaced(int i, int j, int type, int style, int direction, int alternate) => WaystoneSystem.BaseWaystoneEntity.PlaceEntity(i, j, style);
+        public static int WaystonePlaced(int i, int j, int type, int style, int direction, int alternate) => WaystoneSystem.BaseWaystoneEntity.TryPlaceEntity(i, j, style);
 
         public override void Update() {
             // Only run code during the activation sequence (and the player is tabbed in)
@@ -47,19 +56,10 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
             float circleRadius = 160f;
 
-            Color activationDustColor = waystoneType switch {
-                WaystoneType.Desert => default,
-                WaystoneType.Jungle => Color.LimeGreen,
-                WaystoneType.Mushroom => Color.DarkBlue,
-                WaystoneType.Caverns => Color.Lavender,
-                WaystoneType.Ice => Color.LightBlue,
-                _ => Color.White
-            };
-
             if (_activationVFXStage == 0) {
                 // Generate circle of dust. Would use the Utils method that was made for this, but this is "special" drawing
                 for (int x = 0; x <= _activationVFXTimer; x++) {
-                    Dust.NewDustPerfect(tileCenter - new Vector2(0, circleRadius).RotatedBy(MathHelper.ToRadians(x * 20f)), DustID.GoldCoin, newColor: activationDustColor);
+                    Dust.NewDustPerfect(tileCenter - new Vector2(0, circleRadius).RotatedBy(MathHelper.ToRadians(x * 20f)), DustID.GoldCoin, newColor: WaystoneColor);
                 }
 
                 if (++_activationVFXSecondaryTimer > 18) {
@@ -82,7 +82,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                 int circlePullThreshold = 30;
                 int finaleThreshold = 5;
 
-                DustUtils.CreateCircle(tileCenter, circleRadius * (1f - _activationVFXTimer / (float)circlePullThreshold), DustID.GoldCoin, newColor: activationDustColor, angleChange: 20f);
+                DustUtils.CreateCircle(tileCenter, circleRadius * (1f - _activationVFXTimer / (float)circlePullThreshold), DustID.GoldCoin, newColor: WaystoneColor, angleChange: 20f);
 
                 // Step RAPIDLY closer
                 _activationVFXTimer++;
@@ -119,17 +119,22 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         }
 
         /// <summary>
-        /// Places a <see cref="WaystoneEntity"/> at this location and returns the <see cref="ModTileEntity.Place"/> value.
+        /// Places a <see cref="WaystoneEntity"/> at this location and returns the <see cref="ModTileEntity.Place"/> value. If an error occurs, returns -1.
         /// </summary>
         /// <param name="i"> Position x of the tile entity. </param>
         /// <param name="j"> Position y of the tile entity. </param>
         /// <param name="style"> What style/type of waystone entity is to be placed. </param>
         /// <param name="addToWaystoneData"> Whether or not the new tile entity to the <see cref="WaystoneSystem.waystoneData"/> list.</param>
         /// <returns></returns>
-        public int PlaceEntity(int i, int j, int style, bool addToWaystoneData = true) {
+        public int TryPlaceEntity(int i, int j, int style, bool addToWaystoneData = true) {
             WaystoneSystem waystoneSystem = ModContent.GetInstance<WaystoneSystem>();
 
-            // Place tile entity and assign its type
+            // First, double check that tile is a Waystone tile
+            if (Framing.GetTileSafely(i, j).type != ModContent.TileType<WaystoneTile>()) {
+                return -1;
+            }
+
+            // Then, place tile entity and assign its type
             int waystoneEntityID = WaystoneSystem.BaseWaystoneEntity.Place(i, j);
             if (TileEntityUtils.TryFindModEntity(i, j, out WaystoneEntity retrievedEntity)) {
                 retrievedEntity.waystoneType = (WaystoneType)style;

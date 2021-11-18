@@ -1,4 +1,7 @@
-﻿using LivingWorldMod.Common.ModTypes;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
 using LivingWorldMod.Content.Tiles.Interactables;
@@ -17,61 +20,47 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
     /// Handles the Worldgen pass that handles the placement of Waystones.
     /// </summary>
     public class Waystones : WorldGenFeature {
-        /// <summary>
-        /// Generates an instance of the current scene metrics for the generating world.
-        /// </summary>
-        public SceneMetrics GenerateMetrics => new SceneMetrics(Main.ActiveWorld);
-
         public override string InternalGenerationName => "Waystones";
 
-        public override string InsertionPassNameForFeature => "Micro Biomes";
+        public override string InsertionPassNameForFeature => "Statues";
 
         public override void Generate(GenerationProgress progress, GameConfiguration gameConfig) {
             progress.Message = "Paving the way";
             progress.Set(0f);
 
-            WaystoneType BiomeToWaystoneType(int i, int j) {
-                SceneMetrics grabbedMetrics = GenerateMetrics;
-                SceneMetricsScanSettings settings = new SceneMetricsScanSettings {
-                    VisualScanArea = null,
-                    BiomeScanCenterPositionInWorld = new Vector2(i * 16, j * 16),
-                    ScanOreFinderData = false
-                };
-
-                grabbedMetrics.ScanAndExportToMain(settings);
-
-                //Kinda bad to look at, but not much else that can be changed in this case
-                if (grabbedMetrics.EnoughTilesForDesert) {
-                    return WaystoneType.Desert;
-                }
-                else if (grabbedMetrics.EnoughTilesForJungle) {
-                    return WaystoneType.Jungle;
-                }
-                else if (grabbedMetrics.EnoughTilesForGlowingMushroom) {
-                    return WaystoneType.Mushroom;
-                }
-                else if (grabbedMetrics.EnoughTilesForSnow) {
-                    return WaystoneType.Ice;
-                }
-                else {
-                    return WaystoneType.Caverns;
-                }
-            }
-
             // How many times we will cut up the world when searching for places to put Waystones
             float worldDivisions = WorldGenUtils.CurrentWorldSize switch {
-                WorldSize.Small => 100f,
-                WorldSize.Medium => 200f,
-                WorldSize.Large => 300f,
-                WorldSize.Custom => 175f,
+                WorldSize.Small => 500f,
+                WorldSize.Medium => 1000f,
+                WorldSize.Large => 1500f,
+                WorldSize.Custom => 300f,
                 _ => 50f
             };
+
+            int minTilesBetweenWaystones = WorldGenUtils.CurrentWorldSize switch {
+                WorldSize.Small => 250,
+                WorldSize.Medium => 325,
+                WorldSize.Large => 375,
+                WorldSize.Custom => 250,
+                _ => 175
+            };
+
+            //Define what waystone types can have what tiles under them
+            Dictionary<WaystoneType, ushort[]> typeToValidTiles = new Dictionary<WaystoneType, ushort[]>() {
+                { WaystoneType.Desert, new ushort[] { TileID.HardenedSand, TileID.Sandstone } },
+                { WaystoneType.Jungle, new ushort[] { TileID.JungleGrass } },
+                { WaystoneType.Mushroom, new ushort[] { TileID.MushroomGrass } },
+                { WaystoneType.Caverns, new ushort[] { TileID.Stone } },
+                { WaystoneType.Ice, new ushort[] { TileID.IceBlock, TileID.SnowBlock } }
+            };
+
+            //Get all the valid tiles together for faster searching
+            ushort[] allValidTiles = typeToValidTiles.Values.ToArray().SelectMany(item => item).Distinct().ToArray();
 
             //Maximum height is the top of the RockLayer, and the lowest being right above the underworld
             int yBottomBound = (int)Main.rockLayer;
             int yTopBound = Main.maxTilesY - 200; //Vanilla definition of the transition point between underworld and not-underworld
             int xBoundFluff = 40;
-            int minDistanceBetweenWaystones = 100; //Distance is in tiles
 
             //First, we will simply satisfy that at least one mushroom biome waystone spawns, since that is the least likely
             for (int i = xBoundFluff; i < Main.maxTilesX - xBoundFluff; i += (int)(Main.maxTilesX / worldDivisions)) {
@@ -95,8 +84,8 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     if (!WorldUtils.Find(searchOrigin + new Point(0, 3), Searches.Chain(
                                 new Searches.Rectangle(2, 1),
                                 new Conditions.IsSolid().AreaAnd(2, 1),
-                                new Conditions.IsTile(TileID.MushroomGrass).AreaAnd(2, 1)),
-                            out Point _)) {
+                                new Conditions.IsTile(typeToValidTiles[WaystoneType.Mushroom]).AreaAnd(2, 1)),
+                            out _)) {
                         continue;
                     }
 
@@ -109,8 +98,9 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     }
 
                     //Place tile entities
-                    WaystoneSystem.BaseWaystoneEntity.PlaceEntity(i, j, (int)WaystoneType.Mushroom);
-                    ModContent.GetInstance<LivingWorldMod>().Logger.Info($"Placed Waystone at {i}, {j}");
+                    if (WaystoneSystem.BaseWaystoneEntity.TryPlaceEntity(i, j, (int)WaystoneType.Mushroom) > -1 && LivingWorldMod.IsDebug) {
+                        ModContent.GetInstance<LivingWorldMod>().Logger.Info($"Placed Waystone at {i}, {j}");
+                    }
 
                     //Assuming we get here, break and move out of loop
                     i = Main.maxTilesX;
@@ -135,12 +125,12 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                         continue;
                     }
 
-                    //Make sure there are two solid tiles below that pocket of air, and they aren't dungeon tiles
+                    //Make sure there are two solid tiles below that pocket of air, and is a valid tile
                     if (!WorldUtils.Find(searchOrigin + new Point(0, 3), Searches.Chain(
                                 new Searches.Rectangle(2, 1),
                                 new Conditions.IsSolid().AreaAnd(2, 1),
-                                new Conditions.IsTile(TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick).AreaAnd(2, 1).Not()),
-                            out _)) {
+                                new Conditions.IsTile(allValidTiles)),
+                            out Point tileBasePoint)) {
                         continue;
                     }
 
@@ -151,13 +141,22 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
 
                     //Finally, for the last check, make sure it isn't too close to any other Waystones
                     foreach (WaystoneInfo info in ModContent.GetInstance<WaystoneSystem>().waystoneData) {
-                        if (info.iconLocation.Distance(new Vector2(i, j)) < minDistanceBetweenWaystones) {
+                        if (info.iconLocation.Distance(searchOrigin.ToVector2()) < minTilesBetweenWaystones) {
                             goto ContinueLoop;
                         }
                     }
 
-                    //Place waystone depending on the biome of its location
-                    WaystoneType determinedWaystoneType = BiomeToWaystoneType(i, j);
+                    //Place waystone depending on the tile base
+                    WaystoneType determinedWaystoneType = WaystoneType.Desert;
+                    for (WaystoneType waystoneType = WaystoneType.Desert; waystoneType <= WaystoneType.Ice; waystoneType = waystoneType.NextEnum()) {
+                        if (WorldUtils.Find(tileBasePoint, Searches.Chain(
+                                    new Searches.Rectangle(2, 1),
+                                    new Conditions.IsTile(typeToValidTiles[waystoneType])),
+                                out _)) {
+                            determinedWaystoneType = waystoneType;
+                            break;
+                        }
+                    }
 
                     //Clear objects out of the way, since there might be things like grass or mushrooms in the way the technically prevent placement
                     WorldUtils.Gen(searchOrigin, new Shapes.Rectangle(2, 3), new Actions.ClearTile(true));
@@ -168,8 +167,10 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     }
 
                     //Place tile entities
-                    WaystoneSystem.BaseWaystoneEntity.PlaceEntity(i, j, (int)determinedWaystoneType);
-                    ModContent.GetInstance<LivingWorldMod>().Logger.Info($"Placed Waystone at {i}, {j}");
+                    if (WaystoneSystem.BaseWaystoneEntity.TryPlaceEntity(i, j, (int)determinedWaystoneType) > -1 && LivingWorldMod.IsDebug) {
+                        ModContent.GetInstance<LivingWorldMod>().Logger.Info($"Placed Waystone at {i}, {j}");
+                    }
+
 
                     ContinueLoop:
                     continue;

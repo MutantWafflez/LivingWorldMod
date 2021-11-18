@@ -28,6 +28,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             Main.tileLavaDeath[Type] = false;
             TileID.Sets.CanBeClearedDuringGeneration[Type] = false;
             TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
+            TileID.Sets.HasOutlines[Type] = true;
+            TileID.Sets.FriendlyFairyCanLureTo[Type] = true;
 
             TileObjectData.newTile.WaterDeath = false;
             TileObjectData.newTile.LavaDeath = false;
@@ -55,6 +57,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
 
         public override bool CanKillTile(int i, int j, ref bool blockDamaged) => LivingWorldMod.IsDebug;
 
+        public override bool HasSmartInteract() => true;
+
         public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
 
@@ -68,9 +72,11 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
 
             if (TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity foundEntity) && foundEntity.isActivated) {
-                r = 0.5f;
-                g = 0.5f;
-                b = 0;
+                Color waystoneColor = foundEntity.WaystoneColor;
+
+                r = waystoneColor.R / 255f;
+                g = waystoneColor.G / 255f;
+                b = waystoneColor.B / 255f;
             }
         }
 

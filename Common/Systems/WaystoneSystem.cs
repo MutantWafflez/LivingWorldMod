@@ -33,6 +33,7 @@ namespace LivingWorldMod.Common.Systems {
                 info.isActivated = true;
             }
             tag["waystoneData"] = waystoneData;
+            waystoneData.Clear();
         }
 
         public override void LoadWorldData(TagCompound tag) {
@@ -41,7 +42,7 @@ namespace LivingWorldMod.Common.Systems {
 
             foreach (WaystoneInfo info in waystoneData) {
                 Point16 entityLocation = new Point16(info.tileLocation.X, info.tileLocation.Y);
-                BaseWaystoneEntity.PlaceEntity(entityLocation.X, entityLocation.Y, (int)info.waystoneType, false);
+                BaseWaystoneEntity.TryPlaceEntity(entityLocation.X, entityLocation.Y, (int)info.waystoneType, false);
 
                 if (TileEntityUtils.TryFindModEntity(entityLocation.X, entityLocation.Y, out WaystoneEntity retrievedEntity)) {
                     retrievedEntity.isActivated = info.isActivated;
