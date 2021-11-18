@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
@@ -25,6 +26,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             Main.tileLighted[Type] = true;
             Main.tileWaterDeath[Type] = false;
             Main.tileLavaDeath[Type] = false;
+            TileID.Sets.CanBeClearedDuringGeneration[Type] = false;
+            TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
 
             TileObjectData.newTile.WaterDeath = false;
             TileObjectData.newTile.LavaDeath = false;

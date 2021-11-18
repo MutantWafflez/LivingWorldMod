@@ -29,7 +29,10 @@ namespace LivingWorldMod.Common.Systems {
         }
 
         public override void SaveWorldData(TagCompound tag) {
-            //Save data then remove the tile entities, as work around 
+            //Save data. That is all. Non-redundant comment here
+            foreach (WaystoneInfo info in waystoneData) {
+                info.isActivated = true;
+            }
             tag["waystoneData"] = waystoneData;
         }
 

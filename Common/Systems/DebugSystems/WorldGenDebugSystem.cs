@@ -1,4 +1,7 @@
-﻿using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
+﻿using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
+using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
+using LivingWorldMod.Content.Tiles.Interactables;
+using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Terraria;
@@ -21,13 +24,32 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
         }
 
         private void GenerationMethod(int x, int y) {
-            Dust.QuickBox(new Vector2(x, y) * 16, new Vector2(x + 1, y + 1) * 16, 2, Color.YellowGreen, null);
+            Dust.QuickBox(new Vector2(x, y) * 16, new Vector2(x + 2, y + 3) * 16, 2, Color.YellowGreen, null);
 
             // Code to test placed here:
 
             Point origin = new Point(x, y);
 
-            WorldUtils.Gen(origin, new EqualTriangle(271), new Actions.SetTile(TileID.SandStoneSlab, true));
+            // Test for 2x3 pocket of air
+            if (!WorldUtils.Find(origin, Searches.Chain(
+                    new Searches.Rectangle(2, 3),
+                    new IsAirOrCuttable().AreaAnd(2, 3)
+                ), out Point _)) {
+                return;
+            }
+
+            //Make sure there are two solid tiles below that pocket of air
+            if (!WorldUtils.Find(origin + new Point(0, 3), Searches.Chain(
+                    new Searches.Rectangle(2, 1),
+                    new Conditions.IsSolid().AreaAnd(2, 1)
+                ), out _)) {
+                return;
+            }
+
+            WorldUtils.Gen(origin, new Shapes.Rectangle(2, 3), new Actions.ClearTile(true));
+            WorldGen.PlaceObject(x, y, ModContent.TileType<WaystoneTile>(), style: (int)WaystoneType.Desert);
+
+            //WorldUtils.Gen(origin, new EqualTriangle(271), new Actions.SetTile(TileID.SandStoneSlab, true));
         }
     }
 }
