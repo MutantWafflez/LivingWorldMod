@@ -11,6 +11,7 @@ using System;
 using System.Linq;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.GameInput;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Patches {
@@ -84,14 +85,14 @@ namespace LivingWorldMod.Common.Patches {
             ILLabel exitLabel = c.DefineLabel();
 
             //Get label of instruction we will be transforming to
-            c.ErrorOnFailedGotoNext(i => i.MatchLdloc(15));
+            c.ErrorOnFailedGotoNext(i => i.MatchCall<PlayerInput>("get_IgnoreMouseInterface"));
 
             exitLabel = c.MarkLabel();
 
             c.Index = 0;
 
             //If the target instruction is found and we found the exit instruction, draw the villager if applicable
-            c.ErrorOnFailedGotoNext(i => i.MatchLdloc(9));
+            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCall<Main>(nameof(Main.SetMouseNPC_ToHousingQuery)));
 
             //What we return here will determine whether or not we skip past the drawing head step in the vanilla function.
             c.EmitDelegate<Func<bool>>(() => {
@@ -194,9 +195,9 @@ namespace LivingWorldMod.Common.Patches {
 
             //Next, we will swap out the background banners for our own
 
-            byte npcLocalNumber = 5;
-            byte bannerAssetLocalNumber = 18;
-            byte framingRectangleLocalNumber = 19;
+            byte npcLocalNumber = 3;
+            byte bannerAssetLocalNumber = 16;
+            byte framingRectangleLocalNumber = 17;
 
             //Navigate to the asset of the background banner
             c.ErrorOnFailedGotoNext(i => i.MatchStloc(bannerAssetLocalNumber));
@@ -244,10 +245,10 @@ namespace LivingWorldMod.Common.Patches {
             ILLabel exitInstruction = c.DefineLabel();
             int preExitJumpIndex = c.Index;
 
-            byte homeTileXLocalNumber = 8;
-            byte homeTileYLocalNumber = 9;
-            byte homeTileYInWorldLocalNumber = 16;
-            byte npcProfileLocalNumber = 20;
+            byte homeTileXLocalNumber = 6;
+            byte homeTileYLocalNumber = 7;
+            byte homeTileYInWorldLocalNumber = 14;
+            byte npcProfileLocalNumber = 18;
 
             //Grab exit instruction & do custom drawing code
             c.ErrorOnFailedGotoNext(i => i.MatchStloc(homeTileXLocalNumber));
@@ -260,11 +261,11 @@ namespace LivingWorldMod.Common.Patches {
             c.Index--;
             exitInstruction = c.MarkLabel();
             c.Index++;
-            //Load local variable 8, or homeTileX in tile coordinates
+            //Load local variable homeTileX in tile coordinates
             c.Emit(OpCodes.Ldloc_S, homeTileXLocalNumber);
-            //Load local variable 9, or homeTileY in tile coordinates
+            //Load local variable homeTileY in tile coordinates
             c.Emit(OpCodes.Ldloc_S, homeTileYLocalNumber);
-            //Load local variable 16, or num11, or homeTileY in pixels
+            //Load local variable homeTileY in world coordinates
             c.Emit(OpCodes.Ldloc_S, homeTileYInWorldLocalNumber);
             //Apply custom draw code
             c.EmitDelegate<Action<NPC, int, int, float>>((npc, homeTileX, homeTileY, homeTileYPixels) => {
@@ -303,8 +304,7 @@ namespace LivingWorldMod.Common.Patches {
             // a lot of math instructions and a spritebatch call
 
             //Finally, we are going to change the hover text and prevent the player from un-housing villagers if they are not well-liked enough
-            byte bannerHoverTextLocalNumber = 42;
-            byte rightClickCheckLocalNumber = 43;
+            byte bannerHoverTextLocalNumber = 25;
 
             //Navigate to banner hover text variable allocation
             c.ErrorOnFailedGotoNext(i => i.MatchStloc(bannerHoverTextLocalNumber));
@@ -316,31 +316,8 @@ namespace LivingWorldMod.Common.Patches {
                 normalText + (npc.ModNPC is Villager { RelationshipStatus: < VillagerRelationship.Like } villager ? $"\n{LocalizationUtils.GetLWMTextValue("UI.VillagerHousing.VillagerTypeLocked", villager.VillagerType.ToString())}" : "")
             );
 
-            //Navigate to right-click boolean loading instruction
-            c.ErrorOnFailedGotoNext(i => i.MatchLdloc(rightClickCheckLocalNumber));
-
-            //Move past local load instruction
-            c.Index++;
-            //Load this NPC to stack
-            c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
-            //Remember that we moved after the right click loading instruction, so we have two things on the stack now
-            c.EmitDelegate<Func<bool, NPC, bool>>((didRightClick, npc) => {
-                //If not right clicking, then return false, no checking needed
-                if (!didRightClick) {
-                    return false;
-                }
-
-                //Check if the npc is a villager, then return based on whether or not the player is well-liked enough
-                if (npc.ModNPC is Villager villager) {
-                    return villager.RelationshipStatus >= VillagerRelationship.Like;
-                }
-
-                //If the npc is not a villager, then assume vanilla functionality
-                return true;
-            });
-
-            //IL block for above two edits ^:
-            /*/* (30154,6)-(30154,72) tModLoader\src\tModLoader\Terraria\Main.cs #1#
+            //IL block for above edit ^:
+            /* (30154,6)-(30154,72) tModLoader\src\tModLoader\Terraria\Main.cs #1#
             /* 0x00101CD3 1105         #1# IL_059B: ldloc.s   nPC
             /* 0x00101CD5 1106         #1# IL_059D: ldloc.s   num2
             /* 0x00101CD7 2891020006   #1# IL_059F: call      string Terraria.Lang::GetNPCHouseBannerText(class Terraria.NPC, int32)
@@ -357,19 +334,29 @@ namespace LivingWorldMod.Common.Patches {
             /* 0x00101CE7 16           #1# IL_05AF: ldc.i4.0
             /* 0x00101CE8 28C3030006   #1# IL_05B0: call      instance void Terraria.Main::MouseText(string, int32, uint8, int32, int32, int32, int32, int32)
             /* 0x00101CED 00           #1# IL_05B5: nop
-            /* (30156,6)-(30156,42) tModLoader\src\tModLoader\Terraria\Main.cs #1#
-            /* 0x00101CEE 7EFC040004   #1# IL_05B6: ldsfld    bool Terraria.Main::mouseRightRelease
-            /* 0x00101CF3 2C07         #1# IL_05BB: brfalse.s IL_05C4
+            */
 
-            /* 0x00101CF5 7ECA020004   #1# IL_05BD: ldsfld    bool Terraria.Main::mouseRight
-            /* 0x00101CFA 2B01         #1# IL_05C2: br.s      IL_05C5
+            //Navigate to right-click call in main
+            c.ErrorOnFailedGotoNext(i => i.MatchLdsfld<Main>(nameof(Main.mouseRight)));
 
-            /* 0x00101CFC 16           #1# IL_05C4: ldc.i4.0
+            //Move past call and copy the brfalse_S label, then move after the transform command
+            c.Index++;
+            ILLabel falseTransformLabel = (ILLabel)c.Next.Operand;
+            c.Index++;
+            //Load this NPC to stack
+            c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
+            //Remember that we moved after the right click loading instruction, so we have two things on the stack now
+            c.EmitDelegate<Func<NPC, bool>>(npc => {
+                //Check if the npc is a villager, then return based on whether or not the player is well-liked enough
+                if (npc.ModNPC is Villager villager) {
+                    return villager.RelationshipStatus >= VillagerRelationship.Like;
+                }
 
-            /* 0x00101CFD 132B         #1# IL_05C5: stloc.s   V_43
-            /* (hidden)-(hidden) tModLoader\src\tModLoader\Terraria\Main.cs #1#
-            /* 0x00101CFF 112B         #1# IL_05C7: ldloc.s   V_43
-            /* 0x00101D01 2C25         #1# IL_05C9: brfalse.s IL_05F0*/
+                //If the npc is not a villager, then assume vanilla functionality
+                return true;
+            });
+            //Finally, add that copied false label we took
+            c.Emit(OpCodes.Brfalse_S, falseTransformLabel);
         }
     }
 }

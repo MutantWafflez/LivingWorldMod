@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -24,14 +26,17 @@ namespace LivingWorldMod.Common.Patches {
             //This filling of holes causes some houses for the harpy village to have their "supports" filled which destroys how the building is supposed to look
             ILCursor c = new ILCursor(il);
 
-            byte itemLocalNumber = 8; //Called "item" in this case, but this is actually the local variable is the position of the wall "hole"
-            byte flagFiveLocalNumber = 13;
+            byte itemLocalNumber = 6; //Called "item" in this case, but this is actually the local variable is the position of the wall "hole"
 
             //IL is quite simple in this case. All we are doing is going to override flag 5 which controls whether or not a certain
             // hole area is going to be filled or not. All we do it return true if the point in question is in the Harpy village zone, which prevents the filling at that point
-            c.ErrorOnFailedGotoNext(i => i.MatchStloc(flagFiveLocalNumber));
+            c.ErrorOnFailedGotoNext(i => i.MatchCallvirt(typeof(List<Point>).GetMethod("Remove", BindingFlags.Public | BindingFlags.Instance)));
 
-            c.Emit(OpCodes.Pop);
+            //Move to brtrue instruction nearby and steal its pointing label
+            c.Index += 9;
+            ILLabel stolenTrueLabel = (ILLabel)c.Next.Operand;
+            //Then, do our own check
+            c.Index++;
             c.Emit(OpCodes.Ldloc_S, itemLocalNumber);
             c.EmitDelegate<Func<Point, bool>>(point => {
                 //Checks if Harpy village zone is not null
@@ -41,21 +46,7 @@ namespace LivingWorldMod.Common.Patches {
 
                 return !WorldGen.InWorld(point.X, point.Y, 1);
             });
-
-            //IL block in above edit ^:
-            /*/* (4813,6)-(4813,38) tModLoader\src\tModLoader\Terraria\WorldGen.cs #1#
-            /* 0x004807F2 1108         #1# IL_00A2: ldloc.s   item
-            /* 0x004807F4 7B0E02000A   #1# IL_00A4: ldfld     int32 [FNA]Microsoft.Xna.Framework.Point::X
-            /* 0x004807F9 1108         #1# IL_00A9: ldloc.s   item
-            /* 0x004807FB 7B0F02000A   #1# IL_00AB: ldfld     int32 [FNA]Microsoft.Xna.Framework.Point::Y
-            /* 0x00480800 17           #1# IL_00B0: ldc.i4.1
-            /* 0x00480801 28D40D0006   #1# IL_00B1: call      bool Terraria.WorldGen::InWorld(int32, int32, int32)
-            /* 0x00480806 16           #1# IL_00B6: ldc.i4.0
-            /* 0x00480807 FE01         #1# IL_00B7: ceq
-            /* 0x00480809 130D         #1# IL_00B9: stloc.s   V_13
-            /* (hidden)-(hidden) tModLoader\src\tModLoader\Terraria\WorldGen.cs #1#
-            /* 0x0048080B 110D         #1# IL_00BB: ldloc.s   V_13
-            /* 0x0048080D 2C0F         #1# IL_00BD: brfalse.s IL_00CE*/
+            c.Emit(OpCodes.Brfalse_S, stolenTrueLabel);
         }
     }
 }

@@ -32,5 +32,36 @@ namespace LivingWorldMod.Custom.Utilities {
 
             throw new InstructionNotFoundException();
         }
+
+        /// <summary>
+        /// Calls <seealso cref="ILCursor.TryGotoPrev"/> normally, but will throw an exception if
+        /// the goto does not work or does not find the proper instruction.
+        /// </summary>
+        public static void ErrorOnFailedGotoPrev(this ILCursor cursor, params Func<Instruction, bool>[] predicates) {
+            if (cursor.TryGotoPrev(predicates)) {
+                return;
+            }
+
+            throw new InstructionNotFoundException();
+        }
+
+        /// <summary>
+        /// Calls <seealso cref="ILCursor.TryGotoPrev"/> normally, but will throw an exception if
+        /// the goto does not work or does not find the proper instruction.
+        /// </summary>
+        public static void ErrorOnFailedGotoPrev(this ILCursor cursor, MoveType moveType, params Func<Instruction, bool>[] predicates) {
+            if (cursor.TryGotoPrev(moveType, predicates)) {
+                return;
+            }
+
+            throw new InstructionNotFoundException();
+        }
+
+        /// <summary>
+        /// Moves and points this cursor to the very last instruction in the given IL content.
+        /// </summary>
+        public static void GotoLastInstruction(this ILCursor cursor) {
+            cursor.Index = cursor.Instrs.Count - 1;
+        }
     }
 }

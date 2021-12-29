@@ -7,6 +7,8 @@ using LivingWorldMod.Custom.Utilities;
 using Mono.Cecil.Cil;
 using Terraria.ModLoader;
 using MonoMod.Cil;
+using Terraria.GameContent;
+using Terraria.ID;
 
 namespace LivingWorldMod.Common.Patches {
     /// <summary>
@@ -31,19 +33,18 @@ namespace LivingWorldMod.Common.Patches {
 
             ILCursor c = new ILCursor(il);
 
-            byte isPylonLocalNumber = 3;
+            // Navigate right after the instruction that tests if the tile type is 597
+            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchLdcI4(TileID.TeleportationPylon));
 
-            // Navigate to the instruction after the stack allocation of if the tile is a pylon or not
-            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchStloc(isPylonLocalNumber));
-
-            // Load normal value onto stack
-            c.Emit(OpCodes.Ldloc_3);
-            // Load current tile onto stack
+            // Steal the label that is here that will allow access to the if block
+            ILLabel trueTransformLabel = (ILLabel)c.Next.Operand;
+            // Move fter this instruction, and add our own check
+            c.Index++;
             c.Emit(OpCodes.Ldloc_2);
-            //If the variable is already true, then just return itself; but if not, check if tile is waystone
-            c.EmitDelegate<Func<bool, Tile, bool>>((isPylon, currentTile) => isPylon || currentTile.type == ModContent.TileType<WaystoneTile>());
-            // Allocate value to variable
-            c.Emit(OpCodes.Stloc_3);
+            // Check if tile is a waystone
+            c.EmitDelegate<Func<Tile, bool>>(currentTile => currentTile.type == ModContent.TileType<WaystoneTile>());
+            // If true, move to the aforementioned stolen label that allows if block access
+            c.Emit(OpCodes.Brtrue_S, trueTransformLabel);
 
             // IL block for above code ^:
             /*
@@ -73,26 +74,23 @@ namespace LivingWorldMod.Common.Patches {
 
             ILLabel exitInstruction = c.DefineLabel();
 
-            //Navigate to the beginning of the teleportation initiation code
-            c.ErrorOnFailedGotoNext(i => i.MatchStloc(34));
+            c.GotoLastInstruction();
+            //Navigate to the beginning of the teleportation initiation code (which is at the end of the method)
+            c.ErrorOnFailedGotoPrev(i => i.MatchLdloc(2));
 
-            //Move to proper instruction location
-            c.Index--;
             //Mark label, and then reset instruction location
             exitInstruction = c.MarkLabel();
             c.Index = 0;
 
             //IL code for above block:
             /*
-            0x005EE3BD 08           IL_02AD: ldloc.2
-            0x005EE3BE 1322         IL_02AE: stloc.s V_34
+            0x005EE3BD 08           IL_0213: ldloc.2
+            0x005EE3BE 1322         IL_0214: brfalse IL_02ad
             */
 
-            //Navigate to a couple instructions after the pylon iteration loop
-            c.ErrorOnFailedGotoNext(i => i.MatchStloc(31));
+            //Navigate to the end of the pylon iteration loop
+            c.ErrorOnFailedGotoNext(i => i.MatchLdloc(6));
 
-            //Move to RIGHT after the loop
-            c.Index -= 3;
             //Also, we need the current player, which is the first local var, so we will grab that first
             c.Emit(OpCodes.Ldloc_0);
             //Then, add our own loop
@@ -110,14 +108,6 @@ namespace LivingWorldMod.Common.Patches {
             });
             // If our loop returns true, then move control to the exit instruction, which will initiate teleportation
             c.Emit(OpCodes.Brtrue_S, exitInstruction);
-
-            //IL code for above block:
-            /*
-                0x005EE37F 1113         IL_026F: ldloc.s   flag2
-                0x005EE381 16           IL_0271: ldc.i4.0
-                0x005EE382 FE01         IL_0272: ceq
-                0x005EE384 131F         IL_0274: stloc.s   V_31
-            */
         }
     }
 }
