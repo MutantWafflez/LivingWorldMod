@@ -184,6 +184,12 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public sealed override void AutoStaticDefaults() {
             base.AutoStaticDefaults();
+
+            //The PR is here, and I am loving it 
+            NPCID.Sets.ActsLikeTownNPC[Type] = true;
+            NPCID.Sets.SpawnsWithCustomName[Type] = true;
+            NPCID.Sets.SavesAndLoads[Type] = true;
+
             NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0) {
                 Velocity = 1f,
                 Direction = -1
@@ -204,10 +210,6 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         public override bool CheckActive() => false;
-
-        //public override void ActsLikeTownNPC => true;
-
-        //public override bool? SpawnsWithCustomName => true;
 
         public override string TownNPCName() => PossibleNames[WorldGen.genRand.Next(0, PossibleNames.Count)];
 
