@@ -57,7 +57,7 @@ namespace LivingWorldMod.Content.Items.DebugItems {
             for (int x = 0; x <= _bottomRight.X - _topLeft.X; x++) {
                 for (int y = 0; y <= _bottomRight.Y - _topLeft.Y; y++) {
                     Tile requestedTile = Framing.GetTileSafely(x + _topLeft.X, y + _topLeft.Y);
-                    if (requestedTile.wall == WallID.None) {
+                    if (requestedTile.WallType == WallID.None) {
                         WorldGen.PlaceWall(x + _topLeft.X, y + _topLeft.Y, ModContent.WallType<SkipWall>());
                     }
                 }

@@ -130,7 +130,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             WaystoneSystem waystoneSystem = ModContent.GetInstance<WaystoneSystem>();
 
             // First, double check that tile is a Waystone tile
-            if (Framing.GetTileSafely(i, j).type != ModContent.TileType<WaystoneTile>()) {
+            if (Framing.GetTileSafely(i, j).TileType != ModContent.TileType<WaystoneTile>()) {
                 return -1;
             }
 

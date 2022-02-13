@@ -43,9 +43,9 @@ namespace LivingWorldMod.Content.Tiles.Building {
             Point thisTilePosition = new Point(i, j);
 
             //Reset frame data
-            thisTile.FrameNumber = 0;
-            thisTile.frameX = 0;
-            thisTile.frameY = 0;
+            thisTile.TileFrameNumber = 0;
+            thisTile.TileFrameX = 0;
+            thisTile.TileFrameY = 0;
 
             /* Legend:
              * Order of pattern on spritesheet from left to right:
@@ -71,10 +71,10 @@ namespace LivingWorldMod.Content.Tiles.Building {
 
             //Merge-able tiles. In this array, the 0th index is above, 1st index is the right, 2nd index is the left, 3rd index is below
             bool[] directionsWithMergableTiles = new bool[] {
-                TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, -1)),
-                TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(1, 0)),
-                TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(-1, 0)),
-                TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, 1))
+                TileUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, -1)),
+                TileUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(1, 0)),
+                TileUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(-1, 0)),
+                TileUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, 1))
             };
 
             //The corner type is determined based on this tile's position in the world, based on odds and evens.
@@ -162,8 +162,8 @@ namespace LivingWorldMod.Content.Tiles.Building {
                 verticalFrame = 15;
             }
 
-            thisTile.frameX = (short)(18 * cornerType);
-            thisTile.frameY = (short)(18 * verticalFrame);
+            thisTile.TileFrameX = (short)(18 * cornerType);
+            thisTile.TileFrameY = (short)(18 * verticalFrame);
 
             return false;
         }
@@ -177,10 +177,10 @@ namespace LivingWorldMod.Content.Tiles.Building {
 
             //Merge-able tiles. In this array, the 0th index is above, 1st index is the right, 2nd index is the left, 3rd index is below
             bool[] directionsWithMergableTiles = new bool[] {
-                TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, -1)),
-                TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(1, 0)),
-                TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(-1, 0)),
-                TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, 1))
+                TileUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, -1)),
+                TileUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(1, 0)),
+                TileUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(-1, 0)),
+                TileUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, 1))
             };
 
             //Vertical frame to begin drawing from
@@ -200,14 +200,14 @@ namespace LivingWorldMod.Content.Tiles.Building {
                     verticalFrame = 18;
                 }
             }
-            else if (thisTile.IsHalfBlock && !TileUtils.CanMergeWithTile(thisTile.type, thisTilePosition, new Point(0, 1))) {
+            else if (thisTile.IsHalfBlock && !TileUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, 1))) {
                 verticalFrame = 19;
             }
 
             if (verticalFrame >= 16) {
                 Main.spriteBatch.Draw(_baseTexture.Value,
                     new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + additionalDisplacement,
-                    new Rectangle(thisTile.frameX, 18 * verticalFrame, 16, 16),
+                    new Rectangle(thisTile.TileFrameX, 18 * verticalFrame, 16, 16),
                     Lighting.GetColor(i, j), 0f, default, 1f, SpriteEffects.None, 0f);
             }
         }

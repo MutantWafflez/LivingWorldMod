@@ -86,17 +86,17 @@ namespace LivingWorldMod.Custom.Structs {
         public readonly string modWallName;
 
         public TileData(Tile tile) {
-            type = tile.IsActive ? tile.type : -1;
+            type = tile.HasTile ? tile.TileType : -1;
             #if DEBUG
-            type = tile.type == ModContent.TileType<SkipTile>() ? -2 : type;
+            type = tile.TileType == ModContent.TileType<SkipTile>() ? -2 : type;
             #endif
-            isActivated = tile.IsActive;
+            isActivated = tile.HasTile;
             isHalfBlock = tile.IsHalfBlock;
-            frameNumber = tile.FrameNumber;
-            frameX = tile.frameX;
-            frameY = tile.frameY;
+            frameNumber = tile.TileFrameNumber;
+            frameX = tile.TileFrameX;
+            frameY = tile.TileFrameY;
             slopeType = (int)tile.Slope;
-            color = tile.Color;
+            color = tile.TileColor;
             isActuated = tile.IsActuated;
             hasActuator = tile.HasActuator;
             hasRedWire = tile.RedWire;
@@ -106,7 +106,7 @@ namespace LivingWorldMod.Custom.Structs {
             liquidType = tile.LiquidType;
             liquidAmount = tile.LiquidAmount;
             #if DEBUG
-            wallType = tile.wall == ModContent.WallType<SkipWall>() ? -1 : tile.wall;
+            wallType = tile.WallType == ModContent.WallType<SkipWall>() ? -1 : tile.WallType;
             #else
             wallType = tile.wall;
             #endif

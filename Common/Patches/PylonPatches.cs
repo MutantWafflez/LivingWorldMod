@@ -42,7 +42,7 @@ namespace LivingWorldMod.Common.Patches {
             c.Index++;
             c.Emit(OpCodes.Ldloc_2);
             // Check if tile is a waystone
-            c.EmitDelegate<Func<Tile, bool>>(currentTile => currentTile.type == ModContent.TileType<WaystoneTile>());
+            c.EmitDelegate<Func<Tile, bool>>(currentTile => currentTile.TileType == ModContent.TileType<WaystoneTile>());
             // If true, move to the aforementioned stolen label that allows if block access
             c.Emit(OpCodes.Brtrue_S, trueTransformLabel);
 

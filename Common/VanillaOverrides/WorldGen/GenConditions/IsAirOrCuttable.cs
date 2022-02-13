@@ -10,10 +10,10 @@ namespace LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions {
         protected override bool CheckValidity(int x, int y) {
             Tile tile = _tiles[x, y];
 
-            return !tile.IsActive
-                   || Main.tileCut[tile.type]
-                   || TileID.Sets.BreakableWhenPlacing[tile.type]
-                   || TileID.Sets.IsVine[tile.type];
+            return !tile.HasTile
+                   || Main.tileCut[tile.TileType]
+                   || TileID.Sets.BreakableWhenPlacing[tile.TileType]
+                   || TileID.Sets.IsVine[tile.TileType];
         }
     }
 }

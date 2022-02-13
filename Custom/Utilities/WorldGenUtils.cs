@@ -50,19 +50,19 @@ namespace LivingWorldMod.Custom.Utilities {
                     switch (tileData.type) {
                         case > 0: {
                             if (ModContent.TryFind(tileData.modName, tileData.modTileName, out ModTile modTile)) {
-                                selectedTile.type = modTile.Type;
+                                selectedTile.TileType = modTile.Type;
                             }
                             else {
-                                selectedTile.type = (ushort)tileData.type;
+                                selectedTile.TileType = (ushort)tileData.type;
                             }
-                            selectedTile.IsActive = true;
+                            selectedTile.HasTile = true;
 
                             selectedTile.IsHalfBlock = tileData.isHalfBlock;
-                            selectedTile.FrameNumber = (byte)tileData.frameNumber;
-                            selectedTile.frameX = (short)tileData.frameX;
-                            selectedTile.frameY = (short)tileData.frameY;
+                            selectedTile.TileFrameNumber = (byte)tileData.frameNumber;
+                            selectedTile.TileFrameX = (short)tileData.frameX;
+                            selectedTile.TileFrameY = (short)tileData.frameY;
                             selectedTile.Slope = (SlopeType)tileData.slopeType;
-                            selectedTile.Color = (byte)tileData.color;
+                            selectedTile.TileColor = (byte)tileData.color;
                             selectedTile.IsActuated = tileData.isActuated;
                             selectedTile.HasActuator = tileData.hasActuator;
                             selectedTile.RedWire = tileData.hasRedWire;
@@ -74,8 +74,8 @@ namespace LivingWorldMod.Custom.Utilities {
                             break;
                         }
                         case -1:
-                            selectedTile.type = 0;
-                            selectedTile.IsActive = false;
+                            selectedTile.TileType = 0;
+                            selectedTile.HasTile = false;
                             selectedTile.HasActuator = tileData.hasActuator;
                             selectedTile.RedWire = tileData.hasRedWire;
                             selectedTile.BlueWire = tileData.hasBlueWire;
@@ -88,10 +88,10 @@ namespace LivingWorldMod.Custom.Utilities {
 
                     if (tileData.wallType != -1) {
                         if (ModContent.TryFind(tileData.modName, tileData.modWallName, out ModWall modWall)) {
-                            selectedTile.wall = modWall.Type;
+                            selectedTile.WallType = modWall.Type;
                         }
                         else {
-                            selectedTile.wall = (ushort)tileData.wallType;
+                            selectedTile.WallType = (ushort)tileData.wallType;
                         }
                         selectedTile.WallColor = (byte)tileData.wallColor;
                         selectedTile.WallFrameNumber = (byte)tileData.wallFrame;
@@ -137,19 +137,19 @@ namespace LivingWorldMod.Custom.Utilities {
                     switch (tileData.type) {
                         case > 0: {
                             if (ModContent.TryFind(tileData.modName, tileData.modTileName, out ModTile modTile)) {
-                                selectedTile.type = modTile.Type;
+                                selectedTile.TileType = modTile.Type;
                             }
                             else {
-                                selectedTile.type = (ushort)tileData.type;
+                                selectedTile.TileType = (ushort)tileData.type;
                             }
-                            selectedTile.IsActive = true;
+                            selectedTile.HasTile = true;
 
                             selectedTile.IsHalfBlock = tileData.isHalfBlock;
-                            selectedTile.FrameNumber = (byte)tileData.frameNumber;
-                            selectedTile.frameX = (short)tileData.frameX;
-                            selectedTile.frameY = (short)tileData.frameY;
+                            selectedTile.TileFrameNumber = (byte)tileData.frameNumber;
+                            selectedTile.TileFrameX = (short)tileData.frameX;
+                            selectedTile.TileFrameY = (short)tileData.frameY;
                             selectedTile.Slope = (SlopeType)tileData.slopeType;
-                            selectedTile.Color = (byte)tileData.color;
+                            selectedTile.TileColor = (byte)tileData.color;
                             selectedTile.IsActuated = tileData.isActuated;
                             selectedTile.HasActuator = tileData.hasActuator;
                             selectedTile.RedWire = tileData.hasRedWire;
@@ -161,8 +161,8 @@ namespace LivingWorldMod.Custom.Utilities {
                             break;
                         }
                         case -1:
-                            selectedTile.type = 0;
-                            selectedTile.IsActive = false;
+                            selectedTile.TileType = 0;
+                            selectedTile.HasTile = false;
                             selectedTile.HasActuator = tileData.hasActuator;
                             selectedTile.RedWire = tileData.hasRedWire;
                             selectedTile.BlueWire = tileData.hasBlueWire;
@@ -175,10 +175,10 @@ namespace LivingWorldMod.Custom.Utilities {
 
                     if (tileData.wallType != -1) {
                         if (ModContent.TryFind(tileData.modName, tileData.modWallName, out ModWall modWall)) {
-                            selectedTile.wall = modWall.Type;
+                            selectedTile.WallType = modWall.Type;
                         }
                         else {
-                            selectedTile.wall = (ushort)tileData.wallType;
+                            selectedTile.WallType = (ushort)tileData.wallType;
                         }
                         selectedTile.WallColor = (byte)tileData.wallColor;
                         selectedTile.WallFrameNumber = (byte)tileData.wallFrame;

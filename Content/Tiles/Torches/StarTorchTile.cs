@@ -51,7 +51,7 @@ namespace LivingWorldMod.Content.Tiles.Torches {
         }
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) {
-            if (Framing.GetTileSafely(i, j).frameX < 66) {
+            if (Framing.GetTileSafely(i, j).TileFrameX < 66) {
                 r = BlockLightSystem.starTorchColor.R / 255f;
                 g = BlockLightSystem.starTorchColor.G / 255f;
                 b = BlockLightSystem.starTorchColor.B / 255f;

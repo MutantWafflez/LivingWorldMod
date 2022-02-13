@@ -31,7 +31,7 @@ namespace LivingWorldMod.Content.TileEntities {
 
             if (!preCheck.HasValue) {
                 Tile tile = Framing.GetTileSafely(x, y);
-                return tile.IsActive && tile.type == ValidTileID && tile.frameX == 0 && tile.frameY == 0;
+                return tile.HasTile && tile.TileType == ValidTileID && tile.TileFrameX == 0 && tile.TileFrameY == 0;
             }
             else {
                 return preCheck.Value;

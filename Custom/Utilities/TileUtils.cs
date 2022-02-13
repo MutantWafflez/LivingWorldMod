@@ -23,15 +23,15 @@ namespace LivingWorldMod.Custom.Utilities {
         public static bool CanMergeWithTile(int tileType, Point tilePosition, Point otherTileOffset) {
             Tile otherTile = Framing.GetTileSafely(tilePosition + otherTileOffset);
 
-            if (otherTile is not { IsActive: true }) {
+            if (otherTile is not { HasTile: true }) {
                 return false;
             }
 
-            return otherTile.type == tileType
-                   || Main.tileMerge[tileType][otherTile.type]
-                   || otherTile.type == TileID.Dirt && (Main.tileMergeDirt[tileType] || TileID.Sets.ForcedDirtMerging[tileType])
-                   || TileID.Sets.MergesWithClouds[tileType] && TileID.Sets.Clouds[otherTile.type]
-                   || TileID.Sets.OreMergesWithMud[tileType] && TileID.Sets.Mud[otherTile.type];
+            return otherTile.TileType == tileType
+                   || Main.tileMerge[tileType][otherTile.TileType]
+                   || otherTile.TileType == TileID.Dirt && (Main.tileMergeDirt[tileType] || TileID.Sets.ForcedDirtMerging[tileType])
+                   || TileID.Sets.MergesWithClouds[tileType] && TileID.Sets.Clouds[otherTile.TileType]
+                   || TileID.Sets.OreMergesWithMud[tileType] && TileID.Sets.Mud[otherTile.TileType];
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace LivingWorldMod.Custom.Utilities {
         /// <param name="tile"> A tile within the multi-tile. </param>
         /// <param name="x"> The x coordinate of the specified tile. </param>
         /// <param name="y"> The y coordinate of the specified tile. </param>
-        public static Point16 GetTopLeftOfMultiTile(Tile tile, int x, int y) => new Point16(x - tile.frameX / 18, y - tile.frameY / 18);
+        public static Point16 GetTopLeftOfMultiTile(Tile tile, int x, int y) => new Point16(x - tile.TileFrameX / 18, y - tile.TileFrameY / 18);
 
         /// <summary>
         /// Returns the top left coordinate of the passed in tile which should be a type of multi-tile. This overload takes into account multi-
@@ -56,9 +56,9 @@ namespace LivingWorldMod.Custom.Utilities {
         public static Point16 GetTopLeftOfMultiTile(Tile tile, int x, int y, int multiTileWidth) {
             int pixelWidthOfFullTile = multiTileWidth * 18;
             //Calculate proper displacement
-            int frameXDisplacement = tile.frameX >= pixelWidthOfFullTile ? (int)(tile.frameX / (float)pixelWidthOfFullTile) * pixelWidthOfFullTile : 0;
+            int frameXDisplacement = tile.TileFrameX >= pixelWidthOfFullTile ? (int)(tile.TileFrameX / (float)pixelWidthOfFullTile) * pixelWidthOfFullTile : 0;
 
-            return new Point16(x - (tile.frameX - frameXDisplacement) / 18, y - tile.frameY / 18);
+            return new Point16(x - (tile.TileFrameX - frameXDisplacement) / 18, y - tile.TileFrameY / 18);
         }
     }
 }
