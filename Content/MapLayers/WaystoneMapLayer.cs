@@ -12,12 +12,12 @@ using Terraria.Map;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace LivingWorldMod.Common.VanillaOverrides {
+namespace LivingWorldMod.Content.MapLayers {
     /// <summary>
     /// IMapLayer class implementation for drawing waystone icons on the map.
     /// </summary>
-    public class WaystoneMapLayer : IMapLayer {
-        public void Draw(ref MapOverlayDrawContext context, ref string text) {
+    public class WaystoneMapLayer : ModMapLayer {
+        public override void Draw(ref MapOverlayDrawContext context, ref string text) {
             WaystoneSystem waystoneSystem = ModContent.GetInstance<WaystoneSystem>();
 
             for (int i = 0; i < waystoneSystem.waystoneData.Count; i++) {
