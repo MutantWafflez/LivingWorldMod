@@ -19,6 +19,23 @@ namespace LivingWorldMod.Common.Patches {
             On.Terraria.GameContent.TeleportPylonsSystem.IsPlayerNearAPylon += PlayerNearPylon;
             IL.Terraria.Player.InInteractionRange += IsInInteractionRange;
             IL.Terraria.GameContent.TeleportPylonsSystem.HandleTeleportRequest += HandleTeleportRequest;
+            IL.Terraria.Map.TeleportPylonsMapLayer.Draw += TeleportPylonsMapLayer_Draw;
+        }
+
+        private void TeleportPylonsMapLayer_Draw(ILContext il) {
+            //Okay, so for some reason, when vanilla normally calls IsPlayerNearAPylon, it returns false even when near a Waystone
+            //However, we can still teleport just fine, meaning that it understands that I actually am near a "pylon" (waystone),
+            //but the map does not update accordingly. However, injecting the EXACT same code has it properly work? I have no idea
+            //what is happening, but since this works, I'm gonna leave it here.
+            ILCursor c = new ILCursor(il);
+
+            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchStloc(4));
+
+            c.Emit(OpCodes.Pop);
+            c.EmitDelegate<Func<bool>>(() => {
+                bool isNearPylon = TeleportPylonsSystem.IsPlayerNearAPylon(Main.LocalPlayer);
+                return isNearPylon;
+            });
         }
 
         public void Unload() { }
