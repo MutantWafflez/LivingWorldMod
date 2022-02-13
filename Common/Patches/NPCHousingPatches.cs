@@ -304,7 +304,7 @@ namespace LivingWorldMod.Common.Patches {
             // a lot of math instructions and a spritebatch call
 
             //Finally, we are going to change the hover text and prevent the player from un-housing villagers if they are not well-liked enough
-            byte bannerHoverTextLocalNumber = 25;
+            byte bannerHoverTextLocalNumber = 26;
 
             //Navigate to banner hover text variable allocation
             c.ErrorOnFailedGotoNext(i => i.MatchStloc(bannerHoverTextLocalNumber));

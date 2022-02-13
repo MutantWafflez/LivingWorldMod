@@ -89,7 +89,7 @@ namespace LivingWorldMod.Common.Patches {
             */
 
             //Navigate to the end of the pylon iteration loop
-            c.ErrorOnFailedGotoNext(i => i.MatchLdloc(6));
+            c.ErrorOnFailedGotoNext(i => i.MatchLdloc(7));
 
             //Also, we need the current player, which is the first local var, so we will grab that first
             c.Emit(OpCodes.Ldloc_0);
