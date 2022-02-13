@@ -28,7 +28,7 @@ namespace LivingWorldMod.Content.MapLayers {
                 }
 
                 Texture2D mapIcon = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}MapIcons/Waystones/WaystoneIcon_{info.waystoneType}").Value;
-                Color drawColor = TeleportPylonsSystem.IsPlayerNearAPylon(Main.LocalPlayer) ? Color.White : new Color(169, 169, 169, 165);
+                Color drawColor = TeleportPylonsSystem.IsPlayerNearAPylon(Main.LocalPlayer) ? Color.White : Color.Gray * 0.5f;
                 if (!context.Draw(mapIcon, info.iconLocation, drawColor, new SpriteFrame(1, 1), 1f, 1.75f, Alignment.Center).IsMouseOver) {
                     continue;
                 }
