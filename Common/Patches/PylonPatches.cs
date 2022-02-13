@@ -33,34 +33,36 @@ namespace LivingWorldMod.Common.Patches {
 
             ILCursor c = new ILCursor(il);
 
-            // Navigate right after the instruction that tests if the tile type is 597
-            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchLdcI4(TileID.TeleportationPylon));
+            ILLabel pylonTypeCheckBlock = c.DefineLabel();
 
-            // Steal the label that is here that will allow access to the if block
-            ILLabel trueTransformLabel = (ILLabel)c.Next.Operand;
-            // Move fter this instruction, and add our own check
+            //Navigate to within the block that is determined by if the tile is a pylon tile or not
+            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchLdcI4(TileID.TeleportationPylon));
             c.Index++;
+
+            pylonTypeCheckBlock = c.MarkLabel();
+
+            //Move to right BEFORE that tile type == 597 check
+            c.Index = 0;
+            c.ErrorOnFailedGotoNext(i => i.MatchLdcI4(TileID.TeleportationPylon));
+            c.Index -= 3;
+
             c.Emit(OpCodes.Ldloc_2);
             // Check if tile is a waystone
             c.EmitDelegate<Func<Tile, bool>>(currentTile => currentTile.TileType == ModContent.TileType<WaystoneTile>());
             // If true, move to the aforementioned stolen label that allows if block access
-            c.Emit(OpCodes.Brtrue_S, trueTransformLabel);
+            c.Emit(OpCodes.Brtrue_S, pylonTypeCheckBlock);
 
-            // IL block for above code ^:
             /*
-            /* 0x002FA2D3 7B020D0004   #1# IL_0063: ldfld     uint16 Terraria.Tile::'type'
-	        /* 0x002FA2D8 20DB010000   #1# IL_0068: ldc.i4    475
-	        /* 0x002FA2DD 2E0F         #1# IL_006D: beq.s     IL_007E
+            // IL block for above code ^:
+            IL_0061: ldloca.s  tile
+            IL_0063: call      instance uint16& Terraria.Tile::get_type()
+            IL_0068: ldind.u2
+            IL_0069: ldc.i4    597
+            IL_006E: bne.un.s  IL_00E7
 
-	        /* 0x002FA2DF 08           #1# IL_006F: ldloc.2
-	        /* 0x002FA2E0 7B020D0004   #1# IL_0070: ldfld     uint16 Terraria.Tile::'type'
-	        /* 0x002FA2E5 2055020000   #1# IL_0075: ldc.i4    597
-	        /* 0x002FA2EA FE01         #1# IL_007A: ceq
-	        /* 0x002FA2EC 2B01         #1# IL_007C: br.s      IL_007F
-
-	        /* 0x002FA2EE 17           #1# IL_007E: ldc.i4.1
-
-	        /* 0x002FA2EF 0D           #1# IL_007F: stloc.3
+            IL_0070: ldarg.1
+            IL_0071: ldloc.0
+            IL_0072: bge.s     IL_0079
             */
         }
 
