@@ -28,25 +28,12 @@ namespace LivingWorldMod.Common.Patches {
 
             byte itemLocalNumber = 6; //Called "item" in this case, but this is actually the local variable is the position of the wall "hole"
 
-            //IL is quite simple in this case. All we are doing is going to override flag 5 which controls whether or not a certain
-            // hole area is going to be filled or not. All we do it return true if the point in question is in the Harpy village zone, which prevents the filling at that point
-            c.ErrorOnFailedGotoNext(i => i.MatchCallvirt(typeof(List<Point>).GetMethod("Remove", BindingFlags.Public | BindingFlags.Instance)));
+            //IL is quite simple in this case. We're going to hijack one of the checks that determines if a hole area is going to be filled or not.
+            //All we do it return true if the point in question is in the Harpy village zone, which prevents the filling at that point
+            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCallvirt(typeof(HashSet<Point>).GetMethod("Contains", BindingFlags.Public | BindingFlags.Instance)));
 
-            //Move to brtrue instruction nearby and steal its pointing label
-            c.Index += 9;
-            ILLabel stolenTrueLabel = (ILLabel)c.Next.Operand;
-            //Then, do our own check
-            c.Index++;
             c.Emit(OpCodes.Ldloc_S, itemLocalNumber);
-            c.EmitDelegate<Func<Point, bool>>(point => {
-                //Checks if Harpy village zone is not null
-                if (ModContent.GetInstance<WorldCreationSystem>().villageZones[(int)VillagerType.Harpy] is Rectangle rectangle) {
-                    return rectangle.Contains(point);
-                }
-
-                return !WorldGen.InWorld(point.X, point.Y, 1);
-            });
-            c.Emit(OpCodes.Brfalse_S, stolenTrueLabel);
+            c.EmitDelegate<Func<bool, Point, bool>>((originalValue, point) => originalValue || ModContent.GetInstance<WorldCreationSystem>().villageZones[(int)VillagerType.Harpy] is Rectangle rectangle && rectangle.Contains(point));
         }
     }
 }
