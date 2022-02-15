@@ -188,7 +188,6 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             //The PR is here, and I am loving it 
             NPCID.Sets.ActsLikeTownNPC[Type] = true;
             NPCID.Sets.SpawnsWithCustomName[Type] = true;
-            NPCID.Sets.SavesAndLoads[Type] = true;
 
             NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0) {
                 Velocity = 1f,
