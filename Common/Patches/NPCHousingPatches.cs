@@ -94,6 +94,8 @@ namespace LivingWorldMod.Common.Patches {
             //If the target instruction is found and we found the exit instruction, draw the villager if applicable
             c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCall<Main>(nameof(Main.SetMouseNPC_ToHousingQuery)));
 
+            c.Index += 3;
+
             //What we return here will determine whether or not we skip past the drawing head step in the vanilla function.
             c.EmitDelegate<Func<bool>>(() => {
                 if (Main.instance.mouseNPCIndex > -1 && Main.npc[Main.instance.mouseNPCIndex].ModNPC is Villager villager) {
