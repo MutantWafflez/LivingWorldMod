@@ -16,6 +16,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
     public class HarpyVillager : Villager {
         public override VillagerType VillagerType => VillagerType.Harpy;
 
+        //TODO: Put into localization file
         public override List<string> PossibleNames => new List<string> {
             "Merel",
             "Mari",
