@@ -35,25 +35,20 @@ namespace LivingWorldMod.Common.Patches {
             ILCursor c = new ILCursor(il);
 
             //We do not want non-villagers spawning in villager homes, which is what this patch is for
-            //The method runs as normally, but right before it returns, we do a few checks
             //In this method, a return of false will mean that the specific NPC cannot spawn in this house, and true means the opposite
-            //We check to see if this NPC already CANNOT spawn in said house for whatever reason, and that acts as normal if true
+            //We check to see if this NPC already CANNOT spawn in said house for whatever reason at the beginning, and that acts as normal if true
             //If the NPC CAN spawn here by normal means, we check to see if the room is within a village and if the NPC is a type of villager, and if both are true, prevent the NPC from taking that house
 
-            //Navigate to return statement
-            c.ErrorOnFailedGotoNext(i => i.MatchRet());
+            //Navigate to first false check
+            c.ErrorOnFailedGotoNext(i => i.MatchCall(typeof(NPCLoader).FullName, nameof(NPCLoader.CheckConditions)));
 
-            //Get original value off stack, load required variables afterwards
-            c.Emit(OpCodes.Pop);
+            //Move to the beginning of the return instruction block and set a label there
+            c.Index += 2;
+            ILLabel falseReturnLabel = c.MarkLabel();
+            c.Index = 0;
+            //Get type from passed in parameter
             c.Emit(OpCodes.Ldarg_0);
-            c.Emit(OpCodes.Ldloc_1);
-            //Do villager testing
-            c.EmitDelegate<Func<int, bool, bool>>((type, result) => {
-                //If the Town NPC already isn't allowed to spawn here for whatever reason, no need to do any additional fancy stuff
-                if (!result) {
-                    return false;
-                }
-
+            c.EmitDelegate<Func<int, bool>>(type => {
                 Rectangle roomInQuestion = new Rectangle(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1, WorldGen.roomY2 - WorldGen.roomY1);
 
                 ModNPC modNPC = ModContent.GetModNPC(type);
@@ -67,11 +62,22 @@ namespace LivingWorldMod.Common.Patches {
 
                 return true;
             });
+            c.Emit(OpCodes.Brfalse_S, falseReturnLabel);
 
             //IL for the above edit (Local variable 1 is the return value calculated beforehand) ^:
-            // /* (1331,3)-(1331,4) tModLoader\src\tModLoader\Terraria\WorldGen.cs */
-            // /* 0x0047715D 07           */ IL_01AD: ldloc.1
-            // /* 0x0047715E 2A           */ IL_01AE: ret
+            // /* (1296,4)-(1296,41) tModLoader\src\tModLoader\Terraria\WorldGen.cs */
+            // /* 0x003CEBC0 */ IL_0000: ldarg.0
+            // /* 0x003CEBC1 */ IL_0001: call      bool Terraria.ModLoader.NPCLoader::CheckConditions(int32)
+            // /* 0x003CEBC6 */ IL_0006: brtrue.s  IL_000A
+
+            // /* (1297,5)-(1297,18) tModLoader\src\tModLoader\Terraria\WorldGen.cs */
+            // /* 0x003CEBC8 */ IL_0008: ldc.i4.0
+            // /* 0x003CEBC9 */ IL_0009: ret
+
+            // /* (1298,4)-(1298,20) tModLoader\src\tModLoader\Terraria\WorldGen.cs */
+            // /* 0x003CEBCA */ IL_000A: ldarg.0
+            // /* 0x003CEBCB */ IL_000B: ldc.i4    160
+            // /* 0x003CEBD0 */ IL_0010: bne.un    IL_00B9
         }
 
         private void DrawSelectedVillagerOnMouse(ILContext il) {
