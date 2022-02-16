@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
+using LivingWorldMod.Content.Walls.WorldGen;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Terraria;
@@ -25,9 +26,22 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
 
             // Code to test placed here:
 
-            Point origin = new Point(x, y);
+            Point tipOfPyramid = new Point(x, y);
 
-            WorldUtils.Gen(origin, new EqualTriangle(271), new Actions.SetTile(TileID.SandStoneSlab, true));
+            ShapeData fullPyramidData = new ShapeData();
+
+            //Generate outer-shell of the pyramid, solid in the beginning
+            WorldUtils.Gen(tipOfPyramid, new EqualTriangle(271), Actions.Chain(
+                new Actions.SetTile(TileID.SandStoneSlab, true),
+                new Actions.PlaceWall((ushort)ModContent.WallType<PyramidBrickWall>()),
+                new Actions.ContinueWrapper(Actions.Chain(
+                    new Modifiers.IsTouchingAir(),
+                    new Actions.RemoveWall()
+                )),
+                new Actions.Blank().Output(fullPyramidData)
+            ));
+
+            ShapeData alteredPyramidData = new ShapeData(fullPyramidData);
         }
     }
 }

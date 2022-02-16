@@ -1,4 +1,4 @@
-﻿using LivingWorldMod.Content.Buffs.Pets;
+﻿using LivingWorldMod.Content.StatusEffects.Buffs.Pets;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

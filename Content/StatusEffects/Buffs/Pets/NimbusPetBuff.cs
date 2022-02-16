@@ -5,9 +5,9 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Content.Buffs.Pets {
+namespace LivingWorldMod.Content.StatusEffects.Buffs.Pets {
     //Thanks Trivaxy for the code! :-)
-    public class NimbusPetBuff : BaseBuff {
+    public class NimbusPetBuff : BaseStatusEffect {
         public override void SetStaticDefaults() {
             Main.buffNoTimeDisplay[Type] = true;
             Main.vanityPet[Type] = true;
