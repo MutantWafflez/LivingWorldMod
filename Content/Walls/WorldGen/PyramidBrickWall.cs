@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using Microsoft.Xna.Framework;
+using Terraria.ID;
 
 namespace LivingWorldMod.Content.Walls.WorldGen {
     /// <summary>
@@ -10,13 +11,15 @@ namespace LivingWorldMod.Content.Walls.WorldGen {
 
         public override void SetStaticDefaults() {
             DustType = DustID.Sand;
+
+            AddMapEntry(new Color(50, 40, 0));
         }
 
         public override bool CanExplode(int i, int j) => false;
 
         public override void KillWall(int i, int j, ref bool fail) {
-            //Unbreakable
-            fail = true;
+            //Unbreakables
+            fail = !LivingWorldMod.IsDebug;
         }
     }
 }

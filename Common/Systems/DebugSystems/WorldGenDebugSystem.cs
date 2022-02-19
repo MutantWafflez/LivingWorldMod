@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
+using LivingWorldMod.Content.Tiles.Generation;
 using LivingWorldMod.Content.Walls.WorldGen;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -27,21 +28,36 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
             // Code to test placed here:
 
             Point tipOfPyramid = new Point(x, y);
+            int lengthOfPyramid = 271;
 
             ShapeData fullPyramidData = new ShapeData();
 
             //Generate outer-shell of the pyramid, solid in the beginning
-            WorldUtils.Gen(tipOfPyramid, new EqualTriangle(271), Actions.Chain(
+            WorldUtils.Gen(tipOfPyramid, new EqualTriangle(lengthOfPyramid), Actions.Chain(
                 new Actions.SetTile(TileID.SandStoneSlab, true),
                 new Actions.PlaceWall((ushort)ModContent.WallType<PyramidBrickWall>()),
-                new Actions.ContinueWrapper(Actions.Chain(
-                    new Modifiers.IsTouchingAir(),
-                    new Actions.RemoveWall()
-                )),
                 new Actions.Blank().Output(fullPyramidData)
             ));
 
+            //Remove walls on outer-most layer
+            WorldUtils.Gen(tipOfPyramid, new ModShapes.All(fullPyramidData), Actions.Chain(
+                new Modifiers.IsTouchingAir(),
+                new Actions.RemoveWall()
+            ));
+
             ShapeData alteredPyramidData = new ShapeData(fullPyramidData);
+
+            //Generate entrance enclave
+            WorldUtils.Gen(tipOfPyramid + new Point(-15, (int)(lengthOfPyramid * 0.025f)), new Shapes.Rectangle(20, 9), Actions.Chain(
+                new Actions.ClearTile(true),
+                new Actions.Blank().Output(alteredPyramidData)
+            ));
+
+            //Generated cracked bricks below entrance
+            WorldUtils.Gen(tipOfPyramid + new Point(-4, (int)(lengthOfPyramid * 0.025f) + 9), new Shapes.Rectangle(9, 5), Actions.Chain(
+                new Actions.SetTileKeepWall((ushort)ModContent.TileType<CrackedSandstoneSlab>(), true),
+                new Actions.Blank().Output(alteredPyramidData)
+            ));
         }
     }
 }
