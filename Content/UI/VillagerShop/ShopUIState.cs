@@ -10,6 +10,7 @@ using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -232,7 +233,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
                         shopItem.remainingStock--;
 
                         player.BuyItem((int)_selectedItem.displayedCost);
-                        player.QuickSpawnItem(_selectedItem.displayedItem);
+                        player.QuickSpawnItem(new EntitySource_DropAsItem(player), _selectedItem.displayedItem);
 
                         buyItemStock.SetText(shopItem.remainingStock.ToString());
 

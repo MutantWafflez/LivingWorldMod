@@ -70,7 +70,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables.VillageShrines {
         public sealed override void KillMultiTile(int i, int j, int frameX, int frameY) {
             Rectangle dropZone = new Rectangle(i * 16, (j + 4) * 16, 4, 5);
 
-            Item.NewItem(dropZone, ItemDropType);
+            Item.NewItem(new EntitySource_TileBreak(i, j), dropZone, ItemDropType);
 
             VillageShrineEntity entity = ShrineEntity;
 

@@ -21,6 +21,6 @@ namespace LivingWorldMod.Content.Tiles.Generation {
             AddMapEntry(Color.LightYellow);
         }
 
-        public override bool Dangersense(int i, int j, Player player) => true;
+        public override bool IsTileDangerous(int i, int j, Player player) => true;
     }
 }
