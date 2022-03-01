@@ -47,15 +47,24 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
 
             ShapeData alteredPyramidData = new ShapeData(fullPyramidData);
 
-            //Generate entrance enclave
+            //Generate entrance hole
             WorldUtils.Gen(tipOfPyramid + new Point(-15, (int)(lengthOfPyramid * 0.025f)), new Shapes.Rectangle(20, 9), Actions.Chain(
                 new Actions.ClearTile(true),
                 new Actions.Blank().Output(alteredPyramidData)
             ));
 
             //Generated cracked bricks below entrance
-            WorldUtils.Gen(tipOfPyramid + new Point(-4, (int)(lengthOfPyramid * 0.025f) + 9), new Shapes.Rectangle(9, 5), Actions.Chain(
+            WorldUtils.Gen(tipOfPyramid + new Point(-5, 15), new Shapes.Rectangle(10, 5), Actions.Chain(
                 new Actions.SetTileKeepWall((ushort)ModContent.TileType<CrackedSandstoneSlab>(), true),
+                new Actions.Blank().Output(alteredPyramidData)
+            ));
+
+            int firstRoomRadius = 15;
+            Point firstRoomOrigin = tipOfPyramid + new Point(0, 20 + firstRoomRadius);
+
+            //Generate static, initial puzzle room
+            WorldUtils.Gen(firstRoomOrigin, new Shapes.Slime(firstRoomRadius), Actions.Chain(
+                new Actions.ClearTile(true),
                 new Actions.Blank().Output(alteredPyramidData)
             ));
         }
