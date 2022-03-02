@@ -27,8 +27,10 @@ namespace LivingWorldMod.Common.Systems {
 
         public override void SaveWorldData(TagCompound tag) {
             //Save data. That is all. Non-redundant comment here
-            foreach (WaystoneInfo info in waystoneData) {
-                info.isActivated = true;
+            if (LivingWorldMod.IsDebug) {
+                foreach (WaystoneInfo info in waystoneData) {
+                    info.isActivated = true;
+                }
             }
             tag["waystoneData"] = waystoneData;
             waystoneData.Clear();

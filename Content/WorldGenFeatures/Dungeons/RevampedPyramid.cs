@@ -16,6 +16,9 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Dungeons {
 
         public override bool PlaceBeforeInsertionPoint => false;
 
+        //Don't load for the time being while in INDEV
+        public override bool IsLoadingEnabled(Mod mod) => LivingWorldMod.IsDebug;
+
         public override void ModifyTaskList(List<GenPass> tasks) {
             //Decided that vanilla pyramids will be unable to generate. We must "nullify" the pass here, by removing and re-adding it in an
             // empty pass in its place, to preserve mod compatibility.

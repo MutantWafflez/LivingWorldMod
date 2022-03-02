@@ -49,7 +49,7 @@ namespace LivingWorldMod.Custom.Utilities {
 
                     switch (tileData.type) {
                         case > 0: {
-                            if (ModContent.TryFind(tileData.modName, tileData.modTileName, out ModTile modTile)) {
+                            if (ModContent.TryFind(tileData.modTileOwner, tileData.modTileName, out ModTile modTile)) {
                                 selectedTile.TileType = modTile.Type;
                             }
                             else {
@@ -87,7 +87,7 @@ namespace LivingWorldMod.Custom.Utilities {
                     }
 
                     if (tileData.wallType != -1) {
-                        if (ModContent.TryFind(tileData.modName, tileData.modWallName, out ModWall modWall)) {
+                        if (ModContent.TryFind(tileData.modWallOwner, tileData.modWallName, out ModWall modWall)) {
                             selectedTile.WallType = modWall.Type;
                         }
                         else {
@@ -136,7 +136,7 @@ namespace LivingWorldMod.Custom.Utilities {
 
                     switch (tileData.type) {
                         case > 0: {
-                            if (ModContent.TryFind(tileData.modName, tileData.modTileName, out ModTile modTile)) {
+                            if (ModContent.TryFind(tileData.modTileOwner, tileData.modTileName, out ModTile modTile)) {
                                 selectedTile.TileType = modTile.Type;
                             }
                             else {
@@ -174,7 +174,7 @@ namespace LivingWorldMod.Custom.Utilities {
                     }
 
                     if (tileData.wallType != -1) {
-                        if (ModContent.TryFind(tileData.modName, tileData.modWallName, out ModWall modWall)) {
+                        if (ModContent.TryFind(tileData.modWallOwner, tileData.modWallName, out ModWall modWall)) {
                             selectedTile.WallType = modWall.Type;
                         }
                         else {

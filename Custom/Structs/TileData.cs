@@ -79,11 +79,13 @@ namespace LivingWorldMod.Custom.Structs {
 
         public readonly int wallFrameY;
 
-        public readonly string modName;
-
         public readonly string modTileName;
 
+        public readonly string modTileOwner;
+
         public readonly string modWallName;
+
+        public readonly string modWallOwner;
 
         public TileData(Tile tile) {
             type = tile.HasTile ? tile.TileType : -1;
@@ -108,7 +110,7 @@ namespace LivingWorldMod.Custom.Structs {
             #if DEBUG
             wallType = tile.WallType == ModContent.WallType<SkipWall>() ? -1 : tile.WallType;
             #else
-            wallType = tile.wall;
+            wallType = tile.WallType;
             #endif
             wallColor = tile.WallColor;
             wallFrame = tile.WallFrameNumber;
@@ -117,9 +119,10 @@ namespace LivingWorldMod.Custom.Structs {
 
             ModTile modTile = ModContent.GetModTile(type);
             ModWall modWall = ModContent.GetModWall(wallType);
-            modName = modTile?.Mod.Name;
             modTileName = modTile?.Name;
+            modTileOwner = modTile?.Mod.Name;
             modWallName = modWall?.Name;
+            modWallOwner = modWall?.Mod.Name;
         }
 
         public TileData(int type, bool isActivated, bool isHalfBlock, int frameNumber, int frameX, int frameY, int slopeType, int color, bool isActuated, bool hasActuator,
@@ -157,14 +160,15 @@ namespace LivingWorldMod.Custom.Structs {
 
             ModTile modTile = ModContent.GetModTile(this.type);
             ModWall modWall = ModContent.GetModWall(this.wallType);
-            modName = modTile?.Mod.Name;
             modTileName = modTile?.Name;
+            modTileOwner = modTile?.Mod.Name;
             modWallName = modWall?.Name;
+            modWallOwner = modWall?.Mod.Name;
         }
 
         public TileData(int type, bool isActivated, bool isHalfBlock, int frameNumber, int frameX, int frameY, int slopeType, int color, bool isActuated, bool hasActuator,
             bool hasRedWire, bool hasBlueWire, bool hasGreenWire, bool hasYellowWire, int liquidType, int liquidAmount, int wallType, int wallColor, int wallFrame,
-            int wallFrameX, int wallFrameY, string modName, string modTileName, string modWallName
+            int wallFrameX, int wallFrameY, string modTileName, string modTileOwner, string modWallName, string modWallOwner
         ) {
             this.type = isActivated ? type : -1;
             #if DEBUG
@@ -194,9 +198,10 @@ namespace LivingWorldMod.Custom.Structs {
             this.wallFrame = wallFrame;
             this.wallFrameX = wallFrameX;
             this.wallFrameY = wallFrameY;
-            this.modName = modName;
             this.modTileName = modTileName;
+            this.modTileOwner = modTileOwner;
             this.modWallName = modWallName;
+            this.modWallOwner = modWallOwner;
         }
 
         public static TileData Deserialize(TagCompound tag) => new TileData(
@@ -221,9 +226,10 @@ namespace LivingWorldMod.Custom.Structs {
             tag.GetInt(nameof(wallFrame)),
             tag.GetInt(nameof(wallFrameX)),
             tag.GetInt(nameof(wallFrameY)),
-            tag.GetString(nameof(modName)),
             tag.GetString(nameof(modTileName)),
-            tag.GetString(nameof(modWallName))
+            tag.GetString(nameof(modTileOwner)),
+            tag.GetString(nameof(modWallName)),
+            tag.GetString(nameof(modWallOwner))
         );
 
         public TagCompound SerializeData() => new TagCompound() {
@@ -248,9 +254,10 @@ namespace LivingWorldMod.Custom.Structs {
             { nameof(wallFrame), wallFrame },
             { nameof(wallFrameX), wallFrameX },
             { nameof(wallFrameY), wallFrameY },
-            { nameof(modName), modName },
             { nameof(modTileName), modTileName },
-            { nameof(modWallName), modWallName }
+            { nameof(modTileOwner), modTileOwner },
+            { nameof(modWallName), modWallName },
+            { nameof(modWallOwner), modWallOwner }
         };
     }
 }

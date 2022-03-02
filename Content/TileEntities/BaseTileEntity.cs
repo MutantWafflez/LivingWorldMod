@@ -18,7 +18,7 @@ namespace LivingWorldMod.Content.TileEntities {
         public Vector2 WorldPosition => Position.ToWorldCoordinates(0, 0);
 
         /// <summary>
-        /// Called before <seealso cref="ValidTile"/> that can be used for overriding the default
+        /// Called before <seealso cref="IsTileValidForEntity"/> that can be used for overriding the default
         /// valid tile check for some kind of special functionality. True means the tile will always
         /// be valid regardless of normal conditions, null means the tile will be valid based on the
         /// normal pre-defined conditions, and false will prevent the tile from being valid
