@@ -8,7 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
+using LivingWorldMod.Content.NPCs.Villagers;
+using LivingWorldMod.Content.TileEntities.Interactables.VillageShrines;
+using LivingWorldMod.Content.Tiles.Interactables.VillageShrines;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.ModLoader;
@@ -270,16 +274,14 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
         }
 
         public override void PostWorldGenAction() {
-            /*
             if (CreationSystem.villageZones[(int)VillagerType.Harpy] is Rectangle rectangle) {
-                //Spawn shrine tile entity (To be added later, when tile entity saving is fixed)
                 for (int i = 0; i < rectangle.Width; i++) {
                     for (int j = 0; j < rectangle.Height; j++) {
                         Point currentPos = new Point(rectangle.X + i, rectangle.Y + j);
 
                         Tile currentTile = Framing.GetTileSafely(currentPos);
 
-                        if (currentTile.type != ModContent.TileType<HarpyShrineTile>()) {
+                        if (currentTile.TileType != ModContent.TileType<HarpyShrineTile>()) {
                             continue;
                         }
 
@@ -291,7 +293,6 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
                     }
                 }
 
-                //Spawn Harpies themselves (Also to be added later when NPC Save & Load PR gets merged)
                 for (int i = 0; i < rectangle.Width; i++) {
                     for (int j = 0; j < rectangle.Height; j++) {
                         Point position = new Point(rectangle.X + i, rectangle.Y + j);
@@ -304,14 +305,14 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
                                 continue;
                             }
 
-                            int npc = NPC.NewNPC(WorldGen.bestX * 16, WorldGen.bestY * 16, harpyType);
+                            int npc = NPC.NewNPC(new EntitySource_WorldGen(), WorldGen.bestX * 16, WorldGen.bestY * 16, harpyType);
 
                             Main.npc[npc].homeTileX = WorldGen.bestX;
                             Main.npc[npc].homeTileY = WorldGen.bestY;
                         }
                     }
                 }
-            }*/
+            }
         }
     }
 }
