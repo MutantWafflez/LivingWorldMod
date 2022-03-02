@@ -1,6 +1,28 @@
+ATTENTION: THIS MOD IS CURRENTLY AVAILABLE AS INDEV EARLY ACCESS, MEANING THERE WILL BE BUGS AND UNIMPLEMENTED FEATURES. DOWNLOAD AT YOUR OWN RISK.
+
+----------------------------------------------------------------------
+
 The Living World Mod aims to improve the Terraria world by adding new structures, establishing villages, adding new systems, and various other features that make the world more interesting to explore and spend time in.
 
-[i:890] Links 
+Currently implemented features:
+- Harpy Village w/ unique shop system
+- Waystones (pylons that spawn in the wild)
+- Several new sky related items (furniture, pets)
+
+Features in development:
+- Village Reputation
+- Revamped Pyramid dungeon
+- Additional villages (Truffle, Lihzahrd, Demon, etc.)
+
+Brought to you by:
+- MutantWafflez (Current Owner & Lead Coder/Designer)
+- RiverOaken (Previous Owner, Spriter and Designer)
+- Salvati (Music Contributor)
+- Kirtle (Coder)
+- Trivaxy (Code Contributor)
+- iFlicky (SFX & Music Contributor)
+
+Links:
 
 Discord server: https://discord.com/invite/h5EPGGV
-Subreddit: https://www.reddit.com/r/LivingWorldMod/
+^ Report bugs here!
