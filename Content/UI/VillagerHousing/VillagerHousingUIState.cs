@@ -2,10 +2,12 @@
 using LivingWorldMod.Content.UI.CommonElements;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.UI.Elements;
@@ -126,6 +128,11 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             gridOfVillagers.Height.Set(gridScrollbar.Height.Pixels, 0f);
             gridOfVillagers.SetScrollbar(gridScrollbar);
             Append(gridOfVillagers);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch) {
+            Main.LocalPlayer.mouseInterface = false;
+            base.Draw(spriteBatch);
         }
 
         protected override void DrawChildren(SpriteBatch spriteBatch) {
