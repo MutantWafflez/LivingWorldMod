@@ -12,21 +12,30 @@ namespace LivingWorldMod.Common.Patches {
     /// Class that has patches for tML methods. These are all internal, so special things must be done.
     /// </summary>
     public class ModLoaderPatches : ILoadable {
-        private MethodInfo _originalSaveNPCMethod;
-        private MethodInfo _originalLoadNPCMethod;
+        private static MethodInfo originalSaveNPCMethod;
+        private static MethodInfo originalLoadNPCMethod;
 
+        private static event ILContext.Manipulator ModifySaveNPC {
+            add => HookEndpointManager.Modify(originalSaveNPCMethod, value);
+            remove => HookEndpointManager.Unmodify(originalSaveNPCMethod, value);
+        }
+
+        private static event ILContext.Manipulator ModifyLoadNPC {
+            add => HookEndpointManager.Modify(originalLoadNPCMethod, value);
+            remove => HookEndpointManager.Unmodify(originalLoadNPCMethod, value);
+        }
 
         public void Load(Mod mod) {
             Type worldIOType = typeof(ModLoader).Assembly.GetType("Terraria.ModLoader.IO.WorldIO");
-            _originalSaveNPCMethod = worldIOType.GetMethod("SaveNPCs", BindingFlags.Static | BindingFlags.NonPublic);
-            _originalLoadNPCMethod = worldIOType.GetMethod("LoadNPCs", BindingFlags.Static | BindingFlags.NonPublic);
-            HookEndpointManager.Modify(_originalSaveNPCMethod, FixedNPCIO);
-            HookEndpointManager.Modify(_originalLoadNPCMethod, FixedNPCIO);
+            originalSaveNPCMethod = worldIOType.GetMethod("SaveNPCs", BindingFlags.Static | BindingFlags.NonPublic);
+            originalLoadNPCMethod = worldIOType.GetMethod("LoadNPCs", BindingFlags.Static | BindingFlags.NonPublic);
+            ModifySaveNPC += FixedNPCIO;
+            ModifyLoadNPC += FixedNPCIO;
         }
 
         public void Unload() {
-            HookEndpointManager.Unmodify(_originalSaveNPCMethod, FixedNPCIO);
-            HookEndpointManager.Unmodify(_originalLoadNPCMethod, FixedNPCIO);
+            ModifySaveNPC -= FixedNPCIO;
+            ModifyLoadNPC -= FixedNPCIO;
         }
 
         //Both methods can actually be edited the same way; no reason to use different ones
