@@ -87,7 +87,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         public override void SetStaticDefaults() {
-            Main.npcFrameCount[NPC.type] = 27;
+            Main.npcFrameCount[Type] = 27;
+            NPCID.Sets.ExtraFramesCount[Type] = 6;
         }
 
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) {

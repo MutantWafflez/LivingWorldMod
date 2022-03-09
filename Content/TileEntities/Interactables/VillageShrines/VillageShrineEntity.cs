@@ -54,7 +54,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables.VillageShrines {
 
         public override void Update() {
             for (int i = 0; i < Main.maxPlayers; i++) {
-                if (Main.player[i].Distance(VillageOriginPosition) <= VillageRadius * 16) {
+                if (Main.player[i].Distance(VillageOriginPosition) <= VillageRadius) {
                     Main.player[i].GetModPlayer<BiomePlayer>().currentVillageBiome = VillageType;
                 }
             }
