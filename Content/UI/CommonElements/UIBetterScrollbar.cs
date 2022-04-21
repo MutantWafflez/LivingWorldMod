@@ -30,7 +30,9 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         }
 
         public override void Update(GameTime gameTime) {
-            Main.LocalPlayer.mouseInterface = preventItemUsageWhileHovering;
+            if (IsMouseHovering && preventItemUsageWhileHovering) {
+                Main.LocalPlayer.mouseInterface = true;
+            }
 
             base.Update(gameTime);
         }

@@ -15,6 +15,8 @@ namespace LivingWorldMod.Common.Systems.UI {
         public static Asset<Effect> hoverFlashShader;
         public static Asset<Effect> grayScaleShader;
 
+        public override string InternalInterfaceName => "Villager Shop";
+
         public override void Load() {
             base.Load();
 

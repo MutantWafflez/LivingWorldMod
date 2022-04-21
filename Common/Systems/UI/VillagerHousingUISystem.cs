@@ -1,16 +1,16 @@
 ﻿using LivingWorldMod.Content.UI.VillagerHousing;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Systems.UI {
     /// <summary>
     /// System that handles the initialization and opening/closing of the Villager Housing UI.
     /// </summary>
     //TODO: FIX VILLAGE HOUSING UI SYSTEM INTERACTION BUG
-    [Autoload(false)]
     public class VillagerHousingUISystem : UISystem<VillagerHousingUIState> {
         public override string VanillaInterfaceLocation => "Vanilla: Inventory";
+
+        public override string InternalInterfaceName => "Villager Housing";
 
         public override void UpdateUI(GameTime gameTime) {
             lastGameTime = gameTime;

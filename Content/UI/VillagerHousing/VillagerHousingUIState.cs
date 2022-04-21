@@ -130,11 +130,6 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             Append(gridOfVillagers);
         }
 
-        public override void Draw(SpriteBatch spriteBatch) {
-            Main.LocalPlayer.mouseInterface = false;
-            base.Draw(spriteBatch);
-        }
-
         protected override void DrawChildren(SpriteBatch spriteBatch) {
             bool isMiniMapEnabled = !Main.mapFullscreen && Main.mapStyle == 1;
 

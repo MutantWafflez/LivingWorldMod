@@ -110,7 +110,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
 
             WhileHovering?.Invoke();
             if (preventItemUsageWhileHovering) {
-                Main.LocalPlayer.mouseInterface = preventItemUsageWhileHovering;
+                Main.LocalPlayer.mouseInterface = true;
             }
 
             if (_borderTexture != null) {
