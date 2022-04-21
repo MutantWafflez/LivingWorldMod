@@ -54,7 +54,7 @@ namespace LivingWorldMod.Common.Systems {
         public override void UpdateUI(GameTime gameTime) {
             lastGameTime = gameTime;
             if (lastGameTime is not null && correspondingInterface.CurrentState == correspondingUIState) {
-                correspondingUIState.Update(lastGameTime);
+                correspondingInterface.Update(lastGameTime);
             }
         }
     }
