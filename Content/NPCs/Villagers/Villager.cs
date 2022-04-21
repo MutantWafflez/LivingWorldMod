@@ -56,13 +56,6 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         /// <summary>
-        /// List of possible names that these villagers can have.
-        /// </summary>
-        public abstract List<string> PossibleNames {
-            get;
-        }
-
-        /// <summary>
         /// Dialogue that is added to the list of reputation dialogue depending on the current
         /// event, if any, that is occurring.
         /// </summary>
@@ -211,7 +204,9 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public override bool CheckActive() => false;
 
-        public override string TownNPCName() => PossibleNames[WorldGen.genRand.Next(0, PossibleNames.Count)];
+        public override string TownNPCName() => LocalizationUtils.GetAllStringsFromCategory($"VillagerNames.{VillagerType}") is { } names && names.elements.Count > 0
+            ? names
+            : LocalizationUtils.GetLWMTextValue($"NPCName.{Name}");
 
         public override void SetChatButtons(ref string button, ref string button2) {
             button = Language.GetTextValue("LegacyInterface.28"); //"Shop"
