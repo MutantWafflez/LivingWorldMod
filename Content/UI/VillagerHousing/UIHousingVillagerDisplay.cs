@@ -29,7 +29,8 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
         /// Whether or not this NPC is "allowed" to be housed, which is to say whether or not the
         /// village that the villager belongs to likes the player.
         /// </summary>
-        public bool IsAllowed => myVillager.RelationshipStatus >= VillagerRelationship.Like;
+        //TODO: Swap back to commented expression when Reputation system is re-implemented
+        public bool IsAllowed => true; //myVillager.RelationshipStatus >= VillagerRelationship.Like;
 
         public UIHousingVillagerDisplay(Villager villager) {
             myVillager = villager;
