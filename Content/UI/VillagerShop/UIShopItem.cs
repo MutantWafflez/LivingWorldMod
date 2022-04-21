@@ -85,7 +85,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
         }
 
         public override void Click(UIMouseEvent evt) {
-            ShopUIState shopState = ModContent.GetInstance<ShopUISystem>().shopState;
+            ShopUIState shopState = ModContent.GetInstance<ShopUISystem>().correspondingUIState;
 
             shopState.SetSelectedItem(!isSelected && pertainedInventoryItem.remainingStock > 0 ? this : null);
         }

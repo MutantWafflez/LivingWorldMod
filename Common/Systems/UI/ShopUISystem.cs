@@ -1,67 +1,30 @@
 ﻿using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.UI.VillagerShop;
 using LivingWorldMod.Custom.Utilities;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.UI;
 
 namespace LivingWorldMod.Common.Systems.UI {
     /// <summary>
     /// System that handles the initialization and opening/closing of the Shop UI for Villagers.
     /// </summary>
-    [Autoload(Side = ModSide.Client)]
-    public class ShopUISystem : ModSystem {
+    public class ShopUISystem : UISystem<ShopUIState> {
         public static Asset<Effect> hoverFlashShader;
         public static Asset<Effect> grayScaleShader;
 
-        public UserInterface shopInterface;
-        public ShopUIState shopState;
-        public GameTime lastGameTime;
-
         public override void Load() {
-            shopInterface = new UserInterface();
-            shopState = new ShopUIState();
-
-            shopState.Activate();
+            base.Load();
 
             hoverFlashShader = Mod.Assets.Request<Effect>("Assets/Shaders/UI/ShopItemHoverFlash");
             grayScaleShader = Mod.Assets.Request<Effect>("Assets/Shaders/UI/Grayscale");
         }
 
         public override void Unload() {
-            shopInterface = null;
-            shopState = null;
-
             hoverFlashShader = null;
             grayScaleShader = null;
-        }
-
-        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
-            int mouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
-            if (mouseTextIndex != -1) {
-                layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer(
-                    "LWM: Shop Interface",
-                    delegate {
-                        if (lastGameTime != null && shopInterface?.CurrentState != null) {
-                            shopInterface.Draw(Main.spriteBatch, lastGameTime);
-                        }
-                        return true;
-                    },
-                    InterfaceScaleType.UI));
-            }
-        }
-
-        public override void UpdateUI(GameTime gameTime) {
-            lastGameTime = gameTime;
-            if (shopInterface?.CurrentState != null) {
-                shopInterface.Update(gameTime);
-            }
         }
 
         public override void PostUpdateTime() {
@@ -77,7 +40,7 @@ namespace LivingWorldMod.Common.Systems.UI {
         public override void PostUpdateEverything() {
             //Close shop UI when the player stops talking to the villager or starts talking to a non-villager
             int talkNPC = Main.LocalPlayer.talkNPC;
-            if (shopInterface.CurrentState != null && (talkNPC == -1 || (!Main.npc[talkNPC].ModNPC?.GetType().IsSubclassOf(typeof(Villager)) ?? true))) {
+            if (correspondingInterface.CurrentState != null && (talkNPC == -1 || (!Main.npc[talkNPC].ModNPC?.GetType().IsSubclassOf(typeof(Villager)) ?? true))) {
                 CloseShopUI();
             }
         }
@@ -88,9 +51,9 @@ namespace LivingWorldMod.Common.Systems.UI {
         /// <param name="villager"> </param>
         public void OpenShopUI(Villager villager) {
             Main.npcChatText = "";
-            shopState.ReloadUI(villager);
-            shopState.SetSelectedItem(null, false);
-            shopInterface.SetState(shopState);
+            correspondingUIState.ReloadUI(villager);
+            correspondingUIState.SetSelectedItem(null, false);
+            correspondingInterface.SetState(correspondingUIState);
             SoundEngine.PlaySound(SoundID.MenuOpen);
         }
 
@@ -98,8 +61,8 @@ namespace LivingWorldMod.Common.Systems.UI {
         /// Closes the shop UI. That is all for now.
         /// </summary>
         public void CloseShopUI() {
-            shopState.SetSelectedItem(null, false);
-            shopInterface.SetState(null);
+            correspondingUIState.SetSelectedItem(null, false);
+            correspondingInterface.SetState(null);
             SoundEngine.PlaySound(SoundID.MenuClose);
         }
     }
