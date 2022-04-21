@@ -13,7 +13,7 @@ namespace LivingWorldMod.Custom.Utilities {
         /// <param name="list">
         /// List that will have its objects and theirs weights added to the other list.
         /// </param>
-        public static void AddList<T>(this WeightedRandom<T> originalList, WeightedRandom<T> list) {
+        public static void AddRange<T>(this WeightedRandom<T> originalList, WeightedRandom<T> list) {
             foreach ((T obj, double weight) in list.elements) {
                 originalList.Add(obj, weight);
             }

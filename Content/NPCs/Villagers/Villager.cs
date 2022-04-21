@@ -232,7 +232,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             WeightedRandom<string> list = LocalizationUtils.GetAllStringsFromCategory($"VillagerDialogue.{VillagerType}.{RelationshipStatus}");
 
             //Add event dialogue, if any events are occurring
-            list.AddList(EventDialogue);
+            list.AddRange(EventDialogue);
 
             return list;
         }
@@ -258,7 +258,6 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// Restocks the shop of this villager, drawing from the SpawnPool property.
         /// </summary>
         public void RestockShop() {
-            WeightedRandom<ShopItem> pool = ShopPool;
             shopInventory = new List<ShopItem>();
 
             int shopLength = Main.rand.Next(6, 8);
