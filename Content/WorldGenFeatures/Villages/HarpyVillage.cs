@@ -176,7 +176,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
 
                 possibleHouses.Remove(selectedHouseType);
 
-                StructureData groundHouseData = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"Villages/Harpy/{selectedHouseType}.struct");
+                StructureData groundHouseData = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/{selectedHouseType}.struct");
 
                 for (int xOffset = leftOffset * (1 - i); xOffset <= 0 + i * Math.Abs(leftOffset); xOffset++) {
                     if (WorldUtils.Find(new Point(originPoint.X + xOffset, originPoint.Y), Searches.Chain(new Searches.Up(25), new Conditions.IsTile(TileID.Grass).AreaAnd(groundHouseData.structureWidth, 1)), out Point groundHouseResult)) {
@@ -209,7 +209,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
             ));
 
             //Place "church" building
-            StructureData churchBuildingData = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"Villages/Harpy/ChurchBuilding{WorldGen.genRand.Next(2)}.struct");
+            StructureData churchBuildingData = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/ChurchBuilding{WorldGen.genRand.Next(2)}.struct");
 
             if (WorldUtils.Find(new Point(originPoint.X - churchBuildingData.structureWidth / 2, originPoint.Y + upOffset),
                     Searches.Chain(new Searches.Up(75), new IsAir().AreaAnd(churchBuildingData.structureWidth, churchBuildingData.structureHeight)), out Point churchResult)) {
@@ -226,7 +226,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
                     string selectedHouseType = WorldGen.genRand.Next(possibleHouses);
                     possibleHouses.Remove(selectedHouseType);
 
-                    StructureData cloudHouseData = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"Villages/Harpy/{selectedHouseType}.struct");
+                    StructureData cloudHouseData = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"/Villages/Harpy/{selectedHouseType}.struct");
                     Point miniIslandOrigin = new Point(originPoint.X + (int)(leftOffset * i * (j == 0 ? 1.15f : 0.775f)), originPoint.Y + upOffset * (int)(j == 0 ? 2f : 6.25f));
 
                     float miniYScale = 0.34f;
