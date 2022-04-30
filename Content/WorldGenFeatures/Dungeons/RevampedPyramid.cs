@@ -43,25 +43,160 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Dungeons {
             progress.Message = "Cursing the Pyramid";
             progress.Set(0f);
 
-            //Search for pyramid location
-            for (int i = (int)(Main.maxTilesX * 0.1f); i < Main.maxTilesY * 0.9f; i++) {
-                progress.Set(i / (Main.maxTilesY * 0.9f));
-                for (int j = (int)(Main.worldSurface * 0.5); j < Main.worldSurface * 1.25f; j++) {
-                    Dictionary<ushort, int> tileData = new Dictionary<ushort, int>();
-                    WorldUtils.Gen(new Point(i, j), new Shapes.Rectangle(51, 51), new Actions.TileScanner(TileID.Sand).Output(tileData));
+            int xLocation = WorldGen.UndergroundDesertLocation.Center.X + 75 * WorldGen.genRand.NextBool().ToDirectionInt();
+            int yLocation = WorldGen.UndergroundDesertLocation.Top;
+            int attempts = 0;
 
-                    //If this area contains 500 blocks of sand, it is a valid spot; generate here
-                    if (tileData[TileID.Sand] > 500) {
-                        StructureData pyramidStructure = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + "Dungeons/OverworldPyramid.struct");
+            while (Framing.GetTileSafely(xLocation, yLocation).HasTile) {
+                yLocation--;
 
-                        WorldGenUtils.GenerateStructure(pyramidStructure, i, j);
-                        return;
-                    }
+                if (++attempts <= 300) {
+                    continue;
                 }
+
+                //If we got this far, then some kind of shenanigans have occurred and we need to compensate before an infinite loop happens
+                ModContent.GetInstance<LivingWorldMod>().Logger.Warn("Revamped Pyramid unable to generate due to no valid placement.");
+                return;
             }
 
-            //If we got this far, then nothing valid was found; drop warning in console
-            ModContent.GetInstance<LivingWorldMod>().Logger.Warn("Revamped Pyramid unable to generate due to no valid placement.");
+            GenOverworldPyramid(xLocation, yLocation);
+        }
+
+        //This is adapted vanilla code that creates a pyramid with no tunnel past the treasure room, and the tunnel room itself is changed
+        private void GenOverworldPyramid(int i, int j) {
+            int entranceDisplacement = WorldGen.genRand.Next(9, 13);
+            int topDisplacement = 1;
+            int bottomY = j + 75;
+            Tile tile;
+            for (int y = j; y < bottomY; y++) {
+                for (int x = i - topDisplacement; x < i + topDisplacement - 1; x++) {
+                    tile = Framing.GetTileSafely(x, y);
+                    tile.TileType = TileID.SandStoneSlab;
+                    tile.HasTile = true;
+                    tile.IsHalfBlock = false;
+                    tile.Slope = SlopeType.Solid;
+                }
+                ++topDisplacement;
+            }
+            for (int index1 = i - topDisplacement - 5; index1 <= i + topDisplacement + 5; index1++) {
+                for (int index2 = j - 1; index2 <= bottomY + 1; index2++) {
+                    bool sandstoneFound = true;
+                    for (int x = index1 - 1; x <= index1 + 1; x++) {
+                        for (int y = index2 - 1; y <= index2 + 1; y++) {
+                            if (Framing.GetTileSafely(x, y).TileType != TileID.SandStoneSlab) {
+                                sandstoneFound = false;
+                            }
+                        }
+                    }
+                    if (!sandstoneFound) {
+                        continue;
+                    }
+
+                    tile = Framing.GetTileSafely(index1, index2);
+                    tile.WallType = WallID.SandstoneBrick;
+                    WorldGen.SquareWallFrame(index1, index2);
+                }
+            }
+            int entranceDirection = WorldGen.genRand.NextBool().ToDirectionInt();
+            int entranceX = i - entranceDisplacement * entranceDirection;
+            int entranceY = j + entranceDisplacement;
+            int tunnelSize = WorldGen.genRand.Next(5, 8);
+            bool continueInitialTunnelGen = true;
+            int roomTunnelDisplacement = WorldGen.genRand.Next(20, 30);
+            while (continueInitialTunnelGen) {
+                continueInitialTunnelGen = false;
+                bool sandFound = false;
+                for (int y = entranceY; y <= entranceY + tunnelSize; y++) {
+                    if (Framing.GetTileSafely(entranceX, y - 1).TileType == TileID.Sand) {
+                        sandFound = true;
+                    }
+                    if (Framing.GetTileSafely(entranceX, y).TileType == TileID.SandStoneSlab) {
+                        Framing.GetTileSafely(entranceX, y + 1).WallType = WallID.SandstoneBrick;
+                        Framing.GetTileSafely(entranceX + entranceDirection, y).WallType = WallID.SandstoneBrick;
+                        tile = Framing.GetTileSafely(entranceX, y);
+                        tile.HasTile = false;
+                        continueInitialTunnelGen = true;
+                    }
+                    if (sandFound) {
+                        tile = Framing.GetTileSafely(entranceX, y);
+                        tile.TileType = WallID.DiamondUnsafe;
+                        tile.HasTile = true;
+                        tile.IsHalfBlock = false;
+                        tile.Slope = SlopeType.Solid;
+                    }
+                }
+                entranceX -= entranceDirection;
+            }
+            int roomTunnelX = i - entranceDisplacement * entranceDirection;
+            bool doRoomGen = false;
+            bool continueRoomTunnelGen = true;
+            while (continueRoomTunnelGen) {
+                for (int y = entranceY; y <= entranceY + tunnelSize; y++) {
+                    tile = Framing.GetTileSafely(roomTunnelX, y);
+                    tile.HasTile = false;
+                }
+                roomTunnelX += entranceDirection;
+                ++entranceY;
+                --roomTunnelDisplacement;
+                if (entranceY >= bottomY - tunnelSize * 2) {
+                    roomTunnelDisplacement = 10;
+                }
+                if (roomTunnelDisplacement <= 0) {
+                    if (doRoomGen) {
+                        int roomHeight = WorldGen.genRand.Next(7, 13);
+                        int roomX = WorldGen.genRand.Next(23, 28);
+                        int roomWidth = roomX;
+                        int roomY = roomTunnelX;
+                        while (roomX > 0) {
+                            for (int y = entranceY - roomHeight + tunnelSize; y <= entranceY + tunnelSize; y++) {
+                                if (roomX == roomWidth || roomX == 1) {
+                                    if (y < entranceY - roomHeight + tunnelSize + 2) {
+                                        continue;
+                                    }
+
+                                    tile = Framing.GetTileSafely(roomTunnelX, y);
+                                    tile.HasTile = false;
+                                }
+                                else if (roomX == roomWidth - 1 || roomX == 2 || roomX == roomWidth - 2 || roomX == 3) {
+                                    if (y < entranceY - roomHeight + tunnelSize + 1) {
+                                        continue;
+                                    }
+
+                                    tile = Framing.GetTileSafely(roomTunnelX, y);
+                                    tile.HasTile = false;
+                                }
+                                else {
+                                    tile = Framing.GetTileSafely(roomTunnelX, y);
+                                    tile.HasTile = false;
+                                }
+                            }
+                            --roomX;
+                            roomTunnelX += entranceDirection;
+                        }
+                        int tempLeftRoomX = roomTunnelX - entranceDirection;
+                        int leftRoomX = tempLeftRoomX;
+                        int bottomRoomY = roomY;
+                        if (tempLeftRoomX > roomY) {
+                            leftRoomX = roomY;
+                            bottomRoomY = tempLeftRoomX;
+                        }
+                        WorldGen.PlaceTile(leftRoomX + 2, entranceY - roomHeight + tunnelSize + 1, TileID.Banners, true, style: WorldGen.genRand.Next(4, 7));
+                        WorldGen.PlaceTile(leftRoomX + 3, entranceY - roomHeight + tunnelSize, TileID.Banners, true, style: WorldGen.genRand.Next(4, 7));
+                        WorldGen.PlaceTile(bottomRoomY - 2, entranceY - roomHeight + tunnelSize + 1, TileID.Banners, true, style: WorldGen.genRand.Next(4, 7));
+                        WorldGen.PlaceTile(bottomRoomY - 3, entranceY - roomHeight + tunnelSize, TileID.Banners, true, style: WorldGen.genRand.Next(4, 7));
+                        for (int x3 = leftRoomX; x3 <= bottomRoomY; ++x3) {
+                            WorldGen.PlacePot(x3, entranceY + tunnelSize, style: WorldGen.genRand.Next(25, 28));
+                        }
+                        return;
+                    }
+                    doRoomGen = true;
+                    entranceDirection *= -1;
+                    roomTunnelDisplacement = WorldGen.genRand.Next(15, 20);
+                }
+                if (entranceY >= bottomY - tunnelSize) {
+                    continueRoomTunnelGen = false;
+                }
+            }
         }
     }
 }
