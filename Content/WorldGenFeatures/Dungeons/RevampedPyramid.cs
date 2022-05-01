@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Terraria;
 using LivingWorldMod.Common.ModTypes;
+using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
@@ -173,18 +174,22 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Dungeons {
                             --roomX;
                             roomTunnelX += entranceDirection;
                         }
-                        int tempLeftRoomX = roomTunnelX - entranceDirection;
-                        int leftRoomX = tempLeftRoomX;
-                        int bottomRoomY = roomY;
-                        if (tempLeftRoomX > roomY) {
-                            leftRoomX = roomY;
-                            bottomRoomY = tempLeftRoomX;
+                        int edgeCheck = roomTunnelX - entranceDirection;
+                        int roomEdge1 = edgeCheck;
+                        int roomEdge2 = roomY;
+                        if (edgeCheck > roomY) {
+                            roomEdge1 = roomY;
+                            roomEdge2 = edgeCheck;
                         }
-                        WorldGen.PlaceTile(leftRoomX + 2, entranceY - roomHeight + tunnelSize + 1, TileID.Banners, true, style: WorldGen.genRand.Next(4, 7));
-                        WorldGen.PlaceTile(leftRoomX + 3, entranceY - roomHeight + tunnelSize, TileID.Banners, true, style: WorldGen.genRand.Next(4, 7));
-                        WorldGen.PlaceTile(bottomRoomY - 2, entranceY - roomHeight + tunnelSize + 1, TileID.Banners, true, style: WorldGen.genRand.Next(4, 7));
-                        WorldGen.PlaceTile(bottomRoomY - 3, entranceY - roomHeight + tunnelSize, TileID.Banners, true, style: WorldGen.genRand.Next(4, 7));
-                        for (int x3 = leftRoomX; x3 <= bottomRoomY; ++x3) {
+                        WorldGen.PlaceTile(roomEdge1 + 2, entranceY - roomHeight + tunnelSize + 1, TileID.Banners, true, style: WorldGen.genRand.Next(4, 7));
+                        WorldGen.PlaceTile(roomEdge1 + 3, entranceY - roomHeight + tunnelSize, TileID.Banners, true, style: WorldGen.genRand.Next(4, 7));
+                        WorldGen.PlaceTile(roomEdge2 - 2, entranceY - roomHeight + tunnelSize + 1, TileID.Banners, true, style: WorldGen.genRand.Next(4, 7));
+                        WorldGen.PlaceTile(roomEdge2 - 3, entranceY - roomHeight + tunnelSize, TileID.Banners, true, style: WorldGen.genRand.Next(4, 7));
+
+                        WorldGen.PlaceObject(roomEdge1 + 7, entranceY + tunnelSize - 1, ModContent.TileType<CryptDoor>(), style: 0, direction: 1);
+                        WorldGen.PlaceObject(roomEdge1 - 7, entranceY + tunnelSize - 1, ModContent.TileType<CryptDoor>(), style: 1, direction: 1);
+
+                        for (int x3 = roomEdge1; x3 <= roomEdge2; ++x3) {
                             WorldGen.PlacePot(x3, entranceY + tunnelSize, style: WorldGen.genRand.Next(25, 28));
                         }
                         return;
