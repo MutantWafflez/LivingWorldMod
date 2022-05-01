@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -65,7 +66,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables.VillageShrines {
             AddMapEntry(new Color(255, 255, 0), name);
         }
 
-        public sealed override bool HasSmartInteract() => true;
+        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
         public sealed override void KillMultiTile(int i, int j, int frameX, int frameY) {
             Rectangle dropZone = new Rectangle(i * 16, (j + 4) * 16, 4, 5);
