@@ -17,6 +17,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             TileObjectData.newTile.Width = 2;
             TileObjectData.newTile.Height = 3;
             TileObjectData.newTile.Origin = new Point16(0, 0);
+            TileObjectData.newTile.DrawYOffset = 2;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
             TileObjectData.newTile.UsesCustomCanPlace = true;
             TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16 };
@@ -28,7 +29,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) {
             effectOnly = true;
-            fail = true;
+            fail = !LivingWorldMod.IsDebug;
         }
     }
 }

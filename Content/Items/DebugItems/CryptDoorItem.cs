@@ -23,7 +23,7 @@ namespace LivingWorldMod.Content.Items.DebugItems {
         public override bool AltFunctionUse(Player player) => true;
 
         public override bool? UseItem(Player player) {
-            if (player.altFunctionUse == 2 && player.itemAnimation == 10) {
+            if (player.altFunctionUse == 2 && player.itemAnimation == 9) {
                 if (++Item.placeStyle > 1) {
                     Item.placeStyle = 0;
                 }
