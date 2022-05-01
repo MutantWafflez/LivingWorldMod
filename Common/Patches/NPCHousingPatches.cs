@@ -302,7 +302,7 @@ namespace LivingWorldMod.Common.Patches {
             c.ErrorOnFailedGotoNext(i => i.MatchLdloca(npcProfileLocalNumber));
 
             //Move to IL instruction that denotes the beginning of the line
-            c.Index -= 3;
+            c.Index -= 2;
             //Load this NPC to stack
             c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
             //Test for villager status
