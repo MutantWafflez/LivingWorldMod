@@ -13,7 +13,7 @@ namespace LivingWorldMod.Content.Biomes {
         public override bool IsBiomeActive(Player player) => Framing.GetTileSafely((int)(player.Center.X / 16f), (int)(player.Center.Y / 16f)).WallType == ModContent.WallType<PyramidBrickWall>();
 
         public void LightingEffect(ref float scale) {
-            scale *= 0.25f;
+            scale *= 0.85f;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Content.Subworlds;
+using Microsoft.Xna.Framework;
 using SubworldLibrary;
 using Terraria;
 using Terraria.DataStructures;
@@ -27,6 +28,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             TileObjectData.newTile.CoordinatePadding = 2;
             TileObjectData.newTile.Direction = TileObjectDirection.PlaceRight;
             TileObjectData.addTile(Type);
+
+            AddMapEntry(Color.Orange);
         }
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) {
@@ -35,7 +38,13 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         }
 
         public override bool RightClick(int i, int j) {
-            SubworldSystem.Enter<PyramidDimension>();
+            if (SubworldSystem.IsActive<PyramidDimension>()) {
+                SubworldSystem.Exit();
+            }
+            else {
+                SubworldSystem.Enter<PyramidDimension>();
+            }
+
             return true;
         }
     }
