@@ -155,14 +155,12 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public sealed override string Texture => LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/DefaultStyle";
 
-        public sealed override bool CloneNewInstances => true;
-
         public Villager() {
             InitializeAssetData();
         }
 
-        public sealed override ModNPC Clone() {
-            Villager clone = (Villager)base.Clone();
+        public sealed override ModNPC Clone(NPC npc) {
+            Villager clone = (Villager)base.Clone(npc);
 
             clone.RestockShop();
 
@@ -204,9 +202,9 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public override bool CheckActive() => false;
 
-        public override string TownNPCName() => LocalizationUtils.GetAllStringsFromCategory($"VillagerNames.{VillagerType}") is { } names && names.elements.Count > 0
-            ? names
-            : LocalizationUtils.GetLWMTextValue($"NPCName.{Name}");
+        public override List<string> SetNPCNameList() => LocalizationUtils.GetAllStringsFromCategory($"VillagerNames.{VillagerType}") is { } names && names.elements.Count > 0
+            ? new List<string>() { names.Get() }
+            : base.SetNPCNameList();
 
         public override void SetChatButtons(ref string button, ref string button2) {
             button = Language.GetTextValue("LegacyInterface.28"); //"Shop"
