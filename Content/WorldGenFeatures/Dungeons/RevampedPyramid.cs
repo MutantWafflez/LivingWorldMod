@@ -186,8 +186,8 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Dungeons {
                         WorldGen.PlaceTile(roomEdge2 - 2, entranceY - roomHeight + tunnelSize + 1, TileID.Banners, true, style: WorldGen.genRand.Next(4, 7));
                         WorldGen.PlaceTile(roomEdge2 - 3, entranceY - roomHeight + tunnelSize, TileID.Banners, true, style: WorldGen.genRand.Next(4, 7));
 
-                        WorldGen.PlaceObject(roomEdge1 + 7, entranceY + tunnelSize - 1, ModContent.TileType<CryptDoor>(), style: 0, direction: 1);
-                        WorldGen.PlaceObject(roomEdge1 - 7, entranceY + tunnelSize - 1, ModContent.TileType<CryptDoor>(), style: 1, direction: 1);
+                        WorldGen.PlaceObject(roomEdge1 + 7, entranceY + tunnelSize - 1, ModContent.TileType<CryptDoorTile>(), style: 0, direction: 1);
+                        WorldGen.PlaceObject(roomEdge1 - 7, entranceY + tunnelSize - 1, ModContent.TileType<CryptDoorTile>(), style: 1, direction: 1);
 
                         for (int x3 = roomEdge1; x3 <= roomEdge2; ++x3) {
                             WorldGen.PlacePot(x3, entranceY + tunnelSize, style: WorldGen.genRand.Next(25, 28));

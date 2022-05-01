@@ -9,7 +9,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
     /// actually change the tile itself, it's permanently 2x3 (or "open"). Allows entrance into the
     /// Revamped Pyramid Subworlds.
     /// </summary>
-    public class CryptDoor : BaseTile {
+    public class CryptDoorTile : BaseTile {
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
