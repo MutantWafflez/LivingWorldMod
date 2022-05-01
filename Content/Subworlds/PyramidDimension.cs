@@ -29,5 +29,7 @@ namespace LivingWorldMod.Content.Subworlds {
                 }
             })
         };
+
+        public override void OnLoad() { }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Terraria;
+﻿using LivingWorldMod.Content.Subworlds;
+using SubworldLibrary;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ObjectData;
@@ -28,8 +30,13 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         }
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) {
-            effectOnly = true;
+            effectOnly = !LivingWorldMod.IsDebug;
             fail = !LivingWorldMod.IsDebug;
+        }
+
+        public override bool RightClick(int i, int j) {
+            SubworldSystem.Enter<PyramidDimension>();
+            return true;
         }
     }
 }

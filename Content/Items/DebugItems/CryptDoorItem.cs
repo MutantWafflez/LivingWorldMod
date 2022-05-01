@@ -30,6 +30,10 @@ namespace LivingWorldMod.Content.Items.DebugItems {
                 Main.NewText($"Now placing Crypt Door Tier {Item.placeStyle + 1}'s");
             }
 
+            if (Item.placeStyle > 1) {
+                Item.placeStyle = 0;
+            }
+
             return base.UseItem(player);
         }
     }

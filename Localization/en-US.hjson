@@ -244,7 +244,7 @@ Mods: {
 			NimbusPetProjectile: "Nimbus Pet"
 		}
 
-		Subworld: {
+		SubworldName: {
 			PyramidDimension: "The Great Pyramid"
 		}
 	}
