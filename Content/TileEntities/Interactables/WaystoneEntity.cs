@@ -137,8 +137,9 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         /// <param name="i"> x location to attempt entity placement. </param>
         /// <param name="j"> y location to attempt entity placement. </param>
         /// <param name="type"> What type of waystone to place at this location </param>
+        /// <param name="isActivated"> Whether or not this waystone should be activated or not. Defaults to false. </param>
         /// <returns></returns>
-        public bool ManualPlace(int i, int j, WaystoneType type) {
+        public bool ManualPlace(int i, int j, WaystoneType type, bool isActivated = false) {
             // First, double check that tile is a Waystone tile
             if (Framing.GetTileSafely(i, j).TileType != ModContent.TileType<WaystoneTile>()) {
                 return false;
@@ -148,7 +149,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             ModContent.GetInstance<WaystoneEntity>().Place(i, j);
             if (TileEntityUtils.TryFindModEntity(i, j, out WaystoneEntity retrievedEntity)) {
                 retrievedEntity.waystoneType = type;
-
+                retrievedEntity.isActivated = isActivated;
                 return true;
             }
             else {

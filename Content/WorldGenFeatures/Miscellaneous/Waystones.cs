@@ -102,7 +102,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     }
 
                     //Place tile entities
-                    if (waystoneEntity.ManualPlace(i, j, WaystoneType.Mushroom) && LivingWorldMod.IsDebug) {
+                    if (waystoneEntity.ManualPlace(i, j, WaystoneType.Mushroom, LivingWorldMod.IsDebug) && LivingWorldMod.IsDebug) {
                         ModContent.GetInstance<LivingWorldMod>().Logger.Info($"Placed Waystone at {i}, {j}");
                     }
 
@@ -171,7 +171,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     }
 
                     //Place tile entities
-                    if (waystoneEntity.ManualPlace(i, j, determinedWaystoneType) && LivingWorldMod.IsDebug) {
+                    if (waystoneEntity.ManualPlace(i, j, determinedWaystoneType, LivingWorldMod.IsDebug) && LivingWorldMod.IsDebug) {
                         ModContent.GetInstance<LivingWorldMod>().Logger.Info($"Placed Waystone at {i}, {j}");
                     }
 
