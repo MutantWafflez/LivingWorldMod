@@ -1,13 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using LivingWorldMod.Content.TileEntities.Interactables;
-using LivingWorldMod.Custom.Enums;
-using LivingWorldMod.Custom.Utilities;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.ID;
+using LivingWorldMod.Common.ModTypes;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod {
@@ -41,26 +33,11 @@ namespace LivingWorldMod {
         /// </summary>
         public static string LWMMusicPath => "Assets/Audio/Music/";
 
-        //TODO: Make this not a switch case
         public override void HandlePacket(BinaryReader reader, int whoAmI) {
-            PacketType packetType = (PacketType)reader.ReadInt32();
-            switch (packetType) {
-                case PacketType.SyncWaystones:
-                    switch (Main.netMode) {
-                        case NetmodeID.Server: {
-                            List<WaystoneEntity> waystones = TileEntity.ByID.Values.OfType<WaystoneEntity>().ToList();
+            byte handlerType = reader.ReadByte();
 
-                            foreach (WaystoneEntity entity in waystones) {
-                                NetMessage.SendData(MessageID.TileSection, whoAmI, number: entity.Position.X - 1, number2: entity.Position.Y - 1, number3: 4, number4: 4);
-                            }
-
-                            break;
-                        }
-                    }
-                    break;
-                default:
-                    Logger.Warn($"Invalid type of packet recieved: {packetType}");
-                    break;
+            if (PacketHandler.GetHandler(handlerType) is { } handler) {
+                handler.HandlePacket(reader, whoAmI);
             }
         }
     }

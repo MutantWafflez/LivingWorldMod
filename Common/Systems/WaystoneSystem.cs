@@ -1,4 +1,4 @@
-﻿using LivingWorldMod.Custom.Enums;
+﻿using LivingWorldMod.Common.PacketHandlers;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,8 +12,7 @@ namespace LivingWorldMod.Common.Systems {
     public class WaystoneSystem : ModSystem {
         public override void OnWorldLoad() {
             if (Main.netMode == NetmodeID.MultiplayerClient) {
-                ModPacket packet = Mod.GetPacket();
-                packet.Write((int)PacketType.SyncWaystones);
+                ModPacket packet = ModContent.GetInstance<WaystoneSyncHandler>().GetPacket();
 
                 packet.Send();
             }

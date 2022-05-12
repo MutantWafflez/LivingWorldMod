@@ -1,4 +1,4 @@
-﻿using LivingWorldMod.Custom.Enums;
+﻿using LivingWorldMod.Common.PacketHandlers;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -18,8 +18,7 @@ namespace LivingWorldMod.Common.Commands.DebugCommands {
 
         public override void Action(CommandCaller caller, string input, string[] args) {
             if (Main.netMode == NetmodeID.MultiplayerClient) {
-                ModPacket packet = Mod.GetPacket();
-                packet.Write((int)PacketType.SyncWaystones);
+                ModPacket packet = ModContent.GetInstance<WaystoneSyncHandler>().GetPacket();
 
                 packet.Send();
                 caller.Reply("Sync Message Sent.");
