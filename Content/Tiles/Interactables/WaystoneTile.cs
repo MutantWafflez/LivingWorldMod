@@ -79,6 +79,10 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             }
         }
 
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) {
+            ModContent.GetInstance<WaystoneEntity>().Kill(i, j);
+        }
+
         public override bool RightClick(int i, int j) {
             if (!TileEntityUtils.TryFindModEntity(i, j, out WaystoneEntity entity)) {
                 return false;

@@ -117,7 +117,7 @@ namespace LivingWorldMod.Common.Patches {
             c.Emit(OpCodes.Ldloc_0);
             //Then, add our own loop
             c.EmitDelegate<Func<Player, bool>>(player => {
-                foreach (WaystoneEntity entity in TileEntity.ByID.Values.Where(entity => entity is WaystoneEntity)) {
+                foreach (WaystoneEntity entity in TileEntity.ByID.Values.OfType<WaystoneEntity>()) {
                     if (entity.isActivated && player.IsInTileInteractionRange(entity.Position.X, entity.Position.Y)) {
                         return true;
                     }

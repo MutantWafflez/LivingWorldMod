@@ -42,6 +42,12 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         private int _activationVFXSecondaryTimer;
         private bool _doingActivationVFX;
 
+        public override bool? PreValidTile(int i, int j) {
+            Tile tile = Framing.GetTileSafely(i, j);
+
+            return tile.HasTile && tile.TileType == ValidTileID && tile.TileFrameX == 18 * 2 * (int)waystoneType;
+        }
+
         public override void Update() {
             // Only run code during the activation sequence (and the player is tabbed in)
             if (!_doingActivationVFX) {
@@ -109,10 +115,12 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
         public override void SaveData(TagCompound tag) {
             tag["active"] = isActivated;
+            tag["type"] = (int)waystoneType;
         }
 
         public override void LoadData(TagCompound tag) {
             isActivated = tag.GetBool("active");
+            waystoneType = (WaystoneType)tag.GetInt("type");
         }
 
         /// <summary>
@@ -141,7 +149,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         /// <returns></returns>
         public bool ManualPlace(int i, int j, WaystoneType type, bool isActivated = false) {
             // First, double check that tile is a Waystone tile
-            if (Framing.GetTileSafely(i, j).TileType != ModContent.TileType<WaystoneTile>()) {
+            if (Framing.GetTileSafely(i, j).TileType != ValidTileID) {
                 return false;
             }
 

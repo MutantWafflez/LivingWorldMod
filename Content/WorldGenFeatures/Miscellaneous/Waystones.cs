@@ -70,7 +70,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
             for (int i = xBoundFluff; i < Main.maxTilesX - xBoundFluff; i += (int)(Main.maxTilesX / worldDivisions)) {
                 for (int j = yBottomBound; j < yTopBound; j++) {
                     //Make sure to prevent any out of world shenanigans, if possible
-                    if (!WorldGen.InWorld(i, j)) {
+                    if (!WorldGen.InWorld(i, j, 4)) {
                         continue;
                     }
                     Point searchOrigin = new Point(i, j);
@@ -115,7 +115,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
             //Secondly (and finally), we will generate the rest of the waystone types, with varying conditions based on world size
             for (int i = xBoundFluff; i < Main.maxTilesX - xBoundFluff; i += (int)(Main.maxTilesX / worldDivisions)) {
                 for (int j = yBottomBound; j < yTopBound; j++) {
-                    if (!WorldGen.InWorld(i, j)) {
+                    if (!WorldGen.InWorld(i, j, 4)) {
                         continue;
                     }
                     Point searchOrigin = new Point(i, j);
@@ -144,8 +144,8 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     }
 
                     //Finally, for the last check, make sure it isn't too close to any other Waystones
-                    foreach (WaystoneEntity entity in TileEntity.ByID.Values.Where(entity => entity is WaystoneEntity)) {
-                        if (entity.WorldPosition.Distance(searchOrigin.ToVector2()) < minTilesBetweenWaystones) {
+                    foreach (WaystoneEntity entity in TileEntity.ByID.Values.OfType<WaystoneEntity>()) {
+                        if (entity.Position.ToVector2().Distance(searchOrigin.ToVector2()) < minTilesBetweenWaystones) {
                             goto ContinueLoop;
                         }
                     }
@@ -174,7 +174,6 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     if (waystoneEntity.ManualPlace(i, j, determinedWaystoneType, LivingWorldMod.IsDebug) && LivingWorldMod.IsDebug) {
                         ModContent.GetInstance<LivingWorldMod>().Logger.Info($"Placed Waystone at {i}, {j}");
                     }
-
 
                     ContinueLoop:
                     continue;
