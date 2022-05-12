@@ -1,4 +1,6 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using System.Linq;
+using LivingWorldMod.Common.Systems;
+using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
@@ -18,24 +20,18 @@ namespace LivingWorldMod.Content.MapLayers {
     /// </summary>
     public class WaystoneMapLayer : ModMapLayer {
         public override void Draw(ref MapOverlayDrawContext context, ref string text) {
-            //TODO: Waystone fix
-            /*
-            WaystoneSystem waystoneSystem = ModContent.GetInstance<WaystoneSystem>();
-
-            for (int i = 0; i < waystoneSystem.waystoneData.Count; i++) {
-                WaystoneInfo info = waystoneSystem.waystoneData[i];
-
-                if (!info.isActivated) {
+            foreach (WaystoneEntity entity in TileEntity.ByID.Values.Where(entity => entity is WaystoneEntity)) {
+                if (!entity.isActivated) {
                     continue;
                 }
 
-                Texture2D mapIcon = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}MapIcons/Waystones/WaystoneIcon_{info.waystoneType}").Value;
+                Texture2D mapIcon = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}MapIcons/Waystones/WaystoneIcon_{entity.waystoneType}").Value;
                 Color drawColor = TeleportPylonsSystem.IsPlayerNearAPylon(Main.LocalPlayer) ? Color.White : Color.Gray * 0.5f;
-                if (!context.Draw(mapIcon, info.iconLocation, drawColor, new SpriteFrame(1, 1), 1f, 1.75f, Alignment.Center).IsMouseOver) {
+                if (!context.Draw(mapIcon, entity.Position.ToVector2() + new Vector2(1f, 1.5f), drawColor, new SpriteFrame(1, 1), 1f, 1.75f, Alignment.Center).IsMouseOver) {
                     continue;
                 }
 
-                text = LocalizationUtils.GetLWMTextValue($"MapInfo.Waystones.{info.waystoneType}");
+                text = LocalizationUtils.GetLWMTextValue($"MapInfo.Waystones.{entity.waystoneType}");
 
                 if (!Main.mouseLeft || !Main.mouseLeftRelease) {
                     continue;
@@ -46,14 +42,13 @@ namespace LivingWorldMod.Content.MapLayers {
 
                 //Create fake pylon data to make the game think this waystone is a universal pylon
                 TeleportPylonInfo fakePylonInfo = default;
-                fakePylonInfo.PositionInTiles = info.tileLocation;
+                fakePylonInfo.PositionInTiles = entity.Position;
                 fakePylonInfo.TypeOfPylon = TeleportPylonType.Victory;
 
                 //Request teleportation
                 Main.PylonSystem.RequestTeleportation(fakePylonInfo, Main.LocalPlayer);
                 SoundEngine.PlaySound(SoundID.MenuClose);
             }
-            */
         }
     }
 }

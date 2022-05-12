@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using LivingWorldMod.Common.Systems;
+using LivingWorldMod.Content.TileEntities.Interactables;
 using Terraria;
 using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Custom.Classes;
@@ -7,6 +9,7 @@ using LivingWorldMod.Custom.Utilities;
 using Mono.Cecil.Cil;
 using Terraria.ModLoader;
 using MonoMod.Cil;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -114,17 +117,12 @@ namespace LivingWorldMod.Common.Patches {
             c.Emit(OpCodes.Ldloc_0);
             //Then, add our own loop
             c.EmitDelegate<Func<Player, bool>>(player => {
-                //TODO: Waystone fix
-                /*
-                WaystoneSystem waystoneSystem = ModContent.GetInstance<WaystoneSystem>();
-
-                for (int i = 0; i < waystoneSystem.waystoneData.Count; i++) {
-                    WaystoneInfo currentInfo = waystoneSystem.waystoneData[i];
-                    if (currentInfo.isActivated && player.IsInTileInteractionRange(currentInfo.tileLocation.X, currentInfo.tileLocation.Y)) {
+                foreach (WaystoneEntity entity in TileEntity.ByID.Values.Where(entity => entity is WaystoneEntity)) {
+                    if (entity.isActivated && player.IsInTileInteractionRange(entity.Position.X, entity.Position.Y)) {
                         return true;
                     }
                 }
-                */
+
 
                 return false;
             });

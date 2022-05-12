@@ -1,3 +1,4 @@
+using System.IO;
 using System.Linq;
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.Tiles.Interactables;
@@ -10,6 +11,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Content.TileEntities.Interactables {
     /// <summary>
@@ -101,12 +103,23 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             }
         }
 
+        public override void NetReceive(BinaryReader reader) {
+            AttemptWaystoneActivation();
+        }
+
+        public override void SaveData(TagCompound tag) {
+            tag["active"] = isActivated;
+        }
+
+        public override void LoadData(TagCompound tag) {
+            isActivated = tag.GetBool("active");
+        }
 
         /// <summary>
         /// Should be called whenever the tile that is entity is associated with is right clicked. Does different things depending on if
         /// this Waystone is activated or not.
         /// </summary>
-        public void RightClicked() {
+        public void AttemptWaystoneActivation() {
             if (isActivated || _doingActivationVFX) {
                 return;
             }
@@ -115,6 +128,32 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             _activationVFXStage = 0;
             _activationVFXTimer = 0;
             _activationVFXSecondaryTimer = 0;
+        }
+
+        /// <summary>
+        /// Method use for manual placing of a Waystone Entity. Primary usage is within WorldGen. Will return false
+        /// if the placement is invalid, true otherwise.
+        /// </summary>
+        /// <param name="i"> x location to attempt entity placement. </param>
+        /// <param name="j"> y location to attempt entity placement. </param>
+        /// <param name="type"> What type of waystone to place at this location </param>
+        /// <returns></returns>
+        public bool ManualPlace(int i, int j, WaystoneType type) {
+            // First, double check that tile is a Waystone tile
+            if (Framing.GetTileSafely(i, j).TileType != ModContent.TileType<WaystoneTile>()) {
+                return false;
+            }
+
+            // Then, place tile entity and assign its type
+            ModContent.GetInstance<WaystoneEntity>().Place(i, j);
+            if (TileEntityUtils.TryFindModEntity(i, j, out WaystoneEntity retrievedEntity)) {
+                retrievedEntity.waystoneType = type;
+
+                return true;
+            }
+            else {
+                return false;
+            }
         }
     }
 }

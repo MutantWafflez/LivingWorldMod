@@ -4,12 +4,14 @@ using System.Linq;
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
+using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.ModLoader;
@@ -62,6 +64,8 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
             int yTopBound = Main.maxTilesY - 200; //Vanilla definition of the transition point between underworld and not-underworld
             int xBoundFluff = 40;
 
+            WaystoneEntity waystoneEntity = ModContent.GetInstance<WaystoneEntity>();
+
             //First, we will simply satisfy that at least one mushroom biome waystone spawns, since that is the least likely
             for (int i = xBoundFluff; i < Main.maxTilesX - xBoundFluff; i += (int)(Main.maxTilesX / worldDivisions)) {
                 for (int j = yBottomBound; j < yTopBound; j++) {
@@ -98,11 +102,9 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     }
 
                     //Place tile entities
-                    //TODO: Waystone fix
-                    /*
-                    if (WaystoneSystem.BaseWaystoneEntity.TryPlaceEntity(i, j, (int)WaystoneType.Mushroom) > -1 && LivingWorldMod.IsDebug) {
+                    if (waystoneEntity.ManualPlace(i, j, WaystoneType.Mushroom) && LivingWorldMod.IsDebug) {
                         ModContent.GetInstance<LivingWorldMod>().Logger.Info($"Placed Waystone at {i}, {j}");
-                    }*/
+                    }
 
                     //Assuming we get here, break and move out of loop
                     i = Main.maxTilesX;
@@ -142,13 +144,11 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     }
 
                     //Finally, for the last check, make sure it isn't too close to any other Waystones
-                    //TODO: Waystone fix
-                    /*
-                    foreach (WaystoneInfo info in ModContent.GetInstance<WaystoneSystem>().waystoneData) {
-                        if (info.iconLocation.Distance(searchOrigin.ToVector2()) < minTilesBetweenWaystones) {
+                    foreach (WaystoneEntity entity in TileEntity.ByID.Values.Where(entity => entity is WaystoneEntity)) {
+                        if (entity.WorldPosition.Distance(searchOrigin.ToVector2()) < minTilesBetweenWaystones) {
                             goto ContinueLoop;
                         }
-                    }*/
+                    }
 
                     //Place waystone depending on the tile base
                     WaystoneType determinedWaystoneType = WaystoneType.Desert;
@@ -171,11 +171,9 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     }
 
                     //Place tile entities
-                    //TODO: Waystone fix
-                    /*
-                    if (WaystoneSystem.BaseWaystoneEntity.TryPlaceEntity(i, j, (int)determinedWaystoneType) > -1 && LivingWorldMod.IsDebug) {
+                    if (waystoneEntity.ManualPlace(i, j, determinedWaystoneType) && LivingWorldMod.IsDebug) {
                         ModContent.GetInstance<LivingWorldMod>().Logger.Info($"Placed Waystone at {i}, {j}");
-                    }*/
+                    }
 
 
                     ContinueLoop:
