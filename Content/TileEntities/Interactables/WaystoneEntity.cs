@@ -40,11 +40,6 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         private int _activationVFXSecondaryTimer;
         private bool _doingActivationVFX;
 
-        /// <summary>
-        /// Called when a waystone tile is placed. Transfers control to the WaystoneEntity to place itself.
-        /// </summary>
-        public static int WaystonePlaced(int i, int j, int type, int style, int direction, int alternate) => WaystoneSystem.BaseWaystoneEntity.TryPlaceEntity(i, j, style);
-
         public override void Update() {
             // Only run code during the activation sequence (and the player is tabbed in)
             if (!_doingActivationVFX) {
@@ -94,10 +89,6 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
                     Main.NewText(LocalizationUtils.GetLWMTextValue("Event.WaystoneActivation"), Color.Yellow);
 
-                    //Activate this waystone on the map
-                    if (ModContent.GetInstance<WaystoneSystem>().waystoneData.FirstOrDefault(waystone => waystone.tileLocation == Position) is { } info) {
-                        info.isActivated = true;
-                    }
                     isActivated = true;
                 }
                 else if (_activationVFXTimer > circlePullThreshold + finaleThreshold) {
@@ -110,46 +101,6 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             }
         }
 
-        public override void OnKill() {
-            // Remove this entry when the tile is killed. Shouldn't be possible, but if it *does* happen, we handle it
-            WaystoneSystem waystoneSystem = ModContent.GetInstance<WaystoneSystem>();
-            if (waystoneSystem.waystoneData.FirstOrDefault(waystone => waystone.tileLocation == Position) is { } info) {
-                waystoneSystem.waystoneData.Remove(info);
-            }
-        }
-
-        /// <summary>
-        /// Places a <see cref="WaystoneEntity"/> at this location and returns the <see cref="ModTileEntity.Place"/> value. If an error occurs, returns -1.
-        /// </summary>
-        /// <param name="i"> Position x of the tile entity. </param>
-        /// <param name="j"> Position y of the tile entity. </param>
-        /// <param name="style"> What style/type of waystone entity is to be placed. </param>
-        /// <param name="addToWaystoneData"> Whether or not the new tile entity to the <see cref="WaystoneSystem.waystoneData"/> list.</param>
-        /// <returns></returns>
-        public int TryPlaceEntity(int i, int j, int style, bool addToWaystoneData = true) {
-            WaystoneSystem waystoneSystem = ModContent.GetInstance<WaystoneSystem>();
-
-            // First, double check that tile is a Waystone tile
-            if (Framing.GetTileSafely(i, j).TileType != ModContent.TileType<WaystoneTile>()) {
-                return -1;
-            }
-
-            // Then, place tile entity and assign its type
-            int waystoneEntityID = WaystoneSystem.BaseWaystoneEntity.Place(i, j);
-            if (TileEntityUtils.TryFindModEntity(i, j, out WaystoneEntity retrievedEntity)) {
-                retrievedEntity.waystoneType = (WaystoneType)style;
-            }
-            else {
-                return -1;
-            }
-
-            if (addToWaystoneData) {
-                // Add to data list if specified
-                waystoneSystem.waystoneData.Add(new WaystoneInfo(new Point16(i, j), (WaystoneType)style, false));
-            }
-
-            return waystoneEntityID;
-        }
 
         /// <summary>
         /// Should be called whenever the tile that is entity is associated with is right clicked. Does different things depending on if

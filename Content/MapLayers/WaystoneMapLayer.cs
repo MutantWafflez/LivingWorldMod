@@ -18,6 +18,8 @@ namespace LivingWorldMod.Content.MapLayers {
     /// </summary>
     public class WaystoneMapLayer : ModMapLayer {
         public override void Draw(ref MapOverlayDrawContext context, ref string text) {
+            //TODO: Waystone fix
+            /*
             WaystoneSystem waystoneSystem = ModContent.GetInstance<WaystoneSystem>();
 
             for (int i = 0; i < waystoneSystem.waystoneData.Count; i++) {
@@ -51,6 +53,7 @@ namespace LivingWorldMod.Content.MapLayers {
                 Main.PylonSystem.RequestTeleportation(fakePylonInfo, Main.LocalPlayer);
                 SoundEngine.PlaySound(SoundID.MenuClose);
             }
+            */
         }
     }
 }

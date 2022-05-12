@@ -98,9 +98,11 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     }
 
                     //Place tile entities
+                    //TODO: Waystone fix
+                    /*
                     if (WaystoneSystem.BaseWaystoneEntity.TryPlaceEntity(i, j, (int)WaystoneType.Mushroom) > -1 && LivingWorldMod.IsDebug) {
                         ModContent.GetInstance<LivingWorldMod>().Logger.Info($"Placed Waystone at {i}, {j}");
-                    }
+                    }*/
 
                     //Assuming we get here, break and move out of loop
                     i = Main.maxTilesX;
@@ -140,11 +142,13 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     }
 
                     //Finally, for the last check, make sure it isn't too close to any other Waystones
+                    //TODO: Waystone fix
+                    /*
                     foreach (WaystoneInfo info in ModContent.GetInstance<WaystoneSystem>().waystoneData) {
                         if (info.iconLocation.Distance(searchOrigin.ToVector2()) < minTilesBetweenWaystones) {
                             goto ContinueLoop;
                         }
-                    }
+                    }*/
 
                     //Place waystone depending on the tile base
                     WaystoneType determinedWaystoneType = WaystoneType.Desert;
@@ -167,9 +171,11 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     }
 
                     //Place tile entities
+                    //TODO: Waystone fix
+                    /*
                     if (WaystoneSystem.BaseWaystoneEntity.TryPlaceEntity(i, j, (int)determinedWaystoneType) > -1 && LivingWorldMod.IsDebug) {
                         ModContent.GetInstance<LivingWorldMod>().Logger.Info($"Placed Waystone at {i}, {j}");
-                    }
+                    }*/
 
 
                     ContinueLoop:

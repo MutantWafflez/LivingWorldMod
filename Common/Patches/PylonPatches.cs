@@ -114,6 +114,8 @@ namespace LivingWorldMod.Common.Patches {
             c.Emit(OpCodes.Ldloc_0);
             //Then, add our own loop
             c.EmitDelegate<Func<Player, bool>>(player => {
+                //TODO: Waystone fix
+                /*
                 WaystoneSystem waystoneSystem = ModContent.GetInstance<WaystoneSystem>();
 
                 for (int i = 0; i < waystoneSystem.waystoneData.Count; i++) {
@@ -122,6 +124,7 @@ namespace LivingWorldMod.Common.Patches {
                         return true;
                     }
                 }
+                */
 
                 return false;
             });

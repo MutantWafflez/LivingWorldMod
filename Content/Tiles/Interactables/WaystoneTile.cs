@@ -44,8 +44,6 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.DrawYOffset = 2;
 
-            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(WaystoneEntity.WaystonePlaced, -1, 0, true);
-
             TileObjectData.addTile(Type);
 
             AnimationFrameHeight = 54;
@@ -81,17 +79,5 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             }
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) => WaystoneSystem.BaseWaystoneEntity.Kill(i, j);
-
-        public override bool RightClick(int i, int j) {
-            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
-
-            if (TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity foundEntity)) {
-                foundEntity.RightClicked();
-                return true;
-            }
-
-            return false;
-        }
     }
 }
