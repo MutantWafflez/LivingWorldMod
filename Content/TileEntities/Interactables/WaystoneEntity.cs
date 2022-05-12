@@ -109,8 +109,20 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             }
         }
 
+        public override void OnNetPlace() {
+            NetMessage.SendData(MessageID.TileEntitySharing, number: ID, number2: Position.X, number3: Position.Y);
+        }
+
+        public override void NetSend(BinaryWriter writer) {
+            writer.Write(_doingActivationVFX);
+            writer.Write(isActivated);
+            writer.Write((int)waystoneType);
+        }
+
         public override void NetReceive(BinaryReader reader) {
-            AttemptWaystoneActivation();
+            _doingActivationVFX = reader.ReadBoolean();
+            isActivated = reader.ReadBoolean();
+            waystoneType = (WaystoneType)reader.ReadInt32();
         }
 
         public override void SaveData(TagCompound tag) {
