@@ -43,7 +43,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         public override bool? PreValidTile(int i, int j) {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            return tile.HasTile && tile.TileType == ValidTileID && tile.TileFrameX == 18 * 2 * (int)waystoneType;
+            return tile.HasTile && tile.TileType == ValidTileID && tile.TileFrameX % 36 == 0;
         }
 
         public override void Update() {
