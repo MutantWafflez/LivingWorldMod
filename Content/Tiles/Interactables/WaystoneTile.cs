@@ -84,14 +84,16 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         }
 
         public override bool RightClick(int i, int j) {
-            if (!TileEntityUtils.TryFindModEntity(i, j, out WaystoneEntity entity)) {
+            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
+
+            if (!TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity entity)) {
                 return false;
             }
 
             switch (Main.netMode) {
                 case NetmodeID.MultiplayerClient:
                     entity.AttemptWaystoneActivation();
-                    NetMessage.SendData(MessageID.TileEntitySharing,  number: entity.ID, number2: entity.Position.X, number3: entity.Position.Y);
+                    NetMessage.SendData(MessageID.TileEntitySharing, number: entity.ID, number2: entity.Position.X, number3: entity.Position.Y);
                     break;
                 case NetmodeID.SinglePlayer:
                     entity.AttemptWaystoneActivation();
