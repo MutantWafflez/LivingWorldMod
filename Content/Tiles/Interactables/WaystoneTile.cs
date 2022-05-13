@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using LivingWorldMod.Common.PacketHandlers;
+using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
@@ -90,13 +91,17 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
                 return false;
             }
 
+            ModContent.GetInstance<WaystoneSystem>().AddNewActivationEntity(topLeft.ToWorldCoordinates(16, 16), entity.WaystoneColor);
             switch (Main.netMode) {
                 case NetmodeID.MultiplayerClient:
-                    entity.AttemptWaystoneActivation();
-                    NetMessage.SendData(MessageID.TileEntitySharing, number: entity.ID, number2: entity.Position.X, number3: entity.Position.Y);
+                    ModPacket packet = ModContent.GetInstance<WaystonePacketHandler>().GetPacket(WaystonePacketHandler.InitiateWaystoneActivation);
+
+                    packet.Write((int)entity.Position.X);
+                    packet.Write((int)entity.Position.Y);
+                    packet.Send();
                     break;
                 case NetmodeID.SinglePlayer:
-                    entity.AttemptWaystoneActivation();
+                    entity.ActivateWaystoneEntity();
                     break;
             }
 

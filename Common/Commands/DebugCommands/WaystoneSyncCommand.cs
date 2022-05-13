@@ -18,7 +18,7 @@ namespace LivingWorldMod.Common.Commands.DebugCommands {
 
         public override void Action(CommandCaller caller, string input, string[] args) {
             if (Main.netMode == NetmodeID.MultiplayerClient) {
-                ModPacket packet = ModContent.GetInstance<WaystoneSyncHandler>().GetPacket();
+                ModPacket packet = ModContent.GetInstance<WaystonePacketHandler>().GetPacket(WaystonePacketHandler.SyncNewPlayer);
 
                 packet.Send();
                 caller.Reply("Sync Message Sent.");
