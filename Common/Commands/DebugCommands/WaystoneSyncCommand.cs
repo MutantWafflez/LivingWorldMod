@@ -1,4 +1,4 @@
-﻿using LivingWorldMod.Common.PacketHandlers;
+﻿using LivingWorldMod.Core.PacketHandlers;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

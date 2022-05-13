@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Linq;
-using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.TileEntities.Interactables;
-using Terraria;
 using LivingWorldMod.Content.Tiles.Interactables;
-using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Utilities;
 using Mono.Cecil.Cil;
-using Terraria.ModLoader;
 using MonoMod.Cil;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 
-namespace LivingWorldMod.Common.Patches {
+namespace LivingWorldMod.Core.Patches {
     /// <summary>
     /// Class that handles patches within the realm of Pylons.
     /// </summary>

@@ -10,7 +10,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Common.PacketHandlers {
+namespace LivingWorldMod.Core.PacketHandlers {
     /// <summary>
     /// PacketHandler that handles all packets relating to Waystones.
     /// </summary>

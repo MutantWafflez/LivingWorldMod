@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using LivingWorldMod.Common.PacketHandlers;
+using LivingWorldMod.Core.PacketHandlers;
 using LivingWorldMod.Custom.Classes;
 using Microsoft.Xna.Framework;
 using Terraria;

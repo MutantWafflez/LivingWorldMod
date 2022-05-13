@@ -1,20 +1,19 @@
-﻿using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Common.Systems.UI;
+﻿using System;
+using System.Linq;
+using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoMod.Cil;
 using Mono.Cecil.Cil;
-using System;
-using System.Linq;
+using MonoMod.Cil;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Common.Patches {
+namespace LivingWorldMod.Core.Patches {
     /// <summary>
     /// Class that contains IL/On patches for NPC housing-related manners.
     /// </summary>

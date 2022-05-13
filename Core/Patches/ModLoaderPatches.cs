@@ -7,7 +7,7 @@ using MonoMod.RuntimeDetour.HookGen;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Common.Patches {
+namespace LivingWorldMod.Core.Patches {
     /// <summary>
     /// Class that has patches for tML methods. These are all internal, so special things must be done.
     /// </summary>

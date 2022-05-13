@@ -1,16 +1,15 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using MonoMod.Cil;
 using Mono.Cecil.Cil;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using Terraria;
+using MonoMod.Cil;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Common.Patches {
+namespace LivingWorldMod.Core.Patches {
     /// <summary>
     /// Class that contains the IL/On methods for patching various worldgen methods.
     /// </summary>
