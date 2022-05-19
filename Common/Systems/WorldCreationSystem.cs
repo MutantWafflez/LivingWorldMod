@@ -38,9 +38,7 @@ namespace LivingWorldMod.Common.Systems {
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight) {
             List<WorldGenFeature> listOfFeatures = ModContent.GetContent<WorldGenFeature>().ToList();
 
-            foreach (WorldGenFeature feature in listOfFeatures) {
-                feature.ModifyTaskList(tasks);
-            }
+            listOfFeatures.ForEach(feature => feature.ModifyTaskList(tasks));
 
             foreach (WorldGenFeature feature in listOfFeatures) {
                 int passIndex = tasks.FindIndex(pass => pass.Name == feature.InsertionPassNameForFeature);
@@ -55,11 +53,7 @@ namespace LivingWorldMod.Common.Systems {
         }
 
         public override void PostWorldGen() {
-            List<WorldGenFeature> listOfFeatures = ModContent.GetContent<WorldGenFeature>().ToList();
-
-            foreach (WorldGenFeature feature in listOfFeatures) {
-                feature.PostWorldGenAction();
-            }
+            ModContent.GetContent<WorldGenFeature>().ToList().ForEach(feature => feature.PostWorldGenAction());
         }
     }
 }
