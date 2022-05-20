@@ -10,6 +10,10 @@ namespace LivingWorldMod.Content.Biomes {
     public class RevampedPyramidBiome : ModBiome, IModifyLightingBrightness {
         public bool LightingEffectActive => IsBiomeActive(Main.LocalPlayer);
 
+        public override int Music => MusicLoader.GetMusicSlot(Mod, LivingWorldMod.LWMMusicPath + "Dungeons/RevampedPyramid");
+
+        public override SceneEffectPriority Priority => SceneEffectPriority.Environment;
+
         public override bool IsBiomeActive(Player player) => Framing.GetTileSafely((int)(player.Center.X / 16f), (int)(player.Center.Y / 16f)).WallType == ModContent.WallType<PyramidBrickWall>();
 
         public void LightingEffect(ref float scale) {

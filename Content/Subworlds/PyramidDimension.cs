@@ -52,7 +52,7 @@ namespace LivingWorldMod.Content.Subworlds {
             WorldUtils.Gen(new Point(Width / 2 - 1, 72), new EqualTriangle(20), new Actions.ClearTile(true));
 
             //Generate exit door
-            WorldGen.PlaceObject(Width / 2 - 1, 79, ModContent.TileType<CryptDoorTile>(), style: 0, direction: 1);
+            WorldGen.PlaceObject(Width / 2 - 2, 78, ModContent.TileType<PyramidDoorTile>(), style: 0, direction: 1);
 
             //Generate Torches
             WorldGen.PlaceTile(Width / 2 - 3, 77, TileID.Torches, forced: true, style: 16);
