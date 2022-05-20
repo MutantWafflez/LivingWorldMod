@@ -1,53 +1,41 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using LivingWorldMod.Common.VanillaOverrides;
-using LivingWorldMod.Content.MapLayers;
-using LivingWorldMod.Content.TileEntities.Interactables;
+using LivingWorldMod.Core.PacketHandlers;
 using LivingWorldMod.Custom.Classes;
-using LivingWorldMod.Custom.Utilities;
+using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Common.Systems {
     /// <summary>
-    /// System that handles some Waystone functionality, in tandem with the Waystone tile entity
-    /// and tiles.
+    /// ModSystem that helps with client-side Waystone functionality.
     /// </summary>
+    [Autoload(Side = ModSide.Client)]
     public class WaystoneSystem : ModSystem {
-        public List<WaystoneInfo> waystoneData;
+        private List<WaystoneActivationEntity> _activationEntities;
 
-        public static WaystoneEntity BaseWaystoneEntity => ModContent.GetInstance<WaystoneEntity>();
+        public override void OnWorldLoad() {
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                ModPacket packet = ModContent.GetInstance<WaystonePacketHandler>().GetPacket(WaystonePacketHandler.SyncNewPlayer);
 
-        public override void Load() {
-            // Initialize Waystone data list
-            waystoneData = new List<WaystoneInfo>();
+                packet.Send();
+            }
+
+            _activationEntities = new List<WaystoneActivationEntity>();
         }
 
-        public override void SaveWorldData(TagCompound tag) {
-            //Save data. That is all. Non-redundant comment here
-            if (LivingWorldMod.IsDebug) {
-                foreach (WaystoneInfo info in waystoneData) {
-                    info.isActivated = true;
-                }
-            }
-            tag["waystoneData"] = waystoneData;
-            waystoneData.Clear();
+        public override void PostUpdateEverything() {
+            _activationEntities.RemoveAll(entity => entity.isFinished);
+            _activationEntities.ForEach(entity => entity.Update());
         }
 
-        public override void LoadWorldData(TagCompound tag) {
-            //Load Waystone data and place the tile entities in the world
-            waystoneData = tag.GetList<WaystoneInfo>("waystoneData").ToList();
-
-            foreach (WaystoneInfo info in waystoneData) {
-                Point16 entityLocation = new Point16(info.tileLocation.X, info.tileLocation.Y);
-                BaseWaystoneEntity.TryPlaceEntity(entityLocation.X, entityLocation.Y, (int)info.waystoneType, false);
-
-                if (TileEntityUtils.TryFindModEntity(entityLocation.X, entityLocation.Y, out WaystoneEntity retrievedEntity)) {
-                    retrievedEntity.isActivated = info.isActivated;
-                }
-            }
+        /// <summary>
+        /// Adds a new activation entity at the specified location. Remember the center is in WORLD coordinates (not tiles).
+        /// </summary>
+        /// <param name="entityCenter"> The center of the entity. </param>
+        /// <param name="waystoneColor"> The color of the Waystone in question. </param>
+        public void AddNewActivationEntity(Vector2 entityCenter, Color waystoneColor) {
+            _activationEntities.Add(new WaystoneActivationEntity(entityCenter, waystoneColor));
         }
     }
 }

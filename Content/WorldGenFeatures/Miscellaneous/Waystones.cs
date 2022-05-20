@@ -4,12 +4,14 @@ using System.Linq;
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
+using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.ModLoader;
@@ -62,11 +64,13 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
             int yTopBound = Main.maxTilesY - 200; //Vanilla definition of the transition point between underworld and not-underworld
             int xBoundFluff = 40;
 
+            WaystoneEntity waystoneEntity = ModContent.GetInstance<WaystoneEntity>();
+
             //First, we will simply satisfy that at least one mushroom biome waystone spawns, since that is the least likely
             for (int i = xBoundFluff; i < Main.maxTilesX - xBoundFluff; i += (int)(Main.maxTilesX / worldDivisions)) {
                 for (int j = yBottomBound; j < yTopBound; j++) {
                     //Make sure to prevent any out of world shenanigans, if possible
-                    if (!WorldGen.InWorld(i, j)) {
+                    if (!WorldGen.InWorld(i, j, 4)) {
                         continue;
                     }
                     Point searchOrigin = new Point(i, j);
@@ -98,7 +102,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     }
 
                     //Place tile entities
-                    if (WaystoneSystem.BaseWaystoneEntity.TryPlaceEntity(i, j, (int)WaystoneType.Mushroom) > -1 && LivingWorldMod.IsDebug) {
+                    if (waystoneEntity.ManualPlace(i, j, WaystoneType.Mushroom, LivingWorldMod.IsDebug) && LivingWorldMod.IsDebug) {
                         ModContent.GetInstance<LivingWorldMod>().Logger.Info($"Placed Waystone at {i}, {j}");
                     }
 
@@ -111,7 +115,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
             //Secondly (and finally), we will generate the rest of the waystone types, with varying conditions based on world size
             for (int i = xBoundFluff; i < Main.maxTilesX - xBoundFluff; i += (int)(Main.maxTilesX / worldDivisions)) {
                 for (int j = yBottomBound; j < yTopBound; j++) {
-                    if (!WorldGen.InWorld(i, j)) {
+                    if (!WorldGen.InWorld(i, j, 4)) {
                         continue;
                     }
                     Point searchOrigin = new Point(i, j);
@@ -140,8 +144,8 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     }
 
                     //Finally, for the last check, make sure it isn't too close to any other Waystones
-                    foreach (WaystoneInfo info in ModContent.GetInstance<WaystoneSystem>().waystoneData) {
-                        if (info.iconLocation.Distance(searchOrigin.ToVector2()) < minTilesBetweenWaystones) {
+                    foreach (WaystoneEntity entity in TileEntity.ByID.Values.OfType<WaystoneEntity>()) {
+                        if (entity.Position.ToVector2().Distance(searchOrigin.ToVector2()) < minTilesBetweenWaystones) {
                             goto ContinueLoop;
                         }
                     }
@@ -167,10 +171,9 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     }
 
                     //Place tile entities
-                    if (WaystoneSystem.BaseWaystoneEntity.TryPlaceEntity(i, j, (int)determinedWaystoneType) > -1 && LivingWorldMod.IsDebug) {
+                    if (waystoneEntity.ManualPlace(i, j, determinedWaystoneType, LivingWorldMod.IsDebug) && LivingWorldMod.IsDebug) {
                         ModContent.GetInstance<LivingWorldMod>().Logger.Info($"Placed Waystone at {i}, {j}");
                     }
-
 
                     ContinueLoop:
                     continue;

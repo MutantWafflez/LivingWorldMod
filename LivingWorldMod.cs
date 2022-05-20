@@ -1,3 +1,5 @@
+using System.IO;
+using LivingWorldMod.Common.ModTypes;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod {
@@ -30,5 +32,13 @@ namespace LivingWorldMod {
         /// Directory of the Music files for LivingWorldMod.
         /// </summary>
         public static string LWMMusicPath => "Assets/Audio/Music/";
+
+        public override void HandlePacket(BinaryReader reader, int whoAmI) {
+            byte handlerType = reader.ReadByte();
+
+            if (PacketHandler.GetHandler(handlerType) is { } handler) {
+                handler.HandlePacket(reader, whoAmI);
+            }
+        }
     }
 }

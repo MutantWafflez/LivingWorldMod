@@ -1,5 +1,6 @@
 ﻿using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.TileEntities.Interactables;
+using LivingWorldMod.Core.PacketHandlers;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -44,8 +45,6 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.DrawYOffset = 2;
 
-            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(WaystoneEntity.WaystonePlaced, -1, 0, true);
-
             TileObjectData.addTile(Type);
 
             AnimationFrameHeight = 54;
@@ -81,17 +80,32 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             }
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) => WaystoneSystem.BaseWaystoneEntity.Kill(i, j);
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) {
+            ModContent.GetInstance<WaystoneEntity>().Kill(i, j);
+        }
 
         public override bool RightClick(int i, int j) {
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
 
-            if (TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity foundEntity)) {
-                foundEntity.RightClicked();
-                return true;
+            if (!TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity entity)) {
+                return false;
             }
 
-            return false;
+            ModContent.GetInstance<WaystoneSystem>().AddNewActivationEntity(topLeft.ToWorldCoordinates(16, 16), entity.WaystoneColor);
+            switch (Main.netMode) {
+                case NetmodeID.MultiplayerClient:
+                    ModPacket packet = ModContent.GetInstance<WaystonePacketHandler>().GetPacket(WaystonePacketHandler.InitiateWaystoneActivation);
+
+                    packet.Write((int)entity.Position.X);
+                    packet.Write((int)entity.Position.Y);
+                    packet.Send();
+                    break;
+                case NetmodeID.SinglePlayer:
+                    entity.ActivateWaystoneEntity();
+                    break;
+            }
+
+            return true;
         }
     }
 }

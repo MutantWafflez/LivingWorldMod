@@ -214,6 +214,7 @@ Mods: {
 
 		//Wall Item Names
 			SkywareWallItem: "Skyware Wall"
+			SandstoneSlabWallItem: "Sandstone Slab Wall"
 			SkywareFenceItem: "Skyware Fence"
 		//Accessory Item Names
 			NimbusInABottle: "Nimbus in a Bottle"
