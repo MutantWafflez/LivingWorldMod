@@ -2,9 +2,6 @@
 using Terraria;
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Content.Tiles.Interactables;
-using LivingWorldMod.Custom.Structs;
-using LivingWorldMod.Custom.Utilities;
-using Microsoft.Xna.Framework;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
@@ -13,9 +10,10 @@ using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Content.WorldGenFeatures.Dungeons {
     /// <summary>
-    /// The completely revamped pyramid structure, now with curses!
+    /// The generation pass for the Overworld Pyramid, which holds the door that leads to the
+    /// Revamped Pyramid Subworld.
     /// </summary>
-    public class RevampedPyramid : WorldGenFeature {
+    public class OverworldPyramid : WorldGenFeature {
         public override string InternalGenerationName => "Revamped Pyramid";
 
         public override string InsertionPassNameForFeature => "Pyramids";
@@ -186,9 +184,9 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Dungeons {
                         WorldGen.PlaceTile(roomEdge2 - 2, entranceY - roomHeight + tunnelSize + 1, TileID.Banners, true, style: WorldGen.genRand.Next(4, 7));
                         WorldGen.PlaceTile(roomEdge2 - 3, entranceY - roomHeight + tunnelSize, TileID.Banners, true, style: WorldGen.genRand.Next(4, 7));
 
-                        WorldGen.PlaceObject(edgeCheck > roomY ? roomEdge1 + 6 : roomEdge2 - 7, entranceY + tunnelSize - 3, ModContent.TileType<PyramidDoorTile>(), style: 0);
+                        WorldGen.PlaceObject(roomEdge1 + (roomEdge2 - roomEdge1) / 2 - 2, entranceY + tunnelSize - 3, ModContent.TileType<PyramidDoorTile>());
 
-                        for (int x3 = roomEdge1; x3 <= roomEdge2; x3++) {
+                        for (int x3 = roomEdge1; x3 <= roomEdge2; x3 += WorldGen.genRand.Next(1, 5)) {
                             WorldGen.PlacePot(x3, entranceY + tunnelSize, style: WorldGen.genRand.Next(25, 28));
                         }
                         return;
