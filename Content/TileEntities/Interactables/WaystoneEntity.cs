@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq;
 using LivingWorldMod.Common.Systems;
+using LivingWorldMod.Content.MiscEntities;
 using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;

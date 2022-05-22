@@ -1,9 +1,13 @@
 ﻿using LivingWorldMod.Content.Subworlds;
+using LivingWorldMod.Content.TileEntities.Interactables;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using SubworldLibrary;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Interactables {
@@ -37,15 +41,6 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             fail = !LivingWorldMod.IsDebug;
         }
 
-        public override bool RightClick(int i, int j) {
-            if (SubworldSystem.IsActive<PyramidDimension>()) {
-                SubworldSystem.Exit();
-            }
-            else {
-                SubworldSystem.Enter<PyramidDimension>();
-            }
-
-            return true;
-        }
+        public override bool RightClick(int i, int j) => true;
     }
 }

@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 
-namespace LivingWorldMod.Custom.Classes {
+namespace LivingWorldMod.Content.MiscEntities {
     /// <summary>
     /// Psuedo-Entity that exists during the Activation Process for Waystones. This exists mainly for consistency between
     /// multiplayer and singleplayer, since Tile Entities updating on the client is a bit weird. 

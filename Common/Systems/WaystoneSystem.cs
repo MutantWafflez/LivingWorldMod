@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using LivingWorldMod.Content.MiscEntities;
 using LivingWorldMod.Core.PacketHandlers;
 using LivingWorldMod.Custom.Classes;
 using Microsoft.Xna.Framework;
