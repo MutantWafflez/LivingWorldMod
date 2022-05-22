@@ -15,6 +15,14 @@ namespace LivingWorldMod.Content.TileEntities {
             get;
         }
 
+        /// <summary>
+        /// The "dimensions" of the entity, in pixels.
+        /// </summary>
+        public virtual Vector2 EntityDimensions => new Vector2(16); //1x1 tiles, aka 16x16 pixels
+
+        /// <summary>
+        /// The pixel position of this entity (aka NOT tile coordinates.)
+        /// </summary>
         public Vector2 WorldPosition => Position.ToWorldCoordinates(0, 0);
 
         /// <summary>

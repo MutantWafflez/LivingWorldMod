@@ -37,6 +37,8 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
         public override int ValidTileID => ModContent.TileType<WaystoneTile>();
 
+        public override Vector2 EntityDimensions => new Vector2(32, 48); //2x3 tiles 
+
         private int _activationTimer;
         private bool _doingActivationVFX;
 

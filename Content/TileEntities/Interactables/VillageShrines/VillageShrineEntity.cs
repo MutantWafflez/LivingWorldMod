@@ -41,10 +41,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables.VillageShrines {
         /// </summary>
         public virtual int VillageZoneDustType => DustID.Dirt;
 
-        /// <summary>
-        /// The "dimensions" of the entity, in pixels.
-        /// </summary>
-        public Vector2 EntityDimensions => new Vector2(64f, 80f); // 4 x 5 tiles
+        public override Vector2 EntityDimensions => new Vector2(64f, 80f); // 4 x 5 tiles
 
         /// <summary>
         /// The origin of the village. Without any displacement, this is in the center of this
