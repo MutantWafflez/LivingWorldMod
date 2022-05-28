@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Content.Subworlds;
+﻿using LivingWorldMod.Common.Systems;
+using LivingWorldMod.Content.Subworlds;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
@@ -36,11 +37,26 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             AnimationFrameHeight = 432;
         }
 
+        public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
+            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
+            PyramidDoorSystem doorSystem = ModContent.GetInstance<PyramidDoorSystem>();
+
+            if (doorSystem.DoorBeingOpened == topLeft) {
+                frameYOffset = doorSystem.DoorOpeningPhase * 72;
+            }
+        }
+
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) {
             effectOnly = !LivingWorldMod.IsDebug;
             fail = !LivingWorldMod.IsDebug;
         }
 
-        public override bool RightClick(int i, int j) => true;
+        public override bool RightClick(int i, int j) {
+            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
+
+            ModContent.GetInstance<PyramidDoorSystem>().StartDoorOpen(topLeft);
+
+            return true;
+        }
     }
 }

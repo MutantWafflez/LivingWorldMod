@@ -1,28 +1,51 @@
-﻿using System.Collections.Generic;
-using LivingWorldMod.Content.MiscEntities;
-using Terraria.DataStructures;
+﻿using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Systems {
     [Autoload(Side = ModSide.Client)]
     public class PyramidDoorSystem : ModSystem {
-        private List<PyramidDoorOpenEntity> _openingEntities;
-
-        public override void OnWorldLoad() {
-            _openingEntities = new List<PyramidDoorOpenEntity>();
-        }
-
-        public override void PostUpdateEverything() {
-            _openingEntities.RemoveAll(entity => entity.isFinished);
-            _openingEntities.ForEach(entity => entity.Update());
+        /// <summary>
+        /// The "Phase" of the opening process the specified door is currently in.
+        /// </summary>
+        public int DoorOpeningPhase {
+            get;
+            private set;
         }
 
         /// <summary>
-        /// Adds a new activation entity at the specified location. Remember the center is in TILE coordinates (not world).
+        /// The position in tiles of the door currently being opened to enter.
         /// </summary>
-        /// <param name="entityPosition"> The top left of the entity. </param>
-        public void AddNewActivationEntity(Point16 entityPosition) {
-            _openingEntities.Add(new PyramidDoorOpenEntity(entityPosition));
+        public Point16 DoorBeingOpened {
+            get;
+            private set;
+        } = Point16.NegativeOne;
+
+        private int _doorOpeningTimer;
+
+        public override void PostUpdateEverything() {
+            if (DoorBeingOpened == Point16.NegativeOne) {
+                return;
+            }
+
+            if (++_doorOpeningTimer >= 75) {
+                DoorOpeningPhase++;
+                _doorOpeningTimer = 0;
+            }
+            if (DoorOpeningPhase >= 6) {
+                DoorBeingOpened = Point16.NegativeOne;
+                DoorOpeningPhase = 0;
+                _doorOpeningTimer = 0;
+            }
+        }
+
+        public void StartDoorOpen(Point16 doorPosition) {
+            if (DoorBeingOpened != Point16.NegativeOne) {
+                return;
+            }
+
+            DoorBeingOpened = doorPosition;
+            _doorOpeningTimer = 0;
+            DoorOpeningPhase = 0;
         }
     }
 }
