@@ -3,6 +3,7 @@ using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Custom.Utilities;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
@@ -14,6 +15,8 @@ namespace LivingWorldMod.Core.Patches {
     public class PlayerDrawingPatches : ILoadable {
         private delegate void RefAction(ref PlayerDrawSet drawInfo);
 
+        private readonly Item _fakeItem = new Item();
+
         public void Load(Mod mod) {
             IL.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayerInternal += ModifyScaleDuringDoorOpening;
         }
@@ -24,6 +27,7 @@ namespace LivingWorldMod.Core.Patches {
             PyramidDoorSystem doorSystem = ModContent.GetInstance<PyramidDoorSystem>();
 
             if (doorSystem.DoorOpeningPhase == 5) {
+                drawInfo.heldItem = _fakeItem;
                 PlayerDrawLayers.DrawPlayer_ScaleDrawData(ref drawInfo, 1f - doorSystem.DoorOpeningTimer / 240f / 3f);
             }
         }

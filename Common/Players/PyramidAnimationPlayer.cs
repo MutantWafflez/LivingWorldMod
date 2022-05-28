@@ -14,7 +14,6 @@ namespace LivingWorldMod.Common.Players {
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo) {
             PyramidDoorSystem doorSystem = ModContent.GetInstance<PyramidDoorSystem>();
 
-
             if (doorSystem.DoorOpeningPhase == 5) {
                 //These three lines are helpful vanilla code
                 int yFrame = (int)(Main.GlobalTimeWrappedHourly / 0.07f) % 14 + 6;
