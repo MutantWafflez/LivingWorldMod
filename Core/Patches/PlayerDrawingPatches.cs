@@ -1,5 +1,4 @@
-﻿using System;
-using LivingWorldMod.Common.Systems;
+﻿using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Custom.Utilities;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -17,22 +16,22 @@ namespace LivingWorldMod.Core.Patches {
 
         private readonly Item _fakeItem = new Item();
 
+        private PyramidDoorSystem DoorSystem => ModContent.GetInstance<PyramidDoorSystem>();
+
         public void Load(Mod mod) {
-            IL.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayerInternal += ModifyScaleDuringDoorOpening;
+            IL.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayerInternal += ModifyDrawDuringDoorOpening;
         }
 
         public void Unload() { }
 
-        private void ModifyPlayerSize(ref PlayerDrawSet drawInfo) {
-            PyramidDoorSystem doorSystem = ModContent.GetInstance<PyramidDoorSystem>();
-
-            if (doorSystem.DoorOpeningPhase == 5) {
-                drawInfo.heldItem = _fakeItem;
-                PlayerDrawLayers.DrawPlayer_ScaleDrawData(ref drawInfo, 1f - doorSystem.DoorOpeningTimer / 240f / 3f);
+        private void ModifySizeAndArms(ref PlayerDrawSet drawInfo) {
+            if (DoorSystem.DoorAnimationPhase == PyramidDoorSystem.PlayerWalkingIntoDoorPhase) {
+                drawInfo.heldItem = _fakeItem; //Has to be done in order for the arms to frame properly
+                PlayerDrawLayers.DrawPlayer_ScaleDrawData(ref drawInfo, 1f - DoorSystem.DoorAnimationTimer / 240f / 3f);
             }
         }
 
-        private void ModifyScaleDuringDoorOpening(ILContext il) {
+        private void ModifyDrawDuringDoorOpening(ILContext il) {
             //Relatively simple patch; there are some shenanigans with draw order where using ModPlayer.ModifyDrawInfo and changing scale there doesn't do anything, so we are going straight to the source
 
             ILCursor c = new ILCursor(il);
@@ -42,7 +41,7 @@ namespace LivingWorldMod.Core.Patches {
             //Jump to right before normal scale call, then emit our own call for modifying player size
             c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCall(typeof(PlayerDrawLayers), nameof(PlayerDrawLayers.DrawPlayer_TransformDrawData)));
             c.Emit(OpCodes.Ldloca_S, drawInfoVarNum);
-            c.EmitDelegate<RefAction>(ModifyPlayerSize);
+            c.EmitDelegate<RefAction>(ModifySizeAndArms);
         }
     }
 }

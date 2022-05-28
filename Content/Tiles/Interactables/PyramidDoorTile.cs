@@ -1,13 +1,9 @@
 ﻿using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Content.Subworlds;
-using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using SubworldLibrary;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
@@ -41,8 +37,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
             PyramidDoorSystem doorSystem = ModContent.GetInstance<PyramidDoorSystem>();
 
-            if (doorSystem.DoorBeingOpened == topLeft) {
-                frameYOffset = doorSystem.DoorOpeningPhase * 72;
+            if (doorSystem.DoorBeingOpenedPosition == topLeft) {
+                frameYOffset = (doorSystem.DoorAnimationPhase - 1) * 72;
             }
         }
 
@@ -54,9 +50,9 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         public override bool RightClick(int i, int j) {
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
 
-            ModContent.GetInstance<PyramidDoorSystem>().StartDoorOpen(topLeft);
-
             Main.LocalPlayer.Teleport(topLeft.ToWorldCoordinates(22, 22), -1);
+
+            ModContent.GetInstance<PyramidDoorSystem>().StartDoorOpen(topLeft);
 
             return true;
         }

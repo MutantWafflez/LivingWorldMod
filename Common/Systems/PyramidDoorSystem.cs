@@ -8,9 +8,9 @@ namespace LivingWorldMod.Common.Systems {
     [Autoload(Side = ModSide.Client)]
     public class PyramidDoorSystem : ModSystem {
         /// <summary>
-        /// The "Phase" of the opening process the specified door is currently in.
+        /// The "Phase" of the opening animation the specified door is currently in.
         /// </summary>
-        public int DoorOpeningPhase {
+        public int DoorAnimationPhase {
             get;
             private set;
         }
@@ -18,7 +18,7 @@ namespace LivingWorldMod.Common.Systems {
         /// <summary>
         /// The position in tiles of the door currently being opened to enter.
         /// </summary>
-        public Point16 DoorBeingOpened {
+        public Point16 DoorBeingOpenedPosition {
             get;
             private set;
         } = Point16.NegativeOne;
@@ -26,40 +26,43 @@ namespace LivingWorldMod.Common.Systems {
         /// <summary>
         /// The timer for the door opening process.
         /// </summary>
-        public int DoorOpeningTimer {
+        public int DoorAnimationTimer {
             get;
             private set;
         }
 
+
+        public const int PlayerWalkingIntoDoorPhase = 6;
+
         public override void PostUpdateEverything() {
-            if (DoorBeingOpened == Point16.NegativeOne) {
+            if (DoorBeingOpenedPosition == Point16.NegativeOne) {
                 return;
             }
 
-            if (DoorOpeningPhase < 5) {
-                if (++DoorOpeningTimer >= 75) {
-                    DoorOpeningPhase++;
-                    DoorOpeningTimer = 0;
+            if (DoorAnimationPhase < PlayerWalkingIntoDoorPhase) {
+                if (++DoorAnimationTimer >= 75) {
+                    DoorAnimationPhase++;
+                    DoorAnimationTimer = 0;
                 }
             }
-            else if (DoorOpeningPhase == 5) {
+            else if (DoorAnimationPhase == PlayerWalkingIntoDoorPhase) {
                 //Check out PyramidAnimationPlayer.cs in Common/Players for more on the drawing specifically.
-                if (++DoorOpeningTimer >= 240) {
-                    DoorBeingOpened = Point16.NegativeOne;
-                    DoorOpeningPhase = 0;
-                    DoorOpeningTimer = 0;
+                if (++DoorAnimationTimer >= 240) {
+                    DoorBeingOpenedPosition = Point16.NegativeOne;
+                    DoorAnimationPhase = 0;
+                    DoorAnimationTimer = 0;
                 }
             }
         }
 
         public void StartDoorOpen(Point16 doorPosition) {
-            if (DoorBeingOpened != Point16.NegativeOne) {
+            if (DoorBeingOpenedPosition != Point16.NegativeOne) {
                 return;
             }
 
-            DoorBeingOpened = doorPosition;
-            DoorOpeningTimer = 0;
-            DoorOpeningPhase = 0;
+            DoorBeingOpenedPosition = doorPosition;
+            DoorAnimationTimer = 0;
+            DoorAnimationPhase = 1;
         }
     }
 }
