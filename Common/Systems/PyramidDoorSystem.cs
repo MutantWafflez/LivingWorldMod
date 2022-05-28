@@ -43,7 +43,7 @@ namespace LivingWorldMod.Common.Systems {
                 }
             }
             else if (DoorOpeningPhase == 5) {
-                //Check out LayerPlayer.cs in Common/Players for more on the drawing specifically.
+                //Check out PyramidAnimationPlayer.cs in Common/Players for more on the drawing specifically.
                 if (++DoorOpeningTimer >= 240) {
                     DoorBeingOpened = Point16.NegativeOne;
                     DoorOpeningPhase = 0;
