@@ -1,6 +1,8 @@
 ﻿using LivingWorldMod.Common.Systems;
+using LivingWorldMod.Content.Subworlds;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
+using SubworldLibrary;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -48,6 +50,11 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         }
 
         public override bool RightClick(int i, int j) {
+            if (SubworldSystem.IsActive<PyramidDimension>()) {
+                SubworldSystem.Exit();
+
+                return true;
+            }
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
 
             Main.LocalPlayer.Teleport(topLeft.ToWorldCoordinates(22, 22), -1);

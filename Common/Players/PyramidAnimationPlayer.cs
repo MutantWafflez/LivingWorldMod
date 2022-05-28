@@ -15,11 +15,12 @@ namespace LivingWorldMod.Common.Players {
 
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo) {
             if (DoorSystem.DoorAnimationPhase == PyramidDoorSystem.PlayerWalkingIntoDoorPhase) {
-                //These three lines are helpful vanilla code
+                //These lines are helpful vanilla code
                 int yFrame = (int)(Main.GameUpdateCount / 0.07f) % 14 + 6;
                 Player.bodyFrame.Y = Player.legFrame.Y = Player.headFrame.Y = yFrame * 56;
+                Player.WingFrame(false);
 
-                float currentStep = DoorSystem.DoorAnimationTimer / 240f;
+                float currentStep = DoorSystem.DoorAnimationTimer / (float)PyramidDoorSystem.PlayerWalkingTime;
                 //This is really disgusting, and I don't like it, but I don't think there's really any other choice, sadly. Vanilla :-(
                 //(If someone comes across this and tells me how to do this much cleaner, please do tell)
                 LerpToTransparentBlack(ref drawInfo.colorArmorHead, currentStep);

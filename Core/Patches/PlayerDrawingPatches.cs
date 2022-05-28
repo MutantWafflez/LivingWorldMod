@@ -24,10 +24,10 @@ namespace LivingWorldMod.Core.Patches {
 
         public void Unload() { }
 
-        private void ModifySizeAndArms(ref PlayerDrawSet drawInfo) {
+        private void ApplyDrawModifications(ref PlayerDrawSet drawInfo) {
             if (DoorSystem.DoorAnimationPhase == PyramidDoorSystem.PlayerWalkingIntoDoorPhase) {
                 drawInfo.heldItem = _fakeItem; //Has to be done in order for the arms to frame properly
-                PlayerDrawLayers.DrawPlayer_ScaleDrawData(ref drawInfo, 1f - DoorSystem.DoorAnimationTimer / 240f / 3f);
+                PlayerDrawLayers.DrawPlayer_ScaleDrawData(ref drawInfo, 1f - DoorSystem.DoorAnimationTimer / (float)PyramidDoorSystem.PlayerWalkingTime / 3f);
             }
         }
 
@@ -41,7 +41,7 @@ namespace LivingWorldMod.Core.Patches {
             //Jump to right before normal scale call, then emit our own call for modifying player size
             c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCall(typeof(PlayerDrawLayers), nameof(PlayerDrawLayers.DrawPlayer_TransformDrawData)));
             c.Emit(OpCodes.Ldloca_S, drawInfoVarNum);
-            c.EmitDelegate<RefAction>(ModifySizeAndArms);
+            c.EmitDelegate<RefAction>(ApplyDrawModifications);
         }
     }
 }
