@@ -2,6 +2,9 @@
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Systems {
+    /// <summary>
+    /// ModSystem that acts as the heart of the pyramid door opening shenanigans.
+    /// </summary>
     [Autoload(Side = ModSide.Client)]
     public class PyramidDoorSystem : ModSystem {
         /// <summary>
@@ -20,21 +23,32 @@ namespace LivingWorldMod.Common.Systems {
             private set;
         } = Point16.NegativeOne;
 
-        private int _doorOpeningTimer;
+        /// <summary>
+        /// The timer for the door opening process.
+        /// </summary>
+        public int DoorOpeningTimer {
+            get;
+            private set;
+        }
 
         public override void PostUpdateEverything() {
             if (DoorBeingOpened == Point16.NegativeOne) {
                 return;
             }
 
-            if (++_doorOpeningTimer >= 75) {
-                DoorOpeningPhase++;
-                _doorOpeningTimer = 0;
+            if (DoorOpeningPhase < 5) {
+                if (++DoorOpeningTimer >= 75) {
+                    DoorOpeningPhase++;
+                    DoorOpeningTimer = 0;
+                }
             }
-            if (DoorOpeningPhase >= 6) {
-                DoorBeingOpened = Point16.NegativeOne;
-                DoorOpeningPhase = 0;
-                _doorOpeningTimer = 0;
+            else if (DoorOpeningPhase == 5) {
+                //Check out LayerPlayer.cs in Common/Players for more on the drawing specifically.
+                if (++DoorOpeningTimer >= 240) {
+                    DoorBeingOpened = Point16.NegativeOne;
+                    DoorOpeningPhase = 0;
+                    DoorOpeningTimer = 0;
+                }
             }
         }
 
@@ -44,7 +58,7 @@ namespace LivingWorldMod.Common.Systems {
             }
 
             DoorBeingOpened = doorPosition;
-            _doorOpeningTimer = 0;
+            DoorOpeningTimer = 0;
             DoorOpeningPhase = 0;
         }
     }

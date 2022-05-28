@@ -56,6 +56,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
 
             ModContent.GetInstance<PyramidDoorSystem>().StartDoorOpen(topLeft);
 
+            Main.LocalPlayer.Teleport(topLeft.ToWorldCoordinates(22, 22), -1);
+
             return true;
         }
     }
