@@ -33,6 +33,11 @@ namespace LivingWorldMod {
         /// </summary>
         public static string LWMMusicPath => "Assets/Audio/Music/";
 
+        /// <summary>
+        /// Directory of sound files for LivingWorldMod.
+        /// </summary>
+        public static string LWMSoundPath => nameof(LivingWorldMod) + "/Assets/Audio/Sounds/";
+
         public override void HandlePacket(BinaryReader reader, int whoAmI) {
             byte handlerType = reader.ReadByte();
 

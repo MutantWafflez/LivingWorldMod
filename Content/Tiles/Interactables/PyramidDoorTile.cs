@@ -4,6 +4,7 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using SubworldLibrary;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ModLoader;
@@ -15,6 +16,10 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
     /// actually change the tile itself. Allows entrance into the Revamped Pyramid Subworld.
     /// </summary>
     public class PyramidDoorTile : BaseTile {
+        /* TODO: Add when preview merges
+        public static readonly SoundStyle OpeningDoorSound = new($"{LivingWorldMod.LWMSoundPath}/PyramidDoorOpen");
+        */
+
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
@@ -60,6 +65,10 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             Main.LocalPlayer.Teleport(topLeft.ToWorldCoordinates(22, 22), -1);
 
             ModContent.GetInstance<PyramidDoorSystem>().StartDoorOpen(topLeft);
+
+            /* TODO: Add when preview merges
+            SoundEngine.PlaySound(OpeningDoorSound, topLeft.ToWorldCoordinates(32));
+            */
 
             return true;
         }
