@@ -90,7 +90,7 @@ namespace LivingWorldMod.Custom.Structs {
         public TileData(Tile tile) {
             type = tile.HasTile ? tile.TileType : -1;
             #if DEBUG
-            type = tile.TileType == ModContent.TileType<SkipTile>() ? -2 : type;
+            type = ModContent.GetModTile(tile.TileType) is SkipTile ? -2 : tile.TileType;
             #endif
             isActivated = tile.HasTile;
             isHalfBlock = tile.IsHalfBlock;
@@ -108,7 +108,7 @@ namespace LivingWorldMod.Custom.Structs {
             liquidType = tile.LiquidType;
             liquidAmount = tile.LiquidAmount;
             #if DEBUG
-            wallType = tile.WallType == ModContent.WallType<SkipWall>() ? -1 : tile.WallType;
+            wallType = ModContent.GetModWall(tile.WallType) is SkipWall ? -1 : tile.WallType;
             #else
             wallType = tile.WallType;
             #endif
@@ -127,52 +127,11 @@ namespace LivingWorldMod.Custom.Structs {
 
         public TileData(int type, bool isActivated, bool isHalfBlock, int frameNumber, int frameX, int frameY, int slopeType, int color, bool isActuated, bool hasActuator,
             bool hasRedWire, bool hasBlueWire, bool hasGreenWire, bool hasYellowWire, int liquidType, int liquidAmount, int wallType, int wallColor, int wallFrame,
-            int wallFrameX, int wallFrameY
-        ) {
-            this.type = isActivated ? type : -1;
-            #if DEBUG
-            this.type = type == ModContent.TileType<SkipTile>() ? -2 : this.type;
-            #endif
-            this.isActivated = isActivated;
-            this.isHalfBlock = isHalfBlock;
-            this.frameNumber = frameNumber;
-            this.frameX = frameX;
-            this.frameY = frameY;
-            this.slopeType = slopeType;
-            this.color = color;
-            this.isActuated = isActuated;
-            this.hasActuator = hasActuator;
-            this.hasRedWire = hasRedWire;
-            this.hasBlueWire = hasBlueWire;
-            this.hasGreenWire = hasGreenWire;
-            this.hasYellowWire = hasYellowWire;
-            this.liquidType = liquidType;
-            this.liquidAmount = liquidAmount;
-            #if DEBUG
-            this.wallType = wallType == ModContent.WallType<SkipWall>() ? -1 : wallType;
-            #else
-            this.wallType = wallType;
-            #endif
-            this.wallColor = wallColor;
-            this.wallFrame = wallFrame;
-            this.wallFrameX = wallFrameX;
-            this.wallFrameY = wallFrameY;
-
-            ModTile modTile = ModContent.GetModTile(this.type);
-            ModWall modWall = ModContent.GetModWall(this.wallType);
-            modTileName = modTile?.Name;
-            modTileOwner = modTile?.Mod.Name;
-            modWallName = modWall?.Name;
-            modWallOwner = modWall?.Mod.Name;
-        }
-
-        public TileData(int type, bool isActivated, bool isHalfBlock, int frameNumber, int frameX, int frameY, int slopeType, int color, bool isActuated, bool hasActuator,
-            bool hasRedWire, bool hasBlueWire, bool hasGreenWire, bool hasYellowWire, int liquidType, int liquidAmount, int wallType, int wallColor, int wallFrame,
             int wallFrameX, int wallFrameY, string modTileName, string modTileOwner, string modWallName, string modWallOwner
         ) {
             this.type = isActivated ? type : -1;
             #if DEBUG
-            this.type = type == ModContent.TileType<SkipTile>() ? -2 : this.type;
+            this.type = modTileOwner == nameof(LivingWorldMod) && modTileName == nameof(SkipTile) ? -2 : type;
             #endif
             this.isActivated = isActivated;
             this.isHalfBlock = isHalfBlock;
@@ -190,7 +149,7 @@ namespace LivingWorldMod.Custom.Structs {
             this.liquidType = liquidType;
             this.liquidAmount = liquidAmount;
             #if DEBUG
-            this.wallType = wallType == ModContent.WallType<SkipWall>() ? -1 : wallType;
+            this.wallType = modWallOwner == nameof(LivingWorldMod) && modWallName == nameof(SkipWall) ? -1 : wallType;
             #else
             this.wallType = wallType;
             #endif
