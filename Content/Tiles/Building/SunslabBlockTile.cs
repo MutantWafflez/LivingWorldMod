@@ -26,7 +26,7 @@ namespace LivingWorldMod.Content.Tiles.Building {
             ItemDrop = ModContent.ItemType<SunslabBlockItem>();
 
             DustType = DustID.GoldCoin;
-            SoundType = SoundID.Tink;
+            HitSound = SoundID.Tink;
 
             AddMapEntry(Color.Yellow);
 

@@ -16,8 +16,10 @@ namespace LivingWorldMod.Custom.Interfaces {
         /// <param name="scale"> The current scale of the lighting. </param>
         public void LightingEffect(ref float scale);
 
+        [NoJIT]
         void ILoadable.Load(Mod mod) { }
 
+        [NoJIT]
         void ILoadable.Unload() { }
     }
 }
