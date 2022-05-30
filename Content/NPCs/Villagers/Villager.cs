@@ -28,14 +28,16 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// <summary>
         /// An array that holds all of the assets for the body sprites of this type of villager.
         /// </summary>
-        public Asset<Texture2D>[] bodyAssets;
+        [CloneByReference]
+        public readonly Asset<Texture2D>[] bodyAssets;
 
         /// <summary>
         /// Any array that holds all of the assets for the head sprites of this type of villager.
         /// What a "head" asset for a villager means depends on the type of villager. For the Harpy
         /// Villagers, for example, the head assets are different types of hair.
         /// </summary>
-        public Asset<Texture2D>[] headAssets;
+        [CloneByReference]
+        public readonly Asset<Texture2D>[] headAssets;
 
         /// <summary>
         /// The body sprite type that this specific villager has.
@@ -155,20 +157,39 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public sealed override string Texture => LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/DefaultStyle";
 
+        public override bool IsCloneable => true;
+
         public Villager() {
-            InitializeAssetData();
+            bodyAssets = new Asset<Texture2D>[BodyAssetVariations];
+            headAssets = new Asset<Texture2D>[HeadAssetVariations];
+
+            for (int i = 0; i < BodyAssetVariations; i++) {
+                bodyAssets[i] = ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/Body{i}");
+            }
+
+            for (int i = 0; i < HeadAssetVariations; i++) {
+                headAssets[i] = ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/Head{i}");
+            }
         }
 
-        public sealed override ModNPC Clone(NPC npc) {
-            Villager clone = (Villager)base.Clone(npc);
+        public override ModNPC NewInstance(NPC entity) {
+            Villager instance = (Villager)base.NewInstance(entity);
 
-            clone.RestockShop();
+            instance.RestockShop();
 
-            clone.bodyAssets = bodyAssets;
-            clone.headAssets = headAssets;
+            instance.bodySpriteType = Main.rand.Next(BodyAssetVariations);
+            instance.headSpriteType = Main.rand.Next(HeadAssetVariations);
 
-            bodySpriteType = Main.rand.Next(BodyAssetVariations);
-            headSpriteType = Main.rand.Next(HeadAssetVariations);
+            return instance;
+        }
+
+        public override ModNPC Clone(NPC newEntity) {
+            Villager clone = (Villager)base.Clone(newEntity);
+
+            clone.shopInventory = shopInventory;
+
+            clone.bodySpriteType = bodySpriteType;
+            clone.headSpriteType = headSpriteType;
 
             return clone;
         }
@@ -268,23 +289,6 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                 }
             }
             while (shopInventory.Count < shopLength);
-        }
-
-        /// <summary>
-        /// Loads the Asset Arrays that contain the body and head assets for this given villager,
-        /// and selects one at random.
-        /// </summary>
-        private void InitializeAssetData() {
-            bodyAssets = new Asset<Texture2D>[BodyAssetVariations];
-            headAssets = new Asset<Texture2D>[HeadAssetVariations];
-
-            for (int i = 0; i < BodyAssetVariations; i++) {
-                bodyAssets[i] = ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/Body{i}");
-            }
-
-            for (int i = 0; i < HeadAssetVariations; i++) {
-                headAssets[i] = ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/Head{i}");
-            }
         }
     }
 }
