@@ -20,8 +20,10 @@ namespace LivingWorldMod.Custom.Interfaces {
         /// </summary>
         public void SunlightEffect(ref Color tileColor, ref Color backgroundColor);
 
+        [NoJIT]
         void ILoadable.Load(Mod mod) { }
 
+        [NoJIT]
         void ILoadable.Unload() { }
     }
 }

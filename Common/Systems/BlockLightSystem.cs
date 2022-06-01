@@ -40,7 +40,7 @@ namespace LivingWorldMod.Common.Systems {
 
         private void TransitionStarshardColor() {
             //Lerp towards target color
-            starCloudColor = MathUtils.ColorLerp(starCloudColor, targetStarCloudColor, 0.34f / 60f);
+            starCloudColor = Color.Lerp(starCloudColor, targetStarCloudColor, 0.34f / 60f);
 
             if (--starCloudTimer <= 0) {
                 //Pick random color after the timer runs out
