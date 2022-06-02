@@ -34,15 +34,33 @@ namespace LivingWorldMod.Common.Systems {
         }
 
         /// <summary>
+        /// The very last phase of the door animation before the door is completely open.
+        /// </summary>
+        public const int LastDoorAnimationPhase = 5;
+
+        /// <summary>
+        /// The phase that is simply a brief "pause" where the player stands still
+        /// after the door is fully, visually open, before they actually enter the
+        /// door.
+        /// </summary>
+        public const int PauseBeforePlayerWalkingPhase = 6;
+
+        /// <summary>
         /// The phase of the door opening animation where the player is meant
         /// to visual "walk into" the open door.
         /// </summary>
-        public const int PlayerWalkingIntoDoorPhase = 6;
+        public const int PlayerWalkingIntoDoorPhase = 7;
 
         /// <summary>
         /// How many ticks it takes for the door to visually update from phase to phase.
         /// </summary>
-        public const int DoorOpeningRate = 45;
+        public const int DoorOpeningRate = 33;
+
+        /// <summary>
+        /// How many ticks it takes before the player begins visually entering the door after the door
+        /// has completely opened.
+        /// </summary>
+        public const int WaitTimeBeforeWalkIn = 60;
 
         /// <summary>
         /// How long it takes for the player to fully "walk into" the open door.
@@ -55,7 +73,7 @@ namespace LivingWorldMod.Common.Systems {
             }
 
             if (DoorAnimationPhase < PlayerWalkingIntoDoorPhase) {
-                if (++DoorAnimationTimer >= DoorOpeningRate) {
+                if (++DoorAnimationTimer >= (DoorAnimationPhase != PauseBeforePlayerWalkingPhase ? DoorOpeningRate : WaitTimeBeforeWalkIn)) {
                     DoorAnimationPhase++;
                     DoorAnimationTimer = 0;
                 }

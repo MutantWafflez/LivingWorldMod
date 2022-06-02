@@ -16,9 +16,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
     /// actually change the tile itself. Allows entrance into the Revamped Pyramid Subworld.
     /// </summary>
     public class PyramidDoorTile : BaseTile {
-        /* TODO: Add when preview merges
-        public static readonly SoundStyle OpeningDoorSound = new($"{LivingWorldMod.LWMSoundPath}/PyramidDoorOpen");
-        */
+        public static readonly SoundStyle OpeningDoorSound = new SoundStyle($"{LivingWorldMod.LWMSoundPath}Tiles/PyramidDoorOpen");
 
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
@@ -45,7 +43,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             PyramidDoorSystem doorSystem = ModContent.GetInstance<PyramidDoorSystem>();
 
             if (doorSystem.DoorBeingOpenedPosition == topLeft) {
-                frameYOffset = (doorSystem.DoorAnimationPhase - 1) * 72;
+                frameYOffset = (int)MathHelper.Clamp(doorSystem.DoorAnimationPhase - 1, 0f, PyramidDoorSystem.LastDoorAnimationPhase) * 72;
             }
         }
 
@@ -66,9 +64,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
 
             ModContent.GetInstance<PyramidDoorSystem>().StartDoorOpen(topLeft);
 
-            /* TODO: Add when preview merges
-            SoundEngine.PlaySound(OpeningDoorSound, topLeft.ToWorldCoordinates(32));
-            */
+            SoundEngine.PlaySound(OpeningDoorSound with { Pitch = -1f }, topLeft.ToWorldCoordinates(32));
 
             return true;
         }
