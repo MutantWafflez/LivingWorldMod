@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
 using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Content.Walls.WorldGen;
@@ -33,13 +34,39 @@ namespace LivingWorldMod.Content.Subworlds {
 
         private Asset<Texture2D> _pyramidBackground;
         private Asset<Texture2D> _pyramidWorldGenBar;
+        private bool isExiting;
+        private string _lastStatusText = "";
+        private int _vanillaLoadStepsPassed;
+
+        private const int TotalVanillaSaveOrLoadSteps = 4;
 
         public override void Load() {
             _pyramidBackground = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}Backgrounds/Loading/PyramidBG");
             _pyramidWorldGenBar = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}UI/SubworldGeneration/GenPyramidBar");
         }
 
+        public override void OnEnter() {
+            _vanillaLoadStepsPassed = -1;
+            _lastStatusText = "";
+            isExiting = false;
+        }
+
+        public override void OnExit() {
+            _vanillaLoadStepsPassed = -1;
+            _lastStatusText = "";
+            isExiting = true;
+        }
+
         public override void DrawMenu(GameTime gameTime) {
+            //A bit of a hacky solution, but this avoids reflection; essentially, we want to add the steps of unloading the main world when
+            //we are loading into the subworld (or the bar will stay stagnant for awhile which is boring) as a part of the progress, so we
+            //check every time the status text changes (which denotes a step was completed)
+            string deNumberedStatusText = string.Concat(Main.statusText.Where(character => !char.IsDigit(character)));
+            if (deNumberedStatusText != _lastStatusText) {
+                _vanillaLoadStepsPassed++;
+            }
+            _lastStatusText = deNumberedStatusText;
+
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
 
@@ -49,21 +76,39 @@ namespace LivingWorldMod.Content.Subworlds {
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
 
-            //Progress Bar Draw
-            Vector2 topProgressBarPos = new Vector2(Main.screenWidth / 2f - 274f, Main.screenHeight / 2f - 18f);
-            Vector2 topProgressBarSize = new Vector2(_pyramidWorldGenBar.Width() - 8f, 18f);
+            //Progress Bar Drawing
+            Vector2 totalProgBarPos = new Vector2(Main.screenWidth / 2f - 274f, Main.screenHeight / 2f - 18f);
+            Vector2 totalProgBarSize = new Vector2(_pyramidWorldGenBar.Width() - 8f, 18f);
 
-            //Background Color
+            Vector2 passProgBarPos = new Vector2(Main.screenWidth / 2f - 252f, Main.screenHeight / 2f);
+            Vector2 passProgBarSize = new Vector2(_pyramidWorldGenBar.Width() - 48f, 12f);
+
+            Color progressBarBackgroundColor = new Color(63, 63, 63);
+
+            //Progress Bar Background Colors
             Main.spriteBatch.Draw(
                 TextureAssets.MagicPixel.Value,
-                new Rectangle((int)topProgressBarPos.X, (int)topProgressBarPos.Y, (int)topProgressBarSize.X, (int)topProgressBarSize.Y),
-                new Color(63, 63, 63)
+                new Rectangle((int)totalProgBarPos.X, (int)totalProgBarPos.Y, (int)totalProgBarSize.X, (int)totalProgBarSize.Y),
+                progressBarBackgroundColor
             );
-            //Actual Progress Color
             Main.spriteBatch.Draw(
                 TextureAssets.MagicPixel.Value,
-                new Rectangle((int)topProgressBarPos.X, (int)topProgressBarPos.Y, (int)(topProgressBarPos.X * WorldGenerator.CurrentGenerationProgress?.TotalProgress ?? 1f), (int)topProgressBarSize.Y),
-                Color.LightBlue
+                new Rectangle((int)passProgBarPos.X, (int)passProgBarPos.Y, (int)passProgBarSize.X, (int)passProgBarSize.Y),
+                progressBarBackgroundColor
+            );
+            //Total Progress Color
+            int totalProgBarWidth = (int)(totalProgBarSize.X * (_vanillaLoadStepsPassed / (float)TotalVanillaSaveOrLoadSteps * 0.34f + (WorldGenerator.CurrentGenerationProgress?.TotalProgress ?? (isExiting ? 1f : 0f) * 0.66f)));
+            Main.spriteBatch.Draw(
+                TextureAssets.MagicPixel.Value,
+                new Rectangle((int)totalProgBarPos.X, (int)totalProgBarPos.Y, totalProgBarWidth, (int)totalProgBarSize.Y),
+                Color.LightCyan
+            );
+            //Pass Progress Color
+            int passProgBarWidth = (int)(passProgBarSize.X * (WorldGenerator.CurrentGenerationProgress?.Value ?? 0f));
+            Main.spriteBatch.Draw(
+                TextureAssets.MagicPixel.Value,
+                new Rectangle((int)passProgBarPos.X, (int)passProgBarPos.Y, passProgBarWidth, (int)passProgBarSize.Y),
+                Color.GhostWhite
             );
             //Frame Sprite
             Main.spriteBatch.Draw(
@@ -72,11 +117,12 @@ namespace LivingWorldMod.Content.Subworlds {
                 Color.White
             );
             //Text Draw
+            string drawnText = (WorldGenerator.CurrentGenerationProgress?.TotalProgress ?? 1) < 1 ? WorldGenerator.CurrentGenerationProgress.Message : Main.statusText;
             ChatManager.DrawColorCodedStringWithShadow(
                 Main.spriteBatch,
                 FontAssets.DeathText.Value,
-                (WorldGenerator.CurrentGenerationProgress?.TotalProgress ?? 1) < 1 ? WorldGenerator.CurrentGenerationProgress.Message : Main.statusText,
-                new Vector2(Main.screenWidth, Main.screenHeight) / 2f - new Vector2(0f, 74f) - FontAssets.DeathText.Value.MeasureString(Main.statusText) / 2f,
+                drawnText,
+                new Vector2(Main.screenWidth, Main.screenHeight) / 2f - new Vector2(0f, 74f) - FontAssets.DeathText.Value.MeasureString(drawnText) / 2f,
                 Color.White,
                 0f,
                 Vector2.Zero,
