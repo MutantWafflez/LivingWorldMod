@@ -5,6 +5,7 @@ using LivingWorldMod.Content.Walls.WorldGen;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using ReLogic.Graphics;
 using SubworldLibrary;
 using Terraria;
 using Terraria.GameContent;
@@ -12,6 +13,7 @@ using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.ModLoader;
+using Terraria.UI.Chat;
 using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Content.Subworlds {
@@ -47,13 +49,39 @@ namespace LivingWorldMod.Content.Subworlds {
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
 
-            //WorldGen Progress Bar Draw
+            //Progress Bar Draw
             Vector2 topProgressBarPos = new Vector2(Main.screenWidth / 2f - 274f, Main.screenHeight / 2f - 18f);
             Vector2 topProgressBarSize = new Vector2(_pyramidWorldGenBar.Width() - 8f, 18f);
 
-            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)topProgressBarPos.X, (int)topProgressBarPos.Y, (int)topProgressBarSize.X, (int)topProgressBarSize.Y), new Color(63, 63, 63));
-            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)topProgressBarPos.X, (int)topProgressBarPos.Y, (int)topProgressBarSize.X, (int)topProgressBarSize.Y), Color.SandyBrown);
-            Main.spriteBatch.Draw(_pyramidWorldGenBar.Value, Utils.CenteredRectangle(new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2f), _pyramidWorldGenBar.Size()), Color.White);
+            //Background Color
+            Main.spriteBatch.Draw(
+                TextureAssets.MagicPixel.Value,
+                new Rectangle((int)topProgressBarPos.X, (int)topProgressBarPos.Y, (int)topProgressBarSize.X, (int)topProgressBarSize.Y),
+                new Color(63, 63, 63)
+            );
+            //Actual Progress Color
+            Main.spriteBatch.Draw(
+                TextureAssets.MagicPixel.Value,
+                new Rectangle((int)topProgressBarPos.X, (int)topProgressBarPos.Y, (int)(topProgressBarPos.X * WorldGenerator.CurrentGenerationProgress?.TotalProgress ?? 1f), (int)topProgressBarSize.Y),
+                Color.LightBlue
+            );
+            //Frame Sprite
+            Main.spriteBatch.Draw(
+                _pyramidWorldGenBar.Value,
+                Utils.CenteredRectangle(new Vector2(Main.screenWidth, Main.screenHeight) / 2f, _pyramidWorldGenBar.Size()),
+                Color.White
+            );
+            //Text Draw
+            ChatManager.DrawColorCodedStringWithShadow(
+                Main.spriteBatch,
+                FontAssets.DeathText.Value,
+                (WorldGenerator.CurrentGenerationProgress?.TotalProgress ?? 1) < 1 ? WorldGenerator.CurrentGenerationProgress.Message : Main.statusText,
+                new Vector2(Main.screenWidth, Main.screenHeight) / 2f - new Vector2(0f, 74f) - FontAssets.DeathText.Value.MeasureString(Main.statusText) / 2f,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                Vector2.One
+            );
         }
 
         private void FillWorld(GenerationProgress progress, GameConfiguration config) {
