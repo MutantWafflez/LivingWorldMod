@@ -1,4 +1,4 @@
-displayName = Living World Mod (INDEV EARLY ACCESS)
+displayName = Living World Mod [INDEV ACCESS]
 author = MutantWafflez & Contributors
 version = 0.1.0.7
 buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*, .idea\*, *.md, *.sln, *.gitignore
