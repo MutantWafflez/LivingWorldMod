@@ -3,8 +3,11 @@ using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
 using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Content.Walls.WorldGen;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using SubworldLibrary;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
@@ -25,6 +28,33 @@ namespace LivingWorldMod.Content.Subworlds {
             new PassLegacy("Starter Room", GenStarterRoom),
             new PassLegacy("Initial Tunnel", GenInitialTunnels)
         };
+
+        private Asset<Texture2D> _pyramidBackground;
+        private Asset<Texture2D> _pyramidWorldGenBar;
+
+        public override void Load() {
+            _pyramidBackground = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}Backgrounds/Loading/PyramidBG");
+            _pyramidWorldGenBar = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}UI/SubworldGeneration/GenPyramidBar");
+        }
+
+        public override void DrawMenu(GameTime gameTime) {
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
+
+            //Background Draw
+            Main.spriteBatch.Draw(_pyramidBackground.Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
+
+            //WorldGen Progress Bar Draw
+            Vector2 topProgressBarPos = new Vector2(Main.screenWidth / 2f - 274f, Main.screenHeight / 2f - 18f);
+            Vector2 topProgressBarSize = new Vector2(_pyramidWorldGenBar.Width() - 8f, 18f);
+
+            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)topProgressBarPos.X, (int)topProgressBarPos.Y, (int)topProgressBarSize.X, (int)topProgressBarSize.Y), new Color(63, 63, 63));
+            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)topProgressBarPos.X, (int)topProgressBarPos.Y, (int)topProgressBarSize.X, (int)topProgressBarSize.Y), Color.SandyBrown);
+            Main.spriteBatch.Draw(_pyramidWorldGenBar.Value, Utils.CenteredRectangle(new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2f), _pyramidWorldGenBar.Size()), Color.White);
+        }
 
         private void FillWorld(GenerationProgress progress, GameConfiguration config) {
             progress.Message = "Slabbing up";
