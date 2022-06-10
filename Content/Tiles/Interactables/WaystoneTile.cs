@@ -87,7 +87,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         public override bool RightClick(int i, int j) {
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
 
-            if (!TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity entity)) {
+            if (!TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity entity) || (entity?.isActivated ?? true)) {
                 return false;
             }
 
