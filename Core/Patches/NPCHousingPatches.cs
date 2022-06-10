@@ -148,7 +148,7 @@ namespace LivingWorldMod.Core.Patches {
 
                 //Re-add our check, making sure it's inverted compared to the IL, since in IL it determines if the code should run if these values are FALSE,
                 // but since we took control of the instructions, we can test based on if it's true or not for easy understanding
-                //TODO: FIX VILLAGE HOUSING UI SYSTEM
+                //TODO: Swap back to commented expression when reputation system is re-implemented
                 c.EmitDelegate<Func<bool>>(() => Main.EquipPage == 1 /*|| ModContent.GetInstance<VillagerHousingUISystem>().housingState.isMenuVisible*/);
 
                 c.Emit(OpCodes.Brtrue_S, stolenLabel);
