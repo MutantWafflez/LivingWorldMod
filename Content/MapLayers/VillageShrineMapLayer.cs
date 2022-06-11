@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using LivingWorldMod.Content.TileEntities.Interactables.VillageShrines;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -29,6 +30,8 @@ namespace LivingWorldMod.Content.MapLayers {
                     continue;
                 }
 
+                text = LocalizationUtils.GetLWMTextValue($"MapInfo.Shrines.{entity.shrineType}");
+
                 if (!Main.mouseLeft || !Main.mouseLeftRelease) {
                     continue;
                 }
@@ -38,7 +41,7 @@ namespace LivingWorldMod.Content.MapLayers {
 
                 //Create fake pylon data to make the game think this shrine is a universal pylon
                 TeleportPylonInfo fakePylonInfo = default;
-                fakePylonInfo.PositionInTiles = entity.Position;
+                fakePylonInfo.PositionInTiles = entity.Position + new Point16(1, 1);
                 fakePylonInfo.TypeOfPylon = TeleportPylonType.Victory;
 
                 //Request teleportation

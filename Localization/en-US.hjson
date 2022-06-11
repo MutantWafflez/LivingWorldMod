@@ -173,6 +173,9 @@ Mods: {
 		}
 
 		MapInfo: {
+			Shrines: {
+				Harpy: "Harpy Village"
+			}
 			Waystones: {
 				Desert: "Desert Waystone"
 				Jungle: "Jungle Waystone"

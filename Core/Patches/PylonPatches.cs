@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using LivingWorldMod.Content.TileEntities.Interactables;
+using LivingWorldMod.Content.TileEntities.Interactables.VillageShrines;
 using LivingWorldMod.Content.Tiles.Interactables;
+using LivingWorldMod.Content.Tiles.Interactables.VillageShrines;
 using LivingWorldMod.Custom.Utilities;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -41,9 +43,12 @@ namespace LivingWorldMod.Core.Patches {
 
         public void Unload() { }
 
-        private bool PlayerNearPylon(On.Terraria.GameContent.TeleportPylonsSystem.orig_IsPlayerNearAPylon orig, Player player) =>
-            // Count waystones as "pylons" for teleportation
-            player.IsTileTypeInInteractionRange(ModContent.TileType<WaystoneTile>()) || orig(player);
+        private bool PlayerNearPylon(On.Terraria.GameContent.TeleportPylonsSystem.orig_IsPlayerNearAPylon orig, Player player) {
+            // Count waystones & shrines as "pylons" for teleportation
+            int[] pseudoPylonTypes = { ModContent.TileType<WaystoneTile>(), ModContent.TileType<VillageShrineTile>() };
+
+            return pseudoPylonTypes.Any(player.IsTileTypeInInteractionRange) || orig(player);
+        }
 
         private void IsInInteractionRange(ILContext il) {
             // Simple edit here. Just need to add Waystone tiles to the Interaction check, by navigating to where
@@ -120,7 +125,11 @@ namespace LivingWorldMod.Core.Patches {
                         return true;
                     }
                 }
-
+                foreach (VillageShrineEntity entity in TileEntity.ByID.Values.OfType<VillageShrineEntity>()) {
+                    if (player.IsInTileInteractionRange(entity.Position.X, entity.Position.Y) && Main.BestiaryTracker.Chats.GetWasChatWith($"{nameof(LivingWorldMod)}/{entity.shrineType}Villager")) {
+                        return true;
+                    }
+                }
 
                 return false;
             });
