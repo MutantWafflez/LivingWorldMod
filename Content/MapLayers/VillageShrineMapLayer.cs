@@ -1,5 +1,7 @@
 ﻿using System.Linq;
+using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.TileEntities.Interactables.VillageShrines;
+using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,7 +22,7 @@ namespace LivingWorldMod.Content.MapLayers {
     public class VillageShrineMapLayer : ModMapLayer {
         public override void Draw(ref MapOverlayDrawContext context, ref string text) {
             foreach (VillageShrineEntity entity in TileEntity.ByID.Values.OfType<VillageShrineEntity>()) {
-                if (!Main.BestiaryTracker.Chats.GetWasChatWith($"{nameof(LivingWorldMod)}/{entity.shrineType}Villager")) {
+                if (!IsShrineVisibleOnMap(entity.shrineType)) {
                     continue;
                 }
 
@@ -47,6 +49,20 @@ namespace LivingWorldMod.Content.MapLayers {
                 //Request teleportation
                 Main.PylonSystem.RequestTeleportation(fakePylonInfo, Main.LocalPlayer);
                 SoundEngine.PlaySound(SoundID.MenuClose);
+            }
+        }
+
+        /// <summary>
+        /// Returns whether or not the given village type will have their shrine icon visible at all on the map.
+        /// </summary>
+        /// <param name="type"> The type of the village who's shrine we are referring to. </param>
+        private bool IsShrineVisibleOnMap(VillagerType type) {
+            switch (type) {
+                case VillagerType.Harpy:
+                    return Main.BestiaryTracker.Chats.GetWasChatWith($"{nameof(LivingWorldMod)}/HarpyVillager");
+                default:
+                    ModContent.GetInstance<LivingWorldMod>().Logger.Error($"Villager Type of {type} is not valid for shrine visibility.");
+                    return false;
             }
         }
     }
