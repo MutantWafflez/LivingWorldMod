@@ -119,8 +119,10 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// The current status of the "relationship" between these villagers and the players.
         /// Returns the enum of said status.
         /// </summary>
-        public VillagerRelationship RelationshipStatus {
+        //TODO: Revert back to commented expression when Reputation system is re-implemented
+        public VillagerRelationship RelationshipStatus => VillagerRelationship.Love; /*{
             get {
+                
                 int reputation = ReputationSystem.GetVillageReputation(VillagerType);
 
                 if (reputation <= HateThreshold) {
@@ -140,8 +142,9 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                 }
 
                 return VillagerRelationship.Neutral;
+                
             }
-        }
+        }*/
 
         /// <summary>
         /// Gets and returns a random shop dialogue line from the "initial shop dialogue" pool.
