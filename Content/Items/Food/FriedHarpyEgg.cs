@@ -6,6 +6,10 @@ using Terraria.ID;
 
 namespace LivingWorldMod.Content.Items.Food {
     public class FriedHarpyEgg : BaseItem {
+        public override void SetStaticDefaults() {
+            SacrificeTotal = 1;
+        }
+
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.FriedEgg);
 

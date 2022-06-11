@@ -6,6 +6,10 @@ using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.Walls.Building {
     public class SkywareWallItem : BaseItem {
+        public override void SetStaticDefaults() {
+            SacrificeTotal = 40;
+        }
+
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.DirtWall);
             Item.placeStyle = 0;
