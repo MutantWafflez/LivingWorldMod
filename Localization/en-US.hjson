@@ -182,6 +182,21 @@ Mods: {
 			}
 		}
 
+		MapObject: {
+			//Furniture Tiles
+			GravityTapestryTile: "Tapestry"
+			SkywareAnvilTile: "{$Mods.LivingWorldMod.ItemName.SkywareAnvilItem}"
+			SkywareLoomTile: "{$Mods.LivingWorldMod.ItemName.SkywareLoomItem}"
+			SunTapestryTile: "{$Mods.LivingWorldMod.MabObject.GravityTapestryTile}"
+
+		    //Interactable Tiles
+			VillageShrineTile: "Village Shrine"
+			WaystoneTile: "Waystone"
+
+			//Torch Tiles
+			StarTorchTile: "{$ItemName.Torch}"
+		}
+
 		BuffName: {
 			NimbusPetBuff: "Nimbus Pet"
 		}
@@ -245,19 +260,8 @@ Mods: {
 			NimbusPetProjectile: "Nimbus Pet"
 		}
 
-		MapObject: {
-			//Furniture Tiles
-			GravityTapestryTile: "Tapestry"
-			SkywareAnvilTile: "{$Mods.LivingWorldMod.ItemName.SkywareAnvilItem}"
-			SkywareLoomTile: "{$Mods.LivingWorldMod.ItemName.SkywareLoomItem}"
-			SunTapestryTile: "{$Mods.LivingWorldMod.MabObject.GravityTapestryTile}"
-
-		    //Interactable Tiles
-			VillageShrineTile: "Village Shrine"
-			WaystoneTile: "Waystone"
-
-			//Torch Tiles
-			StarTorchTile: "{$ItemName.Torch}"
+		Bestiary: {
+			HarpyVillager: "A villager from the Harpy Village in the sky. Don't ruffle their feathers or attempt flirtation if you value your life."
 		}
 	}
 }
