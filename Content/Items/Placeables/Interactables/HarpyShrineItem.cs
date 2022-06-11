@@ -18,7 +18,7 @@ namespace LivingWorldMod.Content.Items.Placeables.Interactables {
             Item.rare = ItemRarityID.Orange;
             Item.consumable = true;
             Item.placeStyle = 0;
-            Item.createTile = ModContent.TileType<HarpyShrineTile>();
+            Item.createTile = ModContent.TileType<VillageShrineTile>();
         }
     }
 }

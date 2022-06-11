@@ -281,15 +281,13 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
 
                         Tile currentTile = Framing.GetTileSafely(currentPos);
 
-                        if (currentTile.TileType != ModContent.TileType<HarpyShrineTile>()) {
+                        if (currentTile.TileType != ModContent.TileType<VillageShrineTile>()) {
                             continue;
                         }
 
-                        VillageShrineEntity entity = ((HarpyShrineTile)ModContent.GetModTile(ModContent.TileType<HarpyShrineTile>())).ShrineEntity;
-
                         Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(currentTile, currentPos.X, currentPos.Y);
 
-                        entity.Place(topLeft.X, topLeft.Y);
+                        ModContent.GetInstance<VillageShrineEntity>().Place(topLeft.X, topLeft.Y);
                     }
                 }
 
