@@ -233,6 +233,12 @@ Mods: {
 			SkywareFenceItem: "Skyware Fence"
 		//Accessory Item Names
 			NimbusInABottle: "Nimbus in a Bottle"
+
+		//Food Items
+			FriedHarpyEgg: "Fried Harpy Egg"
+
+		//Misc Items
+			HarpyEgg: "Harpy Egg"
 		}
 
 		ItemTooltip: {
@@ -249,6 +255,12 @@ Mods: {
 
 			//Torches
 			StarTorchItem: "'Light the way with the essence of the cosmos'"
+
+		//Food Items
+			FriedHarpyEgg: "{$CommonItemTooltip.MajorStats}\n'You monster.'"
+				
+		//Misc Items
+			HarpyEgg: "'It's rather large, but looks like any other egg.'"
 		}
 
 		NPCName: {
