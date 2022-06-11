@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Content.TileEntities.Interactables.VillageShrines;
+using LivingWorldMod.Custom.Interfaces;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -12,7 +13,7 @@ namespace LivingWorldMod.Core.PacketHandlers {
     /// <summary>
     /// PacketHandler that handles all packet functionality in relation to Village Shrines.
     /// </summary>
-    public class ShrinePacketHandler : PacketHandler {
+    public class ShrinePacketHandler : PacketHandler, IPlayerEnteredWorld {
         /// <summary>
         /// Sent/Received when a new player/client first enters a server's world. Syncs all Shrine
         /// Tile Entities from the server to said client.
@@ -35,6 +36,14 @@ namespace LivingWorldMod.Core.PacketHandlers {
                 default:
                     ModContent.GetInstance<LivingWorldMod>().Logger.Warn($"Invalid ShrinePacketHandler Packet Type of {packetType}");
                     break;
+            }
+        }
+
+        public void OnPlayerEnterWorld() {
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                ModPacket packet = GetPacket(SyncNewPlayer);
+
+                packet.Send();
             }
         }
     }

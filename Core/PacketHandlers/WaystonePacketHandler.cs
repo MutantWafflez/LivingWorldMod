@@ -4,6 +4,7 @@ using System.Linq;
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.TileEntities.Interactables;
+using LivingWorldMod.Custom.Interfaces;
 using LivingWorldMod.Custom.Utilities;
 using Terraria;
 using Terraria.DataStructures;
@@ -14,7 +15,7 @@ namespace LivingWorldMod.Core.PacketHandlers {
     /// <summary>
     /// PacketHandler that handles all packets relating to Waystones.
     /// </summary>
-    public class WaystonePacketHandler : PacketHandler {
+    public class WaystonePacketHandler : PacketHandler, IPlayerEnteredWorld {
         /// <summary>
         /// Sent/Received when a new player/client first enters a server's world. Syncs all Waystone
         /// Tile Entities from the server to said client.
@@ -69,6 +70,14 @@ namespace LivingWorldMod.Core.PacketHandlers {
                 default:
                     ModContent.GetInstance<LivingWorldMod>().Logger.Warn($"Invalid WaystonePacketHandler Packet Type of {packetType}");
                     break;
+            }
+        }
+
+        public void OnPlayerEnterWorld() {
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                ModPacket packet = GetPacket(SyncNewPlayer);
+
+                packet.Send();
             }
         }
     }
