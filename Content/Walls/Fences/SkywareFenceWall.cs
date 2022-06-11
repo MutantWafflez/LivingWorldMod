@@ -6,6 +6,8 @@ using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Walls.Fences {
     public class SkywareFenceWall : BaseWall {
+        public override Color? WallColorOnMap => Color.LightBlue;
+
         public override void SetStaticDefaults() {
             Main.wallHouse[Type] = true;
             WallID.Sets.AllowsWind[Type] = true;
@@ -15,7 +17,7 @@ namespace LivingWorldMod.Content.Walls.Fences {
 
             ItemDrop = ModContent.ItemType<SkywareFenceItem>();
 
-            AddMapEntry(Color.LightBlue);
+            base.SetStaticDefaults();
         }
     }
 }

@@ -7,12 +7,14 @@ namespace LivingWorldMod.Content.Walls.WorldGen {
     /// Revamped Pyramid.
     /// </summary>
     public class PyramidBrickWall : BaseWall {
+        public override Color? WallColorOnMap => new Color(50, 40, 0);
+
         public override string Texture => "Terraria/Images/Wall_" + WallID.SandstoneBrick;
 
         public override void SetStaticDefaults() {
             DustType = DustID.Sand;
 
-            AddMapEntry(new Color(50, 40, 0));
+            base.SetStaticDefaults();
         }
 
         public override bool CanExplode(int i, int j) => false;

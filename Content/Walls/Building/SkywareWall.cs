@@ -6,6 +6,8 @@ using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Walls.Building {
     public class SkywareWall : BaseWall {
+        public override Color? WallColorOnMap => Color.Cyan;
+
         public override void SetStaticDefaults() {
             Main.wallHouse[Type] = true;
 
@@ -13,7 +15,7 @@ namespace LivingWorldMod.Content.Walls.Building {
 
             ItemDrop = ModContent.ItemType<SkywareWallItem>();
 
-            AddMapEntry(Color.Blue);
+            base.SetStaticDefaults();
         }
     }
 }
