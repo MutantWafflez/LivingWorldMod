@@ -7,6 +7,8 @@ using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Tiles.Building {
     public class StarshardCloudTile : BaseTile {
+        public override Color? TileColorOnMap => Color.LightYellow;
+
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = true;
             Main.tileNoSunLight[Type] = true;
@@ -26,8 +28,6 @@ namespace LivingWorldMod.Content.Tiles.Building {
 
             ItemDrop = ModContent.ItemType<StarshardCloudItem>();
             DustType = DustID.Cloud;
-
-            AddMapEntry(Color.LightYellow);
         }
 
         public override bool HasWalkDust() => true;

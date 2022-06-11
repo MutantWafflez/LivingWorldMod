@@ -11,6 +11,8 @@ using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Torches {
     public class StarTorchTile : BaseTile {
+        public override Color? TileColorOnMap => Color.Yellow;
+
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = false;
             Main.tileNoSunLight[Type] = false;
@@ -43,11 +45,6 @@ namespace LivingWorldMod.Content.Tiles.Torches {
             AdjTiles = new int[] { TileID.Torches };
 
             DustType = DustID.YellowStarDust;
-
-            ModTranslation mapName = CreateMapEntryName();
-            mapName.SetDefault("Torch");
-
-            AddMapEntry(Color.Yellow, mapName);
         }
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) {

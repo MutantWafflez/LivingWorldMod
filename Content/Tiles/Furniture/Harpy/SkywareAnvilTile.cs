@@ -9,6 +9,8 @@ using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
     public class SkywareAnvilTile : BaseTile {
+        public override Color? TileColorOnMap => Color.LightBlue;
+
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = false;
             Main.tileNoSunLight[Type] = false;
@@ -22,11 +24,6 @@ namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
             TileObjectData.addTile(Type);
 
             AdjTiles = new int[] { TileID.Anvils };
-
-            ModTranslation mapName = CreateMapEntryName();
-            mapName.SetDefault("Skyware Anvil");
-
-            AddMapEntry(Color.LightBlue, mapName);
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) {

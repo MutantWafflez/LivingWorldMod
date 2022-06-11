@@ -34,6 +34,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables.VillageShrines {
         /// </summary>
         public virtual Point16 TileOrigin => new Point16(1, 2);
 
+        public override Color? TileColorOnMap => new Color(255, 255, 0);
+
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
@@ -59,11 +61,6 @@ namespace LivingWorldMod.Content.Tiles.Interactables.VillageShrines {
             TileObjectData.addTile(Type);
 
             AnimationFrameHeight = 90;
-
-            //TODO: Proper localization
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Village Shrine");
-            AddMapEntry(new Color(255, 255, 0), name);
         }
 
         public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;

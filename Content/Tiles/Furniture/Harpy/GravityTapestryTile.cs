@@ -7,6 +7,8 @@ using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
     public class GravityTapestryTile : BaseTile {
+        public override Color? TileColorOnMap => Color.LightBlue;
+
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = false;
             Main.tileNoSunLight[Type] = false;
@@ -23,11 +25,6 @@ namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
             TileObjectData.newTile.Origin = new Point16(1, 0);
             TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
             TileObjectData.addTile(Type);
-
-            ModTranslation mapName = CreateMapEntryName();
-            mapName.SetDefault("Tapestry");
-
-            AddMapEntry(Color.LightBlue);
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) {

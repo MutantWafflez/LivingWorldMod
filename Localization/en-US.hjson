@@ -244,5 +244,20 @@ Mods: {
 		ProjectileName: {
 			NimbusPetProjectile: "Nimbus Pet"
 		}
+
+		MapObject: {
+			//Furniture Tiles
+			GravityTapestryTile: "Tapestry"
+			SkywareAnvilTile: "{$Mods.LivingWorldMod.ItemName.SkywareAnvilItem}"
+			SkywareLoomTile: "{$Mods.LivingWorldMod.ItemName.SkywareLoomItem}"
+			SunTapestryTile: "{$Mods.LivingWorldMod.MabObject.GravityTapestryTile}"
+
+		    //Interactable Tiles
+			VillageShrineTile: "Village Shrine"
+			WaystoneTile: "Waystone"
+
+			//Torch Tiles
+			StarTorchTile: "{$ItemName.Torch}"
+		}
 	}
 }

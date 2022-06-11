@@ -9,6 +9,8 @@ using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Tiles.Building {
     public class SunslabBlockTile : BaseTile {
+        public override Color? TileColorOnMap => Color.Yellow;
+
         private Asset<Texture2D> _baseTexture;
 
         public override void SetStaticDefaults() {
@@ -27,8 +29,6 @@ namespace LivingWorldMod.Content.Tiles.Building {
 
             DustType = DustID.GoldCoin;
             HitSound = SoundID.Tink;
-
-            AddMapEntry(Color.Yellow);
 
             _baseTexture = Mod.Assets.Request<Texture2D>(Texture.Replace("LivingWorldMod/", ""));
         }
