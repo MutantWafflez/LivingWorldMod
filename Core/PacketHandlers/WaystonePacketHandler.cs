@@ -16,13 +16,13 @@ namespace LivingWorldMod.Core.PacketHandlers {
     /// </summary>
     public class WaystonePacketHandler : PacketHandler {
         /// <summary>
-        /// Sent/Recieved when a new player/client first enters a server's world. Syncs all Waystone
+        /// Sent/Received when a new player/client first enters a server's world. Syncs all Waystone
         /// Tile Entities from the server to said client.
         /// </summary>
         public const byte SyncNewPlayer = 0;
 
         /// <summary>
-        /// Sent/Recieved when any player/client activates an unactive waystone, and Sync the activation
+        /// Sent/Received when any player/client activates an unactive waystone, and Sync the activation
         /// with all other clients.
         /// </summary>
         public const byte InitiateWaystoneActivation = 1;
