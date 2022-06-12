@@ -27,6 +27,11 @@ namespace LivingWorldMod.Common.Systems.BaseSystems {
         /// </summary>
         public virtual string InternalInterfaceName => typeof(T).Name;
 
+        /// <summary>
+        /// What kind of scale type this interface will be using. Defaults to InterfaceScaleType.UI.
+        /// </summary>
+        public virtual InterfaceScaleType ScaleType => InterfaceScaleType.UI;
+
         protected GameTime lastGameTime;
 
         public override void Load() {
@@ -47,7 +52,7 @@ namespace LivingWorldMod.Common.Systems.BaseSystems {
                         }
                         return true;
                     },
-                    InterfaceScaleType.UI));
+                    ScaleType));
             }
         }
 
