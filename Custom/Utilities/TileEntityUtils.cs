@@ -44,15 +44,5 @@ namespace LivingWorldMod.Custom.Utilities {
             entity = null;
             return false;
         }
-
-        /// <summary>
-        /// Short-hand method to determine whether or not a modded tile entity exists at the given
-        /// location in TILE coordinates.
-        /// </summary>
-        /// <param name="entity"> The entity type in question. </param>
-        /// <param name="x"> The x coordinate to test for a tile entity. </param>
-        /// <param name="y"> The y coordinate to test for a tile entity. </param>
-        /// <returns> </returns>
-        public static bool EntityExistsHere(this ModTileEntity entity, int x, int y) => entity.Find(x, y) >= 0;
     }
 }
