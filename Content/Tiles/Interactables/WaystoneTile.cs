@@ -88,7 +88,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
                 return false;
             }
 
-            ModContent.GetInstance<WaystoneSystem>().AddNewActivationEntity(topLeft.ToWorldCoordinates(16, 16), entity.WaystoneColor);
+            WaystoneSystem.Instance.AddNewActivationEntity(topLeft.ToWorldCoordinates(16, 16), entity.WaystoneColor);
             switch (Main.netMode) {
                 case NetmodeID.MultiplayerClient:
                     ModPacket packet = ModContent.GetInstance<WaystonePacketHandler>().GetPacket(WaystonePacketHandler.InitiateWaystoneActivation);

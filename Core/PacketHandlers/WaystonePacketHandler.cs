@@ -64,7 +64,7 @@ namespace LivingWorldMod.Core.PacketHandlers {
                             return;
                         }
 
-                        ModContent.GetInstance<WaystoneSystem>().AddNewActivationEntity(entityPos.ToWorldCoordinates(16, 16), entity.WaystoneColor);
+                        WaystoneSystem.Instance.AddNewActivationEntity(entityPos.ToWorldCoordinates(16, 16), entity.WaystoneColor);
                     }
                     break;
                 default:

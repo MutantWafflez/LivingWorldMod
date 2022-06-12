@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Custom.Utilities;
+﻿using LivingWorldMod.Common.Systems.BaseSystems;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
@@ -9,23 +10,23 @@ namespace LivingWorldMod.Common.Systems {
     /// Has a couple of static fields that pertain to specific block colors.
     /// </summary>
     [Autoload(Side = ModSide.Client)]
-    public class BlockLightSystem : ModSystem {
+    public class BlockLightSystem : BaseModSystem<BlockLightSystem> {
         /// <summary>
         /// The current glow color of the Starshard Cloud blocks.
         /// </summary>
-        public static Color starCloudColor;
+        public Color starCloudColor;
 
         /// <summary>
         /// The glow color the Starshard Cloud blocks are transitioning towards.
         /// </summary>
-        public static Color targetStarCloudColor;
+        public Color targetStarCloudColor;
 
         /// <summary>
         /// The glow color of the star torches.
         /// </summary>
-        public static Color starTorchColor;
+        public Color starTorchColor;
 
-        private static int starCloudTimer;
+        private int starCloudTimer;
 
         public override void Load() {
             starCloudColor = targetStarCloudColor = Color.Yellow;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Classes;
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
@@ -8,7 +9,7 @@ namespace LivingWorldMod.Common.Systems {
     /// ModSystem that helps with client-side Waystone functionality.
     /// </summary>
     [Autoload(Side = ModSide.Client)]
-    public class WaystoneSystem : ModSystem {
+    public class WaystoneSystem : BaseModSystem<WaystoneSystem> {
         private List<WaystoneActivationEntity> _activationEntities;
 
         public override void OnWorldLoad() {

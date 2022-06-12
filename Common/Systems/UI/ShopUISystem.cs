@@ -1,6 +1,6 @@
-﻿using LivingWorldMod.Content.NPCs.Villagers;
+﻿using LivingWorldMod.Common.Systems.BaseSystems;
+using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.UI.VillagerShop;
-using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;

@@ -37,11 +37,6 @@ namespace LivingWorldMod.Common.ModTypes {
         public virtual bool PlaceBeforeInsertionPoint => true;
 
         /// <summary>
-        /// Acquires and returns the WorldCreationSystem.
-        /// </summary>
-        public WorldCreationSystem CreationSystem => ModContent.GetInstance<WorldCreationSystem>();
-
-        /// <summary>
         /// The size of the world that is currently being generated.
         /// </summary>
         public WorldSize CurrentWorldSize => WorldGenUtils.CurrentWorldSize;

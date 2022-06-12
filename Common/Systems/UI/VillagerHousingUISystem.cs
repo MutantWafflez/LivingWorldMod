@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Content.UI.VillagerHousing;
+﻿using LivingWorldMod.Common.Systems.BaseSystems;
+using LivingWorldMod.Content.UI.VillagerHousing;
 using Microsoft.Xna.Framework;
 using Terraria;
 

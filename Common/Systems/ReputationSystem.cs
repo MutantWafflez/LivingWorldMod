@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Hjson;
+using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Terraria.ModLoader;
@@ -13,7 +14,7 @@ namespace LivingWorldMod.Common.Systems {
     /// <summary>
     /// System that handles reputations for all of the villages in the mod.
     /// </summary>
-    public class ReputationSystem : ModSystem {
+    public class ReputationSystem : BaseModSystem<ReputationSystem> {
         public Dictionary<VillagerType, ReputationThresholdData> villageThresholdData;
         private int[] _villageReputation;
 

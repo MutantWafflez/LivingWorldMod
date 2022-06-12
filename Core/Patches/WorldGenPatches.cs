@@ -32,7 +32,7 @@ namespace LivingWorldMod.Core.Patches {
             c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCallvirt(typeof(HashSet<Point>).GetMethod("Contains", BindingFlags.Public | BindingFlags.Instance)));
 
             c.Emit(OpCodes.Ldloc_S, itemLocalNumber);
-            c.EmitDelegate<Func<bool, Point, bool>>((originalValue, point) => originalValue || ModContent.GetInstance<WorldCreationSystem>().villageZones[(int)VillagerType.Harpy] is Rectangle rectangle && rectangle.Contains(point));
+            c.EmitDelegate<Func<bool, Point, bool>>((originalValue, point) => originalValue || WorldCreationSystem.Instance.villageZones[(int)VillagerType.Harpy] is Rectangle rectangle && rectangle.Contains(point));
         }
     }
 }

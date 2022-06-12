@@ -51,7 +51,7 @@ namespace LivingWorldMod.Core.Patches {
                 Rectangle roomInQuestion = new Rectangle(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1, WorldGen.roomY2 - WorldGen.roomY1);
 
                 ModNPC modNPC = ModContent.GetModNPC(type);
-                Rectangle[] villageZones = ModContent.GetInstance<WorldCreationSystem>().villageZones;
+                Rectangle[] villageZones = WorldCreationSystem.Instance.villageZones;
 
                 //HOWEVER, if the Town NPC can spawn here, we need to do additional checks to make sure it's not a non-villager spawning in a villager home
                 //Additionally, we can't have villagers in a non-village home, which is the second check after  V  this OR statement.

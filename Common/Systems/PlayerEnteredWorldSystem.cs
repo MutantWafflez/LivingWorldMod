@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Interfaces;
 using Terraria.ModLoader;
 
@@ -8,7 +9,7 @@ namespace LivingWorldMod.Common.Systems {
     /// respective method when necessary.
     /// </summary>
     [Autoload(Side = ModSide.Client)]
-    public class PlayerEnteredWorldSystem : ModSystem {
+    public class PlayerEnteredWorldSystem : BaseModSystem<PlayerEnteredWorldSystem> {
         public override void OnWorldLoad() {
             ModContent.GetContent<IPlayerEnteredWorld>().ToList().ForEach(thing => thing.OnPlayerEnterWorld());
         }

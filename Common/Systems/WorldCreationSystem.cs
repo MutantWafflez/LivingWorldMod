@@ -1,8 +1,8 @@
 ﻿using LivingWorldMod.Common.ModTypes;
-using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Utilities;
 using Terraria;
 using Terraria.GameContent.Generation;
@@ -15,7 +15,7 @@ namespace LivingWorldMod.Common.Systems {
     /// System that handles the INITIAL world generation steps. This system does NOT handle world
     /// events that occur AFTER the world is created.
     /// </summary>
-    public class WorldCreationSystem : ModSystem {
+    public class WorldCreationSystem : BaseModSystem<WorldCreationSystem> {
         /// <summary>
         /// List of all the areas which are the "zones" belonging to each village. Different for
         /// each world.

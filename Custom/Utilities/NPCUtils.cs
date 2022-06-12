@@ -16,15 +16,13 @@ namespace LivingWorldMod.Custom.Utilities {
         /// villager's relationship with the players.
         /// </summary>
         public static float GetPriceMultiplierFromRep(Villager villager) {
-            ReputationSystem repSystem = ModContent.GetInstance<ReputationSystem>();
-
             if (villager.RelationshipStatus == VillagerRelationship.Neutral) {
                 return 1f;
             }
 
-            ReputationThresholdData thresholds = repSystem.villageThresholdData[villager.VillagerType];
+            ReputationThresholdData thresholds = ReputationSystem.Instance.villageThresholdData[villager.VillagerType];
 
-            float reputationValue = repSystem.GetNumericVillageReputation(villager.VillagerType);
+            float reputationValue = ReputationSystem.Instance.GetNumericVillageReputation(villager.VillagerType);
             float centerPoint = (thresholds.likeThreshold - thresholds.dislikeThreshold) / 2f;
 
             return MathHelper.Clamp(1 - reputationValue / (ReputationSystem.VillageReputationConstraint - centerPoint) / 2f, 0.67f, 1.67f);

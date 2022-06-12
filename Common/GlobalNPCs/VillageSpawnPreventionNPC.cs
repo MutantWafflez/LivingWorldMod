@@ -10,9 +10,7 @@ namespace LivingWorldMod.Common.GlobalNPCs {
     /// </summary>
     public class VillageSpawnPreventionNPC : GlobalNPC {
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo) {
-            WorldCreationSystem creationSystem = ModContent.GetInstance<WorldCreationSystem>();
-
-            if (creationSystem.villageZones.Any(zone => zone.Contains(spawnInfo.Player.Center.ToTileCoordinates()))) {
+            if (WorldCreationSystem.Instance.villageZones.Any(zone => zone.Contains(spawnInfo.Player.Center.ToTileCoordinates()))) {
                 pool[0] = 0;
             }
         }

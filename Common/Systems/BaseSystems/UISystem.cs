@@ -4,13 +4,13 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace LivingWorldMod.Common.Systems {
+namespace LivingWorldMod.Common.Systems.BaseSystems {
     /// <summary>
     /// Unique type of ModSystem that can be extended for automatic setting
     /// up and handling of the given UIState T.
     /// </summary>
     [Autoload(Side = ModSide.Client)]
-    public abstract class UISystem<T> : ModSystem where T : UIState, new() {
+    public abstract class UISystem<T> : BaseModSystem<UISystem<T>> where T : UIState, new() {
         public UserInterface correspondingInterface;
 
         public T correspondingUIState;

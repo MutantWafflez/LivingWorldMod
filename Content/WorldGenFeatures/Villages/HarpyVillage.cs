@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
 using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.TileEntities.Interactables.VillageShrines;
@@ -64,7 +65,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
                 originPoint = possibleIslandPlacements.OrderBy(point => Math.Abs(point.X - Main.maxTilesX / 2)).First();
 
                 //Set Harpy Village Zone
-                CreationSystem.villageZones[(int)VillagerType.Harpy] = new Rectangle(originPoint.X, originPoint.Y, originHorizontalDisplacement, originVerticalDisplacement);
+                WorldCreationSystem.Instance.villageZones[(int)VillagerType.Harpy] = new Rectangle(originPoint.X, originPoint.Y, originHorizontalDisplacement, originVerticalDisplacement);
 
                 //Adjust origin point to be placed correctly within the village "zone" and actually an origin rather than the top corner
                 originPoint.X += (int)(originHorizontalDisplacement * (0.88f / 1.75f));
@@ -274,7 +275,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
         }
 
         public override void PostWorldGenAction() {
-            if (CreationSystem.villageZones[(int)VillagerType.Harpy] is Rectangle rectangle) {
+            if (WorldCreationSystem.Instance.villageZones[(int)VillagerType.Harpy] is Rectangle rectangle) {
                 for (int i = 0; i < rectangle.Width; i++) {
                     for (int j = 0; j < rectangle.Height; j++) {
                         Point currentPos = new Point(rectangle.X + i, rectangle.Y + j);

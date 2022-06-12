@@ -100,7 +100,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// <summary>
         /// Shorthand get property for acquiring the current relationship status of whatever type of village this villager belongs to.
         /// </summary>
-        public VillagerRelationship RelationshipStatus => ModContent.GetInstance<ReputationSystem>().GetVillageRelationship(VillagerType);
+        public VillagerRelationship RelationshipStatus => ReputationSystem.Instance.GetVillageRelationship(VillagerType);
 
         public sealed override string Texture => LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/DefaultStyle";
 
