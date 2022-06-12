@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using LivingWorldMod.Content.TileEntities.Interactables;
-using LivingWorldMod.Content.TileEntities.Interactables.VillageShrines;
 using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Content.Tiles.Interactables.VillageShrines;
 using LivingWorldMod.Custom.Utilities;

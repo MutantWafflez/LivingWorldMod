@@ -1,16 +1,13 @@
 ﻿using System.IO;
-using LivingWorldMod.Common.Players;
 using LivingWorldMod.Content.Tiles.Interactables.VillageShrines;
 using LivingWorldMod.Custom.Enums;
-using LivingWorldMod.Custom.Utilities;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace LivingWorldMod.Content.TileEntities.Interactables.VillageShrines {
+namespace LivingWorldMod.Content.TileEntities.Interactables {
     /// <summary>
     /// Tile Entity within each village shrine of each type, which mainly handles whether or not a
     /// specified player is close enough to the specified shrine to be considered "within the village."

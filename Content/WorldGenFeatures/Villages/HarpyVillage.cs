@@ -10,7 +10,7 @@ using System.Linq;
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
 using LivingWorldMod.Content.NPCs.Villagers;
-using LivingWorldMod.Content.TileEntities.Interactables.VillageShrines;
+using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Content.Tiles.Interactables.VillageShrines;
 using Terraria;
 using Terraria.DataStructures;

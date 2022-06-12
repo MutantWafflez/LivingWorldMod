@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using LivingWorldMod.Common.ModTypes;
-using LivingWorldMod.Content.TileEntities.Interactables.VillageShrines;
+using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Interfaces;
 using Terraria;
 using Terraria.DataStructures;

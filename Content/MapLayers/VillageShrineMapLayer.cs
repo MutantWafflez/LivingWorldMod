@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Content.TileEntities.Interactables.VillageShrines;
+using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
