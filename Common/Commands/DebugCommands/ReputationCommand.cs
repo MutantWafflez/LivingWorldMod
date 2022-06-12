@@ -21,7 +21,7 @@ namespace LivingWorldMod.Common.Commands.DebugCommands {
                         if (Math.Abs(repValue) > ReputationSystem.VillageReputationConstraint) {
                             throw new UsageException("Inputted reputation value is greater than 100 or less than -100.");
                         }
-                        ReputationSystem.SetVillageReputation(type, repValue);
+                        ModContent.GetInstance<ReputationSystem>().SetVillageReputation((VillagerType)type, repValue);
                         caller.Reply("Village type " + (VillagerType)type + "'s reputation successfully changed to " + repValue);
                     }
                     else {
