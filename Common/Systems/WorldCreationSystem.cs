@@ -3,6 +3,7 @@ using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Custom.Utilities;
 using Terraria;
 using Terraria.GameContent.Generation;
 using Terraria.ModLoader;
@@ -22,7 +23,7 @@ namespace LivingWorldMod.Common.Systems {
         public Rectangle[] villageZones;
 
         public override void Load() {
-            villageZones = new Rectangle[(int)VillagerType.TypeCount];
+            villageZones = new Rectangle[NPCUtils.GetTotalVillagerTypeCount()];
         }
 
         public override void Unload() { }

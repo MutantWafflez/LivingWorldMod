@@ -229,7 +229,7 @@ namespace LivingWorldMod.Core.Patches {
             //Load the current texture to the stack
             c.Emit(OpCodes.Ldloc_S, bannerAssetLocalNumber);
             //If this NPC is a villager, adjust the framing rectangle to use our modded proportions. If not, return the normal vanilla value
-            c.EmitDelegate<Func<NPC, Texture2D, Rectangle>>((npc, texture) => npc.ModNPC is Villager ? texture.Frame(2, (int)VillagerType.TypeCount) : texture.Frame(2, 2));
+            c.EmitDelegate<Func<NPC, Texture2D, Rectangle>>((npc, texture) => npc.ModNPC is Villager ? texture.Frame(2, NPCUtils.GetTotalVillagerTypeCount()) : texture.Frame(2, 2));
 
             //IL block for the above two edits ^:
             /*/* (30124,5)-(30124,55) tModLoader\src\tModLoader\Terraria\Main.cs #1#

@@ -1,6 +1,7 @@
 ﻿using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
 using System;
+using LivingWorldMod.Custom.Utilities;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -49,7 +50,7 @@ namespace LivingWorldMod.Common.Systems {
         }
 
         public override void Load() {
-            villageReputation = new int[(int)VillagerType.TypeCount];
+            villageReputation = new int[NPCUtils.GetTotalVillagerTypeCount()];
         }
 
         public override void Unload() {
@@ -58,7 +59,7 @@ namespace LivingWorldMod.Common.Systems {
 
         public override void PostUpdateEverything() {
             //Clamp Village Reputation
-            for (int i = 0; i < (int)VillagerType.TypeCount; i++) {
+            for (int i = 0; i < NPCUtils.GetTotalVillagerTypeCount(); i++) {
                 villageReputation[i] = (int)MathHelper.Clamp(villageReputation[i], -VillageReputationConstraint, VillageReputationConstraint);
             }
         }

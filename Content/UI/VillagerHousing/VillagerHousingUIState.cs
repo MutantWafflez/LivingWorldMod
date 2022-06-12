@@ -188,11 +188,11 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             //Make sure to wrap around properly when necessary
             if (enumerateDirection) {
                 VillagerType nextValue = typeToShow.NextEnum();
-                typeToShow = nextValue == VillagerType.TypeCount ? VillagerType.Harpy : nextValue;
+                typeToShow = nextValue;
             }
             else {
                 VillagerType previousValue = typeToShow.PreviousEnum();
-                typeToShow = previousValue == VillagerType.TypeCount ? VillagerType.TypeCount - 1 : previousValue;
+                typeToShow = previousValue;
             }
 
             //Change to proper villager type text

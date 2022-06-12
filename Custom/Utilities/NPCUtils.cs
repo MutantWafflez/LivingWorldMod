@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using System;
+using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
@@ -22,5 +23,11 @@ namespace LivingWorldMod.Custom.Utilities {
 
             return MathHelper.Clamp(1 - reputationValue / (ReputationSystem.VillageReputationConstraint - centerPoint) / 2f, 0.67f, 1.67f);
         }
+
+        /// <summary>
+        /// Returns the count of all defined villager types as defined by the <seealso cref="VillagerType"/> enum.
+        /// </summary>
+        /// <returns></returns>
+        public static int GetTotalVillagerTypeCount() => Enum.GetValues<VillagerType>().Length;
     }
 }
