@@ -9,8 +9,13 @@ namespace LivingWorldMod.Common.Systems.BaseSystems {
     /// Unique type of ModSystem that can be extended for automatic setting
     /// up and handling of the given UIState T.
     /// </summary>
+    /// <remarks>
+    /// Does not extend <seealso cref="BaseModSystem{T}"/> like all other ModSystems in this mod,
+    /// since double layered generics cause some confusing shenanigans, namely the Instance property
+    /// somehow returning null.
+    /// </remarks>
     [Autoload(Side = ModSide.Client)]
-    public abstract class UISystem<T> : BaseModSystem<UISystem<T>> where T : UIState, new() {
+    public abstract class UISystem<T> : ModSystem where T : UIState, new() {
         public UserInterface correspondingInterface;
 
         public T correspondingUIState;

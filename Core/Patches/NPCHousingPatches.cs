@@ -151,7 +151,7 @@ namespace LivingWorldMod.Core.Patches {
 
                 //Re-add our check, making sure it's inverted compared to the IL, since in IL it determines if the code should run if these values are FALSE,
                 // but since we took control of the instructions, we can test based on if it's true or not for easy understanding
-                c.EmitDelegate<Func<bool>>(() => Main.EquipPage == 1 || VillagerHousingUISystem.Instance.correspondingUIState.isMenuVisible);
+                c.EmitDelegate<Func<bool>>(() => Main.EquipPage == 1 || ModContent.GetInstance<VillagerHousingUISystem>().correspondingUIState.isMenuVisible);
 
                 c.Emit(OpCodes.Brtrue_S, stolenLabel);
             }
