@@ -1,6 +1,8 @@
 ﻿using System.IO;
 using LivingWorldMod.Content.Tiles.Interactables.VillageShrines;
 using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.Custom.Structs;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -15,7 +17,11 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
     [LegacyName("HarpyShrineEntity")]
     public class VillageShrineEntity : BaseTileEntity {
         public VillagerType shrineType;
+        public Circle villageZone;
+
         public override int ValidTileID => ModContent.TileType<VillageShrineTile>();
+
+        public const float DefaultVillageRadius = 1360f;
 
         public override bool? PreValidTile(int i, int j) {
             Tile tile = Framing.GetTileSafely(i, j);
@@ -25,10 +31,15 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
         public override void NetSend(BinaryWriter writer) {
             writer.Write((int)shrineType);
+
+            writer.WriteVector2(villageZone.center);
+            writer.Write(villageZone.radius);
         }
 
         public override void NetReceive(BinaryReader reader) {
             shrineType = (VillagerType)reader.ReadInt32();
+
+            villageZone = new Circle(reader.ReadVector2(), reader.ReadSingle());
         }
 
         public override void OnNetPlace() {
@@ -43,6 +54,8 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
         public override void LoadData(TagCompound tag) {
             shrineType = (VillagerType)tag.GetInt("ShrineType");
+
+            villageZone = new Circle(WorldPosition + new Vector2(40f), DefaultVillageRadius);
         }
 
         public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate) {
@@ -56,6 +69,10 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
             Point16 tileOrigin = ModContent.GetInstance<VillageShrineTile>().tileOrigin;
             int placedEntity = Place(i - tileOrigin.X, j - tileOrigin.Y);
+            if (placedEntity != -1) {
+                (ByID[placedEntity] as VillageShrineEntity)!.villageZone = villageZone = new Circle(WorldPosition + new Vector2(40f), DefaultVillageRadius);
+            }
+
             return placedEntity;
         }
     }

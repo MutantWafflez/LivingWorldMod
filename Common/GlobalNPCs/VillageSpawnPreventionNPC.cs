@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Common.Systems;
-using Terraria;
+using LivingWorldMod.Content.TileEntities.Interactables;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.GlobalNPCs {
@@ -10,7 +10,7 @@ namespace LivingWorldMod.Common.GlobalNPCs {
     /// </summary>
     public class VillageSpawnPreventionNPC : GlobalNPC {
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo) {
-            if (WorldCreationSystem.Instance.villageZones.Any(zone => zone.Contains(spawnInfo.Player.Center.ToTileCoordinates()))) {
+            if (TileEntity.ByID.Values.OfType<VillageShrineEntity>().ToList().Any(shrine => shrine.villageZone.ContainsPoint(spawnInfo.Player.Center))) {
                 pool[0] = 0;
             }
         }

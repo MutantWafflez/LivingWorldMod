@@ -1,14 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.NPCs.Villagers;
+using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ModLoader;
@@ -51,11 +55,12 @@ namespace LivingWorldMod.Core.Patches {
                 Rectangle roomInQuestion = new Rectangle(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1, WorldGen.roomY2 - WorldGen.roomY1);
 
                 ModNPC modNPC = ModContent.GetModNPC(type);
-                Rectangle[] villageZones = WorldCreationSystem.Instance.villageZones;
+                List<VillageShrineEntity> shrines = TileEntity.ByID.Values.OfType<VillageShrineEntity>().ToList();
 
                 //HOWEVER, if the Town NPC can spawn here, we need to do additional checks to make sure it's not a non-villager spawning in a villager home
-                //Additionally, we can't have villagers in a non-village home, which is the second check after  V  this OR statement.
-                if (modNPC is not Villager && villageZones.Any(zone => zone.Contains(roomInQuestion)) || modNPC is Villager && !villageZones.Any(zone => zone.Contains(roomInQuestion))) {
+                //Additionally, we can't have villagers in a non-village home, which is the second check.
+                if (modNPC is not Villager && shrines.Any(shrine => shrine.villageZone.ContainsPoint(roomInQuestion.Center().ToWorldCoordinates()))
+                    || modNPC is Villager && !shrines.Any(shrine => shrine.villageZone.ContainsPoint(roomInQuestion.Center().ToWorldCoordinates()))) {
                     return false;
                 }
 
