@@ -34,7 +34,7 @@ namespace LivingWorldMod.Core.PacketHandlers {
             switch (packetType) {
                 case SyncNewPlayer:
                     if (Main.netMode == NetmodeID.Server) {
-                        List<WaystoneEntity> waystones = TileEntity.ByID.Values.OfType<WaystoneEntity>().ToList();
+                        List<WaystoneEntity> waystones = TileEntityUtils.GetAllEntityOfType<WaystoneEntity>().ToList();
 
                         foreach (WaystoneEntity entity in waystones) {
                             NetMessage.SendData(MessageID.TileSection, fromWhomst, number: entity.Position.X - 1, number2: entity.Position.Y - 1, number3: 4, number4: 4);

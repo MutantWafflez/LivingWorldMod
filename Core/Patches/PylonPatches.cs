@@ -119,12 +119,12 @@ namespace LivingWorldMod.Core.Patches {
             c.Emit(OpCodes.Ldloc_0);
             //Then, add our own loop
             c.EmitDelegate<Func<Player, bool>>(player => {
-                foreach (WaystoneEntity entity in TileEntity.ByID.Values.OfType<WaystoneEntity>()) {
+                foreach (WaystoneEntity entity in TileEntityUtils.GetAllEntityOfType<WaystoneEntity>()) {
                     if (entity.isActivated && player.IsInTileInteractionRange(entity.Position.X, entity.Position.Y)) {
                         return true;
                     }
                 }
-                foreach (VillageShrineEntity entity in TileEntity.ByID.Values.OfType<VillageShrineEntity>()) {
+                foreach (VillageShrineEntity entity in TileEntityUtils.GetAllEntityOfType<VillageShrineEntity>()) {
                     if (player.IsInTileInteractionRange(entity.Position.X, entity.Position.Y) && Main.BestiaryTracker.Chats.GetWasChatWith($"{nameof(LivingWorldMod)}/{entity.shrineType}Villager")) {
                         return true;
                     }

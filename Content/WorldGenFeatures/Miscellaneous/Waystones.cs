@@ -144,7 +144,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     }
 
                     //Finally, for the last check, make sure it isn't too close to any other Waystones
-                    foreach (WaystoneEntity entity in TileEntity.ByID.Values.OfType<WaystoneEntity>()) {
+                    foreach (WaystoneEntity entity in TileEntityUtils.GetAllEntityOfType<WaystoneEntity>()) {
                         if (entity.Position.ToVector2().Distance(searchOrigin.ToVector2()) < minTilesBetweenWaystones) {
                             goto ContinueLoop;
                         }

@@ -4,6 +4,7 @@ using System.Linq;
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Interfaces;
+using LivingWorldMod.Custom.Utilities;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -26,7 +27,7 @@ namespace LivingWorldMod.Core.PacketHandlers {
             switch (packetType) {
                 case SyncNewPlayer:
                     if (Main.netMode == NetmodeID.Server) {
-                        List<VillageShrineEntity> shrines = TileEntity.ByID.Values.OfType<VillageShrineEntity>().ToList();
+                        List<VillageShrineEntity> shrines = TileEntityUtils.GetAllEntityOfType<VillageShrineEntity>().ToList();
 
                         foreach (VillageShrineEntity entity in shrines) {
                             NetMessage.SendData(MessageID.TileSection, fromWhomst, number: entity.Position.X - 1, number2: entity.Position.Y - 1, number3: 5, number4: 6);

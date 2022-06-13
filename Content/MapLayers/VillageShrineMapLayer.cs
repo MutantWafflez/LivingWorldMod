@@ -21,7 +21,7 @@ namespace LivingWorldMod.Content.MapLayers {
     /// </summary>
     public class VillageShrineMapLayer : ModMapLayer {
         public override void Draw(ref MapOverlayDrawContext context, ref string text) {
-            foreach (VillageShrineEntity entity in TileEntity.ByID.Values.OfType<VillageShrineEntity>()) {
+            foreach (VillageShrineEntity entity in TileEntityUtils.GetAllEntityOfType<VillageShrineEntity>()) {
                 if (!IsShrineVisibleOnMap(entity.shrineType)) {
                     continue;
                 }
