@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
@@ -50,6 +51,6 @@ namespace LivingWorldMod.Custom.Utilities {
         /// Gets and returns all currently living tile entities of the specified type.
         /// </summary>
         /// <typeparam name="T"> The type of ModTileEntity you want to find all living entities of. </typeparam>
-        public static IEnumerable<T> GetAllEntityOfType<T>() where T : ModTileEntity => GetAllEntityOfType<T>();
+        public static IEnumerable<T> GetAllEntityOfType<T>() where T : ModTileEntity => TileEntity.ByID.Values.OfType<T>();
     }
 }
