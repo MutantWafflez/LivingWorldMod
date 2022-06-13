@@ -4,6 +4,7 @@ using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
 using System;
+using Terraria;
 
 namespace LivingWorldMod.Custom.Utilities {
     /// <summary>
@@ -32,5 +33,25 @@ namespace LivingWorldMod.Custom.Utilities {
         /// </summary>
         /// <returns></returns>
         public static int GetTotalVillagerTypeCount() => Enum.GetValues<VillagerType>().Length;
+
+        /// <summary>
+        /// Searches through all active NPCs in the npc array and returns how many of them are villagers and
+        /// are currently within the the circle zone provided.
+        /// </summary>
+        /// <param name="zone"> The zone that an NPC must be within to be considered "In The Zone." </param>
+        /// <returns></returns>
+        public static int GetVillagerCountInZone(Circle zone) {
+            int count = 0;
+
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+
+                if (npc.active && npc.ModNPC is Villager && zone.ContainsPoint(npc.Center) && ) {
+                    count++;
+                }
+            }
+
+            return count;
+        }
     }
 }
