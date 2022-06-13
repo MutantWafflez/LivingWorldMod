@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading;
 using LivingWorldMod.Content.Tiles.Interactables.VillageShrines;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
@@ -29,6 +30,18 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             return tile.HasTile && tile.TileType == ValidTileID && tile.TileFrameX % 72 == 0 && tile.TileFrameY == 0;
         }
 
+        public override void Update() {
+            //This is only here for backwards compatibility, if someone is loading a world from where
+            //the shrines were the older HarpyShrineEntity type, then their VillageZone values will
+            //be default and thus need to be fixed.
+            if (villageZone == default) {
+                InstantiateVillageZone();
+
+                //This method has the same functionality we want, so I'll just save the boilerplate
+                OnNetPlace();
+            }
+        }
+
         public override void NetSend(BinaryWriter writer) {
             writer.Write((int)shrineType);
 
@@ -55,7 +68,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         public override void LoadData(TagCompound tag) {
             shrineType = (VillagerType)tag.GetInt("ShrineType");
 
-            villageZone = new Circle(WorldPosition + new Vector2(40f), DefaultVillageRadius);
+            InstantiateVillageZone();
         }
 
         public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate) {
@@ -70,10 +83,18 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             Point16 tileOrigin = ModContent.GetInstance<VillageShrineTile>().tileOrigin;
             int placedEntity = Place(i - tileOrigin.X, j - tileOrigin.Y);
             if (placedEntity != -1) {
-                (ByID[placedEntity] as VillageShrineEntity)!.villageZone = villageZone = new Circle(WorldPosition + new Vector2(40f), DefaultVillageRadius);
+                (ByID[placedEntity] as VillageShrineEntity)!.InstantiateVillageZone();
             }
 
             return placedEntity;
+        }
+
+        /// <summary>
+        /// Really simple method that just sets the village zone field to its proper values given
+        /// the the tile entity's current position.
+        /// </summary>
+        private void InstantiateVillageZone() {
+            villageZone = new Circle(WorldPosition + new Vector2(40f), DefaultVillageRadius);
         }
     }
 }

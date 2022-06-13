@@ -32,5 +32,9 @@ namespace LivingWorldMod.Custom.Structs {
             { nameof(center), center },
             { nameof(radius), radius }
         };
+
+        public static bool operator ==(Circle first, Circle second) => first.center == second.center && first.radius == second.radius;
+
+        public static bool operator !=(Circle first, Circle second) => !(first == second);
     }
 }
