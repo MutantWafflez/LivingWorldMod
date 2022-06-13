@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using LivingWorldMod.Content.TileEntities.Interactables;
+﻿using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Utilities;
-using Terraria.DataStructures;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.GlobalNPCs {

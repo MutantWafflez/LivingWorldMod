@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using LivingWorldMod.Common.Systems;
+﻿using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
+using System.Collections.Generic;
 using Terraria.IO;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;

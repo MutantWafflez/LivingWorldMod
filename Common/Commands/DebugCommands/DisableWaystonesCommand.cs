@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using Terraria;
-using LivingWorldMod.Content.TileEntities.Interactables;
+﻿using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Utilities;
-using Terraria.DataStructures;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 

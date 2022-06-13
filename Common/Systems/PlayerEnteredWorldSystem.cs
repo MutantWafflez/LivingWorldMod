@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using LivingWorldMod.Common.Systems.BaseSystems;
+﻿using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Interfaces;
+using System.Linq;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Systems {

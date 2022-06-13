@@ -1,5 +1,4 @@
-﻿using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Content.TileEntities.Interactables;
+﻿using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;

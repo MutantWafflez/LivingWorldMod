@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using LivingWorldMod.Common.ModTypes;
+﻿using LivingWorldMod.Common.ModTypes;
+using System.Collections.Generic;
 using Terraria.GameContent.Generation;
 using Terraria.IO;
 using Terraria.ModLoader;

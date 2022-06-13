@@ -1,9 +1,8 @@
-﻿using System.IO;
-using System.Threading;
-using LivingWorldMod.Content.Tiles.Interactables.VillageShrines;
+﻿using LivingWorldMod.Content.Tiles.Interactables.VillageShrines;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
+using System.IO;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;

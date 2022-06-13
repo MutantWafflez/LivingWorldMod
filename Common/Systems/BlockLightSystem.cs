@@ -1,5 +1,4 @@
 ﻿using LivingWorldMod.Common.Systems.BaseSystems;
-using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;

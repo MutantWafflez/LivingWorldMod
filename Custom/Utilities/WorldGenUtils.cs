@@ -3,7 +3,6 @@ using LivingWorldMod.Custom.Structs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Custom.Utilities {
     /// <summary>

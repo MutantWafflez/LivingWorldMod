@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using LivingWorldMod.Common.ModTypes;
+﻿using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Interfaces;
 using LivingWorldMod.Custom.Utilities;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 

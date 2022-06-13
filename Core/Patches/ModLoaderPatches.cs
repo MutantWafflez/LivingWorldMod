@@ -1,9 +1,9 @@
-﻿using System;
-using System.Reflection;
-using LivingWorldMod.Custom.Utilities;
+﻿using LivingWorldMod.Custom.Utilities;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour.HookGen;
+using System;
+using System.Reflection;
 using Terraria;
 using Terraria.ModLoader;
 

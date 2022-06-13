@@ -1,9 +1,9 @@
 ﻿using LivingWorldMod.Common.ModTypes;
-using System.Collections.Generic;
-using System.Linq;
 using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Interfaces;
 using LivingWorldMod.Custom.Structs;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.GameContent.Generation;
 using Terraria.ModLoader;

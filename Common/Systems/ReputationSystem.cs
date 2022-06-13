@@ -1,12 +1,12 @@
-﻿using LivingWorldMod.Custom.Enums;
+﻿using Hjson;
+using LivingWorldMod.Common.Systems.BaseSystems;
+using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.Custom.Structs;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Hjson;
-using LivingWorldMod.Common.Systems.BaseSystems;
-using LivingWorldMod.Custom.Structs;
-using LivingWorldMod.Custom.Utilities;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 

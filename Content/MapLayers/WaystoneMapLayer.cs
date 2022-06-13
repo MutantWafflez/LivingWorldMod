@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Content.TileEntities.Interactables;
-using LivingWorldMod.Custom.Classes;
+﻿using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

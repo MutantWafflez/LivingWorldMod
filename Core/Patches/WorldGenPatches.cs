@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using LivingWorldMod.Common.Systems;
+﻿using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.WorldGenFeatures.Villages;
-using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Core.Patches {

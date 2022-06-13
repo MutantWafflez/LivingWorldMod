@@ -1,10 +1,9 @@
-﻿using System;
-using LivingWorldMod.Common.Systems;
+﻿using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
+using System;
 
 namespace LivingWorldMod.Custom.Utilities {
     /// <summary>
