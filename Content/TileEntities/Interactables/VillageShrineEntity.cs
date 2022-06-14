@@ -1,6 +1,5 @@
 ﻿using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
-using Microsoft.Xna.Framework;
 using System.IO;
 using LivingWorldMod.Common.Systems.UI;
 using LivingWorldMod.Content.Tiles.Interactables;
@@ -101,7 +100,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         /// the the tile entity's current position.
         /// </summary>
         private void InstantiateVillageZone() {
-            villageZone = new Circle(WorldPosition + new Vector2(40f), DefaultVillageRadius);
+            villageZone = new Circle(Position.ToWorldCoordinates(32f, 40f), DefaultVillageRadius);
         }
     }
 }
