@@ -46,7 +46,7 @@ namespace LivingWorldMod.Custom.Utilities {
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
 
-                if (npc.active && npc.ModNPC is Villager && zone.ContainsPoint(npc.Center) && ) {
+                if (npc.active && npc.ModNPC is Villager && zone.ContainsPoint(npc.Center)) {
                     count++;
                 }
             }
