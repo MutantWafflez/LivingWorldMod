@@ -3,6 +3,7 @@ using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
 using System.IO;
+using LivingWorldMod.Common.Systems.UI;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -86,6 +87,13 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             }
 
             return placedEntity;
+        }
+
+        /// <summary>
+        /// Called when the tile this entity is associated with is right clicked.
+        /// </summary>
+        public void RightClicked() {
+            ModContent.GetInstance<VillageShrineUISystem>().OpenOrRegenShrineState(shrineType, WorldPosition);
         }
 
         /// <summary>

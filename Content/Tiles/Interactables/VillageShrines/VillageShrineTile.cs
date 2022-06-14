@@ -64,5 +64,17 @@ namespace LivingWorldMod.Content.Tiles.Interactables.VillageShrines {
         public override void KillMultiTile(int i, int j, int frameX, int frameY) {
             ModContent.GetInstance<VillageShrineEntity>().Kill(i - tileOrigin.X, j - tileOrigin.Y);
         }
+
+        public override bool RightClick(int i, int j) {
+            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
+
+            if (!TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out VillageShrineEntity entity)) {
+                return false;
+            }
+
+            entity.RightClicked();
+
+            return true;
+        }
     }
 }
