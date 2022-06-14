@@ -10,21 +10,25 @@ namespace LivingWorldMod.Common.Systems.UI {
 
         public override string InternalInterfaceName => "Village Shrine Panel";
 
-        public override InterfaceScaleType ScaleType => InterfaceScaleType.None;
+        public override InterfaceScaleType ScaleType => InterfaceScaleType.Game;
 
         /// <summary>
         /// Opens (if no shrine panel is already open) or regens the ShrineUIState (if a shrine panel is currently open)
         /// with the passed in parameters. 
         /// </summary>
-        /// <param name="newShrineType"> The new shrine type to swap the state to. </param>
-        /// <param name="topLeftShrinePos"> The WORLD position of where to move the state to. </param>
-        public void OpenOrRegenShrineState(VillagerType newShrineType, Vector2 topLeftShrinePos) {
+        /// <param name="newShrineType">
+        /// The new shrine type to swap the state to.
+        /// </param>
+        /// <param name="centerShrinePos">
+        /// The WORLD position of where to move the state to, which should be the center of the shrine tile.
+        /// </param>
+        public void OpenOrRegenShrineState(VillagerType newShrineType, Vector2 centerShrinePos) {
             if (correspondingInterface.CurrentState is null) {
                 correspondingInterface.SetState(correspondingUIState);
             }
 
             if (correspondingInterface.CurrentState == correspondingUIState) {
-                correspondingUIState.RegenState(newShrineType, topLeftShrinePos);
+                correspondingUIState.RegenState(newShrineType, centerShrinePos);
             }
         }
 

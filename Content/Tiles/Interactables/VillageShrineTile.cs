@@ -8,7 +8,7 @@ using Terraria.GameContent.ObjectInteractions;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Content.Tiles.Interactables.VillageShrines {
+namespace LivingWorldMod.Content.Tiles.Interactables {
     [LegacyName("HarpyShrineTile")]
     public class VillageShrineTile : BaseTile {
         /// <summary>
