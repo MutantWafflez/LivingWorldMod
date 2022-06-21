@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Content.TileEntities.Interactables;
+﻿using LivingWorldMod.Content.Items.Placeables.Interactables;
+using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -63,6 +64,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) {
             ModContent.GetInstance<VillageShrineEntity>().Kill(i - tileOrigin.X, j - tileOrigin.Y);
+            //TODO: Add method to drop other shrines when other villages are added
+            Item.NewItem(new EntitySource_TileBreak(i - tileOrigin.X, j - tileOrigin.Y), new Vector2(i - tileOrigin.X, j - tileOrigin.Y) * 16, 4, 5, ModContent.ItemType<HarpyShrineItem>());
         }
 
         public override bool RightClick(int i, int j) {

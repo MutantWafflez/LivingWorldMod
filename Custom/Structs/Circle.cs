@@ -28,6 +28,23 @@ namespace LivingWorldMod.Custom.Structs {
         /// </summary>
         public bool ContainsPoint(Vector2 point) => Math.Abs(center.Distance(point)) < radius;
 
+        /// <summary>
+        /// Creates a copy of this Circle equivalent in tile coordinates, assuming that this circle is in world coordinates.
+        /// Do note a potential loss of precision with the radius if it is not divisible by 16.
+        /// </summary>
+        public Circle ToTileCoordinates() => new Circle(center.ToTileCoordinates().ToVector2(), (int)(radius / 16f));
+
+        /// <summary>
+        /// Creates a copy of this Circle equivalent in world coordinates, assuming that this circle is in tile coordinates.
+        /// </summary>
+        public Circle ToWorldCoordinates() => new Circle(center.ToWorldCoordinates(), radius * 16f);
+
+        /// <summary>
+        /// Uses this Circle's data in order to create a Rectangle (square) that has each edge being tangential
+        /// to one side of the Circle (AKA, a "hitbox" for the circle).
+        /// </summary>
+        public Rectangle ToRectangle() => new Rectangle((int)(center.X - radius), (int)(center.Y - radius), (int)(radius * 2), (int)(radius * 2));
+
         public TagCompound SerializeData() => new TagCompound() {
             { nameof(center), center },
             { nameof(radius), radius }

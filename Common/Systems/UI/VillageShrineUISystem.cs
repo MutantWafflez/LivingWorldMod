@@ -1,7 +1,6 @@
 ﻿using LivingWorldMod.Common.Systems.BaseSystems;
+using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Content.UI.VillageShrine;
-using LivingWorldMod.Custom.Enums;
-using Microsoft.Xna.Framework;
 using Terraria.UI;
 
 namespace LivingWorldMod.Common.Systems.UI {
@@ -14,21 +13,16 @@ namespace LivingWorldMod.Common.Systems.UI {
 
         /// <summary>
         /// Opens (if no shrine panel is already open) or regens the ShrineUIState (if a shrine panel is currently open)
-        /// with the passed in parameters. 
+        /// with the passed in entity.
         /// </summary>
-        /// <param name="newShrineType">
-        /// The new shrine type to swap the state to.
-        /// </param>
-        /// <param name="centerShrinePos">
-        /// The WORLD position of where to move the state to, which should be the center of the shrine tile.
-        /// </param>
-        public void OpenOrRegenShrineState(VillagerType newShrineType, Vector2 centerShrinePos) {
+        /// <param name="entity"></param>
+        public void OpenOrRegenShrineState(VillageShrineEntity entity) {
             if (correspondingInterface.CurrentState is null) {
                 correspondingInterface.SetState(correspondingUIState);
             }
 
             if (correspondingInterface.CurrentState == correspondingUIState) {
-                correspondingUIState.RegenState(newShrineType, centerShrinePos);
+                correspondingUIState.RegenState(entity);
             }
         }
 
