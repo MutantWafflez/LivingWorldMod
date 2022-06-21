@@ -41,6 +41,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             this.pertainedInventoryItem = pertainedInventoryItem;
             displayedItem = new Item();
             displayedItem.SetDefaults(pertainedInventoryItem.itemType);
+            displayedItem.stack = pertainedInventoryItem.remainingStock;
             this.displayedCost = displayedCost;
             this.villagerType = villagerType;
         }
