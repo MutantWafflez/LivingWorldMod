@@ -2,8 +2,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.VillageShrine {
@@ -15,12 +15,14 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
 
         public Vector2 centerShrinePosition;
 
-        public UIPanel backPanel;
+        public UIImage backPanel;
+
+        public static readonly string SpritePath = $"{LivingWorldMod.LWMSpritePath}UI/ShrineUI/";
 
         public override void OnInitialize() {
             currentShrineType = VillagerType.Harpy;
 
-            backPanel = new UIPanel();
+            backPanel = new UIImage(ModContent.Request<Texture2D>($"{SpritePath}BackPanel"));
             backPanel.Width = backPanel.Height = new StyleDimension(160f, 0f);
             Append(backPanel);
         }
