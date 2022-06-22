@@ -1,11 +1,15 @@
-﻿using LivingWorldMod.Content.TileEntities.Interactables;
+﻿using System.Linq;
+using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Content.UI.CommonElements;
+using LivingWorldMod.Core.PacketHandlers;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -71,6 +75,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             };
             addRespawnButton.Height.Set(30f, 0f);
             addRespawnButton.Top.Set(itemPanel.Height.Pixels + 4f, 0f);
+            addRespawnButton.ProperOnClick += AddRespawnItem;
             backPanel.Append(addRespawnButton);
 
             takeRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "Take 1") {
@@ -81,6 +86,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
                 preventItemUsageWhileHovering = true
             };
             takeRespawnButton.Top.Set(addRespawnButton.Top.Pixels + addRespawnButton.Height.Pixels + 4f, 0f);
+            takeRespawnButton.ProperOnClick += TakeRespawnItem;
             backPanel.Append(takeRespawnButton);
 
             Append(backPanel);
@@ -92,6 +98,9 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
 
             backPanel.Left.Set(centerOfEntity.X - panelDimensions.Width / 2f - Main.screenPosition.X, 0f);
             backPanel.Top.Set(centerOfEntity.Y - panelDimensions.Height - Main.screenPosition.Y, 0f);
+            respawnItemCount.SetText(CurrentEntity.remainingRespawnItems.ToString());
+            addRespawnButton.isVisible = CurrentEntity.remainingRespawnItems < CurrentEntity.CurrentValidHouses;
+            takeRespawnButton.isVisible = CurrentEntity.remainingRespawnItems > 0;
         }
 
         /// <summary>
@@ -103,6 +112,48 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
 
             respawnItemDisplay.SetItem(NPCUtils.VillagerTypeToRespawnItemType(entity.shrineType));
             respawnItemCount.SetText(entity.remainingRespawnItems.ToString());
+        }
+
+        private void AddRespawnItem(UIMouseEvent evt, UIElement listeningElement) {
+            int respawnItemType = NPCUtils.VillagerTypeToRespawnItemType(CurrentEntity.shrineType);
+            Player player = Main.LocalPlayer;
+
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                if (player.HasItem(respawnItemType)) {
+                    player.inventory[player.FindItem(respawnItemType)].stack--;
+
+                    ModPacket packet = ModContent.GetInstance<ShrinePacketHandler>().GetPacket(ShrinePacketHandler.AddRespawnItem);
+                    packet.WriteVector2(CurrentEntity.Position.ToVector2());
+                    packet.Send();
+                }
+            }
+            else {
+                if (player.HasItem(respawnItemType)) {
+                    player.inventory[player.FindItem(respawnItemType)].stack--;
+
+                    CurrentEntity.remainingRespawnItems++;
+                }
+            }
+        }
+
+        private void TakeRespawnItem(UIMouseEvent evt, UIElement listeningElement) {
+            Player player = Main.LocalPlayer;
+            Item respawnItem = new Item(NPCUtils.VillagerTypeToRespawnItemType(CurrentEntity.shrineType));
+
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                if (player.CanAcceptItemIntoInventory(respawnItem)) {
+                    ModPacket packet = ModContent.GetInstance<ShrinePacketHandler>().GetPacket(ShrinePacketHandler.TakeRespawnItem);
+                    packet.WriteVector2(CurrentEntity.Position.ToVector2());
+                    packet.Send();
+                }
+            }
+            else {
+                if (player.CanAcceptItemIntoInventory(respawnItem) && CurrentEntity.remainingRespawnItems < CurrentEntity.CurrentValidHouses) {
+                    player.QuickSpawnItem(new EntitySource_TileEntity(CurrentEntity), respawnItem);
+
+                    CurrentEntity.remainingRespawnItems--;
+                }
+            }
         }
     }
 }

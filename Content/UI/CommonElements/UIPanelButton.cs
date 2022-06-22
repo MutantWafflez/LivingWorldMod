@@ -67,7 +67,8 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             buttonText = new UIBetterText(_text, textSize) {
                 HAlign = 0.5f,
                 VAlign = 0.5f,
-                horizontalTextConstraint = GetDimensions().Width
+                horizontalTextConstraint = GetDimensions().Width,
+                IgnoresMouseInteraction = true
             };
 
             Append(buttonText);
@@ -87,6 +88,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
                 return;
             }
 
+            base.Click(evt);
             ProperOnClick?.Invoke(evt, this);
         }
 

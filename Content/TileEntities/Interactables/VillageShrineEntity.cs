@@ -32,11 +32,17 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
         public override int ValidTileID => ModContent.TileType<VillageShrineTile>();
 
+        public int CurrentVillagerCount {
+            get;
+            private set;
+        }
+
+        public int CurrentValidHouses {
+            get;
+            private set;
+        }
+
         private int _syncTimer;
-
-        private int _currentVillagerCount;
-
-        private int _currentValidHouses;
 
         public const float DefaultVillageRadius = 1360f;
 
@@ -63,10 +69,10 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             if (--_syncTimer <= 0) {
                 _syncTimer = 60 * 4;
 
-                _currentVillagerCount = NPCUtils.GetVillagerCountInZone(villageZone);
-                _currentValidHouses = NPCUtils.GetValidHousesInZone(villageZone.ToTileCoordinates(), NPCUtils.VillagerTypeToNPCType(shrineType));
+                CurrentVillagerCount = NPCUtils.GetVillagerCountInZone(villageZone);
+                CurrentValidHouses = NPCUtils.GetValidHousesInZone(villageZone.ToTileCoordinates(), NPCUtils.VillagerTypeToNPCType(shrineType));
 
-                respawnTimeCap = (int)MathHelper.Lerp(FullVillageRespawnTime, EmptyVillageRespawnTime, _currentValidHouses > 0 ? _currentVillagerCount / (float)_currentValidHouses : 0f);
+                respawnTimeCap = (int)MathHelper.Lerp(FullVillageRespawnTime, EmptyVillageRespawnTime, CurrentValidHouses > 0 ? CurrentVillagerCount / (float)CurrentValidHouses : 0f);
                 remainingRespawnTime = (int)MathHelper.Clamp(remainingRespawnTime, 0f, respawnTimeCap);
 
                 SyncDataToClients();
@@ -75,14 +81,14 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             }
 
             remainingRespawnTime = (int)MathHelper.Clamp(remainingRespawnTime - 1, 0f, respawnTimeCap);
-            if (remainingRespawnTime <= 0 && remainingRespawnItems <= _currentValidHouses) {
+            if (remainingRespawnTime <= 0 && remainingRespawnItems <= CurrentValidHouses) {
                 remainingRespawnTime = respawnTimeCap;
                 remainingRespawnItems++;
 
                 SyncDataToClients();
             }
 
-            if (_currentVillagerCount < _currentValidHouses && remainingRespawnItems > 0) {
+            if (CurrentVillagerCount < CurrentValidHouses && remainingRespawnItems > 0) {
                 Rectangle housingRectangle = villageZone.ToTileCoordinates().ToRectangle();
                 int villagerNPCType = NPCUtils.VillagerTypeToNPCType(shrineType);
 
@@ -93,7 +99,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                         if (WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(villagerNPCType)) {
                             WorldGen.ScoreRoom(npcTypeAskingToScoreRoom: villagerNPCType);
 
-                            if (Main.npc.Any(npc => npc.homeTileX == WorldGen.bestX && npc.homeTileY == WorldGen.bestY)) {
+                            if (Main.npc.Any(npc => npc.active && npc.homeTileX == WorldGen.bestX && npc.homeTileY == WorldGen.bestY)) {
                                 continue;
                             }
 
@@ -101,11 +107,13 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
                             Main.npc[npc].homeTileX = WorldGen.bestX;
                             Main.npc[npc].homeTileY = WorldGen.bestY;
+
+                            remainingRespawnItems--;
+                            CurrentVillagerCount++;
                         }
                     }
                 }
 
-                remainingRespawnItems--;
                 SyncDataToClients();
             }
         }
@@ -119,8 +127,8 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             writer.Write(remainingRespawnTime);
             writer.Write(respawnTimeCap);
 
-            writer.Write(_currentVillagerCount);
-            writer.Write(_currentValidHouses);
+            writer.Write(CurrentVillagerCount);
+            writer.Write(CurrentValidHouses);
         }
 
         public override void NetReceive(BinaryReader reader) {
@@ -130,8 +138,8 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             remainingRespawnTime = reader.ReadInt32();
             respawnTimeCap = reader.ReadInt32();
 
-            _currentVillagerCount = reader.ReadInt32();
-            _currentValidHouses = reader.ReadInt32();
+            CurrentVillagerCount = reader.ReadInt32();
+            CurrentValidHouses = reader.ReadInt32();
         }
 
         public override void OnNetPlace() {

@@ -1,6 +1,6 @@
 ﻿using Terraria.ID;
 
-namespace LivingWorldMod.Content.Items.Miscellaneous {
+namespace LivingWorldMod.Content.Items.RespawnItems {
     /// <summary>
     /// Item used for respawning Harpy Villagers at the Harpy Village shrine.
     /// </summary>

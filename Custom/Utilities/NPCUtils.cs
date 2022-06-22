@@ -5,7 +5,7 @@ using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using LivingWorldMod.Content.Items.Miscellaneous;
+using LivingWorldMod.Content.Items.RespawnItems;
 using Terraria.DataStructures;
 using Terraria;
 using Terraria.ModLoader;

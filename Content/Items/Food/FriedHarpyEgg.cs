@@ -1,7 +1,7 @@
-﻿using LivingWorldMod.Content.Items.Miscellaneous;
+﻿using LivingWorldMod.Content.Items.RespawnItems;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.GameContent;
+using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace LivingWorldMod.Content.Items.Food {
@@ -11,33 +11,17 @@ namespace LivingWorldMod.Content.Items.Food {
         }
 
         public override void SetDefaults() {
-            Item.CloneDefaults(ItemID.FriedEgg);
-
-            Item.buffType = BuffID.WellFed3;
-            Item.buffTime = 14400; //4 minutes
+            Item.DefaultToFood(22, 22, BuffID.WellFed3, 14400);
             Item.rare = ItemRarityID.Blue;
 
+            Main.RegisterItemAnimation(Type, new DrawAnimationVertical(int.MaxValue, 3));
+
             ItemID.Sets.IsFood[Type] = true;
-            ItemID.Sets.FoodParticleColors[Type] = ItemID.Sets.FoodParticleColors[ItemID.FriedEgg];
-        }
-
-        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            //Food item drawing is a bit wack
-            Rectangle rectanglizedPosition = new Rectangle((int)position.X - 6, (int)position.Y + 8, 28, 16);
-            Rectangle newFrame = new Rectangle(0, 0, 28, 16);
-
-            spriteBatch.Draw(TextureAssets.Item[Type].Value, rectanglizedPosition, newFrame, drawColor, 0f, Vector2.Zero, SpriteEffects.None, scale);
-
-            return false;
-        }
-
-        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
-            Rectangle rectanglizedPosition = new Rectangle((int)Item.position.X, (int)Item.position.Y, 28, 16);
-            Rectangle frame = new Rectangle(0, 0, 28, 16);
-
-            spriteBatch.Draw(TextureAssets.Item[Type].Value, rectanglizedPosition, frame, alphaColor, rotation, Vector2.Zero, SpriteEffects.None, scale);
-
-            return false;
+            ItemID.Sets.FoodParticleColors[Type] = new Color[3] {
+                Color.White,
+                Color.LightGray,
+                Color.Blue
+            };
         }
 
         public override void AddRecipes() {
