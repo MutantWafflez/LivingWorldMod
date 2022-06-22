@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Content.UI.CommonElements;
 using LivingWorldMod.Core.PacketHandlers;
@@ -30,12 +30,18 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
 
         public UIPanelButton takeRespawnButton;
 
-        public UIBetterText respawnTimerText;
+        public UIElement respawnTimerZone;
+
+        public UIBetterText respawnTimerHeader;
+
+        public UIBetterText respawnTimer;
 
         public VillageShrineEntity CurrentEntity {
             get;
             private set;
         }
+
+        private TimeSpan _timeConverter;
 
         public override void OnInitialize() {
             Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
@@ -47,6 +53,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
                 BorderColor = Color.White
             };
             backPanel.Width = backPanel.Height = new StyleDimension(194f, 0f);
+            Append(backPanel);
 
             itemPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) {
                 BackgroundColor = new Color(46, 46, 159),
@@ -69,7 +76,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             };
             itemPanel.Append(respawnItemCount);
 
-            addRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: LocalizationUtils.GetLWMTextValue("UI.Shrine.AddText")) {
+            addRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "Add 1") {
                 BackgroundColor = backPanel.BackgroundColor,
                 BorderColor = Color.White,
                 Width = itemPanel.Width,
@@ -80,7 +87,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             addRespawnButton.ProperOnClick += AddRespawnItem;
             backPanel.Append(addRespawnButton);
 
-            takeRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: LocalizationUtils.GetLWMTextValue("UI.Shrine.TakeText")) {
+            takeRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "Take 1") {
                 BackgroundColor = backPanel.BackgroundColor,
                 BorderColor = Color.White,
                 Width = addRespawnButton.Width,
@@ -91,9 +98,39 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             takeRespawnButton.ProperOnClick += TakeRespawnItem;
             backPanel.Append(takeRespawnButton);
 
-            respawnTimerText = new UIBetterText(LocalizationUtils.GetLWMTextValue("UI.Shrine.HarpyCountdown"));
+            respawnTimerZone = new UIElement();
+            respawnTimerZone.Left.Set(itemPanel.Width.Pixels + 4f, 0f);
+            respawnTimerZone.Width.Set(backPanel.Width.Pixels - backPanel.PaddingLeft - backPanel.PaddingRight - itemPanel.Width.Pixels - 4f, 0f);
+            respawnTimerZone.Height.Set(itemPanel.Height.Pixels, 0f);
+            backPanel.Append(respawnTimerZone);
 
-            Append(backPanel);
+            respawnTimerHeader = new UIBetterText("New Respawn Item in:") {
+                HAlign = 0.5f,
+                horizontalTextConstraint = respawnTimerZone.Width.Pixels
+            };
+            respawnTimerZone.Append(respawnTimerHeader);
+
+            respawnTimer = new UIBetterText("00:00", 0.67f, true) {
+                HAlign = 0.5f,
+                horizontalTextConstraint = respawnTimerZone.Width.Pixels
+            };
+            respawnTimer.Top.Set(respawnTimerHeader.Height.Pixels + 12f, 0f);
+            respawnTimerZone.Append(respawnTimer);
+
+            _timeConverter = new TimeSpan();
+        }
+
+        public override void Update(GameTime gameTime) {
+            base.Update(gameTime);
+
+            if (CurrentEntity.remainingRespawnItems < CurrentEntity.CurrentValidHouses) {
+                _timeConverter = new TimeSpan((long)(TimeSpan.TicksPerSecond / (double)60 * CurrentEntity.remainingRespawnTime));
+
+                respawnTimer.SetText(_timeConverter.ToString(@"mm\:ss"));
+            }
+            else {
+                respawnTimer.SetText("\u221E");
+            }
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
@@ -115,7 +152,9 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             CurrentEntity = entity;
 
             respawnItemDisplay.SetItem(NPCUtils.VillagerTypeToRespawnItemType(entity.shrineType));
-            respawnItemCount.SetText(entity.remainingRespawnItems.ToString());
+            addRespawnButton.SetText(LocalizationUtils.GetLWMTextValue("UI.Shrine.AddText"));
+            takeRespawnButton.SetText(LocalizationUtils.GetLWMTextValue("UI.Shrine.TakeText"));
+            respawnTimerHeader.SetText(LocalizationUtils.GetLWMTextValue($"UI.Shrine.{entity.shrineType}Countdown"));
         }
 
         private void AddRespawnItem(UIMouseEvent evt, UIElement listeningElement) {

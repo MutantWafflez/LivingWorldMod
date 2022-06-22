@@ -72,7 +72,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                 CurrentVillagerCount = NPCUtils.GetVillagerCountInZone(villageZone);
                 CurrentValidHouses = NPCUtils.GetValidHousesInZone(villageZone.ToTileCoordinates(), NPCUtils.VillagerTypeToNPCType(shrineType));
 
-                respawnTimeCap = (int)MathHelper.Lerp(FullVillageRespawnTime, EmptyVillageRespawnTime, CurrentValidHouses > 0 ? CurrentVillagerCount / (float)CurrentValidHouses : 0f);
+                respawnTimeCap = (int)MathHelper.Lerp(EmptyVillageRespawnTime, FullVillageRespawnTime, CurrentValidHouses > 0 ? CurrentVillagerCount / (float)CurrentValidHouses : 0f);
                 remainingRespawnTime = (int)MathHelper.Clamp(remainingRespawnTime, 0f, respawnTimeCap);
 
                 SyncDataToClients();
