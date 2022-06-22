@@ -30,6 +30,8 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
 
         public UIPanelButton takeRespawnButton;
 
+        public UIBetterText respawnTimerText;
+
         public VillageShrineEntity CurrentEntity {
             get;
             private set;
@@ -67,7 +69,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             };
             itemPanel.Append(respawnItemCount);
 
-            addRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "Add 1") {
+            addRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: LocalizationUtils.GetLWMTextValue("UI.Shrine.AddText")) {
                 BackgroundColor = backPanel.BackgroundColor,
                 BorderColor = Color.White,
                 Width = itemPanel.Width,
@@ -78,7 +80,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             addRespawnButton.ProperOnClick += AddRespawnItem;
             backPanel.Append(addRespawnButton);
 
-            takeRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "Take 1") {
+            takeRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: LocalizationUtils.GetLWMTextValue("UI.Shrine.TakeText")) {
                 BackgroundColor = backPanel.BackgroundColor,
                 BorderColor = Color.White,
                 Width = addRespawnButton.Width,
@@ -88,6 +90,8 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             takeRespawnButton.Top.Set(addRespawnButton.Top.Pixels + addRespawnButton.Height.Pixels + 4f, 0f);
             takeRespawnButton.ProperOnClick += TakeRespawnItem;
             backPanel.Append(takeRespawnButton);
+
+            respawnTimerText = new UIBetterText(LocalizationUtils.GetLWMTextValue("UI.Shrine.HarpyCountdown"));
 
             Append(backPanel);
         }

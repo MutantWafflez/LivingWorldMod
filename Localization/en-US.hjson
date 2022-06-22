@@ -166,6 +166,12 @@ Mods: {
 				ButtonHoverText: "Villager Housing"
 				VillagerTypeLocked: "{0} Villagers cannot be re-housed until you are liked by them!"
 			}
+			Shrine: {
+				HarpyCountdown: "New Harpy Egg in:"
+
+				AddText: "Add 1"
+				TakeText: "Take 1"
+			}
 		}
 		
 		Event: {
