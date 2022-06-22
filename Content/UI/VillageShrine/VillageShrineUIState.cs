@@ -22,6 +22,10 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
 
         public UIBetterText respawnItemCount;
 
+        public UIPanelButton addRespawnButton;
+
+        public UIPanelButton takeRespawnButton;
+
         public VillageShrineEntity CurrentEntity {
             get;
             private set;
@@ -43,6 +47,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
                 BorderColor = new Color(22, 29, 107)
             };
             itemPanel.Width = itemPanel.Height = new StyleDimension(48f, 0f);
+            itemPanel.SetPadding(0f);
             backPanel.Append(itemPanel);
 
             respawnItemDisplay = new UIBetterItemIcon(new Item(), 48f, true) {
@@ -54,19 +59,39 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             respawnItemCount = new UIBetterText("0") {
                 horizontalTextConstraint = itemPanel.Width.Pixels,
                 HAlign = 0.5f,
-                VAlign = 0.5f
+                VAlign = 0.85f
             };
             itemPanel.Append(respawnItemCount);
+
+            addRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "Add 1") {
+                BackgroundColor = backPanel.BackgroundColor,
+                BorderColor = Color.White,
+                Width = itemPanel.Width,
+                preventItemUsageWhileHovering = true
+            };
+            addRespawnButton.Height.Set(30f, 0f);
+            addRespawnButton.Top.Set(itemPanel.Height.Pixels + 4f, 0f);
+            backPanel.Append(addRespawnButton);
+
+            takeRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "Take 1") {
+                BackgroundColor = backPanel.BackgroundColor,
+                BorderColor = Color.White,
+                Width = addRespawnButton.Width,
+                Height = addRespawnButton.Height,
+                preventItemUsageWhileHovering = true
+            };
+            takeRespawnButton.Top.Set(addRespawnButton.Top.Pixels + addRespawnButton.Height.Pixels + 4f, 0f);
+            backPanel.Append(takeRespawnButton);
 
             Append(backPanel);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
             CalculatedStyle panelDimensions = backPanel.GetDimensions();
-            Vector2 centerOfEntity = CurrentEntity.Position.ToWorldCoordinates(32f, 40f);
+            Vector2 centerOfEntity = CurrentEntity.Position.ToWorldCoordinates(32f, 0f);
 
             backPanel.Left.Set(centerOfEntity.X - panelDimensions.Width / 2f - Main.screenPosition.X, 0f);
-            backPanel.Top.Set(centerOfEntity.Y - 40f - panelDimensions.Height - Main.screenPosition.Y, 0f);
+            backPanel.Top.Set(centerOfEntity.Y - panelDimensions.Height - Main.screenPosition.Y, 0f);
         }
 
         /// <summary>

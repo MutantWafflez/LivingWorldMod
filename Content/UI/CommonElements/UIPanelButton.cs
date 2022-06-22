@@ -1,18 +1,18 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.CommonElements {
     /// <summary>
-    /// A better version of vanilla's UIImage Button, with much more functionality than the vanilla
-    /// counterpart has, for a larger range of uses.
+    /// UIPanel extension that has functionality for being a button.
     /// </summary>
-    public class UIBetterImageButton : UIElement {
+    public class UIPanelButton : UIPanel {
         public UIBetterText buttonText;
 
         public float textSize;
@@ -31,10 +31,6 @@ namespace LivingWorldMod.Content.UI.CommonElements {
 
         private string _text;
 
-        private Asset<Texture2D> _buttonTexture;
-
-        private Asset<Texture2D> _borderTexture;
-
         private float _activeVisibility = 1f;
 
         private float _inactiveVisibility = 0.4f;
@@ -51,13 +47,16 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         /// </summary>
         public event MouseEvent ProperOnClick;
 
-        //Remember to use ImmediateLoad request mode if you request the texture in the parameter!
-        public UIBetterImageButton(Asset<Texture2D> buttonTexture, string text = null, float textSize = 1f) {
-            _buttonTexture = buttonTexture;
+
+        public UIPanelButton(Asset<Texture2D> customBackground, Asset<Texture2D> customBorder, int customCornerSize = 12, int customBarSize = 4, string text = null, float textSize = 1f)
+            : base(customBackground, customBorder, customCornerSize, customBarSize) {
             _text = text;
             this.textSize = textSize;
-            Width.Set(buttonTexture.Value.Width, 0f);
-            Height.Set(buttonTexture.Value.Height, 0f);
+        }
+
+        public UIPanelButton(string text = null, float textSize = 1f) {
+            _text = text;
+            this.textSize = textSize;
         }
 
         public override void OnInitialize() {
@@ -68,7 +67,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             buttonText = new UIBetterText(_text, textSize) {
                 HAlign = 0.5f,
                 VAlign = 0.5f,
-                horizontalTextConstraint = _buttonTexture.Value.Width
+                horizontalTextConstraint = GetDimensions().Width
             };
 
             Append(buttonText);
@@ -101,8 +100,16 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             }
             bool isHovering = ContainsPoint(Main.MouseScreen);
 
-            CalculatedStyle dimensions = GetDimensions();
-            spriteBatch.Draw(_buttonTexture.Value, dimensions.Position(), Color.White * (isHovering ? _activeVisibility : _inactiveVisibility));
+            //Have to do some cheaty shenanigans in order to make the visibility work as normal
+            Color oldBackgroundColor = BackgroundColor;
+            Color oldBorderColor = BorderColor;
+            BackgroundColor = isHovering ? BackgroundColor * _activeVisibility : BackgroundColor * _inactiveVisibility;
+            BorderColor = isHovering ? BorderColor * _activeVisibility : BorderColor * _inactiveVisibility;
+
+            base.DrawSelf(spriteBatch);
+
+            BackgroundColor = oldBackgroundColor;
+            BorderColor = oldBorderColor;
 
             //Hovering functionality
             if (!isHovering) {
@@ -113,24 +120,6 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             if (preventItemUsageWhileHovering) {
                 Main.LocalPlayer.mouseInterface = true;
             }
-
-            if (_borderTexture != null) {
-                spriteBatch.Draw(_borderTexture.Value, dimensions.Position(), Color.White);
-            }
-        }
-
-        public void SetHoverImage(Asset<Texture2D> texture) => _borderTexture = texture;
-
-        public void SetImage(Asset<Texture2D> texture) {
-            _buttonTexture = texture;
-            Width.Set(_buttonTexture.Width(), 0f);
-            Height.Set(_buttonTexture.Height(), 0f);
-
-            if (buttonText is not null) {
-                buttonText.horizontalTextConstraint = _buttonTexture.Width();
-            }
-
-            RecalculateChildren();
         }
 
         public void SetText(string text) {

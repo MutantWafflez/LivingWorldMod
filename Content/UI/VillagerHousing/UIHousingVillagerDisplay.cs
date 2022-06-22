@@ -58,7 +58,7 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
         }
 
         public override void Update(GameTime gameTime) {
-            if (!IsMouseHovering || myVillager is null) {
+            if (!ContainsPoint(Main.MouseScreen) || myVillager is null) {
                 return;
             }
 

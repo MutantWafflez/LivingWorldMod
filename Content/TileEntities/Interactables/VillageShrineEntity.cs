@@ -97,7 +97,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                                 continue;
                             }
 
-                            int npc = NPC.NewNPC(Entity.GetSource_TownSpawn(), WorldGen.bestX * 16, WorldGen.bestY * 16, villagerNPCType);
+                            int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), WorldGen.bestX * 16, WorldGen.bestY * 16, villagerNPCType);
 
                             Main.npc[npc].homeTileX = WorldGen.bestX;
                             Main.npc[npc].homeTileY = WorldGen.bestY;

@@ -208,11 +208,11 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
         }
 
         public override void Update(GameTime gameTime) {
-            if (backImage.IsMouseHovering) {
+            if (backImage.ContainsPoint(Main.MouseScreen)) {
                 Main.LocalPlayer.mouseInterface = true;
             }
 
-            if (_selectedItem != null && buyItemButton.IsMouseHovering && Main.mouseLeft) {
+            if (_selectedItem != null && buyItemButton.ContainsPoint(Main.MouseScreen) && Main.mouseLeft) {
                 Player player = Main.LocalPlayer;
                 ShopItem shopItem = _selectedItem.pertainedInventoryItem;
 
