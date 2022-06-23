@@ -63,9 +63,9 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) {
-            ModContent.GetInstance<VillageShrineEntity>().Kill(i - tileOrigin.X, j - tileOrigin.Y);
+            ModContent.GetInstance<VillageShrineEntity>().Kill(i, j);
             //TODO: Add method to drop other shrines when other villages are added
-            Item.NewItem(new EntitySource_TileBreak(i - tileOrigin.X, j - tileOrigin.Y), new Vector2(i - tileOrigin.X, j - tileOrigin.Y) * 16, 4 * 16, 5 * 16, ModContent.ItemType<HarpyShrineItem>());
+            Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, 4 * 16, 5 * 16, ModContent.ItemType<HarpyShrineItem>());
         }
 
         public override bool RightClick(int i, int j) {

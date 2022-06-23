@@ -193,8 +193,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                 NetMessage.SendData(MessageID.TileEntityPlacement, -1, -1, null, i, j, Type);
             }
 
-            Point16 tileOrigin = ModContent.GetInstance<VillageShrineTile>().tileOrigin;
-            int placedEntity = Place(i - tileOrigin.X, j - tileOrigin.Y);
+            int placedEntity = Place(i, j);
             if (placedEntity != -1) {
                 (ByID[placedEntity] as VillageShrineEntity)!.InstantiateVillageZone();
             }
