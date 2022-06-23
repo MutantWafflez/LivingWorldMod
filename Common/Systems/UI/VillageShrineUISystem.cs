@@ -4,6 +4,7 @@ using LivingWorldMod.Content.UI.VillageShrine;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
@@ -39,14 +40,14 @@ namespace LivingWorldMod.Common.Systems.UI {
         /// Opens (if no shrine panel is already open) or regens the ShrineUIState (if a shrine panel is currently open)
         /// with the passed in entity.
         /// </summary>
-        /// <param name="entity"></param>
-        public void OpenOrRegenShrineState(VillageShrineEntity entity) {
+        /// <param name="entityPos"> The position of the new entity to bind to. </param>
+        public void OpenOrRegenShrineState(Point16 entityPos) {
             if (correspondingInterface.CurrentState is null) {
                 correspondingInterface.SetState(correspondingUIState);
             }
 
             if (correspondingInterface.CurrentState == correspondingUIState) {
-                correspondingUIState.RegenState(entity);
+                correspondingUIState.RegenState(entityPos);
             }
         }
 

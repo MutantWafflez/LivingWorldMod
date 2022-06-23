@@ -5,6 +5,7 @@ using LivingWorldMod.Custom.Utilities;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using LivingWorldMod.Common.Systems.UI;
 using Terraria.DataStructures;
 using Terraria;
 using Terraria.ID;
@@ -28,7 +29,7 @@ namespace LivingWorldMod.Core.PacketHandlers {
         public const byte AddRespawnItem = 1;
 
         /// <summary>
-        /// Sent/Recieved when a player with a shrine UI open wants to take a respawn item from the
+        /// Sent/Received when a player with a shrine UI open wants to take a respawn item from the
         /// shrine's inventory.
         /// </summary>
         public const byte TakeRespawnItem = 2;
@@ -74,6 +75,8 @@ namespace LivingWorldMod.Core.PacketHandlers {
 
                             if (TileEntity.ByPosition.TryGetValue(entityPos, out TileEntity entity) && entity is VillageShrineEntity shrineEntity) {
                                 Main.LocalPlayer.QuickSpawnItem(new EntitySource_Sync(), NPCUtils.VillagerTypeToRespawnItemType(shrineEntity.shrineType));
+
+                                ModContent.GetInstance<VillageShrineUISystem>().OpenOrRegenShrineState(entityPos);
                             }
                             else {
                                 ModContent.GetInstance<LivingWorldMod>().Logger.Error($"Failed AddRespawnItem received, but got invalid/no entity at position: {entityPos}");
@@ -112,6 +115,8 @@ namespace LivingWorldMod.Core.PacketHandlers {
                         else {
                             if (TileEntity.ByPosition.TryGetValue(entityPos, out TileEntity entity) && entity is VillageShrineEntity shrineEntity) {
                                 Main.LocalPlayer.QuickSpawnItem(new EntitySource_Sync(), NPCUtils.VillagerTypeToRespawnItemType(shrineEntity.shrineType));
+
+                                ModContent.GetInstance<VillageShrineUISystem>().OpenOrRegenShrineState(entityPos);
                             }
                             else {
                                 ModContent.GetInstance<LivingWorldMod>().Logger.Error($"Successful TakeRespawnItem received, but got invalid/no entity at position: {entityPos}");

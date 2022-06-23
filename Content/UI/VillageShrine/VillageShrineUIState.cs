@@ -2,6 +2,7 @@
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Content.UI.CommonElements;
 using LivingWorldMod.Core.PacketHandlers;
+using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -47,8 +48,13 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
         public UIBetterImageButton showVillageRadiusButton;
 
         public VillageShrineEntity CurrentEntity {
-            get;
-            private set;
+            get {
+                if (TileEntity.ByPosition.ContainsKey(_entityPosition) && TileEntity.ByPosition[_entityPosition] is VillageShrineEntity entity) {
+                    return entity;
+                }
+
+                return null;
+            }
         }
 
         public bool ShowVillageRadius {
@@ -57,6 +63,8 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
         }
 
         private TimeSpan _timeConverter;
+
+        private Point16 _entityPosition;
 
         public override void OnInitialize() {
             Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
@@ -161,48 +169,57 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
         }
 
         public override void Update(GameTime gameTime) {
-            base.Update(gameTime);
+            VillageShrineEntity currentEntity = CurrentEntity;
 
-            if (CurrentEntity.remainingRespawnItems < CurrentEntity.CurrentValidHouses) {
-                _timeConverter = new TimeSpan((long)(TimeSpan.TicksPerSecond / (double)60 * CurrentEntity.remainingRespawnTime));
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                currentEntity.clientTimer++;
+            }
+
+            if (currentEntity.remainingRespawnItems < currentEntity.CurrentValidHouses) {
+                _timeConverter = new TimeSpan((long)(TimeSpan.TicksPerSecond / (double)60 * (currentEntity.remainingRespawnTime - currentEntity.clientTimer)));
 
                 respawnTimer.SetText(_timeConverter.ToString(@"mm\:ss"));
             }
             else {
                 respawnTimer.SetText("\u221E");
             }
+
+            base.Update(gameTime);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
             CalculatedStyle panelDimensions = backPanel.GetDimensions();
-            Vector2 centerOfEntity = CurrentEntity.Position.ToWorldCoordinates(32f, 0f);
+            VillageShrineEntity currentEntity = CurrentEntity;
+            Vector2 centerOfEntity = _entityPosition.ToWorldCoordinates(32f, 0f);
 
             backPanel.Left.Set(centerOfEntity.X - panelDimensions.Width / 2f - Main.screenPosition.X, 0f);
             backPanel.Top.Set(centerOfEntity.Y - panelDimensions.Height - Main.screenPosition.Y, 0f);
 
-            respawnItemCount.SetText(CurrentEntity.remainingRespawnItems.ToString());
-            addRespawnButton.isVisible = CurrentEntity.remainingRespawnItems < CurrentEntity.CurrentValidHouses;
-            takeRespawnButton.isVisible = CurrentEntity.remainingRespawnItems > 0;
+            respawnItemCount.SetText(currentEntity.remainingRespawnItems.ToString());
+            addRespawnButton.isVisible = currentEntity.remainingRespawnItems < currentEntity.CurrentValidHouses;
+            takeRespawnButton.isVisible = currentEntity.remainingRespawnItems > 0;
 
-            houseCountText.SetText(CurrentEntity.CurrentValidHouses.ToString());
-            takenHouseCountText.SetText(CurrentEntity.CurrentVillagerCount.ToString());
+            houseCountText.SetText(currentEntity.CurrentValidHouses.ToString());
+            takenHouseCountText.SetText(currentEntity.CurrentVillagerCount.ToString());
         }
 
         /// <summary>
         /// Regenerates this UI state with the new passed in shrine entity.
         /// </summary>
-        /// <param name="entity"> The new entity that this state will bind to. </param>
-        public void RegenState(VillageShrineEntity entity) {
-            CurrentEntity = entity;
+        /// <param name="entityPos"> The position of the new entity to bind to. </param>
+        public void RegenState(Point16 entityPos) {
+            _entityPosition = entityPos;
+            VillagerType shrineType = CurrentEntity.shrineType;
 
-            respawnItemDisplay.SetItem(NPCUtils.VillagerTypeToRespawnItemType(entity.shrineType));
+            respawnItemDisplay.SetItem(NPCUtils.VillagerTypeToRespawnItemType(shrineType));
             addRespawnButton.SetText(LocalizationUtils.GetLWMTextValue("UI.Shrine.AddText"));
             takeRespawnButton.SetText(LocalizationUtils.GetLWMTextValue("UI.Shrine.TakeText"));
-            respawnTimerHeader.SetText(LocalizationUtils.GetLWMTextValue($"UI.Shrine.{entity.shrineType}Countdown"));
+            respawnTimerHeader.SetText(LocalizationUtils.GetLWMTextValue($"UI.Shrine.{shrineType}Countdown"));
         }
 
         private void AddRespawnItem(UIMouseEvent evt, UIElement listeningElement) {
-            int respawnItemType = NPCUtils.VillagerTypeToRespawnItemType(CurrentEntity.shrineType);
+            VillageShrineEntity currentEntity = CurrentEntity;
+            int respawnItemType = NPCUtils.VillagerTypeToRespawnItemType(currentEntity.shrineType);
             Player player = Main.LocalPlayer;
 
             if (Main.netMode == NetmodeID.MultiplayerClient) {
@@ -210,7 +227,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
                     player.inventory[player.FindItem(respawnItemType)].stack--;
 
                     ModPacket packet = ModContent.GetInstance<ShrinePacketHandler>().GetPacket(ShrinePacketHandler.AddRespawnItem);
-                    packet.WriteVector2(CurrentEntity.Position.ToVector2());
+                    packet.WriteVector2(currentEntity.Position.ToVector2());
                     packet.Send();
                 }
             }
@@ -218,27 +235,28 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
                 if (player.HasItem(respawnItemType)) {
                     player.inventory[player.FindItem(respawnItemType)].stack--;
 
-                    CurrentEntity.remainingRespawnItems++;
+                    currentEntity.remainingRespawnItems++;
                 }
             }
         }
 
         private void TakeRespawnItem(UIMouseEvent evt, UIElement listeningElement) {
+            VillageShrineEntity currentEntity = CurrentEntity;
             Player player = Main.LocalPlayer;
-            Item respawnItem = new Item(NPCUtils.VillagerTypeToRespawnItemType(CurrentEntity.shrineType));
+            Item respawnItem = new Item(NPCUtils.VillagerTypeToRespawnItemType(currentEntity.shrineType));
 
             if (Main.netMode == NetmodeID.MultiplayerClient) {
                 if (player.CanAcceptItemIntoInventory(respawnItem)) {
                     ModPacket packet = ModContent.GetInstance<ShrinePacketHandler>().GetPacket(ShrinePacketHandler.TakeRespawnItem);
-                    packet.WriteVector2(CurrentEntity.Position.ToVector2());
+                    packet.WriteVector2(currentEntity.Position.ToVector2());
                     packet.Send();
                 }
             }
             else {
-                if (player.CanAcceptItemIntoInventory(respawnItem) && CurrentEntity.remainingRespawnItems < CurrentEntity.CurrentValidHouses) {
-                    player.QuickSpawnItem(new EntitySource_TileEntity(CurrentEntity), respawnItem);
+                if (player.CanAcceptItemIntoInventory(respawnItem) && currentEntity.remainingRespawnItems < currentEntity.CurrentValidHouses) {
+                    player.QuickSpawnItem(new EntitySource_TileEntity(currentEntity), respawnItem);
 
-                    CurrentEntity.remainingRespawnItems--;
+                    currentEntity.remainingRespawnItems--;
                 }
             }
         }

@@ -30,6 +30,10 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
         public int respawnTimeCap;
 
+        //This isn't updated on the server, and is manually updated by the client in order
+        //for parity between client and server.
+        public int clientTimer;
+
         public override int ValidTileID => ModContent.TileType<VillageShrineTile>();
 
         public int CurrentVillagerCount {
@@ -66,6 +70,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                 SyncDataToClients();
             }
 
+            //Sync from server to clients every 4 seconds
             if (--_syncTimer <= 0) {
                 _syncTimer = 60 * 4;
 
@@ -81,6 +86,8 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             }
 
             remainingRespawnTime = (int)MathHelper.Clamp(remainingRespawnTime - 1, 0f, respawnTimeCap);
+
+            //Natural Respawn Item regenerating
             if (remainingRespawnTime <= 0 && remainingRespawnItems <= CurrentValidHouses) {
                 remainingRespawnTime = respawnTimeCap;
                 remainingRespawnItems++;
@@ -88,6 +95,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                 SyncDataToClients();
             }
 
+            //NPC respawning
             if (CurrentVillagerCount < CurrentValidHouses && remainingRespawnItems > 0) {
                 Rectangle housingRectangle = villageZone.ToTileCoordinates().ToRectangle();
                 int villagerNPCType = NPCUtils.VillagerTypeToNPCType(shrineType);
@@ -124,6 +132,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             writer.WriteVector2(villageZone.center);
             writer.Write(villageZone.radius);
 
+            writer.Write(remainingRespawnItems);
             writer.Write(remainingRespawnTime);
             writer.Write(respawnTimeCap);
 
@@ -135,11 +144,14 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             shrineType = (VillagerType)reader.ReadInt32();
 
             villageZone = new Circle(reader.ReadVector2(), reader.ReadSingle());
+            remainingRespawnItems = reader.ReadInt32();
             remainingRespawnTime = reader.ReadInt32();
             respawnTimeCap = reader.ReadInt32();
 
             CurrentVillagerCount = reader.ReadInt32();
             CurrentValidHouses = reader.ReadInt32();
+
+            clientTimer = 0;
         }
 
         public override void OnNetPlace() {
@@ -187,8 +199,8 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
             switch (shrineSystem.correspondingInterface.CurrentState) {
                 case null:
-                case VillageShrineUIState state when state.CurrentEntity != this:
-                    shrineSystem.OpenOrRegenShrineState(this);
+                case VillageShrineUIState state when state.CurrentEntity.Position != Position:
+                    shrineSystem.OpenOrRegenShrineState(Position);
                     break;
                 case VillageShrineUIState:
                     shrineSystem.CloseShrineState();
