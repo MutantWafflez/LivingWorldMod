@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Content.Items.Placeables.Interactables;
+﻿using LivingWorldMod.Common.Systems.UI;
+using LivingWorldMod.Content.Items.Placeables.Interactables;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
@@ -63,6 +64,11 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) {
+            VillageShrineUISystem shrineUISystem = ModContent.GetInstance<VillageShrineUISystem>();
+            if (shrineUISystem.correspondingUIState.EntityPosition == new Point16(i, j)) {
+                shrineUISystem.CloseShrineState();
+            }
+
             ModContent.GetInstance<VillageShrineEntity>().Kill(i, j);
             //TODO: Add method to drop other shrines when other villages are added
             Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, 4 * 16, 5 * 16, ModContent.ItemType<HarpyShrineItem>());

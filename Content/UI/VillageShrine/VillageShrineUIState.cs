@@ -49,12 +49,17 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
 
         public VillageShrineEntity CurrentEntity {
             get {
-                if (TileEntity.ByPosition.ContainsKey(_entityPosition) && TileEntity.ByPosition[_entityPosition] is VillageShrineEntity entity) {
+                if (TileEntity.ByPosition.ContainsKey(EntityPosition) && TileEntity.ByPosition[EntityPosition] is VillageShrineEntity entity) {
                     return entity;
                 }
 
                 return null;
             }
+        }
+
+        public Point16 EntityPosition {
+            get;
+            private set;
         }
 
         public bool ShowVillageRadius {
@@ -63,8 +68,6 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
         }
 
         private TimeSpan _timeConverter;
-
-        private Point16 _entityPosition;
 
         public override void OnInitialize() {
             Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
@@ -190,7 +193,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
         protected override void DrawSelf(SpriteBatch spriteBatch) {
             CalculatedStyle panelDimensions = backPanel.GetDimensions();
             VillageShrineEntity currentEntity = CurrentEntity;
-            Vector2 centerOfEntity = _entityPosition.ToWorldCoordinates(32f, 0f);
+            Vector2 centerOfEntity = EntityPosition.ToWorldCoordinates(32f, 0f);
 
             backPanel.Left.Set(centerOfEntity.X - panelDimensions.Width / 2f - Main.screenPosition.X, 0f);
             backPanel.Top.Set(centerOfEntity.Y - panelDimensions.Height - Main.screenPosition.Y, 0f);
@@ -208,7 +211,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
         /// </summary>
         /// <param name="entityPos"> The position of the new entity to bind to. </param>
         public void RegenState(Point16 entityPos) {
-            _entityPosition = entityPos;
+            EntityPosition = entityPos;
             VillagerType shrineType = CurrentEntity.shrineType;
 
             respawnItemDisplay.SetItem(NPCUtils.VillagerTypeToRespawnItemType(shrineType));

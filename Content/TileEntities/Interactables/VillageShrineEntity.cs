@@ -185,8 +185,6 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         }
 
         public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate) {
-            shrineType = (VillagerType)style;
-
             if (Main.netMode == NetmodeID.MultiplayerClient) {
                 NetMessage.SendTileSquare(Main.myPlayer, i, j, 4, 5);
 
@@ -194,8 +192,11 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             }
 
             int placedEntity = Place(i, j);
-            if (placedEntity != -1) {
-                (ByID[placedEntity] as VillageShrineEntity)!.InstantiateVillageZone();
+            if (TileEntityUtils.TryFindModEntity(placedEntity, out VillageShrineEntity entity)) {
+                entity.InstantiateVillageZone();
+                entity.shrineType = (VillagerType)style;
+                entity.remainingRespawnTime = EmptyVillageRespawnTime;
+                entity.respawnTimeCap = EmptyVillageRespawnTime;
             }
 
             return placedEntity;
