@@ -1,8 +1,11 @@
 ﻿using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Content.UI.VillageShrine;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.GameInput;
+using Terraria.ID;
 using Terraria.UI;
 
 namespace LivingWorldMod.Common.Systems.UI {
@@ -12,6 +15,17 @@ namespace LivingWorldMod.Common.Systems.UI {
         public override string InternalInterfaceName => "Village Shrine Panel";
 
         public override InterfaceScaleType ScaleType => InterfaceScaleType.Game;
+
+        public override void PostUpdateEverything() {
+            if (correspondingInterface.CurrentState == correspondingUIState && correspondingUIState.ShowVillageRadius && correspondingUIState.CurrentEntity is { } entity) {
+                Dust dust = Dust.NewDustPerfect(entity.Position.ToWorldCoordinates(32f, 40f), DustID.BlueFairy);
+                dust.active = false;
+                dust.noGravity = true;
+                dust.scale = 1.25f;
+
+                DustUtils.CreateCircle(dust.position, VillageShrineEntity.DefaultVillageRadius, dust);
+            }
+        }
 
         public override void UpdateUI(GameTime gameTime) {
             //Although the zoom is properly adjusted for drawing, it is NOT properly adjusted for updating, and since we're using

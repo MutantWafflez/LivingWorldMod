@@ -36,7 +36,22 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
 
         public UIBetterText respawnTimer;
 
+        public UIImage houseIcon;
+
+        public UIBetterText houseCountText;
+
+        public UIImage takenHouseIcon;
+
+        public UIBetterText takenHouseCountText;
+
+        public UIBetterImageButton showVillageRadiusButton;
+
         public VillageShrineEntity CurrentEntity {
+            get;
+            private set;
+        }
+
+        public bool ShowVillageRadius {
             get;
             private set;
         }
@@ -117,7 +132,32 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             respawnTimer.Top.Set(respawnTimerHeader.Height.Pixels + 12f, 0f);
             respawnTimerZone.Append(respawnTimer);
 
-            _timeConverter = new TimeSpan();
+            houseIcon = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/DisplaySlots_4", AssetRequestMode.ImmediateLoad));
+            houseIcon.Top.Set(takeRespawnButton.Top.Pixels + takeRespawnButton.Height.Pixels + 2f, 0f);
+            backPanel.Append(houseIcon);
+
+            houseCountText = new UIBetterText("0");
+            houseCountText.Top.Set(houseIcon.Top.Pixels + 4f, 0f);
+            houseCountText.Left.Set(houseIcon.Width.Pixels + 4f, 0f);
+            backPanel.Append(houseCountText);
+
+            takenHouseIcon = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/DisplaySlots_7", AssetRequestMode.ImmediateLoad));
+            takenHouseIcon.Top.Set(houseIcon.Top.Pixels + houseIcon.Height.Pixels + 2f, 0f);
+            takenHouseIcon.Left.Set(-2f, 0f);
+            backPanel.Append(takenHouseIcon);
+
+            takenHouseCountText = new UIBetterText("0");
+            takenHouseCountText.Top.Set(takenHouseIcon.Top.Pixels + 6f, 0f);
+            takenHouseCountText.Left.Set(takenHouseIcon.Width.Pixels + 2f, 0f);
+            backPanel.Append(takenHouseCountText);
+
+            showVillageRadiusButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonFavoriteInactive", AssetRequestMode.ImmediateLoad)) {
+                HAlign = 1f,
+                VAlign = 1f
+            };
+            showVillageRadiusButton.WhileHovering += HoveringVillageRadiusButton;
+            showVillageRadiusButton.ProperOnClick += ClickVillagerRadiusButton;
+            backPanel.Append(showVillageRadiusButton);
         }
 
         public override void Update(GameTime gameTime) {
@@ -139,9 +179,13 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
 
             backPanel.Left.Set(centerOfEntity.X - panelDimensions.Width / 2f - Main.screenPosition.X, 0f);
             backPanel.Top.Set(centerOfEntity.Y - panelDimensions.Height - Main.screenPosition.Y, 0f);
+
             respawnItemCount.SetText(CurrentEntity.remainingRespawnItems.ToString());
             addRespawnButton.isVisible = CurrentEntity.remainingRespawnItems < CurrentEntity.CurrentValidHouses;
             takeRespawnButton.isVisible = CurrentEntity.remainingRespawnItems > 0;
+
+            houseCountText.SetText(CurrentEntity.CurrentValidHouses.ToString());
+            takenHouseCountText.SetText(CurrentEntity.CurrentVillagerCount.ToString());
         }
 
         /// <summary>
@@ -197,6 +241,16 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
                     CurrentEntity.remainingRespawnItems--;
                 }
             }
+        }
+
+        private void HoveringVillageRadiusButton() {
+            Main.instance.MouseText(LocalizationUtils.GetLWMTextValue("UI.Shrine." + (ShowVillageRadius ? "Disable" : "Enable") + "VillageRadius"));
+        }
+
+        private void ClickVillagerRadiusButton(UIMouseEvent evt, UIElement listeningElement) {
+            ShowVillageRadius = !ShowVillageRadius;
+
+            showVillageRadiusButton.SetImage(Main.Assets.Request<Texture2D>("Images/UI/ButtonFavorite" + (ShowVillageRadius ? "Active" : "Inactive"), AssetRequestMode.ImmediateLoad));
         }
     }
 }

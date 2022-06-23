@@ -171,6 +171,9 @@ Mods: {
 
 				AddText: "Add 1"
 				TakeText: "Take 1"
+
+				DisableVillageRadius: "Hide Village Radius Display"
+				EnableVillageRadius: "Show Village Radius Display"
 			}
 		}
 		
