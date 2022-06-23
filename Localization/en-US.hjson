@@ -179,6 +179,10 @@ Mods: {
 		
 		Event: {
 		    WaystoneActivation: "Waystone Activated!"
+
+			VillagerRespawned: {
+				Harpy: "{0} the Harpy Villager has hatched!"
+			}
 		}
 
 		MapInfo: {

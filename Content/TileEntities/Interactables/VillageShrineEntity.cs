@@ -12,6 +12,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using LivingWorldMod.Custom.Utilities;
+using Terraria.Chat;
+using Terraria.Localization;
 
 namespace LivingWorldMod.Content.TileEntities.Interactables {
     /// <summary>
@@ -115,6 +117,15 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
                             Main.npc[npc].homeTileX = WorldGen.bestX;
                             Main.npc[npc].homeTileY = WorldGen.bestY;
+
+                            Color arrivalColor = new Color(50, 125, 255);
+                            string arrivalText = LocalizationUtils.GetLWMTextValue($"Event.VillagerRespawned.{shrineType}", new object[] { Main.npc[npc].GivenOrTypeName });
+                            if (Main.netMode == NetmodeID.Server) {
+                                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(arrivalText), arrivalColor);
+                            }
+                            else {
+                                Main.NewText(arrivalText, arrivalColor);
+                            }
 
                             remainingRespawnItems--;
                             CurrentVillagerCount++;
