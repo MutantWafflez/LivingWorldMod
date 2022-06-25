@@ -308,7 +308,8 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
                         if (WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(harpyType)) {
                             WorldGen.ScoreRoom(npcTypeAskingToScoreRoom: harpyType);
 
-                            if (Main.npc.Any(npc => npc.homeTileX == WorldGen.bestX && npc.homeTileY == WorldGen.bestY)) {
+                            //A "high score" of -1 means the room is occupied or the score otherwise failed
+                            if (WorldGen.hiScore == -1) {
                                 continue;
                             }
 

@@ -28,6 +28,10 @@ namespace LivingWorldMod.Core.Patches {
             IL.Terraria.Main.DrawInterface_7_TownNPCHouseBanners += BannersVisibleWhileInVillagerHousingMenu;
 
             IL.Terraria.Main.DrawNPCHousesInWorld += DrawVillagerBannerInHouses;
+
+            IL.Terraria.WorldGen.ScoreRoom_IsThisRoomOccupiedBySomeone += RoomOccupancyCheck;
+
+            IL.Terraria.WorldGen.ScoreRoom += IgnoreRoomOccupancy;
         }
 
         public void Unload() { }
@@ -367,6 +371,31 @@ namespace LivingWorldMod.Core.Patches {
             });
             //Finally, add that copied false label we took
             c.Emit(OpCodes.Brfalse_S, falseTransformLabel);
+        }
+
+        private void RoomOccupancyCheck(ILContext il) {
+            //This edit is simple; we will be allowing villagers to properly check along-side normal TownNPCs for the occupancy check vanilla does.
+
+            ILCursor c = new ILCursor(il);
+
+            //Navigate to townNPC check
+            c.ErrorOnFailedGotoNext(i => i.MatchLdfld<NPC>(nameof(NPC.townNPC)));
+
+            //Remove the check, add our own delegate check
+            c.Remove();
+            c.EmitDelegate<Func<NPC, bool>>(npc => npc.townNPC || npc.ModNPC is Villager);
+        }
+
+        private void IgnoreRoomOccupancy(ILContext il) {
+            //Another simple edit; this edit will allow us to get WorldGen.bestX and WorldGen.bestY for a room, ignoring if the room is occupied.
+
+            ILCursor c = new ILCursor(il);
+
+            //Navigate to occupancy check
+            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCall<WorldGen>("ScoreRoom_IsThisRoomOccupiedBySomeone"));
+
+            //Emit our check to see if our IgnoreOccupancy in HousingUtils.cs is true, and if so, automatically return false, ignoring occupancy
+            c.EmitDelegate<Func<bool, bool>>((isOccupied) => !HousingUtils.IgnoreHouseOccupancy && isOccupied);
         }
     }
 }

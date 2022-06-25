@@ -81,9 +81,9 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             if (--_syncTimer <= 0) {
                 _syncTimer = 60 * 10;
 
-                CurrentHousedVillagersCount = NPCUtils.NPCCountHousedInZone(tileVillageZone, villagerNPCType);
-                if (_houseLocations is null || !NPCUtils.LocationsValidForHousing(_houseLocations, villagerNPCType)) {
-                    _houseLocations = NPCUtils.GetValidHousesInZone(tileVillageZone, villagerNPCType);
+                CurrentHousedVillagersCount = HousingUtils.NPCCountHousedInZone(tileVillageZone, villagerNPCType);
+                if (_houseLocations is null || !HousingUtils.LocationsValidForHousing(_houseLocations, villagerNPCType)) {
+                    _houseLocations = HousingUtils.GetValidHousesInZone(tileVillageZone, villagerNPCType);
                     CurrentValidHouses = _houseLocations.Count;
                 }
 
@@ -116,7 +116,8 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                         if (WorldGen.InWorld(position.X, position.Y) && WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(villagerNPCType)) {
                             WorldGen.ScoreRoom(npcTypeAskingToScoreRoom: villagerNPCType);
 
-                            if (Main.npc.Any(npc => npc.active && !npc.homeless && npc.homeTileX == WorldGen.bestX && npc.homeTileY == WorldGen.bestY)) {
+                            //A "high score" of -1 means the room is occupied or the score otherwise failed
+                            if (WorldGen.hiScore == -1) {
                                 continue;
                             }
 
