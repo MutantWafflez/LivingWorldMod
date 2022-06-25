@@ -81,46 +81,17 @@ namespace LivingWorldMod.Custom.Utilities {
         }
 
         /// <summary>
-        /// Gets &amp; returns the count of all houses that are valid housing within the passed in zone with the passed in
+        /// Gets &amp; returns the positions of all houses that are valid housing within the passed in zone with the passed in
         /// NPC type. Make sure the passed in zone is in tile coordinates.
         /// </summary>
         /// <param name="zone"> The zone to search in. This should be tile coordinates. </param>
         /// <param name="npcType"> The type of NPC to check the housing with. If you want "Normal" checking, pass in the Guide type. </param>
-        public static int GetValidHousesInZone(Rectangle zone, int npcType) {
-            List<Point16> foundHouses = new List<Point16>();
-
-            for (int i = 0; i < zone.Width; i++) {
-                for (int j = 0; j < zone.Height; j++) {
-                    Point position = new Point(zone.X + i, zone.Y + j);
-
-                    if (WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(npcType)) {
-                        WorldGen.ScoreRoom(npcTypeAskingToScoreRoom: npcType);
-                        Point16 bestPoint = new Point16(WorldGen.bestX, WorldGen.bestY);
-
-                        if (foundHouses.Contains(bestPoint)) {
-                            continue;
-                        }
-
-                        foundHouses.Add(bestPoint);
-                    }
-                }
-            }
-
-            return foundHouses.Count;
-        }
-
-        /// <summary>
-        /// Gets &amp; returns the count of all houses that are valid housing within the passed in zone with the passed in
-        /// NPC type. Make sure the passed in zone is in tile coordinates.
-        /// </summary>
-        /// <param name="zone"> The zone to search in. This should be tile coordinates. </param>
-        /// <param name="npcType"> The type of NPC to check the housing with. If you want "Normal" checking, pass in the Guide type. </param>
-        public static int GetValidHousesInZone(Circle zone, int npcType) {
+        public static List<Point16> GetValidHousesInZone(Circle zone, int npcType) {
             List<Point16> foundHouses = new List<Point16>();
             Rectangle rectangle = zone.ToRectangle();
 
-            for (int i = 0; i < rectangle.Width; i++) {
-                for (int j = 0; j < rectangle.Height; j++) {
+            for (int i = 0; i < rectangle.Width; i += 2) {
+                for (int j = 0; j < rectangle.Height; j += 2) {
                     Point position = new Point(rectangle.X + i, rectangle.Y + j);
 
                     if (WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(npcType)) {
@@ -136,7 +107,28 @@ namespace LivingWorldMod.Custom.Utilities {
                 }
             }
 
-            return foundHouses.Count;
+            return foundHouses;
+        }
+
+        /// <summary>
+        /// Returns whether or not all of the passed in positions are all within regions
+        /// considered to be valid housing.
+        /// </summary>
+        /// <param name="housePositions"> Every position to check for valid housing. </param>
+        /// <param name="npcType"> The NPC type to be testing against for house validity. </param>
+        /// <param name="adjustForBest">
+        /// Whether or not to move the position up 1 tile when checking if the position is valid.
+        /// This is necessary if positions calculated with WorldGen's bestX and bestY values are passed in,
+        /// since the Y value is typically on a floor tile.
+        /// </param>
+        public static bool LocationsValidForHousing(List<Point16> housePositions, int npcType, bool adjustForBest = true) {
+            foreach (Point16 housePosition in housePositions) {
+                if (!(WorldGen.StartRoomCheck(housePosition.X, housePosition.Y - (adjustForBest ? 1 : 0)) && WorldGen.RoomNeeds(npcType))) {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

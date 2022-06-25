@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Custom.Enums;
+﻿using System.Collections.Generic;
+using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using System.IO;
 using System.Linq;
@@ -50,6 +51,8 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
         private int _syncTimer;
 
+        private List<Point16> _houseLocations;
+
         public const float DefaultVillageRadius = 1360f;
 
         public const int EmptyVillageRespawnTime = 60 * 60 * 15;
@@ -71,13 +74,17 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
                 SyncDataToClients();
             }
+            int villagerNPCType = NPCUtils.VillagerTypeToNPCType(shrineType);
 
-            //Sync from server to clients every 4 seconds
+            //Sync from server to clients every 10 seconds
             if (--_syncTimer <= 0) {
-                _syncTimer = 60 * 4;
+                _syncTimer = 60 * 10;
 
                 CurrentVillagerCount = NPCUtils.GetVillagerCountInZone(villageZone);
-                CurrentValidHouses = NPCUtils.GetValidHousesInZone(villageZone.ToTileCoordinates(), NPCUtils.VillagerTypeToNPCType(shrineType));
+                if (_houseLocations is null || !NPCUtils.LocationsValidForHousing(_houseLocations, villagerNPCType)) {
+                    _houseLocations = NPCUtils.GetValidHousesInZone(villageZone.ToTileCoordinates(), villagerNPCType);
+                    CurrentValidHouses = _houseLocations.Count;
+                }
 
                 respawnTimeCap = (int)MathHelper.Lerp(EmptyVillageRespawnTime, FullVillageRespawnTime, CurrentValidHouses > 0 ? CurrentVillagerCount / (float)CurrentValidHouses : 0f);
                 remainingRespawnTime = (int)MathHelper.Clamp(remainingRespawnTime, 0f, respawnTimeCap);
@@ -100,7 +107,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             //NPC respawning
             if (CurrentVillagerCount < CurrentValidHouses && remainingRespawnItems > 0) {
                 Rectangle housingRectangle = villageZone.ToTileCoordinates().ToRectangle();
-                int villagerNPCType = NPCUtils.VillagerTypeToNPCType(shrineType);
+
 
                 for (int i = 0; i < housingRectangle.Width; i++) {
                     for (int j = 0; j < housingRectangle.Height; j++) {
