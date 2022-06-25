@@ -53,7 +53,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
         private List<Point16> _houseLocations;
 
-        public const float DefaultVillageRadius = 1360f;
+        public const float DefaultVillageRadius = 90f * 16f;
 
         public const int EmptyVillageRespawnTime = 60 * 60 * 15;
 
@@ -75,14 +75,15 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                 SyncDataToClients();
             }
             int villagerNPCType = NPCUtils.VillagerTypeToNPCType(shrineType);
+            Circle tileVillageZone = villageZone.ToTileCoordinates();
 
             //Sync from server to clients every 10 seconds
             if (--_syncTimer <= 0) {
                 _syncTimer = 60 * 10;
 
-                CurrentVillagerCount = NPCUtils.GetVillagerCountInZone(villageZone);
+                CurrentVillagerCount = NPCUtils.NPCCountHousedInZone(tileVillageZone, villagerNPCType);
                 if (_houseLocations is null || !NPCUtils.LocationsValidForHousing(_houseLocations, villagerNPCType)) {
-                    _houseLocations = NPCUtils.GetValidHousesInZone(villageZone.ToTileCoordinates(), villagerNPCType);
+                    _houseLocations = NPCUtils.GetValidHousesInZone(tileVillageZone, villagerNPCType);
                     CurrentValidHouses = _houseLocations.Count;
                 }
 
@@ -106,17 +107,16 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
             //NPC respawning
             if (CurrentVillagerCount < CurrentValidHouses && remainingRespawnItems > 0) {
-                Rectangle housingRectangle = villageZone.ToTileCoordinates().ToRectangle();
+                Rectangle housingRectangle = tileVillageZone.ToRectangle();
 
-
-                for (int i = 0; i < housingRectangle.Width; i++) {
-                    for (int j = 0; j < housingRectangle.Height; j++) {
+                for (int i = 0; i < housingRectangle.Width; i += 2) {
+                    for (int j = 0; j < housingRectangle.Height; j += 2) {
                         Point position = new Point(housingRectangle.X + i, housingRectangle.Y + j);
 
-                        if (WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(villagerNPCType)) {
+                        if (WorldGen.InWorld(position.X, position.Y) && WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(villagerNPCType)) {
                             WorldGen.ScoreRoom(npcTypeAskingToScoreRoom: villagerNPCType);
 
-                            if (Main.npc.Any(npc => npc.active && npc.homeTileX == WorldGen.bestX && npc.homeTileY == WorldGen.bestY)) {
+                            if (Main.npc.Any(npc => npc.active && !npc.homeless && npc.homeTileX == WorldGen.bestX && npc.homeTileY == WorldGen.bestY)) {
                                 continue;
                             }
 

@@ -5,6 +5,7 @@ using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using LivingWorldMod.Content.Items.RespawnItems;
 using Terraria.DataStructures;
 using Terraria;
@@ -61,26 +62,6 @@ namespace LivingWorldMod.Custom.Utilities {
         }
 
         /// <summary>
-        /// Searches through all active NPCs in the npc array and returns how many of them are villagers and
-        /// are currently within the the circle zone provided.
-        /// </summary>
-        /// <param name="zone"> The zone that an NPC must be within to be considered "In The Zone." </param>
-        /// <returns></returns>
-        public static int GetVillagerCountInZone(Circle zone) {
-            int count = 0;
-
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-
-                if (npc.active && npc.ModNPC is Villager && zone.ContainsPoint(npc.Center)) {
-                    count++;
-                }
-            }
-
-            return count;
-        }
-
-        /// <summary>
         /// Gets &amp; returns the positions of all houses that are valid housing within the passed in zone with the passed in
         /// NPC type. Make sure the passed in zone is in tile coordinates.
         /// </summary>
@@ -94,7 +75,7 @@ namespace LivingWorldMod.Custom.Utilities {
                 for (int j = 0; j < rectangle.Height; j += 2) {
                     Point position = new Point(rectangle.X + i, rectangle.Y + j);
 
-                    if (WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(npcType)) {
+                    if (WorldGen.InWorld(position.X, position.Y) && WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(npcType)) {
                         WorldGen.ScoreRoom(npcTypeAskingToScoreRoom: npcType);
                         Point16 bestPoint = new Point16(WorldGen.bestX, WorldGen.bestY);
 
@@ -122,13 +103,15 @@ namespace LivingWorldMod.Custom.Utilities {
         /// since the Y value is typically on a floor tile.
         /// </param>
         public static bool LocationsValidForHousing(List<Point16> housePositions, int npcType, bool adjustForBest = true) {
-            foreach (Point16 housePosition in housePositions) {
-                if (!(WorldGen.StartRoomCheck(housePosition.X, housePosition.Y - (adjustForBest ? 1 : 0)) && WorldGen.RoomNeeds(npcType))) {
-                    return false;
-                }
-            }
-
-            return true;
+            return housePositions.All(housePosition =>
+                WorldGen.InWorld(housePosition.X, housePosition.Y - (adjustForBest ? 1 : 0)) && WorldGen.StartRoomCheck(housePosition.X, housePosition.Y - (adjustForBest ? 1 : 0)) && WorldGen.RoomNeeds(npcType));
         }
+
+        /// <summary>
+        /// Gets the count of the specified NPC type that currently has a house within the zone. 
+        /// </summary>
+        /// <param name="zone"> The zone to search in. This should be tile coordinates. </param>
+        /// <param name="npcType"> The type of NPC to check the housing with. </param>
+        public static int NPCCountHousedInZone(Circle zone, int npcType) => Main.npc.Where(npc => npc.active && !npc.homeless && npc.type == npcType).Sum(npc => zone.ContainsPoint(new Vector2(npc.homeTileX, npc.homeTileY)) ? 1 : 0);
     }
 }
