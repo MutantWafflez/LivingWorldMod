@@ -11,7 +11,9 @@ namespace LivingWorldMod.Common.GlobalNPCs {
     public class VillageSpawnPreventionNPC : GlobalNPC {
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo) {
             if (TileEntityUtils.GetAllEntityOfType<VillageShrineEntity>().Any(shrine => shrine.villageZone.ContainsPoint(spawnInfo.Player.Center))) {
-                pool[0] = 0;
+                foreach ((int key, float value) in pool) {
+                    pool[key] = 0;
+                }
             }
         }
     }
