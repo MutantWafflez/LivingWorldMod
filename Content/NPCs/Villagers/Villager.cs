@@ -9,6 +9,8 @@ using ReLogic.Content;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.Audio;
+using Terraria.Chat;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -107,6 +109,11 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public override bool IsCloneable => true;
 
+        /// <summary>
+        /// A counter for how long this Villager has been homeless for, used for automatically leaving
+        /// </summary>
+        private int _homelessCounter;
+
         public Villager() {
             bodyAssets = new Asset<Texture2D>[BodyAssetVariations];
             headAssets = new Asset<Texture2D>[HeadAssetVariations];
@@ -138,6 +145,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
             clone.bodySpriteType = bodySpriteType;
             clone.headSpriteType = headSpriteType;
+
+            clone._homelessCounter = _homelessCounter;
 
             return clone;
         }
@@ -243,6 +252,36 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             spriteBatch.Draw(headTexture, drawArea, NPC.frame, drawColor, NPC.rotation, default, spriteDirection, 0);
 
             return false;
+        }
+
+        public override void PostAI() {
+            //We only want this to run on Server/SP
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                return;
+            }
+
+            if (NPC.homeless) {
+                _homelessCounter++;
+            }
+            else {
+                _homelessCounter = 0;
+                return;
+            }
+
+            if (_homelessCounter >= 60 * 60 * 2) {
+                Color leavingColor = new Color(255, 25, 25);
+                string leavingText = LocalizationUtils.GetLWMTextValue($"Event.VillagerLeft.{VillagerType}", new object[] { NPC.GivenOrTypeName });
+
+                NPC.active = false;
+                if (Main.netMode == NetmodeID.Server) {
+                    ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(leavingText), leavingColor);
+                    NetMessage.SendData(MessageID.SyncNPC, number: NPC.whoAmI);
+                }
+                else {
+                    Main.NewText(leavingText, leavingColor);
+                    SoundEngine.PlaySound(SoundID.NPCDeath6, NPC.Center);
+                }
+            }
         }
 
         /// <summary>
