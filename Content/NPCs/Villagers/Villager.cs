@@ -12,6 +12,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 
 namespace LivingWorldMod.Content.NPCs.Villagers {
@@ -147,7 +148,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             //The PR is here, and I am loving it 
             NPCID.Sets.ActsLikeTownNPC[Type] = true;
             NPCID.Sets.SpawnsWithCustomName[Type] = true;
-            NPCID.Sets.SavesAndLoads[Type] = true;
+            NPCID.Sets.AllowDoorInteraction[Type] = true;
 
             NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0) {
                 Velocity = 1f,
@@ -166,6 +167,30 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             NPC.knockBackResist = 0.5f;
             NPC.aiStyle = 7;
             AnimationType = NPCID.Guide;
+        }
+
+        public override bool NeedSaving() => true;
+
+        public override void SaveData(TagCompound tag) {
+            tag["HeadType"] = headSpriteType;
+            tag["BodyType"] = bodySpriteType;
+            tag["Shop"] = shopInventory;
+
+            tag["DisplayName"] = NPC.GivenName;
+            tag["HomeTileX"] = NPC.homeTileX;
+            tag["HomeTileY"] = NPC.homeTileY;
+            tag["IsHomeless"] = NPC.homeless;
+        }
+
+        public override void LoadData(TagCompound tag) {
+            headSpriteType = tag.GetInt("HeadType");
+            bodySpriteType = tag.GetInt("BodyType");
+            shopInventory = tag.Get<List<ShopItem>>("Shop");
+
+            NPC.GivenName = tag.GetString("DisplayName");
+            NPC.homeTileX = tag.GetInt("HomeTileX");
+            NPC.homeTileY = tag.GetInt("HomeTileY");
+            NPC.homeless = tag.GetBool("IsHomeless");
         }
 
         public override bool CheckActive() => false;
