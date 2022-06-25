@@ -81,6 +81,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             if (--_syncTimer <= 0) {
                 _syncTimer = 60 * 10;
 
+                //TODO: Add new field/separate field for villager count AND housed villager count
                 CurrentVillagerCount = NPCUtils.NPCCountHousedInZone(tileVillageZone, villagerNPCType);
                 if (_houseLocations is null || !NPCUtils.LocationsValidForHousing(_houseLocations, villagerNPCType)) {
                     _houseLocations = NPCUtils.GetValidHousesInZone(tileVillageZone, villagerNPCType);

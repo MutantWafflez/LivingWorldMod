@@ -62,6 +62,26 @@ namespace LivingWorldMod.Custom.Utilities {
         }
 
         /// <summary>
+        /// Searches through all active NPCs in the npc array and returns how many of them are villagers and
+        /// are currently within the the circle zone provided.
+        /// </summary>
+        /// <param name="zone"> The zone that an NPC must be within to be considered "In The Zone." </param>
+        /// <returns></returns>
+        public static int GetVillagerCountInZone(Circle zone) {
+            int count = 0;
+
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+
+                if (npc.active && npc.ModNPC is Villager && zone.ContainsPoint(npc.Center)) {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        /// <summary>
         /// Gets &amp; returns the positions of all houses that are valid housing within the passed in zone with the passed in
         /// NPC type. Make sure the passed in zone is in tile coordinates.
         /// </summary>
