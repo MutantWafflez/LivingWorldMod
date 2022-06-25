@@ -60,7 +60,7 @@ namespace LivingWorldMod.Content.Tiles.Torches {
         }
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) {
-            if (Main.rand.Next(15) == 0) {
+            if (Main.rand.NextBool(15)) {
                 for (int x = 0; x < Main.rand.Next(3); x++) {
                     Dust.NewDust(new Vector2(i * 16, j * 16), 16, 16, DustType);
                 }
