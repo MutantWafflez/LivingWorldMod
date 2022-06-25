@@ -34,6 +34,12 @@ namespace LivingWorldMod.Core.PacketHandlers {
         /// </summary>
         public const byte TakeRespawnItem = 2;
 
+        /// <summary>
+        /// Sent by the client when a player with a shrine UI open wants the Server to resync the
+        /// housing for said shrine.
+        /// </summary>
+        public const byte TriggerForceSync = 3;
+
         public override void HandlePacket(BinaryReader reader, int fromWhomst) {
             byte packetType = reader.ReadByte();
 
@@ -121,6 +127,18 @@ namespace LivingWorldMod.Core.PacketHandlers {
                             else {
                                 ModContent.GetInstance<LivingWorldMod>().Logger.Error($"Successful TakeRespawnItem received, but got invalid/no entity at position: {entityPos}");
                             }
+                        }
+                    }
+                    break;
+                case TriggerForceSync:
+                    if (Main.netMode == NetmodeID.Server) {
+                        Point16 entityPos = reader.ReadVector2().ToPoint16();
+
+                        if (TileEntity.ByPosition.TryGetValue(entityPos, out TileEntity entity) && entity is VillageShrineEntity shrineEntity) {
+                            shrineEntity.ForceRecalculateAndSync();
+                        }
+                        else {
+                            ModContent.GetInstance<LivingWorldMod>().Logger.Error($"TriggerForceSync received, but got invalid/no entity at position: {entityPos}");
                         }
                     }
                     break;

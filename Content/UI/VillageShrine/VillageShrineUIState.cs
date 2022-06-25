@@ -47,6 +47,8 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
 
         public UIBetterImageButton showVillageRadiusButton;
 
+        public UIBetterImageButton forceShrineSyncButton;
+
         public VillageShrineEntity CurrentEntity {
             get {
                 if (TileEntity.ByPosition.ContainsKey(EntityPosition) && TileEntity.ByPosition[EntityPosition] is VillageShrineEntity entity) {
@@ -169,6 +171,15 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             showVillageRadiusButton.WhileHovering += HoveringVillageRadiusButton;
             showVillageRadiusButton.ProperOnClick += ClickVillagerRadiusButton;
             backPanel.Append(showVillageRadiusButton);
+
+            forceShrineSyncButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonCloudActive", AssetRequestMode.ImmediateLoad)) {
+                HAlign = 1f,
+                VAlign = 1f
+            };
+            forceShrineSyncButton.Left.Set(-showVillageRadiusButton.Width.Pixels - 4, 0f);
+            forceShrineSyncButton.WhileHovering += HoveringShrineSyncButton;
+            forceShrineSyncButton.ProperOnClick += ClickShrineSyncButton;
+            backPanel.Append(forceShrineSyncButton);
         }
 
         public override void Update(GameTime gameTime) {
@@ -203,7 +214,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             takeRespawnButton.isVisible = currentEntity.remainingRespawnItems > 0;
 
             houseCountText.SetText(currentEntity.CurrentValidHouses.ToString());
-            takenHouseCountText.SetText(currentEntity.CurrentVillagerCount.ToString());
+            takenHouseCountText.SetText(currentEntity.CurrentHousedVillagersCount.ToString());
         }
 
         /// <summary>
@@ -272,6 +283,23 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             ShowVillageRadius = !ShowVillageRadius;
 
             showVillageRadiusButton.SetImage(Main.Assets.Request<Texture2D>("Images/UI/ButtonFavorite" + (ShowVillageRadius ? "Active" : "Inactive"), AssetRequestMode.ImmediateLoad));
+        }
+
+        private void HoveringShrineSyncButton() {
+            Main.instance.MouseText(LocalizationUtils.GetLWMTextValue("UI.Shrine.ForceShrineButtonText"));
+        }
+
+        private void ClickShrineSyncButton(UIMouseEvent evt, UIElement listeningElement) {
+            switch (Main.netMode) {
+                case NetmodeID.MultiplayerClient:
+                    ModPacket packet = ModContent.GetInstance<ShrinePacketHandler>().GetPacket(ShrinePacketHandler.TriggerForceSync);
+                    packet.WriteVector2(CurrentEntity.Position.ToVector2());
+                    packet.Send();
+                    break;
+                case NetmodeID.SinglePlayer:
+                    CurrentEntity.ForceRecalculateAndSync();
+                    break;
+            }
         }
     }
 }

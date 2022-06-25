@@ -14,6 +14,8 @@
 
 				DisableVillageRadius: "Hide Village Radius Display"
 				EnableVillageRadius: "Show Village Radius Display"
+
+				ForceShrineButtonText: "Force Synchronize Housing"
 			}
 		}
 	

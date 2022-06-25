@@ -39,7 +39,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
         public override int ValidTileID => ModContent.TileType<VillageShrineTile>();
 
-        public int CurrentVillagerCount {
+        public int CurrentHousedVillagersCount {
             get;
             private set;
         }
@@ -81,14 +81,13 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             if (--_syncTimer <= 0) {
                 _syncTimer = 60 * 10;
 
-                //TODO: Add new field/separate field for villager count AND housed villager count
-                CurrentVillagerCount = NPCUtils.NPCCountHousedInZone(tileVillageZone, villagerNPCType);
+                CurrentHousedVillagersCount = NPCUtils.NPCCountHousedInZone(tileVillageZone, villagerNPCType);
                 if (_houseLocations is null || !NPCUtils.LocationsValidForHousing(_houseLocations, villagerNPCType)) {
                     _houseLocations = NPCUtils.GetValidHousesInZone(tileVillageZone, villagerNPCType);
                     CurrentValidHouses = _houseLocations.Count;
                 }
 
-                respawnTimeCap = (int)MathHelper.Lerp(EmptyVillageRespawnTime, FullVillageRespawnTime, CurrentValidHouses > 0 ? CurrentVillagerCount / (float)CurrentValidHouses : 0f);
+                respawnTimeCap = (int)MathHelper.Lerp(EmptyVillageRespawnTime, FullVillageRespawnTime, CurrentValidHouses > 0 ? CurrentHousedVillagersCount / (float)CurrentValidHouses : 0f);
                 remainingRespawnTime = (int)MathHelper.Clamp(remainingRespawnTime, 0f, respawnTimeCap);
 
                 SyncDataToClients();
@@ -107,7 +106,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             }
 
             //NPC respawning
-            if (CurrentVillagerCount < CurrentValidHouses && remainingRespawnItems > 0) {
+            if (CurrentHousedVillagersCount < CurrentValidHouses && remainingRespawnItems > 0) {
                 Rectangle housingRectangle = tileVillageZone.ToRectangle();
 
                 for (int i = 0; i < housingRectangle.Width; i += 2) {
@@ -136,7 +135,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                             }
 
                             remainingRespawnItems--;
-                            CurrentVillagerCount++;
+                            CurrentHousedVillagersCount++;
                         }
                     }
                 }
@@ -155,7 +154,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             writer.Write(remainingRespawnTime);
             writer.Write(respawnTimeCap);
 
-            writer.Write(CurrentVillagerCount);
+            writer.Write(CurrentHousedVillagersCount);
             writer.Write(CurrentValidHouses);
         }
 
@@ -167,7 +166,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             remainingRespawnTime = reader.ReadInt32();
             respawnTimeCap = reader.ReadInt32();
 
-            CurrentVillagerCount = reader.ReadInt32();
+            CurrentHousedVillagersCount = reader.ReadInt32();
             CurrentValidHouses = reader.ReadInt32();
 
             clientTimer = 0;
@@ -225,6 +224,15 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                     shrineSystem.CloseShrineState();
                     break;
             }
+        }
+
+        /// <summary>
+        /// Forcefully triggers a village housing recalculation during the next update &amp; instantly syncs said information.
+        /// Should be called on the Server in MP.
+        /// </summary>
+        public void ForceRecalculateAndSync() {
+            _syncTimer = 0;
+            _houseLocations = null;
         }
 
         /// <summary>
