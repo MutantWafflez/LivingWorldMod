@@ -235,6 +235,8 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
                         player.BuyItem((int)_selectedItem.displayedCost);
                         player.QuickSpawnItem(new EntitySource_DropAsItem(player), _selectedItem.displayedItem);
 
+                        _selectedItem.displayedItem.stack--;
+                        _selectedItem.itemNameText.SetText(_selectedItem.displayedItem.HoverName);
                         buyItemStock.SetText(shopItem.remainingStock.ToString());
 
                         savingsDisplay.moneyToDisplay = player.CalculateTotalSavings();
