@@ -136,6 +136,12 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
                             remainingRespawnItems--;
                             CurrentHousedVillagersCount++;
+                            if (CurrentHousedVillagersCount < CurrentValidHouses && remainingRespawnItems > 0) {
+                                continue;
+                            }
+
+                            SyncDataToClients();
+                            return;
                         }
                     }
                 }
