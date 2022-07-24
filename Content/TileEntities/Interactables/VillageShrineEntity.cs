@@ -15,6 +15,7 @@ using Terraria.ModLoader.IO;
 using LivingWorldMod.Custom.Utilities;
 using Terraria.Chat;
 using Terraria.Localization;
+using Terraria.ModLoader.Default;
 
 namespace LivingWorldMod.Content.TileEntities.Interactables {
     /// <summary>
@@ -22,7 +23,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
     /// specified player is close enough to the specified shrine to be considered "within the village."
     /// </summary>
     [LegacyName("HarpyShrineEntity")]
-    public class VillageShrineEntity : BaseTileEntity {
+    public class VillageShrineEntity : TEModdedPylon {
         public VillagerType shrineType;
 
         public Circle villageZone;
@@ -36,8 +37,6 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         //This isn't updated on the server, and is manually updated by the client in order
         //for parity between client and server.
         public int clientTimer;
-
-        public override int ValidTileID => ModContent.TileType<VillageShrineTile>();
 
         public int CurrentHousedVillagersCount {
             get;
@@ -58,12 +57,6 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         public const int EmptyVillageRespawnTime = 60 * 60 * 15;
 
         public const int FullVillageRespawnTime = 60 * 60 * 3;
-
-        public override bool? PreValidTile(int i, int j) {
-            Tile tile = Framing.GetTileSafely(i, j);
-
-            return tile.HasTile && tile.TileType == ValidTileID && tile.TileFrameX % 72 == 0 && tile.TileFrameY == 0;
-        }
 
         public override void Update() {
             //This is only here for backwards compatibility, if someone is loading a world from where
@@ -199,13 +192,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         }
 
         public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate) {
-            if (Main.netMode == NetmodeID.MultiplayerClient) {
-                NetMessage.SendTileSquare(Main.myPlayer, i, j, 4, 5);
-
-                NetMessage.SendData(MessageID.TileEntityPlacement, -1, -1, null, i, j, Type);
-            }
-
-            int placedEntity = Place(i, j);
+            int placedEntity = base.Hook_AfterPlacement(i, j, type, style, direction, alternate);
             if (TileEntityUtils.TryFindModEntity(placedEntity, out VillageShrineEntity entity)) {
                 entity.InstantiateVillageZone();
                 entity.shrineType = (VillagerType)style;
