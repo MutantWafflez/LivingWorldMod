@@ -1,10 +1,7 @@
 ﻿using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Content.TileEntities.Interactables;
-using LivingWorldMod.Custom.Interfaces;
 using LivingWorldMod.Custom.Utilities;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using LivingWorldMod.Common.Systems.UI;
 using Terraria.DataStructures;
 using Terraria;
@@ -15,44 +12,29 @@ namespace LivingWorldMod.Core.PacketHandlers {
     /// <summary>
     /// PacketHandler that handles all packet functionality in relation to Village Shrines.
     /// </summary>
-    public class ShrinePacketHandler : PacketHandler, IPlayerEnteredWorld {
-        /// <summary>
-        /// Sent/Received when a new player/client first enters a server's world. Syncs all Shrine
-        /// Tile Entities from the server to said client.
-        /// </summary>
-        public const byte SyncNewPlayer = 0;
-
+    public class ShrinePacketHandler : PacketHandler {
         /// <summary>
         /// Sent/Received when a player with a shrine UI open wants to add a new respawn item to the
         /// shrine's inventory.
         /// </summary>
-        public const byte AddRespawnItem = 1;
+        public const byte AddRespawnItem = 0;
 
         /// <summary>
         /// Sent/Received when a player with a shrine UI open wants to take a respawn item from the
         /// shrine's inventory.
         /// </summary>
-        public const byte TakeRespawnItem = 2;
+        public const byte TakeRespawnItem = 1;
 
         /// <summary>
         /// Sent by the client when a player with a shrine UI open wants the Server to resync the
         /// housing for said shrine.
         /// </summary>
-        public const byte TriggerForceSync = 3;
+        public const byte TriggerForceSync = 2;
 
         public override void HandlePacket(BinaryReader reader, int fromWhomst) {
             byte packetType = reader.ReadByte();
 
             switch (packetType) {
-                case SyncNewPlayer:
-                    if (Main.netMode == NetmodeID.Server) {
-                        List<VillageShrineEntity> shrines = TileEntityUtils.GetAllEntityOfType<VillageShrineEntity>().ToList();
-
-                        foreach (VillageShrineEntity entity in shrines) {
-                            NetMessage.SendData(MessageID.TileSection, fromWhomst, number: entity.Position.X - 1, number2: entity.Position.Y - 1, number3: 5, number4: 6);
-                        }
-                    }
-                    break;
                 case AddRespawnItem:
                     if (Main.netMode == NetmodeID.Server) {
                         Point16 entityPos = reader.ReadVector2().ToPoint16();
@@ -145,14 +127,6 @@ namespace LivingWorldMod.Core.PacketHandlers {
                 default:
                     ModContent.GetInstance<LivingWorldMod>().Logger.Warn($"Invalid ShrinePacketHandler Packet Type of {packetType}");
                     break;
-            }
-        }
-
-        public void OnPlayerEnterWorld() {
-            if (Main.netMode == NetmodeID.MultiplayerClient) {
-                ModPacket packet = GetPacket(SyncNewPlayer);
-
-                packet.Send();
             }
         }
     }
