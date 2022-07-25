@@ -10,10 +10,20 @@ namespace LivingWorldMod.Common.GlobalNPCs {
     /// </summary>
     [Autoload(Side = ModSide.Client)]
     public class TownChangesNPC : GlobalNPC {
+        private static RainProfile _rainProfile;
+
+        public override void Load() {
+            _rainProfile = new RainProfile();
+        }
+
+        public override void Unload() {
+            _rainProfile = null;
+        }
+
         public override ITownNPCProfile ModifyTownNPCProfile(NPC npc) {
             //Rain profiles
             if (npc.type == NPCID.Guide) {
-                return new GuideProfile();
+                return _rainProfile;
             }
 
             return null;
