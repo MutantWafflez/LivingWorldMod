@@ -9,7 +9,7 @@ namespace LivingWorldMod.Common.GlobalNPCs {
     /// GlobalNPC that handles visual updates on town NPCs for various aesthetic purposes.
     /// </summary>
     [Autoload(Side = ModSide.Client)]
-    public class TownProfileNPC : GlobalNPC {
+    public class TownChangesNPC : GlobalNPC {
         public override ITownNPCProfile ModifyTownNPCProfile(NPC npc) {
             //Rain profiles
             if (npc.type == NPCID.Guide) {
