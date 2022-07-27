@@ -38,7 +38,7 @@ namespace LivingWorldMod.Custom.Utilities {
                         ScoreRoomIgnoringOccupancy(npcTypeAskingToScoreRoom: npcType);
                         Point16 bestPoint = new Point16(WorldGen.bestX, WorldGen.bestY);
 
-                        if (foundHouses.Contains(bestPoint) || !zone.ContainsPoint(bestPoint.ToVector2())) {
+                        if (foundHouses.Contains(bestPoint) || !zone.ContainsPoint(bestPoint.ToVector2()) || WorldGen.hiScore <= 0) {
                             continue;
                         }
 

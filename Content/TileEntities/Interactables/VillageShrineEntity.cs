@@ -116,8 +116,8 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                         if (WorldGen.InWorld(position.X, position.Y) && WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(villagerNPCType)) {
                             WorldGen.ScoreRoom(npcTypeAskingToScoreRoom: villagerNPCType);
 
-                            //A "high score" of -1 means the room is occupied or the score otherwise failed
-                            if (WorldGen.hiScore == -1) {
+                            //A "high score" of 0 or less means the room is occupied or the score otherwise failed
+                            if (WorldGen.hiScore <= 0) {
                                 continue;
                             }
 
