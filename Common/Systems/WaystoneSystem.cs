@@ -1,10 +1,7 @@
 using System.Collections.Generic;
 using LivingWorldMod.Content.MiscEntities;
-using LivingWorldMod.Core.PacketHandlers;
-﻿using LivingWorldMod.Common.Systems.BaseSystems;
-using LivingWorldMod.Custom.Classes;
+using LivingWorldMod.Common.Systems.BaseSystems;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Systems {
