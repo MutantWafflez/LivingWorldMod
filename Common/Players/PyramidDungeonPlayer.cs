@@ -6,11 +6,10 @@ using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Players {
     /// <summary>
-    /// ModPlayer that exclusively handles doing custom drawing with player layers
-    /// with the Pyramid Door animation.
+    /// ModPlayer that handles player related things with the Revamped Pyramid dungeon, such as the pyramid door walking
+    /// animation and camera room handling.
     /// </summary>
-    [Autoload(Side = ModSide.Client)]
-    public class PyramidAnimationPlayer : ModPlayer {
+    public class PyramidDungeonPlayer : ModPlayer {
         private PyramidDoorSystem DoorSystem => ModContent.GetInstance<PyramidDoorSystem>();
 
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo) {

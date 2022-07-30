@@ -28,17 +28,18 @@ namespace LivingWorldMod.Content.Subworlds {
         public override List<GenPass> Tasks => new List<GenPass>() {
             new PassLegacy("Fill World", FillWorld),
             new PassLegacy("Set Spawn", SetSpawn),
-            new PassLegacy("Starter Room", GenStarterRoom),
-            new PassLegacy("Initial Tunnel", GenInitialTunnels)
+            new PassLegacy("Starter Room", GenStarterRoom)
         };
 
         private Asset<Texture2D> _pyramidBackground;
         private Asset<Texture2D> _pyramidWorldGenBar;
-        private bool isExiting;
+        private bool _isExiting;
         private string _lastStatusText = "";
         private int _vanillaLoadStepsPassed;
 
         private const int TotalVanillaSaveOrLoadSteps = 4;
+        private const int SpawnTileX = 150;
+        private const int SpawnTileY = 82;
 
         public override void Load() {
             _pyramidBackground = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}Backgrounds/Loading/PyramidBG");
@@ -48,13 +49,13 @@ namespace LivingWorldMod.Content.Subworlds {
         public override void OnEnter() {
             _vanillaLoadStepsPassed = -1;
             _lastStatusText = "";
-            isExiting = false;
+            _isExiting = false;
         }
 
         public override void OnExit() {
             _vanillaLoadStepsPassed = -1;
             _lastStatusText = "";
-            isExiting = true;
+            _isExiting = true;
         }
 
         public override void DrawMenu(GameTime gameTime) {
@@ -97,7 +98,7 @@ namespace LivingWorldMod.Content.Subworlds {
                 progressBarBackgroundColor
             );
             //Total Progress Color
-            int totalProgBarWidth = (int)(totalProgBarSize.X * (_vanillaLoadStepsPassed / (float)TotalVanillaSaveOrLoadSteps * 0.34f + (WorldGenerator.CurrentGenerationProgress?.TotalProgress ?? (isExiting ? 1f : 0f) * 0.66f)));
+            int totalProgBarWidth = (int)(totalProgBarSize.X * (_vanillaLoadStepsPassed / (float)TotalVanillaSaveOrLoadSteps * 0.34f + (WorldGenerator.CurrentGenerationProgress?.TotalProgress ?? (_isExiting ? 1f : 0f) * 0.66f)));
             Main.spriteBatch.Draw(
                 TextureAssets.MagicPixel.Value,
                 new Rectangle((int)totalProgBarPos.X, (int)totalProgBarPos.Y, totalProgBarWidth, (int)totalProgBarSize.Y),
@@ -145,27 +146,22 @@ namespace LivingWorldMod.Content.Subworlds {
 
         private void SetSpawn(GenerationProgress progress, GameConfiguration config) {
             progress.Message = "Spawning up";
-            Main.spawnTileX = Width / 2;
-            Main.spawnTileY = 82;
+            Main.spawnTileX = SpawnTileX;
+            Main.spawnTileY = SpawnTileY;
         }
 
         private void GenStarterRoom(GenerationProgress progress, GameConfiguration config) {
             progress.Message = "Starter Room";
 
             //Generate initial triangular room
-            WorldUtils.Gen(new Point(Width / 2 - 1, 72), new EqualTriangle(20), new Actions.ClearTile(true));
+            WorldUtils.Gen(new Point(SpawnTileX - 1, SpawnTileY - 10), new EqualTriangle(20), new Actions.ClearTile(true));
 
             //Generate exit door
-            WorldGen.PlaceObject(Width / 2 - 2, 78, ModContent.TileType<PyramidDoorTile>(), style: 0, direction: 1);
+            WorldGen.PlaceObject(SpawnTileX - 2, SpawnTileY - 4, ModContent.TileType<PyramidDoorTile>(), style: 0, direction: 1);
 
             //Generate Torches
-            WorldGen.PlaceTile(Width / 2 - 3, 77, TileID.Torches, forced: true, style: 16);
-            WorldGen.PlaceTile(Width / 2 + 2, 77, TileID.Torches, forced: true, style: 16);
-        }
-
-        private void GenInitialTunnels(GenerationProgress progress, GameConfiguration config) {
-            progress.Message = "Tunnelin'";
-            WorldUtils.Gen(new Point(Width / 2 - 7, 81), new StraightLine(5, new Vector2(-10, 10)), new Actions.ClearTile(true));
+            WorldGen.PlaceTile(SpawnTileX - 3, SpawnTileY - 5, TileID.Torches, forced: true, style: 16);
+            WorldGen.PlaceTile(SpawnTileX + 2, SpawnTileY - 5, TileID.Torches, forced: true, style: 16);
         }
     }
 }
