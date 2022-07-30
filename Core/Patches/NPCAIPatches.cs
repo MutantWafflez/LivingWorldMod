@@ -10,6 +10,8 @@ namespace LivingWorldMod.Core.Patches {
     /// <summary>
     /// Loadable class that applies IL/On patches related to NPC AI.
     /// </summary>
+    //TODO: Finish NPC umbrella stuff
+    [Autoload(false)]
     public class NPCAIPatches : ILoadable {
         public void Load(Mod mod) {
             IL.Terraria.NPC.AI_007_TownEntities += TownNPCAI;

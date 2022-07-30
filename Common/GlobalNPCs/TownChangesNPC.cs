@@ -8,7 +8,8 @@ namespace LivingWorldMod.Common.GlobalNPCs {
     /// <summary>
     /// GlobalNPC that handles visual updates on town NPCs for various aesthetic purposes.
     /// </summary>
-    [Autoload(Side = ModSide.Client)]
+    //TODO: Finish NPC umbrella stuff
+    [Autoload(false, Side = ModSide.Client)]
     public class TownChangesNPC : GlobalNPC {
         private static RainProfile _rainProfile;
 
