@@ -5,6 +5,10 @@ using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.Placeables.Building {
     public class SunslabBlockItem : BaseItem {
+        public override void SetStaticDefaults() {
+            SacrificeTotal = 50;
+        }
+
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.DirtBlock);
             Item.value = Item.buyPrice(silver: 1);

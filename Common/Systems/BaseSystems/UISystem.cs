@@ -1,14 +1,19 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace LivingWorldMod.Common.Systems {
+namespace LivingWorldMod.Common.Systems.BaseSystems {
     /// <summary>
     /// Unique type of ModSystem that can be extended for automatic setting
     /// up and handling of the given UIState T.
     /// </summary>
+    /// <remarks>
+    /// Does not extend <seealso cref="BaseModSystem{T}"/> like all other ModSystems in this mod,
+    /// since double layered generics cause some confusing shenanigans, namely the Instance property
+    /// somehow returning null.
+    /// </remarks>
     [Autoload(Side = ModSide.Client)]
     public abstract class UISystem<T> : ModSystem where T : UIState, new() {
         public UserInterface correspondingInterface;
@@ -26,6 +31,11 @@ namespace LivingWorldMod.Common.Systems {
         /// Layers. Defaults to the name of the passed in UIState.
         /// </summary>
         public virtual string InternalInterfaceName => typeof(T).Name;
+
+        /// <summary>
+        /// What kind of scale type this interface will be using. Defaults to InterfaceScaleType.UI.
+        /// </summary>
+        public virtual InterfaceScaleType ScaleType => InterfaceScaleType.UI;
 
         protected GameTime lastGameTime;
 
@@ -47,7 +57,7 @@ namespace LivingWorldMod.Common.Systems {
                         }
                         return true;
                     },
-                    InterfaceScaleType.UI));
+                    ScaleType));
             }
         }
 

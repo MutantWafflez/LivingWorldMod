@@ -1,5 +1,6 @@
 ﻿using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.Custom.Utilities;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -15,7 +16,7 @@ namespace LivingWorldMod.Common.Commands.DebugCommands {
 
         public override void Action(CommandCaller caller, string input, string[] args) {
             if (args.Length == 1 && int.TryParse(args[0], out int type)) {
-                if (type >= 0 && type < (int)VillagerType.TypeCount) {
+                if (type >= 0 && type < NPCUtils.GetTotalVillagerTypeCount()) {
                     for (int i = 0; i < Main.maxNPCs; i++) {
                         if (Main.npc[i].ModNPC is HarpyVillager villager) {
                             villager.RestockShop();

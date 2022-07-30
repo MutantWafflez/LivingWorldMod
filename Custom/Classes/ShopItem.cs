@@ -1,11 +1,13 @@
-﻿using Terraria;
+﻿using System;
+using Terraria;
+using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Custom.Classes {
     /// <summary>
     /// Class that does what it says on the tin. Has fields for an instance of a shop item for
     /// Villagers to sell as its primary use.
     /// </summary>
-    public sealed class ShopItem {
+    public sealed class ShopItem : TagSerializable {
         /// <summary>
         /// The item type that pertains to this shop index.
         /// </summary>
@@ -38,19 +40,29 @@ namespace LivingWorldMod.Custom.Classes {
         /// </summary>
         private readonly long? _internalPrice;
 
+        public static readonly Func<TagCompound, ShopItem> DESERIALIZER = Deserialize;
+
         public ShopItem(int itemType, int remainingStock, long? internalPrice) {
             this.itemType = itemType;
             this.remainingStock = remainingStock;
             _internalPrice = internalPrice;
         }
 
+        private static ShopItem Deserialize(TagCompound tag) => new ShopItem(
+            tag.GetInt("ItemType"),
+            tag.GetInt("Stock"),
+            tag.GetLong("ItemPrice")
+        );
+
         public static bool operator ==(ShopItem shopItem1, ShopItem shopItem2) => shopItem1.itemType == shopItem2.itemType;
 
         public static bool operator !=(ShopItem shopItem1, ShopItem shopItem2) => shopItem1.itemType != shopItem2.itemType;
 
-        public override bool Equals(object obj) => obj is ShopItem other && Equals(other);
-
-        public override int GetHashCode() => itemType;
+        public TagCompound SerializeData() => new TagCompound() {
+            { "ItemType", itemType },
+            { "Stock", remainingStock },
+            { "ItemPrice", ItemPrice }
+        };
 
         //We only care about the item type when determining equality, as the other two factors are inconsequential
         public bool Equals(ShopItem other) => itemType == other.itemType;

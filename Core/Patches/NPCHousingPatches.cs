@@ -1,13 +1,15 @@
-﻿using System;
-using System.Linq;
-using LivingWorldMod.Common.Systems;
+﻿using LivingWorldMod.Common.Systems.UI;
 using LivingWorldMod.Content.NPCs.Villagers;
+using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameInput;
@@ -26,6 +28,10 @@ namespace LivingWorldMod.Core.Patches {
             IL.Terraria.Main.DrawInterface_7_TownNPCHouseBanners += BannersVisibleWhileInVillagerHousingMenu;
 
             IL.Terraria.Main.DrawNPCHousesInWorld += DrawVillagerBannerInHouses;
+
+            IL.Terraria.WorldGen.ScoreRoom_IsThisRoomOccupiedBySomeone += RoomOccupancyCheck;
+
+            IL.Terraria.WorldGen.ScoreRoom += IgnoreRoomOccupancy;
         }
 
         public void Unload() { }
@@ -51,11 +57,12 @@ namespace LivingWorldMod.Core.Patches {
                 Rectangle roomInQuestion = new Rectangle(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1, WorldGen.roomY2 - WorldGen.roomY1);
 
                 ModNPC modNPC = ModContent.GetModNPC(type);
-                Rectangle[] villageZones = ModContent.GetInstance<WorldCreationSystem>().villageZones;
+                List<VillageShrineEntity> shrines = TileEntityUtils.GetAllEntityOfType<VillageShrineEntity>().ToList();
 
                 //HOWEVER, if the Town NPC can spawn here, we need to do additional checks to make sure it's not a non-villager spawning in a villager home
-                //Additionally, we can't have villagers in a non-village home, which is the second check after  V  this OR statement.
-                if (modNPC is not Villager && villageZones.Any(zone => zone.Contains(roomInQuestion)) || modNPC is Villager && !villageZones.Any(zone => zone.Contains(roomInQuestion))) {
+                //Additionally, we can't have villagers in a non-village home, which is the second check.
+                if (modNPC is not Villager && shrines.Any(shrine => shrine.villageZone.ContainsPoint(roomInQuestion.Center().ToWorldCoordinates()))
+                    || modNPC is Villager && !shrines.Any(shrine => shrine.villageZone.ContainsPoint(roomInQuestion.Center().ToWorldCoordinates()))) {
                     return false;
                 }
 
@@ -148,8 +155,7 @@ namespace LivingWorldMod.Core.Patches {
 
                 //Re-add our check, making sure it's inverted compared to the IL, since in IL it determines if the code should run if these values are FALSE,
                 // but since we took control of the instructions, we can test based on if it's true or not for easy understanding
-                //TODO: FIX VILLAGE HOUSING UI SYSTEM
-                c.EmitDelegate<Func<bool>>(() => Main.EquipPage == 1 /*|| ModContent.GetInstance<VillagerHousingUISystem>().housingState.isMenuVisible*/);
+                c.EmitDelegate<Func<bool>>(() => Main.EquipPage == 1 || ModContent.GetInstance<VillagerHousingUISystem>().correspondingUIState.isMenuVisible);
 
                 c.Emit(OpCodes.Brtrue_S, stolenLabel);
             }
@@ -229,7 +235,7 @@ namespace LivingWorldMod.Core.Patches {
             //Load the current texture to the stack
             c.Emit(OpCodes.Ldloc_S, bannerAssetLocalNumber);
             //If this NPC is a villager, adjust the framing rectangle to use our modded proportions. If not, return the normal vanilla value
-            c.EmitDelegate<Func<NPC, Texture2D, Rectangle>>((npc, texture) => npc.ModNPC is Villager ? texture.Frame(2, (int)VillagerType.TypeCount) : texture.Frame(2, 2));
+            c.EmitDelegate<Func<NPC, Texture2D, Rectangle>>((npc, texture) => npc.ModNPC is Villager ? texture.Frame(2, NPCUtils.GetTotalVillagerTypeCount()) : texture.Frame(2, 2));
 
             //IL block for the above two edits ^:
             /*/* (30124,5)-(30124,55) tModLoader\src\tModLoader\Terraria\Main.cs #1#
@@ -365,6 +371,31 @@ namespace LivingWorldMod.Core.Patches {
             });
             //Finally, add that copied false label we took
             c.Emit(OpCodes.Brfalse_S, falseTransformLabel);
+        }
+
+        private void RoomOccupancyCheck(ILContext il) {
+            //This edit is simple; we will be allowing villagers to properly check along-side normal TownNPCs for the occupancy check vanilla does.
+
+            ILCursor c = new ILCursor(il);
+
+            //Navigate to townNPC check
+            c.ErrorOnFailedGotoNext(i => i.MatchLdfld<NPC>(nameof(NPC.townNPC)));
+
+            //Remove the check, add our own delegate check
+            c.Remove();
+            c.EmitDelegate<Func<NPC, bool>>(npc => npc.townNPC || npc.ModNPC is Villager);
+        }
+
+        private void IgnoreRoomOccupancy(ILContext il) {
+            //Another simple edit; this edit will allow us to get WorldGen.bestX and WorldGen.bestY for a room, ignoring if the room is occupied.
+
+            ILCursor c = new ILCursor(il);
+
+            //Navigate to occupancy check
+            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCall<WorldGen>("ScoreRoom_IsThisRoomOccupiedBySomeone"));
+
+            //Emit our check to see if our IgnoreOccupancy in HousingUtils.cs is true, and if so, automatically return false, ignoring occupancy
+            c.EmitDelegate<Func<bool, bool>>((isOccupied) => !HousingUtils.IgnoreHouseOccupancy && isOccupied);
         }
     }
 }

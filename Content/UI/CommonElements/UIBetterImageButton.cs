@@ -68,7 +68,8 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             buttonText = new UIBetterText(_text, textSize) {
                 HAlign = 0.5f,
                 VAlign = 0.5f,
-                horizontalTextConstraint = _buttonTexture.Value.Width
+                horizontalTextConstraint = _buttonTexture.Value.Width,
+                IgnoresMouseInteraction = true
             };
 
             Append(buttonText);
@@ -88,6 +89,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
                 return;
             }
 
+            base.Click(evt);
             ProperOnClick?.Invoke(evt, this);
         }
 
@@ -99,12 +101,13 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             if (!isVisible) {
                 return;
             }
+            bool isHovering = ContainsPoint(Main.MouseScreen);
 
             CalculatedStyle dimensions = GetDimensions();
-            spriteBatch.Draw(_buttonTexture.Value, dimensions.Position(), Color.White * (IsMouseHovering ? _activeVisibility : _inactiveVisibility));
+            spriteBatch.Draw(_buttonTexture.Value, dimensions.Position(), Color.White * (isHovering ? _activeVisibility : _inactiveVisibility));
 
             //Hovering functionality
-            if (!IsMouseHovering) {
+            if (!isHovering) {
                 return;
             }
 

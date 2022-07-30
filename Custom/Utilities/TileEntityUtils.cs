@@ -1,4 +1,6 @@
-﻿using Terraria.DataStructures;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Custom.Utilities {
@@ -46,13 +48,9 @@ namespace LivingWorldMod.Custom.Utilities {
         }
 
         /// <summary>
-        /// Short-hand method to determine whether or not a modded tile entity exists at the given
-        /// location in TILE coordinates.
+        /// Gets and returns all currently living tile entities of the specified type.
         /// </summary>
-        /// <param name="entity"> The entity type in question. </param>
-        /// <param name="x"> The x coordinate to test for a tile entity. </param>
-        /// <param name="y"> The y coordinate to test for a tile entity. </param>
-        /// <returns> </returns>
-        public static bool EntityExistsHere(this ModTileEntity entity, int x, int y) => entity.Find(x, y) >= 0;
+        /// <typeparam name="T"> The type of ModTileEntity you want to find all living entities of. </typeparam>
+        public static IEnumerable<T> GetAllEntityOfType<T>() where T : ModTileEntity => TileEntity.ByID.Values.OfType<T>();
     }
 }

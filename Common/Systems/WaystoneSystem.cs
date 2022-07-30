@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using LivingWorldMod.Content.MiscEntities;
 using LivingWorldMod.Core.PacketHandlers;
+﻿using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Classes;
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
+using System.Collections.Generic;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Systems {
@@ -12,16 +12,10 @@ namespace LivingWorldMod.Common.Systems {
     /// ModSystem that helps with client-side Waystone functionality.
     /// </summary>
     [Autoload(Side = ModSide.Client)]
-    public class WaystoneSystem : ModSystem {
+    public class WaystoneSystem : BaseModSystem<WaystoneSystem> {
         private List<WaystoneActivationEntity> _activationEntities;
 
         public override void OnWorldLoad() {
-            if (Main.netMode == NetmodeID.MultiplayerClient) {
-                ModPacket packet = ModContent.GetInstance<WaystonePacketHandler>().GetPacket(WaystonePacketHandler.SyncNewPlayer);
-
-                packet.Send();
-            }
-
             _activationEntities = new List<WaystoneActivationEntity>();
         }
 

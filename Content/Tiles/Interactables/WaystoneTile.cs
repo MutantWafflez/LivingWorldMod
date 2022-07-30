@@ -16,6 +16,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
     /// Class for Waystone tiles, which are basically Pylons but in the wild.
     /// </summary>
     public class WaystoneTile : BaseTile {
+        public override Color? TileColorOnMap => Color.White;
+
         /// <summary>
         /// The tile width of Waystones. Used for tile entity placement/destroying calculations.
         /// </summary>
@@ -48,11 +50,6 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             TileObjectData.addTile(Type);
 
             AnimationFrameHeight = 54;
-
-            //TODO: Proper localization
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Waystone");
-            AddMapEntry(Color.White, name);
         }
 
         public override bool CanKillTile(int i, int j, ref bool blockDamaged) => LivingWorldMod.IsDebug;
@@ -87,11 +84,11 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         public override bool RightClick(int i, int j) {
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
 
-            if (!TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity entity)) {
+            if (!TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity entity) || (entity?.isActivated ?? true)) {
                 return false;
             }
 
-            ModContent.GetInstance<WaystoneSystem>().AddNewActivationEntity(topLeft.ToWorldCoordinates(16, 16), entity.WaystoneColor);
+            WaystoneSystem.Instance.AddNewActivationEntity(topLeft.ToWorldCoordinates(16, 16), entity.WaystoneColor);
             switch (Main.netMode) {
                 case NetmodeID.MultiplayerClient:
                     ModPacket packet = ModContent.GetInstance<WaystonePacketHandler>().GetPacket(WaystonePacketHandler.InitiateWaystoneActivation);

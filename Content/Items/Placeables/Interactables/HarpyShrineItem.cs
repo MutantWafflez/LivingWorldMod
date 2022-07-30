@@ -1,9 +1,13 @@
-﻿using LivingWorldMod.Content.Tiles.Interactables.VillageShrines;
+﻿using LivingWorldMod.Content.Tiles.Interactables;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.Placeables.Interactables {
     public class HarpyShrineItem : BaseItem {
+        public override void SetStaticDefaults() {
+            SacrificeTotal = 1;
+        }
+
         public override void SetDefaults() {
             Item.maxStack = 99;
             Item.useTurn = true;
@@ -14,7 +18,7 @@ namespace LivingWorldMod.Content.Items.Placeables.Interactables {
             Item.rare = ItemRarityID.Orange;
             Item.consumable = true;
             Item.placeStyle = 0;
-            Item.createTile = ModContent.TileType<HarpyShrineTile>();
+            Item.createTile = ModContent.TileType<VillageShrineTile>();
         }
     }
 }

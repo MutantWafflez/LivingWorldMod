@@ -1,7 +1,6 @@
-﻿using System.Linq;
+﻿using LivingWorldMod.Content.TileEntities.Interactables;
+using LivingWorldMod.Custom.Utilities;
 using Terraria;
-using LivingWorldMod.Content.TileEntities.Interactables;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -19,7 +18,7 @@ namespace LivingWorldMod.Common.Commands.DebugCommands {
         public override CommandType Type => CommandType.World;
 
         public override void Action(CommandCaller caller, string input, string[] args) {
-            foreach (WaystoneEntity entity in TileEntity.ByID.Values.OfType<WaystoneEntity>()) {
+            foreach (WaystoneEntity entity in TileEntityUtils.GetAllEntityOfType<WaystoneEntity>()) {
                 entity.isActivated = false;
                 if (Main.netMode == NetmodeID.Server) {
                     NetMessage.SendData(MessageID.TileEntitySharing, number: entity.ID, number2: entity.Position.X, number3: entity.Position.Y);

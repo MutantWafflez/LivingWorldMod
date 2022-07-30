@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Content.TileEntities.Interactables;
-using LivingWorldMod.Custom.Classes;
+﻿using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,7 +17,7 @@ namespace LivingWorldMod.Content.MapLayers {
     /// </summary>
     public class WaystoneMapLayer : ModMapLayer {
         public override void Draw(ref MapOverlayDrawContext context, ref string text) {
-            foreach (WaystoneEntity entity in TileEntity.ByID.Values.OfType<WaystoneEntity>()) {
+            foreach (WaystoneEntity entity in TileEntityUtils.GetAllEntityOfType<WaystoneEntity>()) {
                 if (!entity.isActivated) {
                     continue;
                 }

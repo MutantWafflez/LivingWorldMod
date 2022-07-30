@@ -8,6 +8,8 @@ using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Furniture.Critter {
     public class NimbusJarTile : BaseTile {
+        public override Color? TileColorOnMap => Color.FloralWhite;
+
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = false;
             Main.tileNoSunLight[Type] = false;
@@ -21,8 +23,6 @@ namespace LivingWorldMod.Content.Tiles.Furniture.Critter {
             TileObjectData.addTile(Type);
 
             AnimationFrameHeight = 36;
-
-            AddMapEntry(Color.FloralWhite);
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) {

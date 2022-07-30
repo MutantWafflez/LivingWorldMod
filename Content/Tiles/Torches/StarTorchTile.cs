@@ -11,6 +11,8 @@ using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Torches {
     public class StarTorchTile : BaseTile {
+        public override Color? TileColorOnMap => Color.Yellow;
+
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = false;
             Main.tileNoSunLight[Type] = false;
@@ -43,18 +45,13 @@ namespace LivingWorldMod.Content.Tiles.Torches {
             AdjTiles = new int[] { TileID.Torches };
 
             DustType = DustID.YellowStarDust;
-
-            ModTranslation mapName = CreateMapEntryName();
-            mapName.SetDefault("Torch");
-
-            AddMapEntry(Color.Yellow, mapName);
         }
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) {
             if (Framing.GetTileSafely(i, j).TileFrameX < 66) {
-                r = BlockLightSystem.starTorchColor.R / 255f;
-                g = BlockLightSystem.starTorchColor.G / 255f;
-                b = BlockLightSystem.starTorchColor.B / 255f;
+                r = BlockLightSystem.Instance.starTorchColor.R / 255f;
+                g = BlockLightSystem.Instance.starTorchColor.G / 255f;
+                b = BlockLightSystem.Instance.starTorchColor.B / 255f;
             }
         }
 
@@ -63,7 +60,7 @@ namespace LivingWorldMod.Content.Tiles.Torches {
         }
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) {
-            if (Main.rand.Next(15) == 0) {
+            if (Main.rand.NextBool(15)) {
                 for (int x = 0; x < Main.rand.Next(3); x++) {
                     Dust.NewDust(new Vector2(i * 16, j * 16), 16, 16, DustType);
                 }

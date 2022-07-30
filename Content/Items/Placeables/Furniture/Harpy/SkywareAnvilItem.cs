@@ -4,6 +4,10 @@ using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.Placeables.Furniture.Harpy {
     public class SkywareAnvilItem : BaseItem {
+        public override void SetStaticDefaults() {
+            SacrificeTotal = 1;
+        }
+
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.IronAnvil);
             Item.placeStyle = 0;

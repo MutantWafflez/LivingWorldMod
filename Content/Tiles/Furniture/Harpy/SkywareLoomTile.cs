@@ -8,6 +8,8 @@ using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
     public class SkywareLoomTile : BaseTile {
+        public override Color? TileColorOnMap => Color.FloralWhite;
+
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = false;
             Main.tileNoSunLight[Type] = false;
@@ -22,11 +24,6 @@ namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
             TileObjectData.addTile(Type);
 
             AdjTiles = new int[] { TileID.Loom };
-
-            ModTranslation mapName = CreateMapEntryName();
-            mapName.SetDefault("Skyware Loom");
-
-            AddMapEntry(Color.FloralWhite);
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) {

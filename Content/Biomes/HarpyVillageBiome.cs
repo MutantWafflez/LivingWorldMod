@@ -1,5 +1,7 @@
-﻿using LivingWorldMod.Common.Players;
+﻿using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.Custom.Utilities;
+using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -16,6 +18,6 @@ namespace LivingWorldMod.Content.Biomes {
             DisplayName.SetDefault("Harpy Village");
         }
 
-        public override bool IsBiomeActive(Player player) => player.GetModPlayer<BiomePlayer>().currentVillageBiome == VillagerType.Harpy;
+        public override bool IsBiomeActive(Player player) => TileEntityUtils.GetAllEntityOfType<VillageShrineEntity>().Any(entity => entity.shrineType == VillagerType.Harpy && entity.villageZone.ContainsPoint(player.Center));
     }
 }

@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Content.UI.VillagerHousing;
+﻿using LivingWorldMod.Common.Systems.BaseSystems;
+using LivingWorldMod.Content.UI.VillagerHousing;
 using Microsoft.Xna.Framework;
 using Terraria;
 
@@ -6,7 +7,6 @@ namespace LivingWorldMod.Common.Systems.UI {
     /// <summary>
     /// System that handles the initialization and opening/closing of the Villager Housing UI.
     /// </summary>
-    //TODO: FIX VILLAGE HOUSING UI SYSTEM INTERACTION BUG
     public class VillagerHousingUISystem : UISystem<VillagerHousingUIState> {
         public override string VanillaInterfaceLocation => "Vanilla: Inventory";
 

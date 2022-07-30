@@ -1,4 +1,8 @@
 ﻿using LivingWorldMod.Common.ModTypes;
+using LivingWorldMod.Common.Systems;
+using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
+using LivingWorldMod.Content.NPCs.Villagers;
+using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Content.Tiles.Building;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
@@ -7,10 +11,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
-using LivingWorldMod.Content.NPCs.Villagers;
-using LivingWorldMod.Content.TileEntities.Interactables.VillageShrines;
-using LivingWorldMod.Content.Tiles.Interactables.VillageShrines;
+using LivingWorldMod.Content.Tiles.Interactables;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -28,6 +29,12 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
         public override string InsertionPassNameForFeature => "Micro Biomes";
 
         public override bool PlaceBeforeInsertionPoint => false;
+
+        /// <summary>
+        /// The name given to the temporary variable created during world generation which holds
+        /// the rectangle in which the original Harpy Village resides in.
+        /// </summary>
+        public const string TemporaryZoneVariableName = "HarpyVillageZone";
 
         public override void Generate(GenerationProgress progress, GameConfiguration gameConfig) {
             progress.Message = "Generating Structures... Harpy Village";
@@ -63,8 +70,10 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
                 //Get point closest to middle of the world: order the list by distance to the center of the world (ascending), then grab the first element in said list
                 originPoint = possibleIslandPlacements.OrderBy(point => Math.Abs(point.X - Main.maxTilesX / 2)).First();
 
-                //Set Harpy Village Zone
-                CreationSystem.villageZones[(int)VillagerType.Harpy] = new Rectangle(originPoint.X, originPoint.Y, originHorizontalDisplacement, originVerticalDisplacement);
+                //Set Harpy Village Zone temporarily
+                WorldCreationSystem.Instance.tempWorldGenValues.Add(
+                    new TemporaryGenValue<Rectangle>(new Rectangle(originPoint.X, originPoint.Y, originHorizontalDisplacement, originVerticalDisplacement), TemporaryZoneVariableName)
+                );
 
                 //Adjust origin point to be placed correctly within the village "zone" and actually an origin rather than the top corner
                 originPoint.X += (int)(originHorizontalDisplacement * (0.88f / 1.75f));
@@ -274,22 +283,20 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
         }
 
         public override void PostWorldGenAction() {
-            if (CreationSystem.villageZones[(int)VillagerType.Harpy] is Rectangle rectangle) {
+            if (WorldCreationSystem.Instance.GetTempWorldGenValue<Rectangle>(TemporaryZoneVariableName) is Rectangle rectangle) {
                 for (int i = 0; i < rectangle.Width; i++) {
                     for (int j = 0; j < rectangle.Height; j++) {
                         Point currentPos = new Point(rectangle.X + i, rectangle.Y + j);
 
                         Tile currentTile = Framing.GetTileSafely(currentPos);
 
-                        if (currentTile.TileType != ModContent.TileType<HarpyShrineTile>()) {
+                        if (currentTile.TileType != ModContent.TileType<VillageShrineTile>()) {
                             continue;
                         }
 
-                        VillageShrineEntity entity = ((HarpyShrineTile)ModContent.GetModTile(ModContent.TileType<HarpyShrineTile>())).ShrineEntity;
-
                         Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(currentTile, currentPos.X, currentPos.Y);
 
-                        entity.Place(topLeft.X, topLeft.Y);
+                        ModContent.GetInstance<VillageShrineEntity>().Place(topLeft.X, topLeft.Y);
                     }
                 }
 
@@ -301,7 +308,8 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
                         if (WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(harpyType)) {
                             WorldGen.ScoreRoom(npcTypeAskingToScoreRoom: harpyType);
 
-                            if (Main.npc.Any(npc => npc.homeTileX == WorldGen.bestX && npc.homeTileY == WorldGen.bestY)) {
+                            //A "high score" of 0 or less means the room is occupied or the score otherwise failed
+                            if (WorldGen.hiScore <= 0) {
                                 continue;
                             }
 

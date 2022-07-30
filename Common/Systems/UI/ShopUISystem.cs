@@ -1,6 +1,6 @@
-﻿using LivingWorldMod.Content.NPCs.Villagers;
+﻿using LivingWorldMod.Common.Systems.BaseSystems;
+using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.UI.VillagerShop;
-using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
@@ -31,11 +31,11 @@ namespace LivingWorldMod.Common.Systems.UI {
 
         public override void PostUpdateTime() {
             if (Main.time >= 32400.0 && !Main.dayTime && (!Main.gameMenu || Main.netMode == NetmodeID.Server)) {
-                NPCUtils.DoActionForEachNPC(npc => {
+                foreach (NPC npc in Main.npc) {
                     if (npc.active && npc.ModNPC is Villager villager) {
                         villager.RestockShop();
                     }
-                });
+                }
             }
         }
 

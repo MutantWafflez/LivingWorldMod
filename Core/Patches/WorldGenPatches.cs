@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Custom.Enums;
+﻿using LivingWorldMod.Common.Systems;
+using LivingWorldMod.Content.WorldGenFeatures.Villages;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Core.Patches {
@@ -32,7 +32,8 @@ namespace LivingWorldMod.Core.Patches {
             c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCallvirt(typeof(HashSet<Point>).GetMethod("Contains", BindingFlags.Public | BindingFlags.Instance)));
 
             c.Emit(OpCodes.Ldloc_S, itemLocalNumber);
-            c.EmitDelegate<Func<bool, Point, bool>>((originalValue, point) => originalValue || ModContent.GetInstance<WorldCreationSystem>().villageZones[(int)VillagerType.Harpy] is Rectangle rectangle && rectangle.Contains(point));
+            c.EmitDelegate<Func<bool, Point, bool>>((originalValue, point) =>
+                originalValue || WorldCreationSystem.Instance.GetTempWorldGenValue<Rectangle>(HarpyVillage.TemporaryZoneVariableName) is Rectangle rectangle && rectangle.Contains(point));
         }
     }
 }

@@ -6,6 +6,8 @@ using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Tiles.Building {
     public class SkywareBlockTile : BaseTile {
+        public override Color? TileColorOnMap => Color.LightBlue;
+
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = true;
             Main.tileNoSunLight[Type] = true;
@@ -15,8 +17,6 @@ namespace LivingWorldMod.Content.Tiles.Building {
 
             ItemDrop = ModContent.ItemType<SkywareBlockItem>();
             DustType = DustID.BlueMoss;
-
-            AddMapEntry(Color.LightBlue);
         }
     }
 }

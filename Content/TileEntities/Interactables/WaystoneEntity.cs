@@ -1,15 +1,10 @@
 using System.IO;
-using System.Linq;
-using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.MiscEntities;
 using LivingWorldMod.Content.Tiles.Interactables;
-using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;

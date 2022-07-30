@@ -5,7 +5,6 @@ using LivingWorldMod.Content.Items.Placeables.Furniture.Harpy;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -80,7 +79,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
                 BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Sky,
 
-                new FlavorTextBestiaryInfoElement("A villager from the Harpy Village in the sky. Don't ruffle their feathers or attempt flirtation if you value your life.")
+                new FlavorTextBestiaryInfoElement("Mods.LivingWorldMod.Bestiary.HarpyVillager")
             });
         }
     }

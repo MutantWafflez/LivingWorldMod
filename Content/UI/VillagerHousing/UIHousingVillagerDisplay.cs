@@ -1,5 +1,4 @@
 ﻿using LivingWorldMod.Content.NPCs.Villagers;
-using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -59,7 +58,7 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
         }
 
         public override void Update(GameTime gameTime) {
-            if (!IsMouseHovering || myVillager is null) {
+            if (!ContainsPoint(Main.MouseScreen) || myVillager is null) {
                 return;
             }
 

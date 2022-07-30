@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using LivingWorldMod.Common.Systems;
+﻿using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
+using System.Collections.Generic;
 using Terraria.IO;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
@@ -35,11 +35,6 @@ namespace LivingWorldMod.Common.ModTypes {
         /// <see cref="InsertionPassNameForFeature"/> value. Defaults to true.
         /// </summary>
         public virtual bool PlaceBeforeInsertionPoint => true;
-
-        /// <summary>
-        /// Acquires and returns the WorldCreationSystem.
-        /// </summary>
-        public WorldCreationSystem CreationSystem => ModContent.GetInstance<WorldCreationSystem>();
 
         /// <summary>
         /// The size of the world that is currently being generated.

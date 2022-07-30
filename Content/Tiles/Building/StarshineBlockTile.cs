@@ -6,6 +6,8 @@ using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Tiles.Building {
     public class StarshineBlockTile : BaseTile {
+        public override Color? TileColorOnMap => Color.DarkBlue;
+
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = true;
             Main.tileNoSunLight[Type] = true;
@@ -18,8 +20,6 @@ namespace LivingWorldMod.Content.Tiles.Building {
 
             ItemDrop = ModContent.ItemType<StarshineBlockItem>();
             DustType = DustID.BlueTorch;
-
-            AddMapEntry(Color.DarkBlue);
         }
 
         public override bool HasWalkDust() => true;

@@ -1,31 +1,9 @@
-Mods: {
+﻿Mods: {
 	LivingWorldMod: {
-		VillagerType: {
-			Harpy: "Harpy"
-		}
-
-		Common: {
-			Reputation: "Reputation"
-		}
-
-		VillagerNames: {
-			Harpy: {
-				0: "Merel"
-				1: "Mari"
-				2: "Wren"
-				3: "Yona"
-				4: "Jena"
-				5: "Tori"
-				6: "Loa"
-				7: "Eve"
-				8: "Rima"
-				9: "Luyu"
-				10: "Robin"
-			}
-		}
-
+		
 		VillagerDialogue: {
 			Harpy: {
+
 				Event: {
 					Rain: {
 						0: {
@@ -48,6 +26,7 @@ Mods: {
 						}
 					}
 				}
+
 				Shop: {
 					Initial: {
 						SevereDislike: {
@@ -94,6 +73,7 @@ Mods: {
 						}
 					}
 				}
+
 				SevereDislike: {
 					0: "Don't take it personally if we like, rip off your arms and eat you or something."
 					1: "How do you even live with those repulsive meat sticks in place of wings?"
@@ -104,6 +84,7 @@ Mods: {
 					6: "Are all the flightless this fowl and annoying...?"
 					7: "Humans... Despicable. Created those foul windows!"
 				}
+
 				Dislike: {
 					0: "Tread carefully, landwalker. You've upset a few of us here around the village."
 					1: "Sure, buy something if you want. But for the inconveniences you've caused some of us, there will be a bit of a markup."
@@ -116,6 +97,7 @@ Mods: {
 						Weight: 0.33
 					}
 				}
+
 				Neutral: {
 					0: "I don't get it, what's so wrong with being bird-brained?"
 					1: "I hope I can be at the front of the V formation at least once before I die."
@@ -131,6 +113,7 @@ Mods: {
 						Weight: 0.33
 					}
 				}
+
 				Like: {
 					0: "Landwalker! You want to buy something, right? Or did you just want to talk to me?"
 					1: "Aren't my feathers pretty today? I spent all day grooming them."
@@ -150,6 +133,7 @@ Mods: {
 						Weight: 0.33
 					}
 				}
+
 				Love: {
 					0: "Hey! There's my favorite human! How have things been going for you?"
 					1: "You know, you're lucky you're super liked around here in the village. No way else would we be giving out discounts like we do for anyone else!"
@@ -158,95 +142,8 @@ Mods: {
 					4: "You don't find the phrase \"landwalker\" offensive, do you? We've been saying it for so long! Oh man..."
 					5: "I don't know how you could ever handle going underground. The air must be so stale and dry... It's much better up here in the sky!"
 				}
+
 			}
-		}
-
-		UI: {
-			VillagerHousing: {
-				ButtonHoverText: "Villager Housing"
-				VillagerTypeLocked: "{0} Villagers cannot be re-housed until you are liked by them!"
-			}
-		}
-		
-		Event: {
-		    WaystoneActivation: "Waystone Activated!"
-		}
-
-		MapInfo: {
-			Waystones: {
-				Desert: "Desert Waystone"
-				Jungle: "Jungle Waystone"
-				Mushroom: "Glowing Mushroom Waystone"
-				Caverns: "Caverns Waystone"
-				Ice: "Tundra Waystone"
-			}
-		}
-
-		BuffName: {
-			NimbusPetBuff: "Nimbus Pet"
-		}
-
-		BuffDescription: {
-			NimbusPetBuff: "I bet it tastes like cotton candy..."
-		}
-
-		ItemName: {
-		//Tile Item Names
-			//Building
-			SkywareBlockItem: "Skyware Block"
-			StarshardCloudItem: "Starshard Cloud"
-			StarshineBlockItem: "Starshine Block"
-			SunslabBlockItem: "Sunslab Block"
-
-			//Furniture
-			NimbusJarItem: "Nimbus in a Jar"
-			GravityTapestryItem: "Gravity Tapestry"
-			SkywareAnvilItem: "Skyware Anvil"
-			SkywareLoomItem: "Skyware Loom"
-			SunTapestryItem: "Sun Tapestry"
-
-			//Interactables
-				//Shrines
-				HarpyShrineItem: "Harpy Village Shrine"
-
-			//Torches
-			StarTorchItem: "Star Torch"
-
-		//Wall Item Names
-			SkywareWallItem: "Skyware Wall"
-			SandstoneSlabWallItem: "Sandstone Slab Wall"
-			SkywareFenceItem: "Skyware Fence"
-		//Accessory Item Names
-			NimbusInABottle: "Nimbus in a Bottle"
-		}
-
-		ItemTooltip: {
-			NimbusInABottle: "Summons a pet nimbus that follows you around"
-		//Tile Item Tooltips
-
-			//Building
-			StarshardCloudItem: "'Shards of fallen stars permeate throughout this cloud'"
-
-			//Interactables
-
-				//Shrines
-				HarpyShrineItem: "'The magical source of protection for all those that inhabit a Harpy Village'"
-
-			//Torches
-			StarTorchItem: "'Light the way with the essence of the cosmos'"
-		}
-
-		NPCName: {
-			//Villagers
-			HarpyVillager: "Harpy Villager"
-		}
-
-		ProjectileName: {
-			NimbusPetProjectile: "Nimbus Pet"
-		}
-
-		SubworldName: {
-			PyramidDimension: "The Great Pyramid"
 		}
 	}
 }

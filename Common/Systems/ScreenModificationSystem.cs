@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Interfaces;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Systems {
@@ -10,7 +11,7 @@ namespace LivingWorldMod.Common.Systems {
     /// changing lighting, or applying screen-wide shaders.
     /// </summary>
     [Autoload(Side = ModSide.Client)]
-    public class ScreenModificationSystem : ModSystem {
+    public class ScreenModificationSystem : BaseModSystem<ScreenModificationSystem> {
         public List<IModifyLightingBrightness> LightingBrightnessEffects {
             get;
             private set;

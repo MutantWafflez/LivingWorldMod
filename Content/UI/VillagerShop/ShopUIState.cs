@@ -208,11 +208,11 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
         }
 
         public override void Update(GameTime gameTime) {
-            if (backImage.IsMouseHovering) {
+            if (backImage.ContainsPoint(Main.MouseScreen)) {
                 Main.LocalPlayer.mouseInterface = true;
             }
 
-            if (_selectedItem != null && buyItemButton.IsMouseHovering && Main.mouseLeft) {
+            if (_selectedItem != null && buyItemButton.ContainsPoint(Main.MouseScreen) && Main.mouseLeft) {
                 Player player = Main.LocalPlayer;
                 ShopItem shopItem = _selectedItem.pertainedInventoryItem;
 
@@ -235,6 +235,8 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
                         player.BuyItem((int)_selectedItem.displayedCost);
                         player.QuickSpawnItem(new EntitySource_DropAsItem(player), _selectedItem.displayedItem);
 
+                        _selectedItem.displayedItem.stack--;
+                        _selectedItem.itemNameText.SetText(_selectedItem.displayedItem.HoverName);
                         buyItemStock.SetText(shopItem.remainingStock.ToString());
 
                         savingsDisplay.moneyToDisplay = player.CalculateTotalSavings();

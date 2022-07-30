@@ -1,5 +1,6 @@
 ﻿using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.Custom.Utilities;
 using System;
 using Terraria.ModLoader;
 
@@ -15,12 +16,12 @@ namespace LivingWorldMod.Common.Commands.DebugCommands {
 
         public override void Action(CommandCaller caller, string input, string[] args) {
             if (args.Length == 2 && int.TryParse(args[0], out int type)) {
-                if (type >= 0 && type < (int)VillagerType.TypeCount) {
+                if (type >= 0 && type < NPCUtils.GetTotalVillagerTypeCount()) {
                     if (int.TryParse(args[1], out int repValue)) {
                         if (Math.Abs(repValue) > ReputationSystem.VillageReputationConstraint) {
                             throw new UsageException("Inputted reputation value is greater than 100 or less than -100.");
                         }
-                        ReputationSystem.SetVillageReputation(type, repValue);
+                        ReputationSystem.Instance.SetVillageReputation((VillagerType)type, repValue);
                         caller.Reply("Village type " + (VillagerType)type + "'s reputation successfully changed to " + repValue);
                     }
                     else {

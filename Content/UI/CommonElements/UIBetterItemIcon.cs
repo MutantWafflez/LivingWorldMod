@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace LivingWorldMod.Content.UI.CommonElements {
     /// <summary>
@@ -17,6 +18,12 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         /// will be drawn. Defaults to true.
         /// </summary>
         public bool isVisible = true;
+
+        /// <summary>
+        /// The color to forcefully draw the item as, regardless of anything else. Null means
+        /// no overriding.
+        /// </summary>
+        public Color? overrideDrawColor = null;
 
         private Item _displayedItem;
         private float _sizeLimit;
@@ -44,6 +51,9 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             float sizeConstraint = 1f;
 
             ItemSlot.GetItemLight(ref currentColor, ref itemLightScale, _displayedItem);
+            if (overrideDrawColor is { } color) {
+                currentColor = color;
+            }
             sizeConstraint *= itemLightScale;
 
             if (itemAnimFrame.Width > _sizeLimit || itemAnimFrame.Height > _sizeLimit) {
@@ -70,6 +80,11 @@ namespace LivingWorldMod.Content.UI.CommonElements {
 
         public void SetItem(Item newItem) {
             _displayedItem = newItem;
+            Recalculate();
+        }
+
+        public void SetItem(int newItemType) {
+            _displayedItem?.SetDefaults(newItemType);
             Recalculate();
         }
     }

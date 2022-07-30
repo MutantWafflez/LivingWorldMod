@@ -9,9 +9,12 @@ using ReLogic.Content;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.Audio;
+using Terraria.Chat;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 
 namespace LivingWorldMod.Content.NPCs.Villagers {
@@ -86,64 +89,6 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         public virtual int HeadAssetVariations => 5;
 
         /// <summary>
-        /// Threshold that the reputation must cross in order for these villagers to HATE the players.
-        /// </summary>
-        public virtual int HateThreshold => -95;
-
-        /// <summary>
-        /// Threshold that the reputation must cross in order for these villagers to SEVERELY
-        /// DISLIKE the players.
-        /// </summary>
-        public virtual int SevereDislikeThreshold => -45;
-
-        /// <summary>
-        /// Threshold that the reputation must cross in order for these villagers to DISLIKE the
-        /// players. The villagers will be considered "neutral" towards the players if the
-        /// reputation is in-between the Dislike and Like thresholds.
-        /// </summary>
-        public virtual int DislikeThreshold => -15;
-
-        /// <summary>
-        /// Threshold that the reputation must cross in order for these villagers to LIKE the
-        /// players. The villagers will be considered "neutral" towards the players if the
-        /// reputation is in-between the Dislike and Like thresholds.
-        /// </summary>
-        public virtual int LikeThreshold => 15;
-
-        /// <summary>
-        /// Threshold that the reputation must cross in order for these villagers to LOVE the players.
-        /// </summary>
-        public virtual int LoveThreshold => 95;
-
-        /// <summary>
-        /// The current status of the "relationship" between these villagers and the players.
-        /// Returns the enum of said status.
-        /// </summary>
-        public VillagerRelationship RelationshipStatus {
-            get {
-                int reputation = ReputationSystem.GetVillageReputation(VillagerType);
-
-                if (reputation <= HateThreshold) {
-                    return VillagerRelationship.Hate;
-                }
-                else if (reputation > HateThreshold && reputation <= SevereDislikeThreshold) {
-                    return VillagerRelationship.SevereDislike;
-                }
-                else if (reputation > SevereDislikeThreshold && reputation <= DislikeThreshold) {
-                    return VillagerRelationship.Dislike;
-                }
-                else if (reputation >= LikeThreshold && reputation < LoveThreshold) {
-                    return VillagerRelationship.Like;
-                }
-                else if (reputation >= LoveThreshold) {
-                    return VillagerRelationship.Love;
-                }
-
-                return VillagerRelationship.Neutral;
-            }
-        }
-
-        /// <summary>
         /// Gets and returns a random shop dialogue line from the "initial shop dialogue" pool.
         /// </summary>
         /// <returns> </returns>
@@ -155,9 +100,19 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// <returns> </returns>
         public string BuyShopChat => LocalizationUtils.GetAllStringsFromCategory($"VillagerDialogue.{VillagerType}.Shop.Buy.{RelationshipStatus}");
 
+        /// <summary>
+        /// Shorthand get property for acquiring the current relationship status of whatever type of village this villager belongs to.
+        /// </summary>
+        public VillagerRelationship RelationshipStatus => ReputationSystem.Instance.GetVillageRelationship(VillagerType);
+
         public sealed override string Texture => LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/DefaultStyle";
 
         public override bool IsCloneable => true;
+
+        /// <summary>
+        /// A counter for how long this Villager has been homeless for, used for automatically leaving
+        /// </summary>
+        private int _homelessCounter;
 
         public Villager() {
             bodyAssets = new Asset<Texture2D>[BodyAssetVariations];
@@ -191,6 +146,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             clone.bodySpriteType = bodySpriteType;
             clone.headSpriteType = headSpriteType;
 
+            clone._homelessCounter = _homelessCounter;
+
             return clone;
         }
 
@@ -200,7 +157,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             //The PR is here, and I am loving it 
             NPCID.Sets.ActsLikeTownNPC[Type] = true;
             NPCID.Sets.SpawnsWithCustomName[Type] = true;
-            NPCID.Sets.SavesAndLoads[Type] = true;
+            NPCID.Sets.AllowDoorInteraction[Type] = true;
 
             NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0) {
                 Velocity = 1f,
@@ -219,6 +176,30 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             NPC.knockBackResist = 0.5f;
             NPC.aiStyle = 7;
             AnimationType = NPCID.Guide;
+        }
+
+        public override bool NeedSaving() => true;
+
+        public override void SaveData(TagCompound tag) {
+            tag["HeadType"] = headSpriteType;
+            tag["BodyType"] = bodySpriteType;
+            tag["Shop"] = shopInventory;
+
+            tag["DisplayName"] = NPC.GivenName;
+            tag["HomeTileX"] = NPC.homeTileX;
+            tag["HomeTileY"] = NPC.homeTileY;
+            tag["IsHomeless"] = NPC.homeless;
+        }
+
+        public override void LoadData(TagCompound tag) {
+            headSpriteType = tag.GetInt("HeadType");
+            bodySpriteType = tag.GetInt("BodyType");
+            shopInventory = tag.Get<List<ShopItem>>("Shop");
+
+            NPC.GivenName = tag.GetString("DisplayName");
+            NPC.homeTileX = tag.GetInt("HomeTileX");
+            NPC.homeTileY = tag.GetInt("HomeTileY");
+            NPC.homeless = tag.GetBool("IsHomeless");
         }
 
         public override bool CheckActive() => false;
@@ -271,6 +252,36 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             spriteBatch.Draw(headTexture, drawArea, NPC.frame, drawColor, NPC.rotation, default, spriteDirection, 0);
 
             return false;
+        }
+
+        public override void PostAI() {
+            //We only want this to run on Server/SP
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                return;
+            }
+
+            if (NPC.homeless) {
+                _homelessCounter++;
+            }
+            else {
+                _homelessCounter = 0;
+                return;
+            }
+
+            if (_homelessCounter >= 60 * 60 * 2) {
+                Color leavingColor = new Color(255, 25, 25);
+                string leavingText = LocalizationUtils.GetLWMTextValue($"Event.VillagerLeft.{VillagerType}", new object[] { NPC.GivenOrTypeName });
+
+                NPC.active = false;
+                if (Main.netMode == NetmodeID.Server) {
+                    ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(leavingText), leavingColor);
+                    NetMessage.SendData(MessageID.SyncNPC, number: NPC.whoAmI);
+                }
+                else {
+                    Main.NewText(leavingText, leavingColor);
+                    SoundEngine.PlaySound(SoundID.NPCDeath6, NPC.Center);
+                }
+            }
         }
 
         /// <summary>

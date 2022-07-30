@@ -1,5 +1,5 @@
-using System.IO;
 using LivingWorldMod.Common.ModTypes;
+using System.IO;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod {

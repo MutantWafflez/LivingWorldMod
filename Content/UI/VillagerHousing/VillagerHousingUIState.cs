@@ -2,12 +2,10 @@
 using LivingWorldMod.Content.UI.CommonElements;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.UI.Elements;
@@ -150,15 +148,20 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             openMenuButton.Left.Set(Main.screenWidth - (isMiniMapEnabled ? 220f : 177f), 0f);
             openMenuButton.Top.Set((isMiniMapEnabled ? 143f : 114f) + _mapDisplacement, 0f);
 
+            enumerateLeftButton.Left.Set(Main.screenWidth - 190f, 0f);
             enumerateLeftButton.Top.Set(180f + _mapDisplacement, 0f);
 
+            villagerTypeCenterElement.Left.Set(Main.screenWidth - 157f, 0f);
             villagerTypeCenterElement.Top.Set(180f + _mapDisplacement, 0f);
 
+            enumerateRightButton.Left.Set(Main.screenWidth - 70f, 0f);
             enumerateRightButton.Top.Set(180f + _mapDisplacement, 0f);
 
+            gridScrollbar.Left.Set(Main.screenWidth - 26f, 0f);
             gridScrollbar.Top.Set(214f + _mapDisplacement, 0f);
             gridScrollbar.Height.Set(390f - _mapDisplacement, 0f);
 
+            gridOfVillagers.Left.Set(Main.screenWidth - 196f, 0f);
             gridOfVillagers.Top.Set(214f + _mapDisplacement, 0f);
             gridOfVillagers.Height.Set(gridScrollbar.Height.Pixels, 0f);
 
@@ -188,11 +191,11 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             //Make sure to wrap around properly when necessary
             if (enumerateDirection) {
                 VillagerType nextValue = typeToShow.NextEnum();
-                typeToShow = nextValue == VillagerType.TypeCount ? VillagerType.Harpy : nextValue;
+                typeToShow = nextValue;
             }
             else {
                 VillagerType previousValue = typeToShow.PreviousEnum();
-                typeToShow = previousValue == VillagerType.TypeCount ? VillagerType.TypeCount - 1 : previousValue;
+                typeToShow = previousValue;
             }
 
             //Change to proper villager type text

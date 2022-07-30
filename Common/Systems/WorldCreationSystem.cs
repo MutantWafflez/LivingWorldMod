@@ -1,12 +1,12 @@
 ﻿using LivingWorldMod.Common.ModTypes;
-using LivingWorldMod.Custom.Enums;
-using Microsoft.Xna.Framework;
+using LivingWorldMod.Common.Systems.BaseSystems;
+using LivingWorldMod.Custom.Interfaces;
+using LivingWorldMod.Custom.Structs;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.GameContent.Generation;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Common.Systems {
@@ -14,26 +14,17 @@ namespace LivingWorldMod.Common.Systems {
     /// System that handles the INITIAL world generation steps. This system does NOT handle world
     /// events that occur AFTER the world is created.
     /// </summary>
-    public class WorldCreationSystem : ModSystem {
+    public class WorldCreationSystem : BaseModSystem<WorldCreationSystem> {
         /// <summary>
-        /// List of all the areas which are the "zones" belonging to each village. Different for
-        /// each world.
+        /// List of values that exist temporarily during the world generation process.
         /// </summary>
-        public Rectangle[] villageZones;
+        public List<ITemporaryGenValue> tempWorldGenValues;
 
         public override void Load() {
-            villageZones = new Rectangle[(int)VillagerType.TypeCount];
+            tempWorldGenValues = new List<ITemporaryGenValue>();
         }
 
         public override void Unload() { }
-
-        public override void SaveWorldData(TagCompound tag) {
-            tag["VillageZones"] = villageZones.ToList();
-        }
-
-        public override void LoadWorldData(TagCompound tag) {
-            villageZones = tag.Get<List<Rectangle>>("VillageZones").ToArray();
-        }
 
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight) {
             List<WorldGenFeature> listOfFeatures = ModContent.GetContent<WorldGenFeature>().ToList();
@@ -52,8 +43,25 @@ namespace LivingWorldMod.Common.Systems {
             }
         }
 
+        public override void PreWorldGen() {
+            tempWorldGenValues = new List<ITemporaryGenValue>();
+        }
+
         public override void PostWorldGen() {
             ModContent.GetContent<WorldGenFeature>().ToList().ForEach(feature => feature.PostWorldGenAction());
+
+            tempWorldGenValues.Clear();
+        }
+
+        /// <summary>
+        /// Shorthand method that will search and return the value of the specified type
+        /// with the passed in name. Returns null if nothing is found.
+        /// </summary>
+        /// <typeparam name="T"> The type of the value you are looking for. </typeparam>
+        /// <param name="name"> The value of <seealso cref="ITemporaryGenValue.Name"/>. </param>
+        /// <returns></returns>
+        public T GetTempWorldGenValue<T>(string name) {
+            return tempWorldGenValues.OfType<TemporaryGenValue<T>>().FirstOrDefault(value => value.Name == name).value;
         }
     }
 }
