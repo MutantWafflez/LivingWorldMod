@@ -12,6 +12,8 @@ namespace LivingWorldMod.Content.Biomes {
 
         public override string BackgroundPath => $"{LivingWorldMod.LWMSpritePath}Backgrounds/Loading/PyramidBG";
 
+        public override string MapBackground => $"{LivingWorldMod.LWMSpritePath}Backgrounds/Loading/PyramidBG";
+
         public override int Music => MusicLoader.GetMusicSlot(Mod, LivingWorldMod.LWMMusicPath + "Dungeons/RevampedPyramid");
 
         public override SceneEffectPriority Priority => SceneEffectPriority.Environment;
