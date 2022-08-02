@@ -5,6 +5,8 @@ using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
 using System;
 using LivingWorldMod.Content.Items.RespawnItems;
+using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Custom.Utilities {
@@ -55,6 +57,27 @@ namespace LivingWorldMod.Custom.Utilities {
                 VillagerType.Harpy => ModContent.ItemType<HarpyEgg>(),
                 _ => -1
             };
+        }
+
+        /// <summary>
+        /// Returns whether or not the specified entity is under a roof or not.
+        /// </summary>
+        /// <param name="entity"> The entity in question. </param>
+        /// <param name="maxRoofHeight"> The maximum height from the top of the entity that can be considered to be a "roof".  </param>
+        /// <returns></returns>
+        public static bool IsEntityUnderRoof(Entity entity, int maxRoofHeight = 32) {
+            for (int i = 0; i < maxRoofHeight; i++) {
+                if (!WorldGen.InWorld((int)((entity.Center.X + entity.direction) / 16), (int)(entity.Center.Y / 16) - i)) {
+                    return false;
+                }
+
+                Tile tile = Framing.GetTileSafely(entity.Center.ToTileCoordinates16() + new Point16(0, -i));
+                if (tile.HasTile && Main.tileSolid[tile.TileType]) {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

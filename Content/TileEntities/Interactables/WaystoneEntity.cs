@@ -7,13 +7,15 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Default;
 using Terraria.ModLoader.IO;
+using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.TileEntities.Interactables {
     /// <summary>
     /// Tile Entity for the Waystone tiles.
     /// </summary>
-    public class WaystoneEntity : BaseTileEntity {
+    public class WaystoneEntity : TEModdedPylon {
         public bool isActivated;
 
         public WaystoneType waystoneType;
@@ -31,18 +33,10 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             }
         }
 
-        public override int ValidTileID => ModContent.TileType<WaystoneTile>();
-
         public override Vector2 EntityDimensions => new Vector2(32, 48); //2x3 tiles 
 
         private int _activationTimer;
         private bool _doingActivationVFX;
-
-        public override bool? PreValidTile(int i, int j) {
-            Tile tile = Framing.GetTileSafely(i, j);
-
-            return tile.HasTile && tile.TileType == ValidTileID && tile.TileFrameX % 36 == 0;
-        }
 
         public override void Update() {
             // Update is only called on server; we don't need to do the visual flair for the server, so we just wait until that is done, then update all clients accordingly
@@ -55,6 +49,24 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                     NetMessage.SendData(MessageID.TileEntitySharing, number: ID, number2: Position.X, number3: Position.Y);
                 }
             }
+        }
+
+        public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate) {
+            TileObjectData tileData = TileObjectData.GetTileData(type, style, alternate);
+            int topLeftX = i - tileData.Origin.X;
+            int topLeftY = j - tileData.Origin.Y;
+
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                NetMessage.SendTileSquare(Main.myPlayer, topLeftX, topLeftY, tileData.Width, tileData.Height);
+                NetMessage.SendData(MessageID.TileEntityPlacement, number: topLeftX, number2: topLeftY, number3: Type);
+                return -1;
+            }
+
+            if (ManualPlace(topLeftX, topLeftY, (WaystoneType)style) && TileEntityUtils.TryFindModEntity(topLeftX, topLeftY, out WaystoneEntity entity)) {
+                return entity.ID;
+            }
+
+            return -1;
         }
 
         public override void OnNetPlace() {
@@ -105,12 +117,12 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         /// <returns></returns>
         public bool ManualPlace(int i, int j, WaystoneType type, bool isActivated = false) {
             // First, double check that tile is a Waystone tile
-            if (Framing.GetTileSafely(i, j).TileType != ValidTileID) {
+            if (Framing.GetTileSafely(i, j).TileType != ModContent.TileType<WaystoneTile>()) {
                 return false;
             }
 
             // Then, place tile entity and assign its type
-            ModContent.GetInstance<WaystoneEntity>().Place(i, j);
+            Place(i, j);
             if (TileEntityUtils.TryFindModEntity(i, j, out WaystoneEntity retrievedEntity)) {
                 retrievedEntity.waystoneType = type;
                 retrievedEntity.isActivated = isActivated;
