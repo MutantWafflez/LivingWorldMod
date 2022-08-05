@@ -89,11 +89,7 @@ namespace LivingWorldMod.Common.Systems {
             switch (dialogueType) {
                 case DialogueType.Normal:
                     foreach (DialogueData data in allDialogue.Where(dialogue => !dialogue.dialogue.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Shop"))) {
-                        if (!data.dialogue.Key.Contains($".{relationshipStatus}.")) {
-                            continue;
-                        }
-
-                        if (data.requiredEvents is { } events && !events.All(requiredEvent => _eventCheckers.ContainsKey(requiredEvent) && _eventCheckers[requiredEvent]())) {
+                        if (!data.dialogue.Key.Contains($".{relationshipStatus}.") || !TestEvents(data.requiredEvents)) {
                             continue;
                         }
 
@@ -104,11 +100,7 @@ namespace LivingWorldMod.Common.Systems {
                 case DialogueType.ShopInitial:
                 case DialogueType.ShopBuy:
                     foreach (DialogueData data in allDialogue.Where(dialogue => dialogue.dialogue.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Shop.{dialogueType.ToString().Replace("Shop", "")}"))) {
-                        if (!data.dialogue.Key.Contains($".{relationshipStatus}.")) {
-                            continue;
-                        }
-
-                        if (data.requiredEvents is { } events && !events.All(requiredEvent => _eventCheckers.ContainsKey(requiredEvent) && _eventCheckers[requiredEvent]())) {
+                        if (!data.dialogue.Key.Contains($".{relationshipStatus}.") || !TestEvents(data.requiredEvents)) {
                             continue;
                         }
 
@@ -119,6 +111,34 @@ namespace LivingWorldMod.Common.Systems {
             }
 
             return dialogueOptions.elements.Any() ? dialogueOptions : "Dialogue error! No dialogue found, report to devs!";
+        }
+
+        /// <summary>
+        /// Takes the passed in events and checks to see if any pass. Returns true if all passed or it is null, false otherwise.
+        /// </summary>
+        /// <param name="events"> The array of events to check. </param>
+        private bool TestEvents(string[] events) {
+            if (events is null) {
+                return true;
+            }
+
+            foreach (string eventToCheck in events) {
+                //Negation functionality
+                if (eventToCheck.StartsWith("!")) {
+                    string eventKey = eventToCheck.TrimStart('!');
+
+                    if (_eventCheckers.ContainsKey(eventKey) && _eventCheckers[eventKey]()) {
+                        return false;
+                    }
+                }
+                else {
+                    if (_eventCheckers.ContainsKey(eventToCheck) && !_eventCheckers[eventToCheck]()) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }

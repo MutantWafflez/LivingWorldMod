@@ -30,7 +30,7 @@
 						}
 						Dislike: {
 							0: "You know, since there aren't any laws regulating prices and there really isn't any competition, due to the minor trouble you've put us through, I think your next product will cost a little extra."
-							1: "Tread carefully, landwalker. Keep slipping up like you have been lately, and soon it'll cost an entire platinum to buy my wares!"
+							1: "Tread carefully, landwalker. Keep slipping up like you have been lately, and soon it'll cost an entire platinum to buy one of these things!"
 						}
 						Neutral: {
 							0: "Nice of you to stop by, landwalker. Would appreciate the extra coin right now, everything is at the standard price!"
@@ -38,10 +38,10 @@
 						}
 						Like: {
 							0: "I wonder if my friends wanna go practice feather shooting later today... Erm- right, anything I got pique your interest landwalker?"
-							1: "You know, when you first came here, I thought you were like all the other landwalkers, but I was pleasantly surprised that's not the case. Have, like, a small discount, on me!"
+							1: "You know, when you first came here, I thought you were like all the other landwalkers, but I was pleasantly surprised that's not the case. Have a small discount, on me!"
 						}
 						Love: {
-							0: "Before you even mention it- no, actually, before you even THINK it, this discount I'm giving you is cause you've helped the village so much and not because I'm interested in you!"
+							0: "Looking for something to buy, landwalker? I know you could probably afford everything at normal price, but I can't hold back giving you a discount regardless."
 							1: "You know landwalker, have this discount on me. I guess you deserve it for helping the village so much, or whatever. Just buy something!"
 						}
 					}
@@ -52,7 +52,7 @@
 						}
 						Dislike: {
 							0: "If you thought this markup was a lot, you haven't seen anything yet. Watch yourself, landwalker. Thanks for the purchase."
-							1: "You must think you're so rich being able to buy all this stuff no matter the price. Whatever. Thanks for the money I guess."
+							1: "You must think you're so rich being able to buy all this stuff no matter the price. Whatever. Thanks for the money, I guess."
 						}
 						Neutral: {
 							0: "Like, thanks for the purchase, landwalker."
@@ -119,15 +119,15 @@
 						Text: "ptoo- Sorry, I got a feather in my mouth again. Happens every time."
 					}
 					7: { 
-						Text: "No I'm not flirting with you! Stupid human!" 
+						Text: "I really hope a blood moon doesn't happen soon, I don't want to deal with my feathers getting all ruffled." 
 					}
 				}
 
 				Love: {
 					0: "Hey! There's my favorite human! How have things been going for you?"
-					1: "You know, you're lucky you're super liked around here in the village. No way else would we be giving out discounts like we do for anyone else!"
-					2: "Heyyy! So happy you could stop by! You got some stories for us this time around? We'd love to hear them!"
-					3: "You know, if I'm being honest, when you first appeared in the village, we weren't sure what to think of you. We never get landwalking visitors up here. But you know what? I'm glad you came!"
+					1: "You know, you're lucky you're super liked around here in the village. No way else would we be giving out discounts like these!"
+					2: "Heyyy! So happy you could stop by; you got some stories for us this time around? We'd love to hear them!"
+					3: "You know, if I'm being honest, when you first appeared in the village, we weren't sure what to think of you. We never get landwalking visitors up here. But you know what? We're glad you're here."
 					4: "You don't find the phrase \"landwalker\" offensive, do you? We've been saying it for so long! Oh man..."
 					5: "I don't know how you could ever handle going underground. The air must be so stale and dry... It's much better up here in the sky!"
 				}
