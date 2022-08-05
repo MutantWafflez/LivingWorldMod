@@ -5,25 +5,20 @@
 			Harpy: {
 
 				Event: {
-					Rain: {
-						0: {
-							Text: "I'm super thankful we're above the clouds. I cannot stand my hair being wet."
-							Weight: 2.0
-						}
-						1: {
-							Text: "Ahh, watching the rain fall from the clouds is so relaxing."
-							Weight: 2.0
-						}
+					//Rain
+					0: {
+						Text: "I'm super thankful we're above the clouds. I cannot stand my hair being wet."
 					}
-					Eclipse: {
-						0: {
-							Text: "It's so fun watching all the monsters going crazy down there attacking people. I'm glad we're somewhat safe up here."
-							Weight: 2.0
-						}
-						1: {
-							Text: "What, are you scared or something?"
-							Weight: 2.0
-						}
+					1: {
+						Text: "Ahh, watching the rain fall from the clouds is so relaxing."
+					}
+					
+					//Eclipse
+					2: {
+						Text: "It's so fun watching all the monsters going crazy down there attacking people. I'm glad we're somewhat safe up here."
+					}
+					3: {
+						Text: "What, are you scared or something?"
 					}
 				}
 
@@ -94,7 +89,6 @@
 					5: "Oh hey. Can I help you at all? No? Then get out of my face."
 					6: {
 						Text: "I'm gonna be straight with you, human. You've caused some problems for us. Nothing outrageous, but it's left a bit of a sour taste in our mouths. We may understand if they were just one time mistakes, but you better act carefully before things get very, very bad for you."
-						Weight: 0.33
 					}
 				}
 
@@ -106,11 +100,9 @@
 					4: "You'll buy something, won't you? You didn't come here for nothing, right?"
 					5: {
 						Text: "No, I don't want any crackers. And stop calling me Polly!"
-						Weight: 0.66
 					}
 					6: {
 						Text: "You're asking how we reproduce if we're all female? Don't be silly."
-						Weight: 0.33
 					}
 				}
 
@@ -122,15 +114,12 @@
 					4: "It gets sort of boring up here. But it's not so bad when you come around."
 					5: {
 						Text: "Does this top make my wings look fat?"
-						Weight: 0.66
 					}
 					6: { 
 						Text: "ptoo- Sorry, I got a feather in my mouth again. Happens every time."
-						Weight: 0.66
 					}
 					7: { 
 						Text: "No I'm not flirting with you! Stupid human!" 
-						Weight: 0.33
 					}
 				}
 

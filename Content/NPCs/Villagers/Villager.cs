@@ -61,14 +61,6 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         /// <summary>
-        /// Dialogue that is added to the list of reputation dialogue depending on the current
-        /// event, if any, that is occurring.
-        /// </summary>
-        public abstract WeightedRandom<string> EventDialogue {
-            get;
-        }
-
-        /// <summary>
         /// A list of ALL POSSIBLE shop items that villagers of this given type can ever sell. This
         /// list is checked upon every restock.
         /// </summary>
@@ -87,18 +79,6 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// villager type. Defaults to 5.
         /// </summary>
         public virtual int HeadAssetVariations => 5;
-
-        /// <summary>
-        /// Gets and returns a random shop dialogue line from the "initial shop dialogue" pool.
-        /// </summary>
-        /// <returns> </returns>
-        public string InitialShopChat => LocalizationUtils.GetAllStringsFromCategory($"VillagerDialogue.{VillagerType}.Shop.Initial.{RelationshipStatus}");
-
-        /// <summary>
-        /// Gets and returns a random shop dialogue line from the "buy shop dialogue" pool.
-        /// </summary>
-        /// <returns> </returns>
-        public string BuyShopChat => LocalizationUtils.GetAllStringsFromCategory($"VillagerDialogue.{VillagerType}.Shop.Buy.{RelationshipStatus}");
 
         /// <summary>
         /// Shorthand get property for acquiring the current relationship status of whatever type of village this villager belongs to.
@@ -229,12 +209,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                 return "..."; //The player should be unable to chat with the villagers if they are hated, but just in case that occurs, return something in order to prevent a error thrown
             }
 
-            WeightedRandom<string> list = LocalizationUtils.GetAllStringsFromCategory($"VillagerDialogue.{VillagerType}.{RelationshipStatus}");
-
-            //Add event dialogue, if any events are occurring
-            list.AddRange(EventDialogue);
-
-            return list;
+            return DialogueSystem.Instance.GetDialogue(VillagerType, RelationshipStatus, DialogueType.Normal);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {

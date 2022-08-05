@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using LivingWorldMod.Common.Systems;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -246,7 +247,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
                             portrait.temporaryExpressionTimer = 120f;
                         }
 
-                        dialogueText.SetText(currentVillager.BuyShopChat);
+                        dialogueText.SetText(DialogueSystem.Instance.GetDialogue(currentVillager.VillagerType, currentVillager.RelationshipStatus, DialogueType.ShopBuy));
 
                         SoundEngine.PlaySound(SoundID.Coins);
                     }
@@ -277,7 +278,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
 
             nameText.SetText(currentVillager.NPC.GivenName, large: true);
 
-            dialogueText.SetText(currentVillager.InitialShopChat);
+            dialogueText.SetText(DialogueSystem.Instance.GetDialogue(currentVillager.VillagerType, currentVillager.RelationshipStatus, DialogueType.ShopInitial));
 
             buyItemButton.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BuyButton", AssetRequestMode.ImmediateLoad));
 
