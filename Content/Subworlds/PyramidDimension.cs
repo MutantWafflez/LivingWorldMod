@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
 using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Content.Walls.WorldGen;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using ReLogic.Graphics;
 using SubworldLibrary;
 using Terraria;
 using Terraria.GameContent;
@@ -15,21 +16,41 @@ using Terraria.ID;
 using Terraria.IO;
 using Terraria.ModLoader;
 using Terraria.UI.Chat;
+using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Content.Subworlds {
     public class PyramidDimension : Subworld {
-        public override int Width => 1000;
+        /// <summary>
+        /// The grid that the dungeon is composed of. Each room at maximum can be 100x100.
+        /// </summary>
+        public Rectangle[][] RoomGrid {
+            get;
+            private set;
+        }
 
-        public override int Height => 1000;
+        /// <summary>
+        /// The "correct" path that leads from the starter room to the boss room.
+        /// </summary>
+        public List<Point> CorrectPath {
+            get;
+            private set;
+        }
 
-        public override bool ShouldSave => !LivingWorldMod.IsDebug;
+        public override int Width => 1000 + _worldBorderPadding * 2;
+
+        public override int Height => 1150 + _worldBorderPadding * 2;
+
+        public override bool ShouldSave => false;
 
         public override List<GenPass> Tasks => new List<GenPass>() {
+            new PassLegacy("Initialize", Initialize),
             new PassLegacy("Fill World", FillWorld),
             new PassLegacy("Set Spawn", SetSpawn),
             new PassLegacy("Starter Room", GenStarterRoom)
         };
+
+        private readonly int _totalVanillaSaveOrLoadSteps = 4;
 
         private Asset<Texture2D> _pyramidBackground;
         private Asset<Texture2D> _pyramidWorldGenBar;
@@ -37,9 +58,11 @@ namespace LivingWorldMod.Content.Subworlds {
         private string _lastStatusText = "";
         private int _vanillaLoadStepsPassed;
 
-        private const int TotalVanillaSaveOrLoadSteps = 4;
-        private const int SpawnTileX = 150;
-        private const int SpawnTileY = 82;
+        private int _worldBorderPadding;
+        private int _spawnTileX;
+        private int _spawnTileY;
+        private int _roomSideLength;
+        private int _gridSideLength;
 
         public override void Load() {
             _pyramidBackground = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}Backgrounds/Loading/PyramidBG");
@@ -98,7 +121,7 @@ namespace LivingWorldMod.Content.Subworlds {
                 progressBarBackgroundColor
             );
             //Total Progress Color
-            int totalProgBarWidth = (int)(totalProgBarSize.X * (_vanillaLoadStepsPassed / (float)TotalVanillaSaveOrLoadSteps * 0.34f + (WorldGenerator.CurrentGenerationProgress?.TotalProgress ?? (_isExiting ? 1f : 0f) * 0.66f)));
+            int totalProgBarWidth = (int)(totalProgBarSize.X * (_vanillaLoadStepsPassed / (float)_totalVanillaSaveOrLoadSteps * 0.34f + (WorldGenerator.CurrentGenerationProgress?.TotalProgress ?? (_isExiting ? 1f : 0f) * 0.66f)));
             Main.spriteBatch.Draw(
                 TextureAssets.MagicPixel.Value,
                 new Rectangle((int)totalProgBarPos.X, (int)totalProgBarPos.Y, totalProgBarWidth, (int)totalProgBarSize.Y),
@@ -131,6 +154,52 @@ namespace LivingWorldMod.Content.Subworlds {
             );
         }
 
+        private void Initialize(GenerationProgress progress, GameConfiguration config) {
+            progress.Message = "Initializing";
+            _worldBorderPadding = 150;
+            _spawnTileX = 150;
+            _spawnTileY = 82;
+            _roomSideLength = 100;
+            _gridSideLength = 10;
+
+            RoomGrid = new Rectangle[_gridSideLength][];
+            for (int i = 0; i < _gridSideLength; i++) {
+                RoomGrid[i] = new Rectangle[_gridSideLength];
+                for (int j = 0; j < _gridSideLength; j++) {
+                    RoomGrid[i][j] = new Rectangle(_worldBorderPadding + i * _roomSideLength, _worldBorderPadding + j * _roomSideLength, _roomSideLength, _roomSideLength);
+                }
+            }
+
+            CorrectPath = new List<Point>() { new Point(WorldGen._genRand.Next(0, _gridSideLength), 0) };
+            Point currentEndPoint = CorrectPath.Last();
+            Point lastMovement = Point.Zero;
+
+            Point leftMovement = new Point(-1, 0);
+            Point rightMovement = new Point(1, 0);
+            Point downMovement = new Point(0, 1);
+            while (currentEndPoint.Y < 11) {
+                List<Tuple<Point, double>> movementChoices = new List<Tuple<Point, double>>();
+                movementChoices.AddConditionally(new Tuple<Point, double>(leftMovement, 25), lastMovement != rightMovement && currentEndPoint.X != 0); //Left
+                movementChoices.AddConditionally(new Tuple<Point, double>(rightMovement, 25), lastMovement != leftMovement && currentEndPoint.X != _gridSideLength); //Right
+                movementChoices.Add(new Tuple<Point, double>(downMovement, 50)); //Down
+
+                WeightedRandom<Point> movementChooser = new WeightedRandom<Point>(WorldGen._genRand, movementChoices.ToArray());
+
+                //If a movement option isn't added, we need to balance out the weights
+                double weightSum = movementChooser.elements.Sum(tuple => tuple.Item2);
+                if (weightSum < 100) {
+                    Tuple<Point, double> minWeightedObject = movementChooser.elements.MinBy(tuple => tuple.Item2);
+                    movementChooser.AddConditionally(new Point(minWeightedObject.Item1.X, minWeightedObject.Item1.Y), minWeightedObject is not null, minWeightedObject.Item2);
+                }
+
+                Point chosenMovement = movementChooser.Get();
+                CorrectPath.Add(new Point(currentEndPoint.X + chosenMovement.X, currentEndPoint.Y + chosenMovement.Y));
+                lastMovement = chosenMovement;
+
+                currentEndPoint = CorrectPath.Last();
+            }
+        }
+
         private void FillWorld(GenerationProgress progress, GameConfiguration config) {
             progress.Message = "Slabbing up";
             for (int i = 0; i < Main.maxTilesX; i++) {
@@ -146,22 +215,22 @@ namespace LivingWorldMod.Content.Subworlds {
 
         private void SetSpawn(GenerationProgress progress, GameConfiguration config) {
             progress.Message = "Spawning up";
-            Main.spawnTileX = SpawnTileX;
-            Main.spawnTileY = SpawnTileY;
+            Main.spawnTileX = _spawnTileX;
+            Main.spawnTileY = _spawnTileY;
         }
 
         private void GenStarterRoom(GenerationProgress progress, GameConfiguration config) {
             progress.Message = "Starter Room";
 
             //Generate initial triangular room
-            WorldUtils.Gen(new Point(SpawnTileX - 1, SpawnTileY - 10), new EqualTriangle(20), new Actions.ClearTile(true));
+            WorldUtils.Gen(new Point(_spawnTileX - 1, _spawnTileY - 10), new EqualTriangle(20), new Actions.ClearTile(true));
 
             //Generate exit door
-            WorldGen.PlaceObject(SpawnTileX - 2, SpawnTileY - 4, ModContent.TileType<PyramidDoorTile>(), style: 0, direction: 1);
+            WorldGen.PlaceObject(_spawnTileX - 2, _spawnTileY - 4, ModContent.TileType<PyramidDoorTile>(), style: 0, direction: 1);
 
             //Generate Torches
-            WorldGen.PlaceTile(SpawnTileX - 3, SpawnTileY - 5, TileID.Torches, forced: true, style: 16);
-            WorldGen.PlaceTile(SpawnTileX + 2, SpawnTileY - 5, TileID.Torches, forced: true, style: 16);
+            WorldGen.PlaceTile(_spawnTileX - 3, _spawnTileY - 5, TileID.Torches, forced: true, style: 16);
+            WorldGen.PlaceTile(_spawnTileX + 2, _spawnTileY - 5, TileID.Torches, forced: true, style: 16);
         }
     }
 }
