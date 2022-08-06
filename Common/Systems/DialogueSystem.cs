@@ -46,11 +46,12 @@ namespace LivingWorldMod.Common.Systems {
                 List<DialogueData> finalDialogueData = new List<DialogueData>();
                 Dictionary<string, ModTranslation> typeDialogue = allDialogue.Where(pair => pair.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{type}")).ToDictionary(pair => pair.Key, pair => pair.Value);
 
-                foreach ((string key, ModTranslation value) in typeDialogue.Where(pair => !(pair.Key.EndsWith(".Weight") || pair.Key.EndsWith(".Events"))).ToDictionary(pair => pair.Key, pair => pair.Value)) {
+                foreach ((string key, ModTranslation value) in typeDialogue.Where(pair => !(pair.Key.EndsWith(".Weight") || pair.Key.EndsWith(".Priority") || pair.Key.EndsWith(".Events"))).ToDictionary(pair => pair.Key, pair => pair.Value)) {
                     //If the key ends with ".Text", that means it possible has Weight and Events value(s)
                     if (key.EndsWith(".Text")) {
                         string keyPrefix = key.Remove(key.LastIndexOf(".Text"));
                         string keyWithWeight = keyPrefix + ".Weight";
+                        string keyWithPriority = keyPrefix + ".Priority";
                         string keyWithEvents = keyPrefix + ".Events";
 
                         double weight = 1;
@@ -58,15 +59,20 @@ namespace LivingWorldMod.Common.Systems {
                             weight = newWeight;
                         }
 
+                        int priority = 0;
+                        if (typeDialogue.ContainsKey(keyWithPriority) && int.TryParse(typeDialogue[keyWithPriority].GetDefault(), out int newPriority)) {
+                            priority = newPriority;
+                        }
+
                         string[] requiredEvents = null;
                         if (typeDialogue.ContainsKey(keyWithEvents)) {
                             requiredEvents = typeDialogue[keyWithEvents].GetDefault().Split('|');
                         }
 
-                        finalDialogueData.Add(new DialogueData(value, weight, requiredEvents));
+                        finalDialogueData.Add(new DialogueData(value, weight, priority, requiredEvents));
                     }
                     else {
-                        finalDialogueData.Add(new DialogueData(value, 1, null));
+                        finalDialogueData.Add(new DialogueData(value, 1, 0, null));
                     }
                 }
 
@@ -85,29 +91,25 @@ namespace LivingWorldMod.Common.Systems {
         public string GetDialogue(VillagerType villagerType, VillagerRelationship relationshipStatus, DialogueType dialogueType) {
             List<DialogueData> allDialogue = _villagerDialogue[villagerType];
             WeightedRandom<string> dialogueOptions = new WeightedRandom<string>();
+            int priorityThreshold = allDialogue.Min(data => data.priority);
 
-            switch (dialogueType) {
-                case DialogueType.Normal:
-                    foreach (DialogueData data in allDialogue.Where(dialogue => !dialogue.dialogue.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Shop"))) {
-                        if (!data.dialogue.Key.Contains($".{relationshipStatus}.") || !TestEvents(data.requiredEvents)) {
-                            continue;
-                        }
+            foreach (DialogueData data in dialogueType == DialogueType.Normal
+                         ? allDialogue.Where(dialogue => !dialogue.dialogue.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Shop"))
+                         : allDialogue.Where(dialogue => dialogue.dialogue.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Shop.{dialogueType.ToString().Replace("Shop", "")}"))) {
+                //So many checks! Conditionals!
+                if (!data.dialogue.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Event")
+                    && !data.dialogue.Key.Contains($".{relationshipStatus}.")
+                    || !TestEvents(data.requiredEvents)
+                    || data.priority < priorityThreshold) {
+                    continue;
+                }
 
-                        dialogueOptions.Add(data.dialogue.GetTranslation(Language.ActiveCulture), data.weight);
-                    }
+                if (data.priority > priorityThreshold) {
+                    priorityThreshold = data.priority;
+                    dialogueOptions.Clear();
+                }
 
-                    break;
-                case DialogueType.ShopInitial:
-                case DialogueType.ShopBuy:
-                    foreach (DialogueData data in allDialogue.Where(dialogue => dialogue.dialogue.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Shop.{dialogueType.ToString().Replace("Shop", "")}"))) {
-                        if (!data.dialogue.Key.Contains($".{relationshipStatus}.") || !TestEvents(data.requiredEvents)) {
-                            continue;
-                        }
-
-                        dialogueOptions.Add(data.dialogue.GetTranslation(Language.ActiveCulture), data.weight);
-                    }
-
-                    break;
+                dialogueOptions.Add(data.dialogue.GetTranslation(Language.ActiveCulture), data.weight);
             }
 
             return dialogueOptions.elements.Any() ? dialogueOptions : "Dialogue error! No dialogue found, report to devs!";

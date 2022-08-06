@@ -24,6 +24,22 @@
 						Weight: 2.0
 						Events: "Eclipse"
 					}
+
+					//Blood Moon
+					4: {
+						Priority: 1
+						Events: "BloodMoon"
+					}
+					5: {
+						Priority: 1
+						Events: "BloodMoon"
+					}
+					6: {
+						//Blood Moon & Rain
+						Weight: 1.5
+						Priority: 1
+						Events: "BloodMoon|Rain"
+					}
 					
 				}
 

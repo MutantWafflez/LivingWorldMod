@@ -20,6 +20,18 @@
 					3: {
 						Text: "What, are you scared or something?"
 					}
+
+					//Blood Moon
+					4: {
+						Text: "Primal dur-SQUAK... during Blood-SQUAK Moons-SQUAK!"
+					}
+					5: {
+						Text: "...Not going to SQUAK say any-SQUAK!"
+					}
+					6: {
+						//Blood Moon & Rain
+						Text: "Wet SQUAK Blood SQUAK annoying!"
+					}
 				}
 
 				Shop: {
@@ -74,7 +86,7 @@
 					1: "How do you even live with those repulsive meat sticks in place of wings?"
 					2: "You really ruffle my feathers, landwalker!"
 					3: "How's the weather down there? I hope it's horrible."
-					4: "Leave me alone you ugly landwalking son of a- squak!"
+					4: "Leave me alone you ugly landwalking son of a- SQUAK!"
 					5: "Do you want my feathers going down your back like a stegosaurus?"
 					6: "Are all the flightless this fowl and annoying...?"
 					7: "Humans... Despicable. Created those foul windows!"
