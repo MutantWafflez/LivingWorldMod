@@ -8,17 +8,19 @@ namespace LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes {
     /// </summary>
     public class StraightLine : GenShape {
         private readonly float _width;
-        private readonly Vector2 _endOffset;
+        private readonly Point _endPosition;
 
-        public StraightLine(float width, Vector2 endOffset) {
+        /// <param name="width"> The width in TILES you want the line to be. </param>
+        /// <param name="endPosition"> The position in TILES of where you want the line to navigate towards, starting from the start position. </param>
+        public StraightLine(float width, Point endPosition) {
             _width = width * 16f;
-            _endOffset = endOffset * 16f;
+            _endPosition = endPosition;
         }
 
         public override bool Perform(Point origin, GenAction action) {
             Vector2 start = new Vector2(origin.X << 4, origin.Y << 4);
 
-            return Utils.PlotTileLine(start, start + _endOffset, _width, (x, y) => UnitApply(action, origin, x, y) || !_quitOnFail);
+            return Utils.PlotTileLine(start, _endPosition.ToWorldCoordinates(0f, 0f), _width, (x, y) => UnitApply(action, origin, x, y) || !_quitOnFail);
         }
     }
 }

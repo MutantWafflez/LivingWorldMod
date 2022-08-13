@@ -25,7 +25,7 @@ namespace LivingWorldMod.Content.Subworlds {
         /// <summary>
         /// The grid that the dungeon is composed of. Each room at maximum can be 100x100.
         /// </summary>
-        public RoomGrid Grid {
+        public PyramidRoomGrid Grid {
             get;
             private set;
         }
@@ -33,7 +33,7 @@ namespace LivingWorldMod.Content.Subworlds {
         /// <summary>
         /// The "correct" path that leads from the starter room to the boss room.
         /// </summary>
-        public List<Point> CorrectPath {
+        public List<PyramidRoom> CorrectPath {
             get;
             private set;
         }
@@ -48,7 +48,8 @@ namespace LivingWorldMod.Content.Subworlds {
             new PassLegacy("Initialize", Initialize),
             new PassLegacy("Fill World", FillWorld),
             new PassLegacy("Set Spawn", SetSpawn),
-            new PassLegacy("Room Generation", GenerateRooms)
+            new PassLegacy("Room Generation", GenerateRooms),
+            new PassLegacy("Debug Draw Paths", DebugDrawPaths)
         };
 
         private readonly int _totalVanillaSaveOrLoadSteps = 4;
@@ -161,27 +162,30 @@ namespace LivingWorldMod.Content.Subworlds {
             _spawnTileX = 225;
             _spawnTileY = 245;
 
-            Grid = new RoomGrid(_gridSideLength, _roomSideLength, _worldBorderPadding);
+            Grid = new PyramidRoomGrid(_gridSideLength, _roomSideLength, _worldBorderPadding);
             Grid.GenerateGrid();
 
-            CorrectPath = new List<Point>() { new Point(WorldGen._genRand.Next(0, _gridSideLength), 0) };
-            Point currentEndPoint = CorrectPath.Last();
-            Point lastMovement = Point.Zero;
+            CorrectPath = new List<PyramidRoom>() { Grid.GetRoom(WorldGen._genRand.Next(_gridSideLength), 0) };
+            PyramidRoom currentRoom = CorrectPath.Last();
+            currentRoom.pathSearched = true;
 
-            Point leftMovement = new Point(-1, 0);
-            Point rightMovement = new Point(1, 0);
-            Point downMovement = new Point(0, 1);
-            while (currentEndPoint.Y < _gridSideLength + 1) {
-                List<Tuple<Point, double>> movementChoices = new List<Tuple<Point, double>>();
-                movementChoices.AddConditionally(new Tuple<Point, double>(leftMovement, 25), lastMovement != rightMovement && currentEndPoint.X != 0); //Left
-                movementChoices.AddConditionally(new Tuple<Point, double>(rightMovement, 25), lastMovement != leftMovement && currentEndPoint.X != _gridSideLength); //Right
-                movementChoices.Add(new Tuple<Point, double>(downMovement, 50)); //Down
+            while (currentRoom is not null) {
+                PyramidRoom roomBelow = Grid.GetRoom(currentRoom.gridTopLeftX, currentRoom.gridTopLeftY + currentRoom.gridHeight);
+                PyramidRoom roomLeft = Grid.GetRoom(currentRoom.gridTopLeftX - 1, currentRoom.gridTopLeftY);
+                PyramidRoom roomRight = Grid.GetRoom(currentRoom.gridTopLeftX + currentRoom.gridWidth, currentRoom.gridTopLeftY);
 
-                Point chosenMovement = new WeightedRandom<Point>(WorldGen._genRand, movementChoices.ToArray()).Get();
-                CorrectPath.Add(new Point(currentEndPoint.X + chosenMovement.X, currentEndPoint.Y + chosenMovement.Y));
-                lastMovement = chosenMovement;
+                List<Tuple<PyramidRoom, double>> movementChoices = new List<Tuple<PyramidRoom, double>>();
+                movementChoices.Add(new Tuple<PyramidRoom, double>(roomBelow, 34)); //Down
+                movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomLeft, 33), roomLeft is { pathSearched: false }); //Left
+                movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomRight, 33), roomRight is { pathSearched: false }); //Right
 
-                currentEndPoint = CorrectPath.Last();
+                PyramidRoom selectedRoom = new WeightedRandom<PyramidRoom>(WorldGen._genRand, movementChoices.ToArray()).Get();
+                CorrectPath.Add(selectedRoom);
+                if (selectedRoom is not null) {
+                    selectedRoom.pathSearched = true;
+                }
+
+                currentRoom = selectedRoom;
             }
         }
 
@@ -211,8 +215,11 @@ namespace LivingWorldMod.Content.Subworlds {
 
             for (int i = 0; i < _gridSideLength; i++) {
                 progress.Set(i / (float)_gridSideLength);
-                for (int j = 0; j < Grid.ColumnLength(i); j++) {
-                    Rectangle room = Grid[i, j];
+                List<PyramidRoom> column = Grid.GetRoomColumn(i);
+
+                for (int j = 0; j < column.Count; j++) {
+                    Rectangle room = column[j].region;
+
                     for (int x = room.X; x <= room.X + room.Width; x++) {
                         for (int y = room.Y; y <= room.Y + room.Height; y++) {
                             Tile tile = Framing.GetTileSafely(x, y);
@@ -222,8 +229,21 @@ namespace LivingWorldMod.Content.Subworlds {
                             }
                         }
                     }
-
                 }
+            }
+        }
+
+        private void DebugDrawPaths(GenerationProgress progress, GameConfiguration config) {
+            progress.Message = "Visualizing Paths";
+
+            for (int i = 0; i < CorrectPath.Count; i++) {
+                if (CorrectPath[i + 1] is null) {
+                    break;
+                }
+                Point firstCenter = CorrectPath[i].region.Center;
+                Point secondCenter = CorrectPath[i + 1].region.Center;
+
+                WorldUtils.Gen(firstCenter, new StraightLine(2f, secondCenter), new Actions.PlaceTile(TileID.Torches));
             }
         }
     }
