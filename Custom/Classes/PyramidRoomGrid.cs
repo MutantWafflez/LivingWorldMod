@@ -57,7 +57,7 @@ namespace LivingWorldMod.Custom.Classes {
                     roomChoices.AddConditionally(new Tuple<Tuple<int, int>, double>(new Tuple<int, int>(2, 1), 8.34), i < _gridSideLength - 1); //2x1 room
                     roomChoices.AddConditionally(new Tuple<Tuple<int, int>, double>(new Tuple<int, int>(2, 2), 8.34), i < _gridSideLength - 1 && currentHeight < _gridSideLength - 1 && !takenGridSpots[i][currentHeight + 1]); //2x2 room
 
-                    (int roomWidth, int roomHeight) = new WeightedRandom<Tuple<int, int>>(WorldGen._genRand, roomChoices.ToArray()).Get();
+                    (int roomWidth, int roomHeight) = new WeightedRandom<Tuple<int, int>>(WorldGen.genRand, roomChoices.ToArray()).Get();
                     PyramidRoom newRoom = new PyramidRoom(
                         new Rectangle(_roomPadding + i * _roomSideLength, _roomPadding + currentHeight * _roomSideLength, _roomSideLength * roomWidth, _roomSideLength * roomHeight),
                         i,
@@ -78,6 +78,21 @@ namespace LivingWorldMod.Custom.Classes {
                 }
             }
         }
+
+        /// <summary>
+        /// Gets the room below the passed in room. Returns null if going below is out of bounds.
+        /// </summary>
+        public PyramidRoom GetRoomBelow(PyramidRoom room) => GetRoom(room.gridTopLeftX, room.gridTopLeftY + room.gridHeight);
+
+        /// <summary>
+        /// Gets the room to the left of the passed in room. Returns null if going to the left is out of bounds.
+        /// </summary>
+        public PyramidRoom GetRoomToLeft(PyramidRoom room) => GetRoom(room.gridTopLeftX - 1, room.gridTopLeftY);
+
+        /// <summary>
+        /// Gets the room to the right of the passed in room. Returns null if going to the right is out of bounds.
+        /// </summary>
+        public PyramidRoom GetRoomToRight(PyramidRoom room) => GetRoom(room.gridTopLeftX + room.gridWidth, room.gridTopLeftY);
 
         /// <summary>
         /// Returns the room that exists at the specified coordinates within the grid. If the grid location is taken by

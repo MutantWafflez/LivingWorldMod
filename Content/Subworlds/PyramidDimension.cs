@@ -38,6 +38,14 @@ namespace LivingWorldMod.Content.Subworlds {
             private set;
         }
 
+        /// <summary>
+        /// The "fake" paths that are tertiary from the correct path, that always lead to a dead end.
+        /// </summary>
+        public List<List<PyramidRoom>> FakePaths {
+            get;
+            private set;
+        }
+
         public override int Width => _roomSideLength * _gridSideLength + _worldBorderPadding * 2;
 
         public override int Height => _roomSideLength * _gridSideLength + _bossRoomPadding + _worldBorderPadding * 2;
@@ -162,30 +170,40 @@ namespace LivingWorldMod.Content.Subworlds {
             _spawnTileX = 225;
             _spawnTileY = 245;
 
+            //Generate grid
             Grid = new PyramidRoomGrid(_gridSideLength, _roomSideLength, _worldBorderPadding);
             Grid.GenerateGrid();
 
-            CorrectPath = new List<PyramidRoom>() { Grid.GetRoom(WorldGen._genRand.Next(_gridSideLength), 0) };
-            PyramidRoom currentRoom = CorrectPath.Last();
+            //Generate correct path first
+            CorrectPath = new List<PyramidRoom>() { Grid.GetRoom(WorldGen.genRand.Next(_gridSideLength), 0) };
+            PyramidRoom currentRoom = CorrectPath[0];
             currentRoom.pathSearched = true;
 
             while (currentRoom is not null) {
-                PyramidRoom roomBelow = Grid.GetRoom(currentRoom.gridTopLeftX, currentRoom.gridTopLeftY + currentRoom.gridHeight);
-                PyramidRoom roomLeft = Grid.GetRoom(currentRoom.gridTopLeftX - 1, currentRoom.gridTopLeftY);
-                PyramidRoom roomRight = Grid.GetRoom(currentRoom.gridTopLeftX + currentRoom.gridWidth, currentRoom.gridTopLeftY);
+                PyramidRoom roomBelow = Grid.GetRoomBelow(currentRoom);
+                PyramidRoom roomLeft = Grid.GetRoomToLeft(currentRoom);
+                PyramidRoom roomRight = Grid.GetRoomToRight(currentRoom);
 
                 List<Tuple<PyramidRoom, double>> movementChoices = new List<Tuple<PyramidRoom, double>>();
                 movementChoices.Add(new Tuple<PyramidRoom, double>(roomBelow, 34)); //Down
                 movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomLeft, 33), roomLeft is { pathSearched: false }); //Left
                 movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomRight, 33), roomRight is { pathSearched: false }); //Right
 
-                PyramidRoom selectedRoom = new WeightedRandom<PyramidRoom>(WorldGen._genRand, movementChoices.ToArray()).Get();
+                PyramidRoom selectedRoom = new WeightedRandom<PyramidRoom>(WorldGen.genRand, movementChoices.ToArray()).Get();
                 CorrectPath.Add(selectedRoom);
                 if (selectedRoom is not null) {
                     selectedRoom.pathSearched = true;
                 }
 
                 currentRoom = selectedRoom;
+            }
+
+            //Generate Fake paths along the correct path
+            FakePaths = new List<List<PyramidRoom>>();
+            GenerateFakePath(CorrectPath, 5, 50);
+            int originalCount = FakePaths.Count;
+            for (int i = 0; i < originalCount; i++) {
+                GenerateFakePath(FakePaths[i], 8, 30);
             }
         }
 
@@ -236,14 +254,85 @@ namespace LivingWorldMod.Content.Subworlds {
         private void DebugDrawPaths(GenerationProgress progress, GameConfiguration config) {
             progress.Message = "Visualizing Paths";
 
-            for (int i = 0; i < CorrectPath.Count; i++) {
+            for (int i = 0; i < CorrectPath.Count - 1; i++) {
                 if (CorrectPath[i + 1] is null) {
                     break;
                 }
                 Point firstCenter = CorrectPath[i].region.Center;
                 Point secondCenter = CorrectPath[i + 1].region.Center;
 
-                WorldUtils.Gen(firstCenter, new StraightLine(2f, secondCenter), new Actions.PlaceTile(TileID.Torches));
+                WorldUtils.Gen(firstCenter, new StraightLine(2f, secondCenter), new Actions.PlaceTile(TileID.LivingCursedFire));
+            }
+
+            foreach (List<PyramidRoom> fakePath in FakePaths) {
+                for (int i = 0; i < fakePath.Count - 1; i++) {
+                    Point firstCenter = fakePath[i].region.Center;
+                    Point secondCenter = fakePath[i + 1].region.Center;
+
+                    WorldUtils.Gen(firstCenter, new StraightLine(2f, secondCenter), new Actions.PlaceTile(TileID.LivingFire));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Scans the passed in path and randomly generates more fake paths branching off of it.
+        /// Make sure the fake path list is properly initialized before calling this.
+        /// </summary>
+        /// <param name="pathToSearchAlong"> The path this method will search along to potentially branch off of. </param>
+        /// <param name="branchOccurrenceDenominator">
+        /// The starting value of 1/value, determining whether or not a new path will be created. Every time the RNG fails,
+        /// this value will decrease by 1 until success, when it is reset to this value.
+        /// </param>
+        /// <param name="branchEndChanceDenominator">
+        /// The starting value of 1/value, determining whether or not a path generating will end. Every time the RNG fails,
+        /// this value will decrease by 5 until success, when it is reset to this value.
+        /// </param>
+        private void GenerateFakePath(List<PyramidRoom> pathToSearchAlong, int branchOccurrenceDenominator, int branchEndChanceDenominator) {
+            int branchChanceDenominator = branchOccurrenceDenominator;
+
+            foreach (PyramidRoom originalPathRoom in pathToSearchAlong) {
+                if (originalPathRoom is null || Grid.GetRoomBelow(originalPathRoom) is { pathSearched: true } && Grid.GetRoomToLeft(originalPathRoom) is { pathSearched: true } && Grid.GetRoomToRight(originalPathRoom) is { pathSearched: true }) {
+                    continue;
+                }
+
+                if (WorldGen.genRand.NextBool(branchChanceDenominator)) {
+                    branchChanceDenominator = branchOccurrenceDenominator;
+                    int endChanceDenominator = branchEndChanceDenominator;
+
+                    List<PyramidRoom> newPath = new List<PyramidRoom>() { originalPathRoom };
+                    PyramidRoom currentFakeRoom = newPath[0];
+
+                    while (true) {
+                        PyramidRoom roomBelow = Grid.GetRoomBelow(currentFakeRoom);
+                        PyramidRoom roomLeft = Grid.GetRoomToLeft(currentFakeRoom);
+                        PyramidRoom roomRight = Grid.GetRoomToRight(currentFakeRoom);
+
+                        List<Tuple<PyramidRoom, double>> movementChoices = new List<Tuple<PyramidRoom, double>>();
+                        movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomBelow, 25), roomBelow is { pathSearched: false }); //Down
+                        movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomLeft, 37.5), roomLeft is { pathSearched: false }); //Left
+                        movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomRight, 37.5), roomRight is { pathSearched: false }); //Right
+                        if (!movementChoices.Any()) {
+                            break;
+                        }
+
+                        PyramidRoom selectedRoom = new WeightedRandom<PyramidRoom>(WorldGen.genRand, movementChoices.ToArray()).Get();
+                        if (WorldGen.genRand.NextBool(endChanceDenominator) || selectedRoom is null || selectedRoom.pathSearched) {
+                            break;
+                        }
+                        newPath.Add(selectedRoom);
+                        selectedRoom.pathSearched = true;
+
+                        endChanceDenominator = (int)MathHelper.Clamp(endChanceDenominator - 5, 1, branchEndChanceDenominator);
+                        currentFakeRoom = selectedRoom;
+                    }
+
+                    if (newPath.Count > 1) {
+                        FakePaths.Add(newPath);
+                    }
+                }
+                else {
+                    branchChanceDenominator = (int)MathHelper.Clamp(branchChanceDenominator - 1, 1, branchChanceDenominator);
+                }
             }
         }
     }
