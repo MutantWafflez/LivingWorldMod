@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
-using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Content.Walls.WorldGen;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Utilities;
@@ -69,7 +68,7 @@ namespace LivingWorldMod.Content.Subworlds {
         private int _vanillaLoadStepsPassed;
 
         private readonly int _worldBorderPadding = 150;
-        private readonly int _roomSideLength = 115;
+        private readonly int _roomSideLength = 100;
         private readonly int _gridSideLength = 10;
         private readonly int _bossRoomPadding = 150;
         private int _spawnTileX;
@@ -262,6 +261,9 @@ namespace LivingWorldMod.Content.Subworlds {
         }
 
         private void DebugDrawPaths(GenerationProgress progress, GameConfiguration config) {
+            if (!LivingWorldMod.IsDebug) {
+                return;
+            }
             progress.Message = "Visualizing Paths";
 
             for (int i = 0; i < CorrectPath.Count - 1; i++) {
