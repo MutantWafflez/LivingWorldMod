@@ -1,5 +1,8 @@
 using LivingWorldMod.Common.ModTypes;
 using System.IO;
+#if !DEBUG
+using LivingWorldMod.Common.Configs;
+#endif
 using Terraria.ModLoader;
 
 namespace LivingWorldMod {
@@ -13,7 +16,7 @@ namespace LivingWorldMod {
                 #if DEBUG
                 return true;
                 #else
-                return false;
+                return ModContent.GetInstance<DebugConfig>().forceDebugMode;
                 #endif
             }
         }
