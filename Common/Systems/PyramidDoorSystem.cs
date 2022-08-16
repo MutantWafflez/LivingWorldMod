@@ -1,5 +1,6 @@
 ﻿using LivingWorldMod.Content.Subworlds;
 using SubworldLibrary;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
@@ -85,6 +86,8 @@ namespace LivingWorldMod.Common.Systems {
                     DoorAnimationPhase = 0;
                     DoorAnimationTimer = 0;
 
+                    //TODO: Multiplayer compat, since this is on the client:
+                    ModContent.GetInstance<PyramidDimension>().GenerateNewRandom(WorldGen.genRand.Next(int.MaxValue));
                     SubworldSystem.Enter<PyramidDimension>();
                 }
             }

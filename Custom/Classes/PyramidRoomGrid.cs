@@ -15,11 +15,13 @@ namespace LivingWorldMod.Custom.Classes {
         private int _roomPadding;
         private PyramidRoom[][] _fixedGrid;
         private List<PyramidRoom>[] _roomList;
+        private UnifiedRandom _randomNumberGenerator;
 
-        public PyramidRoomGrid(int gridSideLength, int roomSideLength, int roomPadding) {
+        public PyramidRoomGrid(int gridSideLength, int roomSideLength, int roomPadding, UnifiedRandom randomNumberGenerator) {
             _gridSideLength = gridSideLength;
             _roomSideLength = roomSideLength;
             _roomPadding = roomPadding;
+            _randomNumberGenerator = randomNumberGenerator;
             _roomList = new List<PyramidRoom>[gridSideLength];
             _fixedGrid = new PyramidRoom[_gridSideLength][];
         }
@@ -57,7 +59,7 @@ namespace LivingWorldMod.Custom.Classes {
                     roomChoices.AddConditionally(new Tuple<Tuple<int, int>, double>(new Tuple<int, int>(2, 1), 8.34), i < _gridSideLength - 1); //2x1 room
                     roomChoices.AddConditionally(new Tuple<Tuple<int, int>, double>(new Tuple<int, int>(2, 2), 8.34), i < _gridSideLength - 1 && currentHeight < _gridSideLength - 1 && !takenGridSpots[i][currentHeight + 1]); //2x2 room
 
-                    (int roomWidth, int roomHeight) = new WeightedRandom<Tuple<int, int>>(WorldGen.genRand, roomChoices.ToArray()).Get();
+                    (int roomWidth, int roomHeight) = new WeightedRandom<Tuple<int, int>>(_randomNumberGenerator, roomChoices.ToArray()).Get();
                     PyramidRoom newRoom = new PyramidRoom(
                         new Rectangle(_roomPadding + i * _roomSideLength, _roomPadding + currentHeight * _roomSideLength, _roomSideLength * roomWidth, _roomSideLength * roomHeight),
                         i,
