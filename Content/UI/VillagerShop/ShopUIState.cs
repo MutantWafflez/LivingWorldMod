@@ -286,6 +286,8 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
 
             PopulateShopList();
 
+            shopScrollbar.ViewPosition = 0f;
+
             RecalculateChildren();
         }
 
