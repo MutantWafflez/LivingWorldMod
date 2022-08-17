@@ -87,8 +87,8 @@ namespace LivingWorldMod.Common.Systems {
                     DoorAnimationTimer = 0;
 
                     //TODO: Multiplayer compat, since this is on the client:
-                    ModContent.GetInstance<PyramidDimension>().GenerateNewRandom(WorldGen.genRand.Next(int.MaxValue));
-                    SubworldSystem.Enter<PyramidDimension>();
+                    ModContent.GetInstance<PyramidSubworld>().GenerateNewRandom(WorldGen.genRand.Next(int.MaxValue));
+                    SubworldSystem.Enter<PyramidSubworld>();
                 }
             }
         }

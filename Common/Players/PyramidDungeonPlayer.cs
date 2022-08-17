@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Common.Systems;
+using LivingWorldMod.Custom.Classes;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -10,6 +11,11 @@ namespace LivingWorldMod.Common.Players {
     /// animation and camera room handling.
     /// </summary>
     public class PyramidDungeonPlayer : ModPlayer {
+        /// <summary>
+        /// The pyramid room this player is currently in.
+        /// </summary>
+        public PyramidRoom currentRoom;
+
         private PyramidDoorSystem DoorSystem => ModContent.GetInstance<PyramidDoorSystem>();
 
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo) {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Common.Players;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
 using LivingWorldMod.Content.Walls.WorldGen;
 using LivingWorldMod.Custom.Classes;
@@ -20,7 +21,7 @@ using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Content.Subworlds {
-    public class PyramidDimension : Subworld {
+    public class PyramidSubworld : Subworld {
         /// <summary>
         /// The grid that the dungeon is composed of. Each room at maximum can be 100x100.
         /// </summary>
@@ -91,6 +92,11 @@ namespace LivingWorldMod.Content.Subworlds {
             _vanillaLoadStepsPassed = -1;
             _lastStatusText = "";
             _isExiting = true;
+        }
+
+        public override void OnLoad() {
+            //TODO: Multiplayer compat
+            Main.LocalPlayer.GetModPlayer<PyramidDungeonPlayer>().currentRoom = CorrectPath.First();
         }
 
         public override void DrawMenu(GameTime gameTime) {
@@ -176,6 +182,7 @@ namespace LivingWorldMod.Content.Subworlds {
 
         private void Initialize(GenerationProgress progress, GameConfiguration config) {
             progress.Message = "Initializing";
+            //Default spawn spot, in case generation goes awry
             _spawnTileX = 225;
             _spawnTileY = 245;
 
@@ -185,7 +192,7 @@ namespace LivingWorldMod.Content.Subworlds {
 
             //Generate correct path first
             CorrectPath = new List<PyramidRoom>() { Grid.GetRoom(_pyramidRandom.Next(_gridSideLength), 0) };
-            PyramidRoom currentRoom = CorrectPath[0];
+            PyramidRoom currentRoom = CorrectPath.First();
             currentRoom.pathSearched = true;
 
             while (currentRoom is not null) {
@@ -206,6 +213,11 @@ namespace LivingWorldMod.Content.Subworlds {
 
                 currentRoom = selectedRoom;
             }
+
+            //Properly set spawn point
+            PyramidRoom starterRoom = CorrectPath.First();
+            _spawnTileX = starterRoom.region.Center.X;
+            _spawnTileY = starterRoom.region.Center.Y;
 
             //Generate Fake paths along the correct path
             FakePaths = new List<List<PyramidRoom>>();

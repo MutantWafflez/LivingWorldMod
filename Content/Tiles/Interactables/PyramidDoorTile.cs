@@ -53,7 +53,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         }
 
         public override bool RightClick(int i, int j) {
-            if (SubworldSystem.IsActive<PyramidDimension>()) {
+            if (SubworldSystem.IsActive<PyramidSubworld>()) {
                 SubworldSystem.Exit();
 
                 return true;
