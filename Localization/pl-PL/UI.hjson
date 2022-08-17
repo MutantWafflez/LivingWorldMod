@@ -3,19 +3,19 @@
 	
 		UI: {
 			VillagerHousing: {
-				ButtonHoverText: "Villager Housing"
-				VillagerTypeLocked: "{0} Villagers cannot be re-housed until you are liked by them!"
+				ButtonHoverText: "Mieszkanie dla wieśniaków"
+				VillagerTypeLocked: "{0} Wieśniacy nie mogą zostać przekwaterowani, dopóki nie będą cię lubić!"
 			}
 			Shrine: {
-				HarpyCountdown: "New Harpy Egg in:"
+				HarpyCountdown: "Nowe jajo harpii w:"
 
-				AddText: "Add 1"
-				TakeText: "Take 1"
+				AddText: "Dodaj 1"
+				TakeText: "Brać 1"
 
-				DisableVillageRadius: "Hide Village Radius Display"
-				EnableVillageRadius: "Show Village Radius Display"
+				DisableVillageRadius: "Ukryj wyświetlanie promienia wioski"
+				EnableVillageRadius: "Pokaż wyświetlanie promienia wioski"
 
-				ForceShrineButtonText: "Force Synchronize Housing"
+				ForceShrineButtonText: "Wymuś synchronizację obudowy"
 			}
 		}
 	

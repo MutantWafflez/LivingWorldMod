@@ -3,38 +3,38 @@
 	
 		ItemName: {
 			//Building
-			SkywareBlockItem: "Skyware Block"
-			StarshardCloudItem: "Starshard Cloud"
-			StarshineBlockItem: "Starshine Block"
-			SunslabBlockItem: "Sunslab Block"
+			SkywareBlockItem: "Blok Skyware"
+			StarshardCloudItem: "Chmura Starshard"
+			StarshineBlockItem: "Blok blasku gwiazd"
+			SunslabBlockItem: "Blok Sunslab"
 
 			//Furniture
-			NimbusJarItem: "Nimbus in a Jar"
-			GravityTapestryItem: "Gravity Tapestry"
-			SkywareAnvilItem: "Skyware Anvil"
-			SkywareLoomItem: "Skyware Loom"
-			SunTapestryItem: "Sun Tapestry"
+			NimbusJarItem: "Nimbus w słoiku"
+			GravityTapestryItem: "Gobelin grawitacyjny"
+			SkywareAnvilItem: "Skyware kowadło"
+			SkywareLoomItem: "Krosno Skyware"
+			SunTapestryItem: "Gobelin słoneczny"
 
 			//Interactables
 
 				//Shrines
-				HarpyShrineItem: "Harpy Village Shrine"
+				HarpyShrineItem: "Świątynia Wioski Harpii"
 
 			//Torches
-			StarTorchItem: "Star Torch"
+			StarTorchItem: "Pochodnia Gwiazd"
 		}
 
 		ItemTooltip: {
 			//Building
-			StarshardCloudItem: "'Shards of fallen stars permeate throughout this cloud'"
+			StarshardCloudItem: "'Odłamki upadłych gwiazd przenikają przez tę chmurę'"
 
 			//Interactables
 
 				//Shrines
-				HarpyShrineItem: "'The magical source of protection for all those that inhabit a Harpy Village'"
+				HarpyShrineItem: "'Magiczne źródło ochrony dla wszystkich, którzy zamieszkują wioskę Harpii'"
 
 			//Torches
-			StarTorchItem: "'Light the way with the essence of the cosmos'"
+			StarTorchItem: "'Rozświetl drogę esencją kosmosu'"
 		}
 	
 	}

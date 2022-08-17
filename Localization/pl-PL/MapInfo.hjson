@@ -6,24 +6,24 @@
 				Harpy: "Harpy Village"
 			}
 			Waystones: {
-				Desert: "Desert Waystone"
-				Jungle: "Jungle Waystone"
-				Mushroom: "Glowing Mushroom Waystone"
-				Caverns: "Caverns Waystone"
-				Ice: "Tundra Waystone"
+				Desert: "Pustynny kamień drogi"
+				Jungle: "Kamień drogi w dżungli"
+				Mushroom: "Świecący kamień z grzyba"
+				Caverns: "Jaskinie Waystone"
+				Ice: "Kamień tundry"
 			}
 		}
 
 		MapObject: {
 			//Furniture Tiles
-			GravityTapestryTile: "Tapestry"
+			GravityTapestryTile: "Gobelin"
 			SkywareAnvilTile: "{$Mods.LivingWorldMod.ItemName.SkywareAnvilItem}"
 			SkywareLoomTile: "{$Mods.LivingWorldMod.ItemName.SkywareLoomItem}"
 			SunTapestryTile: "{$Mods.LivingWorldMod.MabObject.GravityTapestryTile}"
 
 		    //Interactable Tiles
-			VillageShrineTile: "Village Shrine"
-			WaystoneTile: "Waystone"
+			VillageShrineTile: "Wioska Świątynia"
+			WaystoneTile: "Kamień na drodze"
 
 			//Torch Tiles
 			StarTorchTile: "{$ItemName.Torch}"

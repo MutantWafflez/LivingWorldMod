@@ -3,24 +3,24 @@
 	
 		ItemName: {
 			//Accessory Item
-			NimbusInABottle: "Nimbus in a Bottle"
+			NimbusInABottle: "Nimbus w butelce"
 
 			//Food Items
-			FriedHarpyEgg: "Fried Harpy Egg"
+			FriedHarpyEgg: "Smażone Jajko Harpii"
 
 			//Misc Items
-			HarpyEgg: "Harpy Egg"
+			HarpyEgg: "Jajo harpii"
 		}
 
 		ItemTooltip: {
 			//Accessory Items
-			NimbusInABottle: "Summons a pet nimbus that follows you around"
+			NimbusInABottle: "Przywołuje uroczą aureolę, która podąża za tobą"
 
 			//Food Items
-			FriedHarpyEgg: "{$CommonItemTooltip.MajorStats}\n'You monster.'"
+			FriedHarpyEgg: "{$CommonItemTooltip.MajorStats}\n'Ty potworze.'"
 				
 			//Misc Items
-			HarpyEgg: "'It's rather large, but looks like any other egg.'"
+			HarpyEgg: "'Jest dość duży, ale wygląda jak każde inne jajko.'"
 		}
 
 	}

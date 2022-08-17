@@ -2,11 +2,11 @@
 	LivingWorldMod: {
 	
 		BuffName: {
-			NimbusPetBuff: "Nimbus Pet"
+			NimbusPetBuff: "Zwierzak Nimbus"
 		}
 
 		BuffDescription: {
-			NimbusPetBuff: "I bet it tastes like cotton candy..."
+			NimbusPetBuff: "'Założę się, że smakuje jak wata cukrowa...'"
 		}
 	
 	}

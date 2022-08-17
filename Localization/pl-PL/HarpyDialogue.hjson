@@ -7,142 +7,145 @@
 				Event: {
 					//Rain
 					0: {
-						Text: "I'm super thankful we're above the clouds. I cannot stand my hair being wet."
+						Text: "Jestem bardzo wdzięczny, że jesteśmy ponad chmurami. Nie mogę znieść mokrych włosów."
 					}
 					1: {
-						Text: "Ahh, watching the rain fall from the clouds is so relaxing."
+						Text: "Ahh, oglądanie deszczu spadającego z chmur jest takie relaksujące."
 					}
 					
 					//Eclipse
 					2: {
-						Text: "It's so fun watching all the monsters going crazy down there attacking people. I'm glad we're somewhat safe up here."
+						Text: "Fajnie jest patrzeć, jak wszystkie szalone potwory atakują ludzi. Cieszę się, że jesteśmy tu trochę bezpieczni."
 					}
 					3: {
-						Text: "What, are you scared or something?"
+						Text: "Co, boisz się czy coś?"
 					}
 
 					//Blood Moon
 					4: {
-						Text: "Primal dur-SQUAK... during Blood-SQUAK Moons-SQUAK!"
+						Text: "Primal dur-SQUAK... podczas krwawy-SQUAK księżyc-SQUAK!"
 					}
 					5: {
-						Text: "...Not going to SQUAK say any-SQUAK!"
+						Text: "...Nie idę do SQUAK, powiedz nic-SQUAK!"
 					}
 					6: {
 						//Blood Moon & Rain
-						Text: "Wet SQUAK Blood SQUAK annoying!"
+						Text: "Mokry SQUAK Krew SQUAK denerwujący!"
 					}
 				}
 
 				Shop: {
 					Initial: {
 						SevereDislike: {
-							0: "You're lucky I am even letting you speak to me, let alone buy my stuff. Just know there'll be a markup for anything you buy due to all the trouble you've caused us."
-							1: "You filthy landwalkers coming around the world barging into places like you own them. Just tell me what you want and I'll decide how much to mark it up by."
+							0: "Masz szczęście, że nawet pozwalam ci ze mną rozmawiać, nie mówiąc już o kupowaniu moich rzeczy. Po prostu wiedz, że wszystko, co kupisz, będzie marżą z powodu wszystkich kłopotów, które nam spowodowałeś."
+							1: "Wy obrzydliwi ziemiochodzący krążycie po całym świecie, wpadacie do miejsc takich, jak do nich należycie. Po prostu powiedz mi, czego chcesz, a ja zdecyduję, o ile to zaznaczę."
 						}
 						Dislike: {
-							0: "You know, since there aren't any laws regulating prices and there really isn't any competition, due to the minor trouble you've put us through, I think your next product will cost a little extra."
-							1: "Tread carefully, landwalker. Keep slipping up like you have been lately, and soon it'll cost an entire platinum to buy one of these things!"
+							0: "Wiesz, skoro nie ma żadnych przepisów regulujących ceny i naprawdę nie ma konkurencji, z powodu drobnych problemów, przez które nas naraziłeś, myślę, że twój następny produkt będzie trochę droższy."
+							1: "Idź ostrożnie, ziemiochodzący. Ciągle się pomyliłeś, tak jak ostatnio, a wkrótce będzie to kosztować całą platynę, aby kupić jedną z tych rzeczy!"
 						}
 						Neutral: {
-							0: "Nice of you to stop by, landwalker. Would appreciate the extra coin right now, everything is at the standard price!"
-							1: "What kind of harpy would I be to give you unfair prices if you really haven't made an impression?"
+							0: "Miło, że się zatrzymałeś, ziemiochodzący. Doceniłbym teraz dodatkową monetę, wszystko jest w standardowej cenie?!"
+							1: "Jaka byłabym harpią, aby dać ci nieuczciwe ceny, jeśli naprawdę nie zrobiłeś wrażenia?"
 						}
 						Like: {
-							0: "I wonder if my friends wanna go practice feather shooting later today... Erm- right, anything I got pique your interest landwalker?"
-							1: "You know, when you first came here, I thought you were like all the other landwalkers, but I was pleasantly surprised that's not the case. Have a small discount, on me!"
+							0: "Zastanawiam się, czy moi przyjaciele zechcą poćwiczyć strzelanie z piór później... Eee- tak, wszystko, co mam, wzbudzi twoje zainteresowanie, ziemiochodzący?"
+							1: "Wiesz, kiedy przyjechałeś tu po raz pierwszy, myślałem, że jesteś jak wszyscy inni ziemiochodzący, ale byłem mile zaskoczony, że tak nie jest. Mam małą zniżkę na mnie!"
 						}
 						Love: {
-							0: "Looking for something to buy, landwalker? I know you could probably afford everything at normal price, but I can't hold back giving you a discount regardless."
-							1: "You know landwalker, have this discount on me. I guess you deserve it for helping the village so much, or whatever. Just buy something!"
+							0: "Szukasz czegoś do kupienia, ziemiochodzący? Wiem, że prawdopodobnie stać Cię na wszystko w normalnej cenie, ale nie mogę się powstrzymać od udzielenia Ci rabatu mimo wszystko."
+							1: "Znasz ziemiochodzący, daj mi tę zniżkę. Chyba zasługujesz na to, że tak bardzo pomagasz wiosce, czy cokolwiek. Po prostu kup coś!"
 						}
 					}
 					Buy: {
 						SevereDislike: {
-							0: "How stupid are you to buy something at such a massive price markup? I guess humans really are all stupid!"
-							1: "Like I was saying before, you're lucky I am even giving you the liberty of speaking to me. Thanks for the purchase I guess."
+							0: "Jak głupi jesteś, żeby kupić coś po tak ogromnej marży? Chyba wszyscy ludzie są naprawdę głupi!"
+							1: "Tak jak mówiłem wcześniej, masz szczęście, że nawet pozwalam ci rozmawiać ze mną. Dzięki za zakup chyba."
 						}
 						Dislike: {
-							0: "If you thought this markup was a lot, you haven't seen anything yet. Watch yourself, landwalker. Thanks for the purchase."
-							1: "You must think you're so rich being able to buy all this stuff no matter the price. Whatever. Thanks for the money, I guess."
+							0: "Jeśli myślałeś, że tych znaczników jest dużo, jeszcze nic nie widziałeś. Uważaj, ziemiochodzący. Dzięki za zakup."
+							1: "Musisz myśleć, że jesteś tak bogaty, że możesz kupować to wszystko bez względu na cenę. Cokolwiek. Chyba dzięki za pieniądze."
 						}
 						Neutral: {
-							0: "Like, thanks for the purchase, landwalker."
-							1: "Thanks for the purchase, landwalker. Couldn't be keeping this economy alive without purchases like these!"
+							0: "Jak, dzięki za zakup, landwalker."
+							1: "Dzięki za zakup, ziemiochodzący. Nie dałoby się utrzymać tej gospodarki przy życiu bez takich zakupów!"
 						}
 						Like: {
-							0: "Hey, thanks for the purchase! It means alot. We don't get a whole lot of inter-species commerce up here, so it's nice to have you around."
-							1: "Keep up the good work and the discount you just got might become even better. You didn't hear that from me, though, landwalker."
+							0: "Hej, dzięki za zakup! To dużo znaczy. Nie mamy tu zbyt wiele handlu międzygatunkowego, więc miło jest mieć cię w pobliżu."
+							1: "Kontynuuj dobrą pracę, a rabat, który właśnie otrzymałeś, może stać się jeszcze lepszy. Nie słyszałeś tego ode mnie, ziemiochodzący."
 						}
 						Love: {
-							0: "We can like, never thank you enough for purchases like these. No other human has ever gotten discounts like these!"
-							1: "So you ended up buying something then? Whatever. Just kidding, thank you very much for the purchase, landwalker!"
+							0: "Możemy lubić, nigdy nie dziękujemy za takie zakupy. Żaden inny człowiek nigdy nie otrzymał takich zniżek!"
+							1: "Więc w końcu coś kupiłeś? Cokolwiek. Żartuję, bardzo dziękuję za zakup, ziemiochodzie!"
 						}
 					}
 				}
 
 				SevereDislike: {
-					0: "Don't take it personally if we like, rip off your arms and eat you or something."
-					1: "How do you even live with those repulsive meat sticks in place of wings?"
-					2: "You really ruffle my feathers, landwalker!"
-					3: "How's the weather down there? I hope it's horrible."
-					4: "Leave me alone you ugly landwalking son of a- SQUAK!"
-					5: "Do you want my feathers going down your back like a stegosaurus?"
-					6: "Are all the flightless this fowl and annoying...?"
-					7: "Humans... Despicable. Created those foul windows!"
+					0: "Nie bierz tego do siebie, jeśli lubimy, oderwij ręce i zjedz cię, czy coś."
+					1: "Jak w ogóle żyjesz z tymi odrażającymi mięsnymi paluszkami zamiast skrzydeł??"
+					2: "Naprawdę marszczysz moje pióra, ziemiochodzie!"
+					3: "Jaka tam pogoda? Mam nadzieję, że to okropne."
+					4: "Zostaw mnie w spokoju, brzydki, chodzący po ziemi synu... SQUAK!"
+					5: "Chcesz, żeby moje pióra spływały ci po plecach jak stegozaur??"
+					6: "Czy ten ptak jest nielotny i denerwujący?...?"
+					7: "Ludzie... Podły. Stworzyłem te paskudne okna!"
+					8: "wiesz, naprawdę cię nie lubię"
+					9: "właściwie... nie mam teraz ochoty z tobą rozmawiać!"
 				}
 
 				Dislike: {
-					0: "Tread carefully, landwalker. You've upset a few of us here around the village."
-					1: "Sure, buy something if you want. But for the inconveniences you've caused some of us, there will be a bit of a markup."
-					2: "If you think some of us are giving you a nasty look, you're probably right."
+					0: "Idź ostrożnie, ziemiochodzący. Zdenerwowałeś kilku z nas tutaj w wiosce."
+					1: "Jasne, kup coś, jeśli chcesz. Ale za niedogodności, które spowodowałeś niektórym z nas, będzie trochę marży."
+					2: "Jeśli uważasz, że niektórzy z nas patrzą na ciebie paskudnie, prawdopodobnie masz rację."
 					3: "What do you want? I'm trying to relax here."
-					4: "You haven't been making the best impressions around here lately. You might want to change that, preferably soon."
-					5: "Oh hey. Can I help you at all? No? Then get out of my face."
+					4: "Ostatnio nie robisz tu najlepszych wrażenia. Możesz to zmienić, najlepiej wkrótce."
+					5: "No cześć. Czy mogę ci w ogóle pomóc? Nie? Potem zejdź mi z twarzy."
 					6: {
-						Text: "I'm gonna be straight with you, human. You've caused some problems for us. Nothing outrageous, but it's left a bit of a sour taste in our mouths. We may understand if they were just one time mistakes, but you better act carefully before things get very, very bad for you."
+						Text: "Będę z tobą szczery, człowieku. Sprawiłeś nam trochę problemów. Nic skandalicznego, ale pozostawił w naszych ustach nieco kwaśny posmak. Możemy zrozumieć, że były to tylko jednorazowe błędy, ale lepiej działaj ostrożnie, zanim sprawy staną się dla ciebie bardzo, bardzo złe."
 					}
 				}
 
 				Neutral: {
-					0: "I don't get it, what's so wrong with being bird-brained?"
-					1: "I hope I can be at the front of the V formation at least once before I die."
-					2: "Flying through the sky is like, so freeing. You should try it sometime."
-					3: "I'm sort of scared of flying too high and floating into space or the sun or something."
-					4: "You'll buy something, won't you? You didn't come here for nothing, right?"
+					0: "Nie rozumiem, co jest złego w byciu ptasim mózgiem?"
+					1: "Mam nadzieję, że uda mi się przynajmniej raz stanąć na czele formacji V, zanim umrę."
+					2: "Latanie po niebie jest jak uwolnienie. Powinieneś kiedyś spróbować."
+					3: "Trochę boję się latać zbyt wysoko i unosić się w kosmos, słońce czy coś."
+					4: "Coś kupisz, prawda? Nie przyszedłeś tu po nic, prawda?"
 					5: {
-						Text: "No, I don't want any crackers. And stop calling me Polly!"
+						Text: "Nie, nie chcę żadnych krakersów. I przestań nazywać mnie Polly!"
 					}
 					6: {
-						Text: "You're asking how we reproduce if we're all female? Don't be silly."
+						Text: "Pytasz, jak się rozmnażamy, jeśli wszyscy jesteśmy kobietami? Nie bądź głupi."
 					}
 				}
 
 				Like: {
-					0: "Landwalker! You want to buy something, right? Or did you just want to talk to me?"
-					1: "Aren't my feathers pretty today? I spent all day grooming them."
-					2: "You should sit with me on my perch sometime. The breeze is so nice, it really helps my zen."
-					3: "You aren't so bad for a landwalking human. Come visit again sometime!"
-					4: "It gets sort of boring up here. But it's not so bad when you come around."
+					0: "Ziemiochodzący! Chcesz coś kupić, prawda? A może po prostu chciałeś ze mną porozmawiać??"
+					1: "Czy moje pióra nie są dziś ładne? Spędziłem cały dzień na ich oporządzaniu."
+					2: "Powinnaś kiedyś usiąść ze mną na mojej grzędzie. Powiew jest tak przyjemny, że naprawdę pomaga mojemu zen."
+					3: "Nie jesteś taki zły jak na człowieka chodzącego po ziemi. Przyjdź kiedyś ponownie?!"
+					4: "Tu na górze robi się trochę nudno. Ale nie jest tak źle, kiedy się pojawiasz."
 					5: {
-						Text: "Does this top make my wings look fat?"
+						Text: "Czy ten top sprawia, że ​​moje skrzydła wyglądają na grube??"
 					}
 					6: { 
-						Text: "ptoo- Sorry, I got a feather in my mouth again. Happens every time."
+						Text: "ptoo!- Przepraszam, znowu mam pióro w ustach. Zdarza się za każdym razem."
 					}
 					7: { 
-						Text: "I really hope a blood moon doesn't happen soon, I don't want to deal with my feathers getting all ruffled." 
+						Text: "Naprawdę mam nadzieję, że krwawy księżyc nie nastąpi szybko, nie chcę mieć do czynienia z potarganiem moich piór." 
 					}
 				}
 
 				Love: {
-					0: "Hey! There's my favorite human! How have things been going for you?"
-					1: "You know, you're lucky you're super liked around here in the village. No way else would we be giving out discounts like these!"
-					2: "Heyyy! So happy you could stop by; you got some stories for us this time around? We'd love to hear them!"
-					3: "You know, if I'm being honest, when you first appeared in the village, we weren't sure what to think of you. We never get landwalking visitors up here. But you know what? We're glad you're here."
-					4: "You don't find the phrase \"landwalker\" offensive, do you? We've been saying it for so long! Oh man..."
-					5: "I don't know how you could ever handle going underground. The air must be so stale and dry... It's much better up here in the sky!"
-				}
+					0: "Hej! Oto mój ulubiony człowiek! Jak ci idzie??"
+					1: "Wiesz, masz szczęście, że jesteś super lubiany w tej wiosce. W żaden inny sposób nie dalibyśmy takich zniżek!"
+					2: "Hej! Tak szczęśliwy, że mógłbyś się zatrzymać; tym razem masz dla nas jakieś historie? Chętnie ich wysłuchamy!"
+					3: "Wiesz, jeśli mam być szczery, kiedy po raz pierwszy pojawiłeś się w wiosce, nie byliśmy pewni, co o tobie myśleć. Nigdy nie odwiedzają nas wędrowni goście. Ale wiesz co? Cieszymy się że tu jesteś."
+					4: "Nie uważasz wyrażenia „landwalker” za obraźliwe, prawda? Mówimy to od tak dawna! O rany..."
+					5: "Nie wiem, jak mogłeś sobie poradzić ze zejściem do podziemia. Powietrze musi być takie stęchłe i suche... Tu na niebie jest o wiele lepiej!"
+					6: "uhhh nie wiem jak to powiedzieć... GAHH przepraszam za marnowanie czasu!"
+				}       
 
 			}
 		}

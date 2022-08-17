@@ -3,9 +3,9 @@
 	
 		ItemName: {
 			//Wall Item Names
-			SkywareWallItem: "Skyware Wall"
-			SandstoneSlabWallItem: "Sandstone Slab Wall"
-			SkywareFenceItem: "Skyware Fence"
+			SkywareWallItem: "Ściana Skyware"
+			SandstoneSlabWallItem: "Ściana z płyty z piaskowca"
+			SkywareFenceItem: "Ogrodzenie Skyware"
 		}
 
 	}
