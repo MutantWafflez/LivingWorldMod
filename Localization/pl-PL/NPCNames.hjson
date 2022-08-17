@@ -1,0 +1,10 @@
+﻿Mods: {
+	LivingWorldMod: {
+	
+		NPCName: {
+			//Villagers
+			HarpyVillager: "Harpia Wieśniaczka"
+		}
+	
+	}
+}

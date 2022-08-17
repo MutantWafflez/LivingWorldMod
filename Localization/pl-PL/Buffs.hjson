@@ -1,0 +1,13 @@
+﻿Mods: {
+	LivingWorldMod: {
+	
+		BuffName: {
+			NimbusPetBuff: "Zwierzak Nimbus"
+		}
+
+		BuffDescription: {
+			NimbusPetBuff: "'Założę się, że smakuje jak wata cukrowa...'"
+		}
+	
+	}
+}

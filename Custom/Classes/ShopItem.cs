@@ -1,5 +1,7 @@
 ﻿using System;
 using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Custom.Classes {
@@ -48,21 +50,34 @@ namespace LivingWorldMod.Custom.Classes {
             _internalPrice = internalPrice;
         }
 
-        private static ShopItem Deserialize(TagCompound tag) => new ShopItem(
-            tag.GetInt("ItemType"),
-            tag.GetInt("Stock"),
-            tag.GetLong("ItemPrice")
-        );
+        private static ShopItem Deserialize(TagCompound tag) {
+            if (tag.TryGet("ItemModName", out string modName) && tag.TryGet("ItemName", out string itemName) && ModContent.TryFind(modName, itemName, out ModItem modItem)) {
+                return new ShopItem(modItem.Type, tag.GetInt("Stock"), tag.GetLong("ItemPrice"));
+            }
+
+            return new ShopItem(tag.GetInt("ItemType"), tag.GetInt("Stock"), tag.GetLong("ItemPrice"));
+        }
 
         public static bool operator ==(ShopItem shopItem1, ShopItem shopItem2) => shopItem1.itemType == shopItem2.itemType;
 
         public static bool operator !=(ShopItem shopItem1, ShopItem shopItem2) => shopItem1.itemType != shopItem2.itemType;
 
-        public TagCompound SerializeData() => new TagCompound() {
-            { "ItemType", itemType },
-            { "Stock", remainingStock },
-            { "ItemPrice", ItemPrice }
-        };
+        public TagCompound SerializeData() {
+            TagCompound tag = new TagCompound() {
+                { "ItemType", itemType },
+                { "Stock", remainingStock },
+                { "ItemPrice", ItemPrice }
+            };
+
+            if (itemType >= ItemID.Count) {
+                ModItem modItem = ModContent.GetModItem(itemType);
+
+                tag["ItemModName"] = modItem.Mod.Name;
+                tag["ItemName"] = modItem.Name;
+            }
+
+            return tag;
+        }
 
         //We only care about the item type when determining equality, as the other two factors are inconsequential
         public bool Equals(ShopItem other) => itemType == other.itemType;

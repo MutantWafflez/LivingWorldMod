@@ -1,0 +1,78 @@
+﻿Mods: {
+	LivingWorldMod: {
+		
+		VillagerDialogue: {
+			Harpy: {
+
+				Event: {
+					//Rain
+					0: {
+						Weight: 2.0
+						Events: "Rain"
+					}
+					1: {
+						Weight: 2.0
+						Events: "Rain"
+					}
+					
+					//Eclipse
+					2: {
+						Weight: 2.0
+						Events: "Eclipse"
+					}
+					3: {
+						Weight: 2.0
+						Events: "Eclipse"
+					}
+
+					//Blood Moon
+					4: {
+						Priority: 1
+						Events: "BloodMoon"
+					}
+					5: {
+						Priority: 1
+						Events: "BloodMoon"
+					}
+					6: {
+						//Blood Moon & Rain
+						Weight: 1.5
+						Priority: 1
+						Events: "BloodMoon|Rain"
+					}
+					
+				}
+
+				Dislike: {
+					6: {
+						Weight: 0.33
+					}
+				}
+
+				Neutral: {
+					5: {
+						Weight: 0.66
+					}
+					6: {
+						Weight: 0.33
+					}
+				}
+
+				Like: {
+					5: {
+						Weight: 0.66
+					}
+					6: { 
+						Weight: 0.66
+					}
+					7: { 
+						Weight: 0.33
+						Events: !BloodMoon
+					}
+				}
+
+			}
+		}
+
+	}
+}

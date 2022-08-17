@@ -1,0 +1,23 @@
+﻿Mods: {
+	LivingWorldMod: {
+	
+		UI: {
+			VillagerHousing: {
+				ButtonHoverText: "Mieszkanie dla wieśniaków"
+				VillagerTypeLocked: "{0} Wieśniacy nie mogą zostać przekwaterowani, dopóki nie będą cię lubić!"
+			}
+			Shrine: {
+				HarpyCountdown: "Nowe jajo harpii w:"
+
+				AddText: "Dodaj 1"
+				TakeText: "Brać 1"
+
+				DisableVillageRadius: "Ukryj wyświetlanie promienia wioski"
+				EnableVillageRadius: "Pokaż wyświetlanie promienia wioski"
+
+				ForceShrineButtonText: "Wymuś synchronizację obudowy"
+			}
+		}
+	
+	}
+}

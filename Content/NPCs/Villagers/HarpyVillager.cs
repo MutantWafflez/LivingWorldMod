@@ -15,22 +15,6 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
     public class HarpyVillager : Villager {
         public override VillagerType VillagerType => VillagerType.Harpy;
 
-        public override WeightedRandom<string> EventDialogue {
-            get {
-                //Rain
-                if (Main.raining) {
-                    return LocalizationUtils.GetAllStringsFromCategory("VillagerDialogue.Harpy.Event.Rain");
-                }
-
-                //Solar Eclipse
-                if (Main.eclipse) {
-                    return LocalizationUtils.GetAllStringsFromCategory("VillagerDialogue.Harpy.Event.Eclipse");
-                }
-
-                return new WeightedRandom<string>();
-            }
-        }
-
         public override WeightedRandom<ShopItem> ShopPool {
             get {
                 WeightedRandom<ShopItem> pool = new WeightedRandom<ShopItem>();

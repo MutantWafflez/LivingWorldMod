@@ -1,0 +1,9 @@
+﻿Mods: {
+	LivingWorldMod: {
+	
+		Common: {
+			Reputation: "Reputacja"
+		}
+
+	}
+}

@@ -1,0 +1,41 @@
+﻿Mods: {
+	LivingWorldMod: {
+	
+		ItemName: {
+			//Building
+			SkywareBlockItem: "Blok Skyware"
+			StarshardCloudItem: "Chmura Starshard"
+			StarshineBlockItem: "Blok blasku gwiazd"
+			SunslabBlockItem: "Blok Sunslab"
+
+			//Furniture
+			NimbusJarItem: "Nimbus w słoiku"
+			GravityTapestryItem: "Gobelin grawitacyjny"
+			SkywareAnvilItem: "Skyware kowadło"
+			SkywareLoomItem: "Krosno Skyware"
+			SunTapestryItem: "Gobelin słoneczny"
+
+			//Interactables
+
+				//Shrines
+				HarpyShrineItem: "Świątynia Wioski Harpii"
+
+			//Torches
+			StarTorchItem: "Pochodnia Gwiazd"
+		}
+
+		ItemTooltip: {
+			//Building
+			StarshardCloudItem: "'Odłamki upadłych gwiazd przenikają przez tę chmurę'"
+
+			//Interactables
+
+				//Shrines
+				HarpyShrineItem: "'Magiczne źródło ochrony dla wszystkich, którzy zamieszkują wioskę Harpii'"
+
+			//Torches
+			StarTorchItem: "'Rozświetl drogę esencją kosmosu'"
+		}
+	
+	}
+}
