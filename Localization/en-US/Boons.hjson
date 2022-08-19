@@ -1,24 +1,29 @@
 ﻿Mods: {
 	LivingWorldMod: {
+
+		//For Translators: In this file, if you see something like |P:word/word| somewhere in the translation,
+		//all that means is that only one of the left or right value will be used, depending on if the Boon is
+		//"Potent" or not. If necessary for translation, only change the two things adjacent to the / character.
+
+		//Text with |NPE: ... | brackets are similar to the situation above, but those lines only appear when
+		//the boon is "Potent", never otherwise. Translate it as normal, but make sure not to touch the | characters
+		//or the "NPE:" at ALL. It's case sensitive.
 	
 		//Boon Item Names
 		ItemName: {
 			AnubisBoon: "Boon of Anubis"
 		}
 
-		BoonFlavorText: {
-			AnubisBoon: "'A blessing from the one entwined with death.'"
-		}
 	
 		BoonDescription: {
-			AnubisBoon: '''
-				Upon death, negate it and heal to max life
-				This effect takes the least precendence if the user has any other death negation effects from Boons
+			AnubisBoon: 
 				'''
-		}
-
-		PotentBoonDescription: {
-			AnubisBoon: "{$Mods.LivingWorldMod.BoonDescription.AnubisBoon}\n[c/147EA8:If a Boon causes death for any reason, instead of dying, your max life is set to 1 and you deal 75% less damage until you die and respawn]\n[c/147EA8:Dying after this effect has triggered does not trigger any Boon death negation effects]"
+				'A blessing from the one entwined with death.'
+				Upon death, negate it and heal to |P:50%/75%| of your max life
+				This effect takes the least precendence if the user has any other death negation effects from Boons
+				|NPE:If a Boon causes death for any reason, instead of dying, your max life is set to 1 and you deal 75% less damage until you die and respawn
+				Dying after this effect has triggered does not trigger any Boon death negation effects|
+				'''
 		}
 
 		BoonCurse: {
@@ -29,10 +34,6 @@
 				2) The death negation effect of this Boon can no longer be used until you die and respawn
 				3) This Boon is destroyed
 				'''
-		}
-
-		PotentBoonCurse: {
-			AnubisBoon: "{$Mods.LivingWorldMod.BoonCurse.AnubisBoon}"
 		}
 	}
 }

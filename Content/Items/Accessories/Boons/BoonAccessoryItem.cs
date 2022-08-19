@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -16,13 +17,17 @@ namespace LivingWorldMod.Content.Items.Accessories.Boons {
         /// </summary>
         public bool isPotent;
 
+        public static readonly Regex InlineWordSearch = new Regex(@"(?<PotentSwap>\|P:(?<Normal>.*)/(?<Potent>.*)\|)", RegexOptions.Compiled | RegexOptions.Multiline);
+        public static readonly Regex AdditionalLineSearch = new Regex(@"(?<Start>\|NPE:)(?<Text>[\s\S]*)(?<End>\|)", RegexOptions.Compiled | RegexOptions.Multiline);
+        public static readonly Color PotentTextColor = new Color(20, 126, 168);
+
         /// <summary>
         /// Equivalent and mutually exclusive to <seealso cref="AccessoryItem.AccessoryUpdate"/>; only one is called
         /// depending on if this boon is placed within the Atum Accessory Slot.
         /// </summary>
         public virtual void PotentBoonUpdate(Player player, bool hideVisual) { }
 
-        public override void ResetAccessoryEffects(Player player) => isPotent = false;
+        public override void ResetAccessoryEffects(Player player) => isPotent = true;
 
         public override bool PreReforge() => GetAccPlayer(Main.LocalPlayer).activeMiscEffects.Any(effect => effect == "CanReforgeBoon");
 
@@ -35,15 +40,47 @@ namespace LivingWorldMod.Content.Items.Accessories.Boons {
             }
             int equipLineIndex = tooltips.IndexOf(equipLine);
 
-            tooltips.Insert(equipLineIndex + 1, new TooltipLine(Mod, "BoonFlavorText", LocalizationUtils.GetLWMTextValue($"BoonFlavorText.{Name}")));
+            string descriptionText = TooltipRegexCheck(LocalizationUtils.GetLWMTextValue($"BoonDescription.{Name}"));
+            tooltips.Insert(equipLineIndex + 1, new TooltipLine(Mod, "BoonDescription", descriptionText));
 
-            string descriptionText = LocalizationUtils.GetLWMTextValue((isPotent ? "Potent" : "") + $"BoonDescription.{Name}");
-            tooltips.Insert(equipLineIndex + 2, new TooltipLine(Mod, "BoonDescription", descriptionText));
-
-            string curseText = LocalizationUtils.GetLWMTextValue((isPotent ? "Potent" : "") + $"BoonCurse.{Name}");
-            tooltips.Insert(equipLineIndex + 3, new TooltipLine(Mod, "BoonCurse", curseText) {
+            string curseText = TooltipRegexCheck(LocalizationUtils.GetLWMTextValue($"BoonCurse.{Name}"));
+            tooltips.Insert(equipLineIndex + 2, new TooltipLine(Mod, "BoonCurse", curseText) {
                 OverrideColor = new Color(252, 60, 60)
             });
+        }
+
+        /// <summary>
+        /// Applies the <seealso cref="InlineWordSearch"/> and <seealso cref="AdditionalLineSearch"/> regex to the passed in
+        /// tooltip lines, and replaces/adds accordingly, and returns the finalized string.
+        /// </summary>
+        /// <param name="originalText"> The line(s) to search. </param>
+        private string TooltipRegexCheck(string originalText) {
+            //Checks for |P:left/right| swaps
+            foreach (Match match in InlineWordSearch.Matches(originalText)) {
+                string fullTag = match.Groups["PotentSwap"].Value;
+                originalText = originalText.Replace(fullTag, isPotent ? $"[c/{PotentTextColor.R:X2}{PotentTextColor.G:X2}{PotentTextColor.B:X2}:{match.Groups["Potent"].Value}]" : match.Groups["Normal"].Value);
+            }
+
+            //Checks for |NPE: ... | line(s) to add
+            foreach (Match match in AdditionalLineSearch.Matches(originalText)) {
+                string fullMatch = match.Value;
+                string innerText = match.Groups["Text"].Value;
+                //If not Potent, or if the text doesn't have line breaks, do a simple replace
+                if (!innerText.Contains('\n') || !isPotent) {
+                    originalText = originalText.Replace(fullMatch, isPotent ? $"[c/{PotentTextColor.R:X2}{PotentTextColor.G:X2}{PotentTextColor.B:X2}:{innerText}]" : "");
+
+                    //Remove lingering new line if it exists
+                    originalText = originalText.EndsWith("\n") ? originalText.TrimEnd('\n') : originalText;
+                    continue;
+                }
+
+                //If potent AND there are multi-lines, since chat tags can't span multiple lines, we must apply the color tag for each line
+                originalText = innerText.Split('\n').Aggregate(originalText, (current, line) => current.Replace(line, $"[c/{PotentTextColor.R:X2}{PotentTextColor.G:X2}{PotentTextColor.B:X2}:{line}]"));
+                originalText = originalText.Replace(match.Groups["Start"].Value, "");
+                originalText = originalText.Replace(match.Groups["End"].Value, "");
+            }
+
+            return originalText;
         }
     }
 }
