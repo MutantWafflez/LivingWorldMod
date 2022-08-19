@@ -18,10 +18,10 @@ namespace LivingWorldMod.Common.Systems {
         /// <summary>
         /// List of values that exist temporarily during the world generation process.
         /// </summary>
-        public List<ITemporaryGenValue> tempWorldGenValues;
+        public List<ITemporaryValue> tempWorldGenValues;
 
         public override void Load() {
-            tempWorldGenValues = new List<ITemporaryGenValue>();
+            tempWorldGenValues = new List<ITemporaryValue>();
         }
 
         public override void Unload() { }
@@ -44,7 +44,7 @@ namespace LivingWorldMod.Common.Systems {
         }
 
         public override void PreWorldGen() {
-            tempWorldGenValues = new List<ITemporaryGenValue>();
+            tempWorldGenValues = new List<ITemporaryValue>();
         }
 
         public override void PostWorldGen() {
@@ -58,10 +58,10 @@ namespace LivingWorldMod.Common.Systems {
         /// with the passed in name. Returns null if nothing is found.
         /// </summary>
         /// <typeparam name="T"> The type of the value you are looking for. </typeparam>
-        /// <param name="name"> The value of <seealso cref="ITemporaryGenValue.Name"/>. </param>
+        /// <param name="name"> The value of <seealso cref="ITemporaryValue.Name"/>. </param>
         /// <returns></returns>
         public T GetTempWorldGenValue<T>(string name) {
-            return tempWorldGenValues.OfType<TemporaryGenValue<T>>().FirstOrDefault(value => value.Name == name).value;
+            return tempWorldGenValues.OfType<TemporaryValue<T>>().FirstOrDefault(value => value.Name == name).value;
         }
     }
 }

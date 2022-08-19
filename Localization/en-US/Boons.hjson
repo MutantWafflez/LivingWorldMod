@@ -1,0 +1,38 @@
+﻿Mods: {
+	LivingWorldMod: {
+	
+		//Boon Item Names
+		ItemName: {
+			AnubisBoon: "Boon of Anubis"
+		}
+
+		BoonFlavorText: {
+			AnubisBoon: "'A blessing from the one entwined with death.'"
+		}
+	
+		BoonDescription: {
+			AnubisBoon: '''
+				Upon death, negate it and heal to max life
+				This effect takes the least precendence if the user has any other death negation effects from Boons
+				'''
+		}
+
+		PotentBoonDescription: {
+			AnubisBoon: "{$Mods.LivingWorldMod.BoonDescription.AnubisBoon}\n[c/147EA8:If a Boon causes death for any reason, instead of dying, your max life is set to 1 and you deal 75% less damage until you die and respawn]\n[c/147EA8:Dying after this effect has triggered does not trigger any Boon death negation effects]"
+		}
+
+		BoonCurse: {
+			AnubisBoon: 
+				'''
+				Curse of Delayed Fate: When you negate death using this Boon:
+				1) Your max life is halved until you die and respawn
+				2) The death negation effect of this Boon can no longer be used until you die and respawn
+				3) This Boon is destroyed
+				'''
+		}
+
+		PotentBoonCurse: {
+			AnubisBoon: "{$Mods.LivingWorldMod.BoonCurse.AnubisBoon}"
+		}
+	}
+}

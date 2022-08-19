@@ -3,9 +3,9 @@
 namespace LivingWorldMod.Custom.Interfaces {
     /// <summary>
     /// Interface that purely exists in order to create collections of
-    /// <seealso cref="TemporaryGenValue{T}"/> where the type of T differs.
+    /// <seealso cref="TemporaryValue{T}"/> where the type of T differs.
     /// </summary>
-    public interface ITemporaryGenValue {
+    public interface ITemporaryValue {
         /// <summary>
         /// The "Name" or purpose for why this object exists, for searching in collections.
         /// </summary>

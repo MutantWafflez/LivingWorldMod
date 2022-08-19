@@ -72,7 +72,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
 
                 //Set Harpy Village Zone temporarily
                 WorldCreationSystem.Instance.tempWorldGenValues.Add(
-                    new TemporaryGenValue<Rectangle>(new Rectangle(originPoint.X, originPoint.Y, originHorizontalDisplacement, originVerticalDisplacement), TemporaryZoneVariableName)
+                    new TemporaryValue<Rectangle>(new Rectangle(originPoint.X, originPoint.Y, originHorizontalDisplacement, originVerticalDisplacement), TemporaryZoneVariableName)
                 );
 
                 //Adjust origin point to be placed correctly within the village "zone" and actually an origin rather than the top corner
