@@ -51,7 +51,7 @@
 				2) The death negation effect of this Boon can no longer be used until you die and respawn
 				3) This Boon is destroyed
 				'''
-			UpuautBoon: "Curse of Frailty: You take |P:35%/45%| additional damage when your life is below |P:30/40%| maximum"
+			UpuautBoon: "Curse of Frailty: You take |P:35%/45%| additional damage when your life is below |P:30%/40%| maximum"
 		}
 	}
 }

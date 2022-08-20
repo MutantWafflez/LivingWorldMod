@@ -18,7 +18,7 @@ namespace LivingWorldMod.Content.Items.Accessories.Boons {
         /// </summary>
         public bool IsPotent => ModContent.GetInstance<AtumAccessorySlot>().FunctionalItem.type == Type;
 
-        public static readonly Regex InlineWordSearch = new Regex(@"(?<PotentSwap>\|P:(?<Normal>.*)/(?<Potent>.*)\|)", RegexOptions.Compiled | RegexOptions.Multiline);
+        public static readonly Regex InlineWordSearch = new Regex(@"(?<PotentSwap>\|P:(?<Normal>.*?)/(?<Potent>.*?)\|)", RegexOptions.Compiled | RegexOptions.Multiline);
         public static readonly Regex AdditionalLineSearch = new Regex(@"(?<Start>\|NPE:)(?<Text>[\s\S]*)(?<End>\|)", RegexOptions.Compiled | RegexOptions.Multiline);
         public static readonly Color PotentTextColor = new Color(20, 126, 168);
 
