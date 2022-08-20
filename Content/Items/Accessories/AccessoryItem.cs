@@ -12,10 +12,7 @@ namespace LivingWorldMod.Content.Items.Accessories {
         /// The priority of this effect, or where in the order of accessories
         /// this effect will be triggered. Defaults to 0.
         /// </summary>
-        public int EffectPriority {
-            get;
-            protected set;
-        } = 0;
+        public virtual int EffectPriority => 0;
 
         /// <summary>
         /// Equivalent to <seealso cref="ModItem.UpdateAccessory"/>.
@@ -23,12 +20,6 @@ namespace LivingWorldMod.Content.Items.Accessories {
         /// <param name="player"> The player that has equipped this accessory. </param>
         /// <param name="hideVisual"> Whether or not this player has marked this accessory to be visible on them. </param>
         public virtual void AccessoryUpdate(Player player, bool hideVisual) { }
-
-        /// <summary>
-        /// Equivalent to <seealso cref="ModPlayer.ResetEffects"/>. This should only be used
-        /// if your accessory has additional data that needs to be reset each update cycle.
-        /// </summary>
-        public virtual void ResetAccessoryEffects(Player player) { }
 
         /// <summary>
         /// This hook is called whenever the player is about to be killed after reaching 0 health. Set the playSound parameter to false to stop the death sound from playing.
@@ -79,7 +70,7 @@ namespace LivingWorldMod.Content.Items.Accessories {
         }
 
         public sealed override void UpdateAccessory(Player player, bool hideVisual) {
-            GetAccPlayer(player).equippedModAccessories.Add(this);
+            GetAccPlayer(player).activeAccessoryEffects[Type] = true;
 
             AccessoryUpdate(player, hideVisual);
         }

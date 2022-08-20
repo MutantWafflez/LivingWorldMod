@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using LivingWorldMod.Content.AccessorySlots;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -15,7 +16,7 @@ namespace LivingWorldMod.Content.Items.Accessories.Boons {
         /// <summary>
         /// Whether or not this boon is considered "potent" from being within the Atum Slot.
         /// </summary>
-        public bool isPotent;
+        public bool IsPotent => ModContent.GetInstance<AtumAccessorySlot>().FunctionalItem.type == Type;
 
         public static readonly Regex InlineWordSearch = new Regex(@"(?<PotentSwap>\|P:(?<Normal>.*)/(?<Potent>.*)\|)", RegexOptions.Compiled | RegexOptions.Multiline);
         public static readonly Regex AdditionalLineSearch = new Regex(@"(?<Start>\|NPE:)(?<Text>[\s\S]*)(?<End>\|)", RegexOptions.Compiled | RegexOptions.Multiline);
@@ -25,11 +26,9 @@ namespace LivingWorldMod.Content.Items.Accessories.Boons {
         /// Equivalent and mutually exclusive to <seealso cref="AccessoryItem.AccessoryUpdate"/>; only one is called
         /// depending on if this boon is placed within the Atum Accessory Slot.
         /// </summary>
-        public virtual void PotentBoonUpdate(Player player, bool hideVisual) { }
+        public virtual void PotentBoonUpdate(Player player) { }
 
-        public override void ResetAccessoryEffects(Player player) => isPotent = true;
-
-        public override bool PreReforge() => GetAccPlayer(Main.LocalPlayer).activeMiscEffects.Any(effect => effect == "CanReforgeBoon");
+        public override bool PreReforge() => false; //TODO: Change when Boon of Ptah is added
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
             //Manually handle our tooltips, just to make things simpler
@@ -58,7 +57,7 @@ namespace LivingWorldMod.Content.Items.Accessories.Boons {
             //Checks for |P:left/right| swaps
             foreach (Match match in InlineWordSearch.Matches(originalText)) {
                 string fullTag = match.Groups["PotentSwap"].Value;
-                originalText = originalText.Replace(fullTag, isPotent ? $"[c/{PotentTextColor.R:X2}{PotentTextColor.G:X2}{PotentTextColor.B:X2}:{match.Groups["Potent"].Value}]" : match.Groups["Normal"].Value);
+                originalText = originalText.Replace(fullTag, IsPotent ? $"[c/{PotentTextColor.R:X2}{PotentTextColor.G:X2}{PotentTextColor.B:X2}:{match.Groups["Potent"].Value}]" : match.Groups["Normal"].Value);
             }
 
             //Checks for |NPE: ... | line(s) to add
@@ -66,8 +65,8 @@ namespace LivingWorldMod.Content.Items.Accessories.Boons {
                 string fullMatch = match.Value;
                 string innerText = match.Groups["Text"].Value;
                 //If not Potent, or if the text doesn't have line breaks, do a simple replace
-                if (!innerText.Contains('\n') || !isPotent) {
-                    originalText = originalText.Replace(fullMatch, isPotent ? $"[c/{PotentTextColor.R:X2}{PotentTextColor.G:X2}{PotentTextColor.B:X2}:{innerText}]" : "");
+                if (!innerText.Contains('\n') || !IsPotent) {
+                    originalText = originalText.Replace(fullMatch, IsPotent ? $"[c/{PotentTextColor.R:X2}{PotentTextColor.G:X2}{PotentTextColor.B:X2}:{innerText}]" : "");
 
                     //Remove lingering new line if it exists
                     originalText = originalText.EndsWith("\n") ? originalText.TrimEnd('\n') : originalText;

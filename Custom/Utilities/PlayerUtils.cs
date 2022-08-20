@@ -31,7 +31,7 @@ namespace LivingWorldMod.Custom.Utilities {
         /// </summary>
         public static void AttemptForceKill(this Player player, PlayerDeathReason deathReason) {
             bool shouldKill = true;
-            foreach (AccessoryItem accessory in player.GetModPlayer<AccessoryPlayer>().equippedModAccessories) {
+            foreach (AccessoryItem accessory in player.GetModPlayer<AccessoryPlayer>().ActiveAccessoryItems) {
                 if (!accessory.PrePlayerForceKill(player, deathReason)) {
                     shouldKill = false;
                 }

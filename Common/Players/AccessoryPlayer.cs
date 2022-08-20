@@ -9,46 +9,73 @@ namespace LivingWorldMod.Common.Players {
     /// ModPlayer that handles the accessories in this mod.
     /// </summary>
     public class AccessoryPlayer : ModPlayer {
-        /// <summary>
-        /// A dynamically modified list that contains all of this player's currently equipped accessories from
-        /// this mod.
-        /// </summary>
-        public List<AccessoryItem> equippedModAccessories = new List<AccessoryItem>();
+        public Dictionary<int, bool> activeAccessoryEffects;
 
-        /// <summary>
-        /// A list reset every frame that holds data for active miscellaneous effects not explicitly handled
-        /// by the hooks in this class.
-        /// </summary>
-        public List<string> activeMiscEffects = new List<string>();
+        public List<AccessoryItem> ActiveAccessoryItems {
+            get;
+            private set;
+        }
+
+        private static HashSet<int> allModAccessoryTypes;
+
+        public override void Initialize() {
+            activeAccessoryEffects = new Dictionary<int, bool>();
+        }
+
+        public override void SetStaticDefaults() {
+            allModAccessoryTypes = ModContent.GetContent<AccessoryItem>().Select(item => item.Type).ToHashSet();
+        }
+
+        public override void Unload() {
+            allModAccessoryTypes = null;
+        }
 
         public override void ResetEffects() {
-            foreach (AccessoryItem accessory in equippedModAccessories) {
-                accessory.ResetAccessoryEffects(Player);
-            }
-            equippedModAccessories = new List<AccessoryItem>();
-            activeMiscEffects = new List<string>();
+            ResetActiveAccessoryEffects();
         }
 
         public override void UpdateDead() {
-            equippedModAccessories = new List<AccessoryItem>();
-            activeMiscEffects = new List<string>();
+            ResetActiveAccessoryEffects();
         }
 
         public override void PostUpdateEquips() {
-            equippedModAccessories = equippedModAccessories.OrderBy(item => item.EffectPriority).ToList();
-        }
+            ActiveAccessoryItems = new List<AccessoryItem>();
 
+            //Vanilla slot checks
+            for (int accIndex = 3; accIndex < 10; accIndex++) {
+                if (Player.IsAValidEquipmentSlotForIteration(accIndex) && Player.armor[accIndex].ModItem is AccessoryItem item) {
+                    ActiveAccessoryItems.Add(item);
+                }
+            }
+
+            //Modded slot checks
+            foreach (ModAccessorySlot accSlot in ModContent.GetContent<ModAccessorySlot>()) {
+                if (accSlot.FunctionalItem.ModItem is AccessoryItem item) {
+                    ActiveAccessoryItems.Add(item);
+                }
+            }
+
+            //Checks for any stragglers in activeAccessoryEffects
+            foreach (int accType in allModAccessoryTypes.Where(accType => activeAccessoryEffects[accType])) {
+                ModItem modItem = ModContent.GetModItem(accType);
+                if (modItem is AccessoryItem accItem && ActiveAccessoryItems.All(item => item.Type != accType)) {
+                    ActiveAccessoryItems.Add(accItem);
+                }
+            }
+
+            ActiveAccessoryItems = ActiveAccessoryItems.OrderBy(item => item.EffectPriority).ToList();
+        }
 
         public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource) {
             bool returnValue = base.PreKill(damage, hitDirection, pvp, ref playSound, ref genGore, ref damageSource);
 
-            foreach (AccessoryItem accessory in equippedModAccessories) {
+            foreach (AccessoryItem accessory in ActiveAccessoryItems) {
                 if (accessory.PrePlayerKill(Player, damage, hitDirection, pvp, ref playSound, ref genGore, ref damageSource) || !returnValue) {
                     continue;
                 }
 
                 returnValue = false;
-                foreach (AccessoryItem accessoryTwo in equippedModAccessories) {
+                foreach (AccessoryItem accessoryTwo in ActiveAccessoryItems) {
                     accessoryTwo.PlayerDeathNegated(Player);
                 }
             }
@@ -57,7 +84,7 @@ namespace LivingWorldMod.Common.Players {
         }
 
         public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource) {
-            foreach (AccessoryItem accessory in equippedModAccessories) {
+            foreach (AccessoryItem accessory in ActiveAccessoryItems) {
                 accessory.PlayerKill(Player, damage, hitDirection, pvp, damageSource);
             }
         }
@@ -65,7 +92,7 @@ namespace LivingWorldMod.Common.Players {
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter) {
             bool returnValue = base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
 
-            foreach (AccessoryItem accessory in equippedModAccessories) {
+            foreach (AccessoryItem accessory in ActiveAccessoryItems) {
                 if (accessory.PrePlayerHurt(Player, pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter) || !returnValue) {
                     continue;
                 }
@@ -77,14 +104,23 @@ namespace LivingWorldMod.Common.Players {
         }
 
         public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter) {
-            foreach (AccessoryItem accessory in equippedModAccessories) {
+            foreach (AccessoryItem accessory in ActiveAccessoryItems) {
                 accessory.PlayerHurt(Player, pvp, quiet, damage, hitDirection, crit, cooldownCounter);
             }
         }
 
         public override void PostHurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter) {
-            foreach (AccessoryItem accessory in equippedModAccessories) {
+            foreach (AccessoryItem accessory in ActiveAccessoryItems) {
                 accessory.PostPlayerHurt(Player, pvp, quiet, damage, hitDirection, crit, cooldownCounter);
+            }
+        }
+
+        /// <summary>
+        /// Resets all currently active accessory effects.
+        /// </summary>
+        private void ResetActiveAccessoryEffects() {
+            foreach (int accessoryType in allModAccessoryTypes) {
+                activeAccessoryEffects[accessoryType] = false;
             }
         }
     }

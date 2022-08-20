@@ -3,10 +3,26 @@
 	
 		BuffName: {
 			NimbusPetBuff: "Nimbus Pet"
+
+			AnubisDeathNegateDebuff: "Curse of Delayed Fate"
+			AnubisBoonNegateDebuff: "Defiance of the Gods"
 		}
 
 		BuffDescription: {
 			NimbusPetBuff: "'I bet it tastes like cotton candy...'"
+
+			AnubisDeathNegateDebuff:
+				'''
+				Your max life is halved until you die and respawn
+				You cannot trigger the death negation effect of the Boon of Anubis
+				'Death comes for us all'
+				'''
+			AnubisBoonNegateDebuff:
+				'''
+				Your max life is set to 1 and you deal 75% less damge until you die and respawn
+				You cannot negate death again under any circumstances until you die and respawn
+				'Seriously?'
+				'''
 		}
 	
 	}
