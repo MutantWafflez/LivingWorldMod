@@ -13,24 +13,32 @@
 		ItemName: {
 			AtumBoon: "Boon of Atum"
 			AnubisBoon: "Boon of Anubis"
+			UpuautBoon: "Boon of Upuaut"
 		}
 
 	
 		BoonDescription: {
 			AtumBoon:
 				'''
-				'A blessing from the one known as the Finisher of the World.'
+				'A blessing from the one known as the Finisher of the World'
 				Grants an additional accessory slot reserved exclusively for Boons (the Atum Slot)
 				Any Boon placed in the Atum Slot gains another effect or has its benenfits increased in potency
 				This Boon cannot be placed within the Atum Slot
 				'''
 			AnubisBoon: 
 				'''
-				'A blessing from the one entwined with death.'
+				'A blessing from the one entwined with death'
 				Upon death, negate it and heal to |P:50%/75%| of your max life
 				This effect takes the least precendence if the user has any other death negation effects from Boons
 				|NPE:If a Boon causes death for any reason, instead of dying, your max life is set to 1 and you deal 75% less damage until you die and respawn
 				Dying after this effect has triggered does not trigger any Boon death negation effects|
+				'''
+			UpuautBoon:
+				'''
+				'A blessing from the one named the Opener of the Ways'
+				Upon death, negate it and enter a Blaze of Glory for |P:5/10| seconds
+				During a Blazy of Glory, you are guaranteed critical strikes and deal 20% additional damage
+				After a Blaze of Glory ends, you instantly die
 				'''
 		}
 
@@ -43,6 +51,7 @@
 				2) The death negation effect of this Boon can no longer be used until you die and respawn
 				3) This Boon is destroyed
 				'''
+			UpuautBoon: "Curse of Frailty: You take |P:35%/45%| additional damage when your life is below |P:30/40%| maximum"
 		}
 	}
 }

@@ -14,6 +14,8 @@ namespace LivingWorldMod.Content.Items.Accessories.Boons {
 
         public override int EffectPriority => -1;
 
+        private bool _otherBoonNegatedDeath;
+
         public override void SetDefaults() {
             Item.DefaultToAccessory();
             Item.rare = ItemRarityID.Orange;
@@ -24,8 +26,14 @@ namespace LivingWorldMod.Content.Items.Accessories.Boons {
             if (player.HasBuff<AnubisDeathNegateDebuff>() || player.HasBuff<AnubisBoonNegateDebuff>()) {
                 return true;
             }
+            else if (_otherBoonNegatedDeath) {
+                _otherBoonNegatedDeath = false;
+
+                return true;
+            }
 
             player.AddBuff(ModContent.BuffType<AnubisDeathNegateDebuff>(), 60);
+            player.statLife = (int)(player.statLifeMax2 * (IsPotent ? 0.75f : 0.5f));
             Item.type = ItemID.None;
             Item.stack = 0;
             return false;
@@ -38,6 +46,10 @@ namespace LivingWorldMod.Content.Items.Accessories.Boons {
             }
 
             return true;
+        }
+
+        public override void PlayerDeathNegated(Player player) {
+            _otherBoonNegatedDeath = true;
         }
     }
 }

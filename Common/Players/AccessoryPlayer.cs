@@ -63,7 +63,7 @@ namespace LivingWorldMod.Common.Players {
                 }
             }
 
-            ActiveAccessoryItems = ActiveAccessoryItems.OrderBy(item => item.EffectPriority).ToList();
+            ActiveAccessoryItems = ActiveAccessoryItems.OrderByDescending(item => item.EffectPriority).ToList();
         }
 
         public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource) {

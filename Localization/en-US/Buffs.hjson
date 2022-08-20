@@ -4,12 +4,21 @@
 		BuffName: {
 			NimbusPetBuff: "Nimbus Pet"
 
+			UpuautDeathBuff: "Blaze of Glory"
+
 			AnubisDeathNegateDebuff: "Curse of Delayed Fate"
 			AnubisBoonNegateDebuff: "Defiance of the Gods"
 		}
 
 		BuffDescription: {
 			NimbusPetBuff: "'I bet it tastes like cotton candy...'"
+
+			UpuautDeathBuff:
+				'''
+				You are guaranteed critical strikes and deal 20% additional damage
+				Once this buff ends, you instantly die
+				'Let it rip!'
+				'''
 
 			AnubisDeathNegateDebuff:
 				'''

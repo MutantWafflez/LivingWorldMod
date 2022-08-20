@@ -9,6 +9,15 @@ namespace LivingWorldMod.Custom.Utilities {
     /// </summary>
     public static class PlayerUtils {
         /// <summary>
+        /// Whether or not in the Player.KillMe method, tML's PreKill should
+        /// be skipped.
+        /// </summary>
+        public static bool SkipPreKill {
+            get;
+            private set;
+        }
+
+        /// <summary>
         /// Calculates and returns the entirety of the savings of the player in all applicable inventories.
         /// </summary>
         /// <param name="player"> </param>
@@ -38,7 +47,9 @@ namespace LivingWorldMod.Custom.Utilities {
             }
 
             if (shouldKill) {
+                SkipPreKill = true;
                 player.KillMe(deathReason, player.statLife, 0);
+                SkipPreKill = false;
             }
         }
     }
