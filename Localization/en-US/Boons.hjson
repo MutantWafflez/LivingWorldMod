@@ -28,17 +28,17 @@
 			AnubisBoon: 
 				'''
 				'A blessing from the one entwined with death'
-				Upon death, negate it and heal to |P:50%/75%| of your max life
+				Upon death, negate it and heal to max life
 				This effect takes the least precendence if the user has any other death negation effects from Boons
-				|NPE:If a Boon causes death for any reason, instead of dying, your max life is set to 1 and you deal 75% less damage until you die and respawn
-				Dying after this effect has triggered does not trigger any Boon death negation effects|
+				|NPE:You negate any smite effects from other Boons; instead your max life is set to 100 and you deal 50% less damage until you die and respawn
+				You cannot negate death until you die and respawn after triggering this effect|
 				'''
 			UpuautBoon:
 				'''
 				'A blessing from the one named the Opener of the Ways'
 				Upon death, negate it and enter a Blaze of Glory for |P:5/10| seconds
 				During a Blazy of Glory, you are guaranteed critical strikes and deal 20% additional damage
-				After a Blaze of Glory ends, you instantly die
+				After a Blaze of Glory ends, you are smited and instantly die
 				'''
 		}
 

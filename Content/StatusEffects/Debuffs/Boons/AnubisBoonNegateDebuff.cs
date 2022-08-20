@@ -19,8 +19,8 @@ namespace LivingWorldMod.Content.StatusEffects.Debuffs.Boons {
         }
 
         public override void Update(Player player, ref int buffIndex) {
-            player.statLifeMax2 = 1;
-            player.GetDamage(DamageClass.Generic) *= 0.25f;
+            player.statLifeMax2 = 100;
+            player.GetDamage(DamageClass.Generic) -= 0.5f;
         }
     }
 }

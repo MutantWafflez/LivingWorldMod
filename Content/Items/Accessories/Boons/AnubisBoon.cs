@@ -33,7 +33,7 @@ namespace LivingWorldMod.Content.Items.Accessories.Boons {
             }
 
             player.AddBuff(ModContent.BuffType<AnubisDeathNegateDebuff>(), 60);
-            player.statLife = (int)(player.statLifeMax2 * (IsPotent ? 0.75f : 0.5f));
+            player.statLife = player.statLifeMax2;
             Item.type = ItemID.None;
             Item.stack = 0;
             return false;
@@ -42,6 +42,7 @@ namespace LivingWorldMod.Content.Items.Accessories.Boons {
         public override bool PrePlayerForceKill(Player player, PlayerDeathReason deathReason) {
             if (IsPotent && deathReason.SourceCustomReason == "Boon") {
                 player.AddBuff(ModContent.BuffType<AnubisBoonNegateDebuff>(), 60);
+                player.statLife = player.statLifeMax2;
                 return false;
             }
 
