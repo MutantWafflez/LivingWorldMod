@@ -46,7 +46,7 @@
 			AtumBoon: "Curse of Equivalency: The Boon in the Atum Slot also has its Curse increase in potency"
 			AnubisBoon: 
 				'''
-				Curse of Delayed Fate: When you negate death using this Boon:
+				Curse of Delayed Fate: When you negate any non-smite death using this Boon:
 				1) Your max life is halved until you die and respawn
 				2) The death negation effect of this Boon can no longer be used until you die and respawn
 				3) This Boon is destroyed
