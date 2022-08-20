@@ -9,8 +9,16 @@ namespace LivingWorldMod.Common.Players {
     /// ModPlayer that handles the accessories in this mod.
     /// </summary>
     public class AccessoryPlayer : ModPlayer {
+        /// <summary>
+        /// Dictionary of item type to bool pairs that designate which
+        /// effects are currently active. Exists to allow for one
+        /// accessory to enabled two other effects, for example.
+        /// </summary>
         public Dictionary<int, bool> activeAccessoryEffects;
 
+        /// <summary>
+        /// A list of actual AccessoryItem objects that are currently equipped.
+        /// </summary>
         public List<AccessoryItem> ActiveAccessoryItems {
             get;
             private set;
