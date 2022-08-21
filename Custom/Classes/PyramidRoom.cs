@@ -35,6 +35,11 @@ namespace LivingWorldMod.Custom.Classes {
         /// </summary>
         public bool pathSearched;
 
+        /// <summary>
+        /// Whether or not this room has been generated into the world.
+        /// </summary>
+        public bool worldGenned;
+
         public PyramidRoom(Rectangle region, int gridTopLeftX, int gridTopLeftY, int gridWidth, int gridHeight) {
             this.region = region;
             this.gridTopLeftX = gridTopLeftX;

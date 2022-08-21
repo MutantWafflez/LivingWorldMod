@@ -5,6 +5,7 @@ using LivingWorldMod.Common.Players;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
 using LivingWorldMod.Content.Walls.WorldGen;
 using LivingWorldMod.Custom.Classes;
+using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -56,7 +57,8 @@ namespace LivingWorldMod.Content.Subworlds {
             new PassLegacy("Initialize", Initialize),
             new PassLegacy("Fill World", FillWorld),
             new PassLegacy("Set Spawn", SetSpawn),
-            new PassLegacy("Room Generation", GenerateRooms),
+            new PassLegacy("Room Skeletons", GenerateRoomSkeleton),
+            new PassLegacy("Paths' Room Generation", GenerateRoomsOnPath),
             new PassLegacy("Debug Draw Paths", DebugDrawPaths)
         };
 
@@ -249,25 +251,69 @@ namespace LivingWorldMod.Content.Subworlds {
             Main.spawnTileY = _spawnTileY;
         }
 
-        private void GenerateRooms(GenerationProgress progress, GameConfiguration config) {
-            progress.Message = "Shifting the Rooms";
+        private void GenerateRoomSkeleton(GenerationProgress progress, GameConfiguration config) {
+            progress.Message = "Boxing the Rooms";
 
             for (int i = 0; i < _gridSideLength; i++) {
                 progress.Set(i / (float)_gridSideLength);
                 List<PyramidRoom> column = Grid.GetRoomColumn(i);
 
-                for (int j = 0; j < column.Count; j++) {
-                    Rectangle room = column[j].region;
+                foreach (PyramidRoom room in column) {
+                    Rectangle roomRegion = room.region;
 
-                    for (int x = room.X; x <= room.X + room.Width; x++) {
-                        for (int y = room.Y; y <= room.Y + room.Height; y++) {
+                    for (int x = roomRegion.X; x <= roomRegion.X + roomRegion.Width; x++) {
+                        for (int y = roomRegion.Y; y <= roomRegion.Y + roomRegion.Height; y++) {
                             Tile tile = Framing.GetTileSafely(x, y);
-                            if (x == room.X || x == room.X + room.Width || y == room.Y || y == room.Y + room.Height) {
+                            if (!room.pathSearched || x == roomRegion.X || x == roomRegion.X + roomRegion.Width || y == roomRegion.Y || y == roomRegion.Y + roomRegion.Height) {
                                 tile.HasTile = true;
                                 tile.TileType = TileID.SandStoneSlab;
                             }
                         }
                     }
+                }
+            }
+        }
+
+        public void GenerateRoomsOnPath(GenerationProgress progress, GameConfiguration config) {
+            progress.Message = "Shifting the Rooms";
+
+            //Generate Rooms along the correct path, ignoring the last room (the boss room)
+            for (int i = 0; i < CorrectPath.Count - 1; i++) {
+                progress.Set(i / (float)CorrectPath.Count * 0.5f);
+
+                PyramidRoom room = CorrectPath[i];
+                Rectangle roomRegion = room.region;
+                if (room.worldGenned) {
+                    continue;
+                }
+
+                room.worldGenned = true;
+                if (room.gridWidth != 1 || room.gridHeight != 1) {
+                    continue;
+                }
+
+                StructureData roomData = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"PyramidRooms/{room.gridWidth}x{room.gridHeight}/Room0.struct");
+                WorldGenUtils.GenerateStructure(roomData, roomRegion.X + 1, roomRegion.Y + 1, false);
+            }
+
+            //Generate Rooms along the fake paths
+            for (int i = 0; i < FakePaths.Count; i++) {
+                progress.Set(0.5f + i / (float)FakePaths.Count * 0.5f);
+                List<PyramidRoom> fakePath = FakePaths[i];
+
+                foreach (PyramidRoom room in fakePath) {
+                    Rectangle roomRegion = room.region;
+                    if (room.worldGenned) {
+                        continue;
+                    }
+
+                    room.worldGenned = true;
+                    if (room.gridWidth != 1 || room.gridHeight != 1) {
+                        continue;
+                    }
+
+                    StructureData roomData = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"PyramidRooms/{room.gridWidth}x{room.gridHeight}/Room0.struct");
+                    WorldGenUtils.GenerateStructure(roomData, roomRegion.X + 1, roomRegion.Y + 1, false);
                 }
             }
         }
