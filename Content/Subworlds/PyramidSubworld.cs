@@ -69,7 +69,7 @@ namespace LivingWorldMod.Content.Subworlds {
         private int _vanillaLoadStepsPassed;
 
         private readonly int _worldBorderPadding = 150;
-        private readonly int _roomSideLength = 100;
+        private readonly int _roomSideLength = 101; //We want 100x100, for the internal room, the additional 1 is to compensate for the outline
         private readonly int _gridSideLength = 10;
         private readonly int _bossRoomPadding = 150;
         private int _spawnTileX;
