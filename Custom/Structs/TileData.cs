@@ -89,9 +89,9 @@ namespace LivingWorldMod.Custom.Structs {
 
         public TileData(Tile tile) {
             type = tile.HasTile ? tile.TileType : -1;
-            #if DEBUG
-            type = ModContent.GetModTile(tile.TileType) is SkipTile ? -2 : tile.TileType;
-            #endif
+            if (LivingWorldMod.IsDebug) {
+                type = ModContent.GetModTile(tile.TileType) is SkipTile ? -2 : type;
+            }
             isActivated = tile.HasTile;
             isHalfBlock = tile.IsHalfBlock;
             frameNumber = tile.TileFrameNumber;
@@ -107,11 +107,12 @@ namespace LivingWorldMod.Custom.Structs {
             hasYellowWire = tile.YellowWire;
             liquidType = tile.LiquidType;
             liquidAmount = tile.LiquidAmount;
-            #if DEBUG
-            wallType = ModContent.GetModWall(tile.WallType) is SkipWall ? -1 : tile.WallType;
-            #else
-            wallType = tile.WallType;
-            #endif
+            if (LivingWorldMod.IsDebug) {
+                wallType = ModContent.GetModWall(tile.WallType) is SkipWall ? -1 : tile.WallType;
+            }
+            else {
+                wallType = tile.WallType;
+            }
             wallColor = tile.WallColor;
             wallFrame = tile.WallFrameNumber;
             wallFrameX = tile.WallFrameX;
@@ -130,9 +131,9 @@ namespace LivingWorldMod.Custom.Structs {
             int wallFrameX, int wallFrameY, string modTileName, string modTileOwner, string modWallName, string modWallOwner
         ) {
             this.type = isActivated ? type : -1;
-            #if DEBUG
-            this.type = modTileOwner == nameof(LivingWorldMod) && modTileName == nameof(SkipTile) ? -2 : type;
-            #endif
+            if (LivingWorldMod.IsDebug) {
+                this.type = modTileOwner == nameof(LivingWorldMod) && modTileName == nameof(SkipTile) ? -2 : this.type;
+            }
             this.isActivated = isActivated;
             this.isHalfBlock = isHalfBlock;
             this.frameNumber = frameNumber;
@@ -148,11 +149,12 @@ namespace LivingWorldMod.Custom.Structs {
             this.hasYellowWire = hasYellowWire;
             this.liquidType = liquidType;
             this.liquidAmount = liquidAmount;
-            #if DEBUG
-            this.wallType = modWallOwner == nameof(LivingWorldMod) && modWallName == nameof(SkipWall) ? -1 : wallType;
-            #else
-            this.wallType = wallType;
-            #endif
+            if (LivingWorldMod.IsDebug) {
+                this.wallType = modWallOwner == nameof(LivingWorldMod) && modWallName == nameof(SkipWall) ? -1 : wallType;
+            }
+            else {
+                this.wallType = wallType;
+            }
             this.wallColor = wallColor;
             this.wallFrame = wallFrame;
             this.wallFrameX = wallFrameX;

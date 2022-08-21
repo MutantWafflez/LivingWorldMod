@@ -47,7 +47,7 @@ namespace LivingWorldMod.Custom.Utilities {
                     TileData tileData = data.structureTileData[x][y];
 
                     switch (tileData.type) {
-                        case > 0: {
+                        case >= 0: {
                             if (ModContent.TryFind(tileData.modTileOwner, tileData.modTileName, out ModTile modTile)) {
                                 selectedTile.TileType = modTile.Type;
                             }
