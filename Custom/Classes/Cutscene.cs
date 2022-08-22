@@ -26,7 +26,15 @@ namespace LivingWorldMod.Custom.Classes {
         }
 
         /// <summary>
-        /// Runs once a tick while the game is focused (unless in Multiplayer). This is where
+        /// Allows you to do things when the cutscene first starts. Called once on every MP
+        /// client and on the server. If you only want to do things on client, make sure
+        /// to double check:
+        /// <code>player.whoAmI = Main.myPlayer</code>
+        /// </summary>
+        public virtual void OnStart(Player player) { }
+
+        /// <summary>
+        /// Runs once a tick on both clients and the server. This is where
         /// the main code for updating the cutscene should be placed. The player parameter
         /// passed in is the player that is currently within this cutscene.
         /// </summary>
@@ -34,7 +42,7 @@ namespace LivingWorldMod.Custom.Classes {
 
         /// <summary>
         /// Allows you to do things when the cutscene ends. Called once, right when the cutscene
-        /// is finished.
+        /// is finished on both the server and clients.
         /// </summary>
         public virtual void OnFinish(Player player) { }
 

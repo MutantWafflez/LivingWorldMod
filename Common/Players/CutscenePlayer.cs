@@ -50,9 +50,7 @@ namespace LivingWorldMod.Common.Players {
             CurrentCutscene.Update(Player);
 
             if (CurrentCutscene.IsFinished) {
-                CurrentCutscene.OnFinish(Player);
-
-                CurrentCutscene = null;
+                EndCutscene(true);
             }
         }
 
@@ -82,6 +80,23 @@ namespace LivingWorldMod.Common.Players {
             }
 
             CurrentCutscene = cutscene;
+            CurrentCutscene.OnStart(Player);
+        }
+
+        /// <summary>
+        /// Forcefully ends the current cutscene. Nothing occurs if there is no cutscene
+        /// playing.
+        /// </summary>
+        /// <param name="triggerOnFinish"> Whether or not to trigger <seealso cref="Cutscene.OnFinish"/>. </param>
+        public void EndCutscene(bool triggerOnFinish) {
+            if (!InCutscene) {
+                return;
+            }
+
+            if (triggerOnFinish) {
+                CurrentCutscene.OnFinish(Player);
+            }
+            CurrentCutscene = null;
         }
     }
 }

@@ -4,6 +4,7 @@ using SubworldLibrary;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Custom.Classes.Cutscenes {
@@ -73,11 +74,18 @@ namespace LivingWorldMod.Custom.Classes.Cutscenes {
 
         public static readonly SoundStyle OpeningDoorSound = new SoundStyle($"{LivingWorldMod.LWMSoundPath}Tiles/PyramidDoorOpen");
 
-        public EnterPyramidCutscene(Player player, Point16 doorBeingOpenedPos) {
+        public EnterPyramidCutscene(Point16 doorBeingOpenedPos) {
             DoorBeingOpenedPosition = doorBeingOpenedPos;
+        }
 
-            player.Teleport(doorBeingOpenedPos.ToWorldCoordinates(22, 22), -1);
-            SoundEngine.PlaySound(OpeningDoorSound with { Pitch = -1f }, doorBeingOpenedPos.ToWorldCoordinates(32));
+        public override void OnStart(Player player) {
+            if (player.whoAmI == Main.myPlayer) {
+                Vector2 telePos = DoorBeingOpenedPosition.ToWorldCoordinates(22, 22);
+                player.Teleport(telePos, -1);
+                NetMessage.SendData(MessageID.Teleport, number: 0, number2: player.whoAmI, number3: telePos.X, number4: telePos.Y, number5: -1);
+            }
+
+            SoundEngine.PlaySound(OpeningDoorSound with { Pitch = -1f }, DoorBeingOpenedPosition.ToWorldCoordinates(32));
         }
 
         public override void Update(Player player) {
@@ -100,7 +108,10 @@ namespace LivingWorldMod.Custom.Classes.Cutscenes {
         }
 
         public override void OnFinish(Player player) {
-            //TODO: Multiplayer compat? Needs more testing
+            if (Main.netMode == NetmodeID.Server || player.whoAmI != Main.myPlayer) {
+                return;
+            }
+
             ModContent.GetInstance<PyramidSubworld>().GenerateNewRandom(WorldGen.genRand.Next(int.MaxValue));
             SubworldSystem.Enter<PyramidSubworld>();
         }
