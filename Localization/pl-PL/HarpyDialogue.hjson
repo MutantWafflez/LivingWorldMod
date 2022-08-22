@@ -90,8 +90,6 @@
 					5: "Chcesz, żeby moje pióra spływały ci po plecach jak stegozaur??"
 					6: "Czy ten ptak jest nielotny i denerwujący?...?"
 					7: "Ludzie... Podły. Stworzyłem te paskudne okna!"
-					8: "wiesz, naprawdę cię nie lubię"
-					9: "właściwie... nie mam teraz ochoty z tobą rozmawiać!"
 				}
 
 				Dislike: {
@@ -144,7 +142,6 @@
 					3: "Wiesz, jeśli mam być szczery, kiedy po raz pierwszy pojawiłeś się w wiosce, nie byliśmy pewni, co o tobie myśleć. Nigdy nie odwiedzają nas wędrowni goście. Ale wiesz co? Cieszymy się że tu jesteś."
 					4: "Nie uważasz wyrażenia „landwalker” za obraźliwe, prawda? Mówimy to od tak dawna! O rany..."
 					5: "Nie wiem, jak mogłeś sobie poradzić ze zejściem do podziemia. Powietrze musi być takie stęchłe i suche... Tu na niebie jest o wiele lepiej!"
-					6: "uhhh nie wiem jak to powiedzieć... GAHH przepraszam za marnowanie czasu!"
 				}       
 
 			}
