@@ -1,13 +1,12 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using LivingWorldMod.Common.Players;
 using LivingWorldMod.Content.Subworlds;
+using LivingWorldMod.Custom.Classes.Cutscenes;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using SubworldLibrary;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Interactables {
@@ -16,8 +15,6 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
     /// actually change the tile itself. Allows entrance into the Revamped Pyramid Subworld.
     /// </summary>
     public class PyramidDoorTile : BaseTile {
-        public static readonly SoundStyle OpeningDoorSound = new SoundStyle($"{LivingWorldMod.LWMSoundPath}Tiles/PyramidDoorOpen");
-
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
@@ -39,11 +36,12 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         }
 
         public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
+            //TODO: Multiplayer compat?
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
-            PyramidDoorSystem doorSystem = ModContent.GetInstance<PyramidDoorSystem>();
+            CutscenePlayer cutscenePlayer = Main.LocalPlayer.GetModPlayer<CutscenePlayer>();
 
-            if (doorSystem.DoorBeingOpenedPosition == topLeft) {
-                frameYOffset = (int)MathHelper.Clamp(doorSystem.DoorAnimationPhase - 1, 0f, PyramidDoorSystem.LastDoorAnimationPhase) * 72;
+            if (cutscenePlayer.CurrentCutscene is EnterPyramidCutscene cutscene && cutscene.DoorBeingOpenedPosition == topLeft) {
+                frameYOffset = (int)MathHelper.Clamp(cutscene.DoorAnimationPhase - 1, 0f, EnterPyramidCutscene.LastDoorAnimationPhase) * 72;
             }
         }
 
@@ -58,14 +56,15 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
 
                 return true;
             }
+
+            Player player = Main.LocalPlayer;
+            CutscenePlayer cutscenePlayer = player.GetModPlayer<CutscenePlayer>();
+            if (cutscenePlayer.InCutscene) {
+                return true;
+            }
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
 
-            Main.LocalPlayer.Teleport(topLeft.ToWorldCoordinates(22, 22), -1);
-
-            ModContent.GetInstance<PyramidDoorSystem>().StartDoorOpen(topLeft);
-
-            SoundEngine.PlaySound(OpeningDoorSound with { Pitch = -1f }, topLeft.ToWorldCoordinates(32));
-
+            cutscenePlayer.StartCutscene(new EnterPyramidCutscene(player, topLeft));
             return true;
         }
     }

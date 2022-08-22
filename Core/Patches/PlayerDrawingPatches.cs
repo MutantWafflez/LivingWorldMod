@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using LivingWorldMod.Common.Players;
+using LivingWorldMod.Custom.Classes.Cutscenes;
 using LivingWorldMod.Custom.Utilities;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -16,8 +17,6 @@ namespace LivingWorldMod.Core.Patches {
 
         private readonly Item _fakeItem = new Item();
 
-        private PyramidDoorSystem DoorSystem => ModContent.GetInstance<PyramidDoorSystem>();
-
         public void Load(Mod mod) {
             IL.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayerInternal += ModifyDrawDuringDoorOpening;
         }
@@ -25,9 +24,10 @@ namespace LivingWorldMod.Core.Patches {
         public void Unload() { }
 
         private void ApplyDrawModifications(ref PlayerDrawSet drawInfo) {
-            if (DoorSystem.DoorAnimationPhase == PyramidDoorSystem.PlayerWalkingIntoDoorPhase) {
+            CutscenePlayer cutscenePlayer = drawInfo.drawPlayer.GetModPlayer<CutscenePlayer>();
+            if (cutscenePlayer.CurrentCutscene is EnterPyramidCutscene { DoorAnimationPhase: EnterPyramidCutscene.PlayerWalkingIntoDoorPhase } cutscene) {
                 drawInfo.heldItem = _fakeItem; //Has to be done in order for the arms to frame properly
-                PlayerDrawLayers.DrawPlayer_ScaleDrawData(ref drawInfo, 1f - DoorSystem.DoorAnimationTimer / (float)PyramidDoorSystem.PlayerWalkingTime / 3f);
+                PlayerDrawLayers.DrawPlayer_ScaleDrawData(ref drawInfo, 1f - cutscene.DoorAnimationTimer / (float)EnterPyramidCutscene.PlayerWalkingTime / 3f);
             }
         }
 
