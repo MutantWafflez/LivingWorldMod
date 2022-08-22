@@ -362,7 +362,12 @@ namespace LivingWorldMod.Content.Subworlds {
                 Point firstCenter = CorrectPath[i].region.Center;
                 Point secondCenter = CorrectPath[i + 1].region.Center;
 
-                WorldUtils.Gen(firstCenter, new StraightLine(2f, secondCenter), Actions.Chain(new Modifiers.SkipTiles((ushort)ModContent.TileType<PyramidDoorTile>()), new Actions.PlaceTile(TileID.LivingCursedFire)));
+                WorldUtils.Gen(firstCenter, new StraightLine(2f, secondCenter), Actions.Chain(
+                    new Modifiers.SkipTiles((ushort)ModContent.TileType<PyramidDoorTile>()),
+                    new Modifiers.Offset(0, -1),
+                    new Modifiers.SkipTiles((ushort)ModContent.TileType<PyramidDoorTile>()),
+                    new Modifiers.Offset(0, 1),
+                    new Actions.PlaceTile(TileID.LivingCursedFire)));
             }
 
             foreach (List<PyramidRoom> fakePath in FakePaths) {
@@ -370,7 +375,12 @@ namespace LivingWorldMod.Content.Subworlds {
                     Point firstCenter = fakePath[i].region.Center;
                     Point secondCenter = fakePath[i + 1].region.Center;
 
-                    WorldUtils.Gen(firstCenter, new StraightLine(2f, secondCenter), Actions.Chain(new Modifiers.SkipTiles((ushort)ModContent.TileType<PyramidDoorTile>()), new Actions.PlaceTile(TileID.LivingFire)));
+                    WorldUtils.Gen(firstCenter, new StraightLine(2f, secondCenter), Actions.Chain(
+                        new Modifiers.SkipTiles((ushort)ModContent.TileType<PyramidDoorTile>()),
+                        new Modifiers.Offset(0, -1),
+                        new Modifiers.SkipTiles((ushort)ModContent.TileType<PyramidDoorTile>()),
+                        new Modifiers.Offset(0, 1),
+                        new Actions.PlaceTile(TileID.LivingFire)));
                 }
             }
         }
