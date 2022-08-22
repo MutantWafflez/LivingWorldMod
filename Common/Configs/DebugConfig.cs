@@ -12,6 +12,11 @@ namespace LivingWorldMod.Common.Configs {
         [ReloadRequired]
         public bool forceDebugMode;
 
+        [Label("Pyramid Generation Debug")]
+        [Tooltip("Requires Debug Mode to be enabled to function; upon entering any world, instantly enter the Revamped Pyramid Subworld.")]
+        [DefaultValue(false)]
+        public bool pyramidDebug;
+
         public override ConfigScope Mode => ConfigScope.ServerSide;
     }
 }
