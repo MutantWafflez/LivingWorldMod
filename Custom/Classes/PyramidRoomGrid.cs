@@ -87,6 +87,11 @@ namespace LivingWorldMod.Custom.Classes {
         public PyramidRoom GetRoomBelow(PyramidRoom room) => GetRoom(room.gridTopLeftX, room.gridTopLeftY + room.gridHeight);
 
         /// <summary>
+        /// Gets the room above the passed in room. Returns null if going above is out of bounds.
+        /// </summary>
+        public PyramidRoom GetRoomAbove(PyramidRoom room) => GetRoom(room.gridTopLeftX, room.gridTopLeftY - 1);
+
+        /// <summary>
         /// Gets the room to the left of the passed in room. Returns null if going to the left is out of bounds.
         /// </summary>
         public PyramidRoom GetRoomToLeft(PyramidRoom room) => GetRoom(room.gridTopLeftX - 1, room.gridTopLeftY);
