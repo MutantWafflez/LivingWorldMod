@@ -74,8 +74,8 @@ namespace LivingWorldMod.Content.Subworlds {
         private string _lastStatusText = "";
         private int _vanillaLoadStepsPassed;
 
-        private readonly int _worldBorderPadding = 150;
-        private readonly int _roomSideLength = 101; //We want 100x100, for the internal room, the additional 1 is to compensate for the outline
+        private readonly int _worldBorderPadding = 149;
+        private readonly int _roomSideLength = 102; //We want 100x100, for the internal room, the additional 2 is to compendsate for the outline
         private readonly int _gridSideLength = 10;
         private readonly int _bossRoomPadding = 150;
         private int _spawnTileX;
@@ -281,8 +281,14 @@ namespace LivingWorldMod.Content.Subworlds {
         public void GenerateRooms(GenerationProgress progress, GameConfiguration config) {
             progress.Message = "Shifting the Rooms";
 
-            //Generate Rooms Layouts along the correct path
-            GenerateRoomLayoutOnPath(CorrectPath);
+            //Generate Starting Room
+            PyramidRoom startRoom = CorrectPath.First();
+            Rectangle startRegion = startRoom.region;
+            WorldGenUtils.GenerateStructure(IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + "PyramidRooms/1x1/StartRoom.struct"), startRegion.X + 1, startRegion.Y + 1, false);
+            startRoom.worldGenned = true;
+
+            //Generate Rooms Layouts along the correct path excluding the starter room (since that's always the same)
+            GenerateRoomLayoutOnPath(CorrectPath.Skip(1).ToList());
             progress.Set(0.5f);
 
             //Generate Rooms along the fake paths
