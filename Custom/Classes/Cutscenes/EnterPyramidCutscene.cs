@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Content.Subworlds;
+using LivingWorldMod.Content.Tiles.Interactables;
 using Microsoft.Xna.Framework;
 using SubworldLibrary;
 using Terraria;
@@ -84,6 +85,7 @@ namespace LivingWorldMod.Custom.Classes.Cutscenes {
                 player.Teleport(telePos, -1);
                 NetMessage.SendData(MessageID.Teleport, number: 0, number2: player.whoAmI, number3: telePos.X, number4: telePos.Y, number5: -1);
             }
+            ModContent.GetInstance<PyramidDoorTile>().playerInCutscene = player;
 
             SoundEngine.PlaySound(OpeningDoorSound with { Pitch = -1f }, DoorBeingOpenedPosition.ToWorldCoordinates(32));
         }
@@ -108,7 +110,11 @@ namespace LivingWorldMod.Custom.Classes.Cutscenes {
         }
 
         public override void OnFinish(Player player) {
-            if (Main.netMode == NetmodeID.Server || player.whoAmI != Main.myPlayer) {
+            if (Main.netMode == NetmodeID.Server) {
+                return;
+            }
+            ModContent.GetInstance<PyramidDoorTile>().playerInCutscene = null;
+            if (player.whoAmI != Main.myPlayer) {
                 return;
             }
 

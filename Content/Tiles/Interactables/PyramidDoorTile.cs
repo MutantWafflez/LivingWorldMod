@@ -18,6 +18,11 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
     /// actually change the tile itself. Allows entrance into the Revamped Pyramid Subworld.
     /// </summary>
     public class PyramidDoorTile : BaseTile {
+        /// <summary>
+        /// The player, if any, currently within the Enter Pyramid cutscene.
+        /// </summary>
+        public Player playerInCutscene;
+
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
@@ -39,9 +44,11 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         }
 
         public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
-            //TODO: Multiplayer compat?
+            if (playerInCutscene is null) {
+                return;
+            }
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
-            CutscenePlayer cutscenePlayer = Main.LocalPlayer.GetModPlayer<CutscenePlayer>();
+            CutscenePlayer cutscenePlayer = playerInCutscene.GetModPlayer<CutscenePlayer>();
 
             if (cutscenePlayer.CurrentCutscene is EnterPyramidCutscene cutscene && cutscene.DoorBeingOpenedPosition == topLeft) {
                 frameYOffset = (int)MathHelper.Clamp(cutscene.DoorAnimationPhase - 1, 0f, EnterPyramidCutscene.LastDoorAnimationPhase) * 72;
@@ -63,6 +70,11 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             Player player = Main.LocalPlayer;
             CutscenePlayer cutscenePlayer = player.GetModPlayer<CutscenePlayer>();
             if (cutscenePlayer.InCutscene) {
+                return true;
+            }
+            else if (playerInCutscene is not null) {
+                SubworldSystem.Enter<PyramidSubworld>();
+
                 return true;
             }
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
