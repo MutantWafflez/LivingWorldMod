@@ -1,4 +1,7 @@
-﻿using LivingWorldMod.Content.Subworlds;
+﻿using System.IO;
+using LivingWorldMod.Common.ModTypes;
+using LivingWorldMod.Common.Players;
+using LivingWorldMod.Content.Subworlds;
 using LivingWorldMod.Content.Tiles.Interactables;
 using Microsoft.Xna.Framework;
 using SubworldLibrary;
@@ -8,7 +11,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Custom.Classes.Cutscenes {
+namespace LivingWorldMod.Content.Cutscenes {
     /// <summary>
     /// Cutscene that plays when the player right clicks on the Revamped Pyramid
     /// door, where the door dramatically opens and the player walks in.
@@ -75,8 +78,38 @@ namespace LivingWorldMod.Custom.Classes.Cutscenes {
 
         public static readonly SoundStyle OpeningDoorSound = new SoundStyle($"{LivingWorldMod.LWMSoundPath}Tiles/PyramidDoorOpen");
 
-        public EnterPyramidCutscene(Point16 doorBeingOpenedPos) {
-            DoorBeingOpenedPosition = doorBeingOpenedPos;
+        public EnterPyramidCutscene(Point16 doorPos) {
+            DoorBeingOpenedPosition = doorPos;
+        }
+
+        // Here for autoloading; doesn't register otherwise
+        private EnterPyramidCutscene() { }
+
+        protected override void WritePacketData(ModPacket packet) {
+            packet.WriteVector2(DoorBeingOpenedPosition.ToVector2());
+        }
+
+        public override void HandleCutscenePacket(BinaryReader reader, int fromWhomst) {
+            if (Main.netMode == NetmodeID.Server) {
+                Player player = Main.player[fromWhomst];
+                DoorBeingOpenedPosition = reader.ReadVector2().ToPoint16();
+
+                if (Framing.GetTileSafely(DoorBeingOpenedPosition).TileType != ModContent.TileType<PyramidDoorTile>() || !player.active) {
+                    return;
+                }
+
+                player.GetModPlayer<CutscenePlayer>().StartCutscene(this);
+            }
+            else {
+                Player player = Main.player[reader.ReadInt32()];
+                DoorBeingOpenedPosition = reader.ReadVector2().ToPoint16();
+
+                if (!player.active) {
+                    return;
+                }
+
+                player.GetModPlayer<CutscenePlayer>().StartCutscene(this);
+            }
         }
 
         public override void OnStart(Player player) {
@@ -98,7 +131,6 @@ namespace LivingWorldMod.Custom.Classes.Cutscenes {
                 }
             }
             else if (DoorAnimationPhase == PlayerWalkingIntoDoorPhase) {
-                //Check out PyramidAnimationPlayer.cs in Common/Players for more on the drawing specifically.
                 if (++DoorAnimationTimer >= PlayerWalkingTime) {
                     DoorBeingOpenedPosition = Point16.NegativeOne;
                     DoorAnimationPhase = 0;

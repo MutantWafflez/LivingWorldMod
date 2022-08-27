@@ -1,4 +1,4 @@
-﻿using LivingWorldMod.Custom.Classes;
+﻿using LivingWorldMod.Common.ModTypes;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Terraria.ModLoader;

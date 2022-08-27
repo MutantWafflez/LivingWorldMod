@@ -1,5 +1,5 @@
 ﻿using LivingWorldMod.Common.Players;
-using LivingWorldMod.Custom.Classes.Cutscenes;
+using LivingWorldMod.Content.Cutscenes;
 using LivingWorldMod.Custom.Utilities;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
