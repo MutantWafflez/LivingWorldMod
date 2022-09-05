@@ -58,7 +58,7 @@ namespace LivingWorldMod.Common.Players {
 
             //Modded slot checks
             foreach (ModAccessorySlot accSlot in ModContent.GetContent<ModAccessorySlot>()) {
-                if (accSlot.FunctionalItem.ModItem is AccessoryItem item) {
+                if (accSlot.IsEnabled() && accSlot.FunctionalItem.ModItem is AccessoryItem item) {
                     ActiveAccessoryItems.Add(item);
                 }
             }
