@@ -60,7 +60,7 @@ namespace LivingWorldMod.Content.Subworlds {
             new PassLegacy("Initialize", Initialize),
             new PassLegacy("Fill World", FillWorld),
             new PassLegacy("Set Spawn", SetSpawn),
-            new PassLegacy("Room Skeletons", GenerateRoomSkeleton),
+            new PassLegacy("Empty Room Fill", FillEmptyRooms),
             new PassLegacy("Room Layout", GenerateRooms),
             new PassLegacy("Room Doors", GenerateRoomDoors),
             new PassLegacy("Debug Draw Paths", DebugDrawPaths)
@@ -74,8 +74,8 @@ namespace LivingWorldMod.Content.Subworlds {
         private string _lastStatusText = "";
         private int _vanillaLoadStepsPassed;
 
-        private readonly int _worldBorderPadding = 149;
-        private readonly int _roomSideLength = 102; //We want 100x100, for the internal room, the additional 2 is to compendsate for the outline
+        private readonly int _worldBorderPadding = 150;
+        private readonly int _roomSideLength = 100;
         private readonly int _gridSideLength = 10;
         private readonly int _bossRoomPadding = 150;
         private int _spawnTileX;
@@ -255,8 +255,8 @@ namespace LivingWorldMod.Content.Subworlds {
             Main.spawnTileY = _spawnTileY;
         }
 
-        private void GenerateRoomSkeleton(GenerationProgress progress, GameConfiguration config) {
-            progress.Message = "Boxing the Rooms";
+        private void FillEmptyRooms(GenerationProgress progress, GameConfiguration config) {
+            progress.Message = "Filling the Empty Space";
 
             for (int i = 0; i < _gridSideLength; i++) {
                 progress.Set(i / (float)_gridSideLength);
@@ -268,7 +268,7 @@ namespace LivingWorldMod.Content.Subworlds {
                     for (int x = roomRegion.X; x <= roomRegion.X + roomRegion.Width; x++) {
                         for (int y = roomRegion.Y; y <= roomRegion.Y + roomRegion.Height; y++) {
                             Tile tile = Framing.GetTileSafely(x, y);
-                            if (!room.pathSearched || x == roomRegion.X || x == roomRegion.X + roomRegion.Width || y == roomRegion.Y || y == roomRegion.Y + roomRegion.Height) {
+                            if (!room.pathSearched) {
                                 tile.HasTile = true;
                                 tile.TileType = TileID.SandStoneSlab;
                             }
@@ -284,7 +284,7 @@ namespace LivingWorldMod.Content.Subworlds {
             //Generate Starting Room
             PyramidRoom startRoom = CorrectPath.First();
             Rectangle startRegion = startRoom.region;
-            WorldGenUtils.GenerateStructure(IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + "PyramidRooms/1x1/StartRoom.struct"), startRegion.X + 1, startRegion.Y + 1, false);
+            WorldGenUtils.GenerateStructure(IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + "PyramidRooms/1x1/StartRoom.struct"), startRegion.X, startRegion.Y, false);
             startRoom.worldGenned = true;
 
             //Generate Rooms Layouts along the correct path excluding the starter room (since that's always the same)
@@ -315,7 +315,7 @@ namespace LivingWorldMod.Content.Subworlds {
                     Rectangle roomRegion = thisRoom.region;
 
                     List<Point> doorLocations = new List<Point>();
-                    int doorType = ModContent.TileType<PyramidDoorTile>();
+                    int doorType = ModContent.TileType<InnerPyramidDoorTile>();
                     TileObjectData doorData = TileObjectData.GetTileData(doorType, 0);
                     //Search over entire room, looking for possible door placements
                     for (int x = roomRegion.X + 1; x < roomRegion.X + roomRegion.Width; x++) {
@@ -325,6 +325,10 @@ namespace LivingWorldMod.Content.Subworlds {
                                 doorLocations.Add(searchPoint);
                             }
                         }
+                    }
+
+                    if (!doorLocations.Any()) {
+                        continue;
                     }
 
                     //Below Door
@@ -369,9 +373,9 @@ namespace LivingWorldMod.Content.Subworlds {
                 Point secondCenter = CorrectPath[i + 1].region.Center;
 
                 WorldUtils.Gen(firstCenter, new StraightLine(2f, secondCenter), Actions.Chain(
-                    new Modifiers.SkipTiles((ushort)ModContent.TileType<PyramidDoorTile>()),
+                    new Modifiers.SkipTiles((ushort)ModContent.TileType<InnerPyramidDoorTile>(), (ushort)ModContent.TileType<PyramidDoorTile>()),
                     new Modifiers.Offset(0, -1),
-                    new Modifiers.SkipTiles((ushort)ModContent.TileType<PyramidDoorTile>()),
+                    new Modifiers.SkipTiles((ushort)ModContent.TileType<InnerPyramidDoorTile>(), (ushort)ModContent.TileType<PyramidDoorTile>()),
                     new Modifiers.Offset(0, 1),
                     new Actions.PlaceTile(TileID.LivingCursedFire)));
             }
@@ -382,9 +386,9 @@ namespace LivingWorldMod.Content.Subworlds {
                     Point secondCenter = fakePath[i + 1].region.Center;
 
                     WorldUtils.Gen(firstCenter, new StraightLine(2f, secondCenter), Actions.Chain(
-                        new Modifiers.SkipTiles((ushort)ModContent.TileType<PyramidDoorTile>()),
+                        new Modifiers.SkipTiles((ushort)ModContent.TileType<InnerPyramidDoorTile>(), (ushort)ModContent.TileType<PyramidDoorTile>()),
                         new Modifiers.Offset(0, -1),
-                        new Modifiers.SkipTiles((ushort)ModContent.TileType<PyramidDoorTile>()),
+                        new Modifiers.SkipTiles((ushort)ModContent.TileType<InnerPyramidDoorTile>(), (ushort)ModContent.TileType<PyramidDoorTile>()),
                         new Modifiers.Offset(0, 1),
                         new Actions.PlaceTile(TileID.LivingFire)));
                 }
@@ -457,7 +461,7 @@ namespace LivingWorldMod.Content.Subworlds {
         /// Generates all the rooms belonging to the passed in path.
         /// </summary>
         private void GenerateRoomLayoutOnPath(List<PyramidRoom> path) {
-            for (int i = 0; i < path.Count - 1; i++) {
+            for (int i = 0; i < path.Count; i++) {
                 PyramidRoom room = path[i];
 
                 Rectangle roomRegion = room.region;
@@ -466,12 +470,9 @@ namespace LivingWorldMod.Content.Subworlds {
                 }
 
                 room.worldGenned = true;
-                if (room.gridWidth != 1 || room.gridHeight != 1) {
-                    continue;
-                }
 
                 StructureData roomData = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"PyramidRooms/{room.gridWidth}x{room.gridHeight}/Room0.struct");
-                WorldGenUtils.GenerateStructure(roomData, roomRegion.X + 1, roomRegion.Y + 1, false);
+                WorldGenUtils.GenerateStructure(roomData, roomRegion.X, roomRegion.Y, false);
             }
         }
     }
