@@ -76,6 +76,7 @@ namespace LivingWorldMod.Content.Subworlds {
         private readonly int _roomSideLength = 100;
         private readonly int _gridSideLength = 10;
         private readonly int _bossRoomPadding = 150;
+        private Dictionary<string, int> _roomTypeCount;
         private int _spawnTileX;
         private int _spawnTileY;
         private UnifiedRandom _pyramidRandom;
@@ -84,6 +85,24 @@ namespace LivingWorldMod.Content.Subworlds {
             _pyramidBackground = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}Backgrounds/Loading/PyramidBG");
             _pyramidWorldGenBar = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}UI/SubworldGeneration/GenPyramidBar");
             _pyramidRandom = new UnifiedRandom();
+        }
+
+        public override void SetStaticDefaults() {
+            //Do file count checks
+            string pathStart = "Content/Structures/PyramidRooms/";
+            List<string> roomFiles = ModContent.GetInstance<LivingWorldMod>()
+                                               .GetFileNames()
+                                               .Where(name => name.StartsWith(pathStart) && !name.EndsWith("StartRoom.pyrroom"))
+                                               .Select(name => name.Replace(pathStart, ""))
+                                               .ToList();
+
+            _roomTypeCount = new Dictionary<string, int>() {
+                { "1x1", 0 },
+                { "1x2", 0 },
+                { "2x1", 0 },
+                { "2x2", 0 }
+            };
+            roomFiles.ForEach(fileName => _roomTypeCount[fileName[..fileName.IndexOf('/')]]++);
         }
 
         public override void OnEnter() {
@@ -204,7 +223,6 @@ namespace LivingWorldMod.Content.Subworlds {
                 PyramidRoom roomLeft = Grid.GetRoomToLeft(currentRoom);
                 PyramidRoom roomRight = Grid.GetRoomToRight(currentRoom);
 
-
                 List<Tuple<PyramidRoom, double>> movementChoices = new List<Tuple<PyramidRoom, double>>();
                 movementChoices.Add(new Tuple<PyramidRoom, double>(roomBelow, 34)); //Down
                 movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomLeft, 33), roomLeft is { pathSearched: false }); //Left
@@ -244,7 +262,7 @@ namespace LivingWorldMod.Content.Subworlds {
 
             //Force starter room to be, well, the starter room, and set spawn point accordingly
             PyramidRoom starterRoom = CorrectPath.First();
-            starterRoom.forcedRoomType = LivingWorldMod.LWMStructurePath + "PyramidRooms/1x1/StartRoom.pyrroom";
+            starterRoom.forcedRoomType = LivingWorldMod.LWMStructurePath + "PyramidRooms/StartRoom.pyrroom";
             _spawnTileX = starterRoom.region.Center.X;
             _spawnTileY = starterRoom.region.Center.Y;
 
@@ -460,15 +478,18 @@ namespace LivingWorldMod.Content.Subworlds {
                 }
                 room.worldGenned = true;
 
-                RoomData roomData = IOUtils.GetTagFromFile<RoomData>(room.forcedRoomType ?? LivingWorldMod.LWMStructurePath + $"PyramidRooms/{room.gridWidth}x{room.gridHeight}/Room0.pyrroom");
+                string roomDimensions = $"{room.gridWidth}x{room.gridHeight}";
+                string selectedRoom = LivingWorldMod.LWMStructurePath + $"PyramidRooms/{roomDimensions}/Room{_pyramidRandom.Next(_roomTypeCount[roomDimensions])}.pyrroom";
+                RoomData roomData = IOUtils.GetTagFromFile<RoomData>(room.forcedRoomType ?? selectedRoom);
+
+                WorldGenUtils.GenerateStructure(roomData.roomLayout, roomRegion.X, roomRegion.Y, false);
+
                 List<Tuple<PyramidRoom.DoorData, Point16>> dataAndDisplacement = new List<Tuple<PyramidRoom.DoorData, Point16>>() {
                     new Tuple<PyramidRoom.DoorData, Point16>(room.topDoor, roomData.topDoorPos),
                     new Tuple<PyramidRoom.DoorData, Point16>(room.rightDoor, roomData.rightDoorPos),
                     new Tuple<PyramidRoom.DoorData, Point16>(room.leftDoor, roomData.leftDoorPos),
                     new Tuple<PyramidRoom.DoorData, Point16>(room.downDoor, roomData.downDoorPos)
                 };
-
-                WorldGenUtils.GenerateStructure(roomData.roomLayout, roomRegion.X, roomRegion.Y, false);
                 foreach ((PyramidRoom.DoorData doorData, Point16 doorDisplacement) in dataAndDisplacement) {
                     if (doorData is null) {
                         continue;
