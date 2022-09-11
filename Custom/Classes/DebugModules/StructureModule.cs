@@ -31,7 +31,7 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
 
             string outputPath = IOUtils.GetLWMFilePath() + $"/StructureOutput_{DateTime.Now.ToShortTimeString().Replace(':', '_').Replace(' ', '_')}.struct";
 
-            TagIO.ToFile(new TagCompound() { { "structureData", structData } }, outputPath);
+            TagIO.ToFile(new TagCompound() { { nameof(StructureData), structData } }, outputPath);
 
             Main.NewText("Structure Copied to File!");
         }

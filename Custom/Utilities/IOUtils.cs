@@ -24,39 +24,23 @@ namespace LivingWorldMod.Custom.Utilities {
         }
 
         /// <summary>
-        /// Shorthand method for getting a StructureData instance from a file. The path parameter
+        /// Shorthand method for getting a <seealso cref="TagSerializable"/> instance from a file. The path parameter
         /// should not include the mod folder. For example, in the path
         /// "LivingWorldMod/Content/Structures/ExampeStructure.struct" it should not include the
         /// "LivngWorldMod" part, it just needs the "Content/Structures/ExampleStructure.struct" part.
         /// </summary>
         /// <param name="path"> The path in the LivingWorldMod folder to go to. </param>
         /// <returns> </returns>
-        public static StructureData GetStructureFromFile(string path) {
+        public static T GetTagFromFile<T>(string path) where T : TagSerializable {
             LivingWorldMod modInstance = ModContent.GetInstance<LivingWorldMod>();
 
             Stream fileStream = modInstance.GetFileStream(path);
 
-            StructureData structureData = TagIO.FromStream(fileStream).Get<StructureData>("structureData");
+            T structureData = TagIO.FromStream(fileStream).Get<T>(typeof(T).Name);
 
             fileStream.Close();
 
             return structureData;
-        }
-
-        /// <summary>
-        /// Similar to <seealso cref="IOUtils.GetStructureFromFile"/>, but is more specialized for Revamped Pyramid Room
-        /// structure files (.pyrroom)
-        /// </summary>
-        public static RoomData GetPyramidRoomDataFromFile(string path) {
-            LivingWorldMod modInstance = ModContent.GetInstance<LivingWorldMod>();
-
-            Stream fileStream = modInstance.GetFileStream(path);
-
-            RoomData roomData = TagIO.FromStream(fileStream).Get<RoomData>("roomData");
-
-            fileStream.Close();
-
-            return roomData;
         }
     }
 }

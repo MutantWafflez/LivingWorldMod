@@ -447,7 +447,7 @@ namespace LivingWorldMod.Content.Subworlds {
                 }
                 room.worldGenned = true;
 
-                RoomData roomData = IOUtils.GetPyramidRoomDataFromFile(room.forcedRoomType ?? LivingWorldMod.LWMStructurePath + $"PyramidRooms/{room.gridWidth}x{room.gridHeight}/Room0.pyrroom");
+                RoomData roomData = IOUtils.GetTagFromFile<RoomData>(room.forcedRoomType ?? LivingWorldMod.LWMStructurePath + $"PyramidRooms/{room.gridWidth}x{room.gridHeight}/Room0.pyrroom");
                 List<Tuple<PyramidRoom.DoorData, Point16>> dataAndDisplacement = new List<Tuple<PyramidRoom.DoorData, Point16>>() {
                     new Tuple<PyramidRoom.DoorData, Point16>(room.topDoor, roomData.topDoorPos),
                     new Tuple<PyramidRoom.DoorData, Point16>(room.rightDoor, roomData.rightDoorPos),

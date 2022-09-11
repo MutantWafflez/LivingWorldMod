@@ -93,7 +93,7 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
 
             string outputPath = IOUtils.GetLWMFilePath() + $"/PyramidRoom_{DateTime.Now.ToShortTimeString().Replace(':', '_').Replace(' ', '_')}.pyrroom";
 
-            TagIO.ToFile(new TagCompound() { { "roomData", roomData } }, outputPath);
+            TagIO.ToFile(new TagCompound() { { nameof(RoomData), roomData } }, outputPath);
 
             Main.NewText("Room Copied to File!");
         }
