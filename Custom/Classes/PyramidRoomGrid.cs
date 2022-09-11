@@ -81,19 +81,22 @@ namespace LivingWorldMod.Custom.Classes {
         }
 
         /// <summary>
-        /// Gets the room below the passed in room. Returns null if going below is out of bounds.
+        /// Gets the room below the passed in room, from the bottom-left tile of this room.
+        /// Returns null if going below is out of bounds.
         /// </summary>
         public PyramidRoom GetRoomBelow(PyramidRoom room) => GetRoom(room.gridTopLeftX, room.gridTopLeftY + room.gridHeight);
 
         /// <summary>
-        /// Gets the room to the left of the passed in room. Returns null if going to the left is out of bounds.
+        /// Gets the room to the left of the passed in room, from the bottom-left tile of this room.
+        /// Returns null if going to the left is out of bounds.
         /// </summary>
-        public PyramidRoom GetRoomToLeft(PyramidRoom room) => GetRoom(room.gridTopLeftX - 1, room.gridTopLeftY);
+        public PyramidRoom GetRoomToLeft(PyramidRoom room) => GetRoom(room.gridTopLeftX - 1, room.gridTopLeftY + room.gridHeight - 1);
 
         /// <summary>
-        /// Gets the room to the right of the passed in room. Returns null if going to the right is out of bounds.
+        /// Gets the room to the right of the passed in room, from the bottom-left tile of this room.
+        /// Returns null if going to the right is out of bounds.
         /// </summary>
-        public PyramidRoom GetRoomToRight(PyramidRoom room) => GetRoom(room.gridTopLeftX + room.gridWidth, room.gridTopLeftY);
+        public PyramidRoom GetRoomToRight(PyramidRoom room) => GetRoom(room.gridTopLeftX + room.gridWidth, room.gridTopLeftY + room.gridHeight - 1);
 
         /// <summary>
         /// Returns the room that exists at the specified coordinates within the grid. If the grid location is taken by
