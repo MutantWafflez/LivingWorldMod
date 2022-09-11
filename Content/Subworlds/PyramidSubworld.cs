@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Common.Players;
-using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
 using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Content.Walls.WorldGen;
@@ -14,12 +13,12 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using SubworldLibrary;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.ModLoader;
-using Terraria.ObjectData;
 using Terraria.UI.Chat;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
@@ -62,7 +61,6 @@ namespace LivingWorldMod.Content.Subworlds {
             new PassLegacy("Set Spawn", SetSpawn),
             new PassLegacy("Empty Room Fill", FillEmptyRooms),
             new PassLegacy("Room Layout", GenerateRooms),
-            new PassLegacy("Room Doors", GenerateRoomDoors),
             new PassLegacy("Debug Draw Paths", DebugDrawPaths)
         };
 
@@ -206,6 +204,7 @@ namespace LivingWorldMod.Content.Subworlds {
                 PyramidRoom roomLeft = Grid.GetRoomToLeft(currentRoom);
                 PyramidRoom roomRight = Grid.GetRoomToRight(currentRoom);
 
+
                 List<Tuple<PyramidRoom, double>> movementChoices = new List<Tuple<PyramidRoom, double>>();
                 movementChoices.Add(new Tuple<PyramidRoom, double>(roomBelow, 34)); //Down
                 movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomLeft, 33), roomLeft is { pathSearched: false }); //Left
@@ -215,13 +214,37 @@ namespace LivingWorldMod.Content.Subworlds {
                 if (selectedRoom is not null) {
                     CorrectPath.Add(selectedRoom);
                     selectedRoom.pathSearched = true;
+
+                    //Link doors accordingly
+                    if (selectedRoom == roomBelow) {
+                        currentRoom.downDoor = new PyramidRoom.DoorData();
+                        selectedRoom.topDoor = new PyramidRoom.DoorData();
+
+                        currentRoom.downDoor.linkedDoor = selectedRoom.topDoor;
+                        selectedRoom.topDoor.linkedDoor = currentRoom.downDoor;
+                    }
+                    else if (selectedRoom == roomLeft) {
+                        currentRoom.leftDoor = new PyramidRoom.DoorData();
+                        selectedRoom.rightDoor = new PyramidRoom.DoorData();
+
+                        currentRoom.leftDoor.linkedDoor = selectedRoom.rightDoor;
+                        selectedRoom.rightDoor.linkedDoor = currentRoom.leftDoor;
+                    }
+                    else if (selectedRoom == roomRight) {
+                        currentRoom.rightDoor = new PyramidRoom.DoorData();
+                        selectedRoom.leftDoor = new PyramidRoom.DoorData();
+
+                        currentRoom.rightDoor.linkedDoor = selectedRoom.leftDoor;
+                        selectedRoom.leftDoor.linkedDoor = currentRoom.rightDoor;
+                    }
                 }
 
                 currentRoom = selectedRoom;
             }
 
-            //Properly set spawn point
+            //Force starter room to be, well, the starter room, and set spawn point accordingly
             PyramidRoom starterRoom = CorrectPath.First();
+            starterRoom.forcedRoomType = LivingWorldMod.LWMStructurePath + "PyramidRooms/1x1/StartRoom.pyrroom";
             _spawnTileX = starterRoom.region.Center.X;
             _spawnTileY = starterRoom.region.Center.Y;
 
@@ -241,7 +264,7 @@ namespace LivingWorldMod.Content.Subworlds {
                     progress.Set((j + i * Main.maxTilesY) / (float)(Main.maxTilesX * Main.maxTilesY));
                     Tile tile = Framing.GetTileSafely(i, j);
                     tile.WallType = (ushort)ModContent.WallType<PyramidBrickWall>();
-                    if (i < _worldBorderPadding || i > Width - _worldBorderPadding || j < _worldBorderPadding || j > Height - _bossRoomPadding - _worldBorderPadding) {
+                    if (i <= _worldBorderPadding || i > Width - _worldBorderPadding || j <= _worldBorderPadding || j > Height - _bossRoomPadding - _worldBorderPadding) {
                         tile.HasTile = true;
                         tile.TileType = TileID.SandStoneSlab;
                     }
@@ -281,85 +304,13 @@ namespace LivingWorldMod.Content.Subworlds {
         public void GenerateRooms(GenerationProgress progress, GameConfiguration config) {
             progress.Message = "Shifting the Rooms";
 
-            //Generate Starting Room
-            PyramidRoom startRoom = CorrectPath.First();
-            Rectangle startRegion = startRoom.region;
-            WorldGenUtils.GenerateStructure(IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + "PyramidRooms/1x1/StartRoom.struct"), startRegion.X, startRegion.Y, false);
-            startRoom.worldGenned = true;
+            //Generate ALL the rooms!
+            List<List<PyramidRoom>> allPaths = FakePaths.Prepend(CorrectPath).ToList();
+            for (int i = 0; i < allPaths.Count; i++) {
+                progress.Set(i / (allPaths.Count - 1f));
 
-            //Generate Rooms Layouts along the correct path excluding the starter room (since that's always the same)
-            GenerateRoomLayoutOnPath(CorrectPath.Skip(1).ToList());
-            progress.Set(0.5f);
-
-            //Generate Rooms along the fake paths
-            for (int i = 0; i < FakePaths.Count; i++) {
-                progress.Set(0.5f + i / (float)FakePaths.Count * 0.5f);
-
-                GenerateRoomLayoutOnPath(FakePaths[i]);
+                GenerateRoomOnPath(allPaths[i]);
             }
-        }
-
-        public void GenerateRoomDoors(GenerationProgress progress, GameConfiguration config) {
-            progress.Message = "Connecting the Rooms";
-
-
-            /*
-            //Go over every room on every path
-            foreach (List<PyramidRoom> path in FakePaths.Prepend(CorrectPath)) {
-                for (int i = 0; i < path.Count; i++) {
-                    PyramidRoom prevRoom = i > 0 ? path[i - 1] : null;
-                    PyramidRoom thisRoom = path[i];
-                    PyramidRoom nextRoom = i < path.Count - 1 ? path[i + 1] : null;
-                    PyramidRoom roomBelow = Grid.GetRoomBelow(thisRoom);
-                    PyramidRoom roomAbove = Grid.GetRoomAbove(thisRoom);
-                    PyramidRoom roomLeft = Grid.GetRoomToLeft(thisRoom);
-                    PyramidRoom roomRight = Grid.GetRoomToRight(thisRoom);
-                    Rectangle roomRegion = thisRoom.region;
-
-                    List<Point> doorLocations = new List<Point>();
-                    int doorType = ModContent.TileType<InnerPyramidDoorTile>();
-                    TileObjectData doorData = TileObjectData.GetTileData(doorType, 0);
-                    //Search over entire room, looking for possible door placements
-                    for (int x = roomRegion.X + 1; x < roomRegion.X + roomRegion.Width; x++) {
-                        for (int y = roomRegion.Y; y <= roomRegion.Y + roomRegion.Height; y++) {
-                            Point searchPoint = new Point(x, y);
-                            if (TileObject.CanPlace(x, y, doorType, 0, -1, out _) && WorldUtils.Find(searchPoint, Searches.Chain(new Searches.Down(1), new IsDry().AreaAnd(doorData.Width, doorData.Height)), out _)) {
-                                doorLocations.Add(searchPoint);
-                            }
-                        }
-                    }
-
-                    if (!doorLocations.Any()) {
-                        continue;
-                    }
-
-                    //Below Door
-                    if (roomBelow is { pathSearched: true } && roomBelow == nextRoom) {
-                        //Find the most southern door location that is the closest to the center.
-                        Point selectedPoint = doorLocations.Where(point => point.X == doorLocations.MinBy(point2 => Math.Abs(roomRegion.Center.X - point2.X)).X).MaxBy(point2 => point2.Y);
-                        WorldGen.PlaceObject(selectedPoint.X, selectedPoint.Y, doorType, true);
-                    }
-                    //Above Door
-                    if (roomAbove is { pathSearched: true } && roomAbove == prevRoom) {
-                        //Find the most northern door location that is the closest to the center.
-                        Point selectedPoint = doorLocations.Where(point => point.X == doorLocations.MinBy(point2 => Math.Abs(roomRegion.Center.X - point2.X)).X).MinBy(point2 => point2.Y);
-                        WorldGen.PlaceObject(selectedPoint.X, selectedPoint.Y, doorType, true);
-                    }
-                    //Left Door
-                    if (roomLeft is { pathSearched: true } && (roomLeft == prevRoom || roomLeft == nextRoom)) {
-                        //Find the west-most door location that is closest to the vertical center
-                        Point selectedPoint = doorLocations.Where(point => point.X == doorLocations.MinBy(point2 => point2.X).X).MinBy(point2 => Math.Abs(roomRegion.Center.Y - point2.Y));
-                        WorldGen.PlaceObject(selectedPoint.X, selectedPoint.Y, doorType, true);
-                    }
-                    //Right Door
-                    if (roomRight is { pathSearched: true } && (roomRight == prevRoom || roomRight == nextRoom)) {
-                        //Find the east-most door location that is closest to the vertical center
-                        Point selectedPoint = doorLocations.Where(point => point.X == doorLocations.MaxBy(point2 => point2.X).X).MinBy(point2 => Math.Abs(roomRegion.Center.Y - point2.Y));
-                        WorldGen.PlaceObject(selectedPoint.X, selectedPoint.Y, doorType, true);
-                    }
-                }
-            }
-            */
         }
 
         private void DebugDrawPaths(GenerationProgress progress, GameConfiguration config) {
@@ -446,6 +397,29 @@ namespace LivingWorldMod.Content.Subworlds {
                         newPath.Add(selectedRoom);
                         selectedRoom.pathSearched = true;
 
+                        //Link doors accordingly
+                        if (selectedRoom == roomBelow) {
+                            currentFakeRoom.downDoor = new PyramidRoom.DoorData();
+                            selectedRoom.topDoor = new PyramidRoom.DoorData();
+
+                            currentFakeRoom.downDoor.linkedDoor = selectedRoom.topDoor;
+                            selectedRoom.topDoor.linkedDoor = currentFakeRoom.downDoor;
+                        }
+                        else if (selectedRoom == roomLeft) {
+                            currentFakeRoom.leftDoor = new PyramidRoom.DoorData();
+                            selectedRoom.rightDoor = new PyramidRoom.DoorData();
+
+                            currentFakeRoom.leftDoor.linkedDoor = selectedRoom.rightDoor;
+                            selectedRoom.rightDoor.linkedDoor = currentFakeRoom.leftDoor;
+                        }
+                        else if (selectedRoom == roomRight) {
+                            currentFakeRoom.rightDoor = new PyramidRoom.DoorData();
+                            selectedRoom.leftDoor = new PyramidRoom.DoorData();
+
+                            currentFakeRoom.rightDoor.linkedDoor = selectedRoom.leftDoor;
+                            selectedRoom.leftDoor.linkedDoor = currentFakeRoom.rightDoor;
+                        }
+
                         endChanceDenominator = (int)MathHelper.Clamp(endChanceDenominator - 5, 1, branchEndChanceDenominator);
                         currentFakeRoom = selectedRoom;
                     }
@@ -463,7 +437,7 @@ namespace LivingWorldMod.Content.Subworlds {
         /// <summary>
         /// Generates all the rooms belonging to the passed in path.
         /// </summary>
-        private void GenerateRoomLayoutOnPath(List<PyramidRoom> path) {
+        private void GenerateRoomOnPath(List<PyramidRoom> path) {
             for (int i = 0; i < path.Count; i++) {
                 PyramidRoom room = path[i];
 
@@ -473,8 +447,24 @@ namespace LivingWorldMod.Content.Subworlds {
                 }
                 room.worldGenned = true;
 
-                StructureData roomData = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"PyramidRooms/{room.gridWidth}x{room.gridHeight}/Room0.struct");
-                WorldGenUtils.GenerateStructure(roomData, roomRegion.X, roomRegion.Y, false);
+                RoomData roomData = IOUtils.GetPyramidRoomDataFromFile(room.forcedRoomType ?? LivingWorldMod.LWMStructurePath + $"PyramidRooms/{room.gridWidth}x{room.gridHeight}/Room0.pyrroom");
+                List<Tuple<PyramidRoom.DoorData, Point16>> dataAndDisplacement = new List<Tuple<PyramidRoom.DoorData, Point16>>() {
+                    new Tuple<PyramidRoom.DoorData, Point16>(room.topDoor, roomData.topDoorPos),
+                    new Tuple<PyramidRoom.DoorData, Point16>(room.rightDoor, roomData.rightDoorPos),
+                    new Tuple<PyramidRoom.DoorData, Point16>(room.leftDoor, roomData.leftDoorPos),
+                    new Tuple<PyramidRoom.DoorData, Point16>(room.downDoor, roomData.downDoorPos)
+                };
+
+                WorldGenUtils.GenerateStructure(roomData.roomLayout, roomRegion.X, roomRegion.Y, false);
+                foreach ((PyramidRoom.DoorData doorData, Point16 doorDisplacement) in dataAndDisplacement) {
+                    if (doorData is null) {
+                        continue;
+                    }
+                    Point16 doorPos = new Point16(room.region.X + doorDisplacement.X, room.region.Y + doorDisplacement.Y);
+
+                    doorData.doorPos = doorPos;
+                    WorldGen.PlaceObject(doorPos.X, doorPos.Y, ModContent.TileType<InnerPyramidDoorTile>());
+                }
             }
         }
     }

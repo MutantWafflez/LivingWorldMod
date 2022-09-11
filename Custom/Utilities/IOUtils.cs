@@ -52,11 +52,11 @@ namespace LivingWorldMod.Custom.Utilities {
 
             Stream fileStream = modInstance.GetFileStream(path);
 
-            TagCompound roomData = TagIO.FromStream(fileStream);
+            RoomData roomData = TagIO.FromStream(fileStream).Get<RoomData>("roomData");
 
             fileStream.Close();
 
-            return RoomData.Deserialize(roomData);
+            return roomData;
         }
     }
 }

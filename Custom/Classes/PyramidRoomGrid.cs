@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using Terraria;
 using Terraria.Utilities;
 
 namespace LivingWorldMod.Custom.Classes {
@@ -41,7 +40,7 @@ namespace LivingWorldMod.Custom.Classes {
             for (int i = 0; i < _gridSideLength; i++) {
                 _roomList[i] = new List<PyramidRoom>();
                 //The top room will always be 1x1
-                PyramidRoom topRoom = new PyramidRoom(new Rectangle(_roomPadding + i * _roomSideLength, _roomPadding, _roomSideLength, _roomSideLength), i, 0, 1, 1);
+                PyramidRoom topRoom = new PyramidRoom(new Rectangle(_roomPadding + i * _roomSideLength + 1, _roomPadding + 1, _roomSideLength, _roomSideLength), i, 0, 1, 1);
                 _roomList[i].Add(topRoom);
                 _fixedGrid[i][0] = topRoom;
                 takenGridSpots[i][0] = true;
@@ -61,7 +60,7 @@ namespace LivingWorldMod.Custom.Classes {
 
                     (int roomWidth, int roomHeight) = new WeightedRandom<Tuple<int, int>>(_randomNumberGenerator, roomChoices.ToArray()).Get();
                     PyramidRoom newRoom = new PyramidRoom(
-                        new Rectangle(_roomPadding + i * _roomSideLength, _roomPadding + currentHeight * _roomSideLength, _roomSideLength * roomWidth, _roomSideLength * roomHeight),
+                        new Rectangle(_roomPadding + i * _roomSideLength + 1, _roomPadding + currentHeight * _roomSideLength + 1, _roomSideLength * roomWidth, _roomSideLength * roomHeight),
                         i,
                         currentHeight,
                         roomWidth,
@@ -85,11 +84,6 @@ namespace LivingWorldMod.Custom.Classes {
         /// Gets the room below the passed in room. Returns null if going below is out of bounds.
         /// </summary>
         public PyramidRoom GetRoomBelow(PyramidRoom room) => GetRoom(room.gridTopLeftX, room.gridTopLeftY + room.gridHeight);
-
-        /// <summary>
-        /// Gets the room above the passed in room. Returns null if going above is out of bounds.
-        /// </summary>
-        public PyramidRoom GetRoomAbove(PyramidRoom room) => GetRoom(room.gridTopLeftX, room.gridTopLeftY - 1);
 
         /// <summary>
         /// Gets the room to the left of the passed in room. Returns null if going to the left is out of bounds.
