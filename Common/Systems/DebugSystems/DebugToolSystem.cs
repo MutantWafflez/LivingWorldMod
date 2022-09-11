@@ -35,11 +35,14 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
                 if (_currentModuleIndex >= _allModules.Count) {
                     _currentModuleIndex = 0;
                 }
-                Main.NewText($"Current Module: {CurrentModule}");
+                Main.NewText($"Current Module: {CurrentModule.GetType().Name}");
             }
 
             //Delegate key presses to current module
             CurrentModule.KeysPressed(Main.keyState.GetPressedKeys().Where(key => !Main.oldKeyState.GetPressedKeys().Contains(key)).ToArray());
+
+            //Update module
+            CurrentModule.ModuleUpdate();
         }
     }
 }

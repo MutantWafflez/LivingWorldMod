@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Terraria;
 using Terraria.DataStructures;
@@ -34,6 +35,12 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
                 _isDoingEffect = true;
                 ApplyEffectOnRegion();
                 _isDoingEffect = false;
+            }
+        }
+
+        public override void ModuleUpdate() {
+            if (topLeft != Point16.NegativeOne && bottomRight != Point16.NegativeOne) {
+                Dust.QuickBox(topLeft.ToWorldCoordinates(Vector2.Zero), bottomRight.ToWorldCoordinates(new Vector2(16f)), 8, Color.YellowGreen, null);
             }
         }
     }
