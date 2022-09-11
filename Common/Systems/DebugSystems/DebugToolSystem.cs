@@ -23,7 +23,8 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
             _allModules = new List<DebugModule>() {
                 new StructureModule(),
                 new SkipWallModule(),
-                new SkipTileModule()
+                new SkipTileModule(),
+                new PyramidRoomModule()
             };
         }
 

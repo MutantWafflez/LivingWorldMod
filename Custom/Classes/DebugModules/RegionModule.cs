@@ -9,9 +9,9 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
     /// Abstract module used for applying effects to a certain region of tiles.
     /// </summary>
     public abstract class RegionModule : DebugModule {
-        protected Point16 topLeft = Point16.NegativeOne;
+        protected Point16 topLeft = Point16.Zero;
 
-        protected Point16 bottomRight = Point16.NegativeOne;
+        protected Point16 bottomRight = Point16.Zero;
 
         private bool _isDoingEffect;
 
@@ -22,15 +22,17 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
         protected abstract void ApplyEffectOnRegion();
 
         public override void KeysPressed(Keys[] pressedKeys) {
+            Point16 mousePos = new Point16((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
+
             if (pressedKeys.Contains(Keys.NumPad1)) {
-                topLeft = new Point16((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
+                topLeft = mousePos;
                 Main.NewText("Top Left Set to: " + topLeft.X + ", " + topLeft.Y);
             }
             if (pressedKeys.Contains(Keys.NumPad2)) {
-                bottomRight = new Point16((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
+                bottomRight = mousePos;
                 Main.NewText("Bottom Right Set to: " + bottomRight.X + ", " + bottomRight.Y);
             }
-            if (pressedKeys.Contains(Keys.NumPad3) && !_isDoingEffect && topLeft != Point16.NegativeOne && bottomRight != Point16.NegativeOne) {
+            if (pressedKeys.Contains(Keys.NumPad3) && !_isDoingEffect) {
                 Main.NewText("Applying Effect...");
                 _isDoingEffect = true;
                 ApplyEffectOnRegion();
@@ -39,7 +41,7 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
         }
 
         public override void ModuleUpdate() {
-            if (topLeft != Point16.NegativeOne && bottomRight != Point16.NegativeOne) {
+            if (topLeft != Point16.Zero && bottomRight != Point16.Zero) {
                 Dust.QuickBox(topLeft.ToWorldCoordinates(Vector2.Zero), bottomRight.ToWorldCoordinates(new Vector2(16f)), 8, Color.YellowGreen, null);
             }
         }

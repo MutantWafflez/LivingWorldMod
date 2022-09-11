@@ -42,5 +42,21 @@ namespace LivingWorldMod.Custom.Utilities {
 
             return structureData;
         }
+
+        /// <summary>
+        /// Similar to <seealso cref="IOUtils.GetStructureFromFile"/>, but is more specialized for Revamped Pyramid Room
+        /// structure files (.pyrroom)
+        /// </summary>
+        public static RoomData GetPyramidRoomDataFromFile(string path) {
+            LivingWorldMod modInstance = ModContent.GetInstance<LivingWorldMod>();
+
+            Stream fileStream = modInstance.GetFileStream(path);
+
+            TagCompound roomData = TagIO.FromStream(fileStream);
+
+            fileStream.Close();
+
+            return RoomData.Deserialize(roomData);
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Custom.Classes.DebugModules {
@@ -11,6 +12,11 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
     /// </summary>
     public class StructureModule : RegionModule {
         protected override void ApplyEffectOnRegion() {
+            if (topLeft == Point16.Zero || bottomRight == Point16.Zero) {
+                Main.NewText("Invalid TopLeft or BottomRight!");
+                return;
+            }
+
             List<List<TileData>> tileData = new List<List<TileData>>();
 
             for (int x = 0; x <= bottomRight.X - topLeft.X; x++) {
