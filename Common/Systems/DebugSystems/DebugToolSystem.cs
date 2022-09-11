@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Systems.DebugSystems {
     /// <summary>
-    /// ModSystem that only loads in debug mode, that uses <seealso cref="DebugModule"/> objects for functionality.
+    /// ModSystem that only loads in debug mode that uses <seealso cref="DebugModule"/> objects for functionality.
     /// </summary>
     [Autoload(Side = ModSide.Client)]
     public class DebugToolSystem : ModSystem {
