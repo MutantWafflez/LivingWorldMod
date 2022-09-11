@@ -11,7 +11,7 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
         /// functionality for holding.
         /// </summary>
         /// <remarks>
-        /// <b>DO NOT</b> do any functionality for <seealso cref="Keys.NumPad0"/>! This is reserved for
+        /// <b>DO NOT</b> have any functionality tied to <seealso cref="Keys.NumPad0"/>! This is reserved for
         /// the parent system for swapping modules, and will cause shenanigans otherwise.
         /// </remarks>
         public abstract void KeysPressed(Keys[] pressedKeys);
