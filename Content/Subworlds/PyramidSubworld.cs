@@ -394,11 +394,13 @@ namespace LivingWorldMod.Content.Subworlds {
                         if (_pyramidRandom.NextBool(endChanceDenominator) || selectedRoom is null || selectedRoom.pathSearched) {
                             break;
                         }
-                        newPath.Add(selectedRoom);
-                        selectedRoom.pathSearched = true;
 
                         //Link doors accordingly
                         if (selectedRoom == roomBelow) {
+                            if (currentFakeRoom.downDoor is not null) {
+                                break;
+                            }
+
                             currentFakeRoom.downDoor = new PyramidRoom.DoorData();
                             selectedRoom.topDoor = new PyramidRoom.DoorData();
 
@@ -406,6 +408,10 @@ namespace LivingWorldMod.Content.Subworlds {
                             selectedRoom.topDoor.linkedDoor = currentFakeRoom.downDoor;
                         }
                         else if (selectedRoom == roomLeft) {
+                            if (currentFakeRoom.leftDoor is not null) {
+                                break;
+                            }
+
                             currentFakeRoom.leftDoor = new PyramidRoom.DoorData();
                             selectedRoom.rightDoor = new PyramidRoom.DoorData();
 
@@ -413,12 +419,19 @@ namespace LivingWorldMod.Content.Subworlds {
                             selectedRoom.rightDoor.linkedDoor = currentFakeRoom.leftDoor;
                         }
                         else if (selectedRoom == roomRight) {
+                            if (currentFakeRoom.rightDoor is not null) {
+                                break;
+                            }
+
                             currentFakeRoom.rightDoor = new PyramidRoom.DoorData();
                             selectedRoom.leftDoor = new PyramidRoom.DoorData();
 
                             currentFakeRoom.rightDoor.linkedDoor = selectedRoom.leftDoor;
                             selectedRoom.leftDoor.linkedDoor = currentFakeRoom.rightDoor;
                         }
+
+                        newPath.Add(selectedRoom);
+                        selectedRoom.pathSearched = true;
 
                         endChanceDenominator = (int)MathHelper.Clamp(endChanceDenominator - 5, 1, branchEndChanceDenominator);
                         currentFakeRoom = selectedRoom;
