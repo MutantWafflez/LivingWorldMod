@@ -302,6 +302,8 @@ namespace LivingWorldMod.Content.Subworlds {
         public void GenerateRoomDoors(GenerationProgress progress, GameConfiguration config) {
             progress.Message = "Connecting the Rooms";
 
+
+            /*
             //Go over every room on every path
             foreach (List<PyramidRoom> path in FakePaths.Prepend(CorrectPath)) {
                 for (int i = 0; i < path.Count; i++) {
@@ -357,6 +359,7 @@ namespace LivingWorldMod.Content.Subworlds {
                     }
                 }
             }
+            */
         }
 
         private void DebugDrawPaths(GenerationProgress progress, GameConfiguration config) {
@@ -468,7 +471,6 @@ namespace LivingWorldMod.Content.Subworlds {
                 if (room.worldGenned) {
                     continue;
                 }
-
                 room.worldGenned = true;
 
                 StructureData roomData = IOUtils.GetStructureFromFile(LivingWorldMod.LWMStructurePath + $"PyramidRooms/{room.gridWidth}x{room.gridHeight}/Room0.struct");
