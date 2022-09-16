@@ -60,7 +60,7 @@ namespace LivingWorldMod.Content.Subworlds {
             new PassLegacy("Fill World", FillWorld),
             new PassLegacy("Set Spawn", SetSpawn),
             new PassLegacy("Empty Room Fill", FillEmptyRooms),
-            new PassLegacy("Room Layout", GenerateRooms),
+            new PassLegacy("Room Layout", GeneratePathRooms),
             new PassLegacy("Debug Draw Paths", DebugDrawPaths)
         };
 
@@ -76,7 +76,7 @@ namespace LivingWorldMod.Content.Subworlds {
         private readonly int _roomSideLength = 100;
         private readonly int _gridSideLength = 10;
         private readonly int _bossRoomPadding = 150;
-        private Dictionary<string, int> _roomTypeCount;
+        private Dictionary<string, List<RoomData>> _allRooms;
         private int _spawnTileX;
         private int _spawnTileY;
         private UnifiedRandom _pyramidRandom;
@@ -88,21 +88,23 @@ namespace LivingWorldMod.Content.Subworlds {
         }
 
         public override void SetStaticDefaults() {
-            //Do file count checks
-            string pathStart = "Content/Structures/PyramidRooms/";
-            List<string> roomFiles = ModContent.GetInstance<LivingWorldMod>()
-                                               .GetFileNames()
-                                               .Where(name => name.StartsWith(pathStart) && !name.EndsWith("StartRoom.pyrroom"))
-                                               .Select(name => name.Replace(pathStart, ""))
-                                               .ToList();
+            //Load all rooms
+            _allRooms = new Dictionary<string, List<RoomData>>();
+            ModContent.GetInstance<LivingWorldMod>()
+                      .GetFileNames()
+                      .Where(file => file.EndsWith(".pyrroom") && !file.EndsWith("StartRoom.pyrroom"))
+                      .Select(IOUtils.GetTagFromFile<RoomData>)
+                      .ToList()
+                      .ForEach(room => {
+                          string key = $"{room.gridWidth}x{room.gridHeight}";
 
-            _roomTypeCount = new Dictionary<string, int>() {
-                { "1x1", 0 },
-                { "1x2", 0 },
-                { "2x1", 0 },
-                { "2x2", 0 }
-            };
-            roomFiles.ForEach(fileName => _roomTypeCount[fileName[..fileName.IndexOf('/')]]++);
+                          if (_allRooms.ContainsKey(key)) {
+                              _allRooms[key].Add(room);
+                          }
+                          else {
+                              _allRooms[key] = new List<RoomData>() { room };
+                          }
+                      });
         }
 
         public override void OnEnter() {
@@ -260,9 +262,8 @@ namespace LivingWorldMod.Content.Subworlds {
                 currentRoom = selectedRoom;
             }
 
-            //Force starter room to be, well, the starter room, and set spawn point accordingly
+            //Move spawn point accordingly
             PyramidRoom starterRoom = CorrectPath.First();
-            starterRoom.forcedRoomType = LivingWorldMod.LWMStructurePath + "PyramidRooms/StartRoom.pyrroom";
             _spawnTileX = starterRoom.region.Center.X;
             _spawnTileY = starterRoom.region.Center.Y;
 
@@ -319,11 +320,35 @@ namespace LivingWorldMod.Content.Subworlds {
             }
         }
 
-        public void GenerateRooms(GenerationProgress progress, GameConfiguration config) {
+        public void GeneratePathRooms(GenerationProgress progress, GameConfiguration config) {
             progress.Message = "Shifting the Rooms";
 
-            //Generate ALL the rooms!
-            List<List<PyramidRoom>> allPaths = FakePaths.Prepend(CorrectPath).ToList();
+            //Manually generate starter room
+            PyramidRoom startRoom = CorrectPath.First();
+            RoomData startRoomData = IOUtils.GetTagFromFile<RoomData>(LivingWorldMod.LWMStructurePath + "PyramidRooms/StartRoom.pyrroom");
+            Rectangle roomRegion = startRoom.region;
+
+            WorldGenUtils.GenerateStructure(startRoomData.roomLayout, roomRegion.X, roomRegion.Y);
+            WorldGen.PlaceObject(roomRegion.X + startRoomData.topDoorPos.X, roomRegion.Y + startRoomData.topDoorPos.Y, ModContent.TileType<PyramidDoorTile>());
+
+            List<Tuple<PyramidRoom.DoorData, Point16>> dataAndDisplacement = new List<Tuple<PyramidRoom.DoorData, Point16>>() {
+                new Tuple<PyramidRoom.DoorData, Point16>(startRoom.rightDoor, startRoomData.rightDoorPos),
+                new Tuple<PyramidRoom.DoorData, Point16>(startRoom.leftDoor, startRoomData.leftDoorPos),
+                new Tuple<PyramidRoom.DoorData, Point16>(startRoom.downDoor, startRoomData.downDoorPos)
+            };
+            foreach ((PyramidRoom.DoorData doorData, Point16 doorDisplacement) in dataAndDisplacement) {
+                if (doorData is null) {
+                    continue;
+                }
+                Point16 doorPos = new Point16(roomRegion.X + doorDisplacement.X, roomRegion.Y + doorDisplacement.Y);
+
+                doorData.doorPos = doorPos;
+                WorldGen.PlaceObject(doorPos.X, doorPos.Y, ModContent.TileType<InnerPyramidDoorTile>());
+            }
+
+
+            //Generate ALL the rooms (minus the starter room, that's done manually)
+            List<List<PyramidRoom>> allPaths = FakePaths.Prepend(CorrectPath.Skip(1).ToList()).ToList();
             for (int i = 0; i < allPaths.Count; i++) {
                 progress.Set(i / (allPaths.Count - 1f));
 
@@ -479,8 +504,7 @@ namespace LivingWorldMod.Content.Subworlds {
                 room.worldGenned = true;
 
                 string roomDimensions = $"{room.gridWidth}x{room.gridHeight}";
-                string selectedRoom = LivingWorldMod.LWMStructurePath + $"PyramidRooms/{roomDimensions}/Room{_pyramidRandom.Next(_roomTypeCount[roomDimensions])}.pyrroom";
-                RoomData roomData = IOUtils.GetTagFromFile<RoomData>(room.forcedRoomType ?? selectedRoom);
+                RoomData roomData = _pyramidRandom.Next(_allRooms[roomDimensions]);
 
                 WorldGenUtils.GenerateStructure(roomData.roomLayout, roomRegion.X, roomRegion.Y, false);
 

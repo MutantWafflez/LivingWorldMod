@@ -72,12 +72,6 @@ namespace LivingWorldMod.Custom.Classes {
         public int gridHeight;
 
         /// <summary>
-        /// The path to the room file this room will be forced to be. If null,
-        /// the room file will be randomly selected as normal.
-        /// </summary>
-        public string forcedRoomType;
-
-        /// <summary>
         /// Whether or not this room has been searched in the process of creating the correct path for the dungeon.
         /// </summary>
         public bool pathSearched;

@@ -20,12 +20,18 @@ namespace LivingWorldMod.Custom.Structs {
 
         public Point16 downDoorPos;
 
-        public RoomData(StructureData roomLayout, Point16 topDoorPos, Point16 rightDoorPos, Point16 leftDoorPos, Point16 downDoorPos) {
+        public byte gridWidth;
+
+        public byte gridHeight;
+
+        public RoomData(StructureData roomLayout, Point16 topDoorPos, Point16 rightDoorPos, Point16 leftDoorPos, Point16 downDoorPos, byte gridWidth, byte gridHeight) {
             this.roomLayout = roomLayout;
             this.topDoorPos = topDoorPos;
             this.rightDoorPos = rightDoorPos;
             this.leftDoorPos = leftDoorPos;
             this.downDoorPos = downDoorPos;
+            this.gridWidth = gridWidth;
+            this.gridHeight = gridHeight;
         }
 
         public static RoomData Deserialize(TagCompound tag) => new RoomData(
@@ -33,7 +39,9 @@ namespace LivingWorldMod.Custom.Structs {
             tag.Get<Point16>(nameof(topDoorPos)),
             tag.Get<Point16>(nameof(rightDoorPos)),
             tag.Get<Point16>(nameof(leftDoorPos)),
-            tag.Get<Point16>(nameof(downDoorPos))
+            tag.Get<Point16>(nameof(downDoorPos)),
+            tag.GetByte(nameof(gridWidth)),
+            tag.GetByte(nameof(gridHeight))
         );
 
         public TagCompound SerializeData() => new TagCompound() {
@@ -41,7 +49,9 @@ namespace LivingWorldMod.Custom.Structs {
             { nameof(topDoorPos), topDoorPos },
             { nameof(rightDoorPos), rightDoorPos },
             { nameof(leftDoorPos), leftDoorPos },
-            { nameof(downDoorPos), downDoorPos }
+            { nameof(downDoorPos), downDoorPos },
+            { nameof(gridWidth), gridWidth },
+            { nameof(gridHeight), gridHeight }
         };
     }
 }

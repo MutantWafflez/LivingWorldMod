@@ -89,7 +89,15 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
                 }
             }
 
-            RoomData roomData = new RoomData(new StructureData(tileData.Count, tileData[0].Count, tileData), _topDoorPos - topLeft, _rightDoorPos - topLeft, _leftDoorPos - topLeft, _downDoorPos - topLeft);
+            RoomData roomData = new RoomData(
+                new StructureData(tileData.Count, tileData[0].Count, tileData),
+                _topDoorPos - topLeft,
+                _rightDoorPos - topLeft,
+                _leftDoorPos - topLeft,
+                _downDoorPos - topLeft,
+                (byte)((bottomRight.X - topLeft.X) / 100),
+                (byte)((bottomRight.Y - topLeft.Y) / 100)
+            );
 
             string outputPath = IOUtils.GetLWMFilePath() + $"/PyramidRoom_{DateTime.Now.ToShortTimeString().Replace(':', '_').Replace(' ', '_')}.pyrroom";
 
