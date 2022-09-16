@@ -345,10 +345,10 @@ namespace LivingWorldMod.Content.Subworlds {
                 doorData.doorPos = doorPos;
                 WorldGen.PlaceObject(doorPos.X, doorPos.Y, ModContent.TileType<InnerPyramidDoorTile>());
             }
+            startRoom.worldGenned = true;
 
-
-            //Generate ALL the rooms (minus the starter room, that's done manually)
-            List<List<PyramidRoom>> allPaths = FakePaths.Prepend(CorrectPath.Skip(1).ToList()).ToList();
+            //Generate ALL the rooms
+            List<List<PyramidRoom>> allPaths = FakePaths.Prepend(CorrectPath).ToList();
             for (int i = 0; i < allPaths.Count; i++) {
                 progress.Set(i / (allPaths.Count - 1f));
 
