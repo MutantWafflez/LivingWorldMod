@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Common.Players;
 using LivingWorldMod.Content.Cutscenes;
@@ -29,7 +28,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             CutscenePlayer cutscenePlayer = playerInCutscene.GetModPlayer<CutscenePlayer>();
 
             if (cutscenePlayer.CurrentCutscene is InnerPyramidDoorCutscene cutscene && cutscene.DoorBeingOpenedPosition == topLeft) {
-                frameYOffset = (int)MathHelper.Clamp(cutscene.DoorAnimationPhase - 1, 0f, EnterPyramidCutscene.LastDoorAnimationPhase) * 72;
+                frameYOffset = (int)MathHelper.Clamp(cutscene.DoorAnimationPhase - 1, 0f, cutscene.LastDoorAnimationPhase) * 72;
             }
         }
 

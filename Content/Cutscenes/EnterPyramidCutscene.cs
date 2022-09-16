@@ -18,6 +18,45 @@ namespace LivingWorldMod.Content.Cutscenes {
     /// </summary>
     public class EnterPyramidCutscene : Cutscene {
         /// <summary>
+        /// The instance of the door tile that is used with this cutscene.
+        /// </summary>
+        public virtual PyramidDoorTile DoorModTile => ModContent.GetInstance<PyramidDoorTile>();
+
+        /// <summary>
+        /// The very last phase of the door animation before the door is completely open.
+        /// </summary>
+        public virtual int LastDoorAnimationPhase => 5;
+
+        /// <summary>
+        /// The phase that is simply a brief "pause" where the player stands still
+        /// after the door is fully, visually open, before they actually enter the
+        /// door.
+        /// </summary>
+        public virtual int PauseBeforePlayerWalkingPhase => 6;
+
+        /// <summary>
+        /// The phase of the door opening animation where the player is meant
+        /// to visual "walk into" the open door.
+        /// </summary>
+        public virtual int PlayerWalkingIntoDoorPhase => 7;
+
+        /// <summary>
+        /// How many ticks it takes for the door to visually update from phase to phase.
+        /// </summary>
+        public virtual int DoorOpeningRate => 33;
+
+        /// <summary>
+        /// How many ticks it takes before the player begins visually entering the door after the door
+        /// has completely opened.
+        /// </summary>
+        public virtual int WaitTimeBeforeWalkIn => 60;
+
+        /// <summary>
+        /// How long it takes for the player to fully "walk into" the open door.
+        /// </summary>
+        public virtual int PlayerWalkingTime => 240;
+
+        /// <summary>
         /// The position in tiles of the door currently being opened to enter.
         /// </summary>
         public Point16 DoorBeingOpenedPosition {
@@ -42,48 +81,6 @@ namespace LivingWorldMod.Content.Cutscenes {
             protected set;
         }
 
-        /// <summary>
-        /// The instance of the door tile that is used with this cutscene.
-        /// </summary>
-        public static PyramidDoorTile DoorModTile {
-            get;
-            protected set;
-        }
-
-        /// <summary>
-        /// The very last phase of the door animation before the door is completely open.
-        /// </summary>
-        public const int LastDoorAnimationPhase = 5;
-
-        /// <summary>
-        /// The phase that is simply a brief "pause" where the player stands still
-        /// after the door is fully, visually open, before they actually enter the
-        /// door.
-        /// </summary>
-        public const int PauseBeforePlayerWalkingPhase = 6;
-
-        /// <summary>
-        /// The phase of the door opening animation where the player is meant
-        /// to visual "walk into" the open door.
-        /// </summary>
-        public const int PlayerWalkingIntoDoorPhase = 7;
-
-        /// <summary>
-        /// How many ticks it takes for the door to visually update from phase to phase.
-        /// </summary>
-        public const int DoorOpeningRate = 33;
-
-        /// <summary>
-        /// How many ticks it takes before the player begins visually entering the door after the door
-        /// has completely opened.
-        /// </summary>
-        public const int WaitTimeBeforeWalkIn = 60;
-
-        /// <summary>
-        /// How long it takes for the player to fully "walk into" the open door.
-        /// </summary>
-        public const int PlayerWalkingTime = 240;
-
         public static readonly SoundStyle OpeningDoorSound = new SoundStyle($"{LivingWorldMod.LWMSoundPath}Tiles/PyramidDoorOpen");
 
         public EnterPyramidCutscene(Point16 doorPos) {
@@ -92,10 +89,6 @@ namespace LivingWorldMod.Content.Cutscenes {
 
         // Here for autoloading; doesn't register otherwise
         protected EnterPyramidCutscene() { }
-
-        public override void SetStaticDefaults() {
-            DoorModTile = ModContent.GetInstance<PyramidDoorTile>();
-        }
 
         protected override void WritePacketData(ModPacket packet) {
             packet.WriteVector2(DoorBeingOpenedPosition.ToVector2());

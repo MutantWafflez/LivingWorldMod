@@ -1,11 +1,6 @@
-﻿using System.IO;
-using LivingWorldMod.Common.Players;
-using LivingWorldMod.Content.Subworlds;
-using LivingWorldMod.Content.Tiles.Interactables;
+﻿using LivingWorldMod.Content.Tiles.Interactables;
 using Microsoft.Xna.Framework;
-using SubworldLibrary;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -22,46 +17,26 @@ namespace LivingWorldMod.Content.Cutscenes {
             get;
         }
 
+        public override PyramidDoorTile DoorModTile => ModContent.GetInstance<InnerPyramidDoorTile>();
+
         /// <summary>
         /// How many ticks it takes for the door to visually update from phase to phase.
         /// </summary>
-        public new const int DoorOpeningRate = 15;
+        public override int DoorOpeningRate => 20;
 
         /// <summary>
         /// How many ticks it takes before the player begins visually entering the door after the door
         /// has completely opened.
         /// </summary>
-        public new const int WaitTimeBeforeWalkIn = 15;
+        public override int WaitTimeBeforeWalkIn => 20;
 
         /// <summary>
         /// How long it takes for the player to fully "walk into" the open door.
         /// </summary>
-        public new const int PlayerWalkingTime = 80;
+        public override int PlayerWalkingTime => 80;
 
         public InnerPyramidDoorCutscene(Point16 doorPos, Vector2 teleportPos) : base(doorPos) {
             EndTeleportPosition = teleportPos;
-        }
-
-        public override void SetStaticDefaults() {
-            DoorModTile = ModContent.GetInstance<InnerPyramidDoorTile>();
-        }
-
-        public override void Update(Player player) {
-            if (DoorAnimationPhase < PlayerWalkingIntoDoorPhase) {
-                if (++DoorAnimationTimer >= (DoorAnimationPhase != PauseBeforePlayerWalkingPhase ? DoorOpeningRate : WaitTimeBeforeWalkIn)) {
-                    DoorAnimationPhase++;
-                    DoorAnimationTimer = 0;
-                }
-            }
-            else if (DoorAnimationPhase == PlayerWalkingIntoDoorPhase) {
-                if (++DoorAnimationTimer >= PlayerWalkingTime) {
-                    DoorBeingOpenedPosition = Point16.NegativeOne;
-                    DoorAnimationPhase = 0;
-                    DoorAnimationTimer = 0;
-
-                    IsFinished = true;
-                }
-            }
         }
 
         public override void OnFinish(Player player) {

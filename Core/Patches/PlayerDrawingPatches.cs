@@ -25,9 +25,9 @@ namespace LivingWorldMod.Core.Patches {
 
         private void ApplyDrawModifications(ref PlayerDrawSet drawInfo) {
             CutscenePlayer cutscenePlayer = drawInfo.drawPlayer.GetModPlayer<CutscenePlayer>();
-            if (cutscenePlayer.CurrentCutscene is EnterPyramidCutscene { DoorAnimationPhase: EnterPyramidCutscene.PlayerWalkingIntoDoorPhase } cutscene) {
+            if (cutscenePlayer.CurrentCutscene is EnterPyramidCutscene cutscene && cutscene.DoorAnimationPhase == cutscene.PlayerWalkingIntoDoorPhase) {
                 drawInfo.heldItem = _fakeItem; //Has to be done in order for the arms to frame properly
-                PlayerDrawLayers.DrawPlayer_ScaleDrawData(ref drawInfo, 1f - cutscene.DoorAnimationTimer / (float)EnterPyramidCutscene.PlayerWalkingTime / 3f);
+                PlayerDrawLayers.DrawPlayer_ScaleDrawData(ref drawInfo, 1f - cutscene.DoorAnimationTimer / (float)cutscene.PlayerWalkingTime / 3f);
             }
         }
 

@@ -7,6 +7,7 @@ using SubworldLibrary;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Interactables {
@@ -48,7 +49,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             CutscenePlayer cutscenePlayer = playerInCutscene.GetModPlayer<CutscenePlayer>();
 
             if (cutscenePlayer.CurrentCutscene is EnterPyramidCutscene cutscene && cutscene.DoorBeingOpenedPosition == topLeft) {
-                frameYOffset = (int)MathHelper.Clamp(cutscene.DoorAnimationPhase - 1, 0f, EnterPyramidCutscene.LastDoorAnimationPhase) * 72;
+                frameYOffset = (int)MathHelper.Clamp(cutscene.DoorAnimationPhase - 1, 0f, cutscene.LastDoorAnimationPhase) * 72;
             }
         }
 
