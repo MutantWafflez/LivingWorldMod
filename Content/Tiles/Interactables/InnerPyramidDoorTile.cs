@@ -5,6 +5,7 @@ using LivingWorldMod.Common.Players;
 using LivingWorldMod.Content.Cutscenes;
 using LivingWorldMod.Content.Subworlds;
 using LivingWorldMod.Custom.Classes;
+using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -60,13 +61,12 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             PyramidRoom currentRoom = dungeonPlayer.currentRoom;
             //Vanilla's arrow sprite is down by default, so we need to calculate the rotation accordingly
             float rotation = 0f;
-            List<PyramidRoom.DoorData> doorData = new List<PyramidRoom.DoorData>() { currentRoom.downDoor, currentRoom.leftDoor, currentRoom.topDoor, currentRoom.rightDoor };
-            for (int i2 = 0; i2 < doorData.Count; i2++) {
-                if (doorData[i2] is null || doorData[i2].doorPos != point) {
+            for (PyramidDoorDirection direction = PyramidDoorDirection.Top; (int)direction < Enum.GetValues<PyramidDoorDirection>().Length; direction++) {
+                if (!currentRoom.doorData.ContainsKey(direction) || currentRoom.doorData[direction].doorPos != point) {
                     continue;
                 }
 
-                rotation = MathHelper.ToRadians(90f * i2);
+                rotation = MathHelper.ToRadians(180f + 90f * (int)direction);
                 goto DoorFound;
             }
             return;
@@ -104,11 +104,11 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             if (cutscenePlayer.InCutscene) {
                 return true;
             }
+
             PyramidDungeonPlayer dungeonPlayer = Main.LocalPlayer.GetModPlayer<PyramidDungeonPlayer>();
             PyramidRoom currentRoom = dungeonPlayer.currentRoom;
-            List<PyramidRoom.DoorData> doorData = new List<PyramidRoom.DoorData>() { currentRoom.topDoor, currentRoom.rightDoor, currentRoom.leftDoor, currentRoom.downDoor };
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
-            Vector2 teleportPos = doorData.First(data => data is not null && data.doorPos == topLeft).linkedDoor.doorPos.ToWorldCoordinates(16f, 16f);
+            Vector2 teleportPos = currentRoom.doorData.Values.First(doorData => doorData.doorPos == topLeft).linkedDoor.doorPos.ToWorldCoordinates(16f, 16f);
 
             InnerPyramidDoorCutscene pyramidCutscene = new InnerPyramidDoorCutscene(topLeft, teleportPos);
             cutscenePlayer.StartCutscene(pyramidCutscene);

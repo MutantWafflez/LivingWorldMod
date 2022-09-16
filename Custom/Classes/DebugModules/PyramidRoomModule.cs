@@ -93,8 +93,8 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
                 new StructureData(tileData.Count, tileData[0].Count, tileData),
                 _topDoorPos - topLeft,
                 _rightDoorPos - topLeft,
-                _leftDoorPos - topLeft,
                 _downDoorPos - topLeft,
+                _leftDoorPos - topLeft,
                 (byte)((bottomRight.X - topLeft.X) / 100),
                 (byte)((bottomRight.Y - topLeft.Y) / 100)
             );

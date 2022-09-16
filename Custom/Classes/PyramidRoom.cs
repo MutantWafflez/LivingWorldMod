@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using LivingWorldMod.Custom.Enums;
+using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 
 namespace LivingWorldMod.Custom.Classes {
@@ -7,49 +9,15 @@ namespace LivingWorldMod.Custom.Classes {
     /// </summary>
     public sealed class PyramidRoom {
         /// <summary>
-        /// Small nested class that holds data on a given door position, and what
-        /// other door that its linked to.
-        /// </summary>
-        public sealed class DoorData {
-            /// <summary>
-            /// The position of THIS door.
-            /// </summary>
-            public Point16 doorPos;
-
-            /// <summary>
-            /// The data of the other door THIS door is linked to.
-            /// </summary>
-            public DoorData linkedDoor;
-        }
-
-        /// <summary>
         /// The rectangle that denotes the actual tile position and width/length.
         /// </summary>
         public Rectangle region;
 
         /// <summary>
-        /// Position of the top door which will lead to the room above this one.
-        /// If this value is null, it means there is no top door for this room.
+        /// Dictionary that holds data on each door in this room. If a key doesn't exist for one of the values, that door does not
+        /// exist in this room.
         /// </summary>
-        public DoorData topDoor;
-
-        /// <summary>
-        /// Position of the right door which will lead to the room right of this one.
-        /// If this value is null, it means there is no right door for this room.
-        /// </summary>
-        public DoorData rightDoor;
-
-        /// <summary>
-        /// Position of the left door which will lead to the room left os this one.
-        /// If this value is null, it means there is no left door for this room.
-        /// </summary>
-        public DoorData leftDoor;
-
-        /// <summary>
-        /// Position of the down door which will lead to the room below this one.
-        /// If this value is null, it means there is no down door for this room.
-        /// </summary>
-        public DoorData downDoor;
+        public Dictionary<PyramidDoorDirection, PyramidDoorData> doorData = new Dictionary<PyramidDoorDirection, PyramidDoorData>() { };
 
         /// <summary>
         /// The top left position's X value of this room in terms of the GRID, not tiles.

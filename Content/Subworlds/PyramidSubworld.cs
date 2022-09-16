@@ -6,6 +6,7 @@ using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
 using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Content.Walls.WorldGen;
 using LivingWorldMod.Custom.Classes;
+using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
@@ -236,27 +237,18 @@ namespace LivingWorldMod.Content.Subworlds {
                     selectedRoom.pathSearched = true;
 
                     //Link doors accordingly
+                    PyramidDoorDirection currentDoorDirection = PyramidDoorDirection.Top;
                     if (selectedRoom == roomBelow) {
-                        currentRoom.downDoor = new PyramidRoom.DoorData();
-                        selectedRoom.topDoor = new PyramidRoom.DoorData();
-
-                        currentRoom.downDoor.linkedDoor = selectedRoom.topDoor;
-                        selectedRoom.topDoor.linkedDoor = currentRoom.downDoor;
+                        currentDoorDirection = PyramidDoorDirection.Down;
                     }
                     else if (selectedRoom == roomLeft) {
-                        currentRoom.leftDoor = new PyramidRoom.DoorData();
-                        selectedRoom.rightDoor = new PyramidRoom.DoorData();
-
-                        currentRoom.leftDoor.linkedDoor = selectedRoom.rightDoor;
-                        selectedRoom.rightDoor.linkedDoor = currentRoom.leftDoor;
+                        currentDoorDirection = PyramidDoorDirection.Left;
                     }
                     else if (selectedRoom == roomRight) {
-                        currentRoom.rightDoor = new PyramidRoom.DoorData();
-                        selectedRoom.leftDoor = new PyramidRoom.DoorData();
-
-                        currentRoom.rightDoor.linkedDoor = selectedRoom.leftDoor;
-                        selectedRoom.leftDoor.linkedDoor = currentRoom.rightDoor;
+                        currentDoorDirection = PyramidDoorDirection.Right;
                     }
+
+                    ConnectDoors(currentRoom, selectedRoom, currentDoorDirection, GetOppositeDirection(currentDoorDirection));
                 }
 
                 currentRoom = selectedRoom;
@@ -329,22 +321,15 @@ namespace LivingWorldMod.Content.Subworlds {
             Rectangle roomRegion = startRoom.region;
 
             WorldGenUtils.GenerateStructure(startRoomData.roomLayout, roomRegion.X, roomRegion.Y);
-            WorldGen.PlaceObject(roomRegion.X + startRoomData.topDoorPos.X, roomRegion.Y + startRoomData.topDoorPos.Y, ModContent.TileType<PyramidDoorTile>());
+            WorldGen.PlaceObject(roomRegion.X + startRoomData.doorData[PyramidDoorDirection.Top].X, roomRegion.Y + startRoomData.doorData[PyramidDoorDirection.Top].Y, ModContent.TileType<PyramidDoorTile>());
 
-            List<Tuple<PyramidRoom.DoorData, Point16>> dataAndDisplacement = new List<Tuple<PyramidRoom.DoorData, Point16>>() {
-                new Tuple<PyramidRoom.DoorData, Point16>(startRoom.rightDoor, startRoomData.rightDoorPos),
-                new Tuple<PyramidRoom.DoorData, Point16>(startRoom.leftDoor, startRoomData.leftDoorPos),
-                new Tuple<PyramidRoom.DoorData, Point16>(startRoom.downDoor, startRoomData.downDoorPos)
-            };
-            foreach ((PyramidRoom.DoorData doorData, Point16 doorDisplacement) in dataAndDisplacement) {
-                if (doorData is null) {
-                    continue;
-                }
-                Point16 doorPos = new Point16(roomRegion.X + doorDisplacement.X, roomRegion.Y + doorDisplacement.Y);
+            foreach ((PyramidDoorDirection key, PyramidDoorData value) in startRoom.doorData) {
+                Point16 doorPos = new Point16(startRoom.region.X + startRoomData.doorData[key].X, startRoom.region.Y + startRoomData.doorData[key].Y);
 
-                doorData.doorPos = doorPos;
+                value.doorPos = doorPos;
                 WorldGen.PlaceObject(doorPos.X, doorPos.Y, ModContent.TileType<InnerPyramidDoorTile>());
             }
+
             startRoom.worldGenned = true;
 
             //Generate ALL the rooms
@@ -439,39 +424,29 @@ namespace LivingWorldMod.Content.Subworlds {
                         }
 
                         //Link doors accordingly
+                        PyramidDoorDirection currentDoorDirection = PyramidDoorDirection.Top;
                         if (selectedRoom == roomBelow) {
-                            if (currentFakeRoom.downDoor is not null) {
+                            if (currentFakeRoom.doorData.ContainsKey(PyramidDoorDirection.Down)) {
                                 break;
                             }
 
-                            currentFakeRoom.downDoor = new PyramidRoom.DoorData();
-                            selectedRoom.topDoor = new PyramidRoom.DoorData();
-
-                            currentFakeRoom.downDoor.linkedDoor = selectedRoom.topDoor;
-                            selectedRoom.topDoor.linkedDoor = currentFakeRoom.downDoor;
+                            currentDoorDirection = PyramidDoorDirection.Down;
                         }
                         else if (selectedRoom == roomLeft) {
-                            if (currentFakeRoom.leftDoor is not null) {
+                            if (currentFakeRoom.doorData.ContainsKey(PyramidDoorDirection.Left)) {
                                 break;
                             }
 
-                            currentFakeRoom.leftDoor = new PyramidRoom.DoorData();
-                            selectedRoom.rightDoor = new PyramidRoom.DoorData();
-
-                            currentFakeRoom.leftDoor.linkedDoor = selectedRoom.rightDoor;
-                            selectedRoom.rightDoor.linkedDoor = currentFakeRoom.leftDoor;
+                            currentDoorDirection = PyramidDoorDirection.Left;
                         }
                         else if (selectedRoom == roomRight) {
-                            if (currentFakeRoom.rightDoor is not null) {
+                            if (currentFakeRoom.doorData.ContainsKey(PyramidDoorDirection.Right)) {
                                 break;
                             }
 
-                            currentFakeRoom.rightDoor = new PyramidRoom.DoorData();
-                            selectedRoom.leftDoor = new PyramidRoom.DoorData();
-
-                            currentFakeRoom.rightDoor.linkedDoor = selectedRoom.leftDoor;
-                            selectedRoom.leftDoor.linkedDoor = currentFakeRoom.rightDoor;
+                            currentDoorDirection = PyramidDoorDirection.Right;
                         }
+                        ConnectDoors(currentFakeRoom, selectedRoom, currentDoorDirection, GetOppositeDirection(currentDoorDirection));
 
                         newPath.Add(selectedRoom);
                         selectedRoom.pathSearched = true;
@@ -506,24 +481,33 @@ namespace LivingWorldMod.Content.Subworlds {
                 string roomDimensions = $"{room.gridWidth}x{room.gridHeight}";
                 RoomData roomData = _pyramidRandom.Next(_allRooms[roomDimensions]);
 
+                //Generate Layout
                 WorldGenUtils.GenerateStructure(roomData.roomLayout, roomRegion.X, roomRegion.Y, false);
 
-                List<Tuple<PyramidRoom.DoorData, Point16>> dataAndDisplacement = new List<Tuple<PyramidRoom.DoorData, Point16>>() {
-                    new Tuple<PyramidRoom.DoorData, Point16>(room.topDoor, roomData.topDoorPos),
-                    new Tuple<PyramidRoom.DoorData, Point16>(room.rightDoor, roomData.rightDoorPos),
-                    new Tuple<PyramidRoom.DoorData, Point16>(room.leftDoor, roomData.leftDoorPos),
-                    new Tuple<PyramidRoom.DoorData, Point16>(room.downDoor, roomData.downDoorPos)
-                };
-                foreach ((PyramidRoom.DoorData doorData, Point16 doorDisplacement) in dataAndDisplacement) {
-                    if (doorData is null) {
-                        continue;
-                    }
-                    Point16 doorPos = new Point16(room.region.X + doorDisplacement.X, room.region.Y + doorDisplacement.Y);
+                //Initialize doors and place them
+                foreach ((PyramidDoorDirection key, PyramidDoorData value) in room.doorData) {
+                    Point16 doorPos = new Point16(room.region.X + roomData.doorData[key].X, room.region.Y + roomData.doorData[key].Y);
 
-                    doorData.doorPos = doorPos;
+                    value.doorPos = doorPos;
                     WorldGen.PlaceObject(doorPos.X, doorPos.Y, ModContent.TileType<InnerPyramidDoorTile>());
                 }
             }
         }
+
+        /// <summary>
+        /// Connects the passed in rooms' two doors, whose direction is also specified.
+        /// </summary>
+        private void ConnectDoors(PyramidRoom firstRoom, PyramidRoom secondRoom, PyramidDoorDirection firstDoorDirection, PyramidDoorDirection secondDoorDirection) {
+            firstRoom.doorData[firstDoorDirection] = new PyramidDoorData();
+            secondRoom.doorData[secondDoorDirection] = new PyramidDoorData();
+
+            firstRoom.doorData[firstDoorDirection].linkedDoor = secondRoom.doorData[secondDoorDirection];
+            secondRoom.doorData[secondDoorDirection].linkedDoor = firstRoom.doorData[firstDoorDirection];
+        }
+
+        /// <summary>
+        /// Returns the opposite direction of the passed in door direction.
+        /// </summary>
+        private PyramidDoorDirection GetOppositeDirection(PyramidDoorDirection direction) => direction.NextEnum().NextEnum();
     }
 }
