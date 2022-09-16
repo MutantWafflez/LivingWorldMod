@@ -7,7 +7,6 @@ using SubworldLibrary;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Interactables {

@@ -1,6 +1,9 @@
 ﻿using LivingWorldMod.Common.ModTypes;
+using LivingWorldMod.Core.PacketHandlers;
 using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Players {
@@ -50,7 +53,7 @@ namespace LivingWorldMod.Common.Players {
             CurrentCutscene.Update(Player);
 
             if (CurrentCutscene.IsFinished) {
-                EndCutscene(true);
+                EndCutscene();
             }
         }
 
@@ -87,14 +90,15 @@ namespace LivingWorldMod.Common.Players {
         /// Forcefully ends the current cutscene. Nothing occurs if there is no cutscene
         /// playing.
         /// </summary>
-        /// <param name="triggerOnFinish"> Whether or not to trigger <seealso cref="Cutscene.OnFinish"/>. </param>
-        public void EndCutscene(bool triggerOnFinish) {
+        public void EndCutscene() {
             if (!InCutscene) {
                 return;
             }
 
-            if (triggerOnFinish) {
-                CurrentCutscene.OnFinish(Player);
+            CurrentCutscene.OnFinish(Player);
+            if (Main.netMode == NetmodeID.MultiplayerClient && Player.whoAmI == Main.myPlayer) {
+                ModPacket packet = ModContent.GetInstance<CutscenePacketHandler>().GetPacket(CutscenePacketHandler.SyncCutsceneFinishToAllClients);
+                packet.Send();
             }
             CurrentCutscene = null;
         }
