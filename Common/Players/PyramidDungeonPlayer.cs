@@ -1,4 +1,6 @@
-﻿using LivingWorldMod.Custom.Classes;
+﻿using LivingWorldMod.Content.Subworlds;
+using LivingWorldMod.Custom.Classes;
+using SubworldLibrary;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Players {
@@ -10,5 +12,14 @@ namespace LivingWorldMod.Common.Players {
         /// The pyramid room this player is currently in.
         /// </summary>
         public PyramidRoom currentRoom;
+
+        public override void PostUpdate() {
+            if (!SubworldSystem.IsActive<PyramidSubworld>()) {
+                currentRoom = null;
+                return;
+            }
+
+            currentRoom = ModContent.GetInstance<PyramidSubworld>().Grid.GetPlayersCurrentRoom(Player);
+        }
     }
 }

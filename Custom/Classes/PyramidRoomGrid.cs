@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.Utilities;
 
 namespace LivingWorldMod.Custom.Classes {
@@ -109,5 +111,14 @@ namespace LivingWorldMod.Custom.Classes {
         /// Returns the entire list of rooms that pertains to the passed in column number.
         /// </summary>
         public List<PyramidRoom> GetRoomColumn(int i) => _roomList[i];
+
+        /// <summary>
+        /// Searches through the current grid and returns the room the passed in player currently resides in.
+        /// If the player isn't in any room or the check otherwise fails, returns null.
+        /// </summary>
+        public PyramidRoom GetPlayersCurrentRoom(Player player) => _roomList
+                                                                   .SelectMany(roomColumn => roomColumn)
+                                                                   .FirstOrDefault(room => new Rectangle(room.region.X * 16, room.region.Y * 16, room.region.Width * 16, room.region.Height * 16)
+                                                                       .Contains(player.Hitbox));
     }
 }

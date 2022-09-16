@@ -22,7 +22,7 @@ namespace LivingWorldMod.Content.Cutscenes {
         /// </summary>
         public Point16 DoorBeingOpenedPosition {
             get;
-            private set;
+            protected set;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace LivingWorldMod.Content.Cutscenes {
         /// </summary>
         public int DoorAnimationPhase {
             get;
-            private set;
+            protected set;
         } = 1;
 
         /// <summary>
@@ -39,7 +39,15 @@ namespace LivingWorldMod.Content.Cutscenes {
         /// </summary>
         public int DoorAnimationTimer {
             get;
-            private set;
+            protected set;
+        }
+
+        /// <summary>
+        /// The instance of the door tile that is used with this cutscene.
+        /// </summary>
+        public static PyramidDoorTile DoorModTile {
+            get;
+            protected set;
         }
 
         /// <summary>
@@ -83,7 +91,11 @@ namespace LivingWorldMod.Content.Cutscenes {
         }
 
         // Here for autoloading; doesn't register otherwise
-        private EnterPyramidCutscene() { }
+        protected EnterPyramidCutscene() { }
+
+        public override void SetStaticDefaults() {
+            DoorModTile = ModContent.GetInstance<PyramidDoorTile>();
+        }
 
         protected override void WritePacketData(ModPacket packet) {
             packet.WriteVector2(DoorBeingOpenedPosition.ToVector2());
@@ -94,7 +106,7 @@ namespace LivingWorldMod.Content.Cutscenes {
                 Player player = Main.player[fromWhomst];
                 DoorBeingOpenedPosition = reader.ReadVector2().ToPoint16();
 
-                if (Framing.GetTileSafely(DoorBeingOpenedPosition).TileType != ModContent.TileType<PyramidDoorTile>() || !player.active) {
+                if (Framing.GetTileSafely(DoorBeingOpenedPosition).TileType != DoorModTile.Type || !player.active) {
                     return;
                 }
 
@@ -118,7 +130,7 @@ namespace LivingWorldMod.Content.Cutscenes {
                 player.Teleport(telePos, -1);
                 NetMessage.SendData(MessageID.Teleport, number: 0, number2: player.whoAmI, number3: telePos.X, number4: telePos.Y, number5: -1);
             }
-            ModContent.GetInstance<PyramidDoorTile>().playerInCutscene = player;
+            DoorModTile.playerInCutscene = player;
 
             SoundEngine.PlaySound(OpeningDoorSound with { Pitch = -1f }, DoorBeingOpenedPosition.ToWorldCoordinates(32));
         }
@@ -145,7 +157,7 @@ namespace LivingWorldMod.Content.Cutscenes {
             if (Main.netMode == NetmodeID.Server) {
                 return;
             }
-            ModContent.GetInstance<PyramidDoorTile>().playerInCutscene = null;
+            DoorModTile.playerInCutscene = null;
             if (player.whoAmI != Main.myPlayer) {
                 return;
             }
