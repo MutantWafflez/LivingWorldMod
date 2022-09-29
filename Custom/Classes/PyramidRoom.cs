@@ -45,9 +45,9 @@ namespace LivingWorldMod.Custom.Classes {
         public bool pathSearched;
 
         /// <summary>
-        /// Whether or not this room has been generated into the world.
+        /// The current progress of this specific room in the generation process.
         /// </summary>
-        public bool worldGenned;
+        public PyramidRoomGenerationStep generationStep;
 
         public PyramidRoom(Rectangle region, int gridTopLeftX, int gridTopLeftY, int gridWidth, int gridHeight) {
             this.region = region;

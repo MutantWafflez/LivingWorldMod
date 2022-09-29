@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Common.Players;
+using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
 using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Content.Walls.WorldGen;
@@ -20,6 +21,7 @@ using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.ModLoader;
+using Terraria.ObjectData;
 using Terraria.UI.Chat;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
@@ -61,7 +63,8 @@ namespace LivingWorldMod.Content.Subworlds {
             new PassLegacy("Fill World", FillWorld),
             new PassLegacy("Set Spawn", SetSpawn),
             new PassLegacy("Empty Room Fill", FillEmptyRooms),
-            new PassLegacy("Room Layout", GeneratePathRooms),
+            new PassLegacy("Room Layout", GenerateRoomLayouts),
+            new PassLegacy("Room Foliage", GenerateRoomFoliage),
             new PassLegacy("Debug Draw Paths", DebugDrawPaths)
         };
 
@@ -118,11 +121,6 @@ namespace LivingWorldMod.Content.Subworlds {
             _vanillaLoadStepsPassed = -1;
             _lastStatusText = "";
             _isExiting = true;
-        }
-
-        public override void OnLoad() {
-            //TODO: Multiplayer compat
-            Main.LocalPlayer.GetModPlayer<PyramidDungeonPlayer>().currentRoom = CorrectPath.First();
         }
 
         public override void DrawMenu(GameTime gameTime) {
@@ -196,6 +194,10 @@ namespace LivingWorldMod.Content.Subworlds {
                 Vector2.Zero,
                 Vector2.One
             );
+        }
+
+        public override void OnLoad() {
+            Main.LocalPlayer.GetModPlayer<PyramidDungeonPlayer>().currentRoom = CorrectPath.First();
         }
 
         /// <summary>
@@ -312,7 +314,7 @@ namespace LivingWorldMod.Content.Subworlds {
             }
         }
 
-        public void GeneratePathRooms(GenerationProgress progress, GameConfiguration config) {
+        public void GenerateRoomLayouts(GenerationProgress progress, GameConfiguration config) {
             progress.Message = "Shifting the Rooms";
 
             //Manually generate starter room
@@ -330,14 +332,26 @@ namespace LivingWorldMod.Content.Subworlds {
                 WorldGen.PlaceObject(doorPos.X, doorPos.Y, ModContent.TileType<InnerPyramidDoorTile>());
             }
 
-            startRoom.worldGenned = true;
+            startRoom.generationStep = PyramidRoomGenerationStep.LayoutGenerated;
 
             //Generate ALL the rooms
             List<List<PyramidRoom>> allPaths = FakePaths.Prepend(CorrectPath).ToList();
             for (int i = 0; i < allPaths.Count; i++) {
                 progress.Set(i / (allPaths.Count - 1f));
 
-                GenerateRoomOnPath(allPaths[i]);
+                GenerateRoomLayoutOnPath(allPaths[i]);
+            }
+        }
+
+        public void GenerateRoomFoliage(GenerationProgress progress, GameConfiguration config) {
+            progress.Message = "Uncovering Lost Remains";
+
+            //Generate torches in all rooms
+            List<List<PyramidRoom>> allPaths = FakePaths.Prepend(CorrectPath).ToList();
+            for (int i = 0; i < allPaths.Count; i++) {
+                progress.Set(i / (allPaths.Count - 1f));
+
+                GenerateRoomFoliageOnPath(allPaths[i]);
             }
         }
 
@@ -466,17 +480,17 @@ namespace LivingWorldMod.Content.Subworlds {
         }
 
         /// <summary>
-        /// Generates all the rooms belonging to the passed in path.
+        /// Generates all the room layouts in the passed in path.
         /// </summary>
-        private void GenerateRoomOnPath(List<PyramidRoom> path) {
+        private void GenerateRoomLayoutOnPath(List<PyramidRoom> path) {
             for (int i = 0; i < path.Count; i++) {
                 PyramidRoom room = path[i];
 
                 Rectangle roomRegion = room.region;
-                if (room.worldGenned) {
+                if (room.generationStep >= PyramidRoomGenerationStep.LayoutGenerated) {
                     continue;
                 }
-                room.worldGenned = true;
+                room.generationStep = PyramidRoomGenerationStep.LayoutGenerated;
 
                 string roomDimensions = $"{room.gridWidth}x{room.gridHeight}";
                 RoomData roomData = _pyramidRandom.Next(_allRooms[roomDimensions]);
@@ -490,6 +504,49 @@ namespace LivingWorldMod.Content.Subworlds {
 
                     value.doorPos = doorPos;
                     WorldGen.PlaceObject(doorPos.X, doorPos.Y, ModContent.TileType<InnerPyramidDoorTile>());
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generates "foliage" in the rooms on the passed in path.
+        /// </summary>
+        private void GenerateRoomFoliageOnPath(List<PyramidRoom> path) {
+            for (int i = 0; i < path.Count; i++) {
+                PyramidRoom room = path[i];
+
+                Rectangle roomRegion = room.region;
+                if (room.generationStep >= PyramidRoomGenerationStep.FoliageGenerated) {
+                    continue;
+                }
+                room.generationStep = PyramidRoomGenerationStep.FoliageGenerated;
+
+                TileObjectData pileData = TileObjectData.GetTileData(TileID.LargePiles, 0);
+                List<Point> pileLocations = new List<Point>();
+
+                //Search through entire room, looking for valid pile placements
+                for (int x = roomRegion.X; x < roomRegion.X + roomRegion.Width; x++) {
+                    for (int y = roomRegion.Y; y <= roomRegion.Y + roomRegion.Height; y++) {
+                        Point searchPoint = new Point(x, y);
+
+                        if (TileObject.CanPlace(x, y, TileID.LargePiles, 0, -1, out _) && WorldUtils.Find(searchPoint, Searches.Chain(new Searches.Down(1), new IsDry().AreaAnd(pileData.Width, pileData.Height)), out _)) {
+                            pileLocations.Add(searchPoint);
+                        }
+                    }
+                }
+
+                foreach (Point pileLocation in pileLocations) {
+                    //34% chance to place by default
+                    if (!_pyramidRandom.NextBool(5)) {
+                        continue;
+                    }
+                    Dictionary<ushort, int> tileData = new Dictionary<ushort, int>();
+
+                    //Check if there is already any piles nearby; if not, place!
+                    WorldUtils.Gen(pileLocation + new Point(1, 0), new Shapes.Circle(28), new Actions.TileScanner(TileID.LargePiles).Output(tileData));
+                    if (tileData[TileID.LargePiles] == 0) {
+                        WorldGen.PlaceObject(pileLocation.X, pileLocation.Y, TileID.LargePiles, style: _pyramidRandom.Next(6));
+                    }
                 }
             }
         }

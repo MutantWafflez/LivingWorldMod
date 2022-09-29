@@ -61,7 +61,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             //Vanilla's arrow sprite is down by default, so we need to calculate the rotation accordingly
             float rotation = 0f;
             for (PyramidDoorDirection direction = PyramidDoorDirection.Top; (int)direction < Enum.GetValues<PyramidDoorDirection>().Length; direction++) {
-                if (!currentRoom.doorData.ContainsKey(direction) || currentRoom.doorData[direction].doorPos != point) {
+                if (currentRoom is null || !currentRoom.doorData.ContainsKey(direction) || currentRoom.doorData[direction].doorPos != point) {
                     continue;
                 }
 
