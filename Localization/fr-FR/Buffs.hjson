@@ -1,0 +1,14 @@
+
+﻿Mods: {
+	LivingWorldMod: {
+	
+		BuffName: {
+			NimbusPetBuff: "Nimbus de compagnie"
+		}
+
+		BuffDescription: {
+			NimbusPetBuff: "'Je parie qu'il goût comme des barbes à papa...'"
+		}
+	
+	}
+}
