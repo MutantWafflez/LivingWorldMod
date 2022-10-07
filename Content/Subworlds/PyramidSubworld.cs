@@ -83,12 +83,10 @@ namespace LivingWorldMod.Content.Subworlds {
         private Dictionary<string, List<RoomData>> _allRooms;
         private int _spawnTileX;
         private int _spawnTileY;
-        private UnifiedRandom _pyramidRandom;
 
         public override void Load() {
             _pyramidBackground = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}Backgrounds/Loading/PyramidBG");
             _pyramidWorldGenBar = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}UI/SubworldGeneration/GenPyramidBar");
-            _pyramidRandom = new UnifiedRandom();
         }
 
         public override void SetStaticDefaults() {
@@ -200,14 +198,6 @@ namespace LivingWorldMod.Content.Subworlds {
             Main.LocalPlayer.GetModPlayer<PyramidDungeonPlayer>().currentRoom = CorrectPath.First();
         }
 
-        /// <summary>
-        /// Changes the internal UnifiedRandom RNG with the passed in seed. Call this before
-        /// the subworld generation process starts.
-        /// </summary>
-        public void GenerateNewRandom(int seed) {
-            _pyramidRandom = new UnifiedRandom(seed);
-        }
-
         private void Initialize(GenerationProgress progress, GameConfiguration config) {
             progress.Message = "Initializing";
             //Default spawn spot, in case generation goes awry
@@ -215,12 +205,14 @@ namespace LivingWorldMod.Content.Subworlds {
             _spawnTileY = 245;
 
             //Generate grid
-            Grid = new PyramidRoomGrid(_gridSideLength, _roomSideLength, _worldBorderPadding, _pyramidRandom);
+            Grid = new PyramidRoomGrid(_gridSideLength, _roomSideLength, _worldBorderPadding, WorldGen.genRand);
             Grid.GenerateGrid();
 
             //Generate correct path first
-            CorrectPath = new List<PyramidRoom>() { Grid.GetRoom(_pyramidRandom.Next(_gridSideLength), 0) };
+            CorrectPath = new List<PyramidRoom>() { Grid.GetRoom(WorldGen.genRand.Next(_gridSideLength), 0) };
             PyramidRoom currentRoom = CorrectPath.First();
+            //Starter room will always be a normal room
+            currentRoom.roomType = PyramidRoomType.Normal;
             currentRoom.pathSearched = true;
 
             while (currentRoom is not null) {
@@ -233,7 +225,7 @@ namespace LivingWorldMod.Content.Subworlds {
                 movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomLeft, 33), roomLeft is { pathSearched: false }); //Left
                 movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomRight, 33), roomRight is { pathSearched: false }); //Right
 
-                PyramidRoom selectedRoom = new WeightedRandom<PyramidRoom>(_pyramidRandom, movementChoices.ToArray()).Get();
+                PyramidRoom selectedRoom = new WeightedRandom<PyramidRoom>(WorldGen.genRand, movementChoices.ToArray()).Get();
                 if (selectedRoom is not null) {
                     CorrectPath.Add(selectedRoom);
                     selectedRoom.pathSearched = true;
@@ -412,7 +404,7 @@ namespace LivingWorldMod.Content.Subworlds {
                     continue;
                 }
 
-                if (_pyramidRandom.NextBool(branchChanceDenominator)) {
+                if (WorldGen.genRand.NextBool(branchChanceDenominator)) {
                     branchChanceDenominator = branchOccurrenceDenominator;
                     int endChanceDenominator = branchEndChanceDenominator;
 
@@ -432,8 +424,8 @@ namespace LivingWorldMod.Content.Subworlds {
                             break;
                         }
 
-                        PyramidRoom selectedRoom = new WeightedRandom<PyramidRoom>(_pyramidRandom, movementChoices.ToArray()).Get();
-                        if (_pyramidRandom.NextBool(endChanceDenominator) || selectedRoom is null || selectedRoom.pathSearched) {
+                        PyramidRoom selectedRoom = new WeightedRandom<PyramidRoom>(WorldGen.genRand, movementChoices.ToArray()).Get();
+                        if (WorldGen.genRand.NextBool(endChanceDenominator) || selectedRoom is null || selectedRoom.pathSearched) {
                             break;
                         }
 
@@ -493,7 +485,7 @@ namespace LivingWorldMod.Content.Subworlds {
                 room.generationStep = PyramidRoomGenerationStep.LayoutGenerated;
 
                 string roomDimensions = $"{room.gridWidth}x{room.gridHeight}";
-                RoomData roomData = _pyramidRandom.Next(_allRooms[roomDimensions]);
+                RoomData roomData = WorldGen.genRand.Next(_allRooms[roomDimensions]);
 
                 //Generate Layout
                 WorldGenUtils.GenerateStructure(roomData.roomLayout, roomRegion.X, roomRegion.Y, false);
@@ -537,7 +529,7 @@ namespace LivingWorldMod.Content.Subworlds {
 
                 foreach (Point pileLocation in pileLocations) {
                     //34% chance to place by default
-                    if (!_pyramidRandom.NextBool(5)) {
+                    if (!WorldGen.genRand.NextBool(5)) {
                         continue;
                     }
                     Dictionary<ushort, int> tileData = new Dictionary<ushort, int>();
@@ -545,7 +537,7 @@ namespace LivingWorldMod.Content.Subworlds {
                     //Check if there is already any piles nearby; if not, place!
                     WorldUtils.Gen(pileLocation + new Point(1, 0), new Shapes.Circle(28), new Actions.TileScanner(TileID.LargePiles).Output(tileData));
                     if (tileData[TileID.LargePiles] == 0) {
-                        WorldGen.PlaceObject(pileLocation.X, pileLocation.Y, TileID.LargePiles, style: _pyramidRandom.Next(6));
+                        WorldGen.PlaceObject(pileLocation.X, pileLocation.Y, TileID.LargePiles, style: WorldGen.genRand.Next(6));
                     }
                 }
             }

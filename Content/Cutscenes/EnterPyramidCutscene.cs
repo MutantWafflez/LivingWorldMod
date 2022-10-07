@@ -155,7 +155,6 @@ namespace LivingWorldMod.Content.Cutscenes {
                 return;
             }
 
-            ModContent.GetInstance<PyramidSubworld>().GenerateNewRandom(WorldGen.genRand.Next(int.MaxValue));
             SubworldSystem.Enter<PyramidSubworld>();
         }
 

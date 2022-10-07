@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.DataStructures;
+using Terraria.Utilities;
 
 namespace LivingWorldMod.Custom.Classes {
     /// <summary>
@@ -49,12 +52,24 @@ namespace LivingWorldMod.Custom.Classes {
         /// </summary>
         public PyramidRoomGenerationStep generationStep;
 
+        /// <summary>
+        /// This room's type.
+        /// </summary>
+        public PyramidRoomType roomType;
+
         public PyramidRoom(Rectangle region, int gridTopLeftX, int gridTopLeftY, int gridWidth, int gridHeight) {
             this.region = region;
             this.gridTopLeftX = gridTopLeftX;
             this.gridTopLeftY = gridTopLeftY;
             this.gridWidth = gridWidth;
             this.gridHeight = gridHeight;
+
+            roomType = new WeightedRandom<PyramidRoomType>(WorldGen.genRand, new[] {
+                new Tuple<PyramidRoomType, double>(PyramidRoomType.Normal, 50),
+                new Tuple<PyramidRoomType, double>(PyramidRoomType.Cursed, 50 / 3f),
+                new Tuple<PyramidRoomType, double>(PyramidRoomType.Puzzle, 50 / 3f),
+                new Tuple<PyramidRoomType, double>(PyramidRoomType.Treasure, 50 / 3f)
+            });
         }
 
         public override string ToString() => "{" + gridTopLeftX + ", " + gridTopLeftY + "} " + $"{gridWidth}x{gridHeight}";
