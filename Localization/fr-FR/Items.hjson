@@ -1,0 +1,27 @@
+﻿Mods: {
+	LivingWorldMod: {
+	
+		ItemName: {
+			//Accessory Item
+			NimbusInABottle: "Nimbus dans un bouteille"
+
+			//Food Items
+			FriedHarpyEgg: "Œuf d'une harpie frit"
+
+			//Misc Items
+			HarpyEgg: "Œuf d'une harpie"
+		}
+
+		ItemTooltip: {
+			//Accessory Items
+			NimbusInABottle: "Invoque un nimbus qui te suivre"
+
+			//Food Items
+			FriedHarpyEgg: "{$CommonItemTooltip.MajorStats}\n'Tu es un monstre.'"
+				
+			//Misc Items
+			HarpyEgg: "'C'est un peu grosse, mais elle a l'air des toutes les autres œufs.'"
+		}
+
+	}
+}
