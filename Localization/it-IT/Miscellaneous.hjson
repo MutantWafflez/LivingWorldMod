@@ -1,0 +1,9 @@
+Mods: {
+	LivingWorldMod: {
+	
+		VillagerType: {
+			Harpy: "Arpia"
+		}
+		
+	}
+}
