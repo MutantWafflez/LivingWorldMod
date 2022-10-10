@@ -6,8 +6,6 @@ using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
 using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Content.Walls.WorldGen;
-using LivingWorldMod.Custom.Classes;
-using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
@@ -26,7 +24,7 @@ using Terraria.UI.Chat;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
-namespace LivingWorldMod.Content.Subworlds {
+namespace LivingWorldMod.Content.Subworlds.Pyramid {
     public class PyramidSubworld : Subworld {
         /// <summary>
         /// The grid that the dungeon is composed of. Each room at maximum can be 100x100.
@@ -528,7 +526,7 @@ namespace LivingWorldMod.Content.Subworlds {
                 }
 
                 foreach (Point pileLocation in pileLocations) {
-                    //34% chance to place by default
+                    //20% chance to place by default
                     if (!WorldGen.genRand.NextBool(5)) {
                         continue;
                     }

@@ -2,9 +2,7 @@
 using System.Linq;
 using LivingWorldMod.Common.Players;
 using LivingWorldMod.Content.Cutscenes;
-using LivingWorldMod.Content.Subworlds;
-using LivingWorldMod.Custom.Classes;
-using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.Content.Subworlds.Pyramid;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

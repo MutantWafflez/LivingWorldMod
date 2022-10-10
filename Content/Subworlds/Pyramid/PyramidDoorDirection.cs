@@ -1,4 +1,4 @@
-﻿namespace LivingWorldMod.Custom.Enums {
+﻿namespace LivingWorldMod.Content.Subworlds.Pyramid {
     /// <summary>
     /// The 4 directions a pyramid door within the Revamped Pyramid can point.
     /// </summary>

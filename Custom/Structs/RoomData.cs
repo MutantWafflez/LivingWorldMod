@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.Content.Subworlds.Pyramid;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 

@@ -2,6 +2,7 @@
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.Players;
 using LivingWorldMod.Content.Subworlds;
+using LivingWorldMod.Content.Subworlds.Pyramid;
 using LivingWorldMod.Content.Tiles.Interactables;
 using Microsoft.Xna.Framework;
 using SubworldLibrary;

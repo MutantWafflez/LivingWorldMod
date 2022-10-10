@@ -1,6 +1,6 @@
 ﻿using Terraria.DataStructures;
 
-namespace LivingWorldMod.Custom.Classes {
+namespace LivingWorldMod.Content.Subworlds.Pyramid {
     /// <summary>
     /// Small class that holds data on a given door position, and what
     /// other door that its linked to.

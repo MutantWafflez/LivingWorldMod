@@ -1,4 +1,4 @@
-﻿namespace LivingWorldMod.Custom.Enums {
+﻿namespace LivingWorldMod.Content.Subworlds.Pyramid {
     /// <summary>
     /// The different types of room a Pyramid Dungeon room can be.
     /// </summary>

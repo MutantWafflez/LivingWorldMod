@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Utilities;
 
-namespace LivingWorldMod.Custom.Classes {
+namespace LivingWorldMod.Content.Subworlds.Pyramid {
     /// <summary>
     /// Class that handles a 2D grid of rooms for the Revamped Pyramid dungeon.
     /// </summary>

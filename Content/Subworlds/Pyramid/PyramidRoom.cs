@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.Utilities;
 
-namespace LivingWorldMod.Custom.Classes {
+namespace LivingWorldMod.Content.Subworlds.Pyramid {
     /// <summary>
     /// Small class that exists for data storage on a given pyramid room.
     /// </summary>

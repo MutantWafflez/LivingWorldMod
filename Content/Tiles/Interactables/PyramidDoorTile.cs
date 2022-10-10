@@ -1,6 +1,6 @@
 ﻿using LivingWorldMod.Common.Players;
 using LivingWorldMod.Content.Cutscenes;
-using LivingWorldMod.Content.Subworlds;
+using LivingWorldMod.Content.Subworlds.Pyramid;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using SubworldLibrary;
