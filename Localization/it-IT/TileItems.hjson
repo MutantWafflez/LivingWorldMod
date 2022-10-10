@@ -1,0 +1,41 @@
+Mods: {
+	LivingWorldMod: {
+	
+		ItemName: {
+			//Building
+			SkywareBlockItem: "Blocco celeste"
+			StarshardCloudItem: "Nuvola di frammenti di stella"
+			StarshineBlockItem: "Blocco di bagliore stellare"
+			SunslabBlockItem: "Lastra solare"
+
+			//Furniture
+			NimbusJarItem: "Nuvola in barattolo"
+			GravityTapestryItem: "Arazzo gravità"
+			SkywareAnvilItem: "Incudine celeste"
+			SkywareLoomItem: "Telaio celeste"
+			SunTapestryItem: "Arazzo solare"
+
+			//Interactables
+
+				//Shrines
+				HarpyShrineItem: "Santuario del villaggio fluttuante delle arpie"
+
+			//Torches
+			StarTorchItem: "Torcia stellare"
+		}
+
+		ItemTooltip: {
+			//Building
+			StarshardCloudItem: "'Frammenti di stelle cadute impregnano questa nuvola'"
+
+			//Interactables
+
+				//Shrines
+				HarpyShrineItem: "'La fonte magica che protegge coloro che abitano nel villaggio fluttuante delle arpie'"
+
+			//Torches
+			StarTorchItem: "'Illumina la via con l'essenza del cosmo'"
+		}
+	
+	}
+}

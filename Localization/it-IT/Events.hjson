@@ -1,0 +1,17 @@
+Mods: {
+	LivingWorldMod: {
+	
+		Event: {
+		    WaystoneActivation: "Waystone attivata!"
+
+			VillagerRespawned: {
+				Harpy: "{0} È nata un'abitante arpia!"
+			}
+
+			VillagerLeft: {
+				Harpy: "{0} Un'abitante arpia è partita in cerca di una nuova casa!"
+			}
+		}
+	
+	}
+}

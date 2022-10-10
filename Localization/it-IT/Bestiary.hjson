@@ -1,0 +1,9 @@
+Mods: {
+	LivingWorldMod: {
+	
+		Bestiary: {
+			HarpyVillager: "Un'abitante del villaggio fluttuante delle arpie. Non giocare con le sue piume e non provarci con lei, se ci tieni alla vita."
+		}
+	
+	}
+}

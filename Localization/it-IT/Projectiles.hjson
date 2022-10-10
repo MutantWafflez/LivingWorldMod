@@ -1,0 +1,9 @@
+Mods: {
+	LivingWorldMod: {
+	
+		ProjectileName: {
+			NimbusPetProjectile: "Nuvoletta domestica"
+		}
+
+	}
+}
