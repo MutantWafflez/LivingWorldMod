@@ -1,0 +1,21 @@
+Mods: {
+	LivingWorldMod: {
+	
+		VillagerNames: {
+			Harpy: {
+				0: "Merel"
+				1: "Mari"
+				2: "Wren"
+				3: "Yona"
+				4: "Jena"
+				5: "Tori"
+				6: "Loa"
+				7: "Eve"
+				8: "Rima"
+				9: "Luyu"
+				10: "Robin"
+			}
+		}
+
+	}
+}

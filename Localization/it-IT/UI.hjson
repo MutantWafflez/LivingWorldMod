@@ -1,0 +1,23 @@
+Mods: {
+	LivingWorldMod: {
+	
+		UI: {
+			VillagerHousing: {
+				ButtonHoverText: "Alloggio"
+				VillagerTypeLocked: "{0} Gli abitanti non possono essere trasferiti finché non sei di loro gradimento!"
+			}
+			Shrine: {
+				HarpyCountdown: "Nuovo uovo di arpia in:"
+
+				AddText: "Aggiungi 1"
+				TakeText: "Prendi 1"
+
+				DisableVillageRadius: "Nascondi la visualizzazione del raggio del villaggio"
+				EnableVillageRadius: "Mostra la visualizzazione del raggio del villaggio"
+
+				ForceShrineButtonText: "Forza sincronizzazione alloggio"
+			}
+		}
+	
+	}
+}

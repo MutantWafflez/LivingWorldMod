@@ -1,0 +1,27 @@
+Mods: {
+	LivingWorldMod: {
+	
+		ItemName: {
+			//Accessory Item
+			NimbusInABottle: "Nuvoletta in bottiglia"
+
+			//Food Items
+			FriedHarpyEgg: "Uovo d'arpia fritto"
+
+			//Misc Items
+			HarpyEgg: "Uovo d'arpia"
+		}
+
+		ItemTooltip: {
+			//Accessory Items
+			NimbusInABottle: "Evoca una nuvoletta domestica che ti segue"
+
+			//Food Items
+			FriedHarpyEgg: "{$CommonItemTooltip.MajorStats}\n'Sei un mostro.'"
+				
+			//Misc Items
+			HarpyEgg: "'È piuttosto grande, ma ha l'aspetto di un uovo ordinario.'"
+		}
+
+	}
+}

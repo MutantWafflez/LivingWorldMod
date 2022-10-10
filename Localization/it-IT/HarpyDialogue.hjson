@@ -1,0 +1,151 @@
+Mods: {
+	LivingWorldMod: {
+		
+		VillagerDialogue: {
+			Harpy: {
+
+				Event: {
+					//Rain
+					0: {
+						Text: "Sono molto grata di essere qui sopra le nuvole. Non sopporto avere i capelli bagnati."
+					}
+					1: {
+						Text: "Ahh, osservare la pioggia cadere dalle nuvole è così rilassante."
+					}
+					
+					//Eclipse
+					2: {
+						Text: "È così divertente vedere tutti quei mostri laggiù impazzire e attaccare le persone. Sono lieta di sapere che qui siamo più o meno al sicuro."
+					}
+					3: {
+						Text: "Che succede? Hai paura per caso?"
+					}
+
+					//Blood Moon
+					4: {
+						Text: "Tutti primitivi dur-SQUAK... durante la luna-SQUAK di sangue-SQUAK!"
+					}
+					5: {
+						Text: "...Non ho intenzione di SQUAK dire nien-SQUAK!"
+					}
+					6: {
+						//Blood Moon & Rain
+						Text: "Sangue SQUAK fradicio SQUAK fastidioso!"
+					}
+				}
+
+				Shop: {
+					Initial: {
+						SevereDislike: {
+							0: "Sei fortunato che ti permetta di parlarmi, figuriamoci di comprare la mia roba. Sappi solo che per te i prezzi saranno più alti per via di tutti i problemi che ci hai causato."
+							1: "Voi, sporchi abitanti della terra, venite in giro per il mondo a fare irruzione nei posti come se fossero di vostra proprietà. Dimmi solo cosa vuoi e deciderò di quanto aumentarne il prezzo."
+						}
+						Dislike: {
+							0: "Dato che non ci sono leggi che regolano i prezzi e non c'è concorrenza, a causa dei piccoli problemi che ci hai fatto passare, credo che il tuo prossimo prodotto costerà un po' di più."
+							1: "Fai attenzione, abitante della terra. Se continui a fare errori come hai fatto ultimamente, presto costerà un intero platino comprare una di queste cose!"
+						}
+						Neutral: {
+							0: "È stato gentile da parte tua a passare, abitante della terra. Apprezzerei qualche moneta extra al momento ma... Tutto è al prezzo standard!"
+							1: "Che razza di arpia sarei se ti facessi dei prezzi ingiusti se ancora non mi sono fatta un'idea su di te?"
+						}
+						Like: {
+							0: "Mi chiedo se i miei amici vogliano esercitarsi nel lanciare piume oggi... Uuh sì, qualcosa ha suscitato il tuo interesse abitante della terra?"
+							1: "Sai, quando sei venuto qui per la prima volta, pensavo che fossi come tutti gli altri abitanti della terra, ma sono rimasta piacevolmente sorpresa che non è così. Ecco un piccolo sconto, da parte mia!"
+						}
+						Love: {
+							0: "Stai cercando qualcosa da comprare, abitante della terra? So che probabilmente potresti permetterti tutto a prezzo normale, ma non posso non farti uno sconto comunque."
+							1: "Sai, abitante della terra, ti farò uno sconto. Immagino che te lo meriti per aver aiutato così tanto il villaggio, o quello che è. Dai! Compra qualcosa!"
+						}
+					}
+					Buy: {
+						SevereDislike: {
+							0: "Quanto sei stupido a comprare qualcosa con un prezzo così alto? Immagino che gli umani siano davvero tutti stupidi!"
+							1: "Come dicevo prima, sei fortunato che ti conceda la libertà di parlarmi. Grazie per l'acquisto, suppongo."
+						}
+						Dislike: {
+							0: "Se pensavi che il prezzo fosse già alto, non hai ancora visto nulla. Stai attento, abitante della terra. Grazie per l'acquisto."
+							1: "Pensi di essere così ricco da poter comprare tutta questa roba a qualsiasi prezzo? Non importa. Grazie per i soldi, immagino."
+						}
+						Neutral: {
+							0: "Ecco... Grazie per l'acquisto, abitante della terra."
+							1: "Grazie per l'acquisto, abitante della terra. Non potremmo tenere in vita l'economia senza acquisti del genere!"
+						}
+						Like: {
+							0: "Ehi, grazie per l'acquisto! Significa molto. Non c'è molto commercio interspecie quassù, quindi è bello averti qui tra noi."
+							1: "Continua così e lo sconto che hai appena ottenuto potrebbe aumentare ancora di più. Però questo non lo hai saputo da me... Abitante della terra."
+						}
+						Love: {
+							0: "Non ti ringrazierò mai abbastanza per acquisti come questi. Nessun altro essere umano ha mai ottenuto sconti del genere!"
+							1: "Quindi alla fine hai comprato qualcosa? Beh, che importa. Scherzo, grazie mille per l'acquisto, abitante della terra!"
+						}
+					}
+				}
+
+				SevereDislike: {
+					0: "Non prendertela sul personale se ti strappiamo le braccia e ti mangiamo o roba simile."
+					1: "Come fai a vivere con quei ripugnanti bastoncini di carne al posto delle ali?"
+					2: "Mi stai davvero facendo rizzare le piume, abitante della terra!"
+					3: "Com'è il tempo laggiù? Spero sia orribile."
+					4: "Lasciami in pace! Tu brutto figlio terreno di- SQUAK!"
+					5: "Vuoi che ti riempia la schiena di piume come uno stegosauro?"
+					6: "Tutti i non-volatili sono davvero così volgari e fastidiosi...?"
+					7: "Umani... Spregevoli. Hanno realizzato quelle insulse finestre!"
+				}
+
+				Dislike: {
+					0: "Fai attenzione, abitante della terra. Hai fatto arrabbiare alcune di noi qui al villaggio."
+					1: "Certo, compra qualcosa se vuoi. Ma per i disagi che hai causato ad alcune di noi, ci sarà un piccolo rialzo dei prezzi."
+					2: "Se pensi che alcune di noi ti guardino male, probabilmente hai ragione."
+					3: "Che vuoi? Sto cercando di rilassarmi."
+					4: "Ultimamente non hai dato la migliore delle impressioni da queste parti. Forse è il caso di cambiare abitudini, possibilmente al più presto."
+					5: "Oh, ehi. Posso aiutarti? No? Allora sparisci dalla mia vista."
+					6: {
+						Text: "Sarò sincero con te, umano. Ci hai causato qualche problema. Niente di oltraggioso, ma ci ha lasciato un po' di amaro in bocca. Potremmo capire se si trattasse di errori occasionali, ma è meglio che tu agisca con cautela prima che le cose si mettano molto, molto male per te."
+					}
+				}
+
+				Neutral: {
+					0: "Non capisco, cosa c'è di male nell'avere un cervello di gallina?"
+					1: "Spero di poter essere in prima fila nella formazione a V almeno una volta prima di morire."
+					2: "Volare nel cielo ti fa sentire così... libero. Dovresti provare qualche volta."
+					3: "A volte ho paura di volare troppo in alto e di fluttuare nello spazio o nel Sole o cose simili."
+					4: "Comprerai qualcosa, vero? Non sei venuto qui per niente, vero?"
+					5: {
+						Text: "No, non voglio nessun cracker. E smettila di chiamarmi Polly!"
+					}
+					6: {
+						Text: "Mi stai chiedendo come facciamo a riprodurci se siamo tutte femmine? Non essere ridicolo..."
+					}
+				}
+
+				Like: {
+					0: "Abitante della terra! Vuoi comprare qualcosa, vero? O volevi solo parlare con me?"
+					1: "Non sono belle le mie piume oggi? Ho passato tutto il giorno a pettinarle."
+					2: "Dovresti sederti con me sul mio trespolo qualche volta. La brezza è così piacevole che aiuta davvero il mio zen."
+					3: "Non sei poi così male per essere un umano che cammina sulla terra. Torna a trovarci qualche volta!"
+					4: "Quassù è un po' noioso. Ma non è poi così male quando vieni a farci visita."
+					5: {
+						Text: "Questo top mi fa ingrassare le ali?"
+					}
+					6: { 
+						Text: "ptuu- Scusami, mi è entrata di nuovo una piuma in bocca. Succede ogni volta."
+					}
+					7: { 
+						Text: "Spero davvero che non si verifichi presto una luna di sangue, non voglio che le mie piume si arruffino." 
+					}
+				}
+
+				Love: {
+					0: "Ehi! Ecco il mio umano preferito! Come stanno andando le cose?"
+					1: "Sei fortunato ad essere molto apprezzato qui nel villaggio. Altrimenti non faremmo sconti come questi!"
+					2: "Ehiii! Sono felice che tu sia potuto passare; hai qualche storia da raccontarci questa volta? Ci piacerebbe sentirle!"
+					3: "Se devo essere sincera, la prima volta che sei apparso nel villaggio, non eravamo sicure di cosa pensare di te. Non riceviamo mai visite dalla terra. Ma sai una cosa? Siamo contente che tu sia qui."
+					4: "Non trovi offensivo che ti chiamiamo 'abitante della terra', vero? Lo diciamo da così tanto tempo! Oh, accidenti..."
+					5: "Non so come si possa sopportare di andare sottoterra. L'aria dev'essere così viziata e secca... È molto meglio quassù in cielo!"
+				}
+
+			}
+		}
+
+	}
+}
