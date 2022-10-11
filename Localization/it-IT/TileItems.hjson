@@ -18,7 +18,7 @@ Mods: {
 			//Interactables
 
 				//Shrines
-				HarpyShrineItem: "Santuario del villaggio fluttuante delle arpie"
+				HarpyShrineItem: "Santuario del villaggio delle arpie"
 
 			//Torches
 			StarTorchItem: "Torcia stellare"
