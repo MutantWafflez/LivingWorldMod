@@ -7,7 +7,7 @@ Mods: {
 				VillagerTypeLocked: "{0} Gli abitanti non possono essere trasferiti finché non sei di loro gradimento!"
 			}
 			Shrine: {
-				HarpyCountdown: "Nuovo uovo di arpia in:"
+				HarpyCountdown: "Uovo di arpia in:"
 
 				AddText: "Aggiungi 1"
 				TakeText: "Prendi 1"
