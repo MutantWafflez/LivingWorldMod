@@ -4,12 +4,12 @@ Mods: {
 		ItemName: {
 			//Building
 			SkywareBlockItem: "Blocco celeste"
-			StarshardCloudItem: "Nuvola di frammenti di stella"
-			StarshineBlockItem: "Blocco di bagliore stellare"
+			StarshardCloudItem: "Nuvola stellare"
+			StarshineBlockItem: "Blocco bagliore stellare"
 			SunslabBlockItem: "Lastra solare"
 
 			//Furniture
-			NimbusJarItem: "Nuvola in barattolo"
+			NimbusJarItem: "Nuvoletta in barattolo"
 			GravityTapestryItem: "Arazzo gravità"
 			SkywareAnvilItem: "Incudine celeste"
 			SkywareLoomItem: "Telaio celeste"
