@@ -4,7 +4,7 @@ Mods: {
 		UI: {
 			VillagerHousing: {
 				ButtonHoverText: "Alloggio interspecie"
-				VillagerTypeLocked: "{0} Gli abitanti non possono essere trasferiti finché non sei di loro gradimento!"
+				VillagerTypeLocked: "{0} non si trasferirà finché non sei di suo gradimento!"
 			}
 			Shrine: {
 				HarpyCountdown: "Uovo di arpia in:"
