@@ -3,7 +3,7 @@ Mods: {
 	
 		UI: {
 			VillagerHousing: {
-				ButtonHoverText: "Alloggio"
+				ButtonHoverText: "Alloggio interspecie"
 				VillagerTypeLocked: "{0} Gli abitanti non possono essere trasferiti finché non sei di loro gradimento!"
 			}
 			Shrine: {
