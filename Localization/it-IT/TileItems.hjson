@@ -21,7 +21,7 @@ Mods: {
 				HarpyShrineItem: "Santuario del villaggio delle arpie"
 
 			//Torches
-			StarTorchItem: "Torcia stellare"
+			StarTorchItem: "Torcia celeste"
 		}
 
 		ItemTooltip: {
