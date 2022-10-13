@@ -5,11 +5,11 @@ Mods: {
 		    WaystoneActivation: "Waystone attivata!"
 
 			VillagerRespawned: {
-				Harpy: "{0} è appena nata!"
+				Harpy: "L'abitante arpia {0} è appena nata!"
 			}
 
 			VillagerLeft: {
-				Harpy: "{0} è partita in cerca di una nuova casa!"
+				Harpy: "L'abitante arpia {0} è partita in cerca di una nuova casa!"
 			}
 		}
 	
