@@ -4,7 +4,7 @@ Mods: {
 		UI: {
 			VillagerHousing: {
 				ButtonHoverText: "Alloggio interspecie"
-				VillagerTypeLocked: "{0} non si trasferirà finché non sei di suo gradimento!"
+				VillagerTypeLocked: "L'abitante arpia {0} non si trasferirà finché non sei di suo gradimento!"
 			}
 			Shrine: {
 				HarpyCountdown: "Uovo di arpia in:"
@@ -12,8 +12,8 @@ Mods: {
 				AddText: "Aggiungi 1"
 				TakeText: "Prendi 1"
 
-				DisableVillageRadius: "Nascondi la visualizzazione del raggio del villaggio"
-				EnableVillageRadius: "Mostra la visualizzazione del raggio del villaggio"
+				DisableVillageRadius: "Nascondi il raggio magico del villaggio"
+				EnableVillageRadius: "Visualizza il raggio magico del villaggio"
 
 				ForceShrineButtonText: "Forza sincronizzazione alloggio"
 			}
