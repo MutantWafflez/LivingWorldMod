@@ -1,0 +1,41 @@
+﻿Mods: {
+	LivingWorldMod: {
+	
+		ItemName: {
+			//Building
+			SkywareBlockItem: "Skyware Block"
+			StarshardCloudItem: "Starshard Cloud"
+			StarshineBlockItem: "Starshine Block"
+			SunslabBlockItem: "Sunslab Block"
+
+			//Furniture
+			NimbusJarItem: "Nimbus in a Jar"
+			GravityTapestryItem: "Gravity Tapestry"
+			SkywareAnvilItem: "Skyware Anvil"
+			SkywareLoomItem: "Skyware Loom"
+			SunTapestryItem: "Sun Tapestry"
+
+			//Interactables
+
+				//Shrines
+				HarpyShrineItem: "Harpy Village Shrine"
+
+			//Torches
+			StarTorchItem: "Star Torch"
+		}
+
+		ItemTooltip: {
+			//Building
+			StarshardCloudItem: "'Shards of fallen stars permeate throughout this cloud'"
+
+			//Interactables
+
+				//Shrines
+				HarpyShrineItem: "'The magical source of protection for all those that inhabit a Harpy Village'"
+
+			//Torches
+			StarTorchItem: "'Light the way with the essence of the cosmos'"
+		}
+	
+	}
+}

@@ -1,0 +1,23 @@
+﻿Mods: {
+	LivingWorldMod: {
+	
+		UI: {
+			VillagerHousing: {
+				ButtonHoverText: "Villager Housing"
+				VillagerTypeLocked: "{0} Villagers cannot be re-housed until you are liked by them!"
+			}
+			Shrine: {
+				HarpyCountdown: "New Harpy Egg in:"
+
+				AddText: "Add 1"
+				TakeText: "Take 1"
+
+				DisableVillageRadius: "Hide Village Radius Display"
+				EnableVillageRadius: "Show Village Radius Display"
+
+				ForceShrineButtonText: "Force Synchronize Housing"
+			}
+		}
+	
+	}
+}
