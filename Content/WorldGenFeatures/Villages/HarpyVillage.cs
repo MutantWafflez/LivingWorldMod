@@ -294,7 +294,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
                             continue;
                         }
 
-                        Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(currentTile, currentPos.X, currentPos.Y);
+                        Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(currentTile, currentPos.X, currentPos.Y, VillageShrineTile.FullTileWidth);
 
                         ModContent.GetInstance<VillageShrineEntity>().Place(topLeft.X, topLeft.Y);
                     }

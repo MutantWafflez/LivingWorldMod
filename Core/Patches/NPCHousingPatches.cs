@@ -25,7 +25,6 @@ namespace LivingWorldMod.Core.Patches {
     /// Class that contains IL/On patches for NPC housing-related manners.
     /// </summary>
     public class NPCHousingPatches : ILoadable {
-
         public static Point HouseBedPosition = Point.Zero;
 
         public void Load(Mod mod) {
@@ -41,11 +40,14 @@ namespace LivingWorldMod.Core.Patches {
 
             IL.Terraria.WorldGen.ScoreRoom += IgnoreRoomOccupancy;
 
+            //TODO: Finish NPC Sleeping Tests
+            /*
             IL.Terraria.WorldGen.ScoreRoom += FindRoomBed;
 
             IL.Terraria.WorldGen.QuickFindHome += AssignBedToNPC;
 
             IL.Terraria.WorldGen.SpawnTownNPC += AssignBedToNPC; // I love when one edit can be used in two methods
+            */
         }
 
         public void Unload() { }
@@ -459,6 +461,5 @@ namespace LivingWorldMod.Core.Patches {
                 HouseBedPosition = Point.Zero;
             });
         }
-
     }
 }

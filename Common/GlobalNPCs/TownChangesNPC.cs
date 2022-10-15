@@ -14,7 +14,8 @@ namespace LivingWorldMod.Common.GlobalNPCs {
     /// <summary>
     /// GlobalNPC that handles visual updates on town NPCs for various aesthetic purposes.
     /// </summary>
-    //TODO: Finish NPC umbrella stuff
+    //TODO: Finish NPC umbrella stuff & sleeping testing
+    [Autoload(false)]
     public class TownChangesNPC : GlobalNPC {
         [CloneByReference]
         public BedData ownedBed;

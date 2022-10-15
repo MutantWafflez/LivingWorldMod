@@ -31,7 +31,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         /// <summary>
         /// The tile width of Village Shrines. Used for tile entity placement/destroying calculations.
         /// </summary>
-        private readonly int _fullTileWidth = 4;
+        public const int FullTileWidth = 4;
 
         public override void Load() {
             shrineIcons = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}MapIcons/ShrineIcons");
@@ -57,12 +57,12 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16, 16, 16 };
             TileObjectData.newTile.Height = 5;
             TileObjectData.newTile.CoordinateWidth = 16;
-            TileObjectData.newTile.Width = _fullTileWidth;
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, _fullTileWidth, 0);
+            TileObjectData.newTile.Width = FullTileWidth;
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, FullTileWidth, 0);
 
             VillageShrineEntity shrineEntity = ModContent.GetInstance<VillageShrineEntity>();
             TileObjectData.newTile.HookCheckIfCanPlace = new PlacementHook(shrineEntity.PlacementPreviewHook_CheckIfCanPlace, 1, 0, true);
-            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(shrineEntity.Hook_AfterPlacement, -1, 0, true);
+            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(shrineEntity.Hook_AfterPlacement, -1, 0, false);
 
             TileObjectData.addTile(Type);
 
@@ -74,9 +74,10 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             AnimationFrameHeight = 90;
         }
 
+
         public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
             //TODO: Re-add tile animation once reputation system re-implemented
-            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
+            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, FullTileWidth);
             Tile topLeftTile = Framing.GetTileSafely(topLeft);
         }
 
@@ -95,7 +96,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         }
 
         public override bool RightClick(int i, int j) {
-            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
+            Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, FullTileWidth);
 
             if (!TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out VillageShrineEntity entity)) {
                 return false;
