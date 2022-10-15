@@ -8,6 +8,7 @@ using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Common.GlobalNPCs {
     /// <summary>
@@ -73,8 +74,8 @@ namespace LivingWorldMod.Common.GlobalNPCs {
         }
 
         public override void AI(NPC npc) {
-            //Any bed breakage, player chattage, or damage will reset the NPC and prevent sleep
-            if (ownedBed is null || Main.player.Any(player => player.talkNPC == npc.whoAmI) || npc.life < npc.lifeMax) {
+            //Any bed breakage, player chattage, damage, or blood moon-age will reset the NPC and prevent sleep
+            if (ownedBed is null || Main.player.Any(player => player.talkNPC == npc.whoAmI) || npc.life < npc.lifeMax || Main.bloodMoon) {
                 bedPhase = 0;
 
                 return;
@@ -91,7 +92,7 @@ namespace LivingWorldMod.Common.GlobalNPCs {
                 //At night, if there is a bed for this NPC, begin to walk towards it
                 npc.direction = npc.DirectionTo(ownedBed.bedPosition.ToWorldCoordinates()).X > 0 ? 1 : -1;
                 npc.ai[0] = 1f;
-                npc.ai[1] = 2f;
+                npc.ai[1] = 1f;
                 //When an NPC sits, even if they aren't in the right AI state, they stand still. Forcing their velocity un-anchors their sitting position
                 if (npc.velocity.X == 0f) {
                     npc.velocity.X = 1f;
@@ -117,17 +118,22 @@ namespace LivingWorldMod.Common.GlobalNPCs {
                     npc.ai[1] = 0f;
 
                     npc.Bottom = ownedBed.bedPosition.ToWorldCoordinates(32f, 31f);
+                    Main.sleepingManager.AddNPC(npc.whoAmI, ownedBed.bedPosition);
 
                     npc.netUpdate = true;
                 }
             }
 
-            //If in bed and it becomes daytime, wake up and stand still for 3 seconds
-            if (bedPhase == 3 && Main.dayTime) {
-                bedPhase = 0;
+            if (bedPhase == 3) {
+                npc.Bottom = ownedBed.bedPosition.ToWorldCoordinates(32f, 31f);
 
-                npc.ai[0] = 0f;
-                npc.ai[1] = 180f;
+                //If in bed and it becomes daytime, wake up and stand still for 3 seconds
+                if (Main.dayTime) {
+                    bedPhase = 0;
+
+                    npc.ai[0] = 0f;
+                    npc.ai[1] = 180f;
+                }
             }
         }
 
@@ -142,6 +148,20 @@ namespace LivingWorldMod.Common.GlobalNPCs {
                     npc.ai[1] = 180f;
                 }
             }
+        }
+
+        public override void SaveData(NPC npc, TagCompound tag) {
+            tag["bedPos"] = ownedBed?.bedPosition.ToVector2() ?? Vector2.Zero;
+            tag["bedPhase"] = bedPhase;
+        }
+
+        public override void LoadData(NPC npc, TagCompound tag) {
+            Point potentialBed = tag.Get<Vector2>("bedPos").ToPoint();
+            if (potentialBed != Point.Zero) {
+                ownedBed = new BedData(potentialBed);
+            }
+
+            bedPhase = tag.GetInt("bedPhase");
         }
     }
 }
