@@ -1,12 +1,13 @@
 ﻿using System.Linq;
+using Terraria.ID;
 using LivingWorldMod.Common.VanillaOverrides.NPCProfiles;
 using LivingWorldMod.Custom.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ModLoader;
-using Terraria.ObjectData;
 
 namespace LivingWorldMod.Common.GlobalNPCs {
     /// <summary>
@@ -14,17 +15,17 @@ namespace LivingWorldMod.Common.GlobalNPCs {
     /// </summary>
     //TODO: Finish NPC umbrella stuff
     public class TownChangesNPC : GlobalNPC {
-        private static RainProfile _rainProfile;
-
         [CloneByReference]
         public BedData ownedBed;
 
         [CloneByReference]
-        private int _bedPhase = 0;
+        public int bedPhase;
 
         public override bool InstancePerEntity => true;
 
-        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.townNPC && entity.aiStyle == 7;
+        private static RainProfile _rainProfile;
+
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.townNPC && entity.aiStyle == 7 && entity.type != NPCID.OldMan;
 
         public override void Load() {
             _rainProfile = new RainProfile();
@@ -34,31 +35,30 @@ namespace LivingWorldMod.Common.GlobalNPCs {
             _rainProfile = null;
         }
 
-        public override ITownNPCProfile ModifyTownNPCProfile(NPC npc) {
+        public override ITownNPCProfile ModifyTownNPCProfile(NPC npc) =>
             //Rain profiles
             /*
             if (npc.type == NPCID.Guide) {
                 return _rainProfile;
             }
             */
-
-            return null;
-        }
+            null;
 
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (_bedPhase == 2 && ownedBed is not null) {
+            if (bedPhase == 3 && ownedBed is not null) {
                 TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile);
                 Rectangle drawPos = new Rectangle(
-                    (int)(ownedBed.bedPosition.X * 16f + (ownedBed.bedDirection < 1 ? 64f : 0f) + 2f - screenPos.X), 
-                    (int)(ownedBed.bedPosition.Y * 16f - 4f - screenPos.Y), 
-                    npc.frame.Width, 
+                    (int)(ownedBed.bedPosition.X * 16f + (ownedBed.bedDirection < 1 ? 66f : 56f) - screenPos.X),
+                    (int)(ownedBed.bedPosition.Y * 16f - 8f - screenPos.Y),
+                    npc.frame.Width,
                     npc.frame.Height
-                    );
+                );
 
+                Asset<Texture2D> drawTexture = profile is not null ? profile.GetTextureNPCShouldUse(npc) : TextureAssets.Npc[npc.type];
                 spriteBatch.Draw(
-                    profile is not null ? profile.GetTextureNPCShouldUse(npc).Value : TextureAssets.Npc[npc.type].Value,
+                    drawTexture.Value,
                     drawPos,
-                    npc.frame,
+                    drawTexture.Frame(1, Main.npcFrameCount[npc.type], 0, 20),
                     drawColor,
                     MathHelper.PiOver2,
                     Vector2.Zero,
@@ -75,46 +75,56 @@ namespace LivingWorldMod.Common.GlobalNPCs {
         public override void AI(NPC npc) {
             //Any bed breakage, player chattage, or damage will reset the NPC and prevent sleep
             if (ownedBed is null || Main.player.Any(player => player.talkNPC == npc.whoAmI) || npc.life < npc.lifeMax) {
-                _bedPhase = -1;
+                bedPhase = 0;
 
                 return;
             }
 
-            if (_bedPhase == -1) {
+            if (bedPhase == 0) {
                 if (!Main.dayTime) {
-                    _bedPhase = 0;
+                    bedPhase = 1;
+
+                    npc.netUpdate = true;
                 }
             }
-            else if (_bedPhase == 0) {
+            else if (bedPhase == 1) {
                 //At night, if there is a bed for this NPC, begin to walk towards it
                 npc.direction = npc.DirectionTo(ownedBed.bedPosition.ToWorldCoordinates()).X > 0 ? 1 : -1;
                 npc.ai[0] = 1f;
-                npc.ai[1] = 1f;
-                    
+                npc.ai[1] = 2f;
+                //When an NPC sits, even if they aren't in the right AI state, they stand still. Forcing their velocity un-anchors their sitting position
+                if (npc.velocity.X == 0f) {
+                    npc.velocity.X = 1f;
+                }
+
                 //Upon bed intersection, move to next step
                 if (npc.Hitbox.Intersects(new Rectangle((int)(ownedBed.bedPosition.X * 16f), (int)(ownedBed.bedPosition.Y * 16f), 16, 16))) {
-                    _bedPhase = 1;
+                    bedPhase = 2;
 
                     //"Touching" ai state
                     npc.ai[0] = 9f;
-                    npc.ai[1] = 31f;
+                    npc.ai[1] = 61f;
+
+                    npc.netUpdate = true;
                 }
             }
-            else if (_bedPhase == 1) {
+            else if (bedPhase == 2) {
                 //"Touching bed" phase over, get into bed
                 if (npc.ai[1] <= 1f) {
-                    _bedPhase = 2;
+                    bedPhase = 3;
 
                     npc.ai[0] = -5f;
                     npc.ai[1] = 0f;
 
-                    npc.Bottom = ownedBed.bedPosition.ToWorldCoordinates(32f, 16f);
+                    npc.Bottom = ownedBed.bedPosition.ToWorldCoordinates(32f, 31f);
+
+                    npc.netUpdate = true;
                 }
             }
 
             //If in bed and it becomes daytime, wake up and stand still for 3 seconds
-            if (_bedPhase == 2 && Main.dayTime) {
-                _bedPhase = -1;
+            if (bedPhase == 3 && Main.dayTime) {
+                bedPhase = 0;
 
                 npc.ai[0] = 0f;
                 npc.ai[1] = 180f;
@@ -122,7 +132,16 @@ namespace LivingWorldMod.Common.GlobalNPCs {
         }
 
         public override void PostAI(NPC npc) {
-            ownedBed = npc.homeless ? null : ownedBed;
+            if (npc.homeless || ownedBed is null || ownedBed is { } data && (!Main.tile[data.bedPosition].HasTile || Main.tile[data.bedPosition].TileType != TileID.Beds)) {
+                ownedBed = null;
+
+                if (bedPhase > 0) {
+                    bedPhase = 0;
+
+                    npc.ai[0] = 0f;
+                    npc.ai[1] = 180f;
+                }
+            }
         }
     }
 }
