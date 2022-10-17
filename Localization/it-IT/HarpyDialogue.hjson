@@ -53,7 +53,7 @@ Mods: {
 							1: "Sai, quando sei venuto qui per la prima volta, pensavo che fossi come tutti gli altri abitanti della terra, ma sono rimasta piacevolmente sorpresa che non è così. Ecco un piccolo sconto, da parte mia!"
 						}
 						Love: {
-							0: "Stai cercando qualcosa da comprare, abitante della terra? So che probabilmente potresti permetterti tutto a prezzo normale, ma non posso non farti uno sconto comunque."
+							0: "Stai cercando qualcosa da comprare, abitante della terra? So che probabilmente potresti permetterti tutto a prezzo standard, ma ti farò comunque uno sconto."
 							1: "Sai, abitante della terra, ti farò uno sconto. Immagino che te lo meriti per aver aiutato così tanto il villaggio, o quello che è. Dai! Compra qualcosa!"
 						}
 					}
@@ -140,7 +140,7 @@ Mods: {
 					1: "Sei fortunato ad essere molto apprezzato qui nel villaggio. Altrimenti non faremmo sconti come questi!"
 					2: "Ehiii! Sono felice che tu sia potuto passare; hai qualche storia da raccontarci questa volta? Ci piacerebbe sentirle!"
 					3: "Se devo essere sincera, la prima volta che sei apparso nel villaggio, non eravamo sicure di cosa pensare di te. Non riceviamo mai visite dalla terra. Ma sai una cosa? Siamo contente che tu sia qui."
-					4: "Non trovi offensivo che ti chiamiamo 'abitante della terra', vero? Lo diciamo da così tanto tempo! Oh, accidenti..."
+					4: "Non trovi offensivo essere chiamato 'abitante della terra', vero? Lo diciamo da così tanto tempo! Oh, accidenti..."
 					5: "Non so come si possa sopportare di andare sottoterra. L'aria dev'essere così viziata e secca... È molto meglio quassù in cielo!"
 				}
 

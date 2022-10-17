@@ -2,7 +2,7 @@ Mods: {
 	LivingWorldMod: {
 	
 		VillagerType: {
-			Harpy: "Arpia"
+			Harpy: "Arpie"
 		}
 		
 	}
