@@ -2,6 +2,12 @@
 	LivingWorldMod: {
 	
 		UI: {
+			VillagerShop: {
+				Buying: "Buying:"
+				Stock: "Stock:"
+				Buy: "Buy"
+				Savings: "Savings"
+			}
 			VillagerHousing: {
 				ButtonHoverText: "Villager Housing"
 				VillagerTypeLocked: "{0} Villagers cannot be re-housed until you are liked by them!"

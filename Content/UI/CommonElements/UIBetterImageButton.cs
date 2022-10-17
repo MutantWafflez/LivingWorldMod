@@ -5,6 +5,7 @@ using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.CommonElements {
@@ -29,7 +30,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         /// </summary>
         public bool preventItemUsageWhileHovering = true;
 
-        private string _text;
+        private object _text;
 
         private Asset<Texture2D> _buttonTexture;
 
@@ -51,8 +52,25 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         /// </summary>
         public event MouseEvent ProperOnClick;
 
+        public UIBetterImageButton(Asset<Texture2D> buttonTexture) {
+            _buttonTexture = buttonTexture;
+            _text = null;
+            textSize = 1f;
+            Width.Set(buttonTexture.Value.Width, 0f);
+            Height.Set(buttonTexture.Value.Height, 0f);
+        }
+
+
         //Remember to use ImmediateLoad request mode if you request the texture in the parameter!
         public UIBetterImageButton(Asset<Texture2D> buttonTexture, string text = null, float textSize = 1f) {
+            _buttonTexture = buttonTexture;
+            _text = text;
+            this.textSize = textSize;
+            Width.Set(buttonTexture.Value.Width, 0f);
+            Height.Set(buttonTexture.Value.Height, 0f);
+        }
+
+        public UIBetterImageButton(Asset<Texture2D> buttonTexture, ModTranslation text = null, float textSize = 1f) {
             _buttonTexture = buttonTexture;
             _text = text;
             this.textSize = textSize;
@@ -65,12 +83,22 @@ namespace LivingWorldMod.Content.UI.CommonElements {
                 return;
             }
 
-            buttonText = new UIBetterText(_text, textSize) {
-                HAlign = 0.5f,
-                VAlign = 0.5f,
-                horizontalTextConstraint = _buttonTexture.Value.Width,
-                IgnoresMouseInteraction = true
-            };
+            if (_text is ModTranslation translation) {
+                buttonText = new UIBetterText(translation, textSize) {
+                    HAlign = 0.5f,
+                    VAlign = 0.5f,
+                    horizontalTextConstraint = GetDimensions().Width,
+                    IgnoresMouseInteraction = true
+                };
+            }
+            else {
+                buttonText = new UIBetterText(_text as string, textSize) {
+                    HAlign = 0.5f,
+                    VAlign = 0.5f,
+                    horizontalTextConstraint = GetDimensions().Width,
+                    IgnoresMouseInteraction = true
+                };
+            }
 
             Append(buttonText);
         }
@@ -136,6 +164,11 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         }
 
         public void SetText(string text) {
+            _text = text;
+            RecalculateChildren();
+        }
+
+        public void SetText(ModTranslation text) {
             _text = text;
             RecalculateChildren();
         }
