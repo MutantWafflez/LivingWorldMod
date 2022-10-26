@@ -2,6 +2,12 @@
 	LivingWorldMod: {
 	
 		UI: {
+			VillagerShop: {
+				Buying: "购买:"
+				Stock: "库存:"
+				Buy: "购买"
+				Savings: "保存"
+			}
 			VillagerHousing: {
 				ButtonHoverText: "村民住房"
 				VillagerTypeLocked: "{0}村民无法重新入住, 知道他们喜欢你!"
