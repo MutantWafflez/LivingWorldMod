@@ -3,19 +3,19 @@
 	
 		UI: {
 			VillagerHousing: {
-				ButtonHoverText: "Villager Housing"
-				VillagerTypeLocked: "{0} Villagers cannot be re-housed until you are liked by them!"
+				ButtonHoverText: "村民住房"
+				VillagerTypeLocked: "{0}村民无法重新入住, 知道他们喜欢你!"
 			}
 			Shrine: {
-				HarpyCountdown: "New Harpy Egg in:"
+				HarpyCountdown: "新的鸟妖蛋位于:"
 
-				AddText: "Add 1"
-				TakeText: "Take 1"
+				AddText: "添加1"
+				TakeText: "拿走1"
 
-				DisableVillageRadius: "Hide Village Radius Display"
-				EnableVillageRadius: "Show Village Radius Display"
+				DisableVillageRadius: "隐藏村庄范围显示"
+				EnableVillageRadius: "显示村庄范围显示"
 
-				ForceShrineButtonText: "Force Synchronize Housing"
+				ForceShrineButtonText: "强制同步住房"
 			}
 		}
 	

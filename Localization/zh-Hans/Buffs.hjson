@@ -2,11 +2,11 @@
 	LivingWorldMod: {
 	
 		BuffName: {
-			NimbusPetBuff: "Nimbus Pet"
+			NimbusPetBuff: "灵气宠物"
 		}
 
 		BuffDescription: {
-			NimbusPetBuff: "'I bet it tastes like cotton candy...'"
+			NimbusPetBuff: "'我打赌它尝起来像棉花糖...'"
 		}
 	
 	}
