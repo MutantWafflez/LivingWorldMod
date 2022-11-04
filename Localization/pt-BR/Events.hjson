@@ -1,0 +1,17 @@
+﻿Mods: {
+	LivingWorldMod: {
+	
+		Event: {
+		    WaystoneActivation: "Waystone Activated!"
+
+			VillagerRespawned: {
+				Harpy: "{0} the Harpy Villager has hatched!"
+			}
+
+			VillagerLeft: {
+				Harpy: "{0} the Harpy Vilager has departed for a new home!"
+			}
+		}
+	
+	}
+}

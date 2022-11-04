@@ -3,7 +3,7 @@ Mods: {
 	
 		MapInfo: {
 			Shrines: {
-				Harpy: "Villaggio fluttuante delle arpie"
+				Harpy: "Villaggio delle arpie"
 			}
 			Waystones: {
 				Desert: "Waystone del deserto"

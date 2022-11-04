@@ -5,6 +5,7 @@ using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.Localization;
+using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.CommonElements {
@@ -32,9 +33,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         /// </summary>
         public bool isVisible = true;
 
-        public object innerText = "";
-
-        public string Text => innerText.ToString();
+        public string Text => _innerText is ModTranslation translation ? translation.GetTranslation(Language.ActiveCulture) : _innerText.ToString();
 
         public float TextOriginX {
             get;
@@ -64,6 +63,8 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             set => _color = value;
         }
 
+        private object _innerText = "";
+
         private float _initialTextScale = 1f;
         private float _dynamicTextScale = 1f;
         private Vector2 _initialTextSize = Vector2.Zero;
@@ -86,7 +87,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             InternalSetText(text, textScale, large);
         }
 
-        public UIBetterText(LocalizedText text, float textScale = 1f, bool large = false) {
+        public UIBetterText(ModTranslation text, float textScale = 1f, bool large = false) {
             TextOriginX = 0.5f;
             TextOriginY = 0f;
             IsWrapped = false;
@@ -132,7 +133,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             InternalSetText(text, scaledText == 0f ? _initialTextScale : scaledText, large ?? _isLarge);
         }
 
-        public void SetText(LocalizedText text, float scaledText = 0f, bool? large = null) {
+        public void SetText(ModTranslation text, float scaledText = 0f, bool? large = null) {
             InternalSetText(text, scaledText == 0f ? _initialTextScale : scaledText, large ?? _isLarge);
         }
 
@@ -145,7 +146,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         private void InternalSetText(object text, float textScale, bool large) {
             DynamicSpriteFont dynamicSpriteFont = large ? FontAssets.DeathText.Value : FontAssets.MouseText.Value;
 
-            innerText = text;
+            _innerText = text;
             _isLarge = large;
             _initialTextScale = textScale;
             _dynamicTextScale = textScale;

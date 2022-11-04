@@ -102,7 +102,7 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             villagerTypeCenterElement.Height.Set(28f, 0f);
             Append(villagerTypeCenterElement);
 
-            villagerTypeText = new UIBetterText(typeToShow.ToString(), 1.1f) {
+            villagerTypeText = new UIBetterText(LocalizationLoader.GetOrCreateTranslation("Mods.LivingWorldMod.VillagerType.Harpy"), 1.1f) {
                 isVisible = false,
                 horizontalTextConstraint = villagerTypeCenterElement.Width.Pixels,
                 HAlign = 0.5f,
@@ -199,7 +199,7 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             }
 
             //Change to proper villager type text
-            villagerTypeText.SetText(LocalizationUtils.GetLWMTextValue($"VillagerType.{typeToShow}"));
+            villagerTypeText.SetText(LocalizationLoader.GetOrCreateTranslation($"Mods.LivingWorldMod.VillagerType.{typeToShow}"));
 
             DisplayAvailableVillagers();
         }

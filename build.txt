@@ -1,5 +1,5 @@
 displayName = Living World Mod [INDEV ACCESS]
 author = MutantWafflez & Contributors
-version = 0.2.1.6
+version = 0.2.1.7
 buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*, .idea\*, *.md, *.sln, *.gitignore, Core\VSRefs\*
 modReferences = SubworldLibrary

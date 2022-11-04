@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.CommonElements {
@@ -29,7 +30,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         /// </summary>
         public bool preventItemUsageWhileHovering = true;
 
-        private string _text;
+        private object _text;
 
         private float _activeVisibility = 1f;
 
@@ -59,17 +60,38 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             this.textSize = textSize;
         }
 
+        public UIPanelButton(Asset<Texture2D> customBackground, Asset<Texture2D> customBorder, int customCornerSize = 12, int customBarSize = 4, ModTranslation text = null, float textSize = 1f)
+            : base(customBackground, customBorder, customCornerSize, customBarSize) {
+            _text = text;
+            this.textSize = textSize;
+        }
+
+        public UIPanelButton(ModTranslation text = null, float textSize = 1f) {
+            _text = text;
+            this.textSize = textSize;
+        }
+
         public override void OnInitialize() {
             if (_text is null) {
                 return;
             }
 
-            buttonText = new UIBetterText(_text, textSize) {
-                HAlign = 0.5f,
-                VAlign = 0.5f,
-                horizontalTextConstraint = GetDimensions().Width,
-                IgnoresMouseInteraction = true
-            };
+            if (_text is ModTranslation translation) {
+                buttonText = new UIBetterText(translation, textSize) {
+                    HAlign = 0.5f,
+                    VAlign = 0.5f,
+                    horizontalTextConstraint = GetDimensions().Width,
+                    IgnoresMouseInteraction = true
+                };
+            }
+            else {
+                buttonText = new UIBetterText(_text as string, textSize) {
+                    HAlign = 0.5f,
+                    VAlign = 0.5f,
+                    horizontalTextConstraint = GetDimensions().Width,
+                    IgnoresMouseInteraction = true
+                };
+            }
 
             Append(buttonText);
         }
@@ -125,6 +147,11 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         }
 
         public void SetText(string text) {
+            _text = text;
+            RecalculateChildren();
+        }
+
+        public void SetText(ModTranslation text) {
             _text = text;
             RecalculateChildren();
         }

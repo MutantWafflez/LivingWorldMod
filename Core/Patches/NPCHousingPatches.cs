@@ -10,9 +10,14 @@ using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using LivingWorldMod.Common.GlobalNPCs;
+using LivingWorldMod.Custom.Classes;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.GameContent.Achievements;
 using Terraria.GameInput;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Core.Patches {
@@ -20,6 +25,8 @@ namespace LivingWorldMod.Core.Patches {
     /// Class that contains IL/On patches for NPC housing-related manners.
     /// </summary>
     public class NPCHousingPatches : ILoadable {
+        public static Point HouseBedPosition = Point.Zero;
+
         public void Load(Mod mod) {
             IL.Terraria.WorldGen.CheckSpecialTownNPCSpawningConditions += TestForVillageHouse;
 
@@ -32,6 +39,15 @@ namespace LivingWorldMod.Core.Patches {
             IL.Terraria.WorldGen.ScoreRoom_IsThisRoomOccupiedBySomeone += RoomOccupancyCheck;
 
             IL.Terraria.WorldGen.ScoreRoom += IgnoreRoomOccupancy;
+
+            //TODO: Finish NPC Sleeping Tests
+            /*
+            IL.Terraria.WorldGen.ScoreRoom += FindRoomBed;
+
+            IL.Terraria.WorldGen.QuickFindHome += AssignBedToNPC;
+
+            IL.Terraria.WorldGen.SpawnTownNPC += AssignBedToNPC; // I love when one edit can be used in two methods
+            */
         }
 
         public void Unload() { }
@@ -396,6 +412,54 @@ namespace LivingWorldMod.Core.Patches {
 
             //Emit our check to see if our IgnoreOccupancy in HousingUtils.cs is true, and if so, automatically return false, ignoring occupancy
             c.EmitDelegate<Func<bool, bool>>((isOccupied) => !HousingUtils.IgnoreHouseOccupancy && isOccupied);
+        }
+
+        private void FindRoomBed(ILContext il) {
+            //One of two patches that injects itself into the ScoreRoom method in order to find a corresponding bed for an NPC
+
+            ILCursor c = new ILCursor(il);
+
+            //Navigate to right before tile loop
+            c.ErrorOnFailedGotoNext(i => i.MatchLdsfld<WorldGen>(nameof(WorldGen.roomY2)));
+            c.Index += 2;
+            //Load all loop local variables
+            c.Emit(OpCodes.Ldloc_S, (byte)2);
+            c.Emit(OpCodes.Ldloc_S, (byte)3);
+            c.Emit(OpCodes.Ldloc_S, (byte)4);
+            c.Emit(OpCodes.Ldloc_S, (byte)5);
+            c.EmitDelegate<Action<int, int, int, int>>((startX, endX, startY, endY) => {
+                //Same check vanilla does
+                for (int i = startX + 1; i < endX; i++) {
+                    for (int j = startY + 2; j < endY + 2; j++) {
+                        Tile tile = Framing.GetTileSafely(i, j);
+                        if (tile.HasTile && tile.TileType == TileID.Beds) {
+                            HouseBedPosition = TileUtils.GetTopLeftOfMultiTile(tile, i, j, 4).ToPoint();
+                            return;
+                        }
+                    }
+                }
+            });
+        }
+
+        private void AssignBedToNPC(ILContext il) {
+            //Second to of two patches that takes the potential calculated bed position in an NPC's house, and assigns it to them
+
+            ILCursor c = new ILCursor(il);
+
+            //Navigate to right after homeless assignment
+            c.ErrorOnFailedGotoNext(i => i.MatchCall<AchievementsHelper>(nameof(AchievementsHelper.NotifyProgressionEvent)));
+            c.Index--;
+            //Load NPC onto stack
+            c.Emit(OpCodes.Ldsfld, typeof(Main).GetField(nameof(Main.npc), BindingFlags.Public | BindingFlags.Static));
+            c.Emit(OpCodes.Ldloc_0);
+            c.Emit(OpCodes.Ldelem_Ref);
+            c.EmitDelegate<Action<NPC>>(npc => {
+                if (HouseBedPosition != Point.Zero) {
+                    npc.GetGlobalNPC<TownChangesNPC>().ownedBed = new BedData(new Point(HouseBedPosition.X, HouseBedPosition.Y));
+                }
+
+                HouseBedPosition = Point.Zero;
+            });
         }
     }
 }
