@@ -1,6 +1,4 @@
-﻿using LivingWorldMod.Content.Subworlds;
-using LivingWorldMod.Content.Subworlds.Pyramid;
-using LivingWorldMod.Custom.Classes;
+﻿using LivingWorldMod.Content.Subworlds.Pyramid;
 using SubworldLibrary;
 using Terraria.ModLoader;
 

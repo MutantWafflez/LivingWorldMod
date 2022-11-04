@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using LivingWorldMod.Common.ModTypes;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Utilities;
@@ -55,6 +56,18 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         /// </summary>
         public PyramidRoomType roomType;
 
+        /// <summary>
+        /// A list of all curses affecting this room.
+        /// </summary>
+        public List<PyramidRoomCurse> roomCurses;
+
+        public static readonly WeightedRandom<PyramidRoomType> RoomSelector = new WeightedRandom<PyramidRoomType>(WorldGen.genRand, new[] {
+            new Tuple<PyramidRoomType, double>(PyramidRoomType.Normal, 50),
+            new Tuple<PyramidRoomType, double>(PyramidRoomType.Cursed, 50 / 3f),
+            new Tuple<PyramidRoomType, double>(PyramidRoomType.Puzzle, 50 / 3f),
+            new Tuple<PyramidRoomType, double>(PyramidRoomType.Treasure, 50 / 3f)
+        });
+
         public PyramidRoom(Rectangle region, int gridTopLeftX, int gridTopLeftY, int gridWidth, int gridHeight) {
             this.region = region;
             this.gridTopLeftX = gridTopLeftX;
@@ -62,12 +75,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
             this.gridWidth = gridWidth;
             this.gridHeight = gridHeight;
 
-            roomType = new WeightedRandom<PyramidRoomType>(WorldGen.genRand, new[] {
-                new Tuple<PyramidRoomType, double>(PyramidRoomType.Normal, 50),
-                new Tuple<PyramidRoomType, double>(PyramidRoomType.Cursed, 50 / 3f),
-                new Tuple<PyramidRoomType, double>(PyramidRoomType.Puzzle, 50 / 3f),
-                new Tuple<PyramidRoomType, double>(PyramidRoomType.Treasure, 50 / 3f)
-            });
+            roomType = RoomSelector;
         }
 
         public override string ToString() => "{" + gridTopLeftX + ", " + gridTopLeftY + "} " + $"{gridWidth}x{gridHeight}";
