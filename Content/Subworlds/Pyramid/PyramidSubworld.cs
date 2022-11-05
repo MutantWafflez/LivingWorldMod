@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.Players;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
@@ -62,6 +63,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
             new PassLegacy("Set Spawn", SetSpawn),
             new PassLegacy("Empty Room Fill", FillEmptyRooms),
             new PassLegacy("Room Layout", GenerateRoomLayouts),
+            new PassLegacy("Room Curse Generation", GenerateRoomCurses),
             new PassLegacy("Room Foliage", GenerateRoomFoliage),
             new PassLegacy("Debug Draw Paths", DebugDrawPaths)
         };
@@ -333,6 +335,18 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
             }
         }
 
+        public void GenerateRoomCurses(GenerationProgress progress, GameConfiguration config) {
+            progress.Message = "Cursing the Path";
+
+            //Generate torches in all rooms
+            List<List<PyramidRoom>> allPaths = FakePaths.Prepend(CorrectPath).ToList();
+            for (int i = 0; i < allPaths.Count; i++) {
+                progress.Set(i / (allPaths.Count - 1f));
+
+                GenerateRoomCurseOnPath(allPaths[i]);
+            }
+        }
+
         public void GenerateRoomFoliage(GenerationProgress progress, GameConfiguration config) {
             progress.Message = "Uncovering Lost Remains";
 
@@ -494,6 +508,30 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
 
                     value.doorPos = doorPos;
                     WorldGen.PlaceObject(doorPos.X, doorPos.Y, ModContent.TileType<InnerPyramidDoorTile>());
+                }
+            }
+        }
+
+        /// <summary>
+        /// If a room is cursed, generate its curse's effect on the generation of the room,
+        /// if applicable.
+        /// </summary>
+        private void GenerateRoomCurseOnPath(List<PyramidRoom> path) {
+            for (int i = 0; i < path.Count; i++) {
+                PyramidRoom room = path[i];
+
+                if (room.generationStep >= PyramidRoomGenerationStep.CurseGenerated) {
+                    continue;
+                }
+                room.generationStep = PyramidRoomGenerationStep.CurseGenerated;
+
+                if (room.roomType != PyramidRoomType.Cursed) {
+                    continue;
+                }
+
+                room.AddRandomCurse();
+                foreach (PyramidRoomCurse curse in room.roomCurses) {
+                    curse.DoGenerationEffect(room.region);
                 }
             }
         }

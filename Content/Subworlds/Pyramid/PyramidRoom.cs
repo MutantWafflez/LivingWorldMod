@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using LivingWorldMod.Common.ModTypes;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ModLoader;
 using Terraria.Utilities;
 
 namespace LivingWorldMod.Content.Subworlds.Pyramid {
@@ -79,5 +81,13 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         }
 
         public override string ToString() => "{" + gridTopLeftX + ", " + gridTopLeftY + "} " + $"{gridWidth}x{gridHeight}";
+
+        /// <summary>
+        /// Adds a random, non-repeating curse to this room.
+        /// </summary>
+        public void AddRandomCurse() {
+            roomCurses ??= new List<PyramidRoomCurse>();
+            roomCurses.Add(WorldGen.genRand.Next(ModContent.GetContent<PyramidRoomCurse>().Where(curse => !roomCurses.Contains(curse)).ToList()));
+        }
     }
 }

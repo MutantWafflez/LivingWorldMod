@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Terraria;
+using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.ModTypes {
@@ -30,6 +31,27 @@ namespace LivingWorldMod.Common.ModTypes {
         /// </summary>
         /// <param name="roomRegion"></param>
         public virtual void DoGenerationEffect(Rectangle roomRegion) { }
+
+        /// <summary>
+        /// Called when a player is damaged.
+        /// </summary>
+        public virtual void PlayerHurt(Player player, bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter) { }
+
+        /// <summary>
+        /// Called every tick right before a player's buffs are updated.
+        /// </summary>
+        /// <param name="player"></param>
+        public virtual void PlayerPreUpdateBuffs(Player player) { }
+
+        /// <summary>
+        /// Called when a player's equips are updated.
+        /// </summary>
+        public virtual void PlayerUpdateEquips(Player player) { }
+
+        /// <summary>
+        /// Called whenever a player shoots a projectile with an item.
+        /// </summary>
+        public virtual void PlayerModifyShoot(Player player, Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) { }
 
         protected override void Register() {
             ModTypeLookup<PyramidRoomCurse>.Register(this);
