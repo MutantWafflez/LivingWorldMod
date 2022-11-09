@@ -111,12 +111,12 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         public List<PyramidRoom> GetRoomColumn(int i) => _roomList[i];
 
         /// <summary>
-        /// Searches through the current grid and returns the room the passed in player currently resides in.
+        /// Searches through the current grid and returns the room the passed in entity currently resides in.
         /// If the player isn't in any room or the check otherwise fails, returns null.
         /// </summary>
-        public PyramidRoom GetPlayersCurrentRoom(Player player) => _roomList
-                                                                   .SelectMany(roomColumn => roomColumn)
-                                                                   .FirstOrDefault(room => new Rectangle(room.region.X * 16, room.region.Y * 16, room.region.Width * 16, room.region.Height * 16)
-                                                                       .Contains(player.Hitbox));
+        public PyramidRoom GetEntityCurrentRoom(Entity entity) => _roomList
+                                                                  .SelectMany(roomColumn => roomColumn)
+                                                                  .FirstOrDefault(room => new Rectangle(room.region.X * 16, room.region.Y * 16, room.region.Width * 16, room.region.Height * 16)
+                                                                      .Contains(entity.Hitbox));
     }
 }
