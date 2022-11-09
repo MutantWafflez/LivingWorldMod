@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using LivingWorldMod.Content.Subworlds.Pyramid;
 using Terraria.ModLoader.Config;
 
@@ -23,13 +20,13 @@ namespace LivingWorldMod.Common.Configs {
         public bool pyramidDebug;
 
         [Label("Super Curse Mode")]
-        [Tooltip("Requires Debug Mode to be enabled to function; All rooms in the pyramid dungeon become cursed.")]
+        [Tooltip("Requires Debug Mode to be enabled to function; All rooms in the pyramid dungeon become cursed of the selected curse (see option below)")]
         [DefaultValue(false)]
-        public bool allPyramidRoomsAreCursed;
+        public bool allCursedRooms;
 
         [Label("Forced Room Curse Type")]
-        [Tooltip("Requires Debug Mode to be enabled to function; All cursed rooms in the pyramid become cursed with the added curses.")]
-        public List<PyramidRoomCurseType> forcedCurseTypes = new List<PyramidRoomCurseType>();
+        [Tooltip("Requires Debug Mode to be enabled to function; All cursed rooms in the pyramid become cursed with this curse.")]
+        public PyramidRoomCurseType forcedCurseType;
 
         public override ConfigScope Mode => ConfigScope.ServerSide;
     }

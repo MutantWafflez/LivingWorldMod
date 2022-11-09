@@ -530,11 +530,8 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                     continue;
                 }
 
-                List<PyramidRoomCurseType> forcedCurses = ModContent.GetInstance<DebugConfig>().forcedCurseTypes;
-                if (LivingWorldMod.IsDebug && forcedCurses.Any()) {
-                    foreach (PyramidRoomCurseType curse in forcedCurses) {
-                        room.roomCurses.Add(curse);
-                    }
+                if (LivingWorldMod.IsDebug && ModContent.GetInstance<DebugConfig>().allCursedRooms) {
+                    room.roomCurses.Add(ModContent.GetInstance<DebugConfig>().forcedCurseType);
                 }
                 else {
                     room.AddRandomCurse();
@@ -623,7 +620,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                         int x = WorldGen.genRand.Next(region.X, region.Right);
                         int y = WorldGen.genRand.Next(region.Y, region.Bottom);
 
-                        if (!Main.tile[x, y].HasTile && WorldUtils.Find(new Point(x, y), Searches.Chain(new Searches.Rectangle(12, 12), new Conditions.IsTile(TileID.Torches).Not()), out _)) {
+                        if (!Main.tile[x, y].HasTile && WorldUtils.Find(new Point(x - 6, y - 6), Searches.Chain(new Searches.Rectangle(13, 13), new Conditions.IsTile(TileID.Torches).Not()), out _)) {
                             WorldGen.PlaceTile(x, y, TileID.Torches);
                         }
                         torchAttempts++;

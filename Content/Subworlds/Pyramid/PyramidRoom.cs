@@ -62,7 +62,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         /// <summary>
         /// A list of all curses affecting this room.
         /// </summary>
-        public List<PyramidRoomCurseType> roomCurses;
+        public List<PyramidRoomCurseType> roomCurses = new List<PyramidRoomCurseType>();
 
         public static readonly WeightedRandom<PyramidRoomType> RoomSelector = new WeightedRandom<PyramidRoomType>(WorldGen.genRand, new[] {
             new Tuple<PyramidRoomType, double>(PyramidRoomType.Normal, 50),
@@ -78,7 +78,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
             this.gridWidth = gridWidth;
             this.gridHeight = gridHeight;
 
-            roomType = LivingWorldMod.IsDebug && ModContent.GetInstance<DebugConfig>().allPyramidRoomsAreCursed ? PyramidRoomType.Cursed : RoomSelector;
+            roomType = LivingWorldMod.IsDebug && ModContent.GetInstance<DebugConfig>().allCursedRooms ? PyramidRoomType.Cursed : RoomSelector;
         }
 
         public override string ToString() => "{" + gridTopLeftX + ", " + gridTopLeftY + "} " + $"{gridWidth}x{gridHeight}";
@@ -87,7 +87,6 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         /// Adds a random, non-repeating curse to this room.
         /// </summary>
         public void AddRandomCurse() {
-            roomCurses ??= new List<PyramidRoomCurseType>();
             roomCurses.Add(WorldGen.genRand.Next(Enum.GetValues<PyramidRoomCurseType>().Where(curse => !roomCurses.Contains(curse)).ToList()));
         }
     }
