@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Common.Configs;
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.Players;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
@@ -529,10 +530,16 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                     continue;
                 }
 
-                room.AddRandomCurse();
-                foreach (PyramidRoomCurse curse in room.roomCurses) {
-                    curse.DoGenerationEffect(room.region);
+                List<PyramidRoomCurseType> forcedCurses = ModContent.GetInstance<DebugConfig>().forcedCurseTypes;
+                if (LivingWorldMod.IsDebug && forcedCurses.Any()) {
+                    foreach (PyramidRoomCurseType curse in forcedCurses) {
+                        room.roomCurses.Add(curse);
+                    }
                 }
+                else {
+                    room.AddRandomCurse();
+                }
+                ApplyCurseGenerationEffect(room.roomCurses[0], room.region);
             }
         }
 
@@ -594,5 +601,35 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         /// Returns the opposite direction of the passed in door direction.
         /// </summary>
         private PyramidDoorDirection GetOppositeDirection(PyramidDoorDirection direction) => direction.NextEnum().NextEnum();
+
+        /// <summary>
+        /// According to the curse passed in, applies it to the passed in room region.
+        /// </summary>
+        private void ApplyCurseGenerationEffect(PyramidRoomCurseType curse, Rectangle region) {
+            switch (curse) {
+                case PyramidRoomCurseType.Flooding:
+                    for (int y = region.Y + region.Height / 2; y <= region.Bottom; y++) {
+                        for (int x = region.X; x <= region.Right; x++) {
+                            Tile tile = Main.tile[x, y];
+                            tile.LiquidType = LiquidID.Water;
+                            tile.LiquidAmount = byte.MaxValue;
+                        }
+                    }
+                    break;
+                case PyramidRoomCurseType.Nyctophilia:
+                case PyramidRoomCurseType.Nyctophobia:
+                    int torchAttempts = 0;
+                    while (torchAttempts < 100) {
+                        int x = WorldGen.genRand.Next(region.X, region.Right);
+                        int y = WorldGen.genRand.Next(region.Y, region.Bottom);
+
+                        if (!Main.tile[x, y].HasTile && WorldUtils.Find(new Point(x, y), Searches.Chain(new Searches.Rectangle(12, 12), new Conditions.IsTile(TileID.Torches).Not()), out _)) {
+                            WorldGen.PlaceTile(x, y, TileID.Torches);
+                        }
+                        torchAttempts++;
+                    }
+                    break;
+            }
+        }
     }
 }

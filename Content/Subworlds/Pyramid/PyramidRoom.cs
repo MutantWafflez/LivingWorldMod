@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Common.Configs;
 using LivingWorldMod.Common.ModTypes;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -61,7 +62,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         /// <summary>
         /// A list of all curses affecting this room.
         /// </summary>
-        public List<PyramidRoomCurse> roomCurses;
+        public List<PyramidRoomCurseType> roomCurses;
 
         public static readonly WeightedRandom<PyramidRoomType> RoomSelector = new WeightedRandom<PyramidRoomType>(WorldGen.genRand, new[] {
             new Tuple<PyramidRoomType, double>(PyramidRoomType.Normal, 50),
@@ -77,7 +78,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
             this.gridWidth = gridWidth;
             this.gridHeight = gridHeight;
 
-            roomType = RoomSelector;
+            roomType = LivingWorldMod.IsDebug && ModContent.GetInstance<DebugConfig>().allPyramidRoomsAreCursed ? PyramidRoomType.Cursed : RoomSelector;
         }
 
         public override string ToString() => "{" + gridTopLeftX + ", " + gridTopLeftY + "} " + $"{gridWidth}x{gridHeight}";
@@ -86,8 +87,8 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         /// Adds a random, non-repeating curse to this room.
         /// </summary>
         public void AddRandomCurse() {
-            roomCurses ??= new List<PyramidRoomCurse>();
-            roomCurses.Add(WorldGen.genRand.Next(ModContent.GetContent<PyramidRoomCurse>().Where(curse => !roomCurses.Contains(curse)).ToList()));
+            roomCurses ??= new List<PyramidRoomCurseType>();
+            roomCurses.Add(WorldGen.genRand.Next(Enum.GetValues<PyramidRoomCurseType>().Where(curse => !roomCurses.Contains(curse)).ToList()));
         }
     }
 }
