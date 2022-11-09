@@ -137,6 +137,16 @@ namespace LivingWorldMod.Common.Players {
             }
         }
 
+        public override void PostUpdateMiscEffects() {
+            foreach (PyramidRoomCurseType curse in CurrentCurses) {
+                switch (curse) {
+                    case PyramidRoomCurseType.ShatteredArmor:
+                        Player.statDefense /= 2;
+                        break;
+                }
+            }
+        }
+
         public override void PostUpdateRunSpeeds() {
             foreach (PyramidRoomCurseType curse in CurrentCurses) {
                 switch (curse) {
