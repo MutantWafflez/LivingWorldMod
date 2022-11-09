@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using LivingWorldMod.Content.Subworlds.Pyramid;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using SubworldLibrary;
 using Terraria;
 using Terraria.DataStructures;
@@ -53,6 +55,20 @@ namespace LivingWorldMod.Common.GlobalNPCs {
                 doubleUpdateTimer = 0f;
 
                 npc.AI();
+            }
+
+            return true;
+        }
+
+        public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            foreach (PyramidRoomCurseType curse in CurrentCurses) {
+                switch (curse) {
+                    case PyramidRoomCurseType.Nearsightedness:
+                        if (Main.LocalPlayer.Center.Distance(npc.Center) >= 16 * 14f) {
+                            return false;
+                        }
+                        break;
+                }
             }
 
             return true;

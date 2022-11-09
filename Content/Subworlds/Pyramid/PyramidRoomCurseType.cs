@@ -74,7 +74,7 @@
         Nyctophobia,
 
         /// <summary>
-        /// Players can only see enemies within 8 tiles.
+        /// Players can only see enemies within 14 tiles.
         /// </summary>
         Nearsightedness,
 
