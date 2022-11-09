@@ -1,6 +1,10 @@
-﻿using LivingWorldMod.Common.Players;
+﻿using System;
+using LivingWorldMod.Common.Players;
 using LivingWorldMod.Content.Subworlds.Pyramid;
 using LivingWorldMod.Core.PacketHandlers;
+using LivingWorldMod.Custom.Utilities;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -8,11 +12,12 @@ using Terraria.ModLoader;
 namespace LivingWorldMod.Core.Patches {
     /// <summary>
     /// ILoadable class that holds patches for specifically the Update method for
-    /// players and any tertiary related method.
+    /// players and any tertiary related methods.
     /// </summary>
     public class PlayerUpdatePatches : ILoadable {
         public void Load(Mod mod) {
             On.Terraria.Player.JumpMovement += PlayerGravityManipulation;
+            IL.Terraria.Player.Update += ForceWaterPhysics;
         }
 
         public void Unload() { }
@@ -42,6 +47,19 @@ namespace LivingWorldMod.Core.Patches {
             }
 
             orig(self);
+        }
+
+        private void ForceWaterPhysics(ILContext il) {
+            //Small edit that will force the physical effects of being underwater, regardless of whether or not
+            //the player is actually submerged.
+
+            ILCursor c = new ILCursor(il);
+
+            //Navigate to WetCollision check
+            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCall<Collision>(nameof(Collision.WetCollision)));
+            //Add our own check
+            c.Emit(OpCodes.Ldarg_0);
+            c.EmitDelegate<Func<bool, Player, bool>>((originalValue, player) => player.GetModPlayer<PyramidDungeonPlayer>().CurrentCurses.Contains(PyramidRoomCurseType.Viscosity) || originalValue);
         }
     }
 }

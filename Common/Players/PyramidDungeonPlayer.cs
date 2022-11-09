@@ -98,6 +98,13 @@ namespace LivingWorldMod.Common.Players {
                     case PyramidRoomCurseType.Hemophilia:
                         Player.potionDelay = 2;
                         break;
+                    case PyramidRoomCurseType.Viscosity:
+                        Player.ignoreWater = false;
+                        Player.accMerman = false;
+                        Player.forceMerman = false;
+                        Player.trident = false;
+                        Player.canFloatInWater = false;
+                        break;
                     case PyramidRoomCurseType.Grounding:
                         if (Player.gravDir > 0f ? Player.velocity.Y > 0f : Player.velocity.Y < 0f) {
                             Player.gravity *= 3;
