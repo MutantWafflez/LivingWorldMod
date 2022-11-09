@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using LivingWorldMod.Content.Subworlds.Pyramid;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using SubworldLibrary;
 using Terraria;
@@ -26,13 +28,38 @@ namespace LivingWorldMod.Common.Players {
         /// </summary>
         public PyramidRoom currentRoom;
 
+        /// <summary>
+        /// List of all currently pending heals due to the Curse of Delay.
+        /// </summary>
         public List<HealInstance> healDelays = new List<HealInstance>();
+
+        public int plaguesCurseTimer;
 
         /// <summary>
         /// Reference to this player's current list of curses in accordance to
         /// the room they are in.
         /// </summary>
         public List<PyramidRoomCurseType> CurrentCurses => currentRoom?.roomCurses ?? new List<PyramidRoomCurseType>();
+
+        private static List<int> _allDebuffs;
+
+        public const int MaxPlaguesCurseTimer = 60 * 20;
+
+        public override void SetStaticDefaults() {
+            _allDebuffs = new List<int>();
+
+            for (int i = 0; i < Main.debuff.Length; i++) {
+                _allDebuffs.AddConditionally(i, Main.debuff[i]);
+            }
+        }
+
+        public override void ResetEffects() {
+            if (SubworldSystem.IsActive<PyramidSubworld>()) {
+                return;
+            }
+
+            plaguesCurseTimer = MaxPlaguesCurseTimer;
+        }
 
         public override void UpdateDead() {
             healDelays.Clear();
@@ -68,6 +95,15 @@ namespace LivingWorldMod.Common.Players {
         public override void PreUpdateBuffs() {
             foreach (PyramidRoomCurseType curse in CurrentCurses) {
                 switch (curse) {
+                    case PyramidRoomCurseType.ThePlagues:
+                        if (Player.whoAmI == Main.myPlayer && --plaguesCurseTimer <= 0) {
+                            plaguesCurseTimer = MaxPlaguesCurseTimer;
+
+                            if (Player.statLife >= Player.statLifeMax2 * 0.33f) {
+                                Player.AddBuff(Main.rand.Next(_allDebuffs), 60 * 10, false);
+                            }
+                        }
+                        break;
                     case PyramidRoomCurseType.Obstruction:
                         Player.AddBuff(BuffID.Obstructed, 5);
                         break;

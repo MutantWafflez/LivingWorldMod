@@ -195,7 +195,7 @@
         DivineSilence,
 
         /// <summary>
-        /// Every 2- seconds, players will be given a random debuff for 10 seconds. Only function if player is >33% life.
+        /// Every 20 seconds, players will be given a random debuff for 10 seconds. Only function if player is >33% life.
         /// </summary>
         ThePlagues,
 
