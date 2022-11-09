@@ -52,6 +52,9 @@ namespace LivingWorldMod.Common.Players {
 
             foreach (PyramidRoomCurseType curse in CurrentCurses) {
                 switch (curse) {
+                    case PyramidRoomCurseType.Hemophilia:
+                        Player.potionDelay = 2;
+                        break;
                     case PyramidRoomCurseType.Grounding:
                         if (Player.gravDir > 0f ? Player.velocity.Y > 0f : Player.velocity.Y < 0f) {
                             Player.gravity *= 3;
@@ -75,8 +78,6 @@ namespace LivingWorldMod.Common.Players {
             }
         }
 
-        public override void PreUpdateMovement() { }
-
         public override void PostUpdate() {
             if (!SubworldSystem.IsActive<PyramidSubworld>()) {
                 currentRoom = null;
@@ -86,6 +87,17 @@ namespace LivingWorldMod.Common.Players {
             currentRoom = ModContent.GetInstance<PyramidSubworld>().Grid.GetPlayersCurrentRoom(Player);
         }
 
+        public override void UpdateBadLifeRegen() {
+            foreach (PyramidRoomCurseType curse in CurrentCurses) {
+                switch (curse) {
+                    case PyramidRoomCurseType.Hemophilia:
+                        Player.lifeRegen = 0;
+                        Player.lifeRegenTime = 0;
+                        break;
+                }
+            }
+        }
+
         public override void GetHealLife(Item item, bool quickHeal, ref int healValue) {
             if (quickHeal) {
                 return;
@@ -93,6 +105,9 @@ namespace LivingWorldMod.Common.Players {
 
             foreach (PyramidRoomCurseType curse in CurrentCurses) {
                 switch (curse) {
+                    case PyramidRoomCurseType.Hemophilia:
+                        healValue = 0;
+                        break;
                     case PyramidRoomCurseType.Delay:
                         healDelays.Add(new HealInstance(120, healValue));
                         healValue = 0;
