@@ -49,6 +49,17 @@ namespace LivingWorldMod.Common.Players {
                 healDelays.Remove(instance);
                 i--;
             }
+
+            foreach (PyramidRoomCurseType curse in CurrentCurses) {
+                switch (curse) {
+                    case PyramidRoomCurseType.Grounding:
+                        if (Player.gravDir > 0f ? Player.velocity.Y > 0f : Player.velocity.Y < 0f) {
+                            Player.gravity *= 3;
+                            Player.maxFallSpeed *= 2;
+                        }
+                        break;
+                }
+            }
         }
 
         public override void PreUpdateBuffs() {
@@ -63,6 +74,8 @@ namespace LivingWorldMod.Common.Players {
                 }
             }
         }
+
+        public override void PreUpdateMovement() { }
 
         public override void PostUpdate() {
             if (!SubworldSystem.IsActive<PyramidSubworld>()) {
