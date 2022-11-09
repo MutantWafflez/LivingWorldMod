@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using LivingWorldMod.Content.Subworlds.Pyramid;
+using Microsoft.Xna.Framework;
 using SubworldLibrary;
 using Terraria;
 using Terraria.ID;
@@ -82,6 +83,18 @@ namespace LivingWorldMod.Common.Players {
                     case PyramidRoomCurseType.Delay:
                         healDelays.Add(new HealInstance(120, healValue));
                         healValue = 0;
+                        break;
+                }
+            }
+        }
+
+        public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) {
+            foreach (PyramidRoomCurseType curse in CurrentCurses) {
+                switch (curse) {
+                    case PyramidRoomCurseType.Misfire:
+                        if (Main.rand.NextBool(4)) {
+                            velocity = velocity.RotateRandom(MathHelper.Pi / 6f);
+                        }
                         break;
                 }
             }
