@@ -129,7 +129,7 @@
         Recursion,
 
         /// <summary>
-        /// Game is forcefully zoomed to 250%.
+        /// Game is forcefully zoomed to 400%.
         /// </summary>
         Spotlight,
 

@@ -3,6 +3,11 @@ using LivingWorldMod.Custom.Interfaces;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Common.Players;
+using LivingWorldMod.Content.Subworlds.Pyramid;
+using SubworldLibrary;
+using Terraria;
+using Terraria.Graphics;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Systems {
@@ -36,6 +41,20 @@ namespace LivingWorldMod.Common.Systems {
         public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor) {
             foreach (IModifySunlightColor sunlightEffect in SunlightColorEffects.Where(effect => effect.SunlightEffectActive)) {
                 sunlightEffect.SunlightEffect(ref tileColor, ref backgroundColor);
+            }
+        }
+
+        public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform) {
+            if (!SubworldSystem.IsActive<PyramidSubworld>()) {
+                return;
+            }
+
+            foreach (PyramidRoomCurseType curse in Main.LocalPlayer.GetModPlayer<PyramidDungeonPlayer>().CurrentCurses) {
+                switch (curse) {
+                    case PyramidRoomCurseType.Spotlight:
+                        Transform.Zoom = new Vector2(Main.ForcedMinimumZoom * 4f);
+                        break;
+                }
             }
         }
     }
