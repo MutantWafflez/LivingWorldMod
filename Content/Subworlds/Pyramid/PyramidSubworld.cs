@@ -223,8 +223,8 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
 
                 List<Tuple<PyramidRoom, double>> movementChoices = new List<Tuple<PyramidRoom, double>>();
                 movementChoices.Add(new Tuple<PyramidRoom, double>(roomBelow, 34)); //Down
-                movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomLeft, 33), roomLeft is { pathSearched: false }); //Left
-                movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomRight, 33), roomRight is { pathSearched: false }); //Right
+                movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomLeft, 33), roomLeft is { pathSearched: false } && !currentRoom.doorData.ContainsKey(PyramidDoorDirection.Left)); //Left
+                movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomRight, 33), roomRight is { pathSearched: false } && !currentRoom.doorData.ContainsKey(PyramidDoorDirection.Right)); //Right
 
                 PyramidRoom selectedRoom = new WeightedRandom<PyramidRoom>(WorldGen.genRand, movementChoices.ToArray()).Get();
                 if (selectedRoom is not null) {
@@ -431,8 +431,8 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
 
                         List<Tuple<PyramidRoom, double>> movementChoices = new List<Tuple<PyramidRoom, double>>();
                         movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomBelow, 25), roomBelow is { pathSearched: false }); //Down
-                        movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomLeft, 37.5), roomLeft is { pathSearched: false }); //Left
-                        movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomRight, 37.5), roomRight is { pathSearched: false }); //Right
+                        movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomLeft, 37.5), roomLeft is { pathSearched: false } && !currentFakeRoom.doorData.ContainsKey(PyramidDoorDirection.Left)); //Left
+                        movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomRight, 37.5), roomRight is { pathSearched: false } && !currentFakeRoom.doorData.ContainsKey(PyramidDoorDirection.Right)); //Right
                         if (!movementChoices.Any()) {
                             break;
                         }
@@ -611,19 +611,6 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                             tile.LiquidType = LiquidID.Water;
                             tile.LiquidAmount = byte.MaxValue;
                         }
-                    }
-                    break;
-                case PyramidRoomCurseType.Nyctophilia:
-                case PyramidRoomCurseType.Nyctophobia:
-                    int torchAttempts = 0;
-                    while (torchAttempts < 100) {
-                        int x = WorldGen.genRand.Next(region.X, region.Right);
-                        int y = WorldGen.genRand.Next(region.Y, region.Bottom);
-
-                        if (!Main.tile[x, y].HasTile && WorldUtils.Find(new Point(x - 6, y - 6), Searches.Chain(new Searches.Rectangle(13, 13), new Conditions.IsTile(TileID.Torches).Not()), out _)) {
-                            WorldGen.PlaceTile(x, y, TileID.Torches);
-                        }
-                        torchAttempts++;
                     }
                     break;
             }

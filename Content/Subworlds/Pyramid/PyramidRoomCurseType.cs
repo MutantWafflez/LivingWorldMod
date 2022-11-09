@@ -69,14 +69,14 @@
         Thievery,
 
         /// <summary>
-        /// When the player is in the dark, they will take damage. Torches come pre-placed.
+        /// When the player is in the dark, they will take damage.
         /// </summary>
         Nyctophobia,
 
         /// <summary>
-        /// When the player is in the light, they will take damage. Torches come pre-placed.
+        /// Players can only see enemies within 8 tiles.
         /// </summary>
-        Nyctophilia,
+        Nearsightedness,
 
         /// <summary>
         /// Player uses items 50% slower.
