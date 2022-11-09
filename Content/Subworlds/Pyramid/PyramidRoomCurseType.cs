@@ -54,7 +54,7 @@
         Hyperactivity,
 
         /// <summary>
-        /// Gravity randomly swaps for everyone in the room.
+        /// Gravity randomly swaps for everyone individually in the room.
         /// </summary>
         GravitationalInstability,
 

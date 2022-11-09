@@ -33,7 +33,20 @@ namespace LivingWorldMod.Common.Players {
         /// </summary>
         public List<HealInstance> healDelays = new List<HealInstance>();
 
+        /// <summary>
+        /// The countdown before The Plagues curse applies a new debuff.
+        /// </summary>
         public int plaguesCurseTimer;
+
+        /// <summary>
+        /// The countdown before the Gravitational Instability curse swaps gravity for this player.
+        /// </summary>
+        public int gravitySwapTimer;
+
+        /// <summary>
+        /// The currently forced gravity direction.
+        /// </summary>
+        public float forcedGravityDirection = 1f;
 
         /// <summary>
         /// Reference to this player's current list of curses in accordance to
@@ -41,6 +54,9 @@ namespace LivingWorldMod.Common.Players {
         /// </summary>
         public List<PyramidRoomCurseType> CurrentCurses => currentRoom?.roomCurses ?? new List<PyramidRoomCurseType>();
 
+        /// <summary>
+        /// Cached list of all debuffs.
+        /// </summary>
         private static List<int> _allDebuffs;
 
         public const int MaxPlaguesCurseTimer = 60 * 20;
@@ -96,7 +112,7 @@ namespace LivingWorldMod.Common.Players {
             foreach (PyramidRoomCurseType curse in CurrentCurses) {
                 switch (curse) {
                     case PyramidRoomCurseType.ThePlagues:
-                        if (Player.whoAmI == Main.myPlayer && --plaguesCurseTimer <= 0) {
+                        if (Main.netMode != NetmodeID.Server && Player.whoAmI == Main.myPlayer && --plaguesCurseTimer <= 0) {
                             plaguesCurseTimer = MaxPlaguesCurseTimer;
 
                             if (Player.statLife >= Player.statLifeMax2 * 0.33f) {
@@ -109,6 +125,17 @@ namespace LivingWorldMod.Common.Players {
                         break;
                     case PyramidRoomCurseType.Confusion:
                         Player.AddBuff(BuffID.Confused, 5);
+                        break;
+                }
+            }
+        }
+
+        public override void PostUpdateRunSpeeds() {
+            foreach (PyramidRoomCurseType curse in CurrentCurses) {
+                switch (curse) {
+                    case PyramidRoomCurseType.GravitationalInstability:
+                        Player.gravControl = false;
+                        Player.gravControl2 = false;
                         break;
                 }
             }
