@@ -158,6 +158,19 @@ namespace LivingWorldMod.Common.Players {
                         Player.gravControl = false;
                         Player.gravControl2 = false;
                         break;
+                    case PyramidRoomCurseType.Proximity:
+                        for (int i = 0; i < Main.maxNPCs; i++) {
+                            NPC npc = Main.npc[i];
+                            if (!npc.active || npc.friendly || Player.Center.Distance(npc.Center) >= 16f * 15f) {
+                                continue;
+                            }
+
+                            Player.maxRunSpeed = 3f;
+                            Player.accRunSpeed = 3f;
+                            Player.runAcceleration = 0.05f;
+                            break;
+                        }
+                        break;
                 }
             }
         }

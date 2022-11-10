@@ -119,7 +119,7 @@
         DodgeOrDie,
 
         /// <summary>
-        /// Players within 8 tiles of an enemy are slowed down.
+        /// Players within 15 tiles of an enemy are slowed down.
         /// </summary>
         Proximity,
 
