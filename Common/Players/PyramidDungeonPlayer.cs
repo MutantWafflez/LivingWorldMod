@@ -224,5 +224,18 @@ namespace LivingWorldMod.Common.Players {
 
             return multiplier;
         }
+
+        public override void PostHurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter) {
+            foreach (PyramidRoomCurseType curse in CurrentCurses) {
+                switch (curse) {
+                    case PyramidRoomCurseType.Ignition:
+                        Player.AddBuff(BuffID.OnFire, 60 * 8);
+                        break;
+                    case PyramidRoomCurseType.Poison:
+                        Player.AddBuff(BuffID.Poisoned, 60 * 8);
+                        break;
+                }
+            }
+        }
     }
 }
