@@ -210,5 +210,19 @@ namespace LivingWorldMod.Common.Players {
                 }
             }
         }
+
+        public override float UseSpeedMultiplier(Item item) {
+            float multiplier = 1f;
+
+            foreach (PyramidRoomCurseType curse in CurrentCurses) {
+                switch (curse) {
+                    case PyramidRoomCurseType.Lethargy:
+                        multiplier -= 0.5f;
+                        break;
+                }
+            }
+
+            return multiplier;
+        }
     }
 }
