@@ -180,7 +180,7 @@
         Delay,
 
         /// <summary>
-        /// All tiles act like ice.
+        /// All tiles have no friction while being walked across.
         /// </summary>
         FrictionalIgnorance,
 

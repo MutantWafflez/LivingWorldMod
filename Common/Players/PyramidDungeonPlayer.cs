@@ -98,6 +98,9 @@ namespace LivingWorldMod.Common.Players {
                     case PyramidRoomCurseType.Hemophilia:
                         Player.potionDelay = 2;
                         break;
+                    case PyramidRoomCurseType.FrictionalIgnorance:
+                        Player.slippy2 = true;
+                        break;
                     case PyramidRoomCurseType.Viscosity:
                         Player.ignoreWater = false;
                         Player.accMerman = false;
