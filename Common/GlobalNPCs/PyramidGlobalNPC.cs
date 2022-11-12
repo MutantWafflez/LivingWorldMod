@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using LivingWorldMod.Content.StatusEffects.Debuffs;
 using LivingWorldMod.Content.Subworlds.Pyramid;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -67,6 +68,30 @@ namespace LivingWorldMod.Common.GlobalNPCs {
                         if (Main.LocalPlayer.Center.Distance(npc.Center) >= 16 * 14f) {
                             return false;
                         }
+                        break;
+                }
+            }
+
+            return true;
+        }
+
+        public override bool CheckDead(NPC npc) {
+            foreach (PyramidRoomCurseType curse in CurrentCurses) {
+                switch (curse) {
+                    case PyramidRoomCurseType.Pacifism:
+                        Player closestPlayer = null;
+                        float closestDistance = float.MaxValue;
+
+                        for (int i = 0; i < Main.maxPlayers; i++) {
+                            Player player = Main.player[i];
+
+                            if (!player.dead && player.Center.Distance(npc.Center) is float distance && distance < closestDistance) {
+                                closestDistance = distance;
+                                closestPlayer = player;
+                            }
+                        }
+
+                        closestPlayer?.AddBuff(ModContent.BuffType<PacifistPlight>(), 60 * 5);
                         break;
                 }
             }

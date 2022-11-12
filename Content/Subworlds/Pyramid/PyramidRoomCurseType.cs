@@ -205,7 +205,7 @@
         UnsteadyFooting,
 
         /// <summary>
-        /// When an enemy is killed, the nearest player gains the Pacifist's Plight debuff for 3 seconds.
+        /// When an enemy is killed, the nearest player gains the Pacifist's Plight debuff for 5 seconds.
         /// (34% less damage, defense, and damage reduction)
         /// </summary>
         Pacifism,
