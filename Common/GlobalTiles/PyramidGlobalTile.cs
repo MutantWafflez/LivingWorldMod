@@ -1,8 +1,10 @@
 ﻿using LivingWorldMod.Common.Players;
 using Terraria;
 using LivingWorldMod.Content.Subworlds.Pyramid;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SubworldLibrary;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.GlobalTiles {
@@ -16,6 +18,12 @@ namespace LivingWorldMod.Common.GlobalTiles {
 
         public override bool CanExplode(int i, int j, int type) => !IsInPyramidSubworld || LivingWorldMod.IsDebug;
 
-        public override bool PreDraw(int i, int j, int type, SpriteBatch spriteBatch) => Main.LocalPlayer.GetModPlayer<PyramidDungeonPlayer>().currentRoom?.region.Contains(i, j) ?? true;
+        public override bool PreDraw(int i, int j, int type, SpriteBatch spriteBatch) {
+            if (!(Main.LocalPlayer.GetModPlayer<PyramidDungeonPlayer>().currentRoom?.region.Contains(i, j) ?? true)) {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

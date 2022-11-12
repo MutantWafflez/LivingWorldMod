@@ -117,6 +117,6 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         public PyramidRoom GetEntityCurrentRoom(Entity entity) => _roomList
                                                                   .SelectMany(roomColumn => roomColumn)
                                                                   .FirstOrDefault(room => new Rectangle(room.region.X * 16, room.region.Y * 16, room.region.Width * 16, room.region.Height * 16)
-                                                                      .Contains(entity.Hitbox));
+                                                                      .Contains(entity.Center.ToPoint()));
     }
 }
