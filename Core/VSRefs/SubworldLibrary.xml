@@ -1,0 +1,141 @@
+﻿<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SubworldLibrary</name>
+    </assembly>
+    <members>
+        <member name="P:SubworldLibrary.Subworld.Width">
+            <summary>
+            The subworld's width.
+            </summary>
+        </member>
+        <member name="P:SubworldLibrary.Subworld.Height">
+            <summary>
+            The subworld's height.
+            </summary>
+        </member>
+        <member name="P:SubworldLibrary.Subworld.Tasks">
+            <summary>
+            The subworld's generation tasks.
+            </summary>
+        </member>
+        <member name="P:SubworldLibrary.Subworld.ShouldSave">
+            <summary>
+            Whether the subworld should save or not. Default: false
+            </summary>
+        </member>
+        <member name="P:SubworldLibrary.Subworld.NoPlayerSaving">
+            <summary>
+            Reverts changes to players when they leave the subworld. Default: false
+            </summary>
+        </member>
+        <member name="P:SubworldLibrary.Subworld.NormalUpdates">
+            <summary>
+            Completely disables vanilla world updating in the subworld. Do not enable unless you are replicating a standard world! Default: false
+            </summary>
+        </member>
+        <member name="M:SubworldLibrary.Subworld.OnEnter">
+            <summary>
+            Called when entering a subworld. Before this is called, the return button and underworld's visibility are reset.
+            </summary>
+        </member>
+        <member name="M:SubworldLibrary.Subworld.OnExit">
+            <summary>
+            Called when exiting a subworld. After this is called, the return button and underworld's visibility are reset.
+            </summary>
+        </member>
+        <member name="M:SubworldLibrary.Subworld.OnLoad">
+            <summary>
+            Called after the subworld generates or loads from file.
+            </summary>
+        </member>
+        <member name="M:SubworldLibrary.Subworld.OnUnload">
+            <summary>
+            Called while leaving the subworld, before a different world generates or loads from file.
+            </summary>
+        </member>
+        <member name="M:SubworldLibrary.Subworld.DrawSetup(Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            Corrects zoom and clears the screen, then calls DrawMenu and draws the cursor.
+            </summary>
+            <code>
+            PlayerInput.SetZoom_Unscaled();
+            Main.instance.GraphicsDevice.Clear(Color.Black);
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
+            DrawMenu(gameTime);
+            Main.DrawCursor(Main.DrawThickCursor());
+            Main.spriteBatch.End();
+            </code>
+        </member>
+        <member name="M:SubworldLibrary.Subworld.DrawMenu(Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            Called by DrawSetup to draw the subworld's loading menu. Defaults to text on a black background.
+            </summary>
+        </member>
+        <member name="M:SubworldLibrary.Subworld.GetLight(Terraria.Tile,System.Int32,System.Int32,Terraria.Utilities.FastRandom@,Microsoft.Xna.Framework.Vector3@)">
+            <summary>
+            Controls how a tile in the subworld is lit. Return true to disable vanilla behaviour. Default: false
+            </summary>
+        </member>
+        <member name="F:SubworldLibrary.SubworldSystem.playerLocations">
+            <summary>
+            Used by the main server to direct packets for a client to the subserver the client is in.
+            </summary>
+        </member>
+        <member name="F:SubworldLibrary.SubworldSystem.noReturn">
+            <summary>
+            Hides the Return button. Its value is reset before OnEnter is called, and after OnExit is called.
+            </summary>
+        </member>
+        <member name="F:SubworldLibrary.SubworldSystem.hideUnderworld">
+            <summary>
+            Hides the Underworld background. Its value is reset before OnEnter is called, and after OnExit is called.
+            </summary>
+        </member>
+        <member name="P:SubworldLibrary.SubworldSystem.Current">
+            <summary>
+            The current subworld.
+            </summary>
+        </member>
+        <member name="M:SubworldLibrary.SubworldSystem.IsActive(System.String)">
+            <summary>
+            Returns true if the current subworld's ID matches the specified ID.
+            </summary>
+        </member>
+        <member name="M:SubworldLibrary.SubworldSystem.IsActive``1">
+            <summary>
+            Returns true if the specified subworld is active.
+            </summary>
+        </member>
+        <member name="M:SubworldLibrary.SubworldSystem.AnyActive(Terraria.ModLoader.Mod)">
+            <summary>
+            Returns true if the current subworld is from the specified mod.
+            </summary>
+        </member>
+        <member name="M:SubworldLibrary.SubworldSystem.AnyActive``1">
+            <summary>
+            Returns true if the current subworld is from the specified mod.
+            </summary>
+        </member>
+        <member name="P:SubworldLibrary.SubworldSystem.CurrentPath">
+            <summary>
+            The current subworld's file path.
+            </summary>
+        </member>
+        <member name="M:SubworldLibrary.SubworldSystem.Enter(System.String)">
+            <summary>
+            Tries to enter a subworld with the specified ID.
+            </summary>
+        </member>
+        <member name="M:SubworldLibrary.SubworldSystem.Enter``1">
+            <summary>
+            Enters the specified subworld.
+            </summary>
+        </member>
+        <member name="M:SubworldLibrary.SubworldSystem.Exit">
+            <summary>
+            Exits the current subworld.
+            </summary>
+        </member>
+    </members>
+</doc>
