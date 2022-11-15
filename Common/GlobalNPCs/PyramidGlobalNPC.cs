@@ -3,9 +3,13 @@ using LivingWorldMod.Content.StatusEffects.Debuffs;
 using LivingWorldMod.Content.Subworlds.Pyramid;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using SubworldLibrary;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.Graphics.Shaders;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.GlobalNPCs {
@@ -34,13 +38,33 @@ namespace LivingWorldMod.Common.GlobalNPCs {
 
         public override bool InstancePerEntity => true;
 
+        private bool _spriteBatchNeedsRestart;
+        private bool _isBeingSpawned;
+        private int _spawnAnimTimer;
+
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => SubworldSystem.IsActive<PyramidSubworld>();
+
+        public override void SetStaticDefaults() {
+            if (Main.netMode != NetmodeID.Server) {
+                GameShaders.Misc["PyramidNPCSpawn"] = new MiscShaderData(new Ref<Effect>(Mod.Assets.Request<Effect>("Assets/Shaders/NPCs/PyramidNPCSpawn", AssetRequestMode.ImmediateLoad).Value), "PyramidNPCSpawn");
+            }
+        }
 
         public override void OnSpawn(NPC npc, IEntitySource source) {
             currentRoom = ModContent.GetInstance<PyramidSubworld>().Grid.GetEntityCurrentRoom(npc);
+            _isBeingSpawned = true;
         }
 
         public override bool PreAI(NPC npc) {
+            if (_isBeingSpawned) {
+                if (++_spawnAnimTimer >= 210) {
+                    _isBeingSpawned = false;
+                    _spawnAnimTimer = 0;
+                }
+
+                return false;
+            }
+
             doubleUpdateRate = 0f;
 
             foreach (PyramidRoomCurseType curse in CurrentCurses) {
@@ -62,6 +86,18 @@ namespace LivingWorldMod.Common.GlobalNPCs {
         }
 
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (_isBeingSpawned) {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+
+                GameShaders.Misc["PyramidNPCSpawn"].Apply(new DrawData(TextureAssets.Npc[npc.type].Value, new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.frame.Width, npc.frame.Height), npc.frame, drawColor));
+
+                _spriteBatchNeedsRestart = true;
+
+                return true;
+            }
+
+
             foreach (PyramidRoomCurseType curse in CurrentCurses) {
                 switch (curse) {
                     case PyramidRoomCurseType.Nearsightedness:
@@ -73,6 +109,14 @@ namespace LivingWorldMod.Common.GlobalNPCs {
             }
 
             return true;
+        }
+
+        public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+            if (_spriteBatchNeedsRestart) {
+                _spriteBatchNeedsRestart = false;
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+            }
         }
 
         public override bool CheckDead(NPC npc) {
