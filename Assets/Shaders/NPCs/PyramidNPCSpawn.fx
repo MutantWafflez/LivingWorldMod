@@ -17,15 +17,16 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 color = tex2D(uImage0, coords);
     float frameY = (coords.y * uImageSize0.y - uSourceRect.y) / uSourceRect.w;
+    float shaderTime = uShaderSpecificData.x;
     
-    float cosTime = (cos(uTime) + 1) / 2;
-    if (frameY < cosTime)
+    float sinTime = (sin(shaderTime) + 1) / 2;
+    if (frameY < sinTime)
     {
         return float4(0, 0, 0, 0);
     }
     else
     {
-        if (frameY < cosTime + 0.0125)
+        if (frameY < sinTime + 0.0125)
         {
             color.rgb *= float3(2, 2, 0);
             return color;

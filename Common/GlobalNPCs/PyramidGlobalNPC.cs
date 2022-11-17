@@ -57,7 +57,7 @@ namespace LivingWorldMod.Common.GlobalNPCs {
 
         public override bool PreAI(NPC npc) {
             if (_isBeingSpawned) {
-                if (++_spawnAnimTimer >= 210) {
+                if (++_spawnAnimTimer >= 190) {
                     _isBeingSpawned = false;
                     _spawnAnimTimer = 0;
                 }
@@ -87,10 +87,13 @@ namespace LivingWorldMod.Common.GlobalNPCs {
 
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (_isBeingSpawned) {
+                MiscShaderData spawnShader = GameShaders.Misc["PyramidNPCSpawn"];
+
                 spriteBatch.End();
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 
-                GameShaders.Misc["PyramidNPCSpawn"].Apply(new DrawData(TextureAssets.Npc[npc.type].Value, new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.frame.Width, npc.frame.Height), npc.frame, drawColor));
+                spawnShader.UseShaderSpecificData(new Vector4(_spawnAnimTimer / 60f + MathHelper.PiOver2, 0f, 0f, 0f));
+                spawnShader.Apply(new DrawData(TextureAssets.Npc[npc.type].Value, new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.frame.Width, npc.frame.Height), npc.frame, drawColor));
 
                 _spriteBatchNeedsRestart = true;
 
