@@ -41,43 +41,65 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
             progress.Set(0f);
 
             //Used to define the rectangle to search and to displace the origin to the actual correct position when generating the village so it doesn't generate on the top left of the rectangle
-            int originHorizontalDisplacement = 175;
-            int originVerticalDisplacement = CurrentWorldSize != WorldSize.Small ? 175 : 123;
+            int rectangleWidth = 175;
+            int rectangleHeight = CurrentWorldSize != WorldSize.Small ? 175 : 123;
+            int originHorizontalDisplacement = (int)(rectangleWidth * (0.88f / 1.75f));
+            int originVerticalDisplacement = (int)(rectangleHeight * (1.34f / 1.75f));
 
-            int yLevel = CurrentWorldSize switch {
-                WorldSize.Small => 45,
-                WorldSize.Medium => 134,
-                WorldSize.Large => 200,
-                _ => 100
-            };
+            int midWorld = Main.maxTilesX / 2;
+            int searchLeftX = midWorld - 400;
+            int searchRightX = midWorld + 400;
+            int startingYLevel = (int)(Main.maxTilesY * 0.025f);
 
             List<Point> possibleIslandPlacements = new List<Point>();
+            for (int i = searchLeftX; i < searchRightX; i += 20) {
+                progress.Set((i - searchLeftX) / (float)(searchRightX - searchLeftX));
 
-            for (int i = Main.maxTilesX / 2 - 1000; i < Main.maxTilesX / 2 + 1000; i++) {
-                progress.Set((float)(i - (Main.maxTilesX / 2 - 1000)) / (float)(Main.maxTilesX / 2 + 1000));
-
-                if (WorldUtils.Find(new Point(i, yLevel), Searches.Chain(
-                            new Searches.Down(5),
-                            new IsAir().AreaAnd(originHorizontalDisplacement, originVerticalDisplacement)
-                        ),
-                        out Point result)) {
-                    possibleIslandPlacements.Add(result);
+                for (int j = startingYLevel; j < WorldGen.worldSurface; j++) {
+                    if (WorldUtils.Find(new Point(midWorld, j), Searches.Chain(
+                                new Searches.Down(1),
+                                new IsAir().AreaAnd(rectangleWidth, rectangleHeight)
+                            ),
+                            out Point result)) {
+                        possibleIslandPlacements.Add(result);
+                    }
                 }
             }
 
             Point originPoint;
             if (possibleIslandPlacements.Any()) {
-                //Get point closest to middle of the world: order the list by distance to the center of the world (ascending), then grab the first element in said list
-                originPoint = possibleIslandPlacements.OrderBy(point => Math.Abs(point.X - Main.maxTilesX / 2)).First();
+                //Get point closest to middle of the world: order the list by distance to the relative "center" of the sky
+                originPoint = possibleIslandPlacements.OrderBy(point => point.ToVector2().Distance(new Vector2(midWorld, Main.maxTilesY * 0.06f))).First();
 
                 //Set Harpy Village Zone temporarily
                 WorldCreationSystem.Instance.tempWorldGenValues.Add(
-                    new TemporaryGenValue<Rectangle>(new Rectangle(originPoint.X, originPoint.Y, originHorizontalDisplacement, originVerticalDisplacement), TemporaryZoneVariableName)
+                    new TemporaryGenValue<Rectangle>(new Rectangle(originPoint.X, originPoint.Y, rectangleWidth, rectangleHeight), TemporaryZoneVariableName)
                 );
 
                 //Adjust origin point to be placed correctly within the village "zone" and actually an origin rather than the top corner
-                originPoint.X += (int)(originHorizontalDisplacement * (0.88f / 1.75f));
-                originPoint.Y += (int)(originVerticalDisplacement * (1.34f / 1.75f));
+                originPoint.X += originHorizontalDisplacement;
+                originPoint.Y += originVerticalDisplacement;
+            }
+            //Compatbility with Remnants
+            else if (ModLoader.HasMod("Remnants")) {
+                ModContent.GetInstance<LivingWorldMod>().Logger.Info("Remnants Mod enabled & no suitable placement found. Forcing Placement.");
+
+                //Set origin point manually
+                originPoint = new Point(midWorld, startingYLevel + originVerticalDisplacement);
+
+                //Set Village Zone manually
+                Rectangle villageZone = new Rectangle(originPoint.X - originHorizontalDisplacement, startingYLevel, rectangleWidth, rectangleHeight);
+                WorldCreationSystem.Instance.tempWorldGenValues.Add(
+                    new TemporaryGenValue<Rectangle>(villageZone, TemporaryZoneVariableName)
+                );
+
+                //Clear village zone
+                for (int i = villageZone.Left; i < villageZone.Right; i++) {
+                    for (int j = villageZone.Top; j < villageZone.Bottom; j++) {
+                        Main.tile[i, j].ClearTile();
+                        Main.tile[i, j].WallType = 0;
+                    }
+                }
             }
             else {
                 //If there is no point found (ever) the structure will not generate and the logger will throw a warning
