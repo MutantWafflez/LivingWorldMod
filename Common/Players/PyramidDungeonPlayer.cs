@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using SubworldLibrary;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -96,6 +97,11 @@ namespace LivingWorldMod.Common.Players {
 
             foreach (PyramidRoomCurseType curse in CurrentCurses) {
                 switch (curse) {
+                    case PyramidRoomCurseType.Nyctophobia:
+                        if (Main.myPlayer == Player.whoAmI) {
+                            DontStarveDarknessDamageDealer.Update(Player);
+                        }
+                        break;
                     case PyramidRoomCurseType.Hemophilia:
                         Player.potionDelay = 2;
                         break;
