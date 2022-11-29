@@ -80,9 +80,9 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
                 originPoint.X += originHorizontalDisplacement;
                 originPoint.Y += originVerticalDisplacement;
             }
-            //Compatbility with Remnants
-            else if (ModLoader.HasMod("Remnants")) {
-                ModContent.GetInstance<LivingWorldMod>().Logger.Info("Remnants Mod enabled & no suitable placement found. Forcing Placement.");
+            //If no valid placement is found, forcefully place and purge structures in the way.
+            else {
+                ModContent.GetInstance<LivingWorldMod>().Logger.Info("No suitable placement found naturally. Forcing Placement.");
 
                 //Set origin point manually
                 originPoint = new Point(midWorld, startingYLevel + originVerticalDisplacement);
@@ -99,11 +99,6 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
                         WorldGenUtils.PurgeStructure(i, j);
                     }
                 }
-            }
-            else {
-                //If there is no point found (ever) the structure will not generate and the logger will throw a warning
-                ModContent.GetInstance<LivingWorldMod>().Logger.Warn("Harpy Village unable to generate due to no suitable placement.");
-                return;
             }
 
             float xScale = WorldGen.genRand.NextFloat(1.6f, 1.75f);
