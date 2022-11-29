@@ -96,8 +96,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
                 //Clear village zone
                 for (int i = villageZone.Left; i < villageZone.Right; i++) {
                     for (int j = villageZone.Top; j < villageZone.Bottom; j++) {
-                        Main.tile[i, j].ClearTile();
-                        Main.tile[i, j].WallType = 0;
+                        WorldGenUtils.PurgeStructure(i, j);
                     }
                 }
             }
