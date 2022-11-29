@@ -141,6 +141,16 @@ namespace LivingWorldMod.Common.Players {
             }
         }
 
+        public override void PostUpdateEquips() {
+            foreach (PyramidRoomCurseType curse in CurrentCurses) {
+                switch (curse) {
+                    case PyramidRoomCurseType.Impact:
+                        Player.noKnockback = false;
+                        break;
+                }
+            }
+        }
+
         public override void PostUpdateMiscEffects() {
             foreach (PyramidRoomCurseType curse in CurrentCurses) {
                 switch (curse) {
@@ -261,6 +271,11 @@ namespace LivingWorldMod.Common.Players {
                         break;
                     case PyramidRoomCurseType.Poison:
                         Player.AddBuff(BuffID.Poisoned, 60 * 8);
+                        break;
+                    case PyramidRoomCurseType.Impact:
+                        if (!Player.noKnockback && hitDirection != 0 && (!Player.mount.Active || !Player.mount.Cart)) {
+                            Player.velocity *= 2f;
+                        }
                         break;
                 }
             }

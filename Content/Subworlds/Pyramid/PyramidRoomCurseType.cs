@@ -159,9 +159,9 @@
         Rotation,
 
         /// <summary>
-        /// Players deccelerate 50% slower.
+        /// Knockback prevention is removed for Players; knockback is 100% more potent
         /// </summary>
-        Inertia,
+        Impact,
 
         /// <summary>
         /// Colliding with an object fast enough will injure the player.
