@@ -1,5 +1,8 @@
-﻿using LivingWorldMod.Custom.Enums;
+﻿using System.Collections.Generic;
+using System.Linq;
+using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -109,6 +112,46 @@ namespace LivingWorldMod.Custom.Utilities {
                     WorldGen.TileFrame(startingX + x + data.structureDisplacement.X, startingY + y + data.structureDisplacement.Y, true, true);
                     Framing.WallFrame(startingX + x + data.structureDisplacement.X, startingY + y + data.structureDisplacement.Y, true);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Starting at the specified position, attempts to purge all walls and tiles connected to said tile in any way. This
+        /// includes diagonal tiles.
+        /// </summary>
+        /// <param name="x"> The beginning tile X position to begin purging. </param>
+        /// <param name="y"> The beginning tile Y position to begin purging. </param>
+        /// <param name="ignoredTileTypes"> An array of tile types to ignore for purging. Defaults to null, or no ignored tile types. </param>
+        /// <param name="maxRepetitions"> How many times the purge loops is allowed run, at maximum. Defaults to 500. </param>
+        public static void PurgeStructure(int x, int y, int[] ignoredTileTypes = null, uint maxRepetitions = 500) {
+            Queue<Point> tiles = new Queue<Point>();
+            Tile firstTile = Main.tile[x, y];
+            if (firstTile.HasTile && !(ignoredTileTypes?.Contains(firstTile.TileType) ?? false) || firstTile.WallType > WallID.None) {
+                tiles.Enqueue(new Point(x, y));
+            }
+
+            void SearchAroundTile(int i, int j) {
+                for (int k = -1; k <= 1; k++) {
+                    for (int l = -1; l <= 1; l += k == 0 ? 2 : 1) {
+                        Tile tile = Main.tile[i + k, j + l];
+
+                        if ((tile.HasTile && !(ignoredTileTypes?.Contains(tile.TileType) ?? false) || tile.WallType > WallID.None) && !tiles.Any(point => point.X == i + k && point.Y == j + l)) {
+                            tiles.Enqueue(new Point(i + k, j + l));
+                        }
+                    }
+                }
+            }
+
+            uint repetitions = 0;
+            while (tiles.Any() && repetitions < maxRepetitions) {
+                repetitions++;
+
+                Point tilePos = tiles.Dequeue();
+
+                SearchAroundTile(tilePos.X, tilePos.Y);
+
+                Main.tile[tilePos].ClearTile();
+                Main.tile[tilePos].WallType = 0;
             }
         }
     }
