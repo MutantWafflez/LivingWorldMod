@@ -52,7 +52,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
             int startingYLevel = (int)(Main.maxTilesY * 0.025f);
 
             List<Point> possibleIslandPlacements = new List<Point>();
-            for (int i = searchLeftX; i < searchRightX; i += 20) {
+            for (int i = searchLeftX; i < searchRightX; i += 5) {
                 progress.Set((i - searchLeftX) / (float)(searchRightX - searchLeftX));
 
                 for (int j = startingYLevel; j < WorldGen.worldSurface; j++) {
@@ -69,7 +69,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
             Point originPoint;
             if (possibleIslandPlacements.Any()) {
                 //Get point closest to middle of the world: order the list by distance to the relative "center" of the sky
-                originPoint = possibleIslandPlacements.OrderBy(point => point.ToVector2().Distance(new Vector2(midWorld, Main.maxTilesY * 0.06f))).First();
+                originPoint = possibleIslandPlacements.OrderBy(point => point.ToVector2().Distance(new Vector2(midWorld - originHorizontalDisplacement, Main.maxTilesY * 0.06f))).First();
 
                 //Set Harpy Village Zone temporarily
                 WorldCreationSystem.Instance.tempWorldGenValues.Add(
