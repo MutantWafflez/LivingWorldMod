@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using LivingWorldMod.Content.StatusEffects.Debuffs;
 using LivingWorldMod.Content.Subworlds.Pyramid;
 using Microsoft.Xna.Framework;
@@ -119,6 +120,12 @@ namespace LivingWorldMod.Common.GlobalNPCs {
                 _spriteBatchNeedsRestart = false;
                 spriteBatch.End();
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+            }
+
+            if (_isBeingSpawned && _spawnAnimTimer < 140) {
+                Vector2 dustPos = new Vector2(npc.position.X, npc.position.Y + npc.height * (float)Math.Sin(_spawnAnimTimer / 70f + MathHelper.PiOver2));
+
+                Dust.NewDust(dustPos, npc.width, 1, DustID.Sand);
             }
         }
 
