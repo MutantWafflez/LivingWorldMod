@@ -1,5 +1,5 @@
 ﻿namespace LivingWorldMod.Custom.Enums {
-    public enum WaystoneType : int {
+    public enum WaystoneType {
         Desert,
         Jungle,
         Mushroom,

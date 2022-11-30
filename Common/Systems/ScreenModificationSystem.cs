@@ -3,6 +3,7 @@ using LivingWorldMod.Custom.Interfaces;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Common.ILoadables;
 using LivingWorldMod.Common.Players;
 using LivingWorldMod.Content.Subworlds.Pyramid;
 using SubworldLibrary;

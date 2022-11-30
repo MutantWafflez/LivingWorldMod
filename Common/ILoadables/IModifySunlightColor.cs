@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Custom.Interfaces {
+namespace LivingWorldMod.Common.ILoadables {
     /// <summary>
     /// Interface that, once inherited, will have some kind of effect on the sunlight color based on the
     /// specified checks.

@@ -29,6 +29,16 @@ using Terraria.WorldBuilding;
 namespace LivingWorldMod.Content.Subworlds.Pyramid {
     public class PyramidSubworld : Subworld {
         /// <summary>
+        /// Small enum that denotes the smaller steps of Pyramid Room's generation steps.
+        /// </summary>
+        public enum PyramidRoomGenerationStep : byte {
+            NotGenerated,
+            LayoutGenerated,
+            CurseGenerated,
+            FoliageGenerated
+        }
+
+        /// <summary>
         /// The grid that the dungeon is composed of. Each room at maximum can be 100x100.
         /// </summary>
         public PyramidRoomGrid Grid {

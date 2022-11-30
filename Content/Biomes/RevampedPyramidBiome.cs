@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Content.Walls.WorldGen;
+﻿using LivingWorldMod.Common.ILoadables;
+using LivingWorldMod.Content.Walls.WorldGen;
 using LivingWorldMod.Custom.Interfaces;
 using Terraria;
 using Terraria.ModLoader;

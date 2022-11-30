@@ -1,6 +1,5 @@
 ﻿using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.UI.CommonElements;
-using LivingWorldMod.Content.UI.Elements;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
@@ -243,7 +242,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
                         savingsDisplay.moneyToDisplay = player.CalculateTotalSavings();
 
                         if (currentVillager.RelationshipStatus >= VillagerRelationship.Dislike) {
-                            portrait.temporaryExpression = VillagerPortraitExpression.Happy;
+                            portrait.temporaryExpression = UIPortrait.VillagerPortraitExpression.Happy;
                             portrait.temporaryExpressionTimer = 120f;
                         }
 

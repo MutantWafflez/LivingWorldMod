@@ -1,21 +1,31 @@
-﻿using LivingWorldMod.Content.NPCs.Villagers;
+﻿using System;
+using System.Collections.Generic;
+using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using System;
-using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.Elements {
+namespace LivingWorldMod.Content.UI.VillagerShop {
     /// <summary>
     /// UIElement class extension that handles and creates portraits for villagers in the shop UI, primarily.
     /// </summary>
     public class UIPortrait : UIElement {
+        /// <summary>
+        /// Small enum that defines what expression fits with what sprite on the portraits of the shop
+        /// UI. Case-sensitive with the sprites file names, very important!
+        /// </summary>
+        public enum VillagerPortraitExpression {
+            Neutral,
+            Angered,
+            Happy
+        }
+
         public UIImage portraitBase;
         public UIImage portraitClothing;
         public UIImage portraitHead;

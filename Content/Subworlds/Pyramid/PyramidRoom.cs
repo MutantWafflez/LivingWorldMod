@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Common.Configs;
-using LivingWorldMod.Common.ModTypes;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
@@ -52,7 +51,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         /// <summary>
         /// The current progress of this specific room in the generation process.
         /// </summary>
-        public PyramidRoomGenerationStep generationStep;
+        public PyramidSubworld.PyramidRoomGenerationStep generationStep;
 
         /// <summary>
         /// This room's type.

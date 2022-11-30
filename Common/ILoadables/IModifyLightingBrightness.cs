@@ -1,6 +1,6 @@
 ﻿using Terraria.ModLoader;
 
-namespace LivingWorldMod.Custom.Interfaces {
+namespace LivingWorldMod.Common.ILoadables {
     public interface IModifyLightingBrightness : ILoadable {
         /// <summary>
         /// Whether or not this current effect should be active.
