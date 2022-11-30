@@ -1,10 +1,12 @@
-﻿using LivingWorldMod.Common.Players;
+﻿using Terraria.ID;
+using LivingWorldMod.Common.Players;
+using LivingWorldMod.Common.Systems.SubworldSystems;
 using Terraria;
 using LivingWorldMod.Content.Subworlds.Pyramid;
+using LivingWorldMod.Core.PacketHandlers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SubworldLibrary;
-using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.GlobalTiles {
@@ -24,6 +26,26 @@ namespace LivingWorldMod.Common.GlobalTiles {
             }
 
             return true;
+        }
+
+        public override void PlaceInWorld(int i, int j, int type, Item item) {
+            if (type != TileID.Torches || !IsInPyramidSubworld) {
+                return;
+            }
+            if (ModContent.GetInstance<PyramidSubworld>().Grid.GetRoomFromTilePosition(new Point(i, j)) is not { } room || !room.roomCurses.Contains(PyramidRoomCurseType.DyingLight)) {
+                return;
+            }
+
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                ModPacket packet = ModContent.GetInstance<PyramidDungeonPacketHandler>().GetPacket(PyramidDungeonPacketHandler.SyncDyingLightCurse);
+                packet.Write(i);
+                packet.Write(j);
+
+                packet.Send();
+            }
+            else {
+                PyramidDungeonSystem.Instance.AddNewDyingTorch(new Point(i, j));
+            }
         }
     }
 }

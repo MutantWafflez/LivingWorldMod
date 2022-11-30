@@ -17,7 +17,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         private PyramidRoom[][] _fixedGrid;
         private List<PyramidRoom>[] _roomList;
 
-        public PyramidRoomGrid(int gridSideLength, int roomSideLength, int roomPadding, UnifiedRandom randomNumberGenerator) {
+        public PyramidRoomGrid(int gridSideLength, int roomSideLength, int roomPadding) {
             _gridSideLength = gridSideLength;
             _roomSideLength = roomSideLength;
             _roomPadding = roomPadding;
@@ -111,12 +111,26 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         public List<PyramidRoom> GetRoomColumn(int i) => _roomList[i];
 
         /// <summary>
-        /// Searches through the current grid and returns the room the passed in entity currently resides in.
-        /// If the player isn't in any room or the check otherwise fails, returns null.
+        /// Searches through the current grid and returns the room that contains the passed in position in WORLD
+        /// coordinates. If this position isn't within a room, then returns null.
         /// </summary>
-        public PyramidRoom GetEntityCurrentRoom(Entity entity) => _roomList
-                                                                  .SelectMany(roomColumn => roomColumn)
-                                                                  .FirstOrDefault(room => new Rectangle(room.region.X * 16, room.region.Y * 16, room.region.Width * 16, room.region.Height * 16)
-                                                                      .Contains(entity.Center.ToPoint()));
+        public PyramidRoom GetRoomFromWorldPosition(Point position) => _roomList
+                                                                       .SelectMany(roomColumn => roomColumn)
+                                                                       .FirstOrDefault(room => new Rectangle(room.region.X * 16, room.region.Y * 16, room.region.Width * 16, room.region.Height * 16)
+                                                                           .Contains(position));
+
+        /// <summary>
+        /// Searches through the current grid and returns the room that contains the passed in position in TILE
+        /// coordinates. If this position isn't within a room, then returns null.
+        /// </summary>
+        public PyramidRoom GetRoomFromTilePosition(Point position) => _roomList
+                                                                      .SelectMany(roomColumn => roomColumn)
+                                                                      .FirstOrDefault(room => room.region.Contains(position));
+
+        /// <summary>
+        /// Searches through the current grid and returns the room the passed in entity currently resides in.
+        /// If the entity isn't in any room or the check otherwise fails, returns null.
+        /// </summary>
+        public PyramidRoom GetEntityCurrentRoom(Entity entity) => GetRoomFromWorldPosition(entity.position.ToPoint());
     }
 }

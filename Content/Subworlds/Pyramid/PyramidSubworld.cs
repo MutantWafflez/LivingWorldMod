@@ -206,7 +206,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
             _spawnTileY = 245;
 
             //Generate grid
-            Grid = new PyramidRoomGrid(_gridSideLength, _roomSideLength, _worldBorderPadding, WorldGen.genRand);
+            Grid = new PyramidRoomGrid(_gridSideLength, _roomSideLength, _worldBorderPadding);
             Grid.GenerateGrid();
 
             //Generate correct path first
