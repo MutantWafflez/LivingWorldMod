@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Terraria;
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Content.Tiles.Interactables;
+using Terraria;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;

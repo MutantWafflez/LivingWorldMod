@@ -16,10 +16,6 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
     /// Tile Entity for the Waystone tiles.
     /// </summary>
     public class WaystoneEntity : TEModdedPylon {
-        public bool isActivated;
-
-        public WaystoneType waystoneType;
-
         public Color WaystoneColor {
             get {
                 return waystoneType switch {
@@ -32,6 +28,10 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                 };
             }
         }
+
+        public bool isActivated;
+
+        public WaystoneType waystoneType;
 
         private int _activationTimer;
         private bool _doingActivationVFX;
@@ -92,7 +92,8 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         }
 
         /// <summary>
-        /// Should be called whenever the tile that is entity is associated with is right clicked & activated in SINGLERPLAYER or ON THE SERVER. Shouldn't
+        /// Should be called whenever the tile that is entity is associated with is right clicked & activated in SINGLERPLAYER or
+        /// ON THE SERVER. Shouldn't
         /// be called on any multiplayer client; we handle that with our own packets.
         /// </summary>
         public void ActivateWaystoneEntity() {
@@ -126,9 +127,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                 retrievedEntity.isActivated = isActivated;
                 return true;
             }
-            else {
-                return false;
-            }
+            return false;
         }
     }
 }

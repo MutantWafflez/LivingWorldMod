@@ -1,8 +1,7 @@
-﻿using System;
+﻿using IL.Terraria;
 using LivingWorldMod.Custom.Utilities;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using Terraria;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Core.Patches {
@@ -12,7 +11,7 @@ namespace LivingWorldMod.Core.Patches {
     /// </summary>
     public class MiscPlayerPatches : ILoadable {
         public void Load(Mod mod) {
-            IL.Terraria.Player.KillMe += SkipPreKill;
+            Player.KillMe += SkipPreKill;
         }
 
         public void Unload() { }
@@ -20,7 +19,7 @@ namespace LivingWorldMod.Core.Patches {
         private void SkipPreKill(ILContext il) {
             //Simple edit, adding some branching that allows us to skip over tML's Prekill call when we Force Kill.
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             ILLabel exitLabel = c.DefineLabel();
 
@@ -33,9 +32,9 @@ namespace LivingWorldMod.Core.Patches {
 
             //Jump back to beginning, and navigate to where we want to add our branch instruction, then add it
             c.Index = 0;
-            c.ErrorOnFailedGotoNext(i => i.MatchCall<Player>(nameof(Player.StopVanityActions)));
+            c.ErrorOnFailedGotoNext(i => i.MatchCall<Terraria.Player>(nameof(Terraria.Player.StopVanityActions)));
             c.Index += 5;
-            c.EmitDelegate<Func<bool>>(() => PlayerUtils.SkipPreKill);
+            c.EmitDelegate(() => PlayerUtils.SkipPreKill);
             c.Emit(OpCodes.Brtrue_S, exitLabel);
         }
     }

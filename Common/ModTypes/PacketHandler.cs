@@ -24,6 +24,10 @@ namespace LivingWorldMod.Common.ModTypes {
             private set;
         }
 
+        public sealed override void SetupContent() { }
+
+        public sealed override void SetStaticDefaults() { }
+
         /// <summary>
         /// Returns the PacketHandler of the specified type. Returns null if the type doesn't exist.
         /// </summary>
@@ -38,6 +42,22 @@ namespace LivingWorldMod.Common.ModTypes {
         public abstract void HandlePacket(BinaryReader reader, int fromWhomst);
 
         /// <summary>
+        /// Retrieves & returns a freshly created ModPacket of this Handler's type. Starts
+        /// with the handler's type & packet type (in relation to this handler) on the
+        /// stream, in that order. This method cannot be overriden as the packet
+        /// containing HandlerType is required for functionality, but <seealso cref="HijackGetPacket"/>
+        /// may be overriden.
+        /// </summary>
+        /// <param name="packetType"> The specific packet type in relation to this handler. </param>
+        public ModPacket GetPacket(byte packetType) {
+            ModPacket packet = Mod.GetPacket();
+            packet.Write(HandlerType);
+            HijackGetPacket(ref packet, packetType);
+
+            return packet;
+        }
+
+        /// <summary>
         /// Method called after <seealso cref="GetPacket"/> writes the HandlerType to the newly generated
         /// packet. By default, writes the packetType to the packet.
         /// </summary>
@@ -47,30 +67,10 @@ namespace LivingWorldMod.Common.ModTypes {
             packet.Write(packetType);
         }
 
-        public sealed override void SetupContent() { }
-
-        public sealed override void SetStaticDefaults() { }
-
         protected sealed override void Register() {
             ModTypeLookup<PacketHandler>.Register(this);
             HandlerType = HandlerTypeCount;
             HandlerTypeCount++;
-        }
-
-        /// <summary>
-        /// Retrieves & returns a freshly created ModPacket of this Handler's type. Starts
-        /// with the handler's type & packet type (in relation to this handler) on the
-        /// stream, in that order. This method cannot be overriden as the packet
-        /// containing HandlerType is required for functionality, but <seealso cref="HijackGetPacket"/>
-        /// may be overriden.
-        /// </summary>
-        /// <param name="packetType"> The specific packet type in relation to this handler. </param>
-        public ModPacket GetPacket(byte packetType = 0) {
-            ModPacket packet = Mod.GetPacket();
-            packet.Write(HandlerType);
-            HijackGetPacket(ref packet, packetType);
-
-            return packet;
         }
     }
 }

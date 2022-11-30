@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Terraria.ID;
 using LivingWorldMod.Common.VanillaOverrides.NPCProfiles;
 using LivingWorldMod.Custom.Classes;
 using Microsoft.Xna.Framework;
@@ -7,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -17,15 +17,15 @@ namespace LivingWorldMod.Common.GlobalNPCs {
     //TODO: Finish NPC umbrella stuff & sleeping testing
     [Autoload(false)]
     public class TownChangesNPC : GlobalNPC {
+        private static RainProfile _rainProfile;
+
+        public override bool InstancePerEntity => true;
+
         [CloneByReference]
         public BedData ownedBed;
 
         [CloneByReference]
         public int bedPhase;
-
-        public override bool InstancePerEntity => true;
-
-        private static RainProfile _rainProfile;
 
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.townNPC && entity.aiStyle == 7 && entity.type != NPCID.OldMan;
 
@@ -49,7 +49,7 @@ namespace LivingWorldMod.Common.GlobalNPCs {
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (bedPhase == 3 && ownedBed is not null) {
                 TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile);
-                Rectangle drawPos = new Rectangle(
+                Rectangle drawPos = new(
                     (int)(ownedBed.bedPosition.X * 16f + (ownedBed.bedDirection < 1 ? 66f : 56f) - screenPos.X),
                     (int)(ownedBed.bedPosition.Y * 16f - 8f - screenPos.Y),
                     npc.frame.Width,

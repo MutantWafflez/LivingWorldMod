@@ -6,9 +6,11 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using Terraria;
+using On.Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Collision = Terraria.Collision;
+using Main = Terraria.Main;
 
 namespace LivingWorldMod.Core.Patches {
     /// <summary>
@@ -17,14 +19,14 @@ namespace LivingWorldMod.Core.Patches {
     /// </summary>
     public class PlayerUpdatePatches : ILoadable {
         public void Load(Mod mod) {
-            On.Terraria.Player.JumpMovement += PlayerGravityManipulation;
+            Player.JumpMovement += PlayerGravityManipulation;
             IL.Terraria.Player.Update += ForceWaterPhysics;
             IL.Terraria.Player.StickyMovement += ForceStickyPhysics;
         }
 
         public void Unload() { }
 
-        private void PlayerGravityManipulation(On.Terraria.Player.orig_JumpMovement orig, Player self) {
+        private void PlayerGravityManipulation(Player.orig_JumpMovement orig, Terraria.Player self) {
             //Due to the limitations of ModPlayer update hooks, we must mess with gravity here.
             PyramidDungeonPlayer player = self.GetModPlayer<PyramidDungeonPlayer>();
             foreach (PyramidRoomCurseType curse in player.CurrentCurses) {
@@ -55,26 +57,26 @@ namespace LivingWorldMod.Core.Patches {
             //Small edit that will force the physical effects of being underwater, regardless of whether or not
             //the player is actually submerged.
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //Navigate to WetCollision check
             c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCall<Collision>(nameof(Collision.WetCollision)));
             //Add our own check
             c.Emit(OpCodes.Ldarg_0);
-            c.EmitDelegate<Func<bool, Player, bool>>((originalValue, player) => player.GetModPlayer<PyramidDungeonPlayer>().CurrentCurses.Contains(PyramidRoomCurseType.Viscosity) || originalValue);
+            c.EmitDelegate<Func<bool, Terraria.Player, bool>>((originalValue, player) => player.GetModPlayer<PyramidDungeonPlayer>().CurrentCurses.Contains(PyramidRoomCurseType.Viscosity) || originalValue);
         }
 
         private void ForceStickyPhysics(ILContext il) {
             //Small edit that will force the physical effects of touching a honey block, regardless of whether or not
             //the player is actually touching a honey block. Player must be colliding with a block for this to apply.
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //Navigate to Sticky Tile call.
             c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCall<Collision>(nameof(Collision.StickyTiles)));
             c.Emit(OpCodes.Pop);
             c.Emit(OpCodes.Ldarg_0);
-            c.EmitDelegate<Func<Player, Vector2>>(player => {
+            c.EmitDelegate<Func<Terraria.Player, Vector2>>(player => {
                 if (player.GetModPlayer<PyramidDungeonPlayer>().CurrentCurses.Contains(PyramidRoomCurseType.Adhesion)) {
                     return Collision.IsClearSpotTest(player.position + player.velocity, 1f, player.width, player.height, gravDir: (int)player.gravDir, checkSlopes: true) ? new Vector2(-1f) : new Vector2(0f);
                 }

@@ -40,10 +40,11 @@ namespace LivingWorldMod.Custom.Utilities {
         /// <param name="tile"> A tile within the multi-tile. </param>
         /// <param name="x"> The x coordinate of the specified tile. </param>
         /// <param name="y"> The y coordinate of the specified tile. </param>
-        public static Point16 GetTopLeftOfMultiTile(Tile tile, int x, int y) => new Point16(x - tile.TileFrameX / 18, y - tile.TileFrameY / 18);
+        public static Point16 GetTopLeftOfMultiTile(Tile tile, int x, int y) => new(x - tile.TileFrameX / 18, y - tile.TileFrameY / 18);
 
         /// <summary>
-        /// Returns the top left coordinate of the passed in tile which should be a type of multi-tile. This overload takes into account multi-
+        /// Returns the top left coordinate of the passed in tile which should be a type of multi-tile. This overload takes into
+        /// account multi-
         /// styled multi-tiles.
         /// </summary>
         /// <param name="tile"> A tile within the multi-tile. </param>

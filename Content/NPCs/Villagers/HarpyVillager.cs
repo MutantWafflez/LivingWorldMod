@@ -17,7 +17,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public override WeightedRandom<ShopItem> ShopPool {
             get {
-                WeightedRandom<ShopItem> pool = new WeightedRandom<ShopItem>();
+                WeightedRandom<ShopItem> pool = new();
                 VillagerRelationship relationship = RelationshipStatus;
 
                 //Furniture & Blocks

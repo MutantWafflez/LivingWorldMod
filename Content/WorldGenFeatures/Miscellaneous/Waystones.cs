@@ -1,12 +1,12 @@
-﻿using LivingWorldMod.Common.ModTypes;
+﻿using System.Collections.Generic;
+using System.Linq;
+using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.IO;
@@ -44,12 +44,12 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
             };
 
             //Define what waystone types can have what tiles under them
-            Dictionary<WaystoneType, ushort[]> typeToValidTiles = new Dictionary<WaystoneType, ushort[]>() {
-                { WaystoneType.Desert, new ushort[] { TileID.HardenedSand, TileID.Sandstone } },
-                { WaystoneType.Jungle, new ushort[] { TileID.JungleGrass } },
-                { WaystoneType.Mushroom, new ushort[] { TileID.MushroomGrass } },
-                { WaystoneType.Caverns, new ushort[] { TileID.Stone } },
-                { WaystoneType.Ice, new ushort[] { TileID.IceBlock, TileID.SnowBlock } }
+            Dictionary<WaystoneType, ushort[]> typeToValidTiles = new() {
+                { WaystoneType.Desert, new[] { TileID.HardenedSand, TileID.Sandstone } },
+                { WaystoneType.Jungle, new[] { TileID.JungleGrass } },
+                { WaystoneType.Mushroom, new[] { TileID.MushroomGrass } },
+                { WaystoneType.Caverns, new[] { TileID.Stone } },
+                { WaystoneType.Ice, new[] { TileID.IceBlock, TileID.SnowBlock } }
             };
 
             //Get all the valid tiles together for faster searching
@@ -69,7 +69,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     if (!WorldGen.InWorld(i, j, 4)) {
                         continue;
                     }
-                    Point searchOrigin = new Point(i, j);
+                    Point searchOrigin = new(i, j);
 
                     // Test for 2x3 pocket of air
                     if (!WorldUtils.Find(searchOrigin, Searches.Chain(
@@ -114,7 +114,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                     if (!WorldGen.InWorld(i, j, 4)) {
                         continue;
                     }
-                    Point searchOrigin = new Point(i, j);
+                    Point searchOrigin = new(i, j);
 
                     // Test for 2x3 pocket of air
                     if (!WorldUtils.Find(searchOrigin, Searches.Chain(
@@ -171,8 +171,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous {
                         ModContent.GetInstance<LivingWorldMod>().Logger.Info($"Placed Waystone at {i}, {j}");
                     }
 
-                    ContinueLoop:
-                    continue;
+                    ContinueLoop: ;
                 }
             }
         }

@@ -12,6 +12,9 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
     /// Small class that exists for data storage on a given pyramid room.
     /// </summary>
     public sealed class PyramidRoom {
+        public static readonly WeightedRandom<PyramidRoomType> RoomSelector = new(WorldGen.genRand, new Tuple<PyramidRoomType, double>(PyramidRoomType.Normal, 50), new Tuple<PyramidRoomType, double>(PyramidRoomType.Cursed, 50 / 3f),
+            new Tuple<PyramidRoomType, double>(PyramidRoomType.Puzzle, 50 / 3f), new Tuple<PyramidRoomType, double>(PyramidRoomType.Treasure, 50 / 3f));
+
         /// <summary>
         /// The rectangle that denotes the actual tile position and width/length.
         /// </summary>
@@ -21,7 +24,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         /// Dictionary that holds data on each door in this room. If a key doesn't exist for one of the values, that door does not
         /// exist in this room.
         /// </summary>
-        public Dictionary<PyramidDoorDirection, PyramidDoorData> doorData = new Dictionary<PyramidDoorDirection, PyramidDoorData>() { };
+        public Dictionary<PyramidDoorDirection, PyramidDoorData> doorData = new();
 
         /// <summary>
         /// The top left position's X value of this room in terms of the GRID, not tiles.
@@ -61,14 +64,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         /// <summary>
         /// A list of all curses affecting this room.
         /// </summary>
-        public List<PyramidRoomCurseType> roomCurses = new List<PyramidRoomCurseType>();
-
-        public static readonly WeightedRandom<PyramidRoomType> RoomSelector = new WeightedRandom<PyramidRoomType>(WorldGen.genRand, new[] {
-            new Tuple<PyramidRoomType, double>(PyramidRoomType.Normal, 50),
-            new Tuple<PyramidRoomType, double>(PyramidRoomType.Cursed, 50 / 3f),
-            new Tuple<PyramidRoomType, double>(PyramidRoomType.Puzzle, 50 / 3f),
-            new Tuple<PyramidRoomType, double>(PyramidRoomType.Treasure, 50 / 3f)
-        });
+        public List<PyramidRoomCurseType> roomCurses = new();
 
         public PyramidRoom(Rectangle region, int gridTopLeftX, int gridTopLeftY, int gridWidth, int gridHeight) {
             this.region = region;

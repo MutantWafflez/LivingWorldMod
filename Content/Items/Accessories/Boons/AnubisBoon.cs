@@ -26,7 +26,7 @@ namespace LivingWorldMod.Content.Items.Accessories.Boons {
             if (player.HasBuff<AnubisDeathNegateDebuff>() || player.HasBuff<AnubisBoonNegateDebuff>()) {
                 return true;
             }
-            else if (_otherBoonNegatedDeath) {
+            if (_otherBoonNegatedDeath) {
                 _otherBoonNegatedDeath = false;
 
                 return true;

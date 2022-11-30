@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -15,11 +15,8 @@ namespace LivingWorldMod.Common.Systems.BaseSystems {
     /// somehow returning null.
     /// </remarks>
     [Autoload(Side = ModSide.Client)]
-    public abstract class UISystem<T> : ModSystem where T : UIState, new() {
-        public UserInterface correspondingInterface;
-
-        public T correspondingUIState;
-
+    public abstract class UISystem<T> : ModSystem
+        where T : UIState, new() {
         /// <summary>
         /// The name of the Vanilla Interface to place this UI BEFORE.
         /// Defaults to Mouse Text.
@@ -36,6 +33,10 @@ namespace LivingWorldMod.Common.Systems.BaseSystems {
         /// What kind of scale type this interface will be using. Defaults to InterfaceScaleType.UI.
         /// </summary>
         public virtual InterfaceScaleType ScaleType => InterfaceScaleType.UI;
+
+        public UserInterface correspondingInterface;
+
+        public T correspondingUIState;
 
         protected GameTime lastGameTime;
 

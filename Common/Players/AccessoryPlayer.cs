@@ -9,12 +9,7 @@ namespace LivingWorldMod.Common.Players {
     /// ModPlayer that handles the accessories in this mod.
     /// </summary>
     public class AccessoryPlayer : ModPlayer {
-        /// <summary>
-        /// Dictionary of item type to bool pairs that designate which
-        /// effects are currently active. Exists to allow for one
-        /// accessory to enabled two other effects, for example.
-        /// </summary>
-        public Dictionary<int, bool> activeAccessoryEffects;
+        private static HashSet<int> allModAccessoryTypes;
 
         /// <summary>
         /// A list of actual AccessoryItem objects that are currently equipped.
@@ -24,7 +19,12 @@ namespace LivingWorldMod.Common.Players {
             private set;
         }
 
-        private static HashSet<int> allModAccessoryTypes;
+        /// <summary>
+        /// Dictionary of item type to bool pairs that designate which
+        /// effects are currently active. Exists to allow for one
+        /// accessory to enabled two other effects, for example.
+        /// </summary>
+        public Dictionary<int, bool> activeAccessoryEffects;
 
         public override void Initialize() {
             activeAccessoryEffects = new Dictionary<int, bool>();

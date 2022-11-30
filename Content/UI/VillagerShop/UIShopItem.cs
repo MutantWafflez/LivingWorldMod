@@ -64,7 +64,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             itemNameText.Left.Set(94f, 0f);
             Append(itemNameText);
 
-            itemCostDisplay = new UICoinDisplay(displayedCost, CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) {
+            itemCostDisplay = new UICoinDisplay(displayedCost, UICoinDisplay.CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) {
                 VAlign = 0.5f
             };
             itemCostDisplay.Left.Set(-itemCostDisplay.Width.Pixels - 12f, 1f);
@@ -92,7 +92,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
-            RasterizerState defaultRasterizerState = new RasterizerState { CullMode = CullMode.None, ScissorTestEnable = true };
+            RasterizerState defaultRasterizerState = new() { CullMode = CullMode.None, ScissorTestEnable = true };
 
             if (pertainedInventoryItem.remainingStock <= 0) {
                 Effect shader = ShopUISystem.grayScaleShader.Value;

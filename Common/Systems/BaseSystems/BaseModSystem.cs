@@ -6,7 +6,8 @@ namespace LivingWorldMod.Common.Systems.BaseSystems {
     /// to simply ModSystem.Instance by using this base class.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class BaseModSystem<T> : ModSystem where T : BaseModSystem<T> {
+    public abstract class BaseModSystem<T> : ModSystem
+        where T : BaseModSystem<T> {
         /// <summary>
         /// The singleton instance for this ModSystem.
         /// </summary>

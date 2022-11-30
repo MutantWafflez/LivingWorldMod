@@ -17,6 +17,11 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
     /// </summary>
     public class VillagerHousingUIState : UIState {
         /// <summary>
+        /// Path to the sprites for this UI.
+        /// </summary>
+        private string HousingTexturePath => LivingWorldMod.LWMSpritePath + "UI/VillagerHousingUI/";
+
+        /// <summary>
         /// Whether or not the menu that shows each of the villagers is visible (open).
         /// </summary>
         public bool isMenuVisible;
@@ -66,11 +71,6 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
         /// </summary>
         private int _mapDisplacement;
 
-        /// <summary>
-        /// Path to the sprites for this UI.
-        /// </summary>
-        private string HousingTexturePath => LivingWorldMod.LWMSpritePath + "UI/VillagerHousingUI/";
-
         public override void OnInitialize() {
             typeToShow = VillagerType.Harpy;
 
@@ -111,14 +111,14 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             villagerTypeCenterElement.Left.Set(Main.screenWidth - 157f, 0f);
             villagerTypeCenterElement.Append(villagerTypeText);
 
-            gridScrollbar = new UIBetterScrollbar() {
+            gridScrollbar = new UIBetterScrollbar {
                 isVisible = false
             };
             gridScrollbar.Left.Set(Main.screenWidth - 26f, 0f);
             gridScrollbar.Height.Set(390f, 0f);
             Append(gridScrollbar);
 
-            gridOfVillagers = new UIGrid() {
+            gridOfVillagers = new UIGrid {
                 ListPadding = 4f
             };
             gridOfVillagers.Left.Set(Main.screenWidth - 196f, 0f);
@@ -126,6 +126,15 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             gridOfVillagers.Height.Set(gridScrollbar.Height.Pixels, 0f);
             gridOfVillagers.SetScrollbar(gridScrollbar);
             Append(gridOfVillagers);
+        }
+
+        /// <summary>
+        /// Simple method that closes the menu. Public for the parent system to use.
+        /// </summary>
+        public void CloseMenu() {
+            isMenuVisible = false;
+            openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off"));
+            gridOfVillagers.Clear();
         }
 
         protected override void DrawChildren(SpriteBatch spriteBatch) {
@@ -173,15 +182,6 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             enumerateRightButton.isVisible = enumerateLeftButton.isVisible = villagerTypeText.isVisible = gridScrollbar.isVisible = isMenuVisible;
 
             base.DrawChildren(spriteBatch);
-        }
-
-        /// <summary>
-        /// Simple method that closes the menu. Public for the parent system to use.
-        /// </summary>
-        public void CloseMenu() {
-            isMenuVisible = false;
-            openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off"));
-            gridOfVillagers.Clear();
         }
 
         private void EnumerateTypeButtonClicked(UIMouseEvent evt, UIElement listeningElement) {
@@ -233,7 +233,7 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
 
             for (int i = 0; i < Main.maxNPCs; i++) {
                 if (Main.npc[i].active && Main.npc[i].ModNPC is Villager villager && villager.VillagerType == typeToShow) {
-                    UIHousingVillagerDisplay element = new UIHousingVillagerDisplay(villager);
+                    UIHousingVillagerDisplay element = new(villager);
 
                     element.Activate();
 

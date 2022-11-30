@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using LivingWorldMod.Content.Subworlds.Pyramid;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
@@ -25,6 +24,19 @@ namespace LivingWorldMod.Common.Players {
             }
         }
 
+        public const int MaxPlaguesCurseTimer = 60 * 20;
+
+        /// <summary>
+        /// Cached list of all debuffs.
+        /// </summary>
+        private static List<int> _allDebuffs;
+
+        /// <summary>
+        /// Reference to this player's current list of curses in accordance to
+        /// the room they are in.
+        /// </summary>
+        public List<PyramidRoomCurseType> CurrentCurses => currentRoom?.roomCurses ?? new List<PyramidRoomCurseType>();
+
         /// <summary>
         /// The pyramid room this player is currently in.
         /// </summary>
@@ -33,7 +45,7 @@ namespace LivingWorldMod.Common.Players {
         /// <summary>
         /// List of all currently pending heals due to the Curse of Delay.
         /// </summary>
-        public List<HealInstance> healDelays = new List<HealInstance>();
+        public List<HealInstance> healDelays = new();
 
         /// <summary>
         /// The countdown before The Plagues curse applies a new debuff.
@@ -49,19 +61,6 @@ namespace LivingWorldMod.Common.Players {
         /// The currently forced gravity direction.
         /// </summary>
         public float forcedGravityDirection = 1f;
-
-        /// <summary>
-        /// Reference to this player's current list of curses in accordance to
-        /// the room they are in.
-        /// </summary>
-        public List<PyramidRoomCurseType> CurrentCurses => currentRoom?.roomCurses ?? new List<PyramidRoomCurseType>();
-
-        /// <summary>
-        /// Cached list of all debuffs.
-        /// </summary>
-        private static List<int> _allDebuffs;
-
-        public const int MaxPlaguesCurseTimer = 60 * 20;
 
         public override void SetStaticDefaults() {
             _allDebuffs = new List<int>();

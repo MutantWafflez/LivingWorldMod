@@ -121,10 +121,13 @@ namespace LivingWorldMod.Custom.Utilities {
         /// </summary>
         /// <param name="x"> The beginning tile X position to begin purging. </param>
         /// <param name="y"> The beginning tile Y position to begin purging. </param>
-        /// <param name="ignoredTileTypes"> An array of tile types to ignore for purging. Defaults to null, or no ignored tile types. </param>
+        /// <param name="ignoredTileTypes">
+        /// An array of tile types to ignore for purging. Defaults to null, or no ignored tile
+        /// types.
+        /// </param>
         /// <param name="maxRepetitions"> How many times the purge loops is allowed run, at maximum. Defaults to 500. </param>
         public static void PurgeStructure(int x, int y, int[] ignoredTileTypes = null, uint maxRepetitions = 500) {
-            Queue<Point> tiles = new Queue<Point>();
+            Queue<Point> tiles = new();
             Tile firstTile = Main.tile[x, y];
             if (firstTile.HasTile && !(ignoredTileTypes?.Contains(firstTile.TileType) ?? false) || firstTile.WallType > WallID.None) {
                 tiles.Enqueue(new Point(x, y));

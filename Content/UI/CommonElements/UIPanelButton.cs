@@ -36,18 +36,6 @@ namespace LivingWorldMod.Content.UI.CommonElements {
 
         private float _inactiveVisibility = 0.4f;
 
-        /// <summary>
-        /// Simple action/event that triggers after every frame while the mouse is currently
-        /// hovering over this element.
-        /// </summary>
-        public event Action WhileHovering;
-
-        /// <summary>
-        /// An "override" of the normal OnClick event that takes into account visibility of this
-        /// button. USE THIS INSTEAD OF THE VANILLA EVENT!
-        /// </summary>
-        public event MouseEvent ProperOnClick;
-
 
         public UIPanelButton(Asset<Texture2D> customBackground, Asset<Texture2D> customBorder, int customCornerSize = 12, int customBarSize = 4, string text = null, float textSize = 1f)
             : base(customBackground, customBorder, customCornerSize, customBarSize) {
@@ -114,6 +102,21 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             ProperOnClick?.Invoke(evt, this);
         }
 
+        public void SetText(string text) {
+            _text = text;
+            RecalculateChildren();
+        }
+
+        public void SetText(ModTranslation text) {
+            _text = text;
+            RecalculateChildren();
+        }
+
+        public void SetVisibility(float whenActive, float whenInactive) {
+            _activeVisibility = MathHelper.Clamp(whenActive, 0.0f, 1f);
+            _inactiveVisibility = MathHelper.Clamp(whenInactive, 0.0f, 1f);
+        }
+
         protected override void DrawSelf(SpriteBatch spriteBatch) {
             if (buttonText is not null) {
                 buttonText.isVisible = isVisible;
@@ -146,19 +149,16 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             }
         }
 
-        public void SetText(string text) {
-            _text = text;
-            RecalculateChildren();
-        }
+        /// <summary>
+        /// Simple action/event that triggers after every frame while the mouse is currently
+        /// hovering over this element.
+        /// </summary>
+        public event Action WhileHovering;
 
-        public void SetText(ModTranslation text) {
-            _text = text;
-            RecalculateChildren();
-        }
-
-        public void SetVisibility(float whenActive, float whenInactive) {
-            _activeVisibility = MathHelper.Clamp(whenActive, 0.0f, 1f);
-            _inactiveVisibility = MathHelper.Clamp(whenInactive, 0.0f, 1f);
-        }
+        /// <summary>
+        /// An "override" of the normal OnClick event that takes into account visibility of this
+        /// button. USE THIS INSTEAD OF THE VANILLA EVENT!
+        /// </summary>
+        public event MouseEvent ProperOnClick;
     }
 }

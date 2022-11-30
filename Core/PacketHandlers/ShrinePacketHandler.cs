@@ -1,10 +1,10 @@
-﻿using LivingWorldMod.Common.ModTypes;
+﻿using System.IO;
+using LivingWorldMod.Common.ModTypes;
+using LivingWorldMod.Common.Systems.UI;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Utilities;
-using System.IO;
-using LivingWorldMod.Common.Systems.UI;
-using Terraria.DataStructures;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 

@@ -14,7 +14,7 @@ namespace LivingWorldMod.Custom.Structs {
 
         public StructureData roomLayout;
 
-        public Dictionary<PyramidDoorDirection, Point16> doorData = new Dictionary<PyramidDoorDirection, Point16>();
+        public Dictionary<PyramidDoorDirection, Point16> doorData = new();
 
         public byte gridWidth;
 
@@ -30,7 +30,7 @@ namespace LivingWorldMod.Custom.Structs {
             this.gridHeight = gridHeight;
         }
 
-        public static RoomData Deserialize(TagCompound tag) => new RoomData(
+        public static RoomData Deserialize(TagCompound tag) => new(
             tag.Get<StructureData>(nameof(roomLayout)),
             tag.Get<Point16>("topDoorPos"),
             tag.Get<Point16>("rightDoorPos"),
@@ -40,7 +40,7 @@ namespace LivingWorldMod.Custom.Structs {
             tag.GetByte(nameof(gridHeight))
         );
 
-        public TagCompound SerializeData() => new TagCompound() {
+        public TagCompound SerializeData() => new() {
             { nameof(roomLayout), roomLayout },
             { "topDoorPos", doorData[PyramidDoorDirection.Top] },
             { "rightDoorPos", doorData[PyramidDoorDirection.Right] },

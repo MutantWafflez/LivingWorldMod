@@ -1,7 +1,7 @@
-﻿using LivingWorldMod.Common.Players;
+﻿using System;
+using LivingWorldMod.Common.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -68,7 +68,7 @@ namespace LivingWorldMod.Content.Projectiles.Friendly.Pets {
             Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
 
             int frameHeight = texture.Height / Main.projFrames[Projectile.type];
-            Rectangle sourceRectangle = new Rectangle(0, frameHeight * Projectile.frame, texture.Width, frameHeight);
+            Rectangle sourceRectangle = new(0, frameHeight * Projectile.frame, texture.Width, frameHeight);
             SpriteEffects spriteEffects = Projectile.direction == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
             float breathScale = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2);

@@ -1,9 +1,9 @@
-using LivingWorldMod.Common.ModTypes;
 using System.IO;
+using LivingWorldMod.Common.ModTypes;
+using Terraria.ModLoader;
 #if !DEBUG
 using LivingWorldMod.Common.Configs;
 #endif
-using Terraria.ModLoader;
 
 namespace LivingWorldMod {
     public class LivingWorldMod : Mod {

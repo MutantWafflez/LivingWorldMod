@@ -11,11 +11,11 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
     /// Class that handles a 2D grid of rooms for the Revamped Pyramid dungeon.
     /// </summary>
     public class PyramidRoomGrid {
-        private int _gridSideLength;
-        private int _roomSideLength;
-        private int _roomPadding;
-        private PyramidRoom[][] _fixedGrid;
-        private List<PyramidRoom>[] _roomList;
+        private readonly int _gridSideLength;
+        private readonly int _roomSideLength;
+        private readonly int _roomPadding;
+        private readonly PyramidRoom[][] _fixedGrid;
+        private readonly List<PyramidRoom>[] _roomList;
 
         public PyramidRoomGrid(int gridSideLength, int roomSideLength, int roomPadding) {
             _gridSideLength = gridSideLength;
@@ -40,7 +40,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
             for (int i = 0; i < _gridSideLength; i++) {
                 _roomList[i] = new List<PyramidRoom>();
                 //The top room will always be 1x1
-                PyramidRoom topRoom = new PyramidRoom(new Rectangle(_roomPadding + i * _roomSideLength + 1, _roomPadding + 1, _roomSideLength, _roomSideLength), i, 0, 1, 1);
+                PyramidRoom topRoom = new(new Rectangle(_roomPadding + i * _roomSideLength + 1, _roomPadding + 1, _roomSideLength, _roomSideLength), i, 0, 1, 1);
                 _roomList[i].Add(topRoom);
                 _fixedGrid[i][0] = topRoom;
                 takenGridSpots[i][0] = true;
@@ -52,14 +52,14 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                         continue;
                     }
 
-                    List<Tuple<Tuple<int, int>, double>> roomChoices = new List<Tuple<Tuple<int, int>, double>>();
+                    List<Tuple<Tuple<int, int>, double>> roomChoices = new();
                     roomChoices.Add(new Tuple<Tuple<int, int>, double>(new Tuple<int, int>(1, 1), 75)); // 1x1 room
                     roomChoices.AddConditionally(new Tuple<Tuple<int, int>, double>(new Tuple<int, int>(1, 2), 8.34), currentHeight < _gridSideLength - 1 && !takenGridSpots[i][currentHeight + 1]); //1x2 room
                     roomChoices.AddConditionally(new Tuple<Tuple<int, int>, double>(new Tuple<int, int>(2, 1), 8.34), i < _gridSideLength - 1); //2x1 room
                     roomChoices.AddConditionally(new Tuple<Tuple<int, int>, double>(new Tuple<int, int>(2, 2), 8.34), i < _gridSideLength - 1 && currentHeight < _gridSideLength - 1 && !takenGridSpots[i][currentHeight + 1]); //2x2 room
 
                     (int roomWidth, int roomHeight) = new WeightedRandom<Tuple<int, int>>(WorldGen.genRand, roomChoices.ToArray()).Get();
-                    PyramidRoom newRoom = new PyramidRoom(
+                    PyramidRoom newRoom = new(
                         new Rectangle(_roomPadding + i * _roomSideLength + 1, _roomPadding + currentHeight * _roomSideLength + 1, _roomSideLength * roomWidth, _roomSideLength * roomHeight),
                         i,
                         currentHeight,

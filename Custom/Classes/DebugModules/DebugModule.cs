@@ -7,6 +7,11 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
     /// </summary>
     public abstract class DebugModule {
         /// <summary>
+        /// Called every tick. Put general update tasks in here, if necessary.
+        /// </summary>
+        public virtual void ModuleUpdate() { }
+
+        /// <summary>
         /// Called when any amount of keys have been pressed. Called only once on first press; has no
         /// functionality for holding.
         /// </summary>
@@ -15,10 +20,5 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
         /// the parent system for swapping modules, and will cause shenanigans otherwise.
         /// </remarks>
         public abstract void KeysPressed(Keys[] pressedKeys);
-
-        /// <summary>
-        /// Called every tick. Put general update tasks in here, if necessary.
-        /// </summary>
-        public virtual void ModuleUpdate() { }
     }
 }

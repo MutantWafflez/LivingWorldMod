@@ -31,7 +31,7 @@ namespace LivingWorldMod.Custom.Utilities {
         public static WeightedRandom<string> GetAllStringsFromCategory(string categoryPath) {
             string path = $"Mods.LivingWorldMod.{categoryPath}";
 
-            WeightedRandom<string> list = new WeightedRandom<string>();
+            WeightedRandom<string> list = new();
 
             int index = 0;
 

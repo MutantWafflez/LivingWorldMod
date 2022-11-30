@@ -27,7 +27,7 @@ namespace LivingWorldMod.Content.Tiles {
         /// <remarks>
         /// For LWM, also automatically attempts to grab the localization key for this tile and add it,
         /// assuming that the key exists; if it doesn't, then hovering over the tile will display nothing.
-        /// </remarks> 
+        /// </remarks>
         public override void PostSetDefaults() {
             if (TileColorOnMap is null) {
                 return;

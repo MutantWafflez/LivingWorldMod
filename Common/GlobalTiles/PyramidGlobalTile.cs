@@ -1,12 +1,12 @@
-﻿using Terraria.ID;
-using LivingWorldMod.Common.Players;
+﻿using LivingWorldMod.Common.Players;
 using LivingWorldMod.Common.Systems.SubworldSystems;
-using Terraria;
 using LivingWorldMod.Content.Subworlds.Pyramid;
 using LivingWorldMod.Core.PacketHandlers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SubworldLibrary;
+using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.GlobalTiles {

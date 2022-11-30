@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Common.Players;
+﻿using IL.Terraria.Graphics.Renderers;
+using LivingWorldMod.Common.Players;
 using LivingWorldMod.Content.Cutscenes;
 using LivingWorldMod.Custom.Utilities;
 using Mono.Cecil.Cil;
@@ -15,10 +16,10 @@ namespace LivingWorldMod.Core.Patches {
     public class PlayerDrawingPatches : ILoadable {
         private delegate void RefAction(ref PlayerDrawSet drawInfo);
 
-        private readonly Item _fakeItem = new Item();
+        private readonly Item _fakeItem = new();
 
         public void Load(Mod mod) {
-            IL.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayerInternal += ModifyDrawDuringDoorOpening;
+            LegacyPlayerRenderer.DrawPlayerInternal += ModifyDrawDuringDoorOpening;
         }
 
         public void Unload() { }
@@ -34,7 +35,7 @@ namespace LivingWorldMod.Core.Patches {
         private void ModifyDrawDuringDoorOpening(ILContext il) {
             //Relatively simple patch; there are some shenanigans with draw order where using ModPlayer.ModifyDrawInfo and changing scale there doesn't do anything, so we are going straight to the source
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             byte drawInfoVarNum = 0;
 

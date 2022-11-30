@@ -18,6 +18,14 @@ namespace LivingWorldMod.Common.GlobalNPCs {
     /// GlobalNPC that only applies to NPCs in the Pyramid Subworld.
     /// </summary>
     public class PyramidGlobalNPC : GlobalNPC {
+        public override bool InstancePerEntity => true;
+
+        /// <summary>
+        /// Reference to this NPC's current list of curses in accordance to
+        /// the room they are in.
+        /// </summary>
+        public List<PyramidRoomCurseType> CurrentCurses => currentRoom?.roomCurses ?? new List<PyramidRoomCurseType>();
+
         public PyramidRoom currentRoom;
 
         /// <summary>
@@ -30,14 +38,6 @@ namespace LivingWorldMod.Common.GlobalNPCs {
         /// 1 (or 100%), the NPC will double update.
         /// </summary>
         public float doubleUpdateTimer;
-
-        /// <summary>
-        /// Reference to this NPC's current list of curses in accordance to
-        /// the room they are in.
-        /// </summary>
-        public List<PyramidRoomCurseType> CurrentCurses => currentRoom?.roomCurses ?? new List<PyramidRoomCurseType>();
-
-        public override bool InstancePerEntity => true;
 
         private bool _spriteBatchNeedsRestart;
         private bool _isBeingSpawned;
@@ -123,7 +123,7 @@ namespace LivingWorldMod.Common.GlobalNPCs {
             }
 
             if (_isBeingSpawned && _spawnAnimTimer < 140) {
-                Vector2 dustPos = new Vector2(npc.position.X, npc.position.Y + npc.height * (float)Math.Sin(_spawnAnimTimer / 70f + MathHelper.PiOver2));
+                Vector2 dustPos = new(npc.position.X, npc.position.Y + npc.height * (float)Math.Sin(_spawnAnimTimer / 70f + MathHelper.PiOver2));
 
                 Dust.NewDust(dustPos, npc.width, 1, DustID.Sand);
             }

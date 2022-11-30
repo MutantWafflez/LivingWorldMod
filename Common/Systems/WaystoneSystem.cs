@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using LivingWorldMod.Content.MiscEntities;
 using LivingWorldMod.Common.Systems.BaseSystems;
+using LivingWorldMod.Content.MiscEntities;
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
 

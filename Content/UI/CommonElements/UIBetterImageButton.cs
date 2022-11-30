@@ -1,7 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -39,18 +39,6 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         private float _activeVisibility = 1f;
 
         private float _inactiveVisibility = 0.4f;
-
-        /// <summary>
-        /// Simple action/event that triggers after every frame while the mouse is currently
-        /// hovering over this element.
-        /// </summary>
-        public event Action WhileHovering;
-
-        /// <summary>
-        /// An "override" of the normal OnClick event that takes into account visibility of this
-        /// button. USE THIS INSTEAD OF THE VANILLA EVENT!
-        /// </summary>
-        public event MouseEvent ProperOnClick;
 
         public UIBetterImageButton(Asset<Texture2D> buttonTexture) {
             _buttonTexture = buttonTexture;
@@ -121,34 +109,6 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             ProperOnClick?.Invoke(evt, this);
         }
 
-        protected override void DrawSelf(SpriteBatch spriteBatch) {
-            if (buttonText is not null) {
-                buttonText.isVisible = isVisible;
-            }
-
-            if (!isVisible) {
-                return;
-            }
-            bool isHovering = ContainsPoint(Main.MouseScreen);
-
-            CalculatedStyle dimensions = GetDimensions();
-            spriteBatch.Draw(_buttonTexture.Value, dimensions.Position(), Color.White * (isHovering ? _activeVisibility : _inactiveVisibility));
-
-            //Hovering functionality
-            if (!isHovering) {
-                return;
-            }
-
-            WhileHovering?.Invoke();
-            if (preventItemUsageWhileHovering) {
-                Main.LocalPlayer.mouseInterface = true;
-            }
-
-            if (_borderTexture != null) {
-                spriteBatch.Draw(_borderTexture.Value, dimensions.Position(), Color.White);
-            }
-        }
-
         public void SetHoverImage(Asset<Texture2D> texture) => _borderTexture = texture;
 
         public void SetImage(Asset<Texture2D> texture) {
@@ -177,5 +137,45 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             _activeVisibility = MathHelper.Clamp(whenActive, 0.0f, 1f);
             _inactiveVisibility = MathHelper.Clamp(whenInactive, 0.0f, 1f);
         }
+
+        protected override void DrawSelf(SpriteBatch spriteBatch) {
+            if (buttonText is not null) {
+                buttonText.isVisible = isVisible;
+            }
+
+            if (!isVisible) {
+                return;
+            }
+            bool isHovering = ContainsPoint(Main.MouseScreen);
+
+            CalculatedStyle dimensions = GetDimensions();
+            spriteBatch.Draw(_buttonTexture.Value, dimensions.Position(), Color.White * (isHovering ? _activeVisibility : _inactiveVisibility));
+
+            //Hovering functionality
+            if (!isHovering) {
+                return;
+            }
+
+            WhileHovering?.Invoke();
+            if (preventItemUsageWhileHovering) {
+                Main.LocalPlayer.mouseInterface = true;
+            }
+
+            if (_borderTexture != null) {
+                spriteBatch.Draw(_borderTexture.Value, dimensions.Position(), Color.White);
+            }
+        }
+
+        /// <summary>
+        /// Simple action/event that triggers after every frame while the mouse is currently
+        /// hovering over this element.
+        /// </summary>
+        public event Action WhileHovering;
+
+        /// <summary>
+        /// An "override" of the normal OnClick event that takes into account visibility of this
+        /// button. USE THIS INSTEAD OF THE VANILLA EVENT!
+        /// </summary>
+        public event MouseEvent ProperOnClick;
     }
 }

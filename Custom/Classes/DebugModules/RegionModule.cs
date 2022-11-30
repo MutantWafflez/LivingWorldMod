@@ -15,14 +15,8 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
 
         private bool _isDoingEffect;
 
-        /// <summary>
-        /// This is where you apply the effects on the square region once the
-        /// NumPad3 key is pressed.
-        /// </summary>
-        protected abstract void ApplyEffectOnRegion();
-
         public override void KeysPressed(Keys[] pressedKeys) {
-            Point16 mousePos = new Point16((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
+            Point16 mousePos = new((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
 
             if (pressedKeys.Contains(Keys.NumPad1)) {
                 topLeft = mousePos;
@@ -45,5 +39,11 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
                 Dust.QuickBox(topLeft.ToWorldCoordinates(Vector2.Zero), bottomRight.ToWorldCoordinates(new Vector2(16f)), 8, Color.YellowGreen, null);
             }
         }
+
+        /// <summary>
+        /// This is where you apply the effects on the square region once the
+        /// NumPad3 key is pressed.
+        /// </summary>
+        protected abstract void ApplyEffectOnRegion();
     }
 }

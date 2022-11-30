@@ -19,19 +19,19 @@ using Terraria.UI;
 namespace LivingWorldMod.Content.Tiles.Interactables {
     [LegacyName("HarpyShrineTile")]
     public class VillageShrineTile : BasePylon {
-        public Asset<Texture2D> shrineIcons;
-
-        /// <summary>
-        /// The displacement for which the tile is placed, used for tile entity shenanigans.
-        /// </summary>
-        public readonly Point16 tileOrigin = new Point16(1, 2);
-
-        public override Color? TileColorOnMap => Color.Yellow;
-
         /// <summary>
         /// The tile width of Village Shrines. Used for tile entity placement/destroying calculations.
         /// </summary>
         public const int FullTileWidth = 4;
+
+        public override Color? TileColorOnMap => Color.Yellow;
+
+        /// <summary>
+        /// The displacement for which the tile is placed, used for tile entity shenanigans.
+        /// </summary>
+        public readonly Point16 tileOrigin = new(1, 2);
+
+        public Asset<Texture2D> shrineIcons;
 
         public override void Load() {
             shrineIcons = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}MapIcons/ShrineIcons");

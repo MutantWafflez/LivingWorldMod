@@ -1,7 +1,7 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using System;
+using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
-using System;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Commands.DebugCommands {

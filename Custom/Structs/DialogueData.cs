@@ -1,9 +1,9 @@
-﻿using System.Linq;
-using Terraria.ModLoader;
+﻿using Terraria.ModLoader;
 
 namespace LivingWorldMod.Custom.Structs {
     /// <summary>
-    /// Struct that holds data on a specific line of dialogue, including its translation key, weight (if applicable), and if any events are
+    /// Struct that holds data on a specific line of dialogue, including its translation key, weight (if applicable), and if
+    /// any events are
     /// required for it to appear.
     /// </summary>
     public readonly struct DialogueData {

@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader.IO;
 
@@ -10,7 +10,7 @@ namespace LivingWorldMod.Custom.Structs {
     public struct Circle : TagSerializable {
         public static readonly Func<TagCompound, Circle> DESERIALIZER = Deserialize;
 
-        private static Circle Deserialize(TagCompound tag) => new Circle(
+        private static Circle Deserialize(TagCompound tag) => new(
             tag.Get<Vector2>(nameof(center)),
             tag.GetFloat(nameof(radius))
         );
@@ -32,20 +32,20 @@ namespace LivingWorldMod.Custom.Structs {
         /// Creates a copy of this Circle equivalent in tile coordinates, assuming that this circle is in world coordinates.
         /// Do note a potential loss of precision with the radius if it is not divisible by 16.
         /// </summary>
-        public Circle ToTileCoordinates() => new Circle(center.ToTileCoordinates().ToVector2(), (int)(radius / 16f));
+        public Circle ToTileCoordinates() => new(center.ToTileCoordinates().ToVector2(), (int)(radius / 16f));
 
         /// <summary>
         /// Creates a copy of this Circle equivalent in world coordinates, assuming that this circle is in tile coordinates.
         /// </summary>
-        public Circle ToWorldCoordinates() => new Circle(center.ToWorldCoordinates(), radius * 16f);
+        public Circle ToWorldCoordinates() => new(center.ToWorldCoordinates(), radius * 16f);
 
         /// <summary>
         /// Uses this Circle's data in order to create a Rectangle (square) that has each edge being tangential
         /// to one side of the Circle (AKA, a "hitbox" for the circle).
         /// </summary>
-        public Rectangle ToRectangle() => new Rectangle((int)(center.X - radius), (int)(center.Y - radius), (int)(radius * 2), (int)(radius * 2));
+        public Rectangle ToRectangle() => new((int)(center.X - radius), (int)(center.Y - radius), (int)(radius * 2), (int)(radius * 2));
 
-        public TagCompound SerializeData() => new TagCompound() {
+        public TagCompound SerializeData() => new() {
             { nameof(center), center },
             { nameof(radius), radius }
         };

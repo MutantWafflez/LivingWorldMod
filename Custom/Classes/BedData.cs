@@ -7,7 +7,6 @@ namespace LivingWorldMod.Custom.Classes {
     /// Small class that holds data on a given bed tile.
     /// </summary>
     public class BedData {
-
         /// <summary>
         /// The tile position of this bed.
         /// </summary>
@@ -29,6 +28,5 @@ namespace LivingWorldMod.Custom.Classes {
             bedDirection = Main.tile[bedPosition].TileFrameX > 18 * 3 ? 1 : -1;
             bedStyle = TileObjectData.GetTileStyle(Main.tile[bedPosition]);
         }
-
     }
 }

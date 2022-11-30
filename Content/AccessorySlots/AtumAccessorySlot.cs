@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using LivingWorldMod.Common.Players;
+﻿using LivingWorldMod.Common.Players;
 using LivingWorldMod.Content.Items.Accessories.Boons;
 using Terraria;
 using Terraria.ModLoader;

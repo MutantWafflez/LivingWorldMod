@@ -7,6 +7,8 @@ namespace LivingWorldMod.Common.Configs {
     /// Config that handles debug related matters in the mod.
     /// </summary>
     public class DebugConfig : ModConfig {
+        public override ConfigScope Mode => ConfigScope.ServerSide;
+
         [Label("Force Debug Mode")]
         [Tooltip("Forces the mod to enter Debug mode, regardless of if the mod is being built from Visual Studio.\nONLY enable this if you know what you're doing.")]
         [DefaultValue(false)]
@@ -27,7 +29,5 @@ namespace LivingWorldMod.Common.Configs {
         [Label("Forced Room Curse Type")]
         [Tooltip("Requires Debug Mode to be enabled to function; All cursed rooms in the pyramid become cursed with this curse.")]
         public PyramidRoomCurseType forcedCurseType;
-
-        public override ConfigScope Mode => ConfigScope.ServerSide;
     }
 }

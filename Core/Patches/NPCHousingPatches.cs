@@ -1,24 +1,26 @@
-﻿using LivingWorldMod.Common.Systems.UI;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using LivingWorldMod.Common.GlobalNPCs;
+using LivingWorldMod.Common.Systems.UI;
 using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.TileEntities.Interactables;
+using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using LivingWorldMod.Common.GlobalNPCs;
-using LivingWorldMod.Custom.Classes;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.Achievements;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Main = IL.Terraria.Main;
+using WorldGen = IL.Terraria.WorldGen;
 
 namespace LivingWorldMod.Core.Patches {
     /// <summary>
@@ -28,17 +30,17 @@ namespace LivingWorldMod.Core.Patches {
         public static Point HouseBedPosition = Point.Zero;
 
         public void Load(Mod mod) {
-            IL.Terraria.WorldGen.CheckSpecialTownNPCSpawningConditions += TestForVillageHouse;
+            WorldGen.CheckSpecialTownNPCSpawningConditions += TestForVillageHouse;
 
-            IL.Terraria.Main.DrawInterface_38_MouseCarriedObject += DrawSelectedVillagerOnMouse;
+            Main.DrawInterface_38_MouseCarriedObject += DrawSelectedVillagerOnMouse;
 
-            IL.Terraria.Main.DrawInterface_7_TownNPCHouseBanners += BannersVisibleWhileInVillagerHousingMenu;
+            Main.DrawInterface_7_TownNPCHouseBanners += BannersVisibleWhileInVillagerHousingMenu;
 
-            IL.Terraria.Main.DrawNPCHousesInWorld += DrawVillagerBannerInHouses;
+            Main.DrawNPCHousesInWorld += DrawVillagerBannerInHouses;
 
-            IL.Terraria.WorldGen.ScoreRoom_IsThisRoomOccupiedBySomeone += RoomOccupancyCheck;
+            WorldGen.ScoreRoom_IsThisRoomOccupiedBySomeone += RoomOccupancyCheck;
 
-            IL.Terraria.WorldGen.ScoreRoom += IgnoreRoomOccupancy;
+            WorldGen.ScoreRoom += IgnoreRoomOccupancy;
 
             //TODO: Finish NPC Sleeping Tests
             /*
@@ -53,7 +55,7 @@ namespace LivingWorldMod.Core.Patches {
         public void Unload() { }
 
         private void TestForVillageHouse(ILContext il) {
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //We do not want non-villagers spawning in villager homes, which is what this patch is for
             //In this method, a return of false will mean that the specific NPC cannot spawn in this house, and true means the opposite
@@ -70,7 +72,7 @@ namespace LivingWorldMod.Core.Patches {
             //Get type from passed in parameter
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Func<int, bool>>(type => {
-                Rectangle roomInQuestion = new Rectangle(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1, WorldGen.roomY2 - WorldGen.roomY1);
+                Rectangle roomInQuestion = new(Terraria.WorldGen.roomX1, Terraria.WorldGen.roomY1, Terraria.WorldGen.roomX2 - Terraria.WorldGen.roomX1, Terraria.WorldGen.roomY2 - Terraria.WorldGen.roomY1);
 
                 ModNPC modNPC = ModContent.GetModNPC(type);
                 List<VillageShrineEntity> shrines = TileEntityUtils.GetAllEntityOfType<VillageShrineEntity>().ToList();
@@ -108,7 +110,7 @@ namespace LivingWorldMod.Core.Patches {
             //So, we want to avoid the head being drawn since there is no head sprite for villagers; so we will get an "exit" instruction that is after the head
             // drawing code using a label. The head will draw as normal if it the NPC in question is a normal NPC, otherwise, our special draw code takes over.
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             ILLabel exitLabel = c.DefineLabel();
 
@@ -120,23 +122,23 @@ namespace LivingWorldMod.Core.Patches {
             c.Index = 0;
 
             //If the target instruction is found and we found the exit instruction, draw the villager if applicable
-            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCall<Main>(nameof(Main.SetMouseNPC_ToHousingQuery)));
+            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCall<Terraria.Main>(nameof(Terraria.Main.SetMouseNPC_ToHousingQuery)));
 
             c.Index += 3;
 
             //What we return here will determine whether or not we skip past the drawing head step in the vanilla function.
-            c.EmitDelegate<Func<bool>>(() => {
-                if (Main.instance.mouseNPCIndex > -1 && Main.npc[Main.instance.mouseNPCIndex].ModNPC is Villager villager) {
+            c.EmitDelegate(() => {
+                if (Terraria.Main.instance.mouseNPCIndex > -1 && Terraria.Main.npc[Terraria.Main.instance.mouseNPCIndex].ModNPC is Villager villager) {
                     float drawScale = 0.67f;
 
                     Texture2D bodyTexture = villager.bodyAssets[villager.bodySpriteType].Value;
                     Texture2D headTexture = villager.headAssets[villager.headSpriteType].Value;
 
-                    Vector2 drawPos = new Vector2(Main.mouseX, Main.mouseY);
-                    Rectangle textureDrawRegion = new Rectangle(0, 0, bodyTexture.Width, bodyTexture.Height / Main.npcFrameCount[villager.Type]);
+                    Vector2 drawPos = new(Terraria.Main.mouseX, Terraria.Main.mouseY);
+                    Rectangle textureDrawRegion = new(0, 0, bodyTexture.Width, bodyTexture.Height / Terraria.Main.npcFrameCount[villager.Type]);
 
-                    Main.spriteBatch.Draw(bodyTexture, drawPos, textureDrawRegion, Color.White, 0f, Vector2.Zero, Main.cursorScale * drawScale, SpriteEffects.None, 0f);
-                    Main.spriteBatch.Draw(headTexture, drawPos, textureDrawRegion, Color.White, 0f, Vector2.Zero, Main.cursorScale * drawScale, SpriteEffects.None, 0f);
+                    Terraria.Main.spriteBatch.Draw(bodyTexture, drawPos, textureDrawRegion, Color.White, 0f, Vector2.Zero, Terraria.Main.cursorScale * drawScale, SpriteEffects.None, 0f);
+                    Terraria.Main.spriteBatch.Draw(headTexture, drawPos, textureDrawRegion, Color.White, 0f, Vector2.Zero, Terraria.Main.cursorScale * drawScale, SpriteEffects.None, 0f);
 
                     //If a type of villager, we do not want the head drawing function, so skip it by returning true
                     return true;
@@ -154,10 +156,10 @@ namespace LivingWorldMod.Core.Patches {
             //Very simple this time. We need to simply allow for the banners to be drawn while in the villager housing menu along with the normal
             // vanilla housing menu.
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //Navigate to EquipPage check
-            c.ErrorOnFailedGotoNext(i => i.MatchLdsfld<Main>(nameof(Main.EquipPage)));
+            c.ErrorOnFailedGotoNext(i => i.MatchLdsfld<Terraria.Main>(nameof(Terraria.Main.EquipPage)));
 
             //If we correctly navigated to the EquipPage, we need to get the label of the beq_s that is associated with it (see IL block below)
             if (c.Instrs[c.Index + 2].OpCode == OpCodes.Beq_S) {
@@ -171,7 +173,7 @@ namespace LivingWorldMod.Core.Patches {
 
                 //Re-add our check, making sure it's inverted compared to the IL, since in IL it determines if the code should run if these values are FALSE,
                 // but since we took control of the instructions, we can test based on if it's true or not for easy understanding
-                c.EmitDelegate<Func<bool>>(() => Main.EquipPage == 1 || ModContent.GetInstance<VillagerHousingUISystem>().correspondingUIState.isMenuVisible);
+                c.EmitDelegate(() => Terraria.Main.EquipPage == 1 || ModContent.GetInstance<VillagerHousingUISystem>().correspondingUIState.isMenuVisible);
 
                 c.Emit(OpCodes.Brtrue_S, stolenLabel);
             }
@@ -193,7 +195,7 @@ namespace LivingWorldMod.Core.Patches {
             //If they are a villager, modify vanilla draw statements, and make sure to transfer the code to draw the villager in their entirety
             //Next, and lastly, make it so the player cannot modify the housing of the villagers if they are not well-liked enough
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //Navigate to first TownNPC check
             c.ErrorOnFailedGotoNext(i => i.MatchLdfld<NPC>(nameof(NPC.townNPC)));
@@ -305,15 +307,15 @@ namespace LivingWorldMod.Core.Patches {
                     Texture2D bodyTexture = villager.bodyAssets[villager.bodySpriteType].Value;
                     Texture2D headTexture = villager.headAssets[villager.headSpriteType].Value;
 
-                    Rectangle textureDrawRegion = new Rectangle(0, 0, bodyTexture.Width, bodyTexture.Height / Main.npcFrameCount[villager.Type]);
-                    Vector2 drawPos = new Vector2(homeTileX * 16f - Main.screenPosition.X + 10f, homeTileYPixels - Main.screenPosition.Y + 14f);
-                    Vector2 drawOrigin = new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f);
+                    Rectangle textureDrawRegion = new(0, 0, bodyTexture.Width, bodyTexture.Height / Terraria.Main.npcFrameCount[villager.Type]);
+                    Vector2 drawPos = new(homeTileX * 16f - Terraria.Main.screenPosition.X + 10f, homeTileYPixels - Terraria.Main.screenPosition.Y + 14f);
+                    Vector2 drawOrigin = new(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f);
 
                     //Take into account possible gravity swapping
-                    SpriteEffects spriteEffect = Main.LocalPlayer.gravDir != -1 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+                    SpriteEffects spriteEffect = Terraria.Main.LocalPlayer.gravDir != -1 ? SpriteEffects.None : SpriteEffects.FlipVertically;
 
-                    Main.spriteBatch.Draw(bodyTexture, drawPos, textureDrawRegion, Lighting.GetColor(homeTileX, homeTileY), 0f, drawOrigin, drawScale, spriteEffect, 0f);
-                    Main.spriteBatch.Draw(headTexture, drawPos, textureDrawRegion, Lighting.GetColor(homeTileX, homeTileY), 0f, drawOrigin, drawScale, spriteEffect, 0f);
+                    Terraria.Main.spriteBatch.Draw(bodyTexture, drawPos, textureDrawRegion, Lighting.GetColor(homeTileX, homeTileY), 0f, drawOrigin, drawScale, spriteEffect, 0f);
+                    Terraria.Main.spriteBatch.Draw(headTexture, drawPos, textureDrawRegion, Lighting.GetColor(homeTileX, homeTileY), 0f, drawOrigin, drawScale, spriteEffect, 0f);
                 }
             });
 
@@ -367,7 +369,7 @@ namespace LivingWorldMod.Core.Patches {
             */
 
             //Navigate to right-click call in main
-            c.ErrorOnFailedGotoNext(i => i.MatchLdsfld<Main>(nameof(Main.mouseRight)));
+            c.ErrorOnFailedGotoNext(i => i.MatchLdsfld<Terraria.Main>(nameof(Terraria.Main.mouseRight)));
 
             //Move past call and copy the brfalse_S label, then move after the transform command
             c.Index++;
@@ -392,7 +394,7 @@ namespace LivingWorldMod.Core.Patches {
         private void RoomOccupancyCheck(ILContext il) {
             //This edit is simple; we will be allowing villagers to properly check along-side normal TownNPCs for the occupancy check vanilla does.
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //Navigate to townNPC check
             c.ErrorOnFailedGotoNext(i => i.MatchLdfld<NPC>(nameof(NPC.townNPC)));
@@ -405,22 +407,22 @@ namespace LivingWorldMod.Core.Patches {
         private void IgnoreRoomOccupancy(ILContext il) {
             //Another simple edit; this edit will allow us to get WorldGen.bestX and WorldGen.bestY for a room, ignoring if the room is occupied.
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //Navigate to occupancy check
-            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCall<WorldGen>("ScoreRoom_IsThisRoomOccupiedBySomeone"));
+            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCall<Terraria.WorldGen>("ScoreRoom_IsThisRoomOccupiedBySomeone"));
 
             //Emit our check to see if our IgnoreOccupancy in HousingUtils.cs is true, and if so, automatically return false, ignoring occupancy
-            c.EmitDelegate<Func<bool, bool>>((isOccupied) => !HousingUtils.IgnoreHouseOccupancy && isOccupied);
+            c.EmitDelegate<Func<bool, bool>>(isOccupied => !HousingUtils.IgnoreHouseOccupancy && isOccupied);
         }
 
         private void FindRoomBed(ILContext il) {
             //One of two patches that injects itself into the ScoreRoom method in order to find a corresponding bed for an NPC
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //Navigate to right before tile loop
-            c.ErrorOnFailedGotoNext(i => i.MatchLdsfld<WorldGen>(nameof(WorldGen.roomY2)));
+            c.ErrorOnFailedGotoNext(i => i.MatchLdsfld<Terraria.WorldGen>(nameof(Terraria.WorldGen.roomY2)));
             c.Index += 2;
             //Load all loop local variables
             c.Emit(OpCodes.Ldloc_S, (byte)2);
@@ -444,13 +446,13 @@ namespace LivingWorldMod.Core.Patches {
         private void AssignBedToNPC(ILContext il) {
             //Second to of two patches that takes the potential calculated bed position in an NPC's house, and assigns it to them
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //Navigate to right after homeless assignment
             c.ErrorOnFailedGotoNext(i => i.MatchCall<AchievementsHelper>(nameof(AchievementsHelper.NotifyProgressionEvent)));
             c.Index--;
             //Load NPC onto stack
-            c.Emit(OpCodes.Ldsfld, typeof(Main).GetField(nameof(Main.npc), BindingFlags.Public | BindingFlags.Static));
+            c.Emit(OpCodes.Ldsfld, typeof(Terraria.Main).GetField(nameof(Terraria.Main.npc), BindingFlags.Public | BindingFlags.Static));
             c.Emit(OpCodes.Ldloc_0);
             c.Emit(OpCodes.Ldelem_Ref);
             c.EmitDelegate<Action<NPC>>(npc => {

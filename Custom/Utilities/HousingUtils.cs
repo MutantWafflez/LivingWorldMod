@@ -25,18 +25,21 @@ namespace LivingWorldMod.Custom.Utilities {
         /// NPC type. Make sure the passed in zone is in tile coordinates.
         /// </summary>
         /// <param name="zone"> The zone to search in. This should be tile coordinates. </param>
-        /// <param name="npcType"> The type of NPC to check the housing with. If you want "Normal" checking, pass in the Guide type. </param>
+        /// <param name="npcType">
+        /// The type of NPC to check the housing with. If you want "Normal" checking, pass in the Guide
+        /// type.
+        /// </param>
         public static List<Point16> GetValidHousesInZone(Circle zone, int npcType) {
-            List<Point16> foundHouses = new List<Point16>();
+            List<Point16> foundHouses = new();
             Rectangle rectangle = zone.ToRectangle();
 
             for (int i = 0; i < rectangle.Width; i += 2) {
                 for (int j = 0; j < rectangle.Height; j += 2) {
-                    Point position = new Point(rectangle.X + i, rectangle.Y + j);
+                    Point position = new(rectangle.X + i, rectangle.Y + j);
 
                     if (WorldGen.InWorld(position.X, position.Y) && WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(npcType)) {
                         ScoreRoomIgnoringOccupancy(npcTypeAskingToScoreRoom: npcType);
-                        Point16 bestPoint = new Point16(WorldGen.bestX, WorldGen.bestY);
+                        Point16 bestPoint = new(WorldGen.bestX, WorldGen.bestY);
 
                         if (foundHouses.Contains(bestPoint) || !zone.ContainsPoint(bestPoint.ToVector2()) || WorldGen.hiScore <= 0) {
                             continue;
@@ -67,7 +70,7 @@ namespace LivingWorldMod.Custom.Utilities {
         }
 
         /// <summary>
-        /// Gets the count of the specified NPC type that currently has a house within the zone. 
+        /// Gets the count of the specified NPC type that currently has a house within the zone.
         /// </summary>
         /// <param name="zone"> The zone to search in. This should be tile coordinates. </param>
         /// <param name="npcType"> The type of NPC to check the housing with. </param>

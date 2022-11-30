@@ -1,6 +1,6 @@
-﻿using LivingWorldMod.Content.Tiles.DebugTiles;
+﻿using System;
+using LivingWorldMod.Content.Tiles.DebugTiles;
 using LivingWorldMod.Content.Walls.DebugWalls;
-using System;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -126,7 +126,8 @@ namespace LivingWorldMod.Custom.Structs {
             modWallOwner = modWall?.Mod.Name;
         }
 
-        public TileData(int type, bool isActivated, bool isHalfBlock, int frameNumber, int frameX, int frameY, int slopeType, int color, bool isActuated, bool hasActuator,
+        public TileData(
+            int type, bool isActivated, bool isHalfBlock, int frameNumber, int frameX, int frameY, int slopeType, int color, bool isActuated, bool hasActuator,
             bool hasRedWire, bool hasBlueWire, bool hasGreenWire, bool hasYellowWire, int liquidType, int liquidAmount, int wallType, int wallColor, int wallFrame,
             int wallFrameX, int wallFrameY, string modTileName, string modTileOwner, string modWallName, string modWallOwner
         ) {
@@ -165,7 +166,7 @@ namespace LivingWorldMod.Custom.Structs {
             this.modWallOwner = modWallOwner;
         }
 
-        public static TileData Deserialize(TagCompound tag) => new TileData(
+        public static TileData Deserialize(TagCompound tag) => new(
             tag.GetInt(nameof(type)),
             tag.GetBool(nameof(isActivated)),
             tag.GetBool(nameof(isHalfBlock)),
@@ -193,7 +194,7 @@ namespace LivingWorldMod.Custom.Structs {
             tag.GetString(nameof(modWallOwner))
         );
 
-        public TagCompound SerializeData() => new TagCompound() {
+        public TagCompound SerializeData() => new() {
             { nameof(type), type },
             { nameof(isActivated), isActivated },
             { nameof(isHalfBlock), isHalfBlock },

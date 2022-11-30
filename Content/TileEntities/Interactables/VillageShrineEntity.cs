@@ -1,21 +1,19 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using LivingWorldMod.Common.Systems.UI;
+using LivingWorldMod.Content.UI.VillageShrine;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
-using System.IO;
-using System.Linq;
-using LivingWorldMod.Common.Systems.UI;
-using LivingWorldMod.Content.Tiles.Interactables;
-using LivingWorldMod.Content.UI.VillageShrine;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
-using LivingWorldMod.Custom.Utilities;
-using Terraria.Chat;
 using Terraria.Localization;
+using Terraria.ModLoader;
 using Terraria.ModLoader.Default;
+using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Content.TileEntities.Interactables {
     /// <summary>
@@ -24,6 +22,22 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
     /// </summary>
     [LegacyName("HarpyShrineEntity")]
     public class VillageShrineEntity : TEModdedPylon {
+        public const float DefaultVillageRadius = 90f * 16f;
+
+        public const int EmptyVillageRespawnTime = 60 * 60 * 15;
+
+        public const int FullVillageRespawnTime = 60 * 60 * 3;
+
+        public int CurrentHousedVillagersCount {
+            get;
+            private set;
+        }
+
+        public int CurrentValidHouses {
+            get;
+            private set;
+        }
+
         public VillagerType shrineType;
 
         public Circle villageZone;
@@ -38,31 +52,15 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         //for parity between client and server.
         public int clientTimer;
 
-        public int CurrentHousedVillagersCount {
-            get;
-            private set;
-        }
-
-        public int CurrentValidHouses {
-            get;
-            private set;
-        }
-
         private int _syncTimer;
 
         private List<Point16> _houseLocations;
-
-        public const float DefaultVillageRadius = 90f * 16f;
-
-        public const int EmptyVillageRespawnTime = 60 * 60 * 15;
-
-        public const int FullVillageRespawnTime = 60 * 60 * 3;
 
         public override void Update() {
             //This is only here for backwards compatibility, if someone is loading a world from where
             //the shrines were the older HarpyShrineEntity type, then their VillageZone values will
             //be default and thus need to be fixed.
-            if (villageZone == default) {
+            if (villageZone == default(Circle)) {
                 InstantiateVillageZone();
 
                 SyncDataToClients();
@@ -104,7 +102,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
 
                 for (int i = 0; i < housingRectangle.Width; i += 2) {
                     for (int j = 0; j < housingRectangle.Height; j += 2) {
-                        Point position = new Point(housingRectangle.X + i, housingRectangle.Y + j);
+                        Point position = new(housingRectangle.X + i, housingRectangle.Y + j);
 
                         if (WorldGen.InWorld(position.X, position.Y) && WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(villagerNPCType)) {
                             WorldGen.ScoreRoom(npcTypeAskingToScoreRoom: villagerNPCType);
@@ -119,8 +117,8 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                             Main.npc[npc].homeTileX = WorldGen.bestX;
                             Main.npc[npc].homeTileY = WorldGen.bestY;
 
-                            Color arrivalColor = new Color(50, 125, 255);
-                            string arrivalText = LocalizationUtils.GetLWMTextValue($"Event.VillagerRespawned.{shrineType}", new object[] { Main.npc[npc].GivenOrTypeName });
+                            Color arrivalColor = new(50, 125, 255);
+                            string arrivalText = LocalizationUtils.GetLWMTextValue($"Event.VillagerRespawned.{shrineType}", Main.npc[npc].GivenOrTypeName);
                             if (Main.netMode == NetmodeID.Server) {
                                 ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(arrivalText), arrivalColor);
                             }

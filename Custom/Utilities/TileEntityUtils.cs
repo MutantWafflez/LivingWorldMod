@@ -16,7 +16,8 @@ namespace LivingWorldMod.Custom.Utilities {
         /// <param name="x"> The x coordinate of the potential entity. </param>
         /// <param name="y"> The y coordinate of the potential entity. </param>
         /// <param name="entity"> The potential entity. </param>
-        public static bool TryFindModEntity<T>(int x, int y, out T entity) where T : ModTileEntity {
+        public static bool TryFindModEntity<T>(int x, int y, out T entity)
+            where T : ModTileEntity {
             TileEntity.ByPosition.TryGetValue(new Point16(x, y), out TileEntity retrievedEntity);
 
             if (retrievedEntity is T castEntity) {
@@ -35,7 +36,8 @@ namespace LivingWorldMod.Custom.Utilities {
         /// <typeparam name="T"> </typeparam>
         /// <param name="ID"> The ID of the potential entity. </param>
         /// <param name="entity"> The potential entity. </param>
-        public static bool TryFindModEntity<T>(int ID, out T entity) where T : ModTileEntity {
+        public static bool TryFindModEntity<T>(int ID, out T entity)
+            where T : ModTileEntity {
             TileEntity retrievedEntity = TileEntity.ByID[ID];
 
             if (retrievedEntity is T castEntity) {
@@ -51,6 +53,7 @@ namespace LivingWorldMod.Custom.Utilities {
         /// Gets and returns all currently living tile entities of the specified type.
         /// </summary>
         /// <typeparam name="T"> The type of ModTileEntity you want to find all living entities of. </typeparam>
-        public static IEnumerable<T> GetAllEntityOfType<T>() where T : ModTileEntity => TileEntity.ByID.Values.OfType<T>();
+        public static IEnumerable<T> GetAllEntityOfType<T>()
+            where T : ModTileEntity => TileEntity.ByID.Values.OfType<T>();
     }
 }

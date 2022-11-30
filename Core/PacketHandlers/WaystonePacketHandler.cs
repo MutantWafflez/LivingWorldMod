@@ -1,8 +1,8 @@
-﻿using LivingWorldMod.Common.ModTypes;
+﻿using System.IO;
+using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Utilities;
-using System.IO;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -40,7 +40,7 @@ namespace LivingWorldMod.Core.PacketHandlers {
                         packet.Send(ignoreClient: fromWhomst);
                     }
                     else if (Main.netMode == NetmodeID.MultiplayerClient) {
-                        Point16 entityPos = new Point16(reader.ReadInt32(), reader.ReadInt32());
+                        Point16 entityPos = new(reader.ReadInt32(), reader.ReadInt32());
 
                         if (!TileEntityUtils.TryFindModEntity(entityPos.X, entityPos.Y, out WaystoneEntity entity)) {
                             return;

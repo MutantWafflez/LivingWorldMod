@@ -42,14 +42,14 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
 
         public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) {
             //Double check that the tile exists
-            Point16 point = new Point16(i, j);
+            Point16 point = new(i, j);
             Tile tile = Main.tile[point.X, point.Y];
             if (tile == null || !tile.HasTile) {
                 return;
             }
 
             //Gets offscreen vector for different lighting modes
-            Vector2 offscreenVector = new Vector2(Main.offScreenRange);
+            Vector2 offscreenVector = new(Main.offScreenRange);
             if (Main.drawToScreen) {
                 offscreenVector = Vector2.Zero;
             }
@@ -73,8 +73,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
 
             //Arrow framing and such
             Asset<Texture2D> arrowAsset = TextureAssets.GolfBallArrow;
-            Rectangle arrowFrame = arrowAsset.Frame(2, 1, 0, 0);
-            Rectangle arrowOutlineFrame = arrowAsset.Frame(2, 1, 1, 0);
+            Rectangle arrowFrame = arrowAsset.Frame(2);
+            Rectangle arrowOutlineFrame = arrowAsset.Frame(2, 1, 1);
 
             //Position calculations
             Vector2 origin = arrowFrame.Size() / 2f;
@@ -107,7 +107,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
             Vector2 teleportPos = currentRoom.doorData.Values.First(doorData => doorData.doorPos == topLeft).linkedDoor.doorPos.ToWorldCoordinates(16f, 16f);
 
-            InnerPyramidDoorCutscene pyramidCutscene = new InnerPyramidDoorCutscene(topLeft, teleportPos);
+            InnerPyramidDoorCutscene pyramidCutscene = new(topLeft, teleportPos);
             cutscenePlayer.StartCutscene(pyramidCutscene);
             pyramidCutscene.SendCutscenePacket(-1);
 

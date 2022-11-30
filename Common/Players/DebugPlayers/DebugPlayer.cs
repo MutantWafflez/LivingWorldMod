@@ -1,5 +1,4 @@
 ﻿using LivingWorldMod.Common.Configs;
-using LivingWorldMod.Content.Subworlds;
 using LivingWorldMod.Content.Subworlds.Pyramid;
 using SubworldLibrary;
 using Terraria;

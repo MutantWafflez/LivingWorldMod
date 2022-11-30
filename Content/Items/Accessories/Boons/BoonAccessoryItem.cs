@@ -13,14 +13,14 @@ namespace LivingWorldMod.Content.Items.Accessories.Boons {
     /// concept of "Boons."
     /// </summary>
     public abstract class BoonAccessoryItem : AccessoryItem {
+        public static readonly Regex InlineWordSearch = new(@"(?<PotentSwap>\|P:(?<Normal>.*?)/(?<Potent>.*?)\|)", RegexOptions.Compiled | RegexOptions.Multiline);
+        public static readonly Regex AdditionalLineSearch = new(@"(?<Start>\|NPE:)(?<Text>[\s\S]*)(?<End>\|)", RegexOptions.Compiled | RegexOptions.Multiline);
+        public static readonly Color PotentTextColor = new(20, 126, 168);
+
         /// <summary>
         /// Whether or not this boon is considered "potent" from being within the Atum Slot.
         /// </summary>
         public bool IsPotent => ModContent.GetInstance<AtumAccessorySlot>().FunctionalItem.type == Type;
-
-        public static readonly Regex InlineWordSearch = new Regex(@"(?<PotentSwap>\|P:(?<Normal>.*?)/(?<Potent>.*?)\|)", RegexOptions.Compiled | RegexOptions.Multiline);
-        public static readonly Regex AdditionalLineSearch = new Regex(@"(?<Start>\|NPE:)(?<Text>[\s\S]*)(?<End>\|)", RegexOptions.Compiled | RegexOptions.Multiline);
-        public static readonly Color PotentTextColor = new Color(20, 126, 168);
 
         /// <summary>
         /// Equivalent and mutually exclusive to <seealso cref="AccessoryItem.AccessoryUpdate"/>; only one is called

@@ -1,10 +1,11 @@
 ﻿using System;
+using IL.Terraria;
 using LivingWorldMod.Custom.Utilities;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Main = Terraria.Main;
 
 namespace LivingWorldMod.Core.Patches {
     /// <summary>
@@ -14,7 +15,7 @@ namespace LivingWorldMod.Core.Patches {
     [Autoload(false)]
     public class NPCAIPatches : ILoadable {
         public void Load(Mod mod) {
-            IL.Terraria.NPC.AI_007_TownEntities += TownNPCAI;
+            NPC.AI_007_TownEntities += TownNPCAI;
         }
 
         public void Unload() { }
@@ -22,7 +23,7 @@ namespace LivingWorldMod.Core.Patches {
         private void TownNPCAI(ILContext il) {
             //REALLY simply patch. Remove the check for rain that prevents Town NPCs from walking around.
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //Navigate to RIGHT after rain check
             c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchLdsfld<Main>(nameof(Main.raining)));
@@ -30,7 +31,7 @@ namespace LivingWorldMod.Core.Patches {
             c.Emit(OpCodes.Pop);
             //Emit our own check (Only vanilla NPCs can walk around during rain)
             c.Emit(OpCodes.Ldarg_0);
-            c.EmitDelegate<Func<NPC, bool>>(npc => npc.type >= NPCID.Count && Main.raining);
+            c.EmitDelegate<Func<Terraria.NPC, bool>>(npc => npc.type >= NPCID.Count && Main.raining);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using LivingWorldMod.Content.NPCs.Villagers;
+﻿using System;
+using LivingWorldMod.Common.Systems;
+using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.UI.CommonElements;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
@@ -6,8 +8,6 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using System;
-using LivingWorldMod.Common.Systems;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -117,7 +117,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             dialogueZone.Top.Set(388f, 0f);
             backImage.Append(dialogueZone);
 
-            dialogueText = new UIBetterText() {
+            dialogueText = new UIBetterText {
                 IsWrapped = true,
                 horizontalWrapConstraint = 388f
             };
@@ -344,7 +344,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             float priceMult = NPCUtils.GetPriceMultiplierFromRep(currentVillager);
 
             foreach (ShopItem item in currentVillager.shopInventory) {
-                UIShopItem element = new UIShopItem(item,
+                UIShopItem element = new(item,
                     (long)Math.Round(item.ItemPrice * priceMult),
                     currentVillager.VillagerType);
 
@@ -364,7 +364,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             shopList.Clear();
 
             for (int i = 0; i < Main.rand.Next(10, 51); i++) {
-                UIShopItem element = new UIShopItem(new ShopItem(Main.rand.Next(ItemID.Count), 1000, 0),
+                UIShopItem element = new(new ShopItem(Main.rand.Next(ItemID.Count), 1000, 0),
                     Main.rand.Next(0, 10000000),
                     VillagerType.Harpy);
 

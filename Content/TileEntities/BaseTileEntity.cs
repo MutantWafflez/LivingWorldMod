@@ -9,16 +9,16 @@ namespace LivingWorldMod.Content.TileEntities {
     /// </summary>
     public abstract class BaseTileEntity : ModTileEntity {
         /// <summary>
+        /// The "dimensions" of the entity, in pixels.
+        /// </summary>
+        public virtual Vector2 EntityDimensions => new(16); //1x1 tiles, aka 16x16 pixels
+
+        /// <summary>
         /// The ID of the tile that this tile entity attaches to.
         /// </summary>
         public abstract int ValidTileID {
             get;
         }
-
-        /// <summary>
-        /// The "dimensions" of the entity, in pixels.
-        /// </summary>
-        public virtual Vector2 EntityDimensions => new Vector2(16); //1x1 tiles, aka 16x16 pixels
 
         /// <summary>
         /// The pixel position of this entity (aka NOT tile coordinates.)
@@ -41,9 +41,7 @@ namespace LivingWorldMod.Content.TileEntities {
                 Tile tile = Framing.GetTileSafely(x, y);
                 return tile.HasTile && tile.TileType == ValidTileID && tile.TileFrameX == 0 && tile.TileFrameY == 0;
             }
-            else {
-                return preCheck.Value;
-            }
+            return preCheck.Value;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using LivingWorldMod.Core.PacketHandlers;
 using Terraria;
@@ -41,29 +40,6 @@ namespace LivingWorldMod.Common.ModTypes {
         }
 
         /// <summary>
-        /// Gets and returns the cutscene that pertains to the specified type. Returns null if none are found.
-        /// </summary>
-        public static Cutscene GetCutsceneFromType(byte type) => ModContent.GetContent<Cutscene>().FirstOrDefault(cutscene => cutscene.Type == type);
-
-        /// <summary>
-        /// Called when a packet needs to be written for this specific cutscene type. Write all important data
-        /// that needs to be synced for the cutscene to work properly across all clients. The sent data will
-        /// be subsequently read in <seealso cref="HandleCutscenePacket"/>.
-        /// </summary>
-        /// <remarks>
-        /// You only need to write to the passed in packet, not send it.
-        /// </remarks>
-        protected abstract void WritePacketData(ModPacket packet);
-
-        /// <summary>
-        /// Read the data that you sent from <seealso cref="WritePacketData"/> and change the necessary
-        /// things within this instance.
-        /// </summary>
-        /// <param name="reader"> The stream holding the data you need to read from. </param>
-        /// <param name="fromWhomst"> What client sent the packet. Only matters if receiving on the server. </param>
-        public abstract void HandleCutscenePacket(BinaryReader reader, int fromWhomst);
-
-        /// <summary>
         /// Allows you to do things when the cutscene first starts. Called once on every MP
         /// client and on the server. If you only want to do things on client, make sure
         /// to double check:
@@ -92,11 +68,18 @@ namespace LivingWorldMod.Common.ModTypes {
 
         public sealed override void SetupContent() => SetStaticDefaults();
 
-        protected sealed override void Register() {
-            ModTypeLookup<Cutscene>.Register(this);
-            Type = TypeCount;
-            TypeCount++;
-        }
+        /// <summary>
+        /// Gets and returns the cutscene that pertains to the specified type. Returns null if none are found.
+        /// </summary>
+        public static Cutscene GetCutsceneFromType(byte type) => ModContent.GetContent<Cutscene>().FirstOrDefault(cutscene => cutscene.Type == type);
+
+        /// <summary>
+        /// Read the data that you sent from <seealso cref="WritePacketData"/> and change the necessary
+        /// things within this instance.
+        /// </summary>
+        /// <param name="reader"> The stream holding the data you need to read from. </param>
+        /// <param name="fromWhomst"> What client sent the packet. Only matters if receiving on the server. </param>
+        public abstract void HandleCutscenePacket(BinaryReader reader, int fromWhomst);
 
         public void SendCutscenePacket(int fromWhomst, int ignoreClient = -1) {
             //Doesn't need to function in SP, saves the boilerplate from having to do netmode checks elsewhere
@@ -113,5 +96,21 @@ namespace LivingWorldMod.Common.ModTypes {
 
             packet.Send(ignoreClient: ignoreClient);
         }
+
+        protected sealed override void Register() {
+            ModTypeLookup<Cutscene>.Register(this);
+            Type = TypeCount;
+            TypeCount++;
+        }
+
+        /// <summary>
+        /// Called when a packet needs to be written for this specific cutscene type. Write all important data
+        /// that needs to be synced for the cutscene to work properly across all clients. The sent data will
+        /// be subsequently read in <seealso cref="HandleCutscenePacket"/>.
+        /// </summary>
+        /// <remarks>
+        /// You only need to write to the passed in packet, not send it.
+        /// </remarks>
+        protected abstract void WritePacketData(ModPacket packet);
     }
 }

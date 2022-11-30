@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Common.Configs;
-using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.Players;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
@@ -38,6 +37,23 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
             FoliageGenerated
         }
 
+        public override int Width => _roomSideLength * _gridSideLength + _worldBorderPadding * 2;
+
+        public override int Height => _roomSideLength * _gridSideLength + _bossRoomPadding + _worldBorderPadding * 2;
+
+        public override bool ShouldSave => false;
+
+        public override List<GenPass> Tasks => new() {
+            new PassLegacy("Initialize", Initialize),
+            new PassLegacy("Fill World", FillWorld),
+            new PassLegacy("Set Spawn", SetSpawn),
+            new PassLegacy("Empty Room Fill", FillEmptyRooms),
+            new PassLegacy("Room Layout", GenerateRoomLayouts),
+            new PassLegacy("Room Curse Generation", GenerateRoomCurses),
+            new PassLegacy("Room Foliage", GenerateRoomFoliage),
+            new PassLegacy("Debug Draw Paths", DebugDrawPaths)
+        };
+
         /// <summary>
         /// The grid that the dungeon is composed of. Each room at maximum can be 100x100.
         /// </summary>
@@ -62,35 +78,18 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
             private set;
         }
 
-        public override int Width => _roomSideLength * _gridSideLength + _worldBorderPadding * 2;
-
-        public override int Height => _roomSideLength * _gridSideLength + _bossRoomPadding + _worldBorderPadding * 2;
-
-        public override bool ShouldSave => false;
-
-        public override List<GenPass> Tasks => new List<GenPass>() {
-            new PassLegacy("Initialize", Initialize),
-            new PassLegacy("Fill World", FillWorld),
-            new PassLegacy("Set Spawn", SetSpawn),
-            new PassLegacy("Empty Room Fill", FillEmptyRooms),
-            new PassLegacy("Room Layout", GenerateRoomLayouts),
-            new PassLegacy("Room Curse Generation", GenerateRoomCurses),
-            new PassLegacy("Room Foliage", GenerateRoomFoliage),
-            new PassLegacy("Debug Draw Paths", DebugDrawPaths)
-        };
-
         private readonly int _totalVanillaSaveOrLoadSteps = 4;
+
+        private readonly int _worldBorderPadding = 150;
+        private readonly int _roomSideLength = 100;
+        private readonly int _gridSideLength = 10;
+        private readonly int _bossRoomPadding = 150;
 
         private Asset<Texture2D> _pyramidBackground;
         private Asset<Texture2D> _pyramidWorldGenBar;
         private bool _isExiting;
         private string _lastStatusText = "";
         private int _vanillaLoadStepsPassed;
-
-        private readonly int _worldBorderPadding = 150;
-        private readonly int _roomSideLength = 100;
-        private readonly int _gridSideLength = 10;
-        private readonly int _bossRoomPadding = 150;
         private Dictionary<string, List<RoomData>> _allRooms;
         private int _spawnTileX;
         private int _spawnTileY;
@@ -115,7 +114,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                               _allRooms[key].Add(room);
                           }
                           else {
-                              _allRooms[key] = new List<RoomData>() { room };
+                              _allRooms[key] = new List<RoomData> { room };
                           }
                       });
         }
@@ -152,13 +151,13 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
 
             //Progress Bar Drawing
-            Vector2 totalProgBarPos = new Vector2(Main.screenWidth / 2f - 274f, Main.screenHeight / 2f - 18f);
-            Vector2 totalProgBarSize = new Vector2(_pyramidWorldGenBar.Width() - 8f, 18f);
+            Vector2 totalProgBarPos = new(Main.screenWidth / 2f - 274f, Main.screenHeight / 2f - 18f);
+            Vector2 totalProgBarSize = new(_pyramidWorldGenBar.Width() - 8f, 18f);
 
-            Vector2 passProgBarPos = new Vector2(Main.screenWidth / 2f - 252f, Main.screenHeight / 2f);
-            Vector2 passProgBarSize = new Vector2(_pyramidWorldGenBar.Width() - 48f, 12f);
+            Vector2 passProgBarPos = new(Main.screenWidth / 2f - 252f, Main.screenHeight / 2f);
+            Vector2 passProgBarSize = new(_pyramidWorldGenBar.Width() - 48f, 12f);
 
-            Color progressBarBackgroundColor = new Color(63, 63, 63);
+            Color progressBarBackgroundColor = new(63, 63, 63);
 
             //Progress Bar Background Colors
             Main.spriteBatch.Draw(
@@ -209,6 +208,59 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
             Main.LocalPlayer.GetModPlayer<PyramidDungeonPlayer>().currentRoom = CorrectPath.First();
         }
 
+        public void GenerateRoomLayouts(GenerationProgress progress, GameConfiguration config) {
+            progress.Message = "Shifting the Rooms";
+
+            //Manually generate starter room
+            PyramidRoom startRoom = CorrectPath.First();
+            RoomData startRoomData = IOUtils.GetTagFromFile<RoomData>(LivingWorldMod.LWMStructurePath + "PyramidRooms/StartRoom.pyrroom");
+            Rectangle roomRegion = startRoom.region;
+
+            WorldGenUtils.GenerateStructure(startRoomData.roomLayout, roomRegion.X, roomRegion.Y);
+            WorldGen.PlaceObject(roomRegion.X + startRoomData.doorData[PyramidDoorDirection.Top].X, roomRegion.Y + startRoomData.doorData[PyramidDoorDirection.Top].Y, ModContent.TileType<PyramidDoorTile>());
+
+            foreach ((PyramidDoorDirection key, PyramidDoorData value) in startRoom.doorData) {
+                Point16 doorPos = new(startRoom.region.X + startRoomData.doorData[key].X, startRoom.region.Y + startRoomData.doorData[key].Y);
+
+                value.doorPos = doorPos;
+                WorldGen.PlaceObject(doorPos.X, doorPos.Y, ModContent.TileType<InnerPyramidDoorTile>());
+            }
+
+            startRoom.generationStep = PyramidRoomGenerationStep.LayoutGenerated;
+
+            //Generate ALL the rooms
+            List<List<PyramidRoom>> allPaths = FakePaths.Prepend(CorrectPath).ToList();
+            for (int i = 0; i < allPaths.Count; i++) {
+                progress.Set(i / (allPaths.Count - 1f));
+
+                GenerateRoomLayoutOnPath(allPaths[i]);
+            }
+        }
+
+        public void GenerateRoomCurses(GenerationProgress progress, GameConfiguration config) {
+            progress.Message = "Cursing the Path";
+
+            //Generate torches in all rooms
+            List<List<PyramidRoom>> allPaths = FakePaths.Prepend(CorrectPath).ToList();
+            for (int i = 0; i < allPaths.Count; i++) {
+                progress.Set(i / (allPaths.Count - 1f));
+
+                GenerateRoomCurseOnPath(allPaths[i]);
+            }
+        }
+
+        public void GenerateRoomFoliage(GenerationProgress progress, GameConfiguration config) {
+            progress.Message = "Uncovering Lost Remains";
+
+            //Generate torches in all rooms
+            List<List<PyramidRoom>> allPaths = FakePaths.Prepend(CorrectPath).ToList();
+            for (int i = 0; i < allPaths.Count; i++) {
+                progress.Set(i / (allPaths.Count - 1f));
+
+                GenerateRoomFoliageOnPath(allPaths[i]);
+            }
+        }
+
         private void Initialize(GenerationProgress progress, GameConfiguration config) {
             progress.Message = "Initializing";
             //Default spawn spot, in case generation goes awry
@@ -220,7 +272,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
             Grid.GenerateGrid();
 
             //Generate correct path first
-            CorrectPath = new List<PyramidRoom>() { Grid.GetRoom(WorldGen.genRand.Next(_gridSideLength), 0) };
+            CorrectPath = new List<PyramidRoom> { Grid.GetRoom(WorldGen.genRand.Next(_gridSideLength), 0) };
             PyramidRoom currentRoom = CorrectPath.First();
             //Starter room will always be a normal room
             currentRoom.roomType = PyramidRoomType.Normal;
@@ -231,7 +283,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                 PyramidRoom roomLeft = Grid.GetRoomToLeft(currentRoom);
                 PyramidRoom roomRight = Grid.GetRoomToRight(currentRoom);
 
-                List<Tuple<PyramidRoom, double>> movementChoices = new List<Tuple<PyramidRoom, double>>();
+                List<Tuple<PyramidRoom, double>> movementChoices = new();
                 movementChoices.Add(new Tuple<PyramidRoom, double>(roomBelow, 34)); //Down
                 movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomLeft, 33), roomLeft is { pathSearched: false } && !currentRoom.doorData.ContainsKey(PyramidDoorDirection.Left)); //Left
                 movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomRight, 33), roomRight is { pathSearched: false } && !currentRoom.doorData.ContainsKey(PyramidDoorDirection.Right)); //Right
@@ -317,59 +369,6 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
             }
         }
 
-        public void GenerateRoomLayouts(GenerationProgress progress, GameConfiguration config) {
-            progress.Message = "Shifting the Rooms";
-
-            //Manually generate starter room
-            PyramidRoom startRoom = CorrectPath.First();
-            RoomData startRoomData = IOUtils.GetTagFromFile<RoomData>(LivingWorldMod.LWMStructurePath + "PyramidRooms/StartRoom.pyrroom");
-            Rectangle roomRegion = startRoom.region;
-
-            WorldGenUtils.GenerateStructure(startRoomData.roomLayout, roomRegion.X, roomRegion.Y);
-            WorldGen.PlaceObject(roomRegion.X + startRoomData.doorData[PyramidDoorDirection.Top].X, roomRegion.Y + startRoomData.doorData[PyramidDoorDirection.Top].Y, ModContent.TileType<PyramidDoorTile>());
-
-            foreach ((PyramidDoorDirection key, PyramidDoorData value) in startRoom.doorData) {
-                Point16 doorPos = new Point16(startRoom.region.X + startRoomData.doorData[key].X, startRoom.region.Y + startRoomData.doorData[key].Y);
-
-                value.doorPos = doorPos;
-                WorldGen.PlaceObject(doorPos.X, doorPos.Y, ModContent.TileType<InnerPyramidDoorTile>());
-            }
-
-            startRoom.generationStep = PyramidRoomGenerationStep.LayoutGenerated;
-
-            //Generate ALL the rooms
-            List<List<PyramidRoom>> allPaths = FakePaths.Prepend(CorrectPath).ToList();
-            for (int i = 0; i < allPaths.Count; i++) {
-                progress.Set(i / (allPaths.Count - 1f));
-
-                GenerateRoomLayoutOnPath(allPaths[i]);
-            }
-        }
-
-        public void GenerateRoomCurses(GenerationProgress progress, GameConfiguration config) {
-            progress.Message = "Cursing the Path";
-
-            //Generate torches in all rooms
-            List<List<PyramidRoom>> allPaths = FakePaths.Prepend(CorrectPath).ToList();
-            for (int i = 0; i < allPaths.Count; i++) {
-                progress.Set(i / (allPaths.Count - 1f));
-
-                GenerateRoomCurseOnPath(allPaths[i]);
-            }
-        }
-
-        public void GenerateRoomFoliage(GenerationProgress progress, GameConfiguration config) {
-            progress.Message = "Uncovering Lost Remains";
-
-            //Generate torches in all rooms
-            List<List<PyramidRoom>> allPaths = FakePaths.Prepend(CorrectPath).ToList();
-            for (int i = 0; i < allPaths.Count; i++) {
-                progress.Set(i / (allPaths.Count - 1f));
-
-                GenerateRoomFoliageOnPath(allPaths[i]);
-            }
-        }
-
         private void DebugDrawPaths(GenerationProgress progress, GameConfiguration config) {
             if (!LivingWorldMod.IsDebug) {
                 return;
@@ -431,7 +430,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                     branchChanceDenominator = branchOccurrenceDenominator;
                     int endChanceDenominator = branchEndChanceDenominator;
 
-                    List<PyramidRoom> newPath = new List<PyramidRoom>() { originalPathRoom };
+                    List<PyramidRoom> newPath = new() { originalPathRoom };
                     PyramidRoom currentFakeRoom = newPath[0];
 
                     while (true) {
@@ -439,7 +438,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                         PyramidRoom roomLeft = Grid.GetRoomToLeft(currentFakeRoom);
                         PyramidRoom roomRight = Grid.GetRoomToRight(currentFakeRoom);
 
-                        List<Tuple<PyramidRoom, double>> movementChoices = new List<Tuple<PyramidRoom, double>>();
+                        List<Tuple<PyramidRoom, double>> movementChoices = new();
                         movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomBelow, 25), roomBelow is { pathSearched: false }); //Down
                         movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomLeft, 37.5), roomLeft is { pathSearched: false } && !currentFakeRoom.doorData.ContainsKey(PyramidDoorDirection.Left)); //Left
                         movementChoices.AddConditionally(new Tuple<PyramidRoom, double>(roomRight, 37.5), roomRight is { pathSearched: false } && !currentFakeRoom.doorData.ContainsKey(PyramidDoorDirection.Right)); //Right
@@ -515,7 +514,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
 
                 //Initialize doors and place them
                 foreach ((PyramidDoorDirection key, PyramidDoorData value) in room.doorData) {
-                    Point16 doorPos = new Point16(room.region.X + roomData.doorData[key].X, room.region.Y + roomData.doorData[key].Y);
+                    Point16 doorPos = new(room.region.X + roomData.doorData[key].X, room.region.Y + roomData.doorData[key].Y);
 
                     value.doorPos = doorPos;
                     WorldGen.PlaceObject(doorPos.X, doorPos.Y, ModContent.TileType<InnerPyramidDoorTile>());
@@ -564,12 +563,12 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                 room.generationStep = PyramidRoomGenerationStep.FoliageGenerated;
 
                 TileObjectData pileData = TileObjectData.GetTileData(TileID.LargePiles, 0);
-                List<Point> pileLocations = new List<Point>();
+                List<Point> pileLocations = new();
 
                 //Search through entire room, looking for valid pile placements
                 for (int x = roomRegion.X; x < roomRegion.X + roomRegion.Width; x++) {
                     for (int y = roomRegion.Y; y <= roomRegion.Y + roomRegion.Height; y++) {
-                        Point searchPoint = new Point(x, y);
+                        Point searchPoint = new(x, y);
 
                         if (TileObject.CanPlace(x, y, TileID.LargePiles, 0, -1, out _) && WorldUtils.Find(searchPoint, Searches.Chain(new Searches.Down(1), new IsDry().AreaAnd(pileData.Width, pileData.Height)), out _)) {
                             pileLocations.Add(searchPoint);
@@ -582,7 +581,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                     if (!WorldGen.genRand.NextBool(5)) {
                         continue;
                     }
-                    Dictionary<ushort, int> tileData = new Dictionary<ushort, int>();
+                    Dictionary<ushort, int> tileData = new();
 
                     //Check if there is already any piles nearby; if not, place!
                     WorldUtils.Gen(pileLocation + new Point(1, 0), new Shapes.Circle(28), new Actions.TileScanner(TileID.LargePiles).Output(tileData));

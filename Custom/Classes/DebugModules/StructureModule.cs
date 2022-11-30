@@ -17,7 +17,7 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
                 return;
             }
 
-            List<List<TileData>> tileData = new List<List<TileData>>();
+            List<List<TileData>> tileData = new();
 
             for (int x = 0; x <= bottomRight.X - topLeft.X; x++) {
                 tileData.Add(new List<TileData>());
@@ -27,11 +27,11 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
                 }
             }
 
-            StructureData structData = new StructureData(tileData.Count, tileData[0].Count, tileData);
+            StructureData structData = new(tileData.Count, tileData[0].Count, tileData);
 
             string outputPath = IOUtils.GetLWMFilePath() + $"/StructureOutput_{DateTime.Now.ToShortTimeString().Replace(':', '_').Replace(' ', '_')}.struct";
 
-            TagIO.ToFile(new TagCompound() { { nameof(StructureData), structData } }, outputPath);
+            TagIO.ToFile(new TagCompound { { nameof(StructureData), structData } }, outputPath);
 
             Main.NewText("Structure Copied to File!");
         }

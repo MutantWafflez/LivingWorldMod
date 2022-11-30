@@ -69,14 +69,14 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             if (cutscenePlayer.InCutscene) {
                 return true;
             }
-            else if (playerInCutscene is not null) {
+            if (playerInCutscene is not null) {
                 SubworldSystem.Enter<PyramidSubworld>();
 
                 return true;
             }
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j);
 
-            EnterPyramidCutscene pyramidCutscene = new EnterPyramidCutscene(topLeft);
+            EnterPyramidCutscene pyramidCutscene = new(topLeft);
             cutscenePlayer.StartCutscene(pyramidCutscene);
             pyramidCutscene.SendCutscenePacket(-1);
 

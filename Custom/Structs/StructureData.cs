@@ -33,14 +33,14 @@ namespace LivingWorldMod.Custom.Structs {
             this.structureDisplacement = structureDisplacement;
         }
 
-        public static StructureData Deserialize(TagCompound tag) => new StructureData(
+        public static StructureData Deserialize(TagCompound tag) => new(
             tag.GetInt(nameof(structureWidth)),
             tag.GetInt(nameof(structureHeight)),
             tag.Get<List<List<TileData>>>(nameof(structureTileData)),
             tag.Get<Point16>(nameof(structureDisplacement))
         );
 
-        public TagCompound SerializeData() => new TagCompound() {
+        public TagCompound SerializeData() => new() {
             { nameof(structureWidth), structureWidth },
             { nameof(structureHeight), structureHeight },
             { nameof(structureTileData), structureTileData },

@@ -46,7 +46,7 @@ namespace LivingWorldMod.Core.PacketHandlers {
                     break;
                 case SyncDyingLightCurse:
                     if (Main.netMode == NetmodeID.Server) {
-                        Point torchPos = new Point(reader.ReadInt32(), reader.ReadInt32());
+                        Point torchPos = new(reader.ReadInt32(), reader.ReadInt32());
 
                         PyramidDungeonSystem.Instance.AddNewDyingTorch(torchPos);
                     }

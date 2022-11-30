@@ -40,7 +40,7 @@ namespace LivingWorldMod.Content.Tiles.Building {
             Tile thisTile = Framing.GetTileSafely(i, j);
 
             //Set tile's position
-            Point thisTilePosition = new Point(i, j);
+            Point thisTilePosition = new(i, j);
 
             //Reset frame data
             thisTile.TileFrameNumber = 0;
@@ -70,7 +70,7 @@ namespace LivingWorldMod.Content.Tiles.Building {
              */
 
             //Merge-able tiles. In this array, the 0th index is above, 1st index is the right, 2nd index is the left, 3rd index is below
-            bool[] directionsWithMergableTiles = new bool[] {
+            bool[] directionsWithMergableTiles = {
                 TileUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, -1)),
                 TileUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(1, 0)),
                 TileUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(-1, 0)),
@@ -173,10 +173,10 @@ namespace LivingWorldMod.Content.Tiles.Building {
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch) {
             Tile thisTile = Framing.GetTileSafely(i, j);
 
-            Point thisTilePosition = new Point(i, j);
+            Point thisTilePosition = new(i, j);
 
             //Merge-able tiles. In this array, the 0th index is above, 1st index is the right, 2nd index is the left, 3rd index is below
-            bool[] directionsWithMergableTiles = new bool[] {
+            bool[] directionsWithMergableTiles = {
                 TileUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, -1)),
                 TileUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(1, 0)),
                 TileUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(-1, 0)),
@@ -208,7 +208,7 @@ namespace LivingWorldMod.Content.Tiles.Building {
                 Main.spriteBatch.Draw(_baseTexture.Value,
                     new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + additionalDisplacement,
                     new Rectangle(thisTile.TileFrameX, 18 * verticalFrame, 16, 16),
-                    Lighting.GetColor(i, j), 0f, default, 1f, SpriteEffects.None, 0f);
+                    Lighting.GetColor(i, j), 0f, default(Vector2), 1f, SpriteEffects.None, 0f);
             }
         }
     }

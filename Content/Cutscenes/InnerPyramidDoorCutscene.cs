@@ -10,13 +10,6 @@ namespace LivingWorldMod.Content.Cutscenes {
     /// Cutscene that plays on the doors within the actual pyramid itself for navigation between rooms.
     /// </summary>
     public class InnerPyramidDoorCutscene : EnterPyramidCutscene {
-        /// <summary>
-        /// The position this player will end up when this cutscene finishes.
-        /// </summary>
-        public Vector2 EndTeleportPosition {
-            get;
-        }
-
         public override PyramidDoorTile DoorModTile => ModContent.GetInstance<InnerPyramidDoorTile>();
 
         /// <summary>
@@ -34,6 +27,13 @@ namespace LivingWorldMod.Content.Cutscenes {
         /// How long it takes for the player to fully "walk into" the open door.
         /// </summary>
         public override int PlayerWalkingTime => 80;
+
+        /// <summary>
+        /// The position this player will end up when this cutscene finishes.
+        /// </summary>
+        public Vector2 EndTeleportPosition {
+            get;
+        }
 
         public InnerPyramidDoorCutscene(Point16 doorPos, Vector2 teleportPos) : base(doorPos) {
             EndTeleportPosition = teleportPos;

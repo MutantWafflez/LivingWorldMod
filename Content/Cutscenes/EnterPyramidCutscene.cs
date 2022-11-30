@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.Players;
-using LivingWorldMod.Content.Subworlds;
 using LivingWorldMod.Content.Subworlds.Pyramid;
 using LivingWorldMod.Content.Tiles.Interactables;
 using Microsoft.Xna.Framework;
@@ -18,6 +17,8 @@ namespace LivingWorldMod.Content.Cutscenes {
     /// door, where the door dramatically opens and the player walks in.
     /// </summary>
     public class EnterPyramidCutscene : Cutscene {
+        public static readonly SoundStyle OpeningDoorSound = new($"{LivingWorldMod.LWMSoundPath}Tiles/PyramidDoorOpen");
+
         /// <summary>
         /// The instance of the door tile that is used with this cutscene.
         /// </summary>
@@ -82,18 +83,12 @@ namespace LivingWorldMod.Content.Cutscenes {
             protected set;
         }
 
-        public static readonly SoundStyle OpeningDoorSound = new SoundStyle($"{LivingWorldMod.LWMSoundPath}Tiles/PyramidDoorOpen");
-
         public EnterPyramidCutscene(Point16 doorPos) {
             DoorBeingOpenedPosition = doorPos;
         }
 
         // Here for autoloading; doesn't register otherwise
         protected EnterPyramidCutscene() { }
-
-        protected override void WritePacketData(ModPacket packet) {
-            packet.WriteVector2(DoorBeingOpenedPosition.ToVector2());
-        }
 
         public override void HandleCutscenePacket(BinaryReader reader, int fromWhomst) {
             if (Main.netMode == NetmodeID.Server) {
@@ -187,6 +182,10 @@ namespace LivingWorldMod.Content.Cutscenes {
                 LerpToTransparentBlack(ref drawInfo.headGlowColor, currentStep);
                 LerpToTransparentBlack(ref drawInfo.legsGlowColor, currentStep);
             }
+        }
+
+        protected override void WritePacketData(ModPacket packet) {
+            packet.WriteVector2(DoorBeingOpenedPosition.ToVector2());
         }
 
         private void LerpToTransparentBlack(ref Color color, float step) {

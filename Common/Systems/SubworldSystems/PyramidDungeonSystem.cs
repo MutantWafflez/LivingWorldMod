@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using LivingWorldMod.Common.Players;
-using Terraria;
 using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Content.Subworlds.Pyramid;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SubworldLibrary;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -25,16 +25,16 @@ namespace LivingWorldMod.Common.Systems.SubworldSystems {
             }
         }
 
-        public List<TorchCountdown> torchCountdowns = new List<TorchCountdown>();
-
         public bool IsInPyramidSubworld => SubworldSystem.IsActive<PyramidSubworld>();
+
+        public List<TorchCountdown> torchCountdowns = new();
 
         public override void PostDrawTiles() {
             if (!IsInPyramidSubworld) {
                 return;
             }
 
-            Rectangle screenRect = new Rectangle((int)Main.screenPosition.X - 16, (int)Main.screenPosition.Y - 16, Main.screenWidth + 16, Main.screenHeight + 16);
+            Rectangle screenRect = new((int)Main.screenPosition.X - 16, (int)Main.screenPosition.Y - 16, Main.screenWidth + 16, Main.screenHeight + 16);
 
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
             for (int i = 0; i < Main.maxTilesX; i++) {

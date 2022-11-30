@@ -7,24 +7,24 @@ using Terraria.ID;
 namespace LivingWorldMod.Content.MiscEntities {
     /// <summary>
     /// Psuedo-Entity that exists during the Activation Process for Waystones. This exists mainly for consistency between
-    /// multiplayer and singleplayer, since Tile Entities updating on the client is a bit weird. 
+    /// multiplayer and singleplayer, since Tile Entities updating on the client is a bit weird.
     /// </summary>
     public sealed class WaystoneActivationEntity {
+        /// <summary>
+        /// How many ticks it takes to fully complete the activation process.
+        /// </summary>
+        public const int FullActivationWaitTime = 372;
+
         /// <summary>
         /// Whether or not the activation process for this specific entity has finished.
         /// </summary>
         public bool isFinished;
 
-        private Vector2 _position;
+        private readonly Vector2 _position;
+        private readonly Color _waystoneColor;
         private int _activationVFXStage;
         private int _activationVFXTimer;
         private int _activationVFXSecondaryTimer;
-        private Color _waystoneColor;
-
-        /// <summary>
-        /// How many ticks it takes to fully complete the activation process.
-        /// </summary>
-        public const int FullActivationWaitTime = 372;
 
         public WaystoneActivationEntity(Vector2 position, Color activationColor) {
             _position = position;

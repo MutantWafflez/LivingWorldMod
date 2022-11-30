@@ -30,7 +30,7 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
 
         public override void KeysPressed(Keys[] pressedKeys) {
             base.KeysPressed(pressedKeys);
-            Point16 mousePos = new Point16((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
+            Point16 mousePos = new((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
 
             if (pressedKeys.Contains(Keys.Up) && DoValidDoorPosCheck(mousePos)) {
                 _topDoorPos = mousePos;
@@ -79,7 +79,7 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
                 return;
             }
 
-            List<List<TileData>> tileData = new List<List<TileData>>();
+            List<List<TileData>> tileData = new();
 
             for (int x = 0; x <= bottomRight.X - topLeft.X; x++) {
                 tileData.Add(new List<TileData>());
@@ -89,7 +89,7 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
                 }
             }
 
-            RoomData roomData = new RoomData(
+            RoomData roomData = new(
                 new StructureData(tileData.Count, tileData[0].Count, tileData),
                 _topDoorPos - topLeft,
                 _rightDoorPos - topLeft,
@@ -101,7 +101,7 @@ namespace LivingWorldMod.Custom.Classes.DebugModules {
 
             string outputPath = IOUtils.GetLWMFilePath() + $"/PyramidRoom_{DateTime.Now.ToShortTimeString().Replace(':', '_').Replace(' ', '_')}.pyrroom";
 
-            TagIO.ToFile(new TagCompound() { { nameof(RoomData), roomData } }, outputPath);
+            TagIO.ToFile(new TagCompound { { nameof(RoomData), roomData } }, outputPath);
 
             Main.NewText("Room Copied to File!");
         }

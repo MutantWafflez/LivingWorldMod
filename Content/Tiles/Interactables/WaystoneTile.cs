@@ -9,7 +9,6 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
-using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.Map;
 using Terraria.ModLoader;
@@ -21,9 +20,9 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
     /// Class for Waystone tiles, which are basically Pylons but in the wild.
     /// </summary>
     public class WaystoneTile : BasePylon {
-        public Asset<Texture2D> waystoneMapIcons;
-
         public override Color? TileColorOnMap => Color.White;
+
+        public Asset<Texture2D> waystoneMapIcons;
 
         /// <summary>
         /// The tile width of Waystones. Used for tile entity placement/destroying calculations.
@@ -54,7 +53,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
             TileObjectData.newTile.Origin = Point16.Zero;
             TileObjectData.newTile.Height = 3;
-            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
+            TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16 };
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.DrawYOffset = 2;
 

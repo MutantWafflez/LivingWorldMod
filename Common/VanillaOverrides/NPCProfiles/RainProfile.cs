@@ -1,5 +1,4 @@
 ﻿using LivingWorldMod.Custom.Utilities;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;

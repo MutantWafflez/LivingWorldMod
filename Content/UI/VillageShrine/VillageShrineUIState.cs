@@ -19,6 +19,26 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
     /// UIState that handles the UI for the village shrine for each type of village.
     /// </summary>
     public class VillageShrineUIState : UIState {
+        public VillageShrineEntity CurrentEntity {
+            get {
+                if (TileEntity.ByPosition.ContainsKey(EntityPosition) && TileEntity.ByPosition[EntityPosition] is VillageShrineEntity entity) {
+                    return entity;
+                }
+
+                return null;
+            }
+        }
+
+        public Point16 EntityPosition {
+            get;
+            private set;
+        }
+
+        public bool ShowVillageRadius {
+            get;
+            private set;
+        }
+
         public UIPanel backPanel;
 
         public UIPanel itemPanel;
@@ -48,26 +68,6 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
         public UIBetterImageButton showVillageRadiusButton;
 
         public UIBetterImageButton forceShrineSyncButton;
-
-        public VillageShrineEntity CurrentEntity {
-            get {
-                if (TileEntity.ByPosition.ContainsKey(EntityPosition) && TileEntity.ByPosition[EntityPosition] is VillageShrineEntity entity) {
-                    return entity;
-                }
-
-                return null;
-            }
-        }
-
-        public Point16 EntityPosition {
-            get;
-            private set;
-        }
-
-        public bool ShowVillageRadius {
-            get;
-            private set;
-        }
 
         private TimeSpan _timeConverter;
 
@@ -201,6 +201,18 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Regenerates this UI state with the new passed in shrine entity.
+        /// </summary>
+        /// <param name="entityPos"> The position of the new entity to bind to. </param>
+        public void RegenState(Point16 entityPos) {
+            EntityPosition = entityPos;
+            VillagerType shrineType = CurrentEntity.shrineType;
+
+            respawnItemDisplay.SetItem(NPCUtils.VillagerTypeToRespawnItemType(shrineType));
+            respawnTimerHeader.SetText(LocalizationLoader.GetOrCreateTranslation($"Mods.LivingWorldMod.UI.Shrine.{shrineType}Countdown"));
+        }
+
         protected override void DrawSelf(SpriteBatch spriteBatch) {
             CalculatedStyle panelDimensions = backPanel.GetDimensions();
             VillageShrineEntity currentEntity = CurrentEntity;
@@ -215,18 +227,6 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
 
             houseCountText.SetText(currentEntity.CurrentValidHouses.ToString());
             takenHouseCountText.SetText(currentEntity.CurrentHousedVillagersCount.ToString());
-        }
-
-        /// <summary>
-        /// Regenerates this UI state with the new passed in shrine entity.
-        /// </summary>
-        /// <param name="entityPos"> The position of the new entity to bind to. </param>
-        public void RegenState(Point16 entityPos) {
-            EntityPosition = entityPos;
-            VillagerType shrineType = CurrentEntity.shrineType;
-
-            respawnItemDisplay.SetItem(NPCUtils.VillagerTypeToRespawnItemType(shrineType));
-            respawnTimerHeader.SetText(LocalizationLoader.GetOrCreateTranslation($"Mods.LivingWorldMod.UI.Shrine.{shrineType}Countdown"));
         }
 
         private void AddRespawnItem(UIMouseEvent evt, UIElement listeningElement) {
@@ -255,7 +255,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
         private void TakeRespawnItem(UIMouseEvent evt, UIElement listeningElement) {
             VillageShrineEntity currentEntity = CurrentEntity;
             Player player = Main.LocalPlayer;
-            Item respawnItem = new Item(NPCUtils.VillagerTypeToRespawnItemType(currentEntity.shrineType));
+            Item respawnItem = new(NPCUtils.VillagerTypeToRespawnItemType(currentEntity.shrineType));
 
             if (Main.netMode == NetmodeID.MultiplayerClient) {
                 if (player.CanAcceptItemIntoInventory(respawnItem)) {

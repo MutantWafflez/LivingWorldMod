@@ -22,14 +22,18 @@ namespace LivingWorldMod.Content.Items.Accessories {
         public virtual void AccessoryUpdate(Player player, bool hideVisual) { }
 
         /// <summary>
-        /// This hook is called whenever the player is about to be killed after reaching 0 health. Set the playSound parameter to false to stop the death sound from playing.
-        /// Set the genGore parameter to false to stop the gore and dust from being created. (These are useful for creating your own sound or gore.)
-        /// Return false to stop the player from being killed. Only return false if you know what you are doing! Returns true by default.
+        /// This hook is called whenever the player is about to be killed after reaching 0 health. Set the playSound parameter to
+        /// false to stop the death sound from playing.
+        /// Set the genGore parameter to false to stop the gore and dust from being created. (These are useful for creating your
+        /// own sound or gore.)
+        /// Return false to stop the player from being killed. Only return false if you know what you are doing! Returns true by
+        /// default.
         /// </summary>
         public virtual bool PrePlayerKill(Player player, double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource) => true;
 
         /// <summary>
-        /// This method is called when this mod attempts to forcefully kill the player for any reason. Returning false prevents the death.
+        /// This method is called when this mod attempts to forcefully kill the player for any reason. Returning false prevents the
+        /// death.
         /// Returns true by default.
         /// </summary>
         public virtual bool PrePlayerForceKill(Player player, PlayerDeathReason deathReason) => true;
@@ -46,11 +50,16 @@ namespace LivingWorldMod.Content.Items.Accessories {
         public virtual void PlayerDeathNegated(Player player) { }
 
         /// <summary>
-        /// This hook is called before every time the player takes damage. The pvp parameter is whether the damage was from another player.
-        /// The quiet parameter determines whether the damage will be communicated to the server. The damage, hitDirection, and crit parameters can be modified.
-        /// Set the customDamage parameter to true if you want to use your own damage formula (this parameter will disable automatically subtracting the player's defense from the damage).
-        /// Set the playSound parameter to false to disable the player's hurt sound, and the genGore parameter to false to disable the dust particles that spawn.
-        /// (These are useful for creating your own sound or gore.) The deathText parameter can be modified to change the player's death message if the player dies.
+        /// This hook is called before every time the player takes damage. The pvp parameter is whether the damage was from another
+        /// player.
+        /// The quiet parameter determines whether the damage will be communicated to the server. The damage, hitDirection, and
+        /// crit parameters can be modified.
+        /// Set the customDamage parameter to true if you want to use your own damage formula (this parameter will disable
+        /// automatically subtracting the player's defense from the damage).
+        /// Set the playSound parameter to false to disable the player's hurt sound, and the genGore parameter to false to disable
+        /// the dust particles that spawn.
+        /// (These are useful for creating your own sound or gore.) The deathText parameter can be modified to change the player's
+        /// death message if the player dies.
         /// Return false to stop the player from taking damage. Returns true by default.
         /// </summary>
         public virtual bool PrePlayerHurt(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter) => true;

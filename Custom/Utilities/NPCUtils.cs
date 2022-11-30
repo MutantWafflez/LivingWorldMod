@@ -1,10 +1,10 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using System;
+using LivingWorldMod.Common.Systems;
+using LivingWorldMod.Content.Items.RespawnItems;
 using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
-using System;
-using LivingWorldMod.Content.Items.RespawnItems;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;

@@ -1,12 +1,13 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using IL.Terraria;
+using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.WorldGenFeatures.Villages;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Core.Patches {
@@ -15,7 +16,7 @@ namespace LivingWorldMod.Core.Patches {
     /// </summary>
     public class WorldGenPatches : ILoadable {
         public void Load(Mod mod) {
-            IL.Terraria.WorldGen.FillWallHolesInSpot += FillHolesInSpotPatch;
+            WorldGen.FillWallHolesInSpot += FillHolesInSpotPatch;
         }
 
         public void Unload() { }
@@ -23,7 +24,7 @@ namespace LivingWorldMod.Core.Patches {
         private void FillHolesInSpotPatch(ILContext il) {
             //For the Harpy Village (and potentially other structures in the future) we do not want the auto "filling of holes" to occur.
             //This filling of holes causes some houses for the harpy village to have their "supports" filled which destroys how the building is supposed to look
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             byte itemLocalNumber = 6; //Called "item" in this case, but this is actually the local variable is the position of the wall "hole"
 

@@ -1,5 +1,4 @@
-﻿using LivingWorldMod.Custom.Structs;
-using System.IO;
+﻿using System.IO;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -31,7 +30,8 @@ namespace LivingWorldMod.Custom.Utilities {
         /// </summary>
         /// <param name="path"> The path in the LivingWorldMod folder to go to. </param>
         /// <returns> </returns>
-        public static T GetTagFromFile<T>(string path) where T : TagSerializable {
+        public static T GetTagFromFile<T>(string path)
+            where T : TagSerializable {
             LivingWorldMod modInstance = ModContent.GetInstance<LivingWorldMod>();
 
             Stream fileStream = modInstance.GetFileStream(path);

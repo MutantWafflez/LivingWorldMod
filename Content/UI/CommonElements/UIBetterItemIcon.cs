@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.UI;
-using Terraria.UI.Chat;
 
 namespace LivingWorldMod.Content.UI.CommonElements {
     /// <summary>
@@ -25,14 +24,25 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         /// </summary>
         public Color? overrideDrawColor = null;
 
+        private readonly float _sizeLimit;
+        private readonly bool _drawFromCenter;
+
         private Item _displayedItem;
-        private float _sizeLimit;
-        private bool _drawFromCenter;
 
         public UIBetterItemIcon(Item displayedItem, float sizeLimit, bool drawFromCenter) {
             _displayedItem = displayedItem;
             _sizeLimit = sizeLimit;
             _drawFromCenter = drawFromCenter;
+        }
+
+        public void SetItem(Item newItem) {
+            _displayedItem = newItem;
+            Recalculate();
+        }
+
+        public void SetItem(int newItemType) {
+            _displayedItem?.SetDefaults(newItemType);
+            Recalculate();
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
@@ -67,7 +77,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
                 itemAnimFrame,
                 currentColor,
                 0f,
-                _drawFromCenter ? new Vector2(itemAnimFrame.Width / 2f, itemAnimFrame.Height / 2f) : default,
+                _drawFromCenter ? new Vector2(itemAnimFrame.Width / 2f, itemAnimFrame.Height / 2f) : default(Vector2),
                 sizeConstraint,
                 SpriteEffects.None,
                 0f);
@@ -76,16 +86,6 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             if (ContainsPoint(Main.MouseScreen)) {
                 ItemSlot.MouseHover(ref _displayedItem, context);
             }
-        }
-
-        public void SetItem(Item newItem) {
-            _displayedItem = newItem;
-            Recalculate();
-        }
-
-        public void SetItem(int newItemType) {
-            _displayedItem?.SetDefaults(newItemType);
-            Recalculate();
         }
     }
 }

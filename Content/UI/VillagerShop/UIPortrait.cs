@@ -26,6 +26,8 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             Happy
         }
 
+        private string PortraitSpritePath => $"{LivingWorldMod.LWMSpritePath}UI/ShopUI/{_villager.VillagerType}/Portraits/";
+
         public UIImage portraitBase;
         public UIImage portraitClothing;
         public UIImage portraitHead;
@@ -38,8 +40,6 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
         public float temporaryExpressionTimer;
 
         private Villager _villager;
-
-        private string PortraitSpritePath => $"{LivingWorldMod.LWMSpritePath}UI/ShopUI/{_villager.VillagerType}/Portraits/";
 
         public UIPortrait(Villager villager) {
             _villager = villager;

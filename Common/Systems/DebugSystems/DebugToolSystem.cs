@@ -20,7 +20,7 @@ namespace LivingWorldMod.Common.Systems.DebugSystems {
         public override bool IsLoadingEnabled(Mod mod) => LivingWorldMod.IsDebug;
 
         public override void Load() {
-            _allModules = new List<DebugModule>() {
+            _allModules = new List<DebugModule> {
                 new StructureModule(),
                 new SkipWallModule(),
                 new SkipTileModule(),

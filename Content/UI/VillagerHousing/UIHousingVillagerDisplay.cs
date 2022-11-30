@@ -15,11 +15,6 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
     /// </summary>
     public class UIHousingVillagerDisplay : UIElement {
         /// <summary>
-        /// The villager instance that this element is displaying.
-        /// </summary>
-        public Villager myVillager;
-
-        /// <summary>
         /// Whether or not this villager is currently selected.
         /// </summary>
         public bool IsSelected => myVillager.NPC.whoAmI == Main.instance.mouseNPCIndex;
@@ -30,6 +25,11 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
         /// </summary>
         //TODO: Swap back to commented expression when Reputation system is re-implemented
         public bool IsAllowed => true; //myVillager.RelationshipStatus >= VillagerRelationship.Like;
+
+        /// <summary>
+        /// The villager instance that this element is displaying.
+        /// </summary>
+        public Villager myVillager;
 
         public UIHousingVillagerDisplay(Villager villager) {
             myVillager = villager;
@@ -74,7 +74,7 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
                 null,
                 !IsAllowed ? Color.Gray : Color.White,
                 0f,
-                default,
+                default(Vector2),
                 SpriteEffects.None,
                 0f);
 
@@ -86,8 +86,8 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
 
             // Make sure to draw from center!
             Vector2 drawPos = GetDimensions().Center();
-            Rectangle textureDrawRegion = new Rectangle(0, 0, bodyTexture.Width, frameHeight);
-            Vector2 drawOrigin = new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f * 1.25f);
+            Rectangle textureDrawRegion = new(0, 0, bodyTexture.Width, frameHeight);
+            Vector2 drawOrigin = new(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f * 1.25f);
 
             Color drawColor = IsSelected ? Color.Yellow : Color.White;
 

@@ -1,17 +1,17 @@
-﻿using LivingWorldMod.Common.ModTypes;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
 using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Content.Tiles.Building;
+using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using LivingWorldMod.Content.Tiles.Interactables;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -24,17 +24,17 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
     /// The Harpy Village structure, generated in the sky as close to the middle of the world as possible.
     /// </summary>
     public class HarpyVillage : WorldGenFeature {
-        public override string InternalGenerationName => "Harpy Village";
-
-        public override string InsertionPassNameForFeature => "Micro Biomes";
-
-        public override bool PlaceBeforeInsertionPoint => false;
-
         /// <summary>
         /// The name given to the temporary variable created during world generation which holds
         /// the rectangle in which the original Harpy Village resides in.
         /// </summary>
         public const string TemporaryZoneVariableName = "HarpyVillageZone";
+
+        public override string InternalGenerationName => "Harpy Village";
+
+        public override string InsertionPassNameForFeature => "Micro Biomes";
+
+        public override bool PlaceBeforeInsertionPoint => false;
 
         public override void Generate(GenerationProgress progress, GameConfiguration gameConfig) {
             progress.Message = "Generating Structures... Harpy Village";
@@ -51,7 +51,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
             int searchRightX = midWorld + 400;
             int startingYLevel = (int)(Main.maxTilesY * 0.025f);
 
-            List<Point> possibleIslandPlacements = new List<Point>();
+            List<Point> possibleIslandPlacements = new();
             for (int i = searchLeftX; i < searchRightX; i += 5) {
                 progress.Set((i - searchLeftX) / (float)(searchRightX - searchLeftX));
 
@@ -88,7 +88,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
                 originPoint = new Point(midWorld, startingYLevel + originVerticalDisplacement);
 
                 //Set Village Zone manually
-                Rectangle villageZone = new Rectangle(originPoint.X - originHorizontalDisplacement, startingYLevel, rectangleWidth, rectangleHeight);
+                Rectangle villageZone = new(originPoint.X - originHorizontalDisplacement, startingYLevel, rectangleWidth, rectangleHeight);
                 WorldCreationSystem.Instance.tempWorldGenValues.Add(
                     new TemporaryValue<Rectangle>(villageZone, TemporaryZoneVariableName)
                 );
@@ -105,7 +105,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
             float yScale = CurrentWorldSize != WorldSize.Small ? 0.65f : 0.45f; //Village is overall much smaller in smaller worlds
             int radius = 35;
 
-            ShapeData mainIslandData = new ShapeData();
+            ShapeData mainIslandData = new();
 
             //Generate base-cloud structure
             WorldUtils.Gen(originPoint, new Shapes.Slime(radius, xScale, yScale), Actions.Chain(
@@ -189,13 +189,13 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
             ));
 
             //Place ground houses on main island
-            List<string> possibleHouses = new List<string>() {
+            List<string> possibleHouses = new() {
                 "HighRise0", "HighRise1", "HighRise2",
                 "GroundHouse0", "GroundHouse1", "GroundHouse2", "GroundHouse3", "GroundHouse4", "GroundHouse5"
             };
 
             for (int i = 0; i < 2; i++) {
-                List<Point> possiblePlacementPoints = new List<Point>();
+                List<Point> possiblePlacementPoints = new();
 
                 string selectedHouseType = WorldGen.genRand.Next(possibleHouses);
 
@@ -252,13 +252,13 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
                     possibleHouses.Remove(selectedHouseType);
 
                     StructureData cloudHouseData = IOUtils.GetTagFromFile<StructureData>(LivingWorldMod.LWMStructurePath + $"Villages/Harpy/{selectedHouseType}.struct");
-                    Point miniIslandOrigin = new Point(originPoint.X + (int)(leftOffset * i * (j == 0 ? 1.15f : 0.775f)), originPoint.Y + upOffset * (int)(j == 0 ? 2f : 6.25f));
+                    Point miniIslandOrigin = new(originPoint.X + (int)(leftOffset * i * (j == 0 ? 1.15f : 0.775f)), originPoint.Y + upOffset * (int)(j == 0 ? 2f : 6.25f));
 
                     float miniYScale = 0.34f;
                     //Diameter will be the radius of the struct plus 5 extra "padding"
                     int miniRadius = cloudHouseData.structureWidth / 2 + 5;
 
-                    ShapeData miniIslandData = new ShapeData();
+                    ShapeData miniIslandData = new();
 
                     //Generate base cloud
                     WorldUtils.Gen(miniIslandOrigin, new Shapes.Slime(miniRadius, 1f, miniYScale), Actions.Chain(
@@ -302,7 +302,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
             if (WorldCreationSystem.Instance.GetTempWorldGenValue<Rectangle>(TemporaryZoneVariableName) is Rectangle rectangle) {
                 for (int i = 0; i < rectangle.Width; i++) {
                     for (int j = 0; j < rectangle.Height; j++) {
-                        Point currentPos = new Point(rectangle.X + i, rectangle.Y + j);
+                        Point currentPos = new(rectangle.X + i, rectangle.Y + j);
 
                         Tile currentTile = Framing.GetTileSafely(currentPos);
 
@@ -318,7 +318,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
 
                 for (int i = 0; i < rectangle.Width; i++) {
                     for (int j = 0; j < rectangle.Height; j++) {
-                        Point position = new Point(rectangle.X + i, rectangle.Y + j);
+                        Point position = new(rectangle.X + i, rectangle.Y + j);
                         int harpyType = ModContent.NPCType<HarpyVillager>();
 
                         if (WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(harpyType)) {

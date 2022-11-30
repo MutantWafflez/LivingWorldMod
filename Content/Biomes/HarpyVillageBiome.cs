@@ -1,7 +1,7 @@
-﻿using LivingWorldMod.Content.TileEntities.Interactables;
+﻿using System.Linq;
+using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
-using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 
