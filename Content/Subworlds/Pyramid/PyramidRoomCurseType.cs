@@ -134,7 +134,7 @@
         Spotlight,
 
         /// <summary>
-        /// Player cannot see their health.
+        /// Player cannot see their health or mana.
         /// </summary>
         Insensitivity,
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using LivingWorldMod.Common.Players;
 using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Content.Subworlds.Pyramid;
@@ -8,6 +9,7 @@ using SubworldLibrary;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.UI;
 
 namespace LivingWorldMod.Common.Systems.SubworldSystems {
     /// <summary>
@@ -74,6 +76,18 @@ namespace LivingWorldMod.Common.Systems.SubworldSystems {
 
                 torchCountdowns.Remove(countdown);
                 i--;
+            }
+        }
+
+        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
+            if (!(Main.LocalPlayer.GetModPlayer<PyramidDungeonPlayer>().currentRoom?.roomCurses.Contains(PyramidRoomCurseType.Insensitivity) ?? false)) {
+                return;
+            }
+
+            GameInterfaceLayer healthLayer = layers.FirstOrDefault(layer => layer.Name == "Vanilla: Resource Bars");
+
+            if (healthLayer is not null) {
+                healthLayer.Active = false;
             }
         }
 
