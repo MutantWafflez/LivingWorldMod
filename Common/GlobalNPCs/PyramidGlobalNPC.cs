@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using SubworldLibrary;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
@@ -216,10 +217,35 @@ namespace LivingWorldMod.Common.GlobalNPCs {
                     case PyramidRoomCurseType.Pacifism:
                         npc.FindClosestPlayerDirect()?.AddBuff(ModContent.BuffType<PacifistPlight>(), 60 * 5);
                         break;
+                    case PyramidRoomCurseType.Combustion:
+                        if (npc.FindClosestPlayerDirect(out float distance) is { } player && distance <= 16f * 8f && Collision.CanHit(npc, player)) {
+                            player.Hurt(PlayerDeathReason.ByNPC(npc.whoAmI), 45, npc.DirectionTo(player.Center).X > 0 ? 1 : -1);
+                        }
+                        break;
                 }
             }
 
             return true;
+        }
+
+        public override void HitEffect(NPC npc, int hitDirection, double damage) {
+            if (npc.life > 0) {
+                return;
+            }
+
+
+            foreach (PyramidRoomCurseType curse in CurrentCurses) {
+                switch (curse) {
+                    //Combustion explosion effect
+                    case PyramidRoomCurseType.Combustion:
+                        for (float i = 0; i < MathHelper.TwoPi; i += MathHelper.PiOver4) {
+                            Gore.NewGore(new EntitySource_Death(npc), npc.Center, new Vector2(3f, 0f).RotatedBy(i), Main.rand.Next(GoreID.Smoke1, GoreID.Smoke3 + 1));
+                        }
+
+                        SoundEngine.PlaySound(SoundID.Item167, npc.Center);
+                        break;
+                }
+            }
         }
     }
 }
