@@ -109,7 +109,7 @@
         Combustion,
 
         /// <summary>
-        /// Enemies gain additional "health" in the form of armor.
+        /// Enemies gain 5 DR stacks and are knockback resistant.
         /// </summary>
         IronCurtain,
 

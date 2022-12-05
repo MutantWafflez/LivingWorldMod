@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using LivingWorldMod.Content.StatusEffects.Debuffs;
 using LivingWorldMod.Content.Subworlds.Pyramid;
 using Microsoft.Xna.Framework;
@@ -12,6 +13,7 @@ using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Common.GlobalNPCs {
     /// <summary>
@@ -26,6 +28,22 @@ namespace LivingWorldMod.Common.GlobalNPCs {
         /// </summary>
         public List<PyramidRoomCurseType> CurrentCurses => currentRoom?.roomCurses ?? new List<PyramidRoomCurseType>();
 
+        /// <summary>
+        /// The percent of damage that will be ignored entirely when this NPC
+        /// takes damage. For balance reasons, functions based on hyperbolic
+        /// scaling, where there is diminishing returns for each DR stack.
+        /// Roughly +10% DR per stack. Determined by adding the static
+        /// DR stacks and dynamic DR stacks together and applying a hyperbolic
+        /// function.
+        /// </summary>
+        public float DamageReduction {
+            get {
+                uint totalStacks = (uint)(_staticDRStacks + _dynamicDRStacks);
+
+                return 0.1f * totalStacks / (0.1f * totalStacks + 1f);
+            }
+        }
+
         public PyramidRoom currentRoom;
 
         /// <summary>
@@ -39,6 +57,27 @@ namespace LivingWorldMod.Common.GlobalNPCs {
         /// </summary>
         public float doubleUpdateTimer;
 
+        /// <summary>
+        /// DR stacks that are not reset every tick, and is thus "static"
+        /// up until it is forcefully changed. Change this if the DR is
+        /// meant to be more permanent.
+        /// </summary>
+        /// <remarks>
+        /// Each "stack" refers to approximately 10% DR, with diminishing
+        /// returns. See <seealso cref="DamageReduction"/>.
+        /// </remarks>
+        private ushort _staticDRStacks;
+
+        /// <summary>
+        /// DR stacks that ARE reset (to 0) every tick, and is thus "dynamic."
+        /// Increase this when the DR is temporary.
+        /// </summary>
+        /// <remarks>
+        /// Each "stack" refers to approximately 10% DR, with diminishing
+        /// returns. See <seealso cref="DamageReduction"/>.
+        /// </remarks>
+        private ushort _dynamicDRStacks;
+
         private bool _spriteBatchNeedsRestart;
         private bool _isBeingSpawned;
         private int _spawnAnimTimer;
@@ -51,9 +90,25 @@ namespace LivingWorldMod.Common.GlobalNPCs {
             }
         }
 
+        public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) {
+            binaryWriter.Write(_staticDRStacks);
+        }
+
+        public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader) {
+            _staticDRStacks = binaryReader.ReadUInt16();
+        }
+
         public override void OnSpawn(NPC npc, IEntitySource source) {
             currentRoom = ModContent.GetInstance<PyramidSubworld>().Grid.GetEntityCurrentRoom(npc);
             _isBeingSpawned = true;
+
+            foreach (PyramidRoomCurseType curse in CurrentCurses) {
+                switch (curse) {
+                    case PyramidRoomCurseType.IronCurtain:
+                        _staticDRStacks += 5;
+                        break;
+                }
+            }
         }
 
         public override bool PreAI(NPC npc) {
@@ -67,6 +122,7 @@ namespace LivingWorldMod.Common.GlobalNPCs {
             }
 
             doubleUpdateRate = 0f;
+            _dynamicDRStacks = 0;
 
             foreach (PyramidRoomCurseType curse in CurrentCurses) {
                 switch (curse) {
@@ -127,6 +183,26 @@ namespace LivingWorldMod.Common.GlobalNPCs {
 
                 Dust.NewDust(dustPos, npc.width, 1, DustID.Sand);
             }
+        }
+
+        public override bool StrikeNPC(NPC npc, ref double damage, int defense, ref float knockback, int hitDirection, ref bool crit) {
+            damage = (damage - defense * 0.5f) * DamageReduction;
+            if (damage < 1) {
+                damage = 1;
+            }
+
+            if (crit) {
+                damage *= 2;
+            }
+
+            foreach (PyramidRoomCurseType curse in CurrentCurses) {
+                switch (curse) {
+                    case PyramidRoomCurseType.IronCurtain:
+                        knockback = 0f;
+                        break;
+                }
+            }
+            return false;
         }
 
         public override bool CheckDead(NPC npc) {
