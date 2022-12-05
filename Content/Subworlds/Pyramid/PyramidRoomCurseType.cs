@@ -104,7 +104,7 @@
         Adhesion,
 
         /// <summary>
-        /// Enemies will explode on death.
+        /// Enemies will explode on death, damaging anyone within 8 tiles.
         /// </summary>
         Combustion,
 
