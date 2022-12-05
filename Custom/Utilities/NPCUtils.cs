@@ -84,6 +84,6 @@ namespace LivingWorldMod.Custom.Utilities {
         /// Gets and returns the nearest player to this NPC. Directly returns the player instance
         /// instead of the index like the vanilla method. Returns null if no player is found.
         /// </summary>
-        public static Player FindClosestPlayerDirect(this NPC npc) => npc.FindClosestPlayer() is int index and > 0 ? Main.player[index] : null;
+        public static Player FindClosestPlayerDirect(this NPC npc) => npc.FindClosestPlayer() is int index and >= 0 ? Main.player[index] : null;
     }
 }

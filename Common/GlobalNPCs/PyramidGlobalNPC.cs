@@ -198,7 +198,7 @@ namespace LivingWorldMod.Common.GlobalNPCs {
                 }
             }
 
-            damage = (damage - defense * 0.5f) * DamageReduction;
+            damage = (damage - defense * 0.5f) * (1f - DamageReduction);
             if (damage < 1) {
                 damage = 1;
             }
