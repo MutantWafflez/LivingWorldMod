@@ -543,7 +543,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                     room.roomCurses.Add(ModContent.GetInstance<DebugConfig>().forcedCurseType);
                 }
                 else {
-                    room.AddRandomCurse();
+                    room.AddRandomCurse(false);
                 }
                 ApplyCurseGenerationEffect(room.roomCurses[0], room.region);
             }

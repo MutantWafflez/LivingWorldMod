@@ -124,7 +124,7 @@
         Proximity,
 
         /// <summary>
-        /// Any player taking damage adds another curse (on a 5 second cooldown).
+        /// Any player taking damage adds another curse up to a maximum of 5.
         /// </summary>
         Recursion,
 
@@ -154,7 +154,7 @@
         Silence,
 
         /// <summary>
-        /// Every 15 seconds, the curse will change.
+        /// Every 15 seconds, all currently active curses will change.
         /// </summary>
         Rotation,
 

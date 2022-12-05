@@ -2,6 +2,7 @@
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.Players;
 using LivingWorldMod.Common.Systems.SubworldSystems;
+using LivingWorldMod.Content.Subworlds.Pyramid;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -21,6 +22,12 @@ namespace LivingWorldMod.Core.PacketHandlers {
         /// process is handled.
         /// </summary>
         public const byte SyncDyingLightCurse = 1;
+
+        /// <summary>
+        /// Send exclusively from the server and received on all clients. Syncs all curses
+        /// in the specified room.
+        /// </summary>
+        public const byte SyncRoomCurses = 2;
 
         public override void HandlePacket(BinaryReader reader, int fromWhomst) {
             byte packetType = reader.ReadByte();
@@ -49,6 +56,20 @@ namespace LivingWorldMod.Core.PacketHandlers {
                         Point torchPos = new(reader.ReadInt32(), reader.ReadInt32());
 
                         PyramidDungeonSystem.Instance.AddNewDyingTorch(torchPos);
+                    }
+
+                    break;
+                case SyncRoomCurses:
+                    int roomGridX = reader.ReadInt32();
+                    int roomGridY = reader.ReadInt32();
+                    PyramidRoom room = ModContent.GetInstance<PyramidSubworld>().Grid.GetRoom(roomGridX, roomGridY);
+                    room.roomCurses.Clear();
+
+                    int curseCount = reader.ReadInt32();
+                    for (int i = 0; i < curseCount; i++) {
+                        PyramidRoomCurseType curse = (PyramidRoomCurseType)reader.ReadInt32();
+
+                        room.roomCurses.Add(curse);
                     }
 
                     break;

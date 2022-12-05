@@ -282,6 +282,11 @@ namespace LivingWorldMod.Common.Players {
                             Player.velocity *= 2f;
                         }
                         break;
+                    case PyramidRoomCurseType.Recursion:
+                        if (Main.netMode != NetmodeID.MultiplayerClient && currentRoom.roomCurses.Count < 5) {
+                            currentRoom.AddRandomCurse();
+                        }
+                        break;
                 }
             }
         }

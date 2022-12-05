@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Common.Configs;
+using LivingWorldMod.Core.PacketHandlers;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 
@@ -79,10 +81,29 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         public override string ToString() => "{" + gridTopLeftX + ", " + gridTopLeftY + "} " + $"{gridWidth}x{gridHeight}";
 
         /// <summary>
-        /// Adds a random, non-repeating curse to this room.
+        /// Adds a random, non-repeating curse to this room. Does nothing on MP clients. If on the server, syncs to all clients
+        /// automatically, unless specified.
         /// </summary>
-        public void AddRandomCurse() {
+        public void AddRandomCurse(bool syncToClients = true) {
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                return;
+            }
+
             roomCurses.Add(WorldGen.genRand.Next(Enum.GetValues<PyramidRoomCurseType>().Where(curse => !roomCurses.Contains(curse)).ToList()));
+
+            if (Main.netMode != NetmodeID.Server || !syncToClients) {
+                return;
+            }
+
+            ModPacket packet = ModContent.GetInstance<PyramidDungeonPacketHandler>().GetPacket(PyramidDungeonPacketHandler.SyncRoomCurses);
+            packet.Write(gridTopLeftX);
+            packet.Write(gridTopLeftY);
+            packet.Write(roomCurses.Count);
+            foreach (PyramidRoomCurseType curse in roomCurses) {
+                packet.Write((int)curse);
+            }
+
+            packet.Send();
         }
     }
 }
