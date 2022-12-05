@@ -68,6 +68,8 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         /// </summary>
         public List<PyramidRoomCurseType> roomCurses = new();
 
+        private int _rotationCurseCountdown;
+
         public PyramidRoom(Rectangle region, int gridTopLeftX, int gridTopLeftY, int gridWidth, int gridHeight) {
             this.region = region;
             this.gridTopLeftX = gridTopLeftX;
@@ -79,6 +81,28 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         }
 
         public override string ToString() => "{" + gridTopLeftX + ", " + gridTopLeftY + "} " + $"{gridWidth}x{gridHeight}";
+
+        /// <summary>
+        /// Called at the end of every update tick for each room in the subworld.
+        /// </summary>
+        public void Update() {
+            foreach (PyramidRoomCurseType curse in roomCurses) {
+                switch (curse) {
+                    case PyramidRoomCurseType.Rotation:
+                        if (Main.netMode != NetmodeID.MultiplayerClient && ++_rotationCurseCountdown >= 60 * 15) {
+                            _rotationCurseCountdown = 0;
+
+                            int removalCount = roomCurses.RemoveAll(innerCurse => innerCurse != PyramidRoomCurseType.Rotation);
+                            for (int i = 0; i < removalCount - 1; i++) {
+                                AddRandomCurse(false);
+                            }
+
+                            AddRandomCurse();
+                        }
+                        break;
+                }
+            }
+        }
 
         /// <summary>
         /// Adds a random, non-repeating curse to this room. Does nothing on MP clients. If on the server, syncs to all clients

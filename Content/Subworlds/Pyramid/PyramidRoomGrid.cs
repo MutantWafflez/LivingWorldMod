@@ -81,6 +81,17 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         }
 
         /// <summary>
+        /// Updates all rooms in this grid, starting from the top left.
+        /// </summary>
+        public void UpdateAllRooms() {
+            foreach (List<PyramidRoom> roomColumn in _roomList) {
+                foreach (PyramidRoom room in roomColumn) {
+                    room.Update();
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the room below the passed in room, from the bottom-left tile of this room.
         /// Returns null if going below is out of bounds.
         /// </summary>

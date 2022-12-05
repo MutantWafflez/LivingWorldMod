@@ -154,7 +154,7 @@
         Silence,
 
         /// <summary>
-        /// Every 15 seconds, all currently active curses will change.
+        /// Every 15 seconds, all currently active curses (excluding this one) change.
         /// </summary>
         Rotation,
 

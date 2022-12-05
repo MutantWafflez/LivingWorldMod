@@ -9,6 +9,7 @@ using SubworldLibrary;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LivingWorldMod.Common.Systems.SubworldSystems {
@@ -54,7 +55,13 @@ namespace LivingWorldMod.Common.Systems.SubworldSystems {
         }
 
         public override void PostUpdateEverything() {
-            if (!IsInPyramidSubworld || Main.netMode == NetmodeID.MultiplayerClient) {
+            if (!IsInPyramidSubworld) {
+                return;
+            }
+
+            ModContent.GetInstance<PyramidSubworld>().Grid.UpdateAllRooms();
+
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
                 return;
             }
 
