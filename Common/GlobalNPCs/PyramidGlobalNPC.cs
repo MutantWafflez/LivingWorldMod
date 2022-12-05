@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using LivingWorldMod.Content.StatusEffects.Debuffs;
 using LivingWorldMod.Content.Subworlds.Pyramid;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -38,7 +39,7 @@ namespace LivingWorldMod.Common.GlobalNPCs {
         /// </summary>
         public float DamageReduction {
             get {
-                uint totalStacks = (uint)(_staticDRStacks + _dynamicDRStacks);
+                uint totalStacks = _staticDRStacks + _dynamicDRStacks;
 
                 return 0.1f * totalStacks / (0.1f * totalStacks + 1f);
             }
@@ -76,7 +77,7 @@ namespace LivingWorldMod.Common.GlobalNPCs {
         /// Each "stack" refers to approximately 10% DR, with diminishing
         /// returns. See <seealso cref="DamageReduction"/>.
         /// </remarks>
-        private ushort _dynamicDRStacks;
+        private uint _dynamicDRStacks;
 
         private bool _spriteBatchNeedsRestart;
         private bool _isBeingSpawned;
@@ -186,6 +187,17 @@ namespace LivingWorldMod.Common.GlobalNPCs {
         }
 
         public override bool StrikeNPC(NPC npc, ref double damage, int defense, ref float knockback, int hitDirection, ref bool crit) {
+            foreach (PyramidRoomCurseType curse in CurrentCurses) {
+                switch (curse) {
+                    case PyramidRoomCurseType.IronCurtain:
+                        knockback = 0f;
+                        break;
+                    case PyramidRoomCurseType.Reflection:
+                        defense += npc.FindClosestPlayerDirect()?.statDefense ?? 0;
+                        break;
+                }
+            }
+
             damage = (damage - defense * 0.5f) * DamageReduction;
             if (damage < 1) {
                 damage = 1;
@@ -195,13 +207,6 @@ namespace LivingWorldMod.Common.GlobalNPCs {
                 damage *= 2;
             }
 
-            foreach (PyramidRoomCurseType curse in CurrentCurses) {
-                switch (curse) {
-                    case PyramidRoomCurseType.IronCurtain:
-                        knockback = 0f;
-                        break;
-                }
-            }
             return false;
         }
 
@@ -209,19 +214,7 @@ namespace LivingWorldMod.Common.GlobalNPCs {
             foreach (PyramidRoomCurseType curse in CurrentCurses) {
                 switch (curse) {
                     case PyramidRoomCurseType.Pacifism:
-                        Player closestPlayer = null;
-                        float closestDistance = float.MaxValue;
-
-                        for (int i = 0; i < Main.maxPlayers; i++) {
-                            Player player = Main.player[i];
-
-                            if (!player.dead && player.Center.Distance(npc.Center) is float distance && distance < closestDistance) {
-                                closestDistance = distance;
-                                closestPlayer = player;
-                            }
-                        }
-
-                        closestPlayer?.AddBuff(ModContent.BuffType<PacifistPlight>(), 60 * 5);
+                        npc.FindClosestPlayerDirect()?.AddBuff(ModContent.BuffType<PacifistPlight>(), 60 * 5);
                         break;
                 }
             }

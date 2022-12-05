@@ -144,7 +144,7 @@
         Disarmament,
 
         /// <summary>
-        /// Enemies will gain the defense and DR of the nearest player.
+        /// Enemies will gain the defense of the nearest player.
         /// </summary>
         Reflection,
 
