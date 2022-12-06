@@ -63,13 +63,13 @@ namespace LivingWorldMod.Core.PacketHandlers {
                     int roomGridX = reader.ReadInt32();
                     int roomGridY = reader.ReadInt32();
                     PyramidRoom room = ModContent.GetInstance<PyramidSubworld>().grid.GetRoom(roomGridX, roomGridY);
-                    room.ActiveCurses.Clear();
+                    room.internalRoomCurses.Clear();
 
                     int curseCount = reader.ReadInt32();
                     for (int i = 0; i < curseCount; i++) {
                         PyramidRoomCurseType curse = (PyramidRoomCurseType)reader.ReadInt32();
 
-                        room.ActiveCurses.Add(curse);
+                        room.internalRoomCurses.Add(curse);
                     }
 
                     break;

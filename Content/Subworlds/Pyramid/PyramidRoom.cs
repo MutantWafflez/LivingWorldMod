@@ -40,7 +40,13 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         /// A list of all ACTIVE curses in this room. If this room is cleared by the player or otherwise not active, returns
         /// an empty list.
         /// </summary>
-        public List<PyramidRoomCurseType> ActiveCurses => IsActive ? _roomCurses : new List<PyramidRoomCurseType>();
+        public List<PyramidRoomCurseType> ActiveCurses => IsActive ? internalRoomCurses : new List<PyramidRoomCurseType>();
+
+        /// <summary>
+        /// A list of all curses that apply to this room, regardless if the room is
+        /// active or not.
+        /// </summary>
+        public readonly List<PyramidRoomCurseType> internalRoomCurses = new();
 
         /// <summary>
         /// The rectangle that denotes the actual tile position and width/length.
@@ -94,11 +100,6 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         public bool roomCleared;
 
         /// <summary>
-        /// A list of all curses that apply to this room.
-        /// </summary>
-        private readonly List<PyramidRoomCurseType> _roomCurses = new();
-
-        /// <summary>
         /// Dictionary of integer values that pertain to timers of certain curses.
         /// </summary>
         private readonly Dictionary<PyramidRoomCurseType, int> _curseTimers;
@@ -128,7 +129,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                         if (Main.netMode != NetmodeID.MultiplayerClient && ++_curseTimers[PyramidRoomCurseType.Rotation] >= 60 * 15) {
                             _curseTimers[PyramidRoomCurseType.Rotation] = 0;
 
-                            int removalCount = ActiveCurses.RemoveAll(innerCurse => innerCurse != PyramidRoomCurseType.Rotation);
+                            int removalCount = internalRoomCurses.RemoveAll(innerCurse => innerCurse != PyramidRoomCurseType.Rotation);
                             for (int i = 0; i < removalCount - 1; i++) {
                                 AddRandomCurse(false);
                             }
@@ -149,7 +150,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                 return;
             }
 
-            _roomCurses.Add(WorldGen.genRand.Next(Enum.GetValues<PyramidRoomCurseType>().Where(curse => !ActiveCurses.Contains(curse)).ToList()));
+            internalRoomCurses.Add(WorldGen.genRand.Next(Enum.GetValues<PyramidRoomCurseType>().Where(curse => !internalRoomCurses.Contains(curse)).ToList()));
 
             if (Main.netMode != NetmodeID.Server || !syncToClients) {
                 return;
@@ -158,8 +159,8 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
             ModPacket packet = ModContent.GetInstance<PyramidDungeonPacketHandler>().GetPacket(PyramidDungeonPacketHandler.SyncRoomCurses);
             packet.Write(gridTopLeftX);
             packet.Write(gridTopLeftY);
-            packet.Write(ActiveCurses.Count);
-            foreach (PyramidRoomCurseType curse in ActiveCurses) {
+            packet.Write(internalRoomCurses.Count);
+            foreach (PyramidRoomCurseType curse in internalRoomCurses) {
                 packet.Write((int)curse);
             }
 

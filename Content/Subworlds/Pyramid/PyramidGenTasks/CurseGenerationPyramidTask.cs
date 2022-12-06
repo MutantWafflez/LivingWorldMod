@@ -39,7 +39,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid.PyramidGenTasks {
                 }
 
                 if (LivingWorldMod.IsDebug && ModContent.GetInstance<DebugConfig>().allCursedRooms) {
-                    room.ActiveCurses.Add(ModContent.GetInstance<DebugConfig>().forcedCurseType);
+                    room.internalRoomCurses.Add(ModContent.GetInstance<DebugConfig>().forcedCurseType);
                 }
                 else {
                     room.AddRandomCurse(false);
