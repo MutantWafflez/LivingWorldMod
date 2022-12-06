@@ -87,7 +87,7 @@ namespace LivingWorldMod.Common.Systems.SubworldSystems {
         }
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
-            if (!(Main.LocalPlayer.GetModPlayer<PyramidDungeonPlayer>().currentRoom?.roomCurses.Contains(PyramidRoomCurseType.Insensitivity) ?? false)) {
+            if (!(Main.LocalPlayer.GetModPlayer<PyramidDungeonPlayer>().currentRoom?.ActiveCurses.Contains(PyramidRoomCurseType.Insensitivity) ?? false)) {
                 return;
             }
 

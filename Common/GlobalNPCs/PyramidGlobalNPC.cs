@@ -28,7 +28,7 @@ namespace LivingWorldMod.Common.GlobalNPCs {
         /// Reference to this NPC's current list of curses in accordance to
         /// the room they are in.
         /// </summary>
-        public List<PyramidRoomCurseType> CurrentCurses => currentRoom?.roomCurses ?? new List<PyramidRoomCurseType>();
+        public List<PyramidRoomCurseType> CurrentCurses => currentRoom?.ActiveCurses ?? new List<PyramidRoomCurseType>();
 
         /// <summary>
         /// The percent of damage that will be ignored entirely when this NPC

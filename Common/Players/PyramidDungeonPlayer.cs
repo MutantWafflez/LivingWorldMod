@@ -35,7 +35,7 @@ namespace LivingWorldMod.Common.Players {
         /// Reference to this player's current list of curses in accordance to
         /// the room they are in.
         /// </summary>
-        public List<PyramidRoomCurseType> CurrentCurses => currentRoom?.roomCurses ?? new List<PyramidRoomCurseType>();
+        public List<PyramidRoomCurseType> CurrentCurses => currentRoom?.ActiveCurses ?? new List<PyramidRoomCurseType>();
 
         /// <summary>
         /// The pyramid room this player is currently in.
@@ -283,7 +283,7 @@ namespace LivingWorldMod.Common.Players {
                         }
                         break;
                     case PyramidRoomCurseType.Recursion:
-                        if (Main.netMode != NetmodeID.MultiplayerClient && currentRoom.roomCurses.Count < 5) {
+                        if (Main.netMode != NetmodeID.MultiplayerClient && currentRoom.ActiveCurses.Count < 5) {
                             currentRoom.AddRandomCurse();
                         }
                         break;
