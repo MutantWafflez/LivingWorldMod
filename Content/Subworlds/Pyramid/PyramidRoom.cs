@@ -17,6 +17,19 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         public static readonly WeightedRandom<PyramidRoomType> RoomSelector = new(WorldGen.genRand, new Tuple<PyramidRoomType, double>(PyramidRoomType.Normal, 50), new Tuple<PyramidRoomType, double>(PyramidRoomType.Cursed, 50 / 3f),
             new Tuple<PyramidRoomType, double>(PyramidRoomType.Puzzle, 50 / 3f), new Tuple<PyramidRoomType, double>(PyramidRoomType.Treasure, 50 / 3f));
 
+        //TODO: Uncomment this once all curses are implemented
+        /*
+        /// <summary>
+        /// List of curses that cannot be added after the room is initially generated.
+        /// </summary>
+        public static readonly IReadOnlyList<PyramidRoomCurseType> CannotBeAddedPostGeneration = new List<PyramidRoomCurseType> {
+            PyramidRoomCurseType.Battle,
+            PyramidRoomCurseType.Siege,
+            PyramidRoomCurseType.Flooding,
+            PyramidRoomCurseType.UnsteadyFooting
+        };
+        */
+
         /// <summary>
         /// Whether or not this room is currently active for updating purposes such as curses and enemy spawning.
         /// </summary>
@@ -185,9 +198,6 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                             }
                         }
 
-                        if (Main.netMode == NetmodeID.Server) {
-                            NetMessage.SendTileSquare(-1, region.X, roomHalfY, region.Width, region.Height / 2);
-                        }
                         break;
                 }
             }
