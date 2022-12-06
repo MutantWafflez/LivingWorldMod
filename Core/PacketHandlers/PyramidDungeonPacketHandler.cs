@@ -62,7 +62,7 @@ namespace LivingWorldMod.Core.PacketHandlers {
                 case SyncRoomCurses:
                     int roomGridX = reader.ReadInt32();
                     int roomGridY = reader.ReadInt32();
-                    PyramidRoom room = ModContent.GetInstance<PyramidSubworld>().Grid.GetRoom(roomGridX, roomGridY);
+                    PyramidRoom room = ModContent.GetInstance<PyramidSubworld>().grid.GetRoom(roomGridX, roomGridY);
                     room.roomCurses.Clear();
 
                     int curseCount = reader.ReadInt32();

@@ -59,7 +59,7 @@ namespace LivingWorldMod.Common.Systems.SubworldSystems {
                 return;
             }
 
-            ModContent.GetInstance<PyramidSubworld>().Grid.UpdateAllRooms();
+            ModContent.GetInstance<PyramidSubworld>().grid.UpdateAllRooms();
 
             if (Main.netMode == NetmodeID.MultiplayerClient) {
                 return;

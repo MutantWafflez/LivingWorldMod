@@ -101,7 +101,7 @@ namespace LivingWorldMod.Common.GlobalNPCs {
         }
 
         public override void OnSpawn(NPC npc, IEntitySource source) {
-            currentRoom = ModContent.GetInstance<PyramidSubworld>().Grid.GetEntityCurrentRoom(npc);
+            currentRoom = ModContent.GetInstance<PyramidSubworld>().grid.GetEntityCurrentRoom(npc);
             _isBeingSpawned = true;
 
             foreach (PyramidRoomCurseType curse in CurrentCurses) {

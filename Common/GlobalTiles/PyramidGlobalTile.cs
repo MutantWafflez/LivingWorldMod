@@ -32,7 +32,7 @@ namespace LivingWorldMod.Common.GlobalTiles {
             if (type != TileID.Torches || !IsInPyramidSubworld) {
                 return;
             }
-            if (ModContent.GetInstance<PyramidSubworld>().Grid.GetRoomFromTilePosition(new Point(i, j)) is not { } room || !room.roomCurses.Contains(PyramidRoomCurseType.DyingLight)) {
+            if (ModContent.GetInstance<PyramidSubworld>().grid.GetRoomFromTilePosition(new Point(i, j)) is not { } room || !room.roomCurses.Contains(PyramidRoomCurseType.DyingLight)) {
                 return;
             }
 

@@ -129,5 +129,31 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
 
             packet.Send();
         }
+
+        /// <summary>
+        /// Applies curse effects that are "one time" effects, such as generation effects
+        /// of the Curse of Flooding.
+        /// </summary>
+        public void ApplyOneTimeCurseEffects() {
+            foreach (PyramidRoomCurseType curse in roomCurses) {
+                switch (curse) {
+                    case PyramidRoomCurseType.Flooding:
+                        int roomHalfY = region.Y + region.Height / 2;
+
+                        for (int y = roomHalfY; y <= region.Bottom; y++) {
+                            for (int x = region.X; x <= region.Right; x++) {
+                                Tile tile = Main.tile[x, y];
+                                tile.LiquidType = LiquidID.Water;
+                                tile.LiquidAmount = byte.MaxValue;
+                            }
+                        }
+
+                        if (Main.netMode == NetmodeID.Server) {
+                            NetMessage.SendTileSquare(-1, region.X, roomHalfY, region.Width, region.Height / 2);
+                        }
+                        break;
+                }
+            }
+        }
     }
 }

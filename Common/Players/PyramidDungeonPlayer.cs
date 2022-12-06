@@ -196,7 +196,7 @@ namespace LivingWorldMod.Common.Players {
                 return;
             }
 
-            currentRoom = ModContent.GetInstance<PyramidSubworld>().Grid.GetEntityCurrentRoom(Player);
+            currentRoom = ModContent.GetInstance<PyramidSubworld>().grid.GetEntityCurrentRoom(Player);
         }
 
         public override void UpdateBadLifeRegen() {
