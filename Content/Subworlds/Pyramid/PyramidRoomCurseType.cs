@@ -114,7 +114,7 @@
         IronCurtain,
 
         /// <summary>
-        /// All enemy projectiles update 100% faster.
+        /// All enemy projectiles spawn with 2x velocity.
         /// </summary>
         DodgeOrDie,
 
