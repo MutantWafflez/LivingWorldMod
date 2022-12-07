@@ -4,6 +4,7 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using SubworldLibrary;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -280,6 +281,29 @@ namespace LivingWorldMod.Common.Players {
                     case PyramidRoomCurseType.Impact:
                         if (!Player.noKnockback && hitDirection != 0 && (!Player.mount.Active || !Player.mount.Cart)) {
                             Player.velocity *= 2f;
+                        }
+                        break;
+                    case PyramidRoomCurseType.Thievery:
+                        if (Main.myPlayer == Player.whoAmI) {
+                            ref Item[] inventory = ref Player.inventory;
+                            bool coinsWereLost = false;
+
+                            for (int i = 0; i < 59; i++) {
+                                if (!inventory[i].IsACoin) {
+                                    continue;
+                                }
+                                coinsWereLost = true;
+
+                                inventory[i].stack -= (int)(inventory[i].stack * 0.25f);
+
+                                if (i == 58) {
+                                    Main.mouseItem = inventory[i].Clone();
+                                }
+                            }
+
+                            if (coinsWereLost) {
+                                SoundEngine.PlaySound(SoundID.Coins, Player.Center);
+                            }
                         }
                         break;
                     case PyramidRoomCurseType.Recursion:
