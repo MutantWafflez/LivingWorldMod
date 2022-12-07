@@ -12,7 +12,7 @@ using Terraria.Utilities;
 
 namespace LivingWorldMod.Content.Subworlds.Pyramid {
     /// <summary>
-    /// Small class that exists for data storage on a given pyramid room.
+    /// Class that exists for data storage and manipulation on a given pyramid room.
     /// </summary>
     public sealed class PyramidRoom {
         public static readonly WeightedRandom<PyramidRoomType> RoomSelector = new(WorldGen.genRand, new Tuple<PyramidRoomType, double>(PyramidRoomType.Normal, 50), new Tuple<PyramidRoomType, double>(PyramidRoomType.Cursed, 50 / 3f),
