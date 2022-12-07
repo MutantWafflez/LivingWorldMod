@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Common.Configs;
+using LivingWorldMod.Common.Systems.SubworldSystems;
 using LivingWorldMod.Core.PacketHandlers;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -143,11 +144,14 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                             _curseTimers[PyramidRoomCurseType.Rotation] = 0;
 
                             int removalCount = internalRoomCurses.RemoveAll(innerCurse => innerCurse != PyramidRoomCurseType.Rotation);
+                            PyramidDungeonSystem.Instance.PurgeTorchList();
+
                             for (int i = 0; i < removalCount - 1; i++) {
                                 AddRandomCurse(false);
                             }
 
                             AddRandomCurse();
+                            ApplyOneTimeCurseEffects();
                         }
                         break;
                 }
@@ -195,6 +199,17 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                                 Tile tile = Main.tile[x, y];
                                 tile.LiquidType = LiquidID.Water;
                                 tile.LiquidAmount = byte.MaxValue;
+                            }
+                        }
+
+                        break;
+                    case PyramidRoomCurseType.DyingLight:
+                        // When Dying Light is added, any torches that existed before-hand need to get added to the death list
+                        for (int y = region.Y; y <= region.Bottom; y++) {
+                            for (int x = region.X; x <= region.Right; x++) {
+                                if (Main.tile[x, y].TileType == TileID.Torches) {
+                                    PyramidDungeonSystem.Instance.AddNewDyingTorch(new Point(x, y));
+                                }
                             }
                         }
 

@@ -30,7 +30,7 @@ namespace LivingWorldMod.Common.Systems.SubworldSystems {
 
         public bool IsInPyramidSubworld => SubworldSystem.IsActive<PyramidSubworld>();
 
-        public List<TorchCountdown> torchCountdowns = new();
+        private readonly List<TorchCountdown> _torchCountdowns = new();
 
         public override void PostDrawTiles() {
             if (!IsInPyramidSubworld) {
@@ -66,8 +66,8 @@ namespace LivingWorldMod.Common.Systems.SubworldSystems {
             }
 
             //Do countdown for each current torch
-            for (int i = 0; i < torchCountdowns.Count; i++) {
-                TorchCountdown countdown = torchCountdowns[i];
+            for (int i = 0; i < _torchCountdowns.Count; i++) {
+                TorchCountdown countdown = _torchCountdowns[i];
 
                 if (--countdown.deathCountdown > 0) {
                     continue;
@@ -81,7 +81,7 @@ namespace LivingWorldMod.Common.Systems.SubworldSystems {
                     NetMessage.SendTileSquare(-1, countdown.torchPos.X, countdown.torchPos.Y);
                 }
 
-                torchCountdowns.Remove(countdown);
+                _torchCountdowns.Remove(countdown);
                 i--;
             }
         }
@@ -98,8 +98,20 @@ namespace LivingWorldMod.Common.Systems.SubworldSystems {
             }
         }
 
+        /// <summary>
+        /// Adds a new torch being marked for death at the specified position.
+        /// </summary>
         public void AddNewDyingTorch(Point torchPos) {
-            torchCountdowns.Add(new TorchCountdown(torchPos, 20 * 60));
+            if (_torchCountdowns.All(countdown => countdown.torchPos != torchPos)) {
+                _torchCountdowns.Add(new TorchCountdown(torchPos, 20 * 60));
+            }
+        }
+
+        /// <summary>
+        /// Removes all currently active torches marked for death.
+        /// </summary>
+        public void PurgeTorchList() {
+            _torchCountdowns.Clear();
         }
     }
 }
