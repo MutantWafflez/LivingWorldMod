@@ -123,6 +123,18 @@ namespace LivingWorldMod.Common.Players {
                             Player.maxFallSpeed *= 2;
                         }
                         break;
+                    case PyramidRoomCurseType.Clumsiness:
+                        if (Main.myPlayer != Player.whoAmI) {
+                            break;
+                        }
+
+                        //Every tick, there is a 1/500 chance for a "trip" to occur
+                        if (Player.velocity.Length() > 2.5f && Player.velocity.Y == 0f && Main.rand.NextBool(500)) {
+                            Player.velocity.X = 0.1f;
+                            //TODO: Add proper damage/death reason
+                            Player.Hurt(PlayerDeathReason.LegacyDefault(), 10, 0);
+                        }
+                        break;
                 }
             }
         }

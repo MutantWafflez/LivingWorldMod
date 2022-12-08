@@ -169,10 +169,9 @@
         Kinetics,
 
         /// <summary>
-        /// Player will randomly "trip", take damage and slow down. Players will jump with a random force of 10% to 150%.
-        /// Enemies will randomly double update.
+        /// Player will randomly trip, causing minor damage and slowing them down.
         /// </summary>
-        MinorInconveniences,
+        Clumsiness,
 
         /// <summary>
         /// Healing via a consumable item will take 2 seconds after consumption to actually heal the player.
