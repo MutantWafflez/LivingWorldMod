@@ -139,7 +139,7 @@
         Insensitivity,
 
         /// <summary>
-        /// Taking damage will disable an accessory for 30 seconds.
+        /// Taking damage will disable an accessory slot for 30 seconds.
         /// </summary>
         Disarmament,
 

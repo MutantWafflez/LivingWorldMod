@@ -1,4 +1,7 @@
-﻿using On.Terraria.UI;
+﻿using System.Linq;
+using LivingWorldMod.Common.Players;
+using On.Terraria.UI;
+using Terraria;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Core.Patches {
@@ -13,7 +16,7 @@ namespace LivingWorldMod.Core.Patches {
             //"Revamped" isEquipLocked for additional and adaptable functionality.
             bool origValue = orig(type);
 
-            return origValue;
+            return origValue || Main.LocalPlayer.GetModPlayer<AccessoryPlayer>().disabledAccessoryTypes.Any(instance => instance.typeOrSlot == type);
         }
     }
 }

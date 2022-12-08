@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using LivingWorldMod.Common.Players;
 using LivingWorldMod.Content.Subworlds.Pyramid;
 using LivingWorldMod.Core.PacketHandlers;
@@ -10,6 +11,7 @@ using On.Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Collision = Terraria.Collision;
+using Item = Terraria.Item;
 using Main = Terraria.Main;
 
 namespace LivingWorldMod.Core.Patches {
@@ -20,6 +22,10 @@ namespace LivingWorldMod.Core.Patches {
     public class PlayerUpdatePatches : ILoadable {
         public void Load(Mod mod) {
             Player.JumpMovement += PlayerGravityManipulation;
+            Player.VanillaUpdateEquip += DisableEquipFunctionality;
+            Player.ApplyEquipFunctional += DisableAccessoryFunctionality;
+            Player.IsAValidEquipmentSlotForIteration += DisableAccessySlotFunctionality;
+
             IL.Terraria.Player.Update += ForceWaterPhysics;
             IL.Terraria.Player.StickyMovement += ForceStickyPhysics;
         }
@@ -51,6 +57,28 @@ namespace LivingWorldMod.Core.Patches {
             }
 
             orig(self);
+        }
+
+        private void DisableEquipFunctionality(Player.orig_VanillaUpdateEquip orig, Terraria.Player self, Item item) {
+            //Small detour that will properly disable armor/accessories if they are denoted to be disabled by the AccessoryPlayer class.
+            if (self.GetModPlayer<AccessoryPlayer>().disabledAccessoryTypes.Any(instance => instance.typeOrSlot == item.type)) {
+                return;
+            }
+
+            orig(self, item);
+        }
+
+        private void DisableAccessoryFunctionality(Player.orig_ApplyEquipFunctional orig, Terraria.Player self, Item currentItem, bool hideVisual) {
+            //Small detour that will properly disable armor/accessories if they are denoted to be disabled by the AccessoryPlayer class.
+            if (self.GetModPlayer<AccessoryPlayer>().disabledAccessoryTypes.Any(instance => instance.typeOrSlot == currentItem.type)) {
+                return;
+            }
+
+            orig(self, currentItem, hideVisual);
+        }
+
+        private bool DisableAccessySlotFunctionality(Player.orig_IsAValidEquipmentSlotForIteration orig, Terraria.Player self, int slot) {
+            return orig(self, slot) && self.GetModPlayer<AccessoryPlayer>().disabledAccessorySlots.Any(instance => instance.typeOrSlot == slot);
         }
 
         private void ForceWaterPhysics(ILContext il) {
