@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using LivingWorldMod.Content.Subworlds.Pyramid;
+using LivingWorldMod.Core.PacketHandlers;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using SubworldLibrary;
@@ -307,7 +309,34 @@ namespace LivingWorldMod.Common.Players {
                         }
                         break;
                     case PyramidRoomCurseType.Disarmament:
-                        // TODO: Add curse functionality
+                        if (Main.netMode == NetmodeID.Server) {
+                            break;
+                        }
+                        AccessoryPlayer accessoryPlayer = Player.GetModPlayer<AccessoryPlayer>();
+
+                        List<int> accessorySlots = new() { 3, 4, 5, 6, 7 };
+                        if (Main.masterMode || Player.extraAccessory && Main.expertMode) {
+                            accessorySlots.Add(8);
+                        }
+                        if (Main.masterMode && Player.extraAccessory) {
+                            accessorySlots.Add(9);
+                        }
+
+                        accessorySlots.RemoveAll(slot => accessoryPlayer.disabledAccessorySlots.Any(instance => instance.typeOrSlot == slot));
+                        if (!accessorySlots.Any()) {
+                            break;
+                        }
+
+                        int selectedSlot = Main.rand.Next(accessorySlots);
+                        AccessoryPlayer.DisabledAccessoryInstance instance = new(30 * 60, false, selectedSlot);
+                        accessoryPlayer.disabledAccessorySlots.Add(instance);
+
+                        if (Main.netMode == NetmodeID.MultiplayerClient) {
+                            ModPacket packet = ModContent.GetInstance<AccessoryPacketHandler>().GetPacket(AccessoryPacketHandler.AddDisabledAccessorySlot);
+                            AccessoryPacketHandler.WriteDisabledAccessoryInstance(instance, packet);
+
+                            packet.Send();
+                        }
                         break;
                     case PyramidRoomCurseType.Recursion:
                         if (Main.netMode != NetmodeID.MultiplayerClient && currentRoom.ActiveCurses.Count < 5) {

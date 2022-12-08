@@ -24,7 +24,7 @@ namespace LivingWorldMod.Core.Patches {
             Player.JumpMovement += PlayerGravityManipulation;
             Player.VanillaUpdateEquip += DisableEquipFunctionality;
             Player.ApplyEquipFunctional += DisableAccessoryFunctionality;
-            Player.IsAValidEquipmentSlotForIteration += DisableAccessySlotFunctionality;
+            Player.IsAValidEquipmentSlotForIteration += DisableAccessorySlotFunctionality;
 
             IL.Terraria.Player.Update += ForceWaterPhysics;
             IL.Terraria.Player.StickyMovement += ForceStickyPhysics;
@@ -77,8 +77,8 @@ namespace LivingWorldMod.Core.Patches {
             orig(self, currentItem, hideVisual);
         }
 
-        private bool DisableAccessySlotFunctionality(Player.orig_IsAValidEquipmentSlotForIteration orig, Terraria.Player self, int slot) {
-            return orig(self, slot) && self.GetModPlayer<AccessoryPlayer>().disabledAccessorySlots.Any(instance => instance.typeOrSlot == slot);
+        private bool DisableAccessorySlotFunctionality(Player.orig_IsAValidEquipmentSlotForIteration orig, Terraria.Player self, int slot) {
+            return orig(self, slot) && !self.GetModPlayer<AccessoryPlayer>().disabledAccessorySlots.Any(instance => instance.typeOrSlot == slot);
         }
 
         private void ForceWaterPhysics(ILContext il) {
