@@ -15,8 +15,11 @@ namespace LivingWorldMod.Core.Patches {
         private bool ExpandedEquipLock(ItemSlot.orig_isEquipLocked orig, int type) {
             //"Revamped" isEquipLocked for additional and adaptable functionality.
             bool origValue = orig(type);
+            AccessoryPlayer player = Main.LocalPlayer.GetModPlayer<AccessoryPlayer>();
 
-            return origValue || Main.LocalPlayer.GetModPlayer<AccessoryPlayer>().disabledAccessoryTypes.Any(instance => instance.typeOrSlot == type);
+            return origValue
+                   || player.disabledAccessoryTypes.Any(instance => instance.typeOrSlot == type)
+                   || player.disabledAccessorySlots.Any(instance => Main.LocalPlayer.armor[instance.typeOrSlot].type == type);
         }
     }
 }

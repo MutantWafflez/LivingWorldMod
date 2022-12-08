@@ -42,6 +42,11 @@ namespace LivingWorldMod.Common.Players {
         /// </summary>
         public List<DisabledAccessoryInstance> disabledAccessorySlots = new();
 
+        public override void Initialize() {
+            disabledAccessoryTypes = new List<DisabledAccessoryInstance>();
+            disabledAccessorySlots = new List<DisabledAccessoryInstance>();
+        }
+
         public override void ResetEffects() {
             bool RemoveCheck(DisabledAccessoryInstance instance) {
                 return !instance.persistent && --instance.durationTimer <= 0;
