@@ -164,9 +164,9 @@
         Impact,
 
         /// <summary>
-        /// Colliding with an object fast enough will injure the player.
+        /// Player's immune time is halved after taking damage.
         /// </summary>
-        Kinetics,
+        Immunodeficiency,
 
         /// <summary>
         /// Player will randomly trip, causing minor damage and slowing them down.

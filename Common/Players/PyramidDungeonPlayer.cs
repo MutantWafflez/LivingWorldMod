@@ -350,6 +350,9 @@ namespace LivingWorldMod.Common.Players {
                             packet.Send();
                         }
                         break;
+                    case PyramidRoomCurseType.Immunodeficiency:
+                        Player.immuneTime /= 2;
+                        break;
                     case PyramidRoomCurseType.Recursion:
                         if (Main.netMode != NetmodeID.MultiplayerClient && currentRoom.ActiveCurses.Count < 5) {
                             currentRoom.AddRandomCurse();
