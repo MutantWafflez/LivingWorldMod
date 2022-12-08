@@ -306,6 +306,9 @@ namespace LivingWorldMod.Common.Players {
                             }
                         }
                         break;
+                    case PyramidRoomCurseType.Disarmament:
+                        // TODO: Add curse functionality
+                        break;
                     case PyramidRoomCurseType.Recursion:
                         if (Main.netMode != NetmodeID.MultiplayerClient && currentRoom.ActiveCurses.Count < 5) {
                             currentRoom.AddRandomCurse();
