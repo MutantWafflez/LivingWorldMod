@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Content.Projectiles.Neutral;
 using LivingWorldMod.Content.Subworlds.Pyramid;
 using LivingWorldMod.Core.PacketHandlers;
 using LivingWorldMod.Custom.Utilities;
@@ -121,6 +122,41 @@ namespace LivingWorldMod.Common.Players {
                         if (Player.gravDir > 0f ? Player.velocity.Y > 0f : Player.velocity.Y < 0f) {
                             Player.gravity *= 3;
                             Player.maxFallSpeed *= 2;
+                        }
+                        break;
+                    case PyramidRoomCurseType.Insanity:
+                        if (Main.myPlayer != Player.whoAmI) {
+                            break;
+                        }
+
+                        if (Main.rand.NextBool(300)) {
+                            Vector2 circleVector = new(192f, 0f);
+                            List<Vector2> validSpawnPositions = new();
+
+                            for (int i = 0; i < 360; i += 15) {
+                                Vector2 displacedCenter = Player.Center + circleVector.RotatedBy(MathHelper.ToRadians(i));
+
+                                if (Collision.CanHitLine(displacedCenter, 10, 10, Player.position, Player.width, Player.height)) {
+                                    validSpawnPositions.Add(displacedCenter);
+                                }
+                            }
+
+                            if (!validSpawnPositions.Any()) {
+                                break;
+                            }
+
+                            Vector2 selectedSpawnPos = Main.rand.Next(validSpawnPositions);
+                            Projectile.NewProjectile(
+                                Terraria.Entity.GetSource_NaturalSpawn(),
+                                selectedSpawnPos,
+                                (selectedSpawnPos.DirectionTo(Player.Center) * Main.rand.NextFloat(6f, 12f)).RotatedByRandom(MathHelper.ToRadians(6f)),
+                                ModContent.ProjectileType<HallucinationProjectile>(),
+                                0,
+                                0,
+                                Main.myPlayer
+                            );
+
+                            SoundEngine.PlaySound(SoundID.Item5, selectedSpawnPos);
                         }
                         break;
                     case PyramidRoomCurseType.Clumsiness:
