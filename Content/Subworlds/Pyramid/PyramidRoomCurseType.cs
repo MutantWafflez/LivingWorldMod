@@ -89,7 +89,7 @@
         Chaos,
 
         /// <summary>
-        /// Player will hallucinate enemies and projectiles.
+        /// Player will hallucinate enemy projectiles.
         /// </summary>
         Insanity,
 
