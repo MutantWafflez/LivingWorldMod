@@ -5,7 +5,6 @@ using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Content.Subworlds.Pyramid;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SubworldLibrary;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -28,12 +27,10 @@ namespace LivingWorldMod.Common.Systems.SubworldSystems {
             }
         }
 
-        public bool IsInPyramidSubworld => SubworldSystem.IsActive<PyramidSubworld>();
-
         private readonly List<TorchCountdown> _torchCountdowns = new();
 
         public override void PostDrawTiles() {
-            if (!IsInPyramidSubworld) {
+            if (!PyramidSubworld.IsInSubworld) {
                 return;
             }
 
@@ -55,7 +52,7 @@ namespace LivingWorldMod.Common.Systems.SubworldSystems {
         }
 
         public override void PostUpdateEverything() {
-            if (!IsInPyramidSubworld) {
+            if (!PyramidSubworld.IsInSubworld) {
                 return;
             }
 

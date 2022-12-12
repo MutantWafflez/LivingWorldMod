@@ -4,7 +4,6 @@ using LivingWorldMod.Content.Subworlds.Pyramid;
 using LivingWorldMod.Core.PacketHandlers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SubworldLibrary;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -14,11 +13,9 @@ namespace LivingWorldMod.Common.GlobalTiles {
     /// Global Tile used exclusively in the Pyramid Dungeon.
     /// </summary>
     public class PyramidGlobalTile : GlobalTile {
-        public bool IsInPyramidSubworld => SubworldSystem.IsActive<PyramidSubworld>();
+        public override bool CanKillTile(int i, int j, int type, ref bool blockDamaged) => !PyramidSubworld.IsInSubworld || LivingWorldMod.IsDebug;
 
-        public override bool CanKillTile(int i, int j, int type, ref bool blockDamaged) => !IsInPyramidSubworld || LivingWorldMod.IsDebug;
-
-        public override bool CanExplode(int i, int j, int type) => !IsInPyramidSubworld || LivingWorldMod.IsDebug;
+        public override bool CanExplode(int i, int j, int type) => !PyramidSubworld.IsInSubworld || LivingWorldMod.IsDebug;
 
         public override bool PreDraw(int i, int j, int type, SpriteBatch spriteBatch) {
             if (!(Main.LocalPlayer.GetModPlayer<PyramidDungeonPlayer>().currentRoom?.region.Contains(i, j) ?? true)) {
@@ -29,7 +26,7 @@ namespace LivingWorldMod.Common.GlobalTiles {
         }
 
         public override void PlaceInWorld(int i, int j, int type, Item item) {
-            if (type != TileID.Torches || !IsInPyramidSubworld) {
+            if (type != TileID.Torches || !PyramidSubworld.IsInSubworld) {
                 return;
             }
             if (ModContent.GetInstance<PyramidSubworld>().grid.GetRoomFromTilePosition(new Point(i, j)) is not { } room || !room.ActiveCurses.Contains(PyramidRoomCurseType.DyingLight)) {

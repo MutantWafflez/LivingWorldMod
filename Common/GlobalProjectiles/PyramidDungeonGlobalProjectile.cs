@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using LivingWorldMod.Content.Subworlds.Pyramid;
-using SubworldLibrary;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
@@ -20,7 +19,7 @@ namespace LivingWorldMod.Common.GlobalProjectiles {
 
         public PyramidRoom currentRoom;
 
-        public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => SubworldSystem.IsActive<PyramidSubworld>();
+        public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => PyramidSubworld.IsInSubworld;
 
         public override void OnSpawn(Projectile projectile, IEntitySource source) {
             currentRoom = ModContent.GetInstance<PyramidSubworld>().grid.GetEntityCurrentRoom(projectile);

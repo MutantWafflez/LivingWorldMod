@@ -7,7 +7,6 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using SubworldLibrary;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -84,7 +83,7 @@ namespace LivingWorldMod.Common.GlobalNPCs {
         private bool _isBeingSpawned;
         private int _spawnAnimTimer;
 
-        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => SubworldSystem.IsActive<PyramidSubworld>();
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => PyramidSubworld.IsInSubworld;
 
         public override void SetStaticDefaults() {
             if (Main.netMode != NetmodeID.Server) {

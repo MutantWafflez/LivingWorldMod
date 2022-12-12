@@ -5,7 +5,6 @@ using LivingWorldMod.Common.Players;
 using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Content.Subworlds.Pyramid;
 using Microsoft.Xna.Framework;
-using SubworldLibrary;
 using Terraria;
 using Terraria.Graphics;
 using Terraria.ModLoader;
@@ -45,7 +44,7 @@ namespace LivingWorldMod.Common.Systems {
         }
 
         public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform) {
-            if (!SubworldSystem.IsActive<PyramidSubworld>()) {
+            if (!PyramidSubworld.IsInSubworld) {
                 return;
             }
 

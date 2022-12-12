@@ -46,7 +46,7 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
                     }
                 }
 
-                return playerInside || roomCleared;
+                return playerInside && !roomCleared;
             }
         }
 
@@ -114,6 +114,13 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         public bool roomCleared;
 
         /// <summary>
+        /// The amount of "weight" remaining that enemies can use to spawn. Depending on their
+        /// strength, enemies will vary on how much of this value they will consume upon spawn.
+        /// Enemies stop spawning when this value reaches 0.
+        /// </summary>
+        public int remainingEnemySpawnWeight;
+
+        /// <summary>
         /// Dictionary of integer values that pertain to timers of certain curses.
         /// </summary>
         private readonly Dictionary<PyramidRoomCurseType, int> _curseTimers;
@@ -127,7 +134,8 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
 
             roomType = LivingWorldMod.IsDebug && ModContent.GetInstance<DebugConfig>().allCursedRooms ? PyramidRoomType.Cursed : RoomSelector;
             _curseTimers = new Dictionary<PyramidRoomCurseType, int> {
-                { PyramidRoomCurseType.Rotation, 0 }
+                { PyramidRoomCurseType.Rotation, 0 },
+                { PyramidRoomCurseType.Siege, 0 }
             };
         }
 
@@ -137,6 +145,11 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         /// Called at the end of every update tick for each room in the subworld.
         /// </summary>
         public void Update() {
+            if (!IsActive) {
+                return;
+            }
+
+
             foreach (PyramidRoomCurseType curse in ActiveCurses) {
                 switch (curse) {
                     case PyramidRoomCurseType.Rotation:

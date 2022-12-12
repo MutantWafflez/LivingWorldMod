@@ -61,6 +61,11 @@ namespace LivingWorldMod.Content.Subworlds.Pyramid {
         public override List<GenPass> Tasks => new List<GenPass>().Concat(_genTasks.Select(task => new PassLegacy(task.StepName, task.DoTask))).ToList();
 
         /// <summary>
+        /// Whether or not this subworld is currently active and "in."
+        /// </summary>
+        public static bool IsInSubworld => SubworldSystem.IsActive<PyramidSubworld>();
+
+        /// <summary>
         /// The grid that the dungeon is composed of. Each room at maximum can be 100x100.
         /// </summary>
         public PyramidRoomGrid grid;

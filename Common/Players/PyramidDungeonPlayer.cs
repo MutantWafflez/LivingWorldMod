@@ -5,7 +5,6 @@ using LivingWorldMod.Content.Subworlds.Pyramid;
 using LivingWorldMod.Core.PacketHandlers;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using SubworldLibrary;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -75,7 +74,7 @@ namespace LivingWorldMod.Common.Players {
         }
 
         public override void ResetEffects() {
-            if (SubworldSystem.IsActive<PyramidSubworld>()) {
+            if (PyramidSubworld.IsInSubworld) {
                 return;
             }
 
@@ -242,7 +241,7 @@ namespace LivingWorldMod.Common.Players {
         }
 
         public override void PostUpdate() {
-            if (!SubworldSystem.IsActive<PyramidSubworld>()) {
+            if (!PyramidSubworld.IsInSubworld) {
                 currentRoom = null;
                 return;
             }
