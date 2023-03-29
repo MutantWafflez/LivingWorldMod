@@ -2,14 +2,14 @@
 	LivingWorldMod: {
 	
 		Event: {
-		    WaystoneActivation: "Waystone Activated!"
+		    WaystoneActivation: "指路石已激活!"
 
 			VillagerRespawned: {
-				Harpy: "{0} the Harpy Villager has hatched!"
+				Harpy: "鸟妖村民{0}已孵化!"
 			}
 
 			VillagerLeft: {
-				Harpy: "{0} the Harpy Vilager has departed for a new home!"
+				Harpy: "鸟妖村民{0}已动身寻找一个新家!"
 			}
 		}
 	

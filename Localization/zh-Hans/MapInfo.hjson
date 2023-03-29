@@ -3,27 +3,27 @@
 	
 		MapInfo: {
 			Shrines: {
-				Harpy: "Harpy Village"
+				Harpy: "鸟妖村庄"
 			}
 			Waystones: {
-				Desert: "Desert Waystone"
-				Jungle: "Jungle Waystone"
-				Mushroom: "Glowing Mushroom Waystone"
-				Caverns: "Caverns Waystone"
-				Ice: "Tundra Waystone"
+				Desert: "沙漠指路石"
+				Jungle: "丛林指路石"
+				Mushroom: "发光蘑菇指路石"
+				Caverns: "洞穴指路石"
+				Ice: "苔原指路石"
 			}
 		}
 
 		MapObject: {
 			//Furniture Tiles
-			GravityTapestryTile: "Tapestry"
+			GravityTapestryTile: "壁毯"
 			SkywareAnvilTile: "{$Mods.LivingWorldMod.ItemName.SkywareAnvilItem}"
 			SkywareLoomTile: "{$Mods.LivingWorldMod.ItemName.SkywareLoomItem}"
 			SunTapestryTile: "{$Mods.LivingWorldMod.MabObject.GravityTapestryTile}"
 
 		    //Interactable Tiles
-			VillageShrineTile: "Village Shrine"
-			WaystoneTile: "Waystone"
+			VillageShrineTile: "村庄神龛"
+			WaystoneTile: "指路石"
 
 			//Torch Tiles
 			StarTorchTile: "{$ItemName.Torch}"

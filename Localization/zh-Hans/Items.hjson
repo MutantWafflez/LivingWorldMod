@@ -3,24 +3,24 @@
 	
 		ItemName: {
 			//Accessory Item
-			NimbusInABottle: "Nimbus in a Bottle"
+			NimbusInABottle: "瓶中灵气"
 
 			//Food Items
-			FriedHarpyEgg: "Fried Harpy Egg"
+			FriedHarpyEgg: "友善鸟妖蛋"
 
 			//Misc Items
-			HarpyEgg: "Harpy Egg"
+			HarpyEgg: "鸟妖蛋"
 		}
 
 		ItemTooltip: {
 			//Accessory Items
-			NimbusInABottle: "Summons a pet nimbus that follows you around"
+			NimbusInABottle: "召唤一个灵气宠物跟在你的身边"
 
 			//Food Items
-			FriedHarpyEgg: "{$CommonItemTooltip.MajorStats}\n'You monster.'"
+			FriedHarpyEgg: "{$CommonItemTooltip.MajorStats}\n'你这怪物.'"
 				
 			//Misc Items
-			HarpyEgg: "'It's rather large, but looks like any other egg.'"
+			HarpyEgg: "'它相当大, 但看起来像其他的蛋.'"
 		}
 
 	}

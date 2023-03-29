@@ -2,7 +2,7 @@
 	LivingWorldMod: {
 	
 		ProjectileName: {
-			NimbusPetProjectile: "Nimbus Pet"
+			NimbusPetProjectile: "灵气宠物"
 		}
 
 	}

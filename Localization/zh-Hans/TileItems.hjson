@@ -3,38 +3,38 @@
 	
 		ItemName: {
 			//Building
-			SkywareBlockItem: "Skyware Block"
-			StarshardCloudItem: "Starshard Cloud"
-			StarshineBlockItem: "Starshine Block"
-			SunslabBlockItem: "Sunslab Block"
+			SkywareBlockItem: "天域块"
+			StarshardCloudItem: "星片云"
+			StarshineBlockItem: "星光块"
+			SunslabBlockItem: "日盘块"
 
 			//Furniture
-			NimbusJarItem: "Nimbus in a Jar"
-			GravityTapestryItem: "Gravity Tapestry"
-			SkywareAnvilItem: "Skyware Anvil"
-			SkywareLoomItem: "Skyware Loom"
-			SunTapestryItem: "Sun Tapestry"
+			NimbusJarItem: "灵气罐"
+			GravityTapestryItem: "重力壁毯"
+			SkywareAnvilItem: "天域砧"
+			SkywareLoomItem: "天域织布机"
+			SunTapestryItem: "太阳壁毯"
 
 			//Interactables
 
 				//Shrines
-				HarpyShrineItem: "Harpy Village Shrine"
+				HarpyShrineItem: "鸟妖村庄神龛"
 
 			//Torches
-			StarTorchItem: "Star Torch"
+			StarTorchItem: "星星火把"
 		}
 
 		ItemTooltip: {
 			//Building
-			StarshardCloudItem: "'Shards of fallen stars permeate throughout this cloud'"
+			StarshardCloudItem: "'落下的星星碎片弥漫在这片云中'"
 
 			//Interactables
 
 				//Shrines
-				HarpyShrineItem: "'The magical source of protection for all those that inhabit a Harpy Village'"
+				HarpyShrineItem: "'魔法源头保护着所有居住在鸟妖村庄的人'"
 
 			//Torches
-			StarTorchItem: "'Light the way with the essence of the cosmos'"
+			StarTorchItem: "'用宇宙精华照亮道路'"
 		}
 	
 	}
