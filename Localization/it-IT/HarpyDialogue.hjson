@@ -6,32 +6,17 @@ Mods: {
 
 				Event: {
 					//Rain
-					0: {
-						Text: "Sono molto grata di essere qui sopra le nuvole. Non sopporto avere i capelli bagnati."
-					}
-					1: {
-						Text: "Ahh, osservare la pioggia cadere dalle nuvole è così rilassante."
-					}
+					0: "Sono molto grata di essere qui sopra le nuvole. Non sopporto avere i capelli bagnati."
+					1: "Ahh, osservare la pioggia cadere dalle nuvole è così rilassante."
 					
 					//Eclipse
-					2: {
-						Text: "È così divertente vedere tutti quei mostri laggiù impazzire e attaccare le persone. Sono lieta di sapere che qui siamo più o meno al sicuro."
-					}
-					3: {
-						Text: "Che succede? Hai paura per caso?"
-					}
+					2: "È così divertente vedere tutti quei mostri laggiù impazzire e attaccare le persone. Sono lieta di sapere che qui siamo più o meno al sicuro."
+					3: "Che succede? Hai paura per caso?"
 
 					//Blood Moon
-					4: {
-						Text: "Tutti primitivi dur-SQUAK... durante la luna-SQUAK di sangue-SQUAK!"
-					}
-					5: {
-						Text: "...Non ho intenzione di SQUAK dire nien-SQUAK!"
-					}
-					6: {
-						//Blood Moon & Rain
-						Text: "Sangue SQUAK fradicio SQUAK fastidioso!"
-					}
+					4: "Tutti primitivi dur-SQUAK... durante la luna-SQUAK di sangue-SQUAK!"
+					5: "...Non ho intenzione di SQUAK dire nien-SQUAK!"
+					6: "Sangue SQUAK fradicio SQUAK fastidioso!" // (and rain)
 				}
 
 				Shop: {
@@ -99,9 +84,7 @@ Mods: {
 					3: "Che vuoi? Sto cercando di rilassarmi."
 					4: "Ultimamente non hai dato la migliore delle impressioni da queste parti. Forse è il caso di cambiare abitudini, possibilmente al più presto."
 					5: "Oh, ehi. Posso aiutarti? No? Allora sparisci dalla mia vista."
-					6: {
-						Text: "Sarò sincero con te, umano. Ci hai causato qualche problema. Niente di oltraggioso, ma ci ha lasciato un po' di amaro in bocca. Potremmo capire se si trattasse di errori occasionali, ma è meglio che tu agisca con cautela prima che le cose si mettano molto, molto male per te."
-					}
+					6: "Sarò sincero con te, umano. Ci hai causato qualche problema. Niente di oltraggioso, ma ci ha lasciato un po' di amaro in bocca. Potremmo capire se si trattasse di errori occasionali, ma è meglio che tu agisca con cautela prima che le cose si mettano molto, molto male per te."
 				}
 
 				Neutral: {
@@ -110,12 +93,8 @@ Mods: {
 					2: "Volare nel cielo ti fa sentire così... libero. Dovresti provare qualche volta."
 					3: "A volte ho paura di volare troppo in alto e di fluttuare nello spazio o nel Sole o cose simili."
 					4: "Comprerai qualcosa, vero? Non sei venuto qui per niente, vero?"
-					5: {
-						Text: "No, non voglio nessun cracker. E smettila di chiamarmi Polly!"
-					}
-					6: {
-						Text: "Mi stai chiedendo come facciamo a riprodurci se siamo tutte femmine? Non essere ridicolo..."
-					}
+					5: "No, non voglio nessun cracker. E smettila di chiamarmi Polly!"
+					6: "Mi stai chiedendo come facciamo a riprodurci se siamo tutte femmine? Non essere ridicolo..."
 				}
 
 				Like: {
@@ -124,15 +103,9 @@ Mods: {
 					2: "Dovresti sederti con me sul mio trespolo qualche volta. La brezza è così piacevole che aiuta davvero il mio zen."
 					3: "Non sei poi così male per essere un umano che cammina sulla terra. Torna a trovarci qualche volta!"
 					4: "Quassù è un po' noioso. Ma non è poi così male quando vieni a farci visita."
-					5: {
-						Text: "Questo top mi fa ingrassare le ali?"
-					}
-					6: { 
-						Text: "ptuu- Scusami, mi è entrata di nuovo una piuma in bocca. Succede ogni volta."
-					}
-					7: { 
-						Text: "Spero davvero che non si verifichi presto una luna di sangue, non voglio che le mie piume si arruffino." 
-					}
+					5: "Questo top mi fa ingrassare le ali?"
+					6: "ptuu- Scusami, mi è entrata di nuovo una piuma in bocca. Succede ogni volta."
+					7: "Spero davvero che non si verifichi presto una luna di sangue, non voglio che le mie piume si arruffino." 
 				}
 
 				Love: {

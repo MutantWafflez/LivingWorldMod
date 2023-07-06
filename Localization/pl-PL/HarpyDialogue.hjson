@@ -6,32 +6,17 @@
 
 				Event: {
 					//Rain
-					0: {
-						Text: "Jestem bardzo wdzięczny, że jesteśmy ponad chmurami. Nie mogę znieść mokrych włosów."
-					}
-					1: {
-						Text: "Ahh, oglądanie deszczu spadającego z chmur jest takie relaksujące."
-					}
+					0: "Jestem bardzo wdzięczny, że jesteśmy ponad chmurami. Nie mogę znieść mokrych włosów."
+					1: "Ahh, oglądanie deszczu spadającego z chmur jest takie relaksujące."
 					
 					//Eclipse
-					2: {
-						Text: "Fajnie jest patrzeć, jak wszystkie szalone potwory atakują ludzi. Cieszę się, że jesteśmy tu trochę bezpieczni."
-					}
-					3: {
-						Text: "Co, boisz się czy coś?"
-					}
+					2: "Fajnie jest patrzeć, jak wszystkie szalone potwory atakują ludzi. Cieszę się, że jesteśmy tu trochę bezpieczni."
+					3: "Co, boisz się czy coś?"
 
 					//Blood Moon
-					4: {
-						Text: "Primal dur-SQUAK... podczas krwawy-SQUAK księżyc-SQUAK!"
-					}
-					5: {
-						Text: "...Nie idę do SQUAK, powiedz nic-SQUAK!"
-					}
-					6: {
-						//Blood Moon & Rain
-						Text: "Mokry SQUAK Krew SQUAK denerwujący!"
-					}
+					4: "Primal dur-SQUAK... podczas krwawy-SQUAK księżyc-SQUAK!"
+					5: "...Nie idę do SQUAK, powiedz nic-SQUAK!"
+					6: "Mokry SQUAK Krew SQUAK denerwujący!" // (and rain)
 				}
 
 				Shop: {
@@ -99,9 +84,7 @@
 					3: "What do you want? I'm trying to relax here."
 					4: "Ostatnio nie robisz tu najlepszych wrażenia. Możesz to zmienić, najlepiej wkrótce."
 					5: "No cześć. Czy mogę ci w ogóle pomóc? Nie? Potem zejdź mi z twarzy."
-					6: {
-						Text: "Będę z tobą szczery, człowieku. Sprawiłeś nam trochę problemów. Nic skandalicznego, ale pozostawił w naszych ustach nieco kwaśny posmak. Możemy zrozumieć, że były to tylko jednorazowe błędy, ale lepiej działaj ostrożnie, zanim sprawy staną się dla ciebie bardzo, bardzo złe."
-					}
+					6: "Będę z tobą szczery, człowieku. Sprawiłeś nam trochę problemów. Nic skandalicznego, ale pozostawił w naszych ustach nieco kwaśny posmak. Możemy zrozumieć, że były to tylko jednorazowe błędy, ale lepiej działaj ostrożnie, zanim sprawy staną się dla ciebie bardzo, bardzo złe."
 				}
 
 				Neutral: {
@@ -110,12 +93,8 @@
 					2: "Latanie po niebie jest jak uwolnienie. Powinieneś kiedyś spróbować."
 					3: "Trochę boję się latać zbyt wysoko i unosić się w kosmos, słońce czy coś."
 					4: "Coś kupisz, prawda? Nie przyszedłeś tu po nic, prawda?"
-					5: {
-						Text: "Nie, nie chcę żadnych krakersów. I przestań nazywać mnie Polly!"
-					}
-					6: {
-						Text: "Pytasz, jak się rozmnażamy, jeśli wszyscy jesteśmy kobietami? Nie bądź głupi."
-					}
+					5: "Nie, nie chcę żadnych krakersów. I przestań nazywać mnie Polly!"
+					6: "Pytasz, jak się rozmnażamy, jeśli wszyscy jesteśmy kobietami? Nie bądź głupi."
 				}
 
 				Like: {
@@ -124,15 +103,9 @@
 					2: "Powinnaś kiedyś usiąść ze mną na mojej grzędzie. Powiew jest tak przyjemny, że naprawdę pomaga mojemu zen."
 					3: "Nie jesteś taki zły jak na człowieka chodzącego po ziemi. Przyjdź kiedyś ponownie?!"
 					4: "Tu na górze robi się trochę nudno. Ale nie jest tak źle, kiedy się pojawiasz."
-					5: {
-						Text: "Czy ten top sprawia, że ​​moje skrzydła wyglądają na grube??"
-					}
-					6: { 
-						Text: "ptoo!- Przepraszam, znowu mam pióro w ustach. Zdarza się za każdym razem."
-					}
-					7: { 
-						Text: "Naprawdę mam nadzieję, że krwawy księżyc nie nastąpi szybko, nie chcę mieć do czynienia z potarganiem moich piór." 
-					}
+					5: "Czy ten top sprawia, że ​​moje skrzydła wyglądają na grube??"
+					6: "ptoo!- Przepraszam, znowu mam pióro w ustach. Zdarza się za każdym razem."
+					7: "Naprawdę mam nadzieję, że krwawy księżyc nie nastąpi szybko, nie chcę mieć do czynienia z potarganiem moich piór." 
 				}
 
 				Love: {

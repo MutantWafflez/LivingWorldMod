@@ -6,32 +6,18 @@
 
 				Event: {
 					//Rain
-					0: {
-						Text: "I'm super thankful we're above the clouds. I cannot stand my hair being wet."
-					}
-					1: {
-						Text: "Ahh, watching the rain fall from the clouds is so relaxing."
-					}
+					0: "I'm super thankful we're above the clouds. I cannot stand my hair being wet."
+					1: "Ahh, watching the rain fall from the clouds is so relaxing."
+			
 					
 					//Eclipse
-					2: {
-						Text: "It's so fun watching all the monsters going crazy down there attacking people. I'm glad we're somewhat safe up here."
-					}
-					3: {
-						Text: "What, are you scared or something?"
-					}
+					2: "It's so fun watching all the monsters going crazy down there attacking people. I'm glad we're somewhat safe up here."
+					3: "What, are you scared or something?"
 
 					//Blood Moon
-					4: {
-						Text: "Primal dur-SQUAK... during Blood-SQUAK Moons-SQUAK!"
-					}
-					5: {
-						Text: "...Not going to SQUAK say any-SQUAK!"
-					}
-					6: {
-						//Blood Moon & Rain
-						Text: "Wet SQUAK Blood SQUAK annoying!"
-					}
+					4: "Primal dur-SQUAK... during Blood-SQUAK Moons-SQUAK!"
+					5: "...Not going to SQUAK say any-SQUAK!"
+					6: "Wet SQUAK Blood SQUAK annoying!" // (and rain)
 				}
 
 				Shop: {
@@ -99,9 +85,7 @@
 					3: "What do you want? I'm trying to relax here."
 					4: "You haven't been making the best impressions around here lately. You might want to change that, preferably soon."
 					5: "Oh hey. Can I help you at all? No? Then get out of my face."
-					6: {
-						Text: "I'm gonna be straight with you, human. You've caused some problems for us. Nothing outrageous, but it's left a bit of a sour taste in our mouths. We may understand if they were just one time mistakes, but you better act carefully before things get very, very bad for you."
-					}
+					6: "I'm gonna be straight with you, human. You've caused some problems for us. Nothing outrageous, but it's left a bit of a sour taste in our mouths. We may understand if they were just one time mistakes, but you better act carefully before things get very, very bad for you."
 				}
 
 				Neutral: {
@@ -110,12 +94,8 @@
 					2: "Flying through the sky is like, so freeing. You should try it sometime."
 					3: "I'm sort of scared of flying too high and floating into space or the sun or something."
 					4: "You'll buy something, won't you? You didn't come here for nothing, right?"
-					5: {
-						Text: "No, I don't want any crackers. And stop calling me Polly!"
-					}
-					6: {
-						Text: "You're asking how we reproduce if we're all female? Don't be silly."
-					}
+					5: "No, I don't want any crackers. And stop calling me Polly!"
+					6: "You're asking how we reproduce if we're all female? Don't be silly."
 				}
 
 				Like: {
@@ -124,15 +104,9 @@
 					2: "You should sit with me on my perch sometime. The breeze is so nice, it really helps my zen."
 					3: "You aren't so bad for a landwalking human. Come visit again sometime!"
 					4: "It gets sort of boring up here. But it's not so bad when you come around."
-					5: {
-						Text: "Does this top make my wings look fat?"
-					}
-					6: { 
-						Text: "ptoo- Sorry, I got a feather in my mouth again. Happens every time."
-					}
-					7: { 
-						Text: "I really hope a blood moon doesn't happen soon, I don't want to deal with my feathers getting all ruffled." 
-					}
+					5: "Does this top make my wings look fat?"
+					6: "ptoo- Sorry, I got a feather in my mouth again. Happens every time."
+					7: "I really hope a blood moon doesn't happen soon, I don't want to deal with my feathers getting all ruffled." 
 				}
 
 				Love: {
