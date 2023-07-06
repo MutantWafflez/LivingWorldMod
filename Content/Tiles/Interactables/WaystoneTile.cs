@@ -9,7 +9,6 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
-using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.Map;
 using Terraria.ModLoader;
@@ -21,9 +20,9 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
     /// Class for Waystone tiles, which are basically Pylons but in the wild.
     /// </summary>
     public class WaystoneTile : BasePylon {
-        public Asset<Texture2D> waystoneMapIcons;
-
         public override Color? TileColorOnMap => Color.White;
+
+        public Asset<Texture2D> waystoneMapIcons;
 
         /// <summary>
         /// The tile width of Waystones. Used for tile entity placement/destroying calculations.
@@ -54,7 +53,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
             TileObjectData.newTile.Origin = Point16.Zero;
             TileObjectData.newTile.Height = 3;
-            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16 };
+            TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16 };
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.DrawYOffset = 2;
 
@@ -64,8 +63,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
 
             TileObjectData.addTile(Type);
 
-            TileID.Sets.InteractibleByNPCs[Type] = true;
-            TileID.Sets.PreventsSandfall[Type] = true;
+            TileID.Sets.InteractibleByNPCs[Type] = TileID.Sets.PreventsSandfall[Type] = TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type]
+                = true;
 
             AddToArray(ref TileID.Sets.CountsAsPylon);
 
@@ -73,6 +72,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         }
 
         public override bool CanKillTile(int i, int j, ref bool blockDamaged) => LivingWorldMod.IsDebug;
+
+        public override bool CanExplode(int i, int j) => LivingWorldMod.IsDebug;
 
         public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
@@ -112,7 +113,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             WaystoneSystem.Instance.AddNewActivationEntity(topLeft.ToWorldCoordinates(16, 16), entity.WaystoneColor);
             switch (Main.netMode) {
                 case NetmodeID.MultiplayerClient:
-                    ModPacket packet = ModContent.GetInstance<WaystonePacketHandler>().GetPacket(WaystonePacketHandler.InitiateWaystoneActivation);
+                    ModPacket packet = ModContent.GetInstance<WaystonePacketHandler>().GetPacket();
 
                     packet.Write((int)entity.Position.X);
                     packet.Write((int)entity.Position.Y);
