@@ -1,13 +1,12 @@
-﻿using Hjson;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using Hjson;
 using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Common.Systems {
@@ -15,28 +14,27 @@ namespace LivingWorldMod.Common.Systems {
     /// System that handles reputations for all of the villages in the mod.
     /// </summary>
     public class ReputationSystem : BaseModSystem<ReputationSystem> {
+        public const int VillageReputationConstraint = 100;
         public Dictionary<VillagerType, ReputationThresholdData> villageThresholdData;
         private int[] _villageReputation;
-
-        public const int VillageReputationConstraint = 100;
 
         public override void Load() {
             _villageReputation = new int[NPCUtils.GetTotalVillagerTypeCount()];
             villageThresholdData = new Dictionary<VillagerType, ReputationThresholdData>();
 
-            Stream reputationDataStream = Mod.GetFileStream("Assets/JSONData/ReputationData.hjson");
-            JsonObject jsonReputationData = HjsonValue.Load(reputationDataStream)["ReputationData"].Qo();
+            Stream reputationDataStream = Mod.GetFileStream("Assets/JSONData/ReputationData.json");
+            JsonObject jsonReputationData = JsonValue.Load(reputationDataStream).Qo();
             reputationDataStream.Close();
 
             foreach (VillagerType type in Enum.GetValues<VillagerType>()) {
-                JsonObject villageSpecificData = jsonReputationData[type.ToString()].Qo();
+                JsonObject villageSpecificData = jsonReputationData[type.ToString()][0].Qo();
 
                 villageThresholdData[type] = new ReputationThresholdData(
-                    villageSpecificData["HateThreshold"].Qi(),
-                    villageSpecificData["SevereDislikeThreshold"].Qi(),
-                    villageSpecificData["DislikeThreshold"].Qi(),
-                    villageSpecificData["LikeThreshold"].Qi(),
-                    villageSpecificData["LoveThreshold"].Qi()
+                    villageSpecificData["Hate"].Qi(),
+                    villageSpecificData["SevereDislike"].Qi(),
+                    villageSpecificData["Dislike"].Qi(),
+                    villageSpecificData["Like"].Qi(),
+                    villageSpecificData["Love"].Qi()
                 );
             }
         }
@@ -61,8 +59,10 @@ namespace LivingWorldMod.Common.Systems {
             }
         }
 
-        /// <summary> Gets & returns the reputation value of the given villager type specified.
-        /// </summary> <returns></returns>
+        /// <summary>
+        /// Gets & returns the reputation value of the given villager type specified.
+        /// </summary>
+        /// <returns></returns>
         public int GetNumericVillageReputation(VillagerType villagerType) => _villageReputation[(int)villagerType];
 
         /// <summary>
