@@ -1,6 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Reflection;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
 using Terraria.ID;
 
 namespace LivingWorldMod.Custom.Utilities {
@@ -8,6 +11,11 @@ namespace LivingWorldMod.Custom.Utilities {
     /// Utilities class that deals with the Tile class and tiles in general.
     /// </summary>
     public static class TileUtils {
+        /// <summary>
+        /// Allows for calling of the private method "AddSpecialPoint(int, int, int)" in <see cref="TileDrawing"/>.
+        /// </summary>
+        public static readonly Delegate AddSpecialPoint = AddSpecialPoint = typeof(TileDrawing).GetMethod("AddSpecialPoint", BindingFlags.Instance | BindingFlags.NonPublic)!.CreateDelegate<Action<int, int, int>>(Main.instance.TilesRenderer);
+
         /// <summary>
         /// Checks and returns whether or not the given tile type at the given position can merge
         /// with the other tile at the position offset by the given offset. For example, passing the
@@ -40,11 +48,11 @@ namespace LivingWorldMod.Custom.Utilities {
         /// <param name="tile"> A tile within the multi-tile. </param>
         /// <param name="x"> The x coordinate of the specified tile. </param>
         /// <param name="y"> The y coordinate of the specified tile. </param>
-        public static Point16 GetTopLeftOfMultiTile(Tile tile, int x, int y) => new Point16(x - tile.TileFrameX / 18, y - tile.TileFrameY / 18);
+        public static Point16 GetTopLeftOfMultiTile(Tile tile, int x, int y) => new(x - tile.TileFrameX / 18, y - tile.TileFrameY / 18);
 
         /// <summary>
-        /// Returns the top left coordinate of the passed in tile which should be a type of multi-tile. This overload takes into account multi-
-        /// styled multi-tiles.
+        /// Returns the top left coordinate of the passed in tile which should be a type of multi-tile. This overload takes into
+        /// account multi-styled multi-tiles.
         /// </summary>
         /// <param name="tile"> A tile within the multi-tile. </param>
         /// <param name="x"> The x coordinate of the specified tile. </param>
