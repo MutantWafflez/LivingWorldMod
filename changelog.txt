@@ -1,4 +1,6 @@
 INDEV RELEASE v0.2.1.9 [Belated Changes] (July 5th, 2023)
 Changes:
 * Blocks under waystones can no longer be destroyed, subsequently destroying the waystone itself
-* Waystones can no longer be exploded with bombs, dynamite, etc.
+* Waystones can no longer be exploded with bombs, dynamite, etc
+Fixes:
+* Internal re-writing of localization & dialogue management in preparation for the 1.4.4 port
