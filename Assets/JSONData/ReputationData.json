@@ -1,11 +1,9 @@
 ﻿{
-  "Harpy": [
-    {
+  "Harpy": {
       "Hate": -95,
       "SevereDislike": -45,
       "Dislike": -15,
       "Like": 15,
       "Love": 95
     }
-  ]
 }

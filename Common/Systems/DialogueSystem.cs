@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using Terraria;
+using Hjson;
 using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
+using Terraria;
 using Terraria.GameContent.Events;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -14,7 +16,8 @@ using NPCUtils = LivingWorldMod.Custom.Utilities.NPCUtils;
 
 namespace LivingWorldMod.Common.Systems {
     /// <summary>
-    /// ModSystem that handles Dialogue for the various types of the villagers, including dialogue weights & event requirements.
+    /// ModSystem that handles Dialogue for the various types of the villagers, including dialogue weights & event
+    /// requirements.
     /// </summary>
     [Autoload(Side = ModSide.Client)]
     public class DialogueSystem : BaseModSystem<DialogueSystem> {
@@ -22,7 +25,7 @@ namespace LivingWorldMod.Common.Systems {
         private Dictionary<string, Func<bool>> _eventCheckers;
 
         public override void Load() {
-            _eventCheckers = new Dictionary<string, Func<bool>>() {
+            _eventCheckers = new Dictionary<string, Func<bool>> {
                 { "Rain", () => Main.raining },
                 { "PumpkinMoon", () => Main.pumpkinMoon },
                 { "FrostMoon", () => Main.snowMoon },
@@ -42,38 +45,40 @@ namespace LivingWorldMod.Common.Systems {
             Dictionary<string, ModTranslation> translationDict = typeof(LocalizationLoader).GetField("translations", BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null) as Dictionary<string, ModTranslation>;
             Dictionary<string, ModTranslation> allDialogue = translationDict!.Where(pair => pair.Value.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue")).ToDictionary(pair => pair.Key, pair => pair.Value);
 
+            Stream dialogueWeightStream = Mod.GetFileStream("Assets/JSONData/DialogueWeights.json");
+            JsonValue jsonReputationData = JsonValue.Load(dialogueWeightStream);
+            dialogueWeightStream.Close();
+
             for (VillagerType type = 0; (int)type < NPCUtils.GetTotalVillagerTypeCount(); type++) {
-                List<DialogueData> finalDialogueData = new List<DialogueData>();
-                Dictionary<string, ModTranslation> typeDialogue = allDialogue.Where(pair => pair.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{type}")).ToDictionary(pair => pair.Key, pair => pair.Value);
+                List<DialogueData> finalDialogueData = new();
 
-                foreach ((string key, ModTranslation value) in typeDialogue.Where(pair => !(pair.Key.EndsWith(".Weight") || pair.Key.EndsWith(".Priority") || pair.Key.EndsWith(".Events"))).ToDictionary(pair => pair.Key, pair => pair.Value)) {
-                    //If the key ends with ".Text", that means it possible has Weight and Events value(s)
-                    if (key.EndsWith(".Text")) {
-                        string keyPrefix = key.Remove(key.LastIndexOf(".Text"));
-                        string keyWithWeight = keyPrefix + ".Weight";
-                        string keyWithPriority = keyPrefix + ".Priority";
-                        string keyWithEvents = keyPrefix + ".Events";
+                string keyStart = $"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{type}";
+                Dictionary<string, ModTranslation> typeDialogue = allDialogue.Where(pair => pair.Key.StartsWith(keyStart)).ToDictionary(pair => pair.Key, pair => pair.Value);
+                JsonObject villageSpecificData = jsonReputationData[type.ToString()].Qo();
 
-                        double weight = 1;
-                        if (typeDialogue.ContainsKey(keyWithWeight) && double.TryParse(typeDialogue[keyWithWeight].GetDefault(), out double newWeight)) {
-                            weight = newWeight;
+                foreach ((string key, ModTranslation value) in typeDialogue) {
+                    double weight = 1;
+                    int priority = 0;
+                    string[] requiredEvents = null;
+
+                    string[] splitKey = key[(keyStart.Length + 1)..].Split('.');
+                    if (villageSpecificData.TryGetValue(splitKey[0], out JsonValue dialogueSubdivisionData) && dialogueSubdivisionData.Qo().TryGetValue(splitKey[1], out JsonValue specificDialogueValue)) {
+                        JsonObject specificDialogueObject = specificDialogueValue.Qo();
+
+                        if (specificDialogueObject.TryGetValue("Weight", out JsonValue weightValue)) {
+                            weight = weightValue.Qd();
                         }
 
-                        int priority = 0;
-                        if (typeDialogue.ContainsKey(keyWithPriority) && int.TryParse(typeDialogue[keyWithPriority].GetDefault(), out int newPriority)) {
-                            priority = newPriority;
+                        if (specificDialogueObject.TryGetValue("Priority", out JsonValue priorityValue)) {
+                            priority = priorityValue.Qi();
                         }
 
-                        string[] requiredEvents = null;
-                        if (typeDialogue.ContainsKey(keyWithEvents)) {
-                            requiredEvents = typeDialogue[keyWithEvents].GetDefault().Split('|');
+                        if (specificDialogueObject.TryGetValue("Events", out JsonValue eventsValue)) {
+                            requiredEvents = eventsValue.Qs().Split('|');
                         }
-
-                        finalDialogueData.Add(new DialogueData(value, weight, priority, requiredEvents));
                     }
-                    else {
-                        finalDialogueData.Add(new DialogueData(value, 1, 0, null));
-                    }
+
+                    finalDialogueData.Add(new DialogueData(value, weight, priority, requiredEvents));
                 }
 
                 _villagerDialogue[type] = finalDialogueData;
@@ -90,7 +95,7 @@ namespace LivingWorldMod.Common.Systems {
         /// <returns></returns>
         public string GetDialogue(VillagerType villagerType, VillagerRelationship relationshipStatus, DialogueType dialogueType) {
             List<DialogueData> allDialogue = _villagerDialogue[villagerType];
-            WeightedRandom<string> dialogueOptions = new WeightedRandom<string>();
+            WeightedRandom<string> dialogueOptions = new();
             int priorityThreshold = allDialogue.Min(data => data.priority);
 
             foreach (DialogueData data in dialogueType == DialogueType.Normal

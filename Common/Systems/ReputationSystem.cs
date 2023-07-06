@@ -27,7 +27,7 @@ namespace LivingWorldMod.Common.Systems {
             reputationDataStream.Close();
 
             foreach (VillagerType type in Enum.GetValues<VillagerType>()) {
-                JsonObject villageSpecificData = jsonReputationData[type.ToString()][0].Qo();
+                JsonObject villageSpecificData = jsonReputationData[type.ToString()].Qo();
 
                 villageThresholdData[type] = new ReputationThresholdData(
                     villageSpecificData["Hate"].Qi(),
