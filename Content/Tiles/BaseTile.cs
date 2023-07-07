@@ -27,7 +27,7 @@ namespace LivingWorldMod.Content.Tiles {
         /// <remarks>
         /// For LWM, also automatically attempts to grab the localization key for this tile and add it,
         /// assuming that the key exists; if it doesn't, then hovering over the tile will display nothing.
-        /// </remarks> 
+        /// </remarks>
         public override void PostSetDefaults() {
             if (TileColorOnMap is null) {
                 return;
@@ -36,7 +36,7 @@ namespace LivingWorldMod.Content.Tiles {
             LocalizedText name = CreateMapEntryName();
             //AKA check if the localization for this tile exists, and only add it if it does
             //Translations will return the key if you try to get the translation value for a translation that doesn't exist.
-            if (name.GetTranslation(Language.ActiveCulture) == name.Key) {
+            if (name.Value == name.Key) {
                 AddMapEntry(TileColorOnMap!.Value);
             }
             else {

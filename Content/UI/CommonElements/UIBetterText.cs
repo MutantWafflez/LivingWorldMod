@@ -1,11 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
-using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.Localization;
-using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.CommonElements {
@@ -15,25 +14,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
     /// Mostly mimics vanilla's UIText though.
     /// </summary>
     public class UIBetterText : UIElement {
-        /// <summary>
-        /// If set to a value greater than zero, it will constrain the text to fix within the value
-        /// set, in pixels. Replaces DynamicallyScaleDownToWidth in UIText.
-        /// </summary>
-        public float horizontalTextConstraint;
-
-        /// <summary>
-        /// Tells how far the text can be drawn before wrapping around to the next line. Measured in
-        /// pixels. Only works if isWrapped is true.
-        /// </summary>
-        public float horizontalWrapConstraint;
-
-        /// <summary>
-        /// Whether or not this element is visible or not, basically meaning whether or not it will
-        /// be drawn or not. Defaults to true.
-        /// </summary>
-        public bool isVisible = true;
-
-        public string Text => _innerText is LocalizedText translation ? translation.GetTranslation(Language.ActiveCulture) : _innerText.ToString();
+        public string Text => _innerText is LocalizedText translation ? translation.Value : _innerText.ToString();
 
         public float TextOriginX {
             get;
@@ -59,9 +40,27 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         }
 
         public Color TextColor {
-            get => _color;
-            set => _color = value;
-        }
+            get;
+            set;
+        } = Color.White;
+
+        /// <summary>
+        /// If set to a value greater than zero, it will constrain the text to fix within the value
+        /// set, in pixels. Replaces DynamicallyScaleDownToWidth in UIText.
+        /// </summary>
+        public float horizontalTextConstraint;
+
+        /// <summary>
+        /// Tells how far the text can be drawn before wrapping around to the next line. Measured in
+        /// pixels. Only works if isWrapped is true.
+        /// </summary>
+        public float horizontalWrapConstraint;
+
+        /// <summary>
+        /// Whether or not this element is visible or not, basically meaning whether or not it will
+        /// be drawn or not. Defaults to true.
+        /// </summary>
+        public bool isVisible = true;
 
         private object _innerText = "";
 
@@ -69,15 +68,12 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         private float _dynamicTextScale = 1f;
         private Vector2 _initialTextSize = Vector2.Zero;
         private Vector2 _dynamicTextSize = Vector2.Zero;
-        private Color _color = Color.White;
 
         private bool _isLarge;
         private bool _isWrapped;
 
         private string _visibleText;
         private string _lastTextReference;
-
-        public event Action OnInternalTextChange;
 
         public UIBetterText(string text = "", float textScale = 1f, bool large = false) {
             TextOriginX = 0.5f;
@@ -98,6 +94,14 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         public override void Recalculate() {
             InternalSetText(Text, _initialTextScale, _isLarge);
             base.Recalculate();
+        }
+
+        public void SetText(string text, float scaledText = 0f, bool? large = null) {
+            InternalSetText(text, scaledText == 0f ? _initialTextScale : scaledText, large ?? _isLarge);
+        }
+
+        public void SetText(LocalizedText text, float scaledText = 0f, bool? large = null) {
+            InternalSetText(text, scaledText == 0f ? _initialTextScale : scaledText, large ?? _isLarge);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
@@ -122,19 +126,11 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             pos.Y += (innerDimensions.Height - _dynamicTextSize.Y) * TextOriginY;
 
             if (_isLarge) {
-                Utils.DrawBorderStringBig(spriteBatch, _visibleText, pos, _color, _dynamicTextScale);
+                Utils.DrawBorderStringBig(spriteBatch, _visibleText, pos, TextColor, _dynamicTextScale);
             }
             else {
-                Utils.DrawBorderString(spriteBatch, _visibleText, pos, _color, _dynamicTextScale);
+                Utils.DrawBorderString(spriteBatch, _visibleText, pos, TextColor, _dynamicTextScale);
             }
-        }
-
-        public void SetText(string text, float scaledText = 0f, bool? large = null) {
-            InternalSetText(text, scaledText == 0f ? _initialTextScale : scaledText, large ?? _isLarge);
-        }
-
-        public void SetText(LocalizedText text, float scaledText = 0f, bool? large = null) {
-            InternalSetText(text, scaledText == 0f ? _initialTextScale : scaledText, large ?? _isLarge);
         }
 
         private void VerifyTextState() {
@@ -179,5 +175,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
 
             OnInternalTextChange?.Invoke();
         }
+
+        public event Action OnInternalTextChange;
     }
 }

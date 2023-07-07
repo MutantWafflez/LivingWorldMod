@@ -42,7 +42,7 @@ namespace LivingWorldMod.Common.Systems {
         public override void PostSetupContent() {
             _villagerDialogue = new Dictionary<VillagerType, List<DialogueData>>();
 
-            Dictionary<string, LocalizedText> translationDict = typeof(LocalizationLoader).GetField("translations", BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null) as Dictionary<string, LocalizedText>;
+            Dictionary<string, LocalizedText> translationDict = typeof(LanguageManager).GetField("_localizedTexts", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(LanguageManager.Instance) as Dictionary<string, LocalizedText>;
             Dictionary<string, LocalizedText> allDialogue = translationDict!.Where(pair => pair.Value.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue")).ToDictionary(pair => pair.Key, pair => pair.Value);
 
             Stream dialogueWeightStream = Mod.GetFileStream("Assets/JSONData/DialogueWeights.json");
@@ -114,7 +114,7 @@ namespace LivingWorldMod.Common.Systems {
                     dialogueOptions.Clear();
                 }
 
-                dialogueOptions.Add(data.dialogue.GetTranslation(Language.ActiveCulture), data.weight);
+                dialogueOptions.Add(data.dialogue.Value, data.weight);
             }
 
             return dialogueOptions.elements.Any() ? dialogueOptions : "Dialogue error! No dialogue found, report to devs!";

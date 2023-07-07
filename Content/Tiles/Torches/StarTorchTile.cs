@@ -1,12 +1,10 @@
 ﻿using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Content.Items.Placeables.Torches;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Torches {
@@ -38,8 +36,6 @@ namespace LivingWorldMod.Content.Tiles.Torches {
             TileObjectData.newAlternate.AnchorWall = true;
             TileObjectData.addAlternate(0);
             TileObjectData.addTile(Type);
-
-            ItemDrop/* tModPorter Note: Removed. Tiles and walls will drop the item which places them automatically. Use RegisterItemDrop to alter the automatic drop if necessary. */ = ModContent.ItemType<StarTorchItem>();
 
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
             AdjTiles = new int[] { TileID.Torches };
