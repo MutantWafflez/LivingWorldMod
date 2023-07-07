@@ -8,7 +8,10 @@ using Terraria.ModLoader;
 namespace LivingWorldMod.Content.Items.Placeables.Torches {
     public class StarTorchItem : BaseItem {
         public override void SetStaticDefaults() {
-            SacrificeTotal = 30;
+            Item.ResearchUnlockCount = 30;
+
+            ItemID.Sets.Torches[Type] = true;
+            ItemID.Sets.WaterTorches[Type] = true;
         }
 
         public override void SetDefaults() {
@@ -30,11 +33,6 @@ namespace LivingWorldMod.Content.Items.Placeables.Torches {
 
         public override void PostUpdate() {
             Lighting.AddLight(new Vector2((Item.position.X + Item.width / 2f) / 16f, (Item.position.Y + Item.height / 2f) / 16f), BlockLightSystem.Instance.starTorchColor.ToVector3());
-        }
-
-        public override void AutoLightSelect(ref bool dryTorch, ref bool wetTorch, ref bool glowstick) {
-            dryTorch = true;
-            wetTorch = true;
         }
 
         public override void AddRecipes() {

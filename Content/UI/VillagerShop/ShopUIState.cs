@@ -14,6 +14,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -133,7 +134,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             buyItemZone.Top.Set(90f, 0f);
             backImage.Append(buyItemZone);
 
-            buyItemHeader = new UIBetterText(LocalizationLoader.GetOrCreateTranslation("Mods.LivingWorldMod.UI.VillagerShop.Buying"), 1.25f) {
+            buyItemHeader = new UIBetterText(Language.GetOrRegister("Mods.LivingWorldMod.UI.VillagerShop.Buying"), 1.25f) {
                 isVisible = false,
                 HAlign = 0.5f
             };
@@ -149,7 +150,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             buyItemIcon.Top.Set(26f, 0f);
             buyItemZone.Append(buyItemIcon);
 
-            buyItemStockHeader = new UIBetterText(LocalizationLoader.GetOrCreateTranslation("Mods.LivingWorldMod.UI.VillagerShop.Stock"), 1.25f) {
+            buyItemStockHeader = new UIBetterText(Language.GetOrRegister("Mods.LivingWorldMod.UI.VillagerShop.Stock"), 1.25f) {
                 isVisible = false,
                 HAlign = 0.5f
             };
@@ -164,7 +165,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             buyItemStock.Top.Set(80f, 0f);
             buyItemZone.Append(buyItemStock);
 
-            buyItemButton = new UIBetterImageButton(ModContent.Request<Texture2D>(shopUIPath + "BuyButton", AssetRequestMode.ImmediateLoad), LocalizationLoader.GetOrCreateTranslation("Mods.LivingWorldMod.UI.VillagerShop.Buy")) {
+            buyItemButton = new UIBetterImageButton(ModContent.Request<Texture2D>(shopUIPath + "BuyButton", AssetRequestMode.ImmediateLoad), Language.GetOrRegister("Mods.LivingWorldMod.UI.VillagerShop.Buy")) {
                 isVisible = false,
                 HAlign = 0.5f
             };
@@ -179,7 +180,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             savingsZone.Top.Set(260f, 0f);
             backImage.Append(savingsZone);
 
-            savingsText = new UIBetterText(LocalizationLoader.GetOrCreateTranslation("Mods.LivingWorldMod.UI.VillagerShop.Savings")) {
+            savingsText = new UIBetterText(Language.GetOrRegister("Mods.LivingWorldMod.UI.VillagerShop.Savings")) {
                 HAlign = 0.5f
             };
             savingsText.Top.Set(-26f, 0f);
@@ -228,7 +229,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
                 _buyDelay *= _buySpeed;
 
                 if (shopItem.remainingStock > 0) {
-                    if (player.CanBuyItem((int)_selectedItem.displayedCost) && player.CanAcceptItemIntoInventory(_selectedItem.displayedItem) && _buyDelay <= 0f) {
+                    if (player.CanAfford((int)_selectedItem.displayedCost) && player.CanAcceptItemIntoInventory(_selectedItem.displayedItem) && _buyDelay <= 0f) {
                         _buyDelay = _maxBuyDelay;
 
                         shopItem.remainingStock--;

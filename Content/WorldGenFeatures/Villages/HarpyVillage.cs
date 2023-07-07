@@ -55,7 +55,7 @@ namespace LivingWorldMod.Content.WorldGenFeatures.Villages {
             for (int i = searchLeftX; i < searchRightX; i += 5) {
                 progress.Set((i - searchLeftX) / (float)(searchRightX - searchLeftX));
 
-                for (int j = startingYLevel; j < WorldGen.worldSurface; j++) {
+                for (int j = startingYLevel; j < GenVars.worldSurface; j++) {
                     if (WorldUtils.Find(new Point(midWorld, j), Searches.Chain(
                                 new Searches.Down(1),
                                 new IsAir().AreaAnd(rectangleWidth, rectangleHeight)

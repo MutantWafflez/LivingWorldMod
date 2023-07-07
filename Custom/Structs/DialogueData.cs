@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Custom.Structs {
@@ -10,7 +11,7 @@ namespace LivingWorldMod.Custom.Structs {
         /// <summary>
         /// The actual text of the dialogue.
         /// </summary>
-        public readonly ModTranslation dialogue;
+        public readonly LocalizedText dialogue;
 
         /// <summary>
         /// The weight of this dialogue, taken into account when selecting a dialogue line from a list.
@@ -27,7 +28,7 @@ namespace LivingWorldMod.Custom.Structs {
         /// </summary>
         public readonly string[] requiredEvents;
 
-        public DialogueData(ModTranslation dialogue, double weight, int priority, string[] requiredEvents) {
+        public DialogueData(LocalizedText dialogue, double weight, int priority, string[] requiredEvents) {
             this.dialogue = dialogue;
             this.weight = weight;
             this.priority = priority;

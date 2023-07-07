@@ -15,7 +15,7 @@ namespace LivingWorldMod.Core.Patches {
     /// </summary>
     public class WorldGenPatches : ILoadable {
         public void Load(Mod mod) {
-            IL.Terraria.WorldGen.FillWallHolesInSpot += FillHolesInSpotPatch;
+            Terraria.IL_WorldGen.FillWallHolesInSpot += FillHolesInSpotPatch;
         }
 
         public void Unload() { }

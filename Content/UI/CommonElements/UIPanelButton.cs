@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -60,13 +61,13 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             this.textSize = textSize;
         }
 
-        public UIPanelButton(Asset<Texture2D> customBackground, Asset<Texture2D> customBorder, int customCornerSize = 12, int customBarSize = 4, ModTranslation text = null, float textSize = 1f)
+        public UIPanelButton(Asset<Texture2D> customBackground, Asset<Texture2D> customBorder, int customCornerSize = 12, int customBarSize = 4, LocalizedText text = null, float textSize = 1f)
             : base(customBackground, customBorder, customCornerSize, customBarSize) {
             _text = text;
             this.textSize = textSize;
         }
 
-        public UIPanelButton(ModTranslation text = null, float textSize = 1f) {
+        public UIPanelButton(LocalizedText text = null, float textSize = 1f) {
             _text = text;
             this.textSize = textSize;
         }
@@ -76,7 +77,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
                 return;
             }
 
-            if (_text is ModTranslation translation) {
+            if (_text is LocalizedText translation) {
                 buttonText = new UIBetterText(translation, textSize) {
                     HAlign = 0.5f,
                     VAlign = 0.5f,
@@ -105,12 +106,12 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             SoundEngine.PlaySound(SoundID.MenuTick);
         }
 
-        public override void Click(UIMouseEvent evt) {
+        public override void LeftClick(UIMouseEvent evt) {
             if (!isVisible) {
                 return;
             }
 
-            base.Click(evt);
+            base.LeftClick(evt);
             ProperOnClick?.Invoke(evt, this);
         }
 
@@ -151,7 +152,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             RecalculateChildren();
         }
 
-        public void SetText(ModTranslation text) {
+        public void SetText(LocalizedText text) {
             _text = text;
             RecalculateChildren();
         }

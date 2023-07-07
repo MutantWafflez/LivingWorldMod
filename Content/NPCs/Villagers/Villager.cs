@@ -193,7 +193,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             button2 = LocalizationUtils.GetLWMTextValue("Common.Reputation");
         }
 
-        public override void OnChatButtonClicked(bool firstButton, ref bool shop) {
+        public override void OnChatButtonClicked(bool firstButton, ref string shopName) {
             //Shop Screen
             if (firstButton) {
                 ModContent.GetInstance<ShopUISystem>().OpenShopUI(this);

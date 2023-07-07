@@ -33,7 +33,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
         /// </summary>
         public bool isVisible = true;
 
-        public string Text => _innerText is ModTranslation translation ? translation.GetTranslation(Language.ActiveCulture) : _innerText.ToString();
+        public string Text => _innerText is LocalizedText translation ? translation.GetTranslation(Language.ActiveCulture) : _innerText.ToString();
 
         public float TextOriginX {
             get;
@@ -87,7 +87,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             InternalSetText(text, textScale, large);
         }
 
-        public UIBetterText(ModTranslation text, float textScale = 1f, bool large = false) {
+        public UIBetterText(LocalizedText text, float textScale = 1f, bool large = false) {
             TextOriginX = 0.5f;
             TextOriginY = 0f;
             IsWrapped = false;
@@ -133,7 +133,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             InternalSetText(text, scaledText == 0f ? _initialTextScale : scaledText, large ?? _isLarge);
         }
 
-        public void SetText(ModTranslation text, float scaledText = 0f, bool? large = null) {
+        public void SetText(LocalizedText text, float scaledText = 0f, bool? large = null) {
             InternalSetText(text, scaledText == 0f ? _initialTextScale : scaledText, large ?? _isLarge);
         }
 

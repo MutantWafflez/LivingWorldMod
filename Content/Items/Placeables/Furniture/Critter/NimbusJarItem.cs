@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 namespace LivingWorldMod.Content.Items.Placeables.Furniture.Critter {
     public class NimbusJarItem : BaseItem {
         public override void SetStaticDefaults() {
-            SacrificeTotal = 1;
+            Item.ResearchUnlockCount = 1;
         }
 
         public override void SetDefaults() {

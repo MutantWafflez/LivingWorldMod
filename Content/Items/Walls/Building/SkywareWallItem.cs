@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 namespace LivingWorldMod.Content.Items.Walls.Building {
     public class SkywareWallItem : BaseItem {
         public override void SetStaticDefaults() {
-            SacrificeTotal = 40;
+            Item.ResearchUnlockCount = 40;
         }
 
         public override void SetDefaults() {

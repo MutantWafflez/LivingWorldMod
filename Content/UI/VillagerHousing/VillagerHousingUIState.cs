@@ -7,6 +7,7 @@ using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
@@ -102,7 +103,7 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             villagerTypeCenterElement.Height.Set(28f, 0f);
             Append(villagerTypeCenterElement);
 
-            villagerTypeText = new UIBetterText(LocalizationLoader.GetOrCreateTranslation("Mods.LivingWorldMod.VillagerType.Harpy"), 1.1f) {
+            villagerTypeText = new UIBetterText(Language.GetOrRegister("Mods.LivingWorldMod.VillagerType.Harpy"), 1.1f) {
                 isVisible = false,
                 horizontalTextConstraint = villagerTypeCenterElement.Width.Pixels,
                 HAlign = 0.5f,
@@ -199,7 +200,7 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             }
 
             //Change to proper villager type text
-            villagerTypeText.SetText(LocalizationLoader.GetOrCreateTranslation($"Mods.LivingWorldMod.VillagerType.{typeToShow}"));
+            villagerTypeText.SetText(Language.GetOrRegister($"Mods.LivingWorldMod.VillagerType.{typeToShow}"));
 
             DisplayAvailableVillagers();
         }

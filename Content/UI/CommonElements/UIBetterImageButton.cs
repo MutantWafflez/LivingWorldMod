@@ -5,6 +5,7 @@ using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -70,7 +71,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             Height.Set(buttonTexture.Value.Height, 0f);
         }
 
-        public UIBetterImageButton(Asset<Texture2D> buttonTexture, ModTranslation text = null, float textSize = 1f) {
+        public UIBetterImageButton(Asset<Texture2D> buttonTexture, LocalizedText text = null, float textSize = 1f) {
             _buttonTexture = buttonTexture;
             _text = text;
             this.textSize = textSize;
@@ -83,7 +84,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
                 return;
             }
 
-            if (_text is ModTranslation translation) {
+            if (_text is LocalizedText translation) {
                 buttonText = new UIBetterText(translation, textSize) {
                     HAlign = 0.5f,
                     VAlign = 0.5f,
@@ -112,12 +113,12 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             SoundEngine.PlaySound(SoundID.MenuTick);
         }
 
-        public override void Click(UIMouseEvent evt) {
+        public override void LeftClick(UIMouseEvent evt) {
             if (!isVisible) {
                 return;
             }
 
-            base.Click(evt);
+            base.LeftClick(evt);
             ProperOnClick?.Invoke(evt, this);
         }
 
@@ -168,7 +169,7 @@ namespace LivingWorldMod.Content.UI.CommonElements {
             RecalculateChildren();
         }
 
-        public void SetText(ModTranslation text) {
+        public void SetText(LocalizedText text) {
             _text = text;
             RecalculateChildren();
         }

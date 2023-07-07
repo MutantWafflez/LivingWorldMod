@@ -26,7 +26,7 @@ namespace LivingWorldMod.Common.Systems {
 
         public override void Unload() { }
 
-        public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight) {
+        public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight) {
             List<WorldGenFeature> listOfFeatures = ModContent.GetContent<WorldGenFeature>().ToList();
 
             listOfFeatures.ForEach(feature => feature.ModifyTaskList(tasks));

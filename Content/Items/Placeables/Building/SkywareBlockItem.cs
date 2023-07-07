@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 namespace LivingWorldMod.Content.Items.Placeables.Building {
     public class SkywareBlockItem : BaseItem {
         public override void SetStaticDefaults() {
-            SacrificeTotal = 50;
+            Item.ResearchUnlockCount = 50;
         }
 
         public override void SetDefaults() {

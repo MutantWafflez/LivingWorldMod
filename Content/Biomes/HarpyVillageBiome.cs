@@ -15,7 +15,7 @@ namespace LivingWorldMod.Content.Biomes {
         public override SceneEffectPriority Priority => SceneEffectPriority.Environment;
 
         public override void SetStaticDefaults() {
-            DisplayName.SetDefault("Harpy Village");
+            // DisplayName.SetDefault("Harpy Village");
         }
 
         public override bool IsBiomeActive(Player player) => TileEntityUtils.GetAllEntityOfType<VillageShrineEntity>().Any(entity => entity.shrineType == VillagerType.Harpy && entity.villageZone.ContainsPoint(player.Center));

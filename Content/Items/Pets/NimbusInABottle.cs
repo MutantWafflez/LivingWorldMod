@@ -7,7 +7,7 @@ namespace LivingWorldMod.Content.Items.Pets {
     //Thanks Trivaxy for the code! :-)
     public class NimbusInABottle : BaseItem {
         public override void SetStaticDefaults() {
-            SacrificeTotal = 1;
+            Item.ResearchUnlockCount = 1;
         }
 
         public override void SetDefaults() {

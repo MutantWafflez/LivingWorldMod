@@ -42,8 +42,8 @@ namespace LivingWorldMod.Common.Systems {
         public override void PostSetupContent() {
             _villagerDialogue = new Dictionary<VillagerType, List<DialogueData>>();
 
-            Dictionary<string, ModTranslation> translationDict = typeof(LocalizationLoader).GetField("translations", BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null) as Dictionary<string, ModTranslation>;
-            Dictionary<string, ModTranslation> allDialogue = translationDict!.Where(pair => pair.Value.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue")).ToDictionary(pair => pair.Key, pair => pair.Value);
+            Dictionary<string, LocalizedText> translationDict = typeof(LocalizationLoader).GetField("translations", BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null) as Dictionary<string, LocalizedText>;
+            Dictionary<string, LocalizedText> allDialogue = translationDict!.Where(pair => pair.Value.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue")).ToDictionary(pair => pair.Key, pair => pair.Value);
 
             Stream dialogueWeightStream = Mod.GetFileStream("Assets/JSONData/DialogueWeights.json");
             JsonValue jsonReputationData = JsonValue.Load(dialogueWeightStream);
@@ -53,10 +53,10 @@ namespace LivingWorldMod.Common.Systems {
                 List<DialogueData> finalDialogueData = new();
 
                 string keyStart = $"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{type}";
-                Dictionary<string, ModTranslation> typeDialogue = allDialogue.Where(pair => pair.Key.StartsWith(keyStart)).ToDictionary(pair => pair.Key, pair => pair.Value);
+                Dictionary<string, LocalizedText> typeDialogue = allDialogue.Where(pair => pair.Key.StartsWith(keyStart)).ToDictionary(pair => pair.Key, pair => pair.Value);
                 JsonObject villageSpecificData = jsonReputationData[type.ToString()].Qo();
 
-                foreach ((string key, ModTranslation value) in typeDialogue) {
+                foreach ((string key, LocalizedText value) in typeDialogue) {
                     double weight = 1;
                     int priority = 0;
                     string[] requiredEvents = null;

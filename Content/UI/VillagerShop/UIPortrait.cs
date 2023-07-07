@@ -53,7 +53,7 @@ namespace LivingWorldMod.Content.UI.Elements {
             portraitExpression = new UIImage(expressionDictionary[currentExpression].Value);
             Append(portraitExpression);
 
-            OnClick += ClickedElement;
+            OnLeftClick += ClickedElement;
         }
 
         public override void Update(GameTime gameTime) {

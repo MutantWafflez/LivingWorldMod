@@ -13,7 +13,7 @@ namespace LivingWorldMod.Content.Walls.Building {
 
             DustType = DustID.BlueMoss;
 
-            ItemDrop = ModContent.ItemType<SkywareWallItem>();
+            ItemDrop/* tModPorter Note: Removed. Tiles and walls will drop the item which places them automatically. Use RegisterItemDrop to alter the automatic drop if necessary. */ = ModContent.ItemType<SkywareWallItem>();
 
             base.SetStaticDefaults();
         }

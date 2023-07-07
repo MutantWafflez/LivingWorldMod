@@ -11,6 +11,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -104,7 +105,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             };
             itemPanel.Append(respawnItemCount);
 
-            addRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: LocalizationLoader.GetOrCreateTranslation("Mods.LivingWorldMod.UI.Shrine.AddText")) {
+            addRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: Language.GetOrRegister("Mods.LivingWorldMod.UI.Shrine.AddText")) {
                 BackgroundColor = backPanel.BackgroundColor,
                 BorderColor = Color.White,
                 Width = itemPanel.Width,
@@ -115,7 +116,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             addRespawnButton.ProperOnClick += AddRespawnItem;
             backPanel.Append(addRespawnButton);
 
-            takeRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: LocalizationLoader.GetOrCreateTranslation("Mods.LivingWorldMod.UI.Shrine.TakeText")) {
+            takeRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: Language.GetOrRegister("Mods.LivingWorldMod.UI.Shrine.TakeText")) {
                 BackgroundColor = backPanel.BackgroundColor,
                 BorderColor = Color.White,
                 Width = addRespawnButton.Width,
@@ -132,7 +133,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             respawnTimerZone.Height.Set(itemPanel.Height.Pixels, 0f);
             backPanel.Append(respawnTimerZone);
 
-            respawnTimerHeader = new UIBetterText(LocalizationLoader.GetOrCreateTranslation("Mods.LivingWorldMod.UI.Shrine.HarpyCountdown")) {
+            respawnTimerHeader = new UIBetterText(Language.GetOrRegister("Mods.LivingWorldMod.UI.Shrine.HarpyCountdown")) {
                 HAlign = 0.5f,
                 horizontalTextConstraint = respawnTimerZone.Width.Pixels
             };
@@ -226,7 +227,7 @@ namespace LivingWorldMod.Content.UI.VillageShrine {
             VillagerType shrineType = CurrentEntity.shrineType;
 
             respawnItemDisplay.SetItem(NPCUtils.VillagerTypeToRespawnItemType(shrineType));
-            respawnTimerHeader.SetText(LocalizationLoader.GetOrCreateTranslation($"Mods.LivingWorldMod.UI.Shrine.{shrineType}Countdown"));
+            respawnTimerHeader.SetText(Language.GetOrRegister($"Mods.LivingWorldMod.UI.Shrine.{shrineType}Countdown"));
         }
 
         private void AddRespawnItem(UIMouseEvent evt, UIElement listeningElement) {

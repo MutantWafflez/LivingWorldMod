@@ -28,17 +28,17 @@ namespace LivingWorldMod.Core.Patches {
         public static Point HouseBedPosition = Point.Zero;
 
         public void Load(Mod mod) {
-            IL.Terraria.WorldGen.CheckSpecialTownNPCSpawningConditions += TestForVillageHouse;
+            Terraria.IL_WorldGen.CheckSpecialTownNPCSpawningConditions += TestForVillageHouse;
 
-            IL.Terraria.Main.DrawInterface_38_MouseCarriedObject += DrawSelectedVillagerOnMouse;
+            Terraria.IL_Main.DrawInterface_38_MouseCarriedObject += DrawSelectedVillagerOnMouse;
 
-            IL.Terraria.Main.DrawInterface_7_TownNPCHouseBanners += BannersVisibleWhileInVillagerHousingMenu;
+            Terraria.IL_Main.DrawInterface_7_TownNPCHouseBanners += BannersVisibleWhileInVillagerHousingMenu;
 
-            IL.Terraria.Main.DrawNPCHousesInWorld += DrawVillagerBannerInHouses;
+            Terraria.IL_Main.DrawNPCHousesInWorld += DrawVillagerBannerInHouses;
 
-            IL.Terraria.WorldGen.ScoreRoom_IsThisRoomOccupiedBySomeone += RoomOccupancyCheck;
+            Terraria.IL_WorldGen.ScoreRoom_IsThisRoomOccupiedBySomeone += RoomOccupancyCheck;
 
-            IL.Terraria.WorldGen.ScoreRoom += IgnoreRoomOccupancy;
+            Terraria.IL_WorldGen.ScoreRoom += IgnoreRoomOccupancy;
 
             //TODO: Finish NPC Sleeping Tests
             /*

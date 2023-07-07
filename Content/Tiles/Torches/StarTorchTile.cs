@@ -39,7 +39,7 @@ namespace LivingWorldMod.Content.Tiles.Torches {
             TileObjectData.addAlternate(0);
             TileObjectData.addTile(Type);
 
-            ItemDrop = ModContent.ItemType<StarTorchItem>();
+            ItemDrop/* tModPorter Note: Removed. Tiles and walls will drop the item which places them automatically. Use RegisterItemDrop to alter the automatic drop if necessary. */ = ModContent.ItemType<StarTorchItem>();
 
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
             AdjTiles = new int[] { TileID.Torches };

@@ -14,7 +14,7 @@ namespace LivingWorldMod.Core.Patches {
     [Autoload(false)]
     public class NPCAIPatches : ILoadable {
         public void Load(Mod mod) {
-            IL.Terraria.NPC.AI_007_TownEntities += TownNPCAI;
+            Terraria.IL_NPC.AI_007_TownEntities += TownNPCAI;
         }
 
         public void Unload() { }

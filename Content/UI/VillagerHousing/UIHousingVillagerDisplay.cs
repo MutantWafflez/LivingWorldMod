@@ -40,7 +40,7 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
             Height.Set(50.284f, 0f);
         }
 
-        public override void Click(UIMouseEvent evt) {
+        public override void LeftClick(UIMouseEvent evt) {
             //Prevent any interaction if the villagers do not like the player
             if (!IsAllowed) {
                 return;

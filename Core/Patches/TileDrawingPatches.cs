@@ -1,10 +1,10 @@
 ﻿using System;
-using IL.Terraria.GameContent.Drawing;
 using LivingWorldMod.Common.Sets;
 using LivingWorldMod.Custom.Utilities;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria;
+using Terraria.GameContent.Drawing;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
@@ -14,7 +14,7 @@ namespace LivingWorldMod.Core.Patches {
     /// </summary>
     public class TileDrawingPatches : ILoadable {
         public void Load(Mod mod) {
-            TileDrawing.DrawMultiTileVines += WindDrawingEdit;
+            IL_TileDrawing.DrawMultiTileVines += WindDrawingEdit;
         }
 
         public void Unload() { }

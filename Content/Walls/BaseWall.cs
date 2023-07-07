@@ -31,7 +31,7 @@ namespace LivingWorldMod.Content.Walls {
                 return;
             }
 
-            ModTranslation name = CreateMapEntryName();
+            LocalizedText name = CreateMapEntryName();
             //AKA check if the localization for this wall exists, and only add it if it does
             //Translations will return the key if you try to get the translation value for a translation that doesn't exist.
             if (name.GetTranslation(Language.ActiveCulture) == name.Key) {

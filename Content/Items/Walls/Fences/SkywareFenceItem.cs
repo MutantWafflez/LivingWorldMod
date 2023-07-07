@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 namespace LivingWorldMod.Content.Items.Walls.Fences {
     public class SkywareFenceItem : BaseItem {
         public override void SetStaticDefaults() {
-            SacrificeTotal = 40;
+            Item.ResearchUnlockCount = 40;
         }
 
         public override void SetDefaults() {
