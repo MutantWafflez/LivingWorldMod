@@ -1,8 +1,0 @@
-Mods: {
-	LivingWorldMod: {
-		Biomes: {
-			HarpyVillageBiome.DisplayName: Harpy Village
-			RevampedPyramidBiome.DisplayName: Revamped Pyramid Biome
-		}
-	}
-}

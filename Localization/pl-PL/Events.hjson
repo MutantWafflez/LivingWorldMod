@@ -1,9 +1,0 @@
-Mods: {
-	LivingWorldMod: {
-		Event: {
-			WaystoneActivation: Waystone jest aktywowany!
-			VillagerRespawned.Harpy: "{0} wykluła się wieśniaczka Harpii!"
-			VillagerLeft.Harpy: "{0} Harpia Vilager odeszła w poszukiwaniu nowego domu!"
-		}
-	}
-}
