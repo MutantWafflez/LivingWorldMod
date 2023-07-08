@@ -25,8 +25,8 @@ Mods: {
 
 		Event: {
 			WaystoneActivation: Waystone Activated!
-			VillagerRespawned.Harpy: "L'abitante arpia {0} è appena nata!"
-			VillagerLeft.Harpy: "L'abitante arpia {0} è partita in cerca di una nuova casa!"
+			VillagerRespawned.Harpy: L'abitante arpia {0} è appena nata!
+			VillagerLeft.Harpy: L'abitante arpia {0} è partita in cerca di una nuova casa!
 		}
 
 		VillagerDialogue: {
@@ -190,62 +190,62 @@ Mods: {
 			}
 
 			NimbusInABottle: {
-				DisplayName: "Nuvoletta in barattolo"
-				Tooltip: "Evoca una nuvoletta domestica che ti segue"
+				DisplayName: Nuvoletta in barattolo
+				Tooltip: Evoca una nuvoletta domestica che ti segue
 			}
 
 			SkywareBlockItem: {
-				DisplayName: "Incudine celeste"
+				DisplayName: Incudine celeste
 				// Tooltip: ""
 			}
 
 			StarshardCloudItem: {
-				DisplayName: "Nuvola stellare"
+				DisplayName: Nuvola stellare
 				Tooltip: "'Frammenti di stelle cadute impregnano questa nuvola'"
 			}
 
 			StarshineBlockItem: {
-				DisplayName: "Blocco bagliore stellare"
+				DisplayName: Blocco bagliore stellare
 				// Tooltip: ""
 			}
 
 			SunslabBlockItem: {
-				DisplayName: "Lastra solare"
+				DisplayName: Lastra solare
 				// Tooltip: ""
 			}
 
 			NimbusJarItem: {
-				DisplayName: "Nuvoletta in barattolo"
+				DisplayName: Nuvoletta in barattolo
 				// Tooltip: ""
 			}
 
 			GravityTapestryItem: {
-				DisplayName: "Arazzo gravità"
+				DisplayName: Arazzo gravità
 				// Tooltip: ""
 			}
 
 			SkywareAnvilItem: {
-				DisplayName: "Incudine celeste"
+				DisplayName: Incudine celeste
 				// Tooltip: ""
 			}
 
 			SkywareLoomItem: {
-				DisplayName: "Telaio celeste"
+				DisplayName: Telaio celeste
 				// Tooltip: ""
 			}
 
 			SunTapestryItem: {
-				DisplayName: "Arazzo solare"
+				DisplayName: Arazzo solare
 				// Tooltip: ""
 			}
 
 			HarpyShrineItem: {
-				DisplayName: "Santuario del villaggio delle arpie"
+				DisplayName: Santuario del villaggio delle arpie
 				Tooltip: "'La fonte magica che protegge coloro che abitano nel villaggio fluttuante delle arpie'"
 			}
 
 			StarTorchItem: {
-				DisplayName: "Torcia celeste"
+				DisplayName: Torcia celeste
 				Tooltip: "'Illumina la via con l'essenza del cosmo'"
 			}
 

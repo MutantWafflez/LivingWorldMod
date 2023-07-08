@@ -286,10 +286,8 @@ Mods: {
 		}
 
 		VillagerType.Harpy: Harpy
-
 		//Villagers
 		NPCs.HarpyVillager.DisplayName: Harpy Villager
-
 		Projectiles.NimbusPetProjectile.DisplayName: Nimbus Pet
 
 		UI: {

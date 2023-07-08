@@ -181,72 +181,76 @@ Mods: {
 			}
 
 			FriedHarpyEgg: {
-				DisplayName: "Smażone Jajko Harpii"
-				Tooltip: "{$CommonItemTooltip.MajorStats}\n'Ty potworze.'"
+				DisplayName: Smażone Jajko Harpii
+				Tooltip:
+					'''
+					{$CommonItemTooltip.MajorStats}
+					'Ty potworze.'
+					'''
 			}
 
 			NimbusInABottle: {
-				DisplayName: "Nimbus w butelce"
-				Tooltip: "Przywołuje uroczą aureolę, która podąża za tobą"
+				DisplayName: Nimbus w butelce
+				Tooltip: Przywołuje uroczą aureolę, która podąża za tobą
 			}
 
 			SkywareBlockItem: {
-				DisplayName: "Blok Skyware"
+				DisplayName: Blok Skyware
 				// Tooltip: ""
 			}
 
 			StarshardCloudItem: {
-				DisplayName: "Chmura Starshard"
+				DisplayName: Chmura Starshard
 				Tooltip: "'Odłamki upadłych gwiazd przenikają przez tę chmurę'"
 			}
 
 			StarshineBlockItem: {
-				DisplayName: "Blok blasku gwiazd"
+				DisplayName: Blok blasku gwiazd
 				// Tooltip: ""
 			}
 
 			SunslabBlockItem: {
-				DisplayName: "Blok Sunslab"
+				DisplayName: Blok Sunslab
 				// Tooltip: ""
 			}
 
 			NimbusJarItem: {
-				DisplayName: "Nimbus w słoiku"
+				DisplayName: Nimbus w słoiku
 				// Tooltip: ""
 			}
 
 			GravityTapestryItem: {
-				DisplayName: "Gobelin grawitacyjny"
+				DisplayName: Gobelin grawitacyjny
 				// Tooltip: ""
 			}
 
 			SkywareAnvilItem: {
-				DisplayName: "Skyware kowadło"
+				DisplayName: Skyware kowadło
 				// Tooltip: ""
 			}
 
 			SkywareLoomItem: {
-				DisplayName: "Krosno Skyware"
+				DisplayName: Krosno Skyware
 				// Tooltip: ""
 			}
 
 			SunTapestryItem: {
-				DisplayName: "Gobelin słoneczny"
+				DisplayName: Gobelin słoneczny
 				// Tooltip: ""
 			}
 
 			HarpyShrineItem: {
-				DisplayName: "Świątynia Wioski Harpii"
+				DisplayName: Świątynia Wioski Harpii
 				Tooltip: "'Magiczne źródło ochrony dla wszystkich, którzy zamieszkują wioskę Harpii'"
 			}
 
 			StarTorchItem: {
-				DisplayName: "Pochodnia Gwiazd"
+				DisplayName: Pochodnia Gwiazd
 				Tooltip: "'Rozświetl drogę esencją kosmosu'"
 			}
 
 			HarpyEgg: {
-				DisplayName: "Jajo harpii"
+				DisplayName: Jajo harpii
 				Tooltip: "'Jest dość duży, ale wygląda jak każde inne jajko.'"
 			}
 		}
@@ -282,7 +286,7 @@ Mods: {
 		}
 
 		VillagerType.Harpy: Harpia
-		
+		//Villagers
 		NPCs.HarpyVillager.DisplayName: Harpia Wieśniaczka
 		Projectiles.NimbusPetProjectile.DisplayName: Zwierzak Nimbus
 
