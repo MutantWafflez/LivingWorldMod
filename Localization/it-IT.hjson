@@ -1,18 +1,18 @@
 Mods: {
 	LivingWorldMod: {
-		
 		Bestiary.HarpyVillager: Un'abitante del villaggio fluttuante delle arpie. Non giocare con le sue piume e non provarci con lei, se ci tieni alla vita.
 
-
-
 		Biomes: {
-			HarpyVillageBiome.DisplayName: Harpy Village
-			RevampedPyramidBiome.DisplayName: Revamped Pyramid Biome
+			HarpyVillageBiome: {
+				DisplayName: Harpy Village
+				// TownNPCDialogueName: the Harpy Village Biome
+			}
+
+			RevampedPyramidBiome: {
+				DisplayName: Revamped Pyramid Biome
+				// TownNPCDialogueName: the Revamped Pyramid Biome
+			}
 		}
-
-
-
-
 
 		Buffs: {
 			NimbusPetBuff: {
@@ -21,30 +21,22 @@ Mods: {
 			}
 		}
 
-
-
 		Common.Reputation: Reputazione
 
-
-
 		Event: {
-			WaystoneActivation: Waystone attivata!
-			VillagerRespawned.Harpy: L'abitante arpia {0} è appena nata!
-			VillagerLeft.Harpy: L'abitante arpia {0} è partita in cerca di una nuova casa!
+			WaystoneActivation: Waystone Activated!
+			VillagerRespawned.Harpy: "L'abitante arpia {0} Ã¨ appena nata!"
+			VillagerLeft.Harpy: "L'abitante arpia {0} Ã¨ partita in cerca di una nuova casa!"
 		}
-
-
-
-
 
 		VillagerDialogue: {
 			Harpy: {
 				Event: {
 					//Rain
 					0: Sono molto grata di essere qui sopra le nuvole. Non sopporto avere i capelli bagnati.
-					1: Ahh, osservare la pioggia cadere dalle nuvole è così rilassante.
+					1: Ahh, osservare la pioggia cadere dalle nuvole Ã¨ cosÃ¬ rilassante.
 					//Eclipse
-					2: È così divertente vedere tutti quei mostri laggiù impazzire e attaccare le persone. Sono lieta di sapere che qui siamo più o meno al sicuro.
+					2: Ãˆ cosÃ¬ divertente vedere tutti quei mostri laggiÃ¹ impazzire e attaccare le persone. Sono lieta di sapere che qui siamo piÃ¹ o meno al sicuro.
 					3: Che succede? Hai paura per caso?
 					//Blood Moon
 					4: Tutti primitivi dur-SQUAK... durante la luna-SQUAK di sangue-SQUAK!
@@ -56,40 +48,40 @@ Mods: {
 				Shop: {
 					Initial: {
 						SevereDislike: {
-							0: Sei fortunato che ti permetta di parlarmi, figuriamoci di comprare la mia roba. Sappi solo che per te i prezzi saranno più alti per via di tutti i problemi che ci hai causato.
-							1: Voi, sporchi abitanti della terra, venite in giro per il mondo a fare irruzione nei posti come se fossero di vostra proprietà. Dimmi solo cosa vuoi e deciderò di quanto aumentarne il prezzo.
+							0: Sei fortunato che ti permetta di parlarmi, figuriamoci di comprare la mia roba. Sappi solo che per te i prezzi saranno piÃ¹ alti per via di tutti i problemi che ci hai causato.
+							1: Voi, sporchi abitanti della terra, venite in giro per il mondo a fare irruzione nei posti come se fossero di vostra proprietÃ . Dimmi solo cosa vuoi e deciderÃ² di quanto aumentarne il prezzo.
 						}
 
 						Dislike: {
-							0: Dato che non ci sono leggi che regolano i prezzi e non c'è concorrenza, a causa dei piccoli problemi che ci hai fatto passare, credo che il tuo prossimo prodotto costerà un po' di più.
-							1: Fai attenzione, abitante della terra. Se continui a fare errori come hai fatto ultimamente, presto costerà un intero platino comprare una di queste cose!
+							0: Dato che non ci sono leggi che regolano i prezzi e non c'Ã¨ concorrenza, a causa dei piccoli problemi che ci hai fatto passare, credo che il tuo prossimo prodotto costerÃ  un po' di piÃ¹.
+							1: Fai attenzione, abitante della terra. Se continui a fare errori come hai fatto ultimamente, presto costerÃ  un intero platino comprare una di queste cose!
 						}
 
 						Neutral: {
-							0: È stato gentile da parte tua a passare, abitante della terra. Apprezzerei qualche moneta extra al momento ma... Tutto è al prezzo standard!
+							0: Ãˆ stato gentile da parte tua a passare, abitante della terra. Apprezzerei qualche moneta extra al momento ma... Tutto Ã¨ al prezzo standard!
 							1: Che razza di arpia sarei se ti facessi dei prezzi ingiusti se ancora non mi sono fatta un'idea su di te?
 						}
 
 						Like: {
-							0: Mi chiedo se i miei amici vogliano esercitarsi nel lanciare piume oggi... Uuh sì, qualcosa ha suscitato il tuo interesse abitante della terra?
-							1: Sai, quando sei venuto qui per la prima volta, pensavo che fossi come tutti gli altri abitanti della terra, ma sono rimasta piacevolmente sorpresa che non è così. Ecco un piccolo sconto, da parte mia!
+							0: Mi chiedo se i miei amici vogliano esercitarsi nel lanciare piume oggi... Uuh sÃ¬, qualcosa ha suscitato il tuo interesse abitante della terra?
+							1: Sai, quando sei venuto qui per la prima volta, pensavo che fossi come tutti gli altri abitanti della terra, ma sono rimasta piacevolmente sorpresa che non Ã¨ cosÃ¬. Ecco un piccolo sconto, da parte mia!
 						}
 
 						Love: {
-							0: Stai cercando qualcosa da comprare, abitante della terra? So che probabilmente potresti permetterti tutto a prezzo standard, ma ti farò comunque uno sconto.
-							1: Sai, abitante della terra, ti farò uno sconto. Immagino che te lo meriti per aver aiutato così tanto il villaggio, o quello che è. Dai! Compra qualcosa!
+							0: Stai cercando qualcosa da comprare, abitante della terra? So che probabilmente potresti permetterti tutto a prezzo standard, ma ti farÃ² comunque uno sconto.
+							1: Sai, abitante della terra, ti farÃ² uno sconto. Immagino che te lo meriti per aver aiutato cosÃ¬ tanto il villaggio, o quello che Ã¨. Dai! Compra qualcosa!
 						}
 					}
 
 					Buy: {
 						SevereDislike: {
-							0: Quanto sei stupido a comprare qualcosa con un prezzo così alto? Immagino che gli umani siano davvero tutti stupidi!
-							1: Come dicevo prima, sei fortunato che ti conceda la libertà di parlarmi. Grazie per l'acquisto, suppongo.
+							0: Quanto sei stupido a comprare qualcosa con un prezzo cosÃ¬ alto? Immagino che gli umani siano davvero tutti stupidi!
+							1: Come dicevo prima, sei fortunato che ti conceda la libertÃ  di parlarmi. Grazie per l'acquisto, suppongo.
 						}
 
 						Dislike: {
-							0: Se pensavi che il prezzo fosse già alto, non hai ancora visto nulla. Stai attento, abitante della terra. Grazie per l'acquisto.
-							1: Pensi di essere così ricco da poter comprare tutta questa roba a qualsiasi prezzo? Non importa. Grazie per i soldi, immagino.
+							0: Se pensavi che il prezzo fosse giÃ  alto, non hai ancora visto nulla. Stai attento, abitante della terra. Grazie per l'acquisto.
+							1: Pensi di essere cosÃ¬ ricco da poter comprare tutta questa roba a qualsiasi prezzo? Non importa. Grazie per i soldi, immagino.
 						}
 
 						Neutral: {
@@ -98,12 +90,12 @@ Mods: {
 						}
 
 						Like: {
-							0: Ehi, grazie per l'acquisto! Significa molto. Non c'è molto commercio interspecie quassù, quindi è bello averti qui tra noi.
-							1: Continua così e lo sconto che hai appena ottenuto potrebbe aumentare ancora di più. Però questo non lo hai saputo da me... Abitante della terra.
+							0: Ehi, grazie per l'acquisto! Significa molto. Non c'Ã¨ molto commercio interspecie quassÃ¹, quindi Ã¨ bello averti qui tra noi.
+							1: Continua cosÃ¬ e lo sconto che hai appena ottenuto potrebbe aumentare ancora di piÃ¹. PerÃ² questo non lo hai saputo da me... Abitante della terra.
 						}
 
 						Love: {
-							0: Non ti ringrazierò mai abbastanza per acquisti come questi. Nessun altro essere umano ha mai ottenuto sconti del genere!
+							0: Non ti ringrazierÃ² mai abbastanza per acquisti come questi. Nessun altro essere umano ha mai ottenuto sconti del genere!
 							1: Quindi alla fine hai comprato qualcosa? Beh, che importa. Scherzo, grazie mille per l'acquisto, abitante della terra!
 						}
 					}
@@ -113,27 +105,27 @@ Mods: {
 					0: Non prendertela sul personale se ti strappiamo le braccia e ti mangiamo o roba simile.
 					1: Come fai a vivere con quei ripugnanti bastoncini di carne al posto delle ali?
 					2: Mi stai davvero facendo rizzare le piume, abitante della terra!
-					3: Com'è il tempo laggiù? Spero sia orribile.
+					3: Com'Ã¨ il tempo laggiÃ¹? Spero sia orribile.
 					4: Lasciami in pace! Tu brutto figlio terreno di- SQUAK!
 					5: Vuoi che ti riempia la schiena di piume come uno stegosauro?
-					6: Tutti i non-volatili sono davvero così volgari e fastidiosi...?
+					6: Tutti i non-volatili sono davvero cosÃ¬ volgari e fastidiosi...?
 					7: Umani... Spregevoli. Hanno realizzato quelle insulse finestre!
 				}
 
 				Dislike: {
 					0: Fai attenzione, abitante della terra. Hai fatto arrabbiare alcune di noi qui al villaggio.
-					1: Certo, compra qualcosa se vuoi. Ma per i disagi che hai causato ad alcune di noi, ci sarà un piccolo rialzo dei prezzi.
+					1: Certo, compra qualcosa se vuoi. Ma per i disagi che hai causato ad alcune di noi, ci sarÃ  un piccolo rialzo dei prezzi.
 					2: Se pensi che alcune di noi ti guardino male, probabilmente hai ragione.
 					3: Che vuoi? Sto cercando di rilassarmi.
-					4: Ultimamente non hai dato la migliore delle impressioni da queste parti. Forse è il caso di cambiare abitudini, possibilmente al più presto.
+					4: Ultimamente non hai dato la migliore delle impressioni da queste parti. Forse Ã¨ il caso di cambiare abitudini, possibilmente al piÃ¹ presto.
 					5: Oh, ehi. Posso aiutarti? No? Allora sparisci dalla mia vista.
-					6: Sarò sincero con te, umano. Ci hai causato qualche problema. Niente di oltraggioso, ma ci ha lasciato un po' di amaro in bocca. Potremmo capire se si trattasse di errori occasionali, ma è meglio che tu agisca con cautela prima che le cose si mettano molto, molto male per te.
+					6: SarÃ² sincero con te, umano. Ci hai causato qualche problema. Niente di oltraggioso, ma ci ha lasciato un po' di amaro in bocca. Potremmo capire se si trattasse di errori occasionali, ma Ã¨ meglio che tu agisca con cautela prima che le cose si mettano molto, molto male per te.
 				}
 
 				Neutral: {
-					0: Non capisco, cosa c'è di male nell'avere un cervello di gallina?
+					0: Non capisco, cosa c'Ã¨ di male nell'avere un cervello di gallina?
 					1: Spero di poter essere in prima fila nella formazione a V almeno una volta prima di morire.
-					2: Volare nel cielo ti fa sentire così... libero. Dovresti provare qualche volta.
+					2: Volare nel cielo ti fa sentire cosÃ¬... libero. Dovresti provare qualche volta.
 					3: A volte ho paura di volare troppo in alto e di fluttuare nello spazio o nel Sole o cose simili.
 					4: Comprerai qualcosa, vero? Non sei venuto qui per niente, vero?
 					5: No, non voglio nessun cracker. E smettila di chiamarmi Polly!
@@ -143,11 +135,11 @@ Mods: {
 				Like: {
 					0: Abitante della terra! Vuoi comprare qualcosa, vero? O volevi solo parlare con me?
 					1: Non sono belle le mie piume oggi? Ho passato tutto il giorno a pettinarle.
-					2: Dovresti sederti con me sul mio trespolo qualche volta. La brezza è così piacevole che aiuta davvero il mio zen.
-					3: Non sei poi così male per essere un umano che cammina sulla terra. Torna a trovarci qualche volta!
-					4: Quassù è un po' noioso. Ma non è poi così male quando vieni a farci visita.
+					2: Dovresti sederti con me sul mio trespolo qualche volta. La brezza Ã¨ cosÃ¬ piacevole che aiuta davvero il mio zen.
+					3: Non sei poi cosÃ¬ male per essere un umano che cammina sulla terra. Torna a trovarci qualche volta!
+					4: QuassÃ¹ Ã¨ un po' noioso. Ma non Ã¨ poi cosÃ¬ male quando vieni a farci visita.
 					5: Questo top mi fa ingrassare le ali?
-					6: ptuu- Scusami, mi è entrata di nuovo una piuma in bocca. Succede ogni volta.
+					6: ptuu- Scusami, mi Ã¨ entrata di nuovo una piuma in bocca. Succede ogni volta.
 					7: Spero davvero che non si verifichi presto una luna di sangue, non voglio che le mie piume si arruffino.
 				}
 
@@ -156,28 +148,40 @@ Mods: {
 					1: Sei fortunato ad essere molto apprezzato qui nel villaggio. Altrimenti non faremmo sconti come questi!
 					2: Ehiii! Sono felice che tu sia potuto passare; hai qualche storia da raccontarci questa volta? Ci piacerebbe sentirle!
 					3: Se devo essere sincera, la prima volta che sei apparso nel villaggio, non eravamo sicure di cosa pensare di te. Non riceviamo mai visite dalla terra. Ma sai una cosa? Siamo contente che tu sia qui.
-					4: Non trovi offensivo essere chiamato 'abitante della terra', vero? Lo diciamo da così tanto tempo! Oh, accidenti...
-					5: Non so come si possa sopportare di andare sottoterra. L'aria dev'essere così viziata e secca... È molto meglio quassù in cielo!
+					4: Non trovi offensivo essere chiamato 'abitante della terra', vero? Lo diciamo da cosÃ¬ tanto tempo! Oh, accidenti...
+					5: Non so come si possa sopportare di andare sottoterra. L'aria dev'essere cosÃ¬ viziata e secca... Ãˆ molto meglio quassÃ¹ in cielo!
 				}
 			}
 		}
 
-
-
-
-
 		Items: {
-			NimbusInABottle: {
-				//Accessory Item
-				DisplayName: Nuvoletta in bottiglia
-				//Accessory Items
-				Tooltip: Evoca una nuvoletta domestica che ti segue
+			SkywareWallItem: {
+				DisplayName: Muro celeste
+				// Tooltip: ""
+			}
+
+			SandstoneSlabWallItem: {
+				DisplayName: Muro in lastre di arenaria
+				// Tooltip: ""
+			}
+
+			SkywareFenceItem: {
+				DisplayName: Recinto celeste
+				// Tooltip: ""
+			}
+
+			SkipTileItem: {
+				// DisplayName: Skip Tile Item
+				// Tooltip: ""
+			}
+
+			SkipWallItem: {
+				// DisplayName: Skip Wall Item
+				// Tooltip: ""
 			}
 
 			FriedHarpyEgg: {
-				//Food Items
 				DisplayName: Uovo d'arpia fritto
-				//Food Items
 				Tooltip:
 					'''
 					{$CommonItemTooltip.MajorStats}
@@ -185,19 +189,71 @@ Mods: {
 					'''
 			}
 
+			NimbusInABottle: {
+				DisplayName: "Nuvoletta in barattolo"
+				Tooltip: "Evoca una nuvoletta domestica che ti segue"
+			}
+
+			SkywareBlockItem: {
+				DisplayName: "Incudine celeste"
+				// Tooltip: ""
+			}
+
+			StarshardCloudItem: {
+				DisplayName: "Nuvola stellare"
+				Tooltip: "'Frammenti di stelle cadute impregnano questa nuvola'"
+			}
+
+			StarshineBlockItem: {
+				DisplayName: "Blocco bagliore stellare"
+				// Tooltip: ""
+			}
+
+			SunslabBlockItem: {
+				DisplayName: "Lastra solare"
+				// Tooltip: ""
+			}
+
+			NimbusJarItem: {
+				DisplayName: "Nuvoletta in barattolo"
+				// Tooltip: ""
+			}
+
+			GravityTapestryItem: {
+				DisplayName: "Arazzo gravitÃ "
+				// Tooltip: ""
+			}
+
+			SkywareAnvilItem: {
+				DisplayName: "Incudine celeste"
+				// Tooltip: ""
+			}
+
+			SkywareLoomItem: {
+				DisplayName: "Telaio celeste"
+				// Tooltip: ""
+			}
+
+			SunTapestryItem: {
+				DisplayName: "Arazzo solare"
+				// Tooltip: ""
+			}
+
+			HarpyShrineItem: {
+				DisplayName: "Santuario del villaggio delle arpie"
+				Tooltip: "'La fonte magica che protegge coloro che abitano nel villaggio fluttuante delle arpie'"
+			}
+
+			StarTorchItem: {
+				DisplayName: "Torcia celeste"
+				Tooltip: "'Illumina la via con l'essenza del cosmo'"
+			}
+
 			HarpyEgg: {
-				//Misc Items
 				DisplayName: Uovo d'arpia
-				//Misc Items
-				Tooltip: "'È piuttosto grande, ma ha l'aspetto di un uovo ordinario.'"
+				Tooltip: "'Ãˆ piuttosto grande, ma ha l'aspetto di un uovo ordinario.'"
 			}
 		}
-
-
-
-		VillagerType.Harpy: Arpie
-
-
 
 		MapInfo: {
 			Shrines.Harpy: Villaggio delle arpie
@@ -222,58 +278,17 @@ Mods: {
 			WaystoneTile.MapEntry: Waystone
 			//Torch Tiles
 			StarTorchTile.MapEntry: "{$ItemName.Torch}"
+			// SkywareBlockTile.MapEntry: Mods.LivingWorldMod.Tiles.SkywareBlockTile.MapEntry
+			// StarshardCloudTile.MapEntry: Mods.LivingWorldMod.Tiles.StarshardCloudTile.MapEntry
+			// StarshineBlockTile.MapEntry: Mods.LivingWorldMod.Tiles.StarshineBlockTile.MapEntry
+			// SunslabBlockTile.MapEntry: Mods.LivingWorldMod.Tiles.SunslabBlockTile.MapEntry
+			// NimbusJarTile.MapEntry: Mods.LivingWorldMod.Tiles.NimbusJarTile.MapEntry
 		}
 
-
-
+		VillagerType.Harpy: Arpie
 		//Villagers
 		NPCs.HarpyVillager.DisplayName: Abitante arpia
-
 		Projectiles.NimbusPetProjectile.DisplayName: Nuvoletta domestica
-
-
-
-		Items: {
-			//Building
-			SkywareBlockItem.DisplayName: Blocco celeste
-
-			StarshardCloudItem: {
-				DisplayName: Nuvola stellare
-				//Building
-				Tooltip: "'Frammenti di stelle cadute impregnano questa nuvola'"
-			}
-
-			StarshineBlockItem.DisplayName: Blocco bagliore stellare
-			SunslabBlockItem.DisplayName: Lastra solare
-			//Furniture
-			NimbusJarItem.DisplayName: Nuvoletta in barattolo
-			GravityTapestryItem.DisplayName: Arazzo gravità
-			SkywareAnvilItem.DisplayName: Incudine celeste
-			SkywareLoomItem.DisplayName: Telaio celeste
-			SunTapestryItem.DisplayName: Arazzo solare
-
-			HarpyShrineItem: {
-				//Interactables
-				
-				//Shrines
-				DisplayName: Santuario del villaggio delle arpie
-				//Interactables
-				
-				//Shrines
-				Tooltip: "'La fonte magica che protegge coloro che abitano nel villaggio fluttuante delle arpie'"
-			}
-
-			StarTorchItem: {
-				//Torches
-				DisplayName: Torcia celeste
-				//Torches
-				Tooltip: "'Illumina la via con l'essenza del cosmo'"
-			}
-		}
-
-
-
-
 
 		UI: {
 			VillagerShop: {
@@ -285,7 +300,7 @@ Mods: {
 
 			VillagerHousing: {
 				ButtonHoverText: Alloggio interspecie
-				VillagerTypeLocked: L'abitante arpia {0} non si trasferirà finché non sei di suo gradimento!
+				VillagerTypeLocked: L'abitante arpia {0} non si trasferirÃ  finchÃ© non sei di suo gradimento!
 			}
 
 			Shrine: {
@@ -298,16 +313,11 @@ Mods: {
 			}
 		}
 
-
-
-
-
-		Items: {
-			//Wall Item Names
-			SkywareWallItem.DisplayName: Muro celeste
-			SandstoneSlabWallItem.DisplayName: Muro in lastre di arenaria
-			SkywareFenceItem.DisplayName: Recinto celeste
+		Walls: {
+			// SandstoneSlabWall.MapEntry: Mods.LivingWorldMod.Walls.SandstoneSlabWall.MapEntry
+			// SkywareWall.MapEntry: Mods.LivingWorldMod.Walls.SkywareWall.MapEntry
+			// SkywareFenceWall.MapEntry: Mods.LivingWorldMod.Walls.SkywareFenceWall.MapEntry
+			// PyramidBrickWall.MapEntry: Mods.LivingWorldMod.Walls.PyramidBrickWall.MapEntry
 		}
-
 	}
 }

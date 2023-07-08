@@ -1,11 +1,17 @@
 Mods: {
 	LivingWorldMod: {
-
 		Bestiary.HarpyVillager: A villager from the Harpy Village in the sky. Don't ruffle their feathers or attempt flirtation if you value your life.
 
 		Biomes: {
-			HarpyVillageBiome.DisplayName: Harpy Village
-			RevampedPyramidBiome.DisplayName: Revamped Pyramid Biome
+			HarpyVillageBiome: {
+				DisplayName: Harpy Village
+				TownNPCDialogueName: the Harpy Village Biome
+			}
+
+			RevampedPyramidBiome: {
+				DisplayName: Revamped Pyramid Biome
+				TownNPCDialogueName: the Revamped Pyramid Biome
+			}
 		}
 
 		Buffs: {
@@ -149,17 +155,33 @@ Mods: {
 		}
 
 		Items: {
-			NimbusInABottle: {
-				//Accessory Item
-				DisplayName: Nimbus in a Bottle
-				//Accessory Items
-				Tooltip: Summons a pet nimbus that follows you around
+			SkywareWallItem: {
+				DisplayName: Skyware Wall
+				Tooltip: ""
+			}
+
+			SandstoneSlabWallItem: {
+				DisplayName: Sandstone Slab Wall
+				Tooltip: ""
+			}
+
+			SkywareFenceItem: {
+				DisplayName: Skyware Fence
+				Tooltip: ""
+			}
+
+			SkipTileItem: {
+				DisplayName: Skip Tile Item
+				Tooltip: ""
+			}
+
+			SkipWallItem: {
+				DisplayName: Skip Wall Item
+				Tooltip: ""
 			}
 
 			FriedHarpyEgg: {
-				//Food Items
 				DisplayName: Fried Harpy Egg
-				//Food Items
 				Tooltip:
 					'''
 					{$CommonItemTooltip.MajorStats}
@@ -167,10 +189,68 @@ Mods: {
 					'''
 			}
 
+			NimbusInABottle: {
+				DisplayName: Nimbus In A Bottle
+				Tooltip: Summons a pet nimbus that follows you around
+			}
+
+			SkywareBlockItem: {
+				DisplayName: Skyware Block
+				Tooltip: ""
+			}
+
+			StarshardCloudItem: {
+				DisplayName: Starshard Cloud
+				Tooltip: "'Shards of fallen stars permeate throughout this cloud'"
+			}
+
+			StarshineBlockItem: {
+				DisplayName: Starshine Block
+				Tooltip: ""
+			}
+
+			SunslabBlockItem: {
+				DisplayName: Sunslab Block
+				Tooltip: ""
+			}
+
+			NimbusJarItem: {
+				DisplayName: Nimbus Jar
+				Tooltip: ""
+			}
+
+			GravityTapestryItem: {
+				DisplayName: Gravity Tapestry
+				Tooltip: ""
+			}
+
+			SkywareAnvilItem: {
+				DisplayName: Skyware Anvil
+				Tooltip: ""
+			}
+
+			SkywareLoomItem: {
+				DisplayName: Skyware Loom
+				Tooltip: ""
+			}
+
+			SunTapestryItem: {
+				DisplayName: Sun Tapestry
+				Tooltip: ""
+			}
+
+			HarpyShrineItem: {
+				DisplayName: Harpy Shrine
+				Tooltip: "'The magical source of protection for all those that inhabit a Harpy Village'"
+			}
+
+			StarTorchItem: {
+				DisplayName: Star Torch
+				Tooltip: "'Light the way with the essence of the cosmos'"
+			}
+
 			HarpyEgg: {
-				//Misc Items
 				DisplayName: Harpy Egg
-				//Misc Items
 				Tooltip: "'It's rather large, but looks like any other egg.'"
 			}
 		}
@@ -198,6 +278,11 @@ Mods: {
 			WaystoneTile.MapEntry: Waystone
 			//Torch Tiles
 			StarTorchTile.MapEntry: "{$ItemName.Torch}"
+			SkywareBlockTile.MapEntry: Mods.LivingWorldMod.Tiles.SkywareBlockTile.MapEntry
+			StarshardCloudTile.MapEntry: Mods.LivingWorldMod.Tiles.StarshardCloudTile.MapEntry
+			StarshineBlockTile.MapEntry: Mods.LivingWorldMod.Tiles.StarshineBlockTile.MapEntry
+			SunslabBlockTile.MapEntry: Mods.LivingWorldMod.Tiles.SunslabBlockTile.MapEntry
+			NimbusJarTile.MapEntry: Mods.LivingWorldMod.Tiles.NimbusJarTile.MapEntry
 		}
 
 		VillagerType.Harpy: Harpy
@@ -206,44 +291,6 @@ Mods: {
 		NPCs.HarpyVillager.DisplayName: Harpy Villager
 
 		Projectiles.NimbusPetProjectile.DisplayName: Nimbus Pet
-
-		Items: {
-			//Building
-			SkywareBlockItem.DisplayName: Skyware Block
-
-			StarshardCloudItem: {
-				DisplayName: Starshard Cloud
-				//Building
-				Tooltip: "'Shards of fallen stars permeate throughout this cloud'"
-			}
-
-			StarshineBlockItem.DisplayName: Starshine Block
-			SunslabBlockItem.DisplayName: Sunslab Block
-			//Furniture
-			NimbusJarItem.DisplayName: Nimbus in a Jar
-			GravityTapestryItem.DisplayName: Gravity Tapestry
-			SkywareAnvilItem.DisplayName: Skyware Anvil
-			SkywareLoomItem.DisplayName: Skyware Loom
-			SunTapestryItem.DisplayName: Sun Tapestry
-
-			HarpyShrineItem: {
-				//Interactables
-				
-				//Shrines
-				DisplayName: Harpy Village Shrine
-				//Interactables
-				
-				//Shrines
-				Tooltip: "'The magical source of protection for all those that inhabit a Harpy Village'"
-			}
-
-			StarTorchItem: {
-				//Torches
-				DisplayName: Star Torch
-				//Torches
-				Tooltip: "'Light the way with the essence of the cosmos'"
-			}
-		}
 
 		UI: {
 			VillagerShop: {
@@ -268,14 +315,11 @@ Mods: {
 			}
 		}
 
-
-		Items: {
-			//Wall Item Names
-			SkywareWallItem.DisplayName: Skyware Wall
-			SandstoneSlabWallItem.DisplayName: Sandstone Slab Wall
-			SkywareFenceItem.DisplayName: Skyware Fence
+		Walls: {
+			SandstoneSlabWall.MapEntry: Mods.LivingWorldMod.Walls.SandstoneSlabWall.MapEntry
+			SkywareWall.MapEntry: Mods.LivingWorldMod.Walls.SkywareWall.MapEntry
+			SkywareFenceWall.MapEntry: Mods.LivingWorldMod.Walls.SkywareFenceWall.MapEntry
+			PyramidBrickWall.MapEntry: Mods.LivingWorldMod.Walls.PyramidBrickWall.MapEntry
 		}
-
-
 	}
 }

@@ -1,18 +1,18 @@
-﻿Mods: {
+Mods: {
 	LivingWorldMod: {
-		
 		Bestiary.HarpyVillager: Wieśniak z Wioski Harpii na niebie. Nie marszczyj ich piór ani nie próbuj flirtować, jeśli cenisz swoje życie.
 
-
-
 		Biomes: {
-			HarpyVillageBiome.DisplayName: Harpy Village
-			RevampedPyramidBiome.DisplayName: Revamped Pyramid Biome
+			HarpyVillageBiome: {
+				DisplayName: Harpy Village
+				// TownNPCDialogueName: the Harpy Village Biome
+			}
+
+			RevampedPyramidBiome: {
+				DisplayName: Revamped Pyramid Biome
+				// TownNPCDialogueName: the Revamped Pyramid Biome
+			}
 		}
-
-
-
-
 
 		Buffs: {
 			NimbusPetBuff: {
@@ -21,21 +21,13 @@
 			}
 		}
 
-
-
 		Common.Reputation: Reputacja
-
-
 
 		Event: {
 			WaystoneActivation: Waystone jest aktywowany!
 			VillagerRespawned.Harpy: "{0} wykluła się wieśniaczka Harpii!"
 			VillagerLeft.Harpy: "{0} Harpia Vilager odeszła w poszukiwaniu nowego domu!"
 		}
-
-
-
-
 
 		VillagerDialogue: {
 			Harpy: {
@@ -162,40 +154,102 @@
 			}
 		}
 
-
-
-
-
 		Items: {
-			NimbusInABottle: {
-				//Accessory Item
-				DisplayName: Nimbus w butelce
-				//Accessory Items
-				Tooltip: Przywołuje uroczą aureolę, która podąża za tobą
+			SkywareWallItem: {
+				DisplayName: Ściana Skyware
+				// Tooltip: ""
+			}
+
+			SandstoneSlabWallItem: {
+				DisplayName: Ściana z płyty z piaskowca
+				// Tooltip: ""
+			}
+
+			SkywareFenceItem: {
+				DisplayName: Ogrodzenie Skyware
+				// Tooltip: ""
+			}
+
+			SkipTileItem: {
+				// DisplayName: Skip Tile Item
+				// Tooltip: ""
+			}
+
+			SkipWallItem: {
+				// DisplayName: Skip Wall Item
+				// Tooltip: ""
 			}
 
 			FriedHarpyEgg: {
-				//Food Items
-				DisplayName: Smażone Jajko Harpii
-				//Food Items
-				Tooltip:
-					'''
-					{$CommonItemTooltip.MajorStats}
-					'Ty potworze.'
-					'''
+				DisplayName: "Smażone Jajko Harpii"
+				Tooltip: "{$CommonItemTooltip.MajorStats}\n'Ty potworze.'"
+			}
+
+			NimbusInABottle: {
+				DisplayName: "Nimbus w butelce"
+				Tooltip: "Przywołuje uroczą aureolę, która podąża za tobą"
+			}
+
+			SkywareBlockItem: {
+				DisplayName: "Blok Skyware"
+				// Tooltip: ""
+			}
+
+			StarshardCloudItem: {
+				DisplayName: "Chmura Starshard"
+				Tooltip: "'Odłamki upadłych gwiazd przenikają przez tę chmurę'"
+			}
+
+			StarshineBlockItem: {
+				DisplayName: "Blok blasku gwiazd"
+				// Tooltip: ""
+			}
+
+			SunslabBlockItem: {
+				DisplayName: "Blok Sunslab"
+				// Tooltip: ""
+			}
+
+			NimbusJarItem: {
+				DisplayName: "Nimbus w słoiku"
+				// Tooltip: ""
+			}
+
+			GravityTapestryItem: {
+				DisplayName: "Gobelin grawitacyjny"
+				// Tooltip: ""
+			}
+
+			SkywareAnvilItem: {
+				DisplayName: "Skyware kowadło"
+				// Tooltip: ""
+			}
+
+			SkywareLoomItem: {
+				DisplayName: "Krosno Skyware"
+				// Tooltip: ""
+			}
+
+			SunTapestryItem: {
+				DisplayName: "Gobelin słoneczny"
+				// Tooltip: ""
+			}
+
+			HarpyShrineItem: {
+				DisplayName: "Świątynia Wioski Harpii"
+				Tooltip: "'Magiczne źródło ochrony dla wszystkich, którzy zamieszkują wioskę Harpii'"
+			}
+
+			StarTorchItem: {
+				DisplayName: "Pochodnia Gwiazd"
+				Tooltip: "'Rozświetl drogę esencją kosmosu'"
 			}
 
 			HarpyEgg: {
-				//Misc Items
-				DisplayName: Jajo harpii
-				//Misc Items
+				DisplayName: "Jajo harpii"
 				Tooltip: "'Jest dość duży, ale wygląda jak każde inne jajko.'"
 			}
 		}
-
-
-
-
 
 		MapInfo: {
 			Shrines.Harpy: Harpy Village
@@ -220,60 +274,17 @@
 			WaystoneTile.MapEntry: Kamień na drodze
 			//Torch Tiles
 			StarTorchTile.MapEntry: "{$ItemName.Torch}"
+			// SkywareBlockTile.MapEntry: Mods.LivingWorldMod.Tiles.SkywareBlockTile.MapEntry
+			// StarshardCloudTile.MapEntry: Mods.LivingWorldMod.Tiles.StarshardCloudTile.MapEntry
+			// StarshineBlockTile.MapEntry: Mods.LivingWorldMod.Tiles.StarshineBlockTile.MapEntry
+			// SunslabBlockTile.MapEntry: Mods.LivingWorldMod.Tiles.SunslabBlockTile.MapEntry
+			// NimbusJarTile.MapEntry: Mods.LivingWorldMod.Tiles.NimbusJarTile.MapEntry
 		}
-
-
 
 		VillagerType.Harpy: Harpia
-
-		//Villagers
+		
 		NPCs.HarpyVillager.DisplayName: Harpia Wieśniaczka
-
 		Projectiles.NimbusPetProjectile.DisplayName: Zwierzak Nimbus
-
-
-
-		Items: {
-			//Building
-			SkywareBlockItem.DisplayName: Blok Skyware
-
-			StarshardCloudItem: {
-				DisplayName: Chmura Starshard
-				//Building
-				Tooltip: "'Odłamki upadłych gwiazd przenikają przez tę chmurę'"
-			}
-
-			StarshineBlockItem.DisplayName: Blok blasku gwiazd
-			SunslabBlockItem.DisplayName: Blok Sunslab
-			//Furniture
-			NimbusJarItem.DisplayName: Nimbus w słoiku
-			GravityTapestryItem.DisplayName: Gobelin grawitacyjny
-			SkywareAnvilItem.DisplayName: Skyware kowadło
-			SkywareLoomItem.DisplayName: Krosno Skyware
-			SunTapestryItem.DisplayName: Gobelin słoneczny
-
-			HarpyShrineItem: {
-				//Interactables
-				
-				//Shrines
-				DisplayName: Świątynia Wioski Harpii
-				//Interactables
-				
-				//Shrines
-				Tooltip: "'Magiczne źródło ochrony dla wszystkich, którzy zamieszkują wioskę Harpii'"
-			}
-
-			StarTorchItem: {
-				//Torches
-				DisplayName: Pochodnia Gwiazd
-				//Torches
-				Tooltip: "'Rozświetl drogę esencją kosmosu'"
-			}
-		}
-
-
-
-
 
 		UI: {
 			VillagerShop: {
@@ -298,16 +309,11 @@
 			}
 		}
 
-
-
-
-
-		Items: {
-			//Wall Item Names
-			SkywareWallItem.DisplayName: Ściana Skyware
-			SandstoneSlabWallItem.DisplayName: Ściana z płyty z piaskowca
-			SkywareFenceItem.DisplayName: Ogrodzenie Skyware
+		Walls: {
+			// SandstoneSlabWall.MapEntry: Mods.LivingWorldMod.Walls.SandstoneSlabWall.MapEntry
+			// SkywareWall.MapEntry: Mods.LivingWorldMod.Walls.SkywareWall.MapEntry
+			// SkywareFenceWall.MapEntry: Mods.LivingWorldMod.Walls.SkywareFenceWall.MapEntry
+			// PyramidBrickWall.MapEntry: Mods.LivingWorldMod.Walls.PyramidBrickWall.MapEntry
 		}
-
 	}
 }
