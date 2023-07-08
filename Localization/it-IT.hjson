@@ -1,39 +1,42 @@
-Mods.LivingWorldMod.Bestiary.HarpyVillager: Un'abitante del villaggio fluttuante delle arpie. Non giocare con le sue piume e non provarci con lei, se ci tieni alla vita.
-
 Mods: {
 	LivingWorldMod: {
+		
+		Bestiary.HarpyVillager: Un'abitante del villaggio fluttuante delle arpie. Non giocare con le sue piume e non provarci con lei, se ci tieni alla vita.
+
+
+
 		Biomes: {
 			HarpyVillageBiome.DisplayName: Harpy Village
 			RevampedPyramidBiome.DisplayName: Revamped Pyramid Biome
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
+
+
+
+
 		Buffs: {
 			NimbusPetBuff: {
 				DisplayName: Nuvoletta domestica
 				Description: "'Scometto che sa di zucchero filato...'"
 			}
 		}
-	}
-}
 
-Mods.LivingWorldMod.Common.Reputation: Reputazione
 
-Mods: {
-	LivingWorldMod: {
+
+		Common.Reputation: Reputazione
+
+
+
 		Event: {
 			WaystoneActivation: Waystone attivata!
 			VillagerRespawned.Harpy: L'abitante arpia {0} è appena nata!
 			VillagerLeft.Harpy: L'abitante arpia {0} è partita in cerca di una nuova casa!
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
+
+
+
+
 		VillagerDialogue: {
 			Harpy: {
 				Event: {
@@ -158,11 +161,11 @@ Mods: {
 				}
 			}
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
+
+
+
+
 		Items: {
 			NimbusInABottle: {
 				//Accessory Item
@@ -189,13 +192,13 @@ Mods: {
 				Tooltip: "'È piuttosto grande, ma ha l'aspetto di un uovo ordinario.'"
 			}
 		}
-	}
-}
 
-Mods.LivingWorldMod.VillagerType.Harpy: Arpie
 
-Mods: {
-	LivingWorldMod: {
+
+		VillagerType.Harpy: Arpie
+
+
+
 		MapInfo: {
 			Shrines.Harpy: Villaggio delle arpie
 
@@ -220,16 +223,16 @@ Mods: {
 			//Torch Tiles
 			StarTorchTile.MapEntry: "{$ItemName.Torch}"
 		}
-	}
-}
 
-//Villagers
-Mods.LivingWorldMod.NPCs.HarpyVillager.DisplayName: Abitante arpia
 
-Mods.LivingWorldMod.Projectiles.NimbusPetProjectile.DisplayName: Nuvoletta domestica
 
-Mods: {
-	LivingWorldMod: {
+		//Villagers
+		NPCs.HarpyVillager.DisplayName: Abitante arpia
+
+		Projectiles.NimbusPetProjectile.DisplayName: Nuvoletta domestica
+
+
+
 		Items: {
 			//Building
 			SkywareBlockItem.DisplayName: Blocco celeste
@@ -267,11 +270,11 @@ Mods: {
 				Tooltip: "'Illumina la via con l'essenza del cosmo'"
 			}
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
+
+
+
+
 		UI: {
 			VillagerShop: {
 				Buying: Buying:
@@ -294,16 +297,17 @@ Mods: {
 				ForceShrineButtonText: Forza sincronizzazione alloggio
 			}
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
+
+
+
+
 		Items: {
 			//Wall Item Names
 			SkywareWallItem.DisplayName: Muro celeste
 			SandstoneSlabWallItem.DisplayName: Muro in lastre di arenaria
 			SkywareFenceItem.DisplayName: Recinto celeste
 		}
+
 	}
 }

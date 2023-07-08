@@ -1,39 +1,28 @@
-Mods.LivingWorldMod.Bestiary.HarpyVillager: A villager from the Harpy Village in the sky. Don't ruffle their feathers or attempt flirtation if you value your life.
-
 Mods: {
 	LivingWorldMod: {
+
+		Bestiary.HarpyVillager: A villager from the Harpy Village in the sky. Don't ruffle their feathers or attempt flirtation if you value your life.
+
 		Biomes: {
 			HarpyVillageBiome.DisplayName: Harpy Village
 			RevampedPyramidBiome.DisplayName: Revamped Pyramid Biome
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
 		Buffs: {
 			NimbusPetBuff: {
 				DisplayName: Nimbus Pet
 				Description: "'I bet it tastes like cotton candy...'"
 			}
 		}
-	}
-}
 
-Mods.LivingWorldMod.Common.Reputation: Reputation
+		Common.Reputation: Reputation
 
-Mods: {
-	LivingWorldMod: {
 		Event: {
 			WaystoneActivation: Waystone Activated!
 			VillagerRespawned.Harpy: "{0} the Harpy Villager has hatched!"
 			VillagerLeft.Harpy: "{0} the Harpy Vilager has departed for a new home!"
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
 		VillagerDialogue: {
 			Harpy: {
 				Event: {
@@ -158,11 +147,7 @@ Mods: {
 				}
 			}
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
 		Items: {
 			NimbusInABottle: {
 				//Accessory Item
@@ -189,11 +174,7 @@ Mods: {
 				Tooltip: "'It's rather large, but looks like any other egg.'"
 			}
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
 		MapInfo: {
 			Shrines.Harpy: Harpy Village
 
@@ -218,18 +199,14 @@ Mods: {
 			//Torch Tiles
 			StarTorchTile.MapEntry: "{$ItemName.Torch}"
 		}
-	}
-}
 
-Mods.LivingWorldMod.VillagerType.Harpy: Harpy
+		VillagerType.Harpy: Harpy
 
-//Villagers
-Mods.LivingWorldMod.NPCs.HarpyVillager.DisplayName: Harpy Villager
+		//Villagers
+		NPCs.HarpyVillager.DisplayName: Harpy Villager
 
-Mods.LivingWorldMod.Projectiles.NimbusPetProjectile.DisplayName: Nimbus Pet
+		Projectiles.NimbusPetProjectile.DisplayName: Nimbus Pet
 
-Mods: {
-	LivingWorldMod: {
 		Items: {
 			//Building
 			SkywareBlockItem.DisplayName: Skyware Block
@@ -267,11 +244,7 @@ Mods: {
 				Tooltip: "'Light the way with the essence of the cosmos'"
 			}
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
 		UI: {
 			VillagerShop: {
 				Buying: Buying:
@@ -294,16 +267,15 @@ Mods: {
 				ForceShrineButtonText: Force Synchronize Housing
 			}
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
+
 		Items: {
 			//Wall Item Names
 			SkywareWallItem.DisplayName: Skyware Wall
 			SandstoneSlabWallItem.DisplayName: Sandstone Slab Wall
 			SkywareFenceItem.DisplayName: Skyware Fence
 		}
+
+
 	}
 }

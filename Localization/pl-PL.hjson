@@ -1,39 +1,42 @@
-﻿Mods.LivingWorldMod.Bestiary.HarpyVillager: Wieśniak z Wioski Harpii na niebie. Nie marszczyj ich piór ani nie próbuj flirtować, jeśli cenisz swoje życie.
-
-Mods: {
+﻿Mods: {
 	LivingWorldMod: {
+		
+		Bestiary.HarpyVillager: Wieśniak z Wioski Harpii na niebie. Nie marszczyj ich piór ani nie próbuj flirtować, jeśli cenisz swoje życie.
+
+
+
 		Biomes: {
 			HarpyVillageBiome.DisplayName: Harpy Village
 			RevampedPyramidBiome.DisplayName: Revamped Pyramid Biome
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
+
+
+
+
 		Buffs: {
 			NimbusPetBuff: {
 				DisplayName: Zwierzak Nimbus
 				Description: "'Założę się, że smakuje jak wata cukrowa...'"
 			}
 		}
-	}
-}
 
-Mods.LivingWorldMod.Common.Reputation: Reputacja
 
-Mods: {
-	LivingWorldMod: {
+
+		Common.Reputation: Reputacja
+
+
+
 		Event: {
 			WaystoneActivation: Waystone jest aktywowany!
 			VillagerRespawned.Harpy: "{0} wykluła się wieśniaczka Harpii!"
 			VillagerLeft.Harpy: "{0} Harpia Vilager odeszła w poszukiwaniu nowego domu!"
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
+
+
+
+
 		VillagerDialogue: {
 			Harpy: {
 				Event: {
@@ -158,11 +161,11 @@ Mods: {
 				}
 			}
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
+
+
+
+
 		Items: {
 			NimbusInABottle: {
 				//Accessory Item
@@ -189,11 +192,11 @@ Mods: {
 				Tooltip: "'Jest dość duży, ale wygląda jak każde inne jajko.'"
 			}
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
+
+
+
+
 		MapInfo: {
 			Shrines.Harpy: Harpy Village
 
@@ -218,18 +221,18 @@ Mods: {
 			//Torch Tiles
 			StarTorchTile.MapEntry: "{$ItemName.Torch}"
 		}
-	}
-}
 
-Mods.LivingWorldMod.VillagerType.Harpy: Harpia
 
-//Villagers
-Mods.LivingWorldMod.NPCs.HarpyVillager.DisplayName: Harpia Wieśniaczka
 
-Mods.LivingWorldMod.Projectiles.NimbusPetProjectile.DisplayName: Zwierzak Nimbus
+		VillagerType.Harpy: Harpia
 
-Mods: {
-	LivingWorldMod: {
+		//Villagers
+		NPCs.HarpyVillager.DisplayName: Harpia Wieśniaczka
+
+		Projectiles.NimbusPetProjectile.DisplayName: Zwierzak Nimbus
+
+
+
 		Items: {
 			//Building
 			SkywareBlockItem.DisplayName: Blok Skyware
@@ -267,11 +270,11 @@ Mods: {
 				Tooltip: "'Rozświetl drogę esencją kosmosu'"
 			}
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
+
+
+
+
 		UI: {
 			VillagerShop: {
 				Buying: Buying:
@@ -294,16 +297,17 @@ Mods: {
 				ForceShrineButtonText: Wymuś synchronizację obudowy
 			}
 		}
-	}
-}
 
-Mods: {
-	LivingWorldMod: {
+
+
+
+
 		Items: {
 			//Wall Item Names
 			SkywareWallItem.DisplayName: Ściana Skyware
 			SandstoneSlabWallItem.DisplayName: Ściana z płyty z piaskowca
 			SkywareFenceItem.DisplayName: Ogrodzenie Skyware
 		}
+
 	}
 }
