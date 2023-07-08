@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using Hjson;
 using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Enums;
@@ -22,10 +21,7 @@ namespace LivingWorldMod.Common.Systems {
             _villageReputation = new int[NPCUtils.GetTotalVillagerTypeCount()];
             villageThresholdData = new Dictionary<VillagerType, ReputationThresholdData>();
 
-            Stream reputationDataStream = Mod.GetFileStream("Assets/JSONData/ReputationData.json");
-            JsonObject jsonReputationData = JsonValue.Load(reputationDataStream).Qo();
-            reputationDataStream.Close();
-
+            JsonObject jsonReputationData = JsonUtils.GetJSONFromFile("Assets/JSONData/ReputationData.json").Qo();
             foreach (VillagerType type in Enum.GetValues<VillagerType>()) {
                 JsonObject villageSpecificData = jsonReputationData[type.ToString()].Qo();
 

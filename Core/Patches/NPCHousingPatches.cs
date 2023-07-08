@@ -285,7 +285,6 @@ namespace LivingWorldMod.Core.Patches {
             byte homeTileXLocalNumber = 6;
             byte homeTileYLocalNumber = 7;
             byte homeTileYInWorldLocalNumber = 14;
-            byte npcProfileLocalNumber = 18;
 
             //Grab exit instruction & do custom drawing code
             c.ErrorOnFailedGotoNext(i => i.MatchStloc(homeTileXLocalNumber));

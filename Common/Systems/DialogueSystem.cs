@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using Hjson;
 using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
+using LivingWorldMod.Custom.Utilities;
 using Terraria;
 using Terraria.GameContent.Events;
 using Terraria.Localization;
@@ -45,10 +45,7 @@ namespace LivingWorldMod.Common.Systems {
             Dictionary<string, LocalizedText> translationDict = typeof(LanguageManager).GetField("_localizedTexts", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(LanguageManager.Instance) as Dictionary<string, LocalizedText>;
             Dictionary<string, LocalizedText> allDialogue = translationDict!.Where(pair => pair.Value.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue")).ToDictionary(pair => pair.Key, pair => pair.Value);
 
-            Stream dialogueWeightStream = Mod.GetFileStream("Assets/JSONData/DialogueWeights.json");
-            JsonValue jsonReputationData = JsonValue.Load(dialogueWeightStream);
-            dialogueWeightStream.Close();
-
+            JsonValue jsonReputationData = JsonUtils.GetJSONFromFile("Assets/JSONData/DialogueWeights.json");
             for (VillagerType type = 0; (int)type < NPCUtils.GetTotalVillagerTypeCount(); type++) {
                 List<DialogueData> finalDialogueData = new();
 

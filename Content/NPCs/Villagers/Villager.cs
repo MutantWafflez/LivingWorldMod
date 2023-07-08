@@ -1,4 +1,7 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Hjson;
+using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Common.Systems.UI;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
@@ -6,8 +9,6 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Chat;
@@ -24,33 +25,20 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
     /// </summary>
     public abstract class Villager : ModNPC {
         /// <summary>
-        /// A list of shop items that this specific villager is selling at this very moment.
+        /// Count of the total amount of variation in terms of body sprites for this specific
+        /// villager type. Defaults to 5.
         /// </summary>
-        public List<ShopItem> shopInventory;
+        public virtual int BodyAssetVariations => 5;
 
         /// <summary>
-        /// An array that holds all of the assets for the body sprites of this type of villager.
+        /// Count of the total amount of variation in terms of head sprites for this specific
+        /// villager type. Defaults to 5.
         /// </summary>
-        [CloneByReference]
-        public readonly Asset<Texture2D>[] bodyAssets;
+        public virtual int HeadAssetVariations => 5;
 
-        /// <summary>
-        /// Any array that holds all of the assets for the head sprites of this type of villager.
-        /// What a "head" asset for a villager means depends on the type of villager. For the Harpy
-        /// Villagers, for example, the head assets are different types of hair.
-        /// </summary>
-        [CloneByReference]
-        public readonly Asset<Texture2D>[] headAssets;
+        public sealed override string Texture => LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/DefaultStyle";
 
-        /// <summary>
-        /// The body sprite type that this specific villager has.
-        /// </summary>
-        public int bodySpriteType;
-
-        /// <summary>
-        /// The head sprite type that this specific villager has.
-        /// </summary>
-        public int headSpriteType;
+        public override bool IsCloneable => true;
 
         /// <summary>
         /// What type of villager this class pertains to. Vital for several functions in the class
@@ -69,25 +57,45 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         /// <summary>
-        /// Count of the total amount of variation in terms of body sprites for this specific
-        /// villager type. Defaults to 5.
-        /// </summary>
-        public virtual int BodyAssetVariations => 5;
-
-        /// <summary>
-        /// Count of the total amount of variation in terms of head sprites for this specific
-        /// villager type. Defaults to 5.
-        /// </summary>
-        public virtual int HeadAssetVariations => 5;
-
-        /// <summary>
-        /// Shorthand get property for acquiring the current relationship status of whatever type of village this villager belongs to.
+        /// Shorthand get property for acquiring the current relationship status of whatever type of village this villager belongs
+        /// to.
         /// </summary>
         public VillagerRelationship RelationshipStatus => ReputationSystem.Instance.GetVillageRelationship(VillagerType);
 
-        public sealed override string Texture => LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/DefaultStyle";
+        /// <summary>
+        /// An array that holds all of the assets for the body sprites of this type of villager.
+        /// </summary>
+        [CloneByReference]
+        public readonly Asset<Texture2D>[] bodyAssets;
 
-        public override bool IsCloneable => true;
+        /// <summary>
+        /// Any array that holds all of the assets for the head sprites of this type of villager.
+        /// What a "head" asset for a villager means depends on the type of villager. For the Harpy
+        /// Villagers, for example, the head assets are different types of hair.
+        /// </summary>
+        [CloneByReference]
+        public readonly Asset<Texture2D>[] headAssets;
+
+        /// <summary>
+        /// A list of shop items that this specific villager is selling at this very moment.
+        /// </summary>
+        public List<ShopItem> shopInventory;
+
+        /// <summary>
+        /// A list of all names a villager of this type can have.
+        /// </summary>
+        [CloneByReference]
+        public IReadOnlyList<string> villagerNames;
+
+        /// <summary>
+        /// The body sprite type that this specific villager has.
+        /// </summary>
+        public int bodySpriteType;
+
+        /// <summary>
+        /// The head sprite type that this specific villager has.
+        /// </summary>
+        public int headSpriteType;
 
         /// <summary>
         /// A counter for how long this Villager has been homeless for, used for automatically leaving
@@ -139,12 +147,14 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             NPCID.Sets.SpawnsWithCustomName[Type] = true;
             NPCID.Sets.AllowDoorInteraction[Type] = true;
 
-            NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0) {
+            NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new(0) {
                 Velocity = 1f,
                 Direction = -1
             };
 
             NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
+
+            villagerNames = JsonUtils.GetJSONFromFile("Assets/JSONData/VillagerNames.json")[VillagerType.ToString()].Qa().Select(value => value.Qs()).ToList();
         }
 
         public override void SetDefaults() {
@@ -184,9 +194,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public override bool CheckActive() => false;
 
-        public override List<string> SetNPCNameList() => LocalizationUtils.GetAllStringsFromCategory($"VillagerNames.{VillagerType}") is { } names && names.elements.Count > 0
-            ? new List<string>() { names.Get() }
-            : base.SetNPCNameList();
+        public override List<string> SetNPCNameList() => villagerNames.ToList();
 
         public override void SetChatButtons(ref string button, ref string button2) {
             button = Language.GetTextValue("LegacyInterface.28"); //"Shop"
@@ -199,7 +207,6 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                 ModContent.GetInstance<ShopUISystem>().OpenShopUI(this);
             }
             //Reputation Screen
-            else { }
         }
 
         public override bool CanChat() => RelationshipStatus != VillagerRelationship.Hate;
@@ -218,13 +225,13 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             Texture2D bodyTexture = bodyAssets[bodySpriteType].Value;
             Texture2D headTexture = headAssets[headSpriteType].Value;
 
-            Rectangle drawArea = new Rectangle((int)(NPC.Right.X - NPC.frame.Width / 1.5 - screenPos.X),
+            Rectangle drawArea = new((int)(NPC.Right.X - NPC.frame.Width / 1.5 - screenPos.X),
                 (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f),
                 NPC.frame.Width,
                 NPC.frame.Height);
 
-            spriteBatch.Draw(bodyTexture, drawArea, NPC.frame, drawColor, NPC.rotation, default, spriteDirection, 0);
-            spriteBatch.Draw(headTexture, drawArea, NPC.frame, drawColor, NPC.rotation, default, spriteDirection, 0);
+            spriteBatch.Draw(bodyTexture, drawArea, NPC.frame, drawColor, NPC.rotation, default(Vector2), spriteDirection, 0);
+            spriteBatch.Draw(headTexture, drawArea, NPC.frame, drawColor, NPC.rotation, default(Vector2), spriteDirection, 0);
 
             return false;
         }
@@ -244,8 +251,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             }
 
             if (_homelessCounter >= 60 * 60 * 2) {
-                Color leavingColor = new Color(255, 25, 25);
-                string leavingText = LocalizationUtils.GetLWMTextValue($"Event.VillagerLeft.{VillagerType}", new object[] { NPC.GivenOrTypeName });
+                Color leavingColor = new(255, 25, 25);
+                string leavingText = LocalizationUtils.GetLWMTextValue($"Event.VillagerLeft.{VillagerType}", NPC.GivenOrTypeName);
 
                 NPC.active = false;
                 if (Main.netMode == NetmodeID.Server) {
@@ -273,8 +280,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                 if (shopInventory.All(item => item != returnedItem)) {
                     shopInventory.Add(returnedItem);
                 }
-            }
-            while (shopInventory.Count < shopLength);
+            } while (shopInventory.Count < shopLength);
         }
     }
 }
