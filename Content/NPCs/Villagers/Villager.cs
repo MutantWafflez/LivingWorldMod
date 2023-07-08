@@ -147,6 +147,9 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             NPCID.Sets.SpawnsWithCustomName[Type] = true;
             NPCID.Sets.AllowDoorInteraction[Type] = true;
 
+            // TODO: Add shimmer functionality
+            NPCID.Sets.ShimmerImmunity[Type] = true;
+
             NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new(0) {
                 Velocity = 1f,
                 Direction = -1

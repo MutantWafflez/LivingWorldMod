@@ -10,8 +10,8 @@ Currently implemented features:
 - Several new sky related items (furniture, pets)
 
 Features in development:
+- Town NPC Revitalization
 - Village Reputation
-- Revamped Pyramid dungeon
 - Additional villages (Truffle, Lihzahrd, Demon, etc.)
 
 Brought to you by:
