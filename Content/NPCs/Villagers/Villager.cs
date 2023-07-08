@@ -17,6 +17,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
+using NPCUtils = LivingWorldMod.Custom.Utilities.NPCUtils;
 
 namespace LivingWorldMod.Content.NPCs.Villagers {
     /// <summary>
@@ -24,6 +25,11 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
     /// modified depending on the "personality" of the villagers.
     /// </summary>
     public abstract class Villager : ModNPC {
+        /// <summary>
+        /// A dictionary holding all villager names for each type.
+        /// </summary>
+        public static IReadOnlyDictionary<VillagerType, IReadOnlyList<string>> villagerNames;
+
         /// <summary>
         /// Count of the total amount of variation in terms of body sprites for this specific
         /// villager type. Defaults to 5.
@@ -80,12 +86,6 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// A list of shop items that this specific villager is selling at this very moment.
         /// </summary>
         public List<ShopItem> shopInventory;
-
-        /// <summary>
-        /// A list of all names a villager of this type can have.
-        /// </summary>
-        [CloneByReference]
-        public IReadOnlyList<string> villagerNames;
 
         /// <summary>
         /// The body sprite type that this specific villager has.
@@ -151,10 +151,17 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                 Velocity = 1f,
                 Direction = -1
             };
-
             NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 
-            villagerNames = JsonUtils.GetJSONFromFile("Assets/JSONData/VillagerNames.json")[VillagerType.ToString()].Qa().Select(value => value.Qs()).ToList();
+            // Villager Names
+            Dictionary<VillagerType, IReadOnlyList<string>> tempVillagerNames = new();
+            JsonValue villagerNameData = JsonUtils.GetJSONFromFile("Assets/JSONData/VillagerNames.json");
+
+            for (VillagerType villagerType = 0; (int)villagerType < NPCUtils.GetTotalVillagerTypeCount(); villagerType++) {
+                tempVillagerNames[villagerType] = villagerNameData[villagerType.ToString()].Qa().Select(value => value.Qs()).ToList();
+            }
+
+            villagerNames = tempVillagerNames;
         }
 
         public override void SetDefaults() {
@@ -194,7 +201,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public override bool CheckActive() => false;
 
-        public override List<string> SetNPCNameList() => villagerNames.ToList();
+        public override List<string> SetNPCNameList() => villagerNames[VillagerType].ToList();
 
         public override void SetChatButtons(ref string button, ref string button2) {
             button = Language.GetTextValue("LegacyInterface.28"); //"Shop"
