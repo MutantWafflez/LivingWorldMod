@@ -1,4 +1,5 @@
 ﻿using System;
+using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Utilities;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -12,17 +13,16 @@ namespace LivingWorldMod.Core.Patches {
     /// </summary>
     //TODO: Finish NPC umbrella stuff
     [Autoload(false)]
-    public class NPCAIPatches : ILoadable {
-        public void Load(Mod mod) {
-            Terraria.IL_NPC.AI_007_TownEntities += TownNPCAI;
+    public class NPCAIPatches : LoadablePatch {
+        public override void LoadPatches() {
+            IL_NPC.AI_007_TownEntities += TownNPCAI;
         }
 
-        public void Unload() { }
-
         private void TownNPCAI(ILContext il) {
+            currentContext = il;
             //REALLY simply patch. Remove the check for rain that prevents Town NPCs from walking around.
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //Navigate to RIGHT after rain check
             c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchLdsfld<Main>(nameof(Main.raining)));

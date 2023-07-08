@@ -1,25 +1,26 @@
 ﻿using System;
 using LivingWorldMod.Common.Sets;
+using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Utilities;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria;
 using Terraria.GameContent.Drawing;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Core.Patches {
     /// <summary>
     /// Handles all patches that relate to tile drawing.
     /// </summary>
-    public class TileDrawingPatches : ILoadable {
-        public void Load(Mod mod) {
+    public class TileDrawingPatches : LoadablePatch {
+        public override void LoadPatches() {
             IL_TileDrawing.DrawMultiTileVines += WindDrawingEdit;
         }
 
-        public void Unload() { }
 
         private void WindDrawingEdit(ILContext il) {
+            currentContext = il;
+
             // This edit allows for this mod to properly incorporate wind-sway for larger tiles
             ILCursor c = new(il);
 
@@ -27,7 +28,7 @@ namespace LivingWorldMod.Core.Patches {
             byte sizeYVarIndex = 8;
             byte tileVarIndex = 9;
 
-            c.ErrorOnFailedGotoNext(i => i.MatchCall<Terraria.GameContent.Drawing.TileDrawing>("DrawMultiTileVinesInWind"));
+            c.ErrorOnFailedGotoNext(i => i.MatchCall<TileDrawing>("DrawMultiTileVinesInWind"));
             c.Index -= 6;
             // We do this so we don't have to mess with the branches
             c.Emit(OpCodes.Pop);

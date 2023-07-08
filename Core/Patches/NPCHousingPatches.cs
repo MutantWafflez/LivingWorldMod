@@ -1,18 +1,18 @@
-﻿using LivingWorldMod.Common.Systems.UI;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using LivingWorldMod.Common.GlobalNPCs;
+using LivingWorldMod.Common.Systems.UI;
 using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.TileEntities.Interactables;
+using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using LivingWorldMod.Common.GlobalNPCs;
-using LivingWorldMod.Custom.Classes;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.Achievements;
@@ -24,21 +24,21 @@ namespace LivingWorldMod.Core.Patches {
     /// <summary>
     /// Class that contains IL/On patches for NPC housing-related manners.
     /// </summary>
-    public class NPCHousingPatches : ILoadable {
+    public class NPCHousingPatches : LoadablePatch {
         public static Point HouseBedPosition = Point.Zero;
 
-        public void Load(Mod mod) {
-            Terraria.IL_WorldGen.CheckSpecialTownNPCSpawningConditions += TestForVillageHouse;
+        public override void LoadPatches() {
+            IL_WorldGen.CheckSpecialTownNPCSpawningConditions += TestForVillageHouse;
 
-            Terraria.IL_Main.DrawInterface_38_MouseCarriedObject += DrawSelectedVillagerOnMouse;
+            IL_Main.DrawInterface_38_MouseCarriedObject += DrawSelectedVillagerOnMouse;
 
-            Terraria.IL_Main.DrawInterface_7_TownNPCHouseBanners += BannersVisibleWhileInVillagerHousingMenu;
+            IL_Main.DrawInterface_7_TownNPCHouseBanners += BannersVisibleWhileInVillagerHousingMenu;
 
-            Terraria.IL_Main.DrawNPCHousesInWorld += DrawVillagerBannerInHouses;
+            IL_Main.DrawNPCHousesInWorld += DrawVillagerBannerInHouses;
 
-            Terraria.IL_WorldGen.ScoreRoom_IsThisRoomOccupiedBySomeone += RoomOccupancyCheck;
+            IL_WorldGen.ScoreRoom_IsThisRoomOccupiedBySomeone += RoomOccupancyCheck;
 
-            Terraria.IL_WorldGen.ScoreRoom += IgnoreRoomOccupancy;
+            IL_WorldGen.ScoreRoom += IgnoreRoomOccupancy;
 
             //TODO: Finish NPC Sleeping Tests
             /*
@@ -50,10 +50,10 @@ namespace LivingWorldMod.Core.Patches {
             */
         }
 
-        public void Unload() { }
-
         private void TestForVillageHouse(ILContext il) {
-            ILCursor c = new ILCursor(il);
+            currentContext = il;
+
+            ILCursor c = new(il);
 
             //We do not want non-villagers spawning in villager homes, which is what this patch is for
             //In this method, a return of false will mean that the specific NPC cannot spawn in this house, and true means the opposite
@@ -70,7 +70,7 @@ namespace LivingWorldMod.Core.Patches {
             //Get type from passed in parameter
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Func<int, bool>>(type => {
-                Rectangle roomInQuestion = new Rectangle(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1, WorldGen.roomY2 - WorldGen.roomY1);
+                Rectangle roomInQuestion = new(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1, WorldGen.roomY2 - WorldGen.roomY1);
 
                 ModNPC modNPC = ModContent.GetModNPC(type);
                 List<VillageShrineEntity> shrines = TileEntityUtils.GetAllEntityOfType<VillageShrineEntity>().ToList();
@@ -103,12 +103,14 @@ namespace LivingWorldMod.Core.Patches {
         }
 
         private void DrawSelectedVillagerOnMouse(ILContext il) {
+            currentContext = il;
+
             //Run-down of this edit:
             //We want to draw the selected villager near the mouse, similar to how vanilla draws NPC heads on the mouse when the player is changing around houses
             //So, we want to avoid the head being drawn since there is no head sprite for villagers; so we will get an "exit" instruction that is after the head
             // drawing code using a label. The head will draw as normal if it the NPC in question is a normal NPC, otherwise, our special draw code takes over.
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             ILLabel exitLabel = c.DefineLabel();
 
@@ -125,15 +127,15 @@ namespace LivingWorldMod.Core.Patches {
             c.Index += 3;
 
             //What we return here will determine whether or not we skip past the drawing head step in the vanilla function.
-            c.EmitDelegate<Func<bool>>(() => {
+            c.EmitDelegate(() => {
                 if (Main.instance.mouseNPCIndex > -1 && Main.npc[Main.instance.mouseNPCIndex].ModNPC is Villager villager) {
                     float drawScale = 0.67f;
 
                     Texture2D bodyTexture = villager.bodyAssets[villager.bodySpriteType].Value;
                     Texture2D headTexture = villager.headAssets[villager.headSpriteType].Value;
 
-                    Vector2 drawPos = new Vector2(Main.mouseX, Main.mouseY);
-                    Rectangle textureDrawRegion = new Rectangle(0, 0, bodyTexture.Width, bodyTexture.Height / Main.npcFrameCount[villager.Type]);
+                    Vector2 drawPos = new(Main.mouseX, Main.mouseY);
+                    Rectangle textureDrawRegion = new(0, 0, bodyTexture.Width, bodyTexture.Height / Main.npcFrameCount[villager.Type]);
 
                     Main.spriteBatch.Draw(bodyTexture, drawPos, textureDrawRegion, Color.White, 0f, Vector2.Zero, Main.cursorScale * drawScale, SpriteEffects.None, 0f);
                     Main.spriteBatch.Draw(headTexture, drawPos, textureDrawRegion, Color.White, 0f, Vector2.Zero, Main.cursorScale * drawScale, SpriteEffects.None, 0f);
@@ -150,11 +152,13 @@ namespace LivingWorldMod.Core.Patches {
         }
 
         private void BannersVisibleWhileInVillagerHousingMenu(ILContext il) {
+            currentContext = il;
+
             //Edit rundown:
             //Very simple this time. We need to simply allow for the banners to be drawn while in the villager housing menu along with the normal
             // vanilla housing menu.
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //Navigate to EquipPage check
             c.ErrorOnFailedGotoNext(i => i.MatchLdsfld<Main>(nameof(Main.EquipPage)));
@@ -171,7 +175,7 @@ namespace LivingWorldMod.Core.Patches {
 
                 //Re-add our check, making sure it's inverted compared to the IL, since in IL it determines if the code should run if these values are FALSE,
                 // but since we took control of the instructions, we can test based on if it's true or not for easy understanding
-                c.EmitDelegate<Func<bool>>(() => Main.EquipPage == 1 || ModContent.GetInstance<VillagerHousingUISystem>().correspondingUIState.isMenuVisible);
+                c.EmitDelegate(() => Main.EquipPage == 1 || ModContent.GetInstance<VillagerHousingUISystem>().correspondingUIState.isMenuVisible);
 
                 c.Emit(OpCodes.Brtrue_S, stolenLabel);
             }
@@ -187,13 +191,15 @@ namespace LivingWorldMod.Core.Patches {
         }
 
         private void DrawVillagerBannerInHouses(ILContext il) {
+            currentContext = il;
+
             //Edit rundown (this one is kinda long):
             //We need to have the villagers who are living in villager homes be displayed on their banners, like they are for normal town NPCs
             //We will do this by hijacking the if statement that tests if the NPC is a town NPC and also test whether or not they are a villager
             //If they are a villager, modify vanilla draw statements, and make sure to transfer the code to draw the villager in their entirety
             //Next, and lastly, make it so the player cannot modify the housing of the villagers if they are not well-liked enough
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //Navigate to first TownNPC check
             c.ErrorOnFailedGotoNext(i => i.MatchLdfld<NPC>(nameof(NPC.townNPC)));
@@ -305,9 +311,9 @@ namespace LivingWorldMod.Core.Patches {
                     Texture2D bodyTexture = villager.bodyAssets[villager.bodySpriteType].Value;
                     Texture2D headTexture = villager.headAssets[villager.headSpriteType].Value;
 
-                    Rectangle textureDrawRegion = new Rectangle(0, 0, bodyTexture.Width, bodyTexture.Height / Main.npcFrameCount[villager.Type]);
-                    Vector2 drawPos = new Vector2(homeTileX * 16f - Main.screenPosition.X + 10f, homeTileYPixels - Main.screenPosition.Y + 14f);
-                    Vector2 drawOrigin = new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f);
+                    Rectangle textureDrawRegion = new(0, 0, bodyTexture.Width, bodyTexture.Height / Main.npcFrameCount[villager.Type]);
+                    Vector2 drawPos = new(homeTileX * 16f - Main.screenPosition.X + 10f, homeTileYPixels - Main.screenPosition.Y + 14f);
+                    Vector2 drawOrigin = new(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f);
 
                     //Take into account possible gravity swapping
                     SpriteEffects spriteEffect = Main.LocalPlayer.gravDir != -1 ? SpriteEffects.None : SpriteEffects.FlipVertically;
@@ -371,7 +377,7 @@ namespace LivingWorldMod.Core.Patches {
 
             //Move past call and copy the brfalse_S label, then move after the transform command
             c.Index++;
-            ILLabel falseTransformLabel = (ILLabel)c.Next.Operand;
+            ILLabel falseTransformLabel = (ILLabel)c.Next!.Operand;
             c.Index++;
             //Load this NPC to stack
             c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
@@ -390,9 +396,11 @@ namespace LivingWorldMod.Core.Patches {
         }
 
         private void RoomOccupancyCheck(ILContext il) {
+            currentContext = il;
+
             //This edit is simple; we will be allowing villagers to properly check along-side normal TownNPCs for the occupancy check vanilla does.
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //Navigate to townNPC check
             c.ErrorOnFailedGotoNext(i => i.MatchLdfld<NPC>(nameof(NPC.townNPC)));
@@ -403,21 +411,25 @@ namespace LivingWorldMod.Core.Patches {
         }
 
         private void IgnoreRoomOccupancy(ILContext il) {
+            currentContext = il;
+
             //Another simple edit; this edit will allow us to get WorldGen.bestX and WorldGen.bestY for a room, ignoring if the room is occupied.
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //Navigate to occupancy check
             c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCall<WorldGen>("ScoreRoom_IsThisRoomOccupiedBySomeone"));
 
             //Emit our check to see if our IgnoreOccupancy in HousingUtils.cs is true, and if so, automatically return false, ignoring occupancy
-            c.EmitDelegate<Func<bool, bool>>((isOccupied) => !HousingUtils.IgnoreHouseOccupancy && isOccupied);
+            c.EmitDelegate<Func<bool, bool>>(isOccupied => !HousingUtils.IgnoreHouseOccupancy && isOccupied);
         }
 
         private void FindRoomBed(ILContext il) {
+            currentContext = il;
+
             //One of two patches that injects itself into the ScoreRoom method in order to find a corresponding bed for an NPC
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //Navigate to right before tile loop
             c.ErrorOnFailedGotoNext(i => i.MatchLdsfld<WorldGen>(nameof(WorldGen.roomY2)));
@@ -432,7 +444,7 @@ namespace LivingWorldMod.Core.Patches {
                 for (int i = startX + 1; i < endX; i++) {
                     for (int j = startY + 2; j < endY + 2; j++) {
                         Tile tile = Framing.GetTileSafely(i, j);
-                        if (tile.HasTile && tile.TileType == TileID.Beds) {
+                        if (tile is { HasTile: true, TileType: TileID.Beds }) {
                             HouseBedPosition = TileUtils.GetTopLeftOfMultiTile(tile, i, j, 4).ToPoint();
                             return;
                         }
@@ -442,9 +454,11 @@ namespace LivingWorldMod.Core.Patches {
         }
 
         private void AssignBedToNPC(ILContext il) {
+            currentContext = il;
+
             //Second to of two patches that takes the potential calculated bed position in an NPC's house, and assigns it to them
 
-            ILCursor c = new ILCursor(il);
+            ILCursor c = new(il);
 
             //Navigate to right after homeless assignment
             c.ErrorOnFailedGotoNext(i => i.MatchCall<AchievementsHelper>(nameof(AchievementsHelper.NotifyProgressionEvent)));
