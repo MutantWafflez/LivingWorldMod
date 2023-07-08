@@ -23,15 +23,6 @@ Mods: {
 			WaystoneTile.MapEntry: Waystone
 			//Torch Tiles
 			StarTorchTile.MapEntry: "{$ItemName.Torch}"
-			SkywareBlockTile.MapEntry: Mods.LivingWorldMod.MapObject.SkywareBlockTile
-			StarshardCloudTile.MapEntry: Mods.LivingWorldMod.MapObject.StarshardCloudTile
-			StarshineBlockTile.MapEntry: Mods.LivingWorldMod.MapObject.StarshineBlockTile
-			SunslabBlockTile.MapEntry: Mods.LivingWorldMod.MapObject.SunslabBlockTile
-			NimbusJarTile.MapEntry: Mods.LivingWorldMod.MapObject.NimbusJarTile
-			SandstoneSlabWall.MapEntry: Mods.LivingWorldMod.MapObject.SandstoneSlabWall
-			SkywareWall.MapEntry: Mods.LivingWorldMod.MapObject.SkywareWall
-			SkywareFenceWall.MapEntry: Mods.LivingWorldMod.MapObject.SkywareFenceWall
-			PyramidBrickWall.MapEntry: Mods.LivingWorldMod.MapObject.PyramidBrickWall
 		}
 	}
 }

@@ -2,10 +2,10 @@ Mods: {
 	LivingWorldMod: {
 		UI: {
 			VillagerShop: {
-				// Buying: Buying:
-				// Stock: Stock:
-				// Buy: Buy
-				// Savings: Savings
+				Buying: "Buying:"
+				Stock: "Stock:"
+				Buy: Buy
+				Savings: Savings
 			}
 
 			VillagerHousing: {
