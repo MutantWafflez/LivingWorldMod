@@ -24,8 +24,9 @@ namespace LivingWorldMod.Custom.Classes {
         public void Load(Mod mod) {
             try {
                 LoadPatches();
+                currentContext = null;
             }
-            catch (ILPatchFailureException ilEx) {
+            catch (ILPatchFailureException) {
                 throw;
             }
             catch (Exception ex) {

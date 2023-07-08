@@ -11,6 +11,7 @@ using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria;
@@ -326,10 +327,14 @@ namespace LivingWorldMod.Core.Patches {
             c.Index = preExitJumpIndex;
 
             //Apply exit instruction transfer if the NPC is a villager
-            c.ErrorOnFailedGotoNext(i => i.MatchLdloca(npcProfileLocalNumber));
-
-            //Move to IL instruction that denotes the beginning of the line
-            c.Index -= 2;
+            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchLdsfld<Main>(nameof(Main.spriteBatch)));
+            //Steal operand of this ^ instruction, so we don't need to more reflection
+            FieldReference mainSpritebatchInfo = (FieldReference)c.Prev.Operand;
+            //Pop off the initial spritebatch loading and re-emit it ourselves, so we don't have to move around branches
+            c.Emit(OpCodes.Pop);
+            c.Emit(OpCodes.Ldsfld, mainSpritebatchInfo);
+            //Move to before this sprite-batch call
+            c.Index--;
             //Load this NPC to stack
             c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
             //Test for villager status
@@ -340,7 +345,7 @@ namespace LivingWorldMod.Core.Patches {
             // a lot of math instructions and a spritebatch call
 
             //Finally, we are going to change the hover text and prevent the player from un-housing villagers if they are not well-liked enough
-            byte bannerHoverTextLocalNumber = 26;
+            byte bannerHoverTextLocalNumber = 25;
 
             //Navigate to banner hover text variable allocation
             c.ErrorOnFailedGotoNext(i => i.MatchStloc(bannerHoverTextLocalNumber));
@@ -373,10 +378,9 @@ namespace LivingWorldMod.Core.Patches {
             */
 
             //Navigate to right-click call in main
-            c.ErrorOnFailedGotoNext(i => i.MatchLdsfld<Main>(nameof(Main.mouseRight)));
+            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchLdsfld<Main>(nameof(Main.mouseRight)));
 
-            //Move past call and copy the brfalse_S label, then move after the transform command
-            c.Index++;
+            //Copy the brfalse_S label, then move after the transform command
             ILLabel falseTransformLabel = (ILLabel)c.Next!.Operand;
             c.Index++;
             //Load this NPC to stack
