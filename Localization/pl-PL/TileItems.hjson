@@ -1,41 +1,41 @@
-﻿Mods: {
+Mods: {
 	LivingWorldMod: {
-	
-		ItemName: {
+		Items: {
 			//Building
-			SkywareBlockItem: "Blok Skyware"
-			StarshardCloudItem: "Chmura Starshard"
-			StarshineBlockItem: "Blok blasku gwiazd"
-			SunslabBlockItem: "Blok Sunslab"
+			SkywareBlockItem.DisplayName: Blok Skyware
 
+			StarshardCloudItem: {
+				DisplayName: Chmura Starshard
+				//Building
+				Tooltip: "'Odłamki upadłych gwiazd przenikają przez tę chmurę'"
+			}
+
+			StarshineBlockItem.DisplayName: Blok blasku gwiazd
+			SunslabBlockItem.DisplayName: Blok Sunslab
 			//Furniture
-			NimbusJarItem: "Nimbus w słoiku"
-			GravityTapestryItem: "Gobelin grawitacyjny"
-			SkywareAnvilItem: "Skyware kowadło"
-			SkywareLoomItem: "Krosno Skyware"
-			SunTapestryItem: "Gobelin słoneczny"
+			NimbusJarItem.DisplayName: Nimbus w słoiku
+			GravityTapestryItem.DisplayName: Gobelin grawitacyjny
+			SkywareAnvilItem.DisplayName: Skyware kowadło
+			SkywareLoomItem.DisplayName: Krosno Skyware
+			SunTapestryItem.DisplayName: Gobelin słoneczny
 
-			//Interactables
-
+			HarpyShrineItem: {
+				//Interactables
+				
 				//Shrines
-				HarpyShrineItem: "Świątynia Wioski Harpii"
-
-			//Torches
-			StarTorchItem: "Pochodnia Gwiazd"
-		}
-
-		ItemTooltip: {
-			//Building
-			StarshardCloudItem: "'Odłamki upadłych gwiazd przenikają przez tę chmurę'"
-
-			//Interactables
-
+				DisplayName: Świątynia Wioski Harpii
+				//Interactables
+				
 				//Shrines
-				HarpyShrineItem: "'Magiczne źródło ochrony dla wszystkich, którzy zamieszkują wioskę Harpii'"
+				Tooltip: "'Magiczne źródło ochrony dla wszystkich, którzy zamieszkują wioskę Harpii'"
+			}
 
-			//Torches
-			StarTorchItem: "'Rozświetl drogę esencją kosmosu'"
+			StarTorchItem: {
+				//Torches
+				DisplayName: Pochodnia Gwiazd
+				//Torches
+				Tooltip: "'Rozświetl drogę esencją kosmosu'"
+			}
 		}
-	
 	}
 }

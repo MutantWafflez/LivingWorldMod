@@ -1,13 +1,10 @@
-﻿Mods: {
+Mods: {
 	LivingWorldMod: {
-	
-		BuffName: {
-			NimbusPetBuff: "Nimbus Pet"
+		Buffs: {
+			NimbusPetBuff: {
+				DisplayName: Nimbus Pet
+				Description: "'I bet it tastes like cotton candy...'"
+			}
 		}
-
-		BuffDescription: {
-			NimbusPetBuff: "'I bet it tastes like cotton candy...'"
-		}
-	
 	}
 }

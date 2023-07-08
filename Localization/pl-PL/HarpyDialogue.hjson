@@ -1,124 +1,127 @@
-﻿Mods: {
+Mods: {
 	LivingWorldMod: {
-		
 		VillagerDialogue: {
 			Harpy: {
-
 				Event: {
 					//Rain
-					0: "Jestem bardzo wdzięczny, że jesteśmy ponad chmurami. Nie mogę znieść mokrych włosów."
-					1: "Ahh, oglądanie deszczu spadającego z chmur jest takie relaksujące."
-					
+					0: Jestem bardzo wdzięczny, że jesteśmy ponad chmurami. Nie mogę znieść mokrych włosów.
+					1: Ahh, oglądanie deszczu spadającego z chmur jest takie relaksujące.
 					//Eclipse
-					2: "Fajnie jest patrzeć, jak wszystkie szalone potwory atakują ludzi. Cieszę się, że jesteśmy tu trochę bezpieczni."
-					3: "Co, boisz się czy coś?"
-
+					2: Fajnie jest patrzeć, jak wszystkie szalone potwory atakują ludzi. Cieszę się, że jesteśmy tu trochę bezpieczni.
+					3: Co, boisz się czy coś?
 					//Blood Moon
-					4: "Primal dur-SQUAK... podczas krwawy-SQUAK księżyc-SQUAK!"
-					5: "...Nie idę do SQUAK, powiedz nic-SQUAK!"
-					6: "Mokry SQUAK Krew SQUAK denerwujący!" // (and rain)
+					4: Primal dur-SQUAK... podczas krwawy-SQUAK księżyc-SQUAK!
+					5: ...Nie idę do SQUAK, powiedz nic-SQUAK!
+					6: Mokry SQUAK Krew SQUAK denerwujący!
 				}
 
 				Shop: {
 					Initial: {
 						SevereDislike: {
-							0: "Masz szczęście, że nawet pozwalam ci ze mną rozmawiać, nie mówiąc już o kupowaniu moich rzeczy. Po prostu wiedz, że wszystko, co kupisz, będzie marżą z powodu wszystkich kłopotów, które nam spowodowałeś."
-							1: "Wy obrzydliwi ziemiochodzący krążycie po całym świecie, wpadacie do miejsc takich, jak do nich należycie. Po prostu powiedz mi, czego chcesz, a ja zdecyduję, o ile to zaznaczę."
+							0: Masz szczęście, że nawet pozwalam ci ze mną rozmawiać, nie mówiąc już o kupowaniu moich rzeczy. Po prostu wiedz, że wszystko, co kupisz, będzie marżą z powodu wszystkich kłopotów, które nam spowodowałeś.
+							1: Wy obrzydliwi ziemiochodzący krążycie po całym świecie, wpadacie do miejsc takich, jak do nich należycie. Po prostu powiedz mi, czego chcesz, a ja zdecyduję, o ile to zaznaczę.
 						}
+
 						Dislike: {
-							0: "Wiesz, skoro nie ma żadnych przepisów regulujących ceny i naprawdę nie ma konkurencji, z powodu drobnych problemów, przez które nas naraziłeś, myślę, że twój następny produkt będzie trochę droższy."
-							1: "Idź ostrożnie, ziemiochodzący. Ciągle się pomyliłeś, tak jak ostatnio, a wkrótce będzie to kosztować całą platynę, aby kupić jedną z tych rzeczy!"
+							0: Wiesz, skoro nie ma żadnych przepisów regulujących ceny i naprawdę nie ma konkurencji, z powodu drobnych problemów, przez które nas naraziłeś, myślę, że twój następny produkt będzie trochę droższy.
+							1: Idź ostrożnie, ziemiochodzący. Ciągle się pomyliłeś, tak jak ostatnio, a wkrótce będzie to kosztować całą platynę, aby kupić jedną z tych rzeczy!
 						}
+
 						Neutral: {
-							0: "Miło, że się zatrzymałeś, ziemiochodzący. Doceniłbym teraz dodatkową monetę, wszystko jest w standardowej cenie?!"
-							1: "Jaka byłabym harpią, aby dać ci nieuczciwe ceny, jeśli naprawdę nie zrobiłeś wrażenia?"
+							0: Miło, że się zatrzymałeś, ziemiochodzący. Doceniłbym teraz dodatkową monetę, wszystko jest w standardowej cenie?!
+							1: Jaka byłabym harpią, aby dać ci nieuczciwe ceny, jeśli naprawdę nie zrobiłeś wrażenia?
 						}
+
 						Like: {
-							0: "Zastanawiam się, czy moi przyjaciele zechcą poćwiczyć strzelanie z piór później... Eee- tak, wszystko, co mam, wzbudzi twoje zainteresowanie, ziemiochodzący?"
-							1: "Wiesz, kiedy przyjechałeś tu po raz pierwszy, myślałem, że jesteś jak wszyscy inni ziemiochodzący, ale byłem mile zaskoczony, że tak nie jest. Mam małą zniżkę na mnie!"
+							0: Zastanawiam się, czy moi przyjaciele zechcą poćwiczyć strzelanie z piór później... Eee- tak, wszystko, co mam, wzbudzi twoje zainteresowanie, ziemiochodzący?
+							1: Wiesz, kiedy przyjechałeś tu po raz pierwszy, myślałem, że jesteś jak wszyscy inni ziemiochodzący, ale byłem mile zaskoczony, że tak nie jest. Mam małą zniżkę na mnie!
 						}
+
 						Love: {
-							0: "Szukasz czegoś do kupienia, ziemiochodzący? Wiem, że prawdopodobnie stać Cię na wszystko w normalnej cenie, ale nie mogę się powstrzymać od udzielenia Ci rabatu mimo wszystko."
-							1: "Znasz ziemiochodzący, daj mi tę zniżkę. Chyba zasługujesz na to, że tak bardzo pomagasz wiosce, czy cokolwiek. Po prostu kup coś!"
+							0: Szukasz czegoś do kupienia, ziemiochodzący? Wiem, że prawdopodobnie stać Cię na wszystko w normalnej cenie, ale nie mogę się powstrzymać od udzielenia Ci rabatu mimo wszystko.
+							1: Znasz ziemiochodzący, daj mi tę zniżkę. Chyba zasługujesz na to, że tak bardzo pomagasz wiosce, czy cokolwiek. Po prostu kup coś!
 						}
 					}
+
 					Buy: {
 						SevereDislike: {
-							0: "Jak głupi jesteś, żeby kupić coś po tak ogromnej marży? Chyba wszyscy ludzie są naprawdę głupi!"
-							1: "Tak jak mówiłem wcześniej, masz szczęście, że nawet pozwalam ci rozmawiać ze mną. Dzięki za zakup chyba."
+							0: Jak głupi jesteś, żeby kupić coś po tak ogromnej marży? Chyba wszyscy ludzie są naprawdę głupi!
+							1: Tak jak mówiłem wcześniej, masz szczęście, że nawet pozwalam ci rozmawiać ze mną. Dzięki za zakup chyba.
 						}
+
 						Dislike: {
-							0: "Jeśli myślałeś, że tych znaczników jest dużo, jeszcze nic nie widziałeś. Uważaj, ziemiochodzący. Dzięki za zakup."
-							1: "Musisz myśleć, że jesteś tak bogaty, że możesz kupować to wszystko bez względu na cenę. Cokolwiek. Chyba dzięki za pieniądze."
+							0: Jeśli myślałeś, że tych znaczników jest dużo, jeszcze nic nie widziałeś. Uważaj, ziemiochodzący. Dzięki za zakup.
+							1: Musisz myśleć, że jesteś tak bogaty, że możesz kupować to wszystko bez względu na cenę. Cokolwiek. Chyba dzięki za pieniądze.
 						}
+
 						Neutral: {
-							0: "Jak, dzięki za zakup, landwalker."
-							1: "Dzięki za zakup, ziemiochodzący. Nie dałoby się utrzymać tej gospodarki przy życiu bez takich zakupów!"
+							0: Jak, dzięki za zakup, landwalker.
+							1: Dzięki za zakup, ziemiochodzący. Nie dałoby się utrzymać tej gospodarki przy życiu bez takich zakupów!
 						}
+
 						Like: {
-							0: "Hej, dzięki za zakup! To dużo znaczy. Nie mamy tu zbyt wiele handlu międzygatunkowego, więc miło jest mieć cię w pobliżu."
-							1: "Kontynuuj dobrą pracę, a rabat, który właśnie otrzymałeś, może stać się jeszcze lepszy. Nie słyszałeś tego ode mnie, ziemiochodzący."
+							0: Hej, dzięki za zakup! To dużo znaczy. Nie mamy tu zbyt wiele handlu międzygatunkowego, więc miło jest mieć cię w pobliżu.
+							1: Kontynuuj dobrą pracę, a rabat, który właśnie otrzymałeś, może stać się jeszcze lepszy. Nie słyszałeś tego ode mnie, ziemiochodzący.
 						}
+
 						Love: {
-							0: "Możemy lubić, nigdy nie dziękujemy za takie zakupy. Żaden inny człowiek nigdy nie otrzymał takich zniżek!"
-							1: "Więc w końcu coś kupiłeś? Cokolwiek. Żartuję, bardzo dziękuję za zakup, ziemiochodzie!"
+							0: Możemy lubić, nigdy nie dziękujemy za takie zakupy. Żaden inny człowiek nigdy nie otrzymał takich zniżek!
+							1: Więc w końcu coś kupiłeś? Cokolwiek. Żartuję, bardzo dziękuję za zakup, ziemiochodzie!
 						}
 					}
 				}
 
 				SevereDislike: {
-					0: "Nie bierz tego do siebie, jeśli lubimy, oderwij ręce i zjedz cię, czy coś."
-					1: "Jak w ogóle żyjesz z tymi odrażającymi mięsnymi paluszkami zamiast skrzydeł??"
-					2: "Naprawdę marszczysz moje pióra, ziemiochodzie!"
-					3: "Jaka tam pogoda? Mam nadzieję, że to okropne."
-					4: "Zostaw mnie w spokoju, brzydki, chodzący po ziemi synu... SQUAK!"
-					5: "Chcesz, żeby moje pióra spływały ci po plecach jak stegozaur??"
-					6: "Czy ten ptak jest nielotny i denerwujący?...?"
-					7: "Ludzie... Podły. Stworzyłem te paskudne okna!"
+					0: Nie bierz tego do siebie, jeśli lubimy, oderwij ręce i zjedz cię, czy coś.
+					1: Jak w ogóle żyjesz z tymi odrażającymi mięsnymi paluszkami zamiast skrzydeł??
+					2: Naprawdę marszczysz moje pióra, ziemiochodzie!
+					3: Jaka tam pogoda? Mam nadzieję, że to okropne.
+					4: Zostaw mnie w spokoju, brzydki, chodzący po ziemi synu... SQUAK!
+					5: Chcesz, żeby moje pióra spływały ci po plecach jak stegozaur??
+					6: Czy ten ptak jest nielotny i denerwujący?...?
+					7: Ludzie... Podły. Stworzyłem te paskudne okna!
 				}
 
 				Dislike: {
-					0: "Idź ostrożnie, ziemiochodzący. Zdenerwowałeś kilku z nas tutaj w wiosce."
-					1: "Jasne, kup coś, jeśli chcesz. Ale za niedogodności, które spowodowałeś niektórym z nas, będzie trochę marży."
-					2: "Jeśli uważasz, że niektórzy z nas patrzą na ciebie paskudnie, prawdopodobnie masz rację."
-					3: "What do you want? I'm trying to relax here."
-					4: "Ostatnio nie robisz tu najlepszych wrażenia. Możesz to zmienić, najlepiej wkrótce."
-					5: "No cześć. Czy mogę ci w ogóle pomóc? Nie? Potem zejdź mi z twarzy."
-					6: "Będę z tobą szczery, człowieku. Sprawiłeś nam trochę problemów. Nic skandalicznego, ale pozostawił w naszych ustach nieco kwaśny posmak. Możemy zrozumieć, że były to tylko jednorazowe błędy, ale lepiej działaj ostrożnie, zanim sprawy staną się dla ciebie bardzo, bardzo złe."
+					0: Idź ostrożnie, ziemiochodzący. Zdenerwowałeś kilku z nas tutaj w wiosce.
+					1: Jasne, kup coś, jeśli chcesz. Ale za niedogodności, które spowodowałeś niektórym z nas, będzie trochę marży.
+					2: Jeśli uważasz, że niektórzy z nas patrzą na ciebie paskudnie, prawdopodobnie masz rację.
+					3: What do you want? I'm trying to relax here.
+					4: Ostatnio nie robisz tu najlepszych wrażenia. Możesz to zmienić, najlepiej wkrótce.
+					5: No cześć. Czy mogę ci w ogóle pomóc? Nie? Potem zejdź mi z twarzy.
+					6: Będę z tobą szczery, człowieku. Sprawiłeś nam trochę problemów. Nic skandalicznego, ale pozostawił w naszych ustach nieco kwaśny posmak. Możemy zrozumieć, że były to tylko jednorazowe błędy, ale lepiej działaj ostrożnie, zanim sprawy staną się dla ciebie bardzo, bardzo złe.
 				}
 
 				Neutral: {
-					0: "Nie rozumiem, co jest złego w byciu ptasim mózgiem?"
-					1: "Mam nadzieję, że uda mi się przynajmniej raz stanąć na czele formacji V, zanim umrę."
-					2: "Latanie po niebie jest jak uwolnienie. Powinieneś kiedyś spróbować."
-					3: "Trochę boję się latać zbyt wysoko i unosić się w kosmos, słońce czy coś."
-					4: "Coś kupisz, prawda? Nie przyszedłeś tu po nic, prawda?"
-					5: "Nie, nie chcę żadnych krakersów. I przestań nazywać mnie Polly!"
-					6: "Pytasz, jak się rozmnażamy, jeśli wszyscy jesteśmy kobietami? Nie bądź głupi."
+					0: Nie rozumiem, co jest złego w byciu ptasim mózgiem?
+					1: Mam nadzieję, że uda mi się przynajmniej raz stanąć na czele formacji V, zanim umrę.
+					2: Latanie po niebie jest jak uwolnienie. Powinieneś kiedyś spróbować.
+					3: Trochę boję się latać zbyt wysoko i unosić się w kosmos, słońce czy coś.
+					4: Coś kupisz, prawda? Nie przyszedłeś tu po nic, prawda?
+					5: Nie, nie chcę żadnych krakersów. I przestań nazywać mnie Polly!
+					6: Pytasz, jak się rozmnażamy, jeśli wszyscy jesteśmy kobietami? Nie bądź głupi.
 				}
 
 				Like: {
-					0: "Ziemiochodzący! Chcesz coś kupić, prawda? A może po prostu chciałeś ze mną porozmawiać??"
-					1: "Czy moje pióra nie są dziś ładne? Spędziłem cały dzień na ich oporządzaniu."
-					2: "Powinnaś kiedyś usiąść ze mną na mojej grzędzie. Powiew jest tak przyjemny, że naprawdę pomaga mojemu zen."
-					3: "Nie jesteś taki zły jak na człowieka chodzącego po ziemi. Przyjdź kiedyś ponownie?!"
-					4: "Tu na górze robi się trochę nudno. Ale nie jest tak źle, kiedy się pojawiasz."
-					5: "Czy ten top sprawia, że ​​moje skrzydła wyglądają na grube??"
-					6: "ptoo!- Przepraszam, znowu mam pióro w ustach. Zdarza się za każdym razem."
-					7: "Naprawdę mam nadzieję, że krwawy księżyc nie nastąpi szybko, nie chcę mieć do czynienia z potarganiem moich piór." 
+					0: Ziemiochodzący! Chcesz coś kupić, prawda? A może po prostu chciałeś ze mną porozmawiać??
+					1: Czy moje pióra nie są dziś ładne? Spędziłem cały dzień na ich oporządzaniu.
+					2: Powinnaś kiedyś usiąść ze mną na mojej grzędzie. Powiew jest tak przyjemny, że naprawdę pomaga mojemu zen.
+					3: Nie jesteś taki zły jak na człowieka chodzącego po ziemi. Przyjdź kiedyś ponownie?!
+					4: Tu na górze robi się trochę nudno. Ale nie jest tak źle, kiedy się pojawiasz.
+					5: Czy ten top sprawia, że ​​moje skrzydła wyglądają na grube??
+					6: ptoo!- Przepraszam, znowu mam pióro w ustach. Zdarza się za każdym razem.
+					7: Naprawdę mam nadzieję, że krwawy księżyc nie nastąpi szybko, nie chcę mieć do czynienia z potarganiem moich piór.
 				}
 
 				Love: {
-					0: "Hej! Oto mój ulubiony człowiek! Jak ci idzie??"
-					1: "Wiesz, masz szczęście, że jesteś super lubiany w tej wiosce. W żaden inny sposób nie dalibyśmy takich zniżek!"
-					2: "Hej! Tak szczęśliwy, że mógłbyś się zatrzymać; tym razem masz dla nas jakieś historie? Chętnie ich wysłuchamy!"
-					3: "Wiesz, jeśli mam być szczery, kiedy po raz pierwszy pojawiłeś się w wiosce, nie byliśmy pewni, co o tobie myśleć. Nigdy nie odwiedzają nas wędrowni goście. Ale wiesz co? Cieszymy się że tu jesteś."
-					4: "Nie uważasz wyrażenia „landwalker” za obraźliwe, prawda? Mówimy to od tak dawna! O rany..."
-					5: "Nie wiem, jak mogłeś sobie poradzić ze zejściem do podziemia. Powietrze musi być takie stęchłe i suche... Tu na niebie jest o wiele lepiej!"
-				}       
-
+					0: Hej! Oto mój ulubiony człowiek! Jak ci idzie??
+					1: Wiesz, masz szczęście, że jesteś super lubiany w tej wiosce. W żaden inny sposób nie dalibyśmy takich zniżek!
+					2: Hej! Tak szczęśliwy, że mógłbyś się zatrzymać; tym razem masz dla nas jakieś historie? Chętnie ich wysłuchamy!
+					3: Wiesz, jeśli mam być szczery, kiedy po raz pierwszy pojawiłeś się w wiosce, nie byliśmy pewni, co o tobie myśleć. Nigdy nie odwiedzają nas wędrowni goście. Ale wiesz co? Cieszymy się że tu jesteś.
+					4: Nie uważasz wyrażenia „landwalker” za obraźliwe, prawda? Mówimy to od tak dawna! O rany...
+					5: Nie wiem, jak mogłeś sobie poradzić ze zejściem do podziemia. Powietrze musi być takie stęchłe i suche... Tu na niebie jest o wiele lepiej!
+				}
 			}
 		}
-
 	}
 }

@@ -1,9 +1,1 @@
-﻿Mods: {
-	LivingWorldMod: {
-	
-		Bestiary: {
-			HarpyVillager: "Um aldeão da vila Harpia no céu. Não despenteie suas penas ou tente flertar com alguma se você valoriza sua vida."
-		}
-	
-	}
-}
+Mods.LivingWorldMod.Bestiary.HarpyVillager: Um aldeão da vila Harpia no céu. Não despenteie suas penas ou tente flertar com alguma se você valoriza sua vida.

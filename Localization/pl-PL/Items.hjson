@@ -1,27 +1,30 @@
-﻿Mods: {
+Mods: {
 	LivingWorldMod: {
-	
-		ItemName: {
-			//Accessory Item
-			NimbusInABottle: "Nimbus w butelce"
+		Items: {
+			NimbusInABottle: {
+				//Accessory Item
+				DisplayName: Nimbus w butelce
+				//Accessory Items
+				Tooltip: Przywołuje uroczą aureolę, która podąża za tobą
+			}
 
-			//Food Items
-			FriedHarpyEgg: "Smażone Jajko Harpii"
+			FriedHarpyEgg: {
+				//Food Items
+				DisplayName: Smażone Jajko Harpii
+				//Food Items
+				Tooltip:
+					'''
+					{$CommonItemTooltip.MajorStats}
+					'Ty potworze.'
+					'''
+			}
 
-			//Misc Items
-			HarpyEgg: "Jajo harpii"
+			HarpyEgg: {
+				//Misc Items
+				DisplayName: Jajo harpii
+				//Misc Items
+				Tooltip: "'Jest dość duży, ale wygląda jak każde inne jajko.'"
+			}
 		}
-
-		ItemTooltip: {
-			//Accessory Items
-			NimbusInABottle: "Przywołuje uroczą aureolę, która podąża za tobą"
-
-			//Food Items
-			FriedHarpyEgg: "{$CommonItemTooltip.MajorStats}\n'Ty potworze.'"
-				
-			//Misc Items
-			HarpyEgg: "'Jest dość duży, ale wygląda jak każde inne jajko.'"
-		}
-
 	}
 }

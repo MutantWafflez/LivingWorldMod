@@ -1,23 +1,26 @@
 Mods: {
 	LivingWorldMod: {
-	
 		UI: {
-			VillagerHousing: {
-				ButtonHoverText: "Alloggio interspecie"
-				VillagerTypeLocked: "L'abitante arpia {0} non si trasferirà finché non sei di suo gradimento!"
+			VillagerShop: {
+				// Buying: Buying:
+				// Stock: Stock:
+				// Buy: Buy
+				// Savings: Savings
 			}
+
+			VillagerHousing: {
+				ButtonHoverText: Alloggio interspecie
+				VillagerTypeLocked: L'abitante arpia {0} non si trasferirà finché non sei di suo gradimento!
+			}
+
 			Shrine: {
-				HarpyCountdown: "Uovo di arpia in:"
-
-				AddText: "Aggiungi 1"
-				TakeText: "Prendi 1"
-
-				DisableVillageRadius: "Nascondi il raggio magico del villaggio"
-				EnableVillageRadius: "Visualizza il raggio magico del villaggio"
-
-				ForceShrineButtonText: "Forza sincronizzazione alloggio"
+				HarpyCountdown: Uovo di arpia in:
+				AddText: Aggiungi 1
+				TakeText: Prendi 1
+				DisableVillageRadius: Nascondi il raggio magico del villaggio
+				EnableVillageRadius: Visualizza il raggio magico del villaggio
+				ForceShrineButtonText: Forza sincronizzazione alloggio
 			}
 		}
-	
 	}
 }

@@ -1,12 +1,10 @@
-﻿Mods: {
+Mods: {
 	LivingWorldMod: {
-	
-		ItemName: {
+		Items: {
 			//Wall Item Names
-			SkywareWallItem: "Skyware Wall"
-			SandstoneSlabWallItem: "Sandstone Slab Wall"
-			SkywareFenceItem: "Skyware Fence"
+			SkywareWallItem.DisplayName: Skyware Wall
+			SandstoneSlabWallItem.DisplayName: Sandstone Slab Wall
+			SkywareFenceItem.DisplayName: Skyware Fence
 		}
-
 	}
 }

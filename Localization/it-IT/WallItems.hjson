@@ -1,12 +1,10 @@
 Mods: {
 	LivingWorldMod: {
-	
-		ItemName: {
+		Items: {
 			//Wall Item Names
-			SkywareWallItem: "Muro celeste"
-			SandstoneSlabWallItem: "Muro in lastre di arenaria"
-			SkywareFenceItem: "Recinto celeste"
+			SkywareWallItem.DisplayName: Muro celeste
+			SandstoneSlabWallItem.DisplayName: Muro in lastre di arenaria
+			SkywareFenceItem.DisplayName: Recinto celeste
 		}
-
 	}
 }

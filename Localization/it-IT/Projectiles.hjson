@@ -1,9 +1,1 @@
-Mods: {
-	LivingWorldMod: {
-	
-		ProjectileName: {
-			NimbusPetProjectile: "Nuvoletta domestica"
-		}
-
-	}
-}
+Mods.LivingWorldMod.Projectiles.NimbusPetProjectile.DisplayName: Nuvoletta domestica

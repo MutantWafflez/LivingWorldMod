@@ -1,9 +1,1 @@
-﻿Mods: {
-	LivingWorldMod: {
-	
-		VillagerType: {
-			Harpy: "Harpy"
-		}
-		
-	}
-}
+Mods.LivingWorldMod.VillagerType.Harpy: Harpy

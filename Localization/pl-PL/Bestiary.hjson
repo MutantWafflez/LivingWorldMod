@@ -1,9 +1,1 @@
-﻿Mods: {
-	LivingWorldMod: {
-	
-		Bestiary: {
-			HarpyVillager: "Wieśniak z Wioski Harpii na niebie. Nie marszczyj ich piór ani nie próbuj flirtować, jeśli cenisz swoje życie."
-		}
-	
-	}
-}
+Mods.LivingWorldMod.Bestiary.HarpyVillager: Wieśniak z Wioski Harpii na niebie. Nie marszczyj ich piór ani nie próbuj flirtować, jeśli cenisz swoje życie.

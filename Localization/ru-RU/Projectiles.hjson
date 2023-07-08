@@ -1,9 +1,1 @@
-﻿Mods: {
-	LivingWorldMod: {
-	
-		ProjectileName: {
-			NimbusPetProjectile: "Nimbus Pet"
-		}
-
-	}
-}
+Mods.LivingWorldMod.Projectiles.NimbusPetProjectile.DisplayName: Nimbus Pet

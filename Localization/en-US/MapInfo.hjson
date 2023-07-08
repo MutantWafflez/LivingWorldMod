@@ -1,33 +1,37 @@
-﻿Mods: {
+Mods: {
 	LivingWorldMod: {
-	
 		MapInfo: {
-			Shrines: {
-				Harpy: "Harpy Village"
-			}
+			Shrines.Harpy: Harpy Village
+
 			Waystones: {
-				Desert: "Desert Waystone"
-				Jungle: "Jungle Waystone"
-				Mushroom: "Glowing Mushroom Waystone"
-				Caverns: "Caverns Waystone"
-				Ice: "Tundra Waystone"
+				Desert: Desert Waystone
+				Jungle: Jungle Waystone
+				Mushroom: Glowing Mushroom Waystone
+				Caverns: Caverns Waystone
+				Ice: Tundra Waystone
 			}
 		}
 
-		MapObject: {
+		Tiles: {
 			//Furniture Tiles
-			GravityTapestryTile: "Tapestry"
-			SkywareAnvilTile: "{$Mods.LivingWorldMod.ItemName.SkywareAnvilItem}"
-			SkywareLoomTile: "{$Mods.LivingWorldMod.ItemName.SkywareLoomItem}"
-			SunTapestryTile: "{$Mods.LivingWorldMod.MabObject.GravityTapestryTile}"
-
-		    //Interactable Tiles
-			VillageShrineTile: "Village Shrine"
-			WaystoneTile: "Waystone"
-
+			GravityTapestryTile.MapEntry: Tapestry
+			SkywareAnvilTile.MapEntry: "{$Mods.LivingWorldMod.ItemName.SkywareAnvilItem}"
+			SkywareLoomTile.MapEntry: "{$Mods.LivingWorldMod.ItemName.SkywareLoomItem}"
+			SunTapestryTile.MapEntry: "{$Mods.LivingWorldMod.MabObject.GravityTapestryTile}"
+			//Interactable Tiles
+			VillageShrineTile.MapEntry: Village Shrine
+			WaystoneTile.MapEntry: Waystone
 			//Torch Tiles
-			StarTorchTile: "{$ItemName.Torch}"
+			StarTorchTile.MapEntry: "{$ItemName.Torch}"
+			SkywareBlockTile.MapEntry: Mods.LivingWorldMod.MapObject.SkywareBlockTile
+			StarshardCloudTile.MapEntry: Mods.LivingWorldMod.MapObject.StarshardCloudTile
+			StarshineBlockTile.MapEntry: Mods.LivingWorldMod.MapObject.StarshineBlockTile
+			SunslabBlockTile.MapEntry: Mods.LivingWorldMod.MapObject.SunslabBlockTile
+			NimbusJarTile.MapEntry: Mods.LivingWorldMod.MapObject.NimbusJarTile
+			SandstoneSlabWall.MapEntry: Mods.LivingWorldMod.MapObject.SandstoneSlabWall
+			SkywareWall.MapEntry: Mods.LivingWorldMod.MapObject.SkywareWall
+			SkywareFenceWall.MapEntry: Mods.LivingWorldMod.MapObject.SkywareFenceWall
+			PyramidBrickWall.MapEntry: Mods.LivingWorldMod.MapObject.PyramidBrickWall
 		}
-	
 	}
 }

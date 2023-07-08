@@ -1,41 +1,41 @@
-﻿Mods: {
+Mods: {
 	LivingWorldMod: {
-	
-		ItemName: {
+		Items: {
 			//Building
-			SkywareBlockItem: "Skyware Block"
-			StarshardCloudItem: "Starshard Cloud"
-			StarshineBlockItem: "Starshine Block"
-			SunslabBlockItem: "Sunslab Block"
+			SkywareBlockItem.DisplayName: Skyware Block
 
+			StarshardCloudItem: {
+				DisplayName: Starshard Cloud
+				//Building
+				Tooltip: "'Shards of fallen stars permeate throughout this cloud'"
+			}
+
+			StarshineBlockItem.DisplayName: Starshine Block
+			SunslabBlockItem.DisplayName: Sunslab Block
 			//Furniture
-			NimbusJarItem: "Nimbus in a Jar"
-			GravityTapestryItem: "Gravity Tapestry"
-			SkywareAnvilItem: "Skyware Anvil"
-			SkywareLoomItem: "Skyware Loom"
-			SunTapestryItem: "Sun Tapestry"
+			NimbusJarItem.DisplayName: Nimbus in a Jar
+			GravityTapestryItem.DisplayName: Gravity Tapestry
+			SkywareAnvilItem.DisplayName: Skyware Anvil
+			SkywareLoomItem.DisplayName: Skyware Loom
+			SunTapestryItem.DisplayName: Sun Tapestry
 
-			//Interactables
-
+			HarpyShrineItem: {
+				//Interactables
+				
 				//Shrines
-				HarpyShrineItem: "Harpy Village Shrine"
-
-			//Torches
-			StarTorchItem: "Star Torch"
-		}
-
-		ItemTooltip: {
-			//Building
-			StarshardCloudItem: "'Shards of fallen stars permeate throughout this cloud'"
-
-			//Interactables
-
+				DisplayName: Harpy Village Shrine
+				//Interactables
+				
 				//Shrines
-				HarpyShrineItem: "'The magical source of protection for all those that inhabit a Harpy Village'"
+				Tooltip: "'The magical source of protection for all those that inhabit a Harpy Village'"
+			}
 
-			//Torches
-			StarTorchItem: "'Light the way with the essence of the cosmos'"
+			StarTorchItem: {
+				//Torches
+				DisplayName: Star Torch
+				//Torches
+				Tooltip: "'Light the way with the essence of the cosmos'"
+			}
 		}
-	
 	}
 }

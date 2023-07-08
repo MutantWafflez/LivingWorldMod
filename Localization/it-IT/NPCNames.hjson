@@ -1,10 +1,2 @@
-Mods: {
-	LivingWorldMod: {
-	
-		NPCName: {
-			//Villagers
-			HarpyVillager: "Abitante arpia"
-		}
-	
-	}
-}
+//Villagers
+Mods.LivingWorldMod.NPCs.HarpyVillager.DisplayName: Abitante arpia

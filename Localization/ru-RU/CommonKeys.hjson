@@ -1,9 +1,1 @@
-﻿Mods: {
-	LivingWorldMod: {
-	
-		Common: {
-			Reputation: "Reputation"
-		}
-
-	}
-}
+Mods.LivingWorldMod.Common.Reputation: Reputation

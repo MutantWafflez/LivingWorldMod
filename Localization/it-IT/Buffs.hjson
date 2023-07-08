@@ -1,13 +1,10 @@
 Mods: {
 	LivingWorldMod: {
-	
-		BuffName: {
-			NimbusPetBuff: "Nuvoletta domestica"
+		Buffs: {
+			NimbusPetBuff: {
+				DisplayName: Nuvoletta domestica
+				Description: "'Scometto che sa di zucchero filato...'"
+			}
 		}
-
-		BuffDescription: {
-			NimbusPetBuff: "'Scometto che sa di zucchero filato...'"
-		}
-	
 	}
 }
