@@ -11,7 +11,6 @@ using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria;
@@ -326,14 +325,7 @@ namespace LivingWorldMod.Core.Patches {
             c.Index = preExitJumpIndex;
 
             //Apply exit instruction transfer if the NPC is a villager
-            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchLdsfld<Main>(nameof(Main.spriteBatch)));
-            //Steal operand of this ^ instruction, so we don't need to more reflection
-            FieldReference mainSpritebatchInfo = (FieldReference)c.Prev.Operand;
-            //Pop off the initial spritebatch loading and re-emit it ourselves, so we don't have to move around branches
-            c.Emit(OpCodes.Pop);
-            c.Emit(OpCodes.Ldsfld, mainSpritebatchInfo);
-            //Move to before this sprite-batch call
-            c.Index--;
+            c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCallOrCallvirt<SpriteBatch>(nameof(SpriteBatch.Draw)));
             //Load this NPC to stack
             c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
             //Test for villager status
