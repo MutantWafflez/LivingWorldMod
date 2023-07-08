@@ -33,7 +33,7 @@ namespace LivingWorldMod.Content.Tiles {
                 return;
             }
 
-            LocalizedText name = CreateMapEntryName();
+            LocalizedText name = this.GetLocalization("MapEntry");
             //AKA check if the localization for this tile exists, and only add it if it does
             //Translations will return the key if you try to get the translation value for a translation that doesn't exist.
             if (name.Value == name.Key) {
