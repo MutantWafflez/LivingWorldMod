@@ -17,8 +17,8 @@ namespace LivingWorldMod.Common.Systems.UI {
 
         public override string InternalInterfaceName => "Villager Shop";
 
-        public override void Load() {
-            base.Load();
+        public override void SetStaticDefaults() {
+            base.SetStaticDefaults();
 
             hoverFlashShader = Mod.Assets.Request<Effect>("Assets/Shaders/UI/ShopItemHoverFlash");
             grayScaleShader = Mod.Assets.Request<Effect>("Assets/Shaders/UI/Grayscale");
