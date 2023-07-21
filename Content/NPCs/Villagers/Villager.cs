@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Hjson;
 using LivingWorldMod.Common.Systems;
@@ -147,8 +148,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             NPCID.Sets.SpawnsWithCustomName[Type] = true;
             NPCID.Sets.AllowDoorInteraction[Type] = true;
 
-            // TODO: Add shimmer functionality
-            NPCID.Sets.ShimmerImmunity[Type] = true;
+            // Villagers use TownNPC ai, which makes this necessary
+            NPCID.Sets.ShimmerTownTransform[Type] = true;
 
             NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new(0) {
                 Velocity = 1f,
@@ -240,16 +241,37 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                 NPC.frame.Width,
                 NPC.frame.Height);
 
+            // TODO: Reduce boiler-plate
+            drawColor = NPC.GetShimmerColor(drawColor);
             spriteBatch.Draw(bodyTexture, drawArea, NPC.frame, drawColor, NPC.rotation, default(Vector2), spriteDirection, 0);
             spriteBatch.Draw(headTexture, drawArea, NPC.frame, drawColor, NPC.rotation, default(Vector2), spriteDirection, 0);
 
             return false;
         }
 
+        public override void SendExtraAI(BinaryWriter writer) {
+            writer.Write(bodySpriteType);
+            writer.Write(headSpriteType);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            bodySpriteType = reader.ReadInt32();
+            headSpriteType = reader.ReadInt32();
+        }
+
         public override void PostAI() {
             //We only want this to run on Server/SP
             if (Main.netMode == NetmodeID.MultiplayerClient) {
                 return;
+            }
+
+            // This means that the villager has been shimmered
+            if (NPC.townNpcVariationIndex == 1) {
+                bodySpriteType = Main.rand.Next(BodyAssetVariations);
+                headSpriteType = Main.rand.Next(HeadAssetVariations);
+                NPC.townNpcVariationIndex = 0;
+
+                NPC.netUpdate = true;
             }
 
             if (NPC.homeless) {
