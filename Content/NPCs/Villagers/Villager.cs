@@ -147,9 +147,9 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             NPCID.Sets.ActsLikeTownNPC[Type] = true;
             NPCID.Sets.SpawnsWithCustomName[Type] = true;
             NPCID.Sets.AllowDoorInteraction[Type] = true;
-
             // Villagers use TownNPC ai, which makes this necessary
             NPCID.Sets.ShimmerTownTransform[Type] = true;
+            NPCID.Sets.NoTownNPCHappiness[Type] = true;
 
             NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new(0) {
                 Velocity = 1f,

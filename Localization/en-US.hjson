@@ -263,6 +263,16 @@ Mods: {
 					'Now with only 1 kilogram of sugar!'
 					'''
 			}
+
+			EffervescentHarpyFeather: {
+				DisplayName: Effervescent Harpy Feather
+				Tooltip:
+					'''
+					Grants the effects of the feather-fall potion
+					Increases damage reduction by 4% while airborne
+					'Float like a Harpy, sting like a Wyvern.'
+					'''
+			}
 		}
 
 		MapInfo: {

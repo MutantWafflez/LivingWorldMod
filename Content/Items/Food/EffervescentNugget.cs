@@ -1,5 +1,6 @@
 ﻿using LivingWorldMod.Common.Players;
 using LivingWorldMod.Content.StatusEffects.Debuffs.Consumables;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -10,6 +11,10 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.Food {
+    /// <summary>
+    /// Upon first consumption, grants a permanent 5% move speed buff.
+    /// Inflicts the <see cref="SugarSuperfluity"/> debuff for a minute.
+    /// </summary>
     public class EffervescentNugget : BaseItem {
         public override string Texture => "Terraria/Images/Item_" + ItemID.ChickenNugget;
 
@@ -22,7 +27,7 @@ namespace LivingWorldMod.Content.Items.Food {
 
             Item.buffType = ModContent.BuffType<SugarSuperfluity>();
             Item.buffTime = 60 * 60; // 1 minute
-            Item.rare = ItemRarityID.Expert;
+            Item.rare = ItemRarityID.LightPurple;
 
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(int.MaxValue, 3));
 
@@ -43,10 +48,17 @@ namespace LivingWorldMod.Content.Items.Food {
         }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            DrawNugget(
+            Texture2D drawTexture = TextureAssets.Item[ItemID.ChickenNugget].Value;
+            int drawWidth = Item.width;
+            int drawHeight = Item.height + 2;
+
+            DrawingUtils.DrawTextureWithArmorShader(
                 spriteBatch,
+                drawTexture,
+                GameShaders.Armor.GetShaderIdFromItemId(ItemID.HallowBossDye),
                 drawColor,
-                new Rectangle((int)position.X, (int)position.Y, Item.width, Item.height),
+                new Rectangle((int)position.X, (int)position.Y, (int)(drawWidth * scale), (int)(drawHeight * scale)),
+                new Rectangle(0, 0, drawWidth, drawHeight),
                 origin,
                 0f,
                 Main.UIScaleMatrix
@@ -56,30 +68,23 @@ namespace LivingWorldMod.Content.Items.Food {
         }
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
-            DrawNugget(
+            Texture2D drawTexture = TextureAssets.Item[ItemID.ChickenNugget].Value;
+            int drawWidth = Item.width;
+            int drawHeight = Item.height + 2;
+
+            DrawingUtils.DrawTextureWithArmorShader(
                 spriteBatch,
+                drawTexture,
+                GameShaders.Armor.GetShaderIdFromItemId(ItemID.HallowBossDye),
                 lightColor,
-                new Rectangle((int)(Item.position.X - Main.screenPosition.X), (int)(Item.position.Y - Main.screenPosition.Y), Item.width, Item.height),
+                new Rectangle((int)(Item.position.X - Main.screenPosition.X), (int)(Item.position.Y - Main.screenPosition.Y), (int)(drawWidth * scale), (int)(drawHeight * scale)),
+                new Rectangle(0, 0, drawWidth, drawHeight),
                 default(Vector2),
                 rotation,
                 Main.GameViewMatrix.ZoomMatrix
             );
 
             return false;
-        }
-
-        private void DrawNugget(SpriteBatch spriteBatch, Color drawColor, Rectangle destinationRectangle, Vector2 origin, float rotation, Matrix drawMatrix) {
-            spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, Main.Rasterizer, null, drawMatrix);
-
-            Rectangle sourceRectangle = new(0, 0, Item.width, Item.height + 2);
-            DrawData itemDrawData = new(TextureAssets.Item[ItemID.ChickenNugget].Value, destinationRectangle, sourceRectangle, drawColor, rotation, origin, SpriteEffects.None);
-
-            GameShaders.Armor.Apply(GameShaders.Armor.GetShaderIdFromItemId(ItemID.HallowBossDye), null, itemDrawData);
-            spriteBatch.Draw(TextureAssets.Item[ItemID.ChickenNugget].Value, destinationRectangle, sourceRectangle, drawColor, rotation, origin, SpriteEffects.None, 0f);
-
-            spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, Main.Rasterizer, null, drawMatrix);
         }
     }
 }
