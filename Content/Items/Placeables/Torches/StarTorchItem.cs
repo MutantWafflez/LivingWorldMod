@@ -12,6 +12,7 @@ namespace LivingWorldMod.Content.Items.Placeables.Torches {
 
             ItemID.Sets.Torches[Type] = true;
             ItemID.Sets.WaterTorches[Type] = true;
+            ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.ShimmerTorch;
         }
 
         public override void SetDefaults() {

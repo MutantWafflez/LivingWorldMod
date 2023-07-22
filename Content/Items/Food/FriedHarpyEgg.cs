@@ -17,7 +17,7 @@ namespace LivingWorldMod.Content.Items.Food {
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(int.MaxValue, 3));
 
             ItemID.Sets.IsFood[Type] = true;
-            ItemID.Sets.FoodParticleColors[Type] = new Color[3] {
+            ItemID.Sets.FoodParticleColors[Type] = new[] {
                 Color.White,
                 Color.LightGray,
                 Color.Blue

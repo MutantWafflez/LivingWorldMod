@@ -1,4 +1,6 @@
-﻿using Terraria.ID;
+﻿using LivingWorldMod.Content.Items.Food;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.RespawnItems {
     /// <summary>
@@ -7,6 +9,8 @@ namespace LivingWorldMod.Content.Items.RespawnItems {
     public class HarpyEgg : BaseItem {
         public override void SetStaticDefaults() {
             Item.ResearchUnlockCount = 1;
+
+            ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<EffervescentNugget>();
         }
 
         public override void SetDefaults() {

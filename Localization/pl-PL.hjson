@@ -19,6 +19,15 @@ Mods: {
 				DisplayName: Zwierzak Nimbus
 				Description: "'Założę się, że smakuje jak wata cukrowa...'"
 			}
+
+			SugarSuperfluity: {
+				// DisplayName: Sugar Superfluity
+				/* Description:
+					'''
+					Tripled movement stats
+					'I am one with the carbs'
+					''' */
+			}
 		}
 
 		Common.Reputation: Reputacja
@@ -253,6 +262,16 @@ Mods: {
 				DisplayName: Jajo harpii
 				Tooltip: "'Jest dość duży, ale wygląda jak każde inne jajko.'"
 			}
+
+			EffervescentNugget: {
+				// DisplayName: Effervescent Chicken Nugget
+				/* Tooltip:
+					'''
+					Triples all your movement stats
+					When the buff ends, you are killed
+					'Now with only 1 kilogram of sugar!'
+					''' */
+			}
 		}
 
 		MapInfo: {
@@ -266,6 +285,8 @@ Mods: {
 				Ice: Kamień tundry
 			}
 		}
+
+		// PlayerDeathReason.SugarSuperfluity: "{0} had a heart attack."
 
 		Tiles: {
 			//Furniture Tiles

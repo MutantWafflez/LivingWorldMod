@@ -19,6 +19,15 @@ Mods: {
 				DisplayName: Nuvoletta domestica
 				Description: "'Scometto che sa di zucchero filato...'"
 			}
+
+			SugarSuperfluity: {
+				// DisplayName: Sugar Superfluity
+				/* Description:
+					'''
+					Tripled movement stats
+					'I am one with the carbs'
+					''' */
+			}
 		}
 
 		Common.Reputation: Reputazione
@@ -253,6 +262,16 @@ Mods: {
 				DisplayName: Uovo d'arpia
 				Tooltip: "'È piuttosto grande, ma ha l'aspetto di un uovo ordinario.'"
 			}
+
+			EffervescentNugget: {
+				// DisplayName: Effervescent Chicken Nugget
+				/* Tooltip:
+					'''
+					Triples all your movement stats
+					When the buff ends, you are killed
+					'Now with only 1 kilogram of sugar!'
+					''' */
+			}
 		}
 
 		MapInfo: {
@@ -266,6 +285,8 @@ Mods: {
 				Ice: Waystone della tundra
 			}
 		}
+
+		// PlayerDeathReason.SugarSuperfluity: "{0} had a heart attack."
 
 		Tiles: {
 			//Furniture Tiles

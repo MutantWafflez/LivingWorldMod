@@ -19,6 +19,15 @@ Mods: {
 				DisplayName: Nimbus Pet
 				Description: "'I bet it tastes like cotton candy...'"
 			}
+
+			SugarSuperfluity: {
+				// DisplayName: Sugar Superfluity
+				/* Description:
+					'''
+					Tripled movement stats
+					'I am one with the carbs'
+					''' */
+			}
 		}
 
 		Common.Reputation: Reputation
@@ -253,6 +262,16 @@ Mods: {
 				DisplayName: Harpy Egg
 				Tooltip: "'It's rather large, but looks like any other egg.'"
 			}
+
+			EffervescentNugget: {
+				// DisplayName: Effervescent Chicken Nugget
+				/* Tooltip:
+					'''
+					Triples all your movement stats
+					When the buff ends, you are killed
+					'Now with only 1 kilogram of sugar!'
+					''' */
+			}
 		}
 
 		MapInfo: {
@@ -266,6 +285,8 @@ Mods: {
 				Ice: Tundra Waystone
 			}
 		}
+
+		// PlayerDeathReason.SugarSuperfluity: "{0} had a heart attack."
 
 		Tiles: {
 			//Furniture Tiles
