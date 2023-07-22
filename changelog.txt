@@ -1,5 +1,6 @@
 INDEV RELEASE v0.2.2 [1.4.4 Port] (July 22nd, 2023)
 Additions:
++ Ported the mod in its entirety to 1.4.4!
 + Harpies (and future villagers) will have their features re-randomized when they are shimmered
 + Added the Effervescent Chicken Nugget & Effervescent Harpy Feather (Hint: Shimmer)
 Changes:
