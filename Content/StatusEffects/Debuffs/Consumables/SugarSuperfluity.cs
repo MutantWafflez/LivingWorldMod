@@ -1,5 +1,4 @@
 ﻿using LivingWorldMod.Content.Items.Food;
-using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -9,8 +8,8 @@ using Terraria.ID;
 
 namespace LivingWorldMod.Content.StatusEffects.Debuffs.Consumables {
     /// <summary>
-    /// Granted by the <see cref="EffervescentNugget"/> food item. Triples
-    /// all movement stats. Once the debuff ends, kills the player.
+    /// Granted by the <see cref="EffervescentNugget"/> food item.
+    /// Causes lighting to go rainbow for the duration (purely visual).
     /// </summary>
     public class SugarSuperfluity : BaseStatusEffect {
         public override string Texture => "Terraria/Images/Buff_" + BuffID.SugarRush;
@@ -18,16 +17,6 @@ namespace LivingWorldMod.Content.StatusEffects.Debuffs.Consumables {
         public override void SetStaticDefaults() {
             Main.debuff[Type] = true;
             BuffID.Sets.NurseCannotRemoveDebuff[Type] = true;
-        }
-
-        public override void Update(Player player, ref int buffIndex) {
-            player.moveSpeed *= 3;
-            player.wingAccRunSpeed *= 3;
-            player.wingRunAccelerationMult *= 3;
-
-            if (player.buffTime[buffIndex] <= 2f) {
-                player.KillMe(PlayerDeathReason.ByCustomReason(LocalizationUtils.GetLWMTextValue($"PlayerDeathReason.{Name}", player.name)), 9999, 0);
-            }
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, int buffIndex, ref BuffDrawParams drawParams) {

@@ -1,8 +1,7 @@
 ﻿using LivingWorldMod.Common.Systems.BaseSystems;
-using LivingWorldMod.Custom.Interfaces;
+using LivingWorldMod.Content.StatusEffects.Debuffs.Consumables;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using System.Linq;
+using Terraria;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Systems {
@@ -12,30 +11,9 @@ namespace LivingWorldMod.Common.Systems {
     /// </summary>
     [Autoload(Side = ModSide.Client)]
     public class ScreenModificationSystem : BaseModSystem<ScreenModificationSystem> {
-        public List<IModifyLightingBrightness> LightingBrightnessEffects {
-            get;
-            private set;
-        }
-
-        public List<IModifySunlightColor> SunlightColorEffects {
-            get;
-            private set;
-        }
-
-        public override void PostSetupContent() {
-            LightingBrightnessEffects = ModContent.GetContent<IModifyLightingBrightness>().ToList();
-            SunlightColorEffects = ModContent.GetContent<IModifySunlightColor>().ToList();
-        }
-
-        public override void ModifyLightingBrightness(ref float scale) {
-            foreach (IModifyLightingBrightness lightingEffect in LightingBrightnessEffects.Where(effect => effect.LightingEffectActive)) {
-                lightingEffect.LightingEffect(ref scale);
-            }
-        }
-
         public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor) {
-            foreach (IModifySunlightColor sunlightEffect in SunlightColorEffects.Where(effect => effect.SunlightEffectActive)) {
-                sunlightEffect.SunlightEffect(ref tileColor, ref backgroundColor);
+            if (Main.LocalPlayer.HasBuff<SugarSuperfluity>()) {
+                tileColor = backgroundColor = Main.DiscoColor;
             }
         }
     }

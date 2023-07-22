@@ -7,11 +7,6 @@ Mods: {
 				DisplayName: Harpy Village
 				TownNPCDialogueName: the Harpy Village Biome
 			}
-
-			RevampedPyramidBiome: {
-				DisplayName: Revamped Pyramid Biome
-				TownNPCDialogueName: the Revamped Pyramid Biome
-			}
 		}
 
 		Buffs: {
@@ -22,11 +17,7 @@ Mods: {
 
 			SugarSuperfluity: {
 				// DisplayName: Sugar Superfluity
-				/* Description:
-					'''
-					Tripled movement stats
-					'I am one with the carbs'
-					''' */
+				// Description: "'Is that you, Roy G. Biv?'"
 			}
 		}
 
@@ -267,8 +258,8 @@ Mods: {
 				// DisplayName: Effervescent Chicken Nugget
 				/* Tooltip:
 					'''
-					Triples all your movement stats
-					When the buff ends, you are killed
+					Upon first consumption, permanently increases your movement speed by 5%
+					Otherwise, become one with the rainbow (epilepsy warning)
 					'Now with only 1 kilogram of sugar!'
 					''' */
 			}

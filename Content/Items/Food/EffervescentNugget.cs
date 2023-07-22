@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Content.StatusEffects.Debuffs.Consumables;
+﻿using LivingWorldMod.Common.Players;
+using LivingWorldMod.Content.StatusEffects.Debuffs.Consumables;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -16,13 +17,11 @@ namespace LivingWorldMod.Content.Items.Food {
             Item.ResearchUnlockCount = 1;
         }
 
-        public override bool CanUseItem(Player player) => !player.HasBuff<SugarSuperfluity>();
-
         public override void SetDefaults() {
             Item.CloneDefaults(ItemID.ChickenNugget);
 
             Item.buffType = ModContent.BuffType<SugarSuperfluity>();
-            Item.buffTime = (int)(60 * 60 * 3.5f) + 2; // Two additional ticks to actually make the counter pin-point accurate (since we do the death check based on <= 2)
+            Item.buffTime = 60 * 60; // 1 minute
             Item.rare = ItemRarityID.Expert;
 
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(int.MaxValue, 3));
@@ -37,6 +36,10 @@ namespace LivingWorldMod.Content.Items.Food {
                 Color.Indigo,
                 Color.Violet
             };
+        }
+
+        public override void OnConsumeItem(Player player) {
+            player.GetModPlayer<PermanentBuffPlayer>().effervescentNuggetBuff = true;
         }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
