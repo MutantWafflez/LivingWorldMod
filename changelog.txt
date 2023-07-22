@@ -1,1 +1,4 @@
-INDEV RELEASE v0.2.2 [1.4.4 Port] (July xth, 2023)
+INDEV RELEASE v0.2.2 [1.4.4 Port] (July 22nd, 2023)
+Additions:
++ Harpies (and future villagers) will have their features re-randomized when they are shimmered
++ Added the Effevescent Chicken Nugget (Hint: Shimmer)
