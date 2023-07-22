@@ -17,7 +17,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public override WeightedRandom<ShopItem> ShopPool {
             get {
-                WeightedRandom<ShopItem> pool = new WeightedRandom<ShopItem>();
+                WeightedRandom<ShopItem> pool = new();
                 VillagerRelationship relationship = RelationshipStatus;
 
                 //Furniture & Blocks
@@ -57,6 +57,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         public override void SetStaticDefaults() {
             Main.npcFrameCount[Type] = 27;
             NPCID.Sets.ExtraFramesCount[Type] = 6;
+
+            NPC.buffImmune[BuffID.Suffocation] = true;
         }
 
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) {

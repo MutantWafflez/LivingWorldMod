@@ -1,4 +1,6 @@
 INDEV RELEASE v0.2.2 [1.4.4 Port] (July 22nd, 2023)
 Additions:
 + Harpies (and future villagers) will have their features re-randomized when they are shimmered
-+ Added the Effevescent Chicken Nugget (Hint: Shimmer)
++ Added the Effervescent Chicken Nugget & Effervescent Harpy Feather (Hint: Shimmer)
+Changes:
+* Harpy Villagers are now immune to the suffocation debuff
