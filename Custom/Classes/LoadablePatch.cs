@@ -22,6 +22,10 @@ namespace LivingWorldMod.Custom.Classes {
         public abstract void LoadPatches();
 
         public void Load(Mod mod) {
+            if (!LivingWorldMod.EnableILPatches) {
+                return;
+            }
+
             try {
                 LoadPatches();
                 currentContext = null;

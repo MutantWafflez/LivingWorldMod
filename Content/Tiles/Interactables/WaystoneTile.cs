@@ -9,6 +9,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
+using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.Map;
 using Terraria.ModLoader;
@@ -36,10 +37,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         public override void SetStaticDefaults() {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
-            Main.tileTable[Type] = false;
             Main.tileLighted[Type] = true;
-            Main.tileWaterDeath[Type] = false;
-            Main.tileLavaDeath[Type] = false;
+
             TileID.Sets.CanBeClearedDuringGeneration[Type] = false;
             TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
             TileID.Sets.HasOutlines[Type] = true;
@@ -47,7 +46,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
 
             TileObjectData.newTile.WaterDeath = false;
             TileObjectData.newTile.LavaDeath = false;
-            TileObjectData.newTile.WaterPlacement = LiquidPlacement.NotAllowed;
+            TileObjectData.newTile.WaterPlacement = LiquidPlacement.Allowed;
             TileObjectData.newTile.LavaPlacement = LiquidPlacement.NotAllowed;
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
@@ -59,7 +58,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
 
             WaystoneEntity waystoneEntity = ModContent.GetInstance<WaystoneEntity>();
             TileObjectData.newTile.HookCheckIfCanPlace = new PlacementHook(waystoneEntity.PlacementPreviewHook_CheckIfCanPlace, 1, 0, true);
-            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(waystoneEntity.Hook_AfterPlacement, -1, 0, true);
+            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(waystoneEntity.Hook_AfterPlacement, -1, 0, false);
 
             TileObjectData.addTile(Type);
 
@@ -74,6 +73,8 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         public override bool CanKillTile(int i, int j, ref bool blockDamaged) => LivingWorldMod.IsDebug;
 
         public override bool CanExplode(int i, int j) => LivingWorldMod.IsDebug;
+
+        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
         public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
@@ -106,7 +107,7 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
         public override bool RightClick(int i, int j) {
             Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
 
-            if (!TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity entity) || (entity?.isActivated ?? true)) {
+            if (!TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity entity) || entity.isActivated || entity.DoingActivationVFX) {
                 return false;
             }
 

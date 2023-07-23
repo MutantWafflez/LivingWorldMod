@@ -1,9 +1,15 @@
-using LivingWorldMod.Common.ModTypes;
 using System.IO;
+using LivingWorldMod.Common.ModTypes;
 using Terraria.ModLoader;
 
 namespace LivingWorldMod {
     public class LivingWorldMod : Mod {
+        /// <summary>
+        /// Whether or not to enable IL edit patches on load.
+        /// Do NOT change unless you know what you're doing!
+        /// </summary>
+        public const bool EnableILPatches = true;
+
         /// <summary>
         /// Whether or not the mod is in Debug, which is determined by if you are building from some
         /// IDE as Debug.

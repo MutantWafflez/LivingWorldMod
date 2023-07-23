@@ -1,9 +1,9 @@
+using System.IO;
 using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -16,10 +16,6 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
     /// Tile Entity for the Waystone tiles.
     /// </summary>
     public class WaystoneEntity : TEModdedPylon {
-        public bool isActivated;
-
-        public WaystoneType waystoneType;
-
         public Color WaystoneColor {
             get {
                 return waystoneType switch {
@@ -33,14 +29,22 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
             }
         }
 
+        public bool DoingActivationVFX {
+            get;
+            private set;
+        }
+
+        public bool isActivated;
+
+        public WaystoneType waystoneType;
+
         private int _activationTimer;
-        private bool _doingActivationVFX;
 
         public override void Update() {
             // Update is only called on server; we don't need to do the visual flair for the server, so we just wait until that is done, then update all clients accordingly
-            if (Main.netMode != NetmodeID.MultiplayerClient && _doingActivationVFX) {
+            if (DoingActivationVFX) {
                 if (++_activationTimer > WaystoneActivationEntity.FullActivationWaitTime) {
-                    _doingActivationVFX = false;
+                    DoingActivationVFX = false;
                     _activationTimer = 0;
                     isActivated = true;
 
@@ -92,15 +96,16 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
         }
 
         /// <summary>
-        /// Should be called whenever the tile that is entity is associated with is right clicked & activated in SINGLERPLAYER or ON THE SERVER. Shouldn't
+        /// Should be called whenever the tile that is entity is associated with is right clicked & activated in SINGLERPLAYER or
+        /// ON THE SERVER. Shouldn't
         /// be called on any multiplayer client; we handle that with our own packets.
         /// </summary>
         public void ActivateWaystoneEntity() {
-            if (isActivated || _doingActivationVFX) {
+            if (isActivated || DoingActivationVFX) {
                 return;
             }
 
-            _doingActivationVFX = true;
+            DoingActivationVFX = true;
             _activationTimer = 0;
         }
 
@@ -126,9 +131,7 @@ namespace LivingWorldMod.Content.TileEntities.Interactables {
                 retrievedEntity.isActivated = isActivated;
                 return true;
             }
-            else {
-                return false;
-            }
+            return false;
         }
     }
 }
