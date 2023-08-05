@@ -70,7 +70,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             const int tanSkinIndex = 2;
 
             LayeredDrawObject drawObject = _villager.drawObject;
-            int faceSkinFrame = drawObject.drawIndices[HarpyVillager.FaceIndexID] switch {
+            int faceSkinFrame = drawObject.drawIndices[HarpyVillager.BodyIndexID] switch {
                 < tanSkinIndex => paleSkinFrame,
                 tanSkinIndex => tanSkinFrame,
                 > tanSkinIndex => darkSkinFrame
