@@ -88,8 +88,8 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
                 textureDrawRegion,
                 IsSelected ? Color.Yellow : Color.White,
                 0f,
-                new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f * 1.25f),
-                0.67f,
+                new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f * 1.15f),
+                0.75f,
                 SpriteEffects.None,
                 0f
             );

@@ -314,7 +314,7 @@ namespace LivingWorldMod.Core.Patches {
                 Rectangle textureDrawRegion = new(0, 0, drawObject.GetFrameWidth(), drawObject.GetFrameHeight(Main.npcFrameCount[villager.Type]));
 
                 drawObject.Draw(Main.spriteBatch,
-                    new Vector2(homeTileX * 16f - Main.screenPosition.X + 10f, homeTileYPixels - Main.screenPosition.Y + 14f),
+                    new Vector2(homeTileX * 16f - Main.screenPosition.X + 10f, homeTileYPixels - Main.screenPosition.Y + 18f),
                     textureDrawRegion,
                     Lighting.GetColor(homeTileX, homeTileY),
                     0f,
