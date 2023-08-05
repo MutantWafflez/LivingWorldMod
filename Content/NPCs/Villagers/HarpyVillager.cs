@@ -24,6 +24,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                 //Furniture & Blocks
                 pool.Add(new ShopItem(ModContent.ItemType<GravityTapestryItem>(), 3, null));
                 pool.Add(new ShopItem(ModContent.ItemType<SunTapestryItem>(), 3, null));
+                pool.Add(new ShopItem(ModContent.ItemType<WorldTapestryItem>(), 3, null));
+                pool.Add(new ShopItem(ModContent.ItemType<StormTapestryItem>(), 3, null));
                 pool.Add(new ShopItem(ModContent.ItemType<StarshardCloudItem>(), 75, null));
                 pool.Add(new ShopItem(ModContent.ItemType<StarshineBlockItem>(), 75, null));
                 pool.Add(new ShopItem(ModContent.ItemType<SkywareBlockItem>(), 75, null));
