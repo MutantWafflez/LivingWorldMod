@@ -57,9 +57,13 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             }
         }
 
+        public HarpyVillager() {
+            drawObject = LoadDrawObject(new[] { 5, 5, 5, 5, 5 }, new[] { "Body", "Outfit", "Hair", "Face", "Wings" });
+        }
+
         public override void SetStaticDefaults() {
-            Main.npcFrameCount[Type] = 27;
-            NPCID.Sets.ExtraFramesCount[Type] = 6;
+            Main.npcFrameCount[Type] = 21;
+            //NPCID.Sets.ExtraFramesCount[Type] = 6;
 
             NPC.buffImmune[BuffID.Suffocation] = true;
         }

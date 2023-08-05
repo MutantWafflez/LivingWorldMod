@@ -129,16 +129,18 @@ namespace LivingWorldMod.Core.Patches {
             //What we return here will determine whether or not we skip past the drawing head step in the vanilla function.
             c.EmitDelegate(() => {
                 if (Main.instance.mouseNPCIndex > -1 && Main.npc[Main.instance.mouseNPCIndex].ModNPC is Villager villager) {
-                    float drawScale = 0.67f;
+                    LayeredDrawObject drawObject = villager.drawObject;
+                    Rectangle textureDrawRegion = new(0, 0, drawObject.GetFrameWidth(), drawObject.GetFrameHeight(Main.npcFrameCount[villager.Type]));
 
-                    Texture2D bodyTexture = villager.bodyAssets[villager.bodySpriteType].Value;
-                    Texture2D headTexture = villager.headAssets[villager.headSpriteType].Value;
-
-                    Vector2 drawPos = new(Main.mouseX, Main.mouseY);
-                    Rectangle textureDrawRegion = new(0, 0, bodyTexture.Width, bodyTexture.Height / Main.npcFrameCount[villager.Type]);
-
-                    Main.spriteBatch.Draw(bodyTexture, drawPos, textureDrawRegion, Color.White, 0f, Vector2.Zero, Main.cursorScale * drawScale, SpriteEffects.None, 0f);
-                    Main.spriteBatch.Draw(headTexture, drawPos, textureDrawRegion, Color.White, 0f, Vector2.Zero, Main.cursorScale * drawScale, SpriteEffects.None, 0f);
+                    drawObject.Draw(Main.spriteBatch,
+                        new Vector2(Main.mouseX, Main.mouseY),
+                        textureDrawRegion, Color.White,
+                        0f,
+                        Vector2.Zero,
+                        Main.cursorScale * 0.67f,
+                        SpriteEffects.None,
+                        0f
+                    );
 
                     //If a type of villager, we do not want the head drawing function, so skip it by returning true
                     return true;
@@ -304,22 +306,23 @@ namespace LivingWorldMod.Core.Patches {
             c.Emit(OpCodes.Ldloc_S, homeTileYInWorldLocalNumber);
             //Apply custom draw code
             c.EmitDelegate<Action<NPC, int, int, float>>((npc, homeTileX, homeTileY, homeTileYPixels) => {
-                if (npc.ModNPC is Villager villager) {
-                    float drawScale = 0.5f;
-
-                    Texture2D bodyTexture = villager.bodyAssets[villager.bodySpriteType].Value;
-                    Texture2D headTexture = villager.headAssets[villager.headSpriteType].Value;
-
-                    Rectangle textureDrawRegion = new(0, 0, bodyTexture.Width, bodyTexture.Height / Main.npcFrameCount[villager.Type]);
-                    Vector2 drawPos = new(homeTileX * 16f - Main.screenPosition.X + 10f, homeTileYPixels - Main.screenPosition.Y + 14f);
-                    Vector2 drawOrigin = new(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f);
-
-                    //Take into account possible gravity swapping
-                    SpriteEffects spriteEffect = Main.LocalPlayer.gravDir != -1 ? SpriteEffects.None : SpriteEffects.FlipVertically;
-
-                    Main.spriteBatch.Draw(bodyTexture, drawPos, textureDrawRegion, Lighting.GetColor(homeTileX, homeTileY), 0f, drawOrigin, drawScale, spriteEffect, 0f);
-                    Main.spriteBatch.Draw(headTexture, drawPos, textureDrawRegion, Lighting.GetColor(homeTileX, homeTileY), 0f, drawOrigin, drawScale, spriteEffect, 0f);
+                if (npc.ModNPC is not Villager villager) {
+                    return;
                 }
+
+                LayeredDrawObject drawObject = villager.drawObject;
+                Rectangle textureDrawRegion = new(0, 0, drawObject.GetFrameWidth(), drawObject.GetFrameHeight(Main.npcFrameCount[villager.Type]));
+
+                drawObject.Draw(Main.spriteBatch,
+                    new Vector2(homeTileX * 16f - Main.screenPosition.X + 10f, homeTileYPixels - Main.screenPosition.Y + 14f),
+                    textureDrawRegion,
+                    Lighting.GetColor(homeTileX, homeTileY),
+                    0f,
+                    new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f),
+                    0.5f,
+                    Main.LocalPlayer.gravDir != -1 ? SpriteEffects.None : SpriteEffects.FlipVertically, //Take into account possible gravity swapping
+                    0f
+                );
             });
 
             c.Index = preExitJumpIndex;

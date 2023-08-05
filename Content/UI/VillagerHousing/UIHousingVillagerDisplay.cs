@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Content.NPCs.Villagers;
+using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,11 +16,6 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
     /// </summary>
     public class UIHousingVillagerDisplay : UIElement {
         /// <summary>
-        /// The villager instance that this element is displaying.
-        /// </summary>
-        public Villager myVillager;
-
-        /// <summary>
         /// Whether or not this villager is currently selected.
         /// </summary>
         public bool IsSelected => myVillager.NPC.whoAmI == Main.instance.mouseNPCIndex;
@@ -30,6 +26,11 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
         /// </summary>
         //TODO: Swap back to commented expression when Reputation system is re-implemented
         public bool IsAllowed => true; //myVillager.RelationshipStatus >= VillagerRelationship.Like;
+
+        /// <summary>
+        /// The villager instance that this element is displaying.
+        /// </summary>
+        public Villager myVillager;
 
         public UIHousingVillagerDisplay(Villager villager) {
             myVillager = villager;
@@ -74,42 +75,24 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
                 null,
                 !IsAllowed ? Color.Gray : Color.White,
                 0f,
-                default,
+                default(Vector2),
                 SpriteEffects.None,
                 0f);
 
-            Texture2D bodyTexture = myVillager.bodyAssets[myVillager.bodySpriteType].Value;
-            Texture2D headTexture = myVillager.headAssets[myVillager.headSpriteType].Value;
 
-            float drawScale = 0.67f;
-            int frameHeight = bodyTexture.Height / Main.npcFrameCount[myVillager.Type];
+            LayeredDrawObject drawObject = myVillager.drawObject;
+            Rectangle textureDrawRegion = new(0, 0, drawObject.GetFrameWidth(), drawObject.GetFrameHeight(Main.npcFrameCount[myVillager.Type]));
 
-            // Make sure to draw from center!
-            Vector2 drawPos = GetDimensions().Center();
-            Rectangle textureDrawRegion = new Rectangle(0, 0, bodyTexture.Width, frameHeight);
-            Vector2 drawOrigin = new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f * 1.25f);
-
-            Color drawColor = IsSelected ? Color.Yellow : Color.White;
-
-            spriteBatch.Draw(bodyTexture,
-                drawPos,
+            drawObject.Draw(spriteBatch,
+                GetDimensions().Center(),
                 textureDrawRegion,
-                drawColor,
+                IsSelected ? Color.Yellow : Color.White,
                 0f,
-                drawOrigin,
-                drawScale,
+                new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f * 1.25f),
+                0.67f,
                 SpriteEffects.None,
-                0f);
-
-            spriteBatch.Draw(headTexture,
-                drawPos,
-                textureDrawRegion,
-                drawColor,
-                0f,
-                drawOrigin,
-                drawScale,
-                SpriteEffects.None,
-                0f);
+                0f
+            );
 
             //Draw lock icon if not "allowed" (player is not high enough rep)
             if (!IsAllowed) {

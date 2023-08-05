@@ -1,10 +1,10 @@
-﻿using LivingWorldMod.Content.NPCs.Villagers;
+﻿using System;
+using System.Collections.Generic;
+using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using System;
-using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
@@ -16,6 +16,8 @@ namespace LivingWorldMod.Content.UI.Elements {
     /// UIElement class extension that handles and creates portraits for villagers in the shop UI, primarily.
     /// </summary>
     public class UIPortrait : UIElement {
+        private string PortraitSpritePath => $"{LivingWorldMod.LWMSpritePath}UI/ShopUI/{_villager.VillagerType}/Portraits/";
+
         public UIImage portraitBase;
         public UIImage portraitClothing;
         public UIImage portraitHead;
@@ -28,8 +30,6 @@ namespace LivingWorldMod.Content.UI.Elements {
         public float temporaryExpressionTimer;
 
         private Villager _villager;
-
-        private string PortraitSpritePath => $"{LivingWorldMod.LWMSpritePath}UI/ShopUI/{_villager.VillagerType}/Portraits/";
 
         public UIPortrait(Villager villager) {
             _villager = villager;
@@ -98,9 +98,9 @@ namespace LivingWorldMod.Content.UI.Elements {
 
             portraitBase.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Base", AssetRequestMode.ImmediateLoad));
 
-            portraitClothing.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Body{_villager.bodySpriteType}", AssetRequestMode.ImmediateLoad));
+            portraitClothing.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Body{ /*_villager.bodySpriteType*/0}", AssetRequestMode.ImmediateLoad));
 
-            portraitHead.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Head{_villager.headSpriteType}", AssetRequestMode.ImmediateLoad));
+            portraitHead.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Head{ /*_villager.headSpriteType*/0}", AssetRequestMode.ImmediateLoad));
 
             portraitExpression.SetImage(expressionDictionary[currentExpression]);
         }

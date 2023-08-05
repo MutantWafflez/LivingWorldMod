@@ -31,18 +31,6 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// </summary>
         public static IReadOnlyDictionary<VillagerType, IReadOnlyList<string>> villagerNames;
 
-        /// <summary>
-        /// Count of the total amount of variation in terms of body sprites for this specific
-        /// villager type. Defaults to 5.
-        /// </summary>
-        public virtual int BodyAssetVariations => 5;
-
-        /// <summary>
-        /// Count of the total amount of variation in terms of head sprites for this specific
-        /// villager type. Defaults to 5.
-        /// </summary>
-        public virtual int HeadAssetVariations => 5;
-
         public sealed override string Texture => LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/DefaultStyle";
 
         public override bool IsCloneable => true;
@@ -70,18 +58,9 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         public VillagerRelationship RelationshipStatus => ReputationSystem.Instance.GetVillageRelationship(VillagerType);
 
         /// <summary>
-        /// An array that holds all of the assets for the body sprites of this type of villager.
+        /// The draw object used to draw this villager.
         /// </summary>
-        [CloneByReference]
-        public readonly Asset<Texture2D>[] bodyAssets;
-
-        /// <summary>
-        /// Any array that holds all of the assets for the head sprites of this type of villager.
-        /// What a "head" asset for a villager means depends on the type of villager. For the Harpy
-        /// Villagers, for example, the head assets are different types of hair.
-        /// </summary>
-        [CloneByReference]
-        public readonly Asset<Texture2D>[] headAssets;
+        public LayeredDrawObject drawObject;
 
         /// <summary>
         /// A list of shop items that this specific villager is selling at this very moment.
@@ -89,40 +68,15 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         public List<ShopItem> shopInventory;
 
         /// <summary>
-        /// The body sprite type that this specific villager has.
-        /// </summary>
-        public int bodySpriteType;
-
-        /// <summary>
-        /// The head sprite type that this specific villager has.
-        /// </summary>
-        public int headSpriteType;
-
-        /// <summary>
         /// A counter for how long this Villager has been homeless for, used for automatically leaving
         /// </summary>
         private int _homelessCounter;
-
-        public Villager() {
-            bodyAssets = new Asset<Texture2D>[BodyAssetVariations];
-            headAssets = new Asset<Texture2D>[HeadAssetVariations];
-
-            for (int i = 0; i < BodyAssetVariations; i++) {
-                bodyAssets[i] = ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/Body{i}");
-            }
-
-            for (int i = 0; i < HeadAssetVariations; i++) {
-                headAssets[i] = ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/Head{i}");
-            }
-        }
 
         public override ModNPC NewInstance(NPC entity) {
             Villager instance = (Villager)base.NewInstance(entity);
 
             instance.RestockShop();
-
-            instance.bodySpriteType = Main.rand.Next(BodyAssetVariations);
-            instance.headSpriteType = Main.rand.Next(HeadAssetVariations);
+            instance.RandomizeFeatures();
 
             return instance;
         }
@@ -131,10 +85,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             Villager clone = (Villager)base.Clone(newEntity);
 
             clone.shopInventory = shopInventory;
-
-            clone.bodySpriteType = bodySpriteType;
-            clone.headSpriteType = headSpriteType;
-
+            clone.drawObject = drawObject;
             clone._homelessCounter = _homelessCounter;
 
             return clone;
@@ -182,8 +133,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         public override bool NeedSaving() => true;
 
         public override void SaveData(TagCompound tag) {
-            tag["HeadType"] = headSpriteType;
-            tag["BodyType"] = bodySpriteType;
+            tag["LayerIndices"] = drawObject.currentTextureIndices;
             tag["Shop"] = shopInventory;
 
             tag["DisplayName"] = NPC.GivenName;
@@ -193,8 +143,12 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         public override void LoadData(TagCompound tag) {
-            headSpriteType = tag.GetInt("HeadType");
-            bodySpriteType = tag.GetInt("BodyType");
+            if (tag.TryGet("LayerIndices", out int[] indices)) {
+                drawObject.currentTextureIndices = indices;
+            }
+            else {
+                RandomizeFeatures();
+            }
             shopInventory = tag.Get<List<ShopItem>>("Shop");
 
             NPC.GivenName = tag.GetString("DisplayName");
@@ -233,30 +187,30 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             SpriteEffects spriteDirection = NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            Texture2D bodyTexture = bodyAssets[bodySpriteType].Value;
-            Texture2D headTexture = headAssets[headSpriteType].Value;
-
             Rectangle drawArea = new((int)(NPC.Right.X - NPC.frame.Width / 1.5 - screenPos.X),
                 (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f),
                 NPC.frame.Width,
                 NPC.frame.Height);
 
-            // TODO: Reduce boiler-plate
-            drawColor = NPC.GetShimmerColor(drawColor);
-            spriteBatch.Draw(bodyTexture, drawArea, NPC.frame, drawColor, NPC.rotation, default(Vector2), spriteDirection, 0);
-            spriteBatch.Draw(headTexture, drawArea, NPC.frame, drawColor, NPC.rotation, default(Vector2), spriteDirection, 0);
-
+            drawObject.Draw(spriteBatch, drawArea, NPC.frame, NPC.GetShimmerColor(drawColor), NPC.rotation, default(Vector2), spriteDirection, 0);
             return false;
         }
 
         public override void SendExtraAI(BinaryWriter writer) {
-            writer.Write(bodySpriteType);
-            writer.Write(headSpriteType);
+            int layerCount = drawObject.currentTextureIndices.Length;
+
+            writer.Write(layerCount);
+            for (int i = 0; i < layerCount; i++) {
+                writer.Write(drawObject.currentTextureIndices[i]);
+            }
         }
 
         public override void ReceiveExtraAI(BinaryReader reader) {
-            bodySpriteType = reader.ReadInt32();
-            headSpriteType = reader.ReadInt32();
+            int layerCount = reader.ReadInt32();
+
+            for (int i = 0; i < layerCount; i++) {
+                drawObject.currentTextureIndices[i] = reader.ReadInt32();
+            }
         }
 
         public override void PostAI() {
@@ -267,8 +221,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
             // This means that the villager has been shimmered
             if (NPC.townNpcVariationIndex == 1) {
-                bodySpriteType = Main.rand.Next(BodyAssetVariations);
-                headSpriteType = Main.rand.Next(HeadAssetVariations);
+                RandomizeFeatures();
                 NPC.townNpcVariationIndex = 0;
 
                 NPC.netUpdate = true;
@@ -313,6 +266,36 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
                     shopInventory.Add(returnedItem);
                 }
             } while (shopInventory.Count < shopLength);
+        }
+
+        /// <summary>
+        /// Randomizes all features of this villager.
+        /// </summary>
+        public void RandomizeFeatures() {
+            for (int i = 0; i < drawObject.allLayerTextures.Length; i++) {
+                drawObject.currentTextureIndices[i] = Main.rand.Next(drawObject.allLayerTextures[i].Length);
+            }
+        }
+
+        /// <summary>
+        /// Creates a new instance of a <see cref="LayeredDrawObject"/> based on the specified variation
+        /// numbers and names. Uses the length of the <see cref="layerVariations"/> parameter to determine
+        /// how many layers there are; make sure it is of proper length! Layer names are also case sensitive
+        /// to their respective texture names.
+        /// </summary>
+        protected LayeredDrawObject LoadDrawObject(int[] layerVariations, string[] layerNames) {
+            Asset<Texture2D>[][] villagerTextures = new Asset<Texture2D>[layerVariations.Length][];
+
+            for (int i = 0; i < layerVariations.Length; i++) {
+                villagerTextures[i] = new Asset<Texture2D>[layerVariations.Length];
+
+                for (int j = 0; j < layerVariations[i]; j++) {
+                    villagerTextures[i][j] = ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/{layerNames[i]}_{j}");
+                }
+            }
+
+            int[] layerIndices = new int[layerVariations.Length];
+            return new LayeredDrawObject(villagerTextures, layerIndices);
         }
     }
 }
