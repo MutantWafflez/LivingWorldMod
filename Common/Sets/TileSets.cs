@@ -1,4 +1,4 @@
-﻿using LivingWorldMod.Content.Tiles.Furniture.Harpy;
+﻿using LivingWorldMod.Content.Tiles.Furniture.Tapestries;
 using LivingWorldMod.Core.Patches;
 using Terraria.ID;
 using Terraria.ObjectData;

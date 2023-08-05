@@ -2,6 +2,7 @@
 using LivingWorldMod.Content.Items.Placeables.Building;
 using LivingWorldMod.Content.Items.Placeables.Furniture.Critter;
 using LivingWorldMod.Content.Items.Placeables.Furniture.Harpy;
+using LivingWorldMod.Content.Items.Placeables.Furniture.Tapestries;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;

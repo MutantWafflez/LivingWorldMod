@@ -1,9 +1,7 @@
-﻿using LivingWorldMod.Content.Items.Placeables.Furniture.Harpy;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
@@ -24,10 +22,6 @@ namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
             TileObjectData.addTile(Type);
 
             AdjTiles = new int[] { TileID.Loom };
-        }
-
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) {
-            Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 32, 48, ModContent.ItemType<SkywareLoomItem>());
         }
     }
 }

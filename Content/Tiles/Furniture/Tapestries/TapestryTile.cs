@@ -1,5 +1,4 @@
 ﻿using LivingWorldMod.Common.Sets;
-using LivingWorldMod.Content.Items.Placeables.Furniture.Harpy;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,9 +7,25 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
-    public class SunTapestryTile : BaseTile {
-        public override Color? TileColorOnMap => Color.MediumPurple;
+namespace LivingWorldMod.Content.Tiles.Furniture.Tapestries {
+    /// <summary>
+    /// Generic tile class that serves as the template for all tapestry tile types.
+    /// Should be added by the item that places it, in <see cref="ModItem.IsLoadingEnabled"/>.
+    /// </summary>
+    [Autoload(false)]
+    public class TapestryTile : BaseTile {
+        public override string Name {
+            get;
+        }
+
+        public override Color? TileColorOnMap {
+            get;
+        }
+
+        public TapestryTile(string placeItemName, Color? mapColor) {
+            Name = placeItemName.Replace("Item", "Tile");
+            TileColorOnMap = mapColor;
+        }
 
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = false;
@@ -30,13 +45,9 @@ namespace LivingWorldMod.Content.Tiles.Furniture.Harpy {
             TileObjectData.addTile(Type);
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) {
-            Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 48, 48, ModContent.ItemType<SunTapestryItem>());
-        }
-
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
             Tile tile = Main.tile[i, j];
-            if (tile.TileFrameX == 0 && tile.TileFrameY == 0) {
+            if (tile is { TileFrameX: 0, TileFrameY: 0 }) {
                 TileUtils.AddSpecialPoint.DynamicInvoke(i, j, 5 /* MultiTileVine */);
             }
 

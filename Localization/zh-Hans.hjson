@@ -273,6 +273,16 @@ Mods: {
 					'Float like a Harpy, sting like a Wyvern.'
 					''' */
 			}
+
+			StormTapestryItem: {
+				// DisplayName: Storm Tapestry
+				// Tooltip: ""
+			}
+
+			WorldTapestryItem: {
+				// DisplayName: World Tapestry
+				// Tooltip: ""
+			}
 		}
 
 		MapInfo: {
@@ -305,6 +315,8 @@ Mods: {
 			StarshineBlockTile.MapEntry: Mods.LivingWorldMod.Tiles.StarshineBlockTile.MapEntry
 			SunslabBlockTile.MapEntry: Mods.LivingWorldMod.Tiles.SunslabBlockTile.MapEntry
 			NimbusJarTile.MapEntry: Mods.LivingWorldMod.Tiles.NimbusJarTile.MapEntry
+			// StormTapestryTile.MapEntry: Mods.LivingWorldMod.Tiles.StormTapestryTile.MapEntry
+			// WorldTapestryTile.MapEntry: Mods.LivingWorldMod.Tiles.WorldTapestryTile.MapEntry
 		}
 
 		VillagerType.Harpy: Harpy

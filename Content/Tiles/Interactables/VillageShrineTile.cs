@@ -1,5 +1,4 @@
 ﻿using LivingWorldMod.Common.Systems.UI;
-using LivingWorldMod.Content.Items.Placeables.Interactables;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
@@ -19,19 +18,19 @@ using Terraria.UI;
 namespace LivingWorldMod.Content.Tiles.Interactables {
     [LegacyName("HarpyShrineTile")]
     public class VillageShrineTile : BasePylon {
-        public Asset<Texture2D> shrineIcons;
-
         /// <summary>
-        /// The displacement for which the tile is placed, used for tile entity shenanigans.
+        /// The tile width of Village Shrines. Used for tile entity placement/destroying calculations.
         /// </summary>
-        public readonly Point16 tileOrigin = new Point16(1, 2);
+        public const int FullTileWidth = 3;
 
         public override Color? TileColorOnMap => Color.Yellow;
 
         /// <summary>
-        /// The tile width of Village Shrines. Used for tile entity placement/destroying calculations.
+        /// The displacement for which the tile is placed, used for tile entity shenanigans.
         /// </summary>
-        public const int FullTileWidth = 4;
+        public readonly Point16 tileOrigin = new(1, 2);
+
+        public Asset<Texture2D> shrineIcons;
 
         public override void Load() {
             shrineIcons = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}MapIcons/ShrineIcons");
@@ -91,8 +90,6 @@ namespace LivingWorldMod.Content.Tiles.Interactables {
             }
 
             ModContent.GetInstance<VillageShrineEntity>().Kill(i, j);
-            //TODO: Add method to drop other shrines when other villages are added
-            Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, 4 * 16, 5 * 16, ModContent.ItemType<HarpyShrineItem>());
         }
 
         public override bool RightClick(int i, int j) {
