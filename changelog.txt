@@ -1,7 +1,7 @@
-INDEV RELEASE v0.2.2 [1.4.4 Port] (July 22nd, 2023)
+INDEV RELEASE v??? [???] (???)
 Additions:
-+ Ported the mod in its entirety to 1.4.4!
-+ Harpies (and future villagers) will have their features re-randomized when they are shimmered
-+ Added the Effervescent Chicken Nugget & Effervescent Harpy Feather (Hint: Shimmer)
++ Added two new tapestries, sold by the Harpy Villagers
++ Added over 5,000 new Harpy Villager sprite variations
 Changes:
-* Harpy Villagers are now immune to the suffocation debuff
+* Several furniture tiles have new sprites
+	-> Village Shrines are now 5x3 instead of 5x4 tiles as a result of the re-sprite
