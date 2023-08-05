@@ -9,7 +9,6 @@ using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Chat;
@@ -133,7 +132,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         public override bool NeedSaving() => true;
 
         public override void SaveData(TagCompound tag) {
-            tag["LayerIndices"] = drawObject.currentTextureIndices;
+            tag["LayerIndices"] = drawObject.drawIndices;
             tag["Shop"] = shopInventory;
 
             tag["DisplayName"] = NPC.GivenName;
@@ -144,7 +143,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public override void LoadData(TagCompound tag) {
             if (tag.TryGet("LayerIndices", out int[] indices)) {
-                drawObject.currentTextureIndices = indices;
+                drawObject.drawIndices = indices;
             }
             else {
                 RandomizeFeatures();
@@ -197,11 +196,11 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         public override void SendExtraAI(BinaryWriter writer) {
-            int layerCount = drawObject.currentTextureIndices.Length;
+            int layerCount = drawObject.drawIndices.Length;
 
             writer.Write(layerCount);
             for (int i = 0; i < layerCount; i++) {
-                writer.Write(drawObject.currentTextureIndices[i]);
+                writer.Write(drawObject.drawIndices[i]);
             }
         }
 
@@ -209,7 +208,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             int layerCount = reader.ReadInt32();
 
             for (int i = 0; i < layerCount; i++) {
-                drawObject.currentTextureIndices[i] = reader.ReadInt32();
+                drawObject.drawIndices[i] = reader.ReadInt32();
             }
         }
 
@@ -273,29 +272,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// </summary>
         public void RandomizeFeatures() {
             for (int i = 0; i < drawObject.allLayerTextures.Length; i++) {
-                drawObject.currentTextureIndices[i] = Main.rand.Next(drawObject.allLayerTextures[i].Length);
+                drawObject.drawIndices[i] = Main.rand.Next(drawObject.allLayerTextures[i].Length);
             }
-        }
-
-        /// <summary>
-        /// Creates a new instance of a <see cref="LayeredDrawObject"/> based on the specified variation
-        /// numbers and names. Uses the length of the <see cref="layerVariations"/> parameter to determine
-        /// how many layers there are; make sure it is of proper length! Layer names are also case sensitive
-        /// to their respective texture names.
-        /// </summary>
-        protected LayeredDrawObject LoadDrawObject(int[] layerVariations, string[] layerNames) {
-            Asset<Texture2D>[][] villagerTextures = new Asset<Texture2D>[layerVariations.Length][];
-
-            for (int i = 0; i < layerVariations.Length; i++) {
-                villagerTextures[i] = new Asset<Texture2D>[layerVariations.Length];
-
-                for (int j = 0; j < layerVariations[i]; j++) {
-                    villagerTextures[i][j] = ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/{layerNames[i]}_{j}");
-                }
-            }
-
-            int[] layerIndices = new int[layerVariations.Length];
-            return new LayeredDrawObject(villagerTextures, layerIndices);
         }
     }
 }

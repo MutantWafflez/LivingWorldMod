@@ -2,7 +2,6 @@
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Content.UI.CommonElements;
-using LivingWorldMod.Content.UI.Elements;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
@@ -275,7 +274,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
 
             shopOverlay.SetImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay", AssetRequestMode.ImmediateLoad));
 
-            portrait.ChangePortraitType(currentVillager);
+            portrait.ReloadPortrait(currentVillager);
 
             nameText.SetText(currentVillager.NPC.GivenName, large: true);
 

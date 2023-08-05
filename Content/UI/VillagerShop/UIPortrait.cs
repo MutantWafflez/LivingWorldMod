@@ -1,116 +1,105 @@
-﻿using System;
-using System.Collections.Generic;
-using LivingWorldMod.Content.NPCs.Villagers;
+﻿using LivingWorldMod.Content.NPCs.Villagers;
+using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using Terraria.Audio;
-using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.Elements {
+namespace LivingWorldMod.Content.UI.VillagerShop {
     /// <summary>
     /// UIElement class extension that handles and creates portraits for villagers in the shop UI, primarily.
     /// </summary>
     public class UIPortrait : UIElement {
         private string PortraitSpritePath => $"{LivingWorldMod.LWMSpritePath}UI/ShopUI/{_villager.VillagerType}/Portraits/";
 
-        public UIImage portraitBase;
-        public UIImage portraitClothing;
-        public UIImage portraitHead;
-        public UIImage portraitExpression;
-
-        public Dictionary<VillagerPortraitExpression, Asset<Texture2D>> expressionDictionary;
-
-        public VillagerPortraitExpression currentExpression;
         public VillagerPortraitExpression temporaryExpression;
         public float temporaryExpressionTimer;
 
+        // TODO: Make array when more villages are added
+        private readonly LayeredDrawObject _drawObject;
+        private VillagerPortraitExpression _currentExpression;
         private Villager _villager;
 
         public UIPortrait(Villager villager) {
             _villager = villager;
             Width.Set(190f, 0f);
             Height.Set(190f, 0f);
+
+            _drawObject = DrawingUtils.LoadDrawObject(new[] { 5, 5, 5, 15 }, new[] { "Base", "Outfit", "Hair", "Face" }, PortraitSpritePath);
         }
 
         public override void OnInitialize() {
-            portraitBase = new UIImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Base", AssetRequestMode.ImmediateLoad));
-            Append(portraitBase);
-
-            portraitClothing = new UIImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Body1", AssetRequestMode.ImmediateLoad));
-            Append(portraitClothing);
-
-            portraitHead = new UIImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Head1", AssetRequestMode.ImmediateLoad));
-            Append(portraitHead);
-
-            PopulateExpressionDictionary();
-
-            currentExpression = VillagerPortraitExpression.Neutral;
-            portraitExpression = new UIImage(expressionDictionary[currentExpression].Value);
-            Append(portraitExpression);
-
             OnLeftClick += ClickedElement;
         }
 
         public override void Update(GameTime gameTime) {
             //Allows for temporary expressions, for whatever reason that it may be applicable
-            if (temporaryExpression != currentExpression && temporaryExpressionTimer > 0f) {
-                temporaryExpressionTimer--;
-                portraitExpression.SetImage(expressionDictionary[temporaryExpression]);
-            }
-            else if (temporaryExpression != currentExpression && temporaryExpressionTimer == 0f) {
-                temporaryExpressionTimer = -1f;
-                portraitExpression.SetImage(expressionDictionary[currentExpression]);
-            }
-            else {
-                temporaryExpression = currentExpression;
+            if (--temporaryExpressionTimer <= 0f) {
                 temporaryExpressionTimer = -1f;
             }
 
             base.Update(gameTime);
         }
 
-        public void ChangePortraitType(Villager newVillager) {
+        public void ReloadPortrait(Villager newVillager) {
             _villager = newVillager;
-            ReloadPortrait();
-        }
-
-        public void ReloadPortrait() {
-            PopulateExpressionDictionary();
 
             switch (_villager.RelationshipStatus) {
                 case <= VillagerRelationship.SevereDislike:
-                    currentExpression = VillagerPortraitExpression.Angered;
+                    _currentExpression = VillagerPortraitExpression.Angered;
                     break;
 
                 case > VillagerRelationship.SevereDislike and < VillagerRelationship.Love:
-                    currentExpression = VillagerPortraitExpression.Neutral;
+                    _currentExpression = VillagerPortraitExpression.Neutral;
                     break;
 
                 case >= VillagerRelationship.Love:
-                    currentExpression = VillagerPortraitExpression.Happy;
+                    _currentExpression = VillagerPortraitExpression.Happy;
                     break;
             }
 
-            portraitBase.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + "Base", AssetRequestMode.ImmediateLoad));
+            const int paleSkinFrame = 0;
+            const int tanSkinFrame = 1;
+            const int darkSkinFrame = 2;
 
-            portraitClothing.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Body{ /*_villager.bodySpriteType*/0}", AssetRequestMode.ImmediateLoad));
+            // The index for the tan skin color in terms of sprite file names
+            // Here for readability
+            const int tanSkinIndex = 2;
 
-            portraitHead.SetImage(ModContent.Request<Texture2D>(PortraitSpritePath + $"Head{ /*_villager.headSpriteType*/0}", AssetRequestMode.ImmediateLoad));
+            LayeredDrawObject drawObject = _villager.drawObject;
+            int faceSkinFrame = drawObject.drawIndices[HarpyVillager.FaceIndexID] switch {
+                < tanSkinIndex => paleSkinFrame,
+                tanSkinIndex => tanSkinFrame,
+                > tanSkinIndex => darkSkinFrame
+            };
 
-            portraitExpression.SetImage(expressionDictionary[currentExpression]);
+            _drawObject.drawIndices = new[] {
+                drawObject.drawIndices[HarpyVillager.BodyIndexID],
+                drawObject.drawIndices[HarpyVillager.OutfitIndexID],
+                drawObject.drawIndices[HarpyVillager.HairIndexID],
+                drawObject.drawIndices[HarpyVillager.FaceIndexID] * 3 + faceSkinFrame
+            };
         }
 
-        private void PopulateExpressionDictionary() {
-            expressionDictionary = new Dictionary<VillagerPortraitExpression, Asset<Texture2D>>();
 
-            foreach (VillagerPortraitExpression expression in Enum.GetValues(typeof(VillagerPortraitExpression))) {
-                expressionDictionary.Add(expression, ModContent.Request<Texture2D>(PortraitSpritePath + $"Expression{expression}", AssetRequestMode.ImmediateLoad));
-            }
+        protected override void DrawSelf(SpriteBatch spriteBatch) {
+            int frameWidth = _drawObject.GetFrameWidth();
+            int frameHeight = _drawObject.GetFrameHeight();
+
+            Rectangle faceRect = new(0, (int)(temporaryExpressionTimer > 0 ? temporaryExpression : _currentExpression) * frameHeight, frameWidth, frameHeight);
+
+            _drawObject.Draw(spriteBatch,
+                GetDimensions().ToRectangle(),
+                new Rectangle?[] { null, null, null, faceRect },
+                Color.White,
+                0f,
+                default(Vector2),
+                SpriteEffects.None,
+                0f
+            );
         }
 
         private void ClickedElement(UIMouseEvent evt, UIElement listeningElement) {

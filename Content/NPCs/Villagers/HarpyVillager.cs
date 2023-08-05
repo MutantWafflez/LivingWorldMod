@@ -14,6 +14,13 @@ using Terraria.Utilities;
 
 namespace LivingWorldMod.Content.NPCs.Villagers {
     public class HarpyVillager : Villager {
+        // Layer indices
+        public const int BodyIndexID = 0;
+        public const int OutfitIndexID = 1;
+        public const int HairIndexID = 2;
+        public const int FaceIndexID = 3;
+        public const int WingsIndexID = 4;
+
         public override VillagerType VillagerType => VillagerType.Harpy;
 
         public override WeightedRandom<ShopItem> ShopPool {
@@ -58,7 +65,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         public HarpyVillager() {
-            drawObject = LoadDrawObject(new[] { 5, 5, 5, 5, 5 }, new[] { "Body", "Outfit", "Hair", "Face", "Wings" });
+            drawObject = DrawingUtils.LoadDrawObject(new[] { 5, 5, 5, 5, 5 }, new[] { "Body", "Outfit", "Hair", "Face", "Wings" }, LivingWorldMod.LWMSpritePath + "NPCs/Villagers/Harpy/");
         }
 
         public override void SetStaticDefaults() {
