@@ -27,7 +27,7 @@ namespace LivingWorldMod.Common.ModTypes {
             private set;
         }
 
-        public sealed override void SetupContent() { }
+        public sealed override void SetupContent() => SetStaticDefaults();
 
         public sealed override void SetStaticDefaults() {
             allPacketHandlers = ModContent.GetContent<PacketHandler>().ToList();
