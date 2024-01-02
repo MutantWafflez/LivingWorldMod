@@ -48,20 +48,6 @@ public static partial class Utilities {
                || TileID.Sets.OreMergesWithMud[tileType] && TileID.Sets.Mud[otherTile.TileType];
     }
 
-    /// <summary>
-    /// Returns the top left coordinate of the passed in tile which should be a type of multi-tile. This overload takes into
-    /// account multi-styled multi-tiles.
-    /// </summary>
-    /// <param name="tile"> A tile within the multi-tile. </param>
-    /// <param name="x"> The x coordinate of the specified tile. </param>
-    /// <param name="y"> The y coordinate of the specified tile. </param>
-    /// <param name="multiTileWidth">
-    /// The width of the full multi-tile, in tiles.
-    /// Assumes multi-tile sprite uses 16x16 for each tile frame, with 2 pixels worth of padding.
-    /// </param>
-    //TODO: Replace all references to GetCornerOfMultiTile and delete this method
-    public static Point GetTopLeftOfMultiTile(Tile tile, int x, int y, int multiTileWidth) => GetCornerOfMultiTile(tile, x, y, CornerType.TopLeft);
-
     public static Point GetCornerOfMultiTile(Tile tile, int x, int y, CornerType corner) {
         TileObjectData data = TileObjectData.GetTileData(tile);
         Point topLeft = new(x - tile.TileFrameX % data.CoordinateFullWidth / 18, y - tile.TileFrameY % data.CoordinateFullHeight / 18);

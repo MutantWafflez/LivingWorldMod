@@ -74,7 +74,7 @@ public class VillageShrineTile : BasePylon {
 
     public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
         //TODO: Re-add tile animation once reputation system re-implemented
-        Point topLeft = Utilities.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, FullTileWidth);
+        Point topLeft = Utilities.GetCornerOfMultiTile(Framing.GetTileSafely(i, j), i, j, Utilities.CornerType.TopLeft);
         Tile topLeftTile = Framing.GetTileSafely(topLeft);
     }
 
@@ -91,7 +91,7 @@ public class VillageShrineTile : BasePylon {
     }
 
     public override bool RightClick(int i, int j) {
-        Point topLeft = Utilities.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, FullTileWidth);
+        Point topLeft = Utilities.GetCornerOfMultiTile(Framing.GetTileSafely(i, j), i, j, Utilities.CornerType.TopLeft);
 
         if (!Utilities.TryFindModEntity(topLeft.X, topLeft.Y, out VillageShrineEntity entity)) {
             return false;
