@@ -87,7 +87,8 @@ public class TownGlobalNPC : GlobalNPC {
 
     private ForgetfulArray<TownNPCActivity> _lastActivities;
 
-    public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.aiStyle == NPCAIStyleID.Passive
+    public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => lateInstantiation
+                                                                                && entity.aiStyle == NPCAIStyleID.Passive
                                                                                 && entity.townNPC
                                                                                 && !NPCID.Sets.IsTownPet[entity.type]
                                                                                 && !NPCID.Sets.IsTownSlime[entity.type]
@@ -174,7 +175,16 @@ public class TownGlobalNPC : GlobalNPC {
         instance.MoodModule = new TownNPCMoodModule(target);
         instance.CombatModule = new TownNPCCombatModule(target);
 
-        if (_talkBlinkOverlays is not null) {
+        if (_talkBlinkOverlays is null) {
+            instance.ChatModule = new TownNPCChatModule(target, null);
+            instance.SpriteModule = new TownNPCSpriteModule(target, null);
+        }
+        else if (!_talkBlinkOverlays.ContainsKey(target.type)) {
+            ModContent.GetInstance<LWM>().Logger.Error($"Valid NPC without talk/blink textures. Type: {target.type}, Type Name: {ModContent.GetModNPC(target.type).Name}");
+            instance.ChatModule = new TownNPCChatModule(target, null);
+            instance.SpriteModule = new TownNPCSpriteModule(target, null);
+        }
+        else {
             instance.ChatModule = new TownNPCChatModule(target, _talkBlinkOverlays[target.type].Item1);
             instance.SpriteModule = new TownNPCSpriteModule(target, _talkBlinkOverlays[target.type].Item2);
         }

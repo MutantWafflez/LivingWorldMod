@@ -32,6 +32,10 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
     }
 
     public void AddDrawRequest(Texture2D request) {
+        if (request is null) {
+            return;
+        }
+
         _drawSet.Add(request);
     }
 
