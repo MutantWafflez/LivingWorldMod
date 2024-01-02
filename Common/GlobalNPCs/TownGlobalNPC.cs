@@ -8,6 +8,7 @@ using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Classes.TownNPCModules;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
+using log4net;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -345,6 +346,7 @@ public class TownGlobalNPC : GlobalNPC {
     private void GenerateTalkBlinkTextures() {
         Dictionary<int, (Texture2D, Texture2D)> talkBlinkOverlays = new();
         NPC npc = new();
+        ILog logger = ModContent.GetInstance<LWM>().Logger;
         for (int i = 0; i < NPCLoader.NPCCount; i++) {
             npc.SetDefaults(i);
             if (!AppliesToEntity(npc, true) || !TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile)) {
@@ -366,7 +368,10 @@ public class TownGlobalNPC : GlobalNPC {
             Color[] secondFrameData = new Color[totalPixelArea];
             Rectangle frameRectangle = new(0, 0, npcTexture.Width, npcFrameHeight);
 
+            logger.Info($"Getting base pixel data for NPC \"{npc.TypeName}\"...");
             npcTexture.GetData(0, frameRectangle, firstFrameData, 0, totalPixelArea);
+
+            logger.Info($"Getting talk frame pixel data for NPC \"{npc.TypeName}\"...");
             npcTexture.GetData(0, frameRectangle with { Y = npcFrameHeight * (nonAttackFrameCount - 2) }, secondFrameData, 0, totalPixelArea);
 
             Color[] colorDifference = new Color[totalPixelArea];
@@ -380,6 +385,7 @@ public class TownGlobalNPC : GlobalNPC {
             talkingFrameTexture.SetData(colorDifference);
             talkingFrameTexture.Name = $"{npcAsset.Name[(npcAsset.Name.LastIndexOf("\\") + 1)..]}_Talking";
 
+            logger.Info($"Getting blink frame pixel data for NPC \"{npc.TypeName}\"...");
             npcTexture.GetData(0, frameRectangle with { Y = npcFrameHeight * (nonAttackFrameCount - 1) }, secondFrameData, 0, totalPixelArea);
             for (int j = 0; j < totalPixelArea; j++) {
                 colorDifference[j] = default(Color);
