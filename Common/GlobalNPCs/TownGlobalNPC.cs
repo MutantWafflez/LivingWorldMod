@@ -8,11 +8,8 @@ using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Classes.TownNPCModules;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
-using log4net;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
-using Terraria.GameContent;
 
 namespace LivingWorldMod.Common.GlobalNPCs;
 
@@ -20,6 +17,8 @@ namespace LivingWorldMod.Common.GlobalNPCs;
 /// Global NPC that handles exclusively the AI overhaul for Town NPCs.
 /// </summary>
 public class TownGlobalNPC : GlobalNPC {
+    public static IReadOnlyDictionary<int, (Texture2D, Texture2D)> talkBlinkOverlays;
+
     /// <summary>
     /// How many activities are remembered by this NPC for the
     /// purpose of preventing activity repetition.
@@ -28,8 +27,6 @@ public class TownGlobalNPC : GlobalNPC {
 
     private static IReadOnlyDictionary<int, TownNPCAIState> _stateDict;
     private static IReadOnlyList<TownNPCActivity> _allActivities;
-
-    private static IReadOnlyDictionary<int, (Texture2D, Texture2D)> _talkBlinkOverlays;
 
     public override bool InstancePerEntity => true;
 
@@ -149,7 +146,7 @@ public class TownGlobalNPC : GlobalNPC {
 
     public override void Unload() {
         Main.QueueMainThreadAction(() => {
-            foreach ((Texture2D talkTexture, Texture2D blinkTexture) in _talkBlinkOverlays.Values) {
+            foreach ((Texture2D talkTexture, Texture2D blinkTexture) in talkBlinkOverlays.Values) {
                 talkTexture.Dispose();
                 blinkTexture.Dispose();
             }
@@ -165,8 +162,6 @@ public class TownGlobalNPC : GlobalNPC {
 
         _stateDict = states.ToDictionary(state => state.ReservedStateInteger);
         //_allActivities = states.OfType<TownNPCActivity>().ToList();
-
-        Main.QueueMainThreadAction(GenerateTalkBlinkTextures);
     }
 
     public override GlobalNPC NewInstance(NPC target) {
@@ -176,18 +171,18 @@ public class TownGlobalNPC : GlobalNPC {
         instance.MoodModule = new TownNPCMoodModule(target);
         instance.CombatModule = new TownNPCCombatModule(target);
 
-        if (_talkBlinkOverlays is null) {
+        if (talkBlinkOverlays is null) {
             instance.ChatModule = new TownNPCChatModule(target, null);
             instance.SpriteModule = new TownNPCSpriteModule(target, null);
         }
-        else if (!_talkBlinkOverlays.ContainsKey(target.type)) {
+        else if (!talkBlinkOverlays.ContainsKey(target.type)) {
             ModContent.GetInstance<LWM>().Logger.Error($"Valid NPC without talk/blink textures. Type: {target.type}, Type Name: {ModContent.GetModNPC(target.type).Name}");
             instance.ChatModule = new TownNPCChatModule(target, null);
             instance.SpriteModule = new TownNPCSpriteModule(target, null);
         }
         else {
-            instance.ChatModule = new TownNPCChatModule(target, _talkBlinkOverlays[target.type].Item1);
-            instance.SpriteModule = new TownNPCSpriteModule(target, _talkBlinkOverlays[target.type].Item2);
+            instance.ChatModule = new TownNPCChatModule(target, talkBlinkOverlays[target.type].Item1);
+            instance.SpriteModule = new TownNPCSpriteModule(target, talkBlinkOverlays[target.type].Item2);
         }
 
         instance.HousingModule = new TownNPCHousingModule(target);
@@ -341,66 +336,5 @@ public class TownGlobalNPC : GlobalNPC {
         }
 
         npc.localAI[0] = wrenchFound.ToInt();
-    }
-
-    private void GenerateTalkBlinkTextures() {
-        Dictionary<int, (Texture2D, Texture2D)> talkBlinkOverlays = new();
-        NPC npc = new();
-        ILog logger = ModContent.GetInstance<LWM>().Logger;
-        for (int i = 0; i < NPCLoader.NPCCount; i++) {
-            npc.SetDefaults(i);
-            if (!AppliesToEntity(npc, true) || !TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile)) {
-                continue;
-            }
-
-            Asset<Texture2D> npcAsset = profile.GetTextureNPCShouldUse(npc);
-            string modName = "Terraria";
-            if (i >= NPCID.Count) {
-                modName = NPCLoader.GetNPC(i).Mod.Name;
-            }
-            Texture2D npcTexture = ModContent.Request<Texture2D>($"{modName}/{npcAsset.Name}".Replace("\\", "/"), AssetRequestMode.ImmediateLoad).Value;
-
-            int npcFrameHeight = npcTexture.Height / Main.npcFrameCount[i];
-            int totalPixelArea = npcTexture.Width * npcFrameHeight;
-            int nonAttackFrameCount = Main.npcFrameCount[i] - NPCID.Sets.AttackFrameCount[i];
-
-            Color[] firstFrameData = new Color[totalPixelArea];
-            Color[] secondFrameData = new Color[totalPixelArea];
-            Rectangle frameRectangle = new(0, 0, npcTexture.Width, npcFrameHeight);
-
-            logger.Info($"Getting base pixel data for NPC \"{npc.TypeName}\"...");
-            npcTexture.GetData(0, frameRectangle, firstFrameData, 0, totalPixelArea);
-
-            logger.Info($"Getting talk frame pixel data for NPC \"{npc.TypeName}\"...");
-            npcTexture.GetData(0, frameRectangle with { Y = npcFrameHeight * (nonAttackFrameCount - 2) }, secondFrameData, 0, totalPixelArea);
-
-            Color[] colorDifference = new Color[totalPixelArea];
-            for (int j = 0; j < totalPixelArea; j++) {
-                if (firstFrameData[j] != secondFrameData[j]) {
-                    colorDifference[j] = secondFrameData[j];
-                }
-            }
-
-            Texture2D talkingFrameTexture = new(Main.graphics.GraphicsDevice, npcTexture.Width, npcFrameHeight);
-            talkingFrameTexture.SetData(colorDifference);
-            talkingFrameTexture.Name = $"{npcAsset.Name[(npcAsset.Name.LastIndexOf("\\") + 1)..]}_Talking";
-
-            logger.Info($"Getting blink frame pixel data for NPC \"{npc.TypeName}\"...");
-            npcTexture.GetData(0, frameRectangle with { Y = npcFrameHeight * (nonAttackFrameCount - 1) }, secondFrameData, 0, totalPixelArea);
-            for (int j = 0; j < totalPixelArea; j++) {
-                colorDifference[j] = default(Color);
-                if (firstFrameData[j] != secondFrameData[j]) {
-                    colorDifference[j] = secondFrameData[j];
-                }
-            }
-
-            Texture2D blinkingFrameTexture = new(Main.graphics.GraphicsDevice, npcTexture.Width, npcFrameHeight);
-            blinkingFrameTexture.SetData(colorDifference);
-            blinkingFrameTexture.Name = $"{npcAsset.Name[(npcAsset.Name.LastIndexOf("\\") + 1)..]}_Blinking";
-
-            talkBlinkOverlays[i] = (talkingFrameTexture, blinkingFrameTexture);
-        }
-
-        _talkBlinkOverlays = talkBlinkOverlays;
     }
 }
