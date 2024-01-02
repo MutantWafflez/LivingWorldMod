@@ -107,7 +107,7 @@ public abstract class Villager : ModNPC {
         NPCID.Sets.ShimmerTownTransform[Type] = true;
         NPCID.Sets.NoTownNPCHappiness[Type] = true;
 
-        NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new(0) {
+        NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new() {
             Velocity = 1f,
             Direction = -1
         };

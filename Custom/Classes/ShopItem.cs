@@ -1,7 +1,4 @@
 ﻿using System;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Custom.Classes;
@@ -10,7 +7,7 @@ namespace LivingWorldMod.Custom.Classes;
 /// Class that does what it says on the tin. Has fields for an instance of a shop item for
 /// Villagers to sell as its primary use.
 /// </summary>
-public sealed class ShopItem : TagSerializable {
+public sealed class ShopItem : TagSerializable, IEquatable<ShopItem> {
     public static readonly Func<TagCompound, ShopItem> DESERIALIZER = Deserialize;
 
     /// <summary>
@@ -49,9 +46,19 @@ public sealed class ShopItem : TagSerializable {
         _internalPrice = internalPrice;
     }
 
-    public static bool operator ==(ShopItem shopItem1, ShopItem shopItem2) => shopItem1.itemType == shopItem2.itemType;
+    public override bool Equals(object obj) => Equals(obj as ShopItem);
 
-    public static bool operator !=(ShopItem shopItem1, ShopItem shopItem2) => shopItem1.itemType != shopItem2.itemType;
+    public override int GetHashCode() => itemType;
+
+    public bool Equals(ShopItem other) {
+        if (other is null) {
+            return false;
+        }
+        if (ReferenceEquals(this, other)) {
+            return true;
+        }
+        return itemType == other.itemType;
+    }
 
     public TagCompound SerializeData() {
         TagCompound tag = new() {
@@ -70,8 +77,9 @@ public sealed class ShopItem : TagSerializable {
         return tag;
     }
 
-    //We only care about the item type when determining equality, as the other two factors are inconsequential
-    public bool Equals(ShopItem other) => itemType == other.itemType;
+    public static bool operator ==(ShopItem left, ShopItem right) => Equals(left, right);
+
+    public static bool operator !=(ShopItem left, ShopItem right) => !Equals(left, right);
 
     private static ShopItem Deserialize(TagCompound tag) {
         if (tag.TryGet("ItemModName", out string modName) && tag.TryGet("ItemName", out string itemName) && ModContent.TryFind(modName, itemName, out ModItem modItem)) {

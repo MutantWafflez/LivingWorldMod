@@ -22,9 +22,11 @@ public abstract class LoadablePatch : ILoadable {
     public abstract void LoadPatches();
 
     public void Load(Mod mod) {
+        #pragma warning disable CS0162 // Unreachable code detected
         if (!LWM.EnableILPatches) {
             return;
         }
+        #pragma warning restore CS0162 // Unreachable code detected
 
         try {
             LoadPatches();

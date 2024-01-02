@@ -23,11 +23,6 @@ public class WaystoneTile : BasePylon {
 
     public Asset<Texture2D> waystoneMapIcons;
 
-    /// <summary>
-    /// The tile width of Waystones. Used for tile entity placement/destroying calculations.
-    /// </summary>
-    private readonly int _fullTileWidth = 2;
-
     public override void Load() {
         waystoneMapIcons = ModContent.Request<Texture2D>($"{LWM.SpritePath}MapIcons/WaystoneIcons");
     }
