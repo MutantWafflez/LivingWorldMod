@@ -18,7 +18,6 @@
         <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
         <PackageReference Include="Krafs.Publicizer" Version="2.2.1" PrivateAssets="all" />
 
-        <Publicize Include="tModLoader:Terraria.NPC.AI_007_TownEntities_IsInAGoodRestingSpot" />
         <Publicize Include="tModLoader:Terraria.GameContent.Events.BirthdayParty.CanNPCParty" />
 
         <!-- Shop Helper Publicizing -->
