@@ -1,6 +1,6 @@
 ﻿using System;
-using Terraria;
-using Terraria.ModLoader;
+using LivingWorldMod.Content.Tiles.DebugTiles;
+using LivingWorldMod.Content.Walls.DebugWalls;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Custom.Structs;
@@ -88,9 +88,9 @@ public readonly struct TileData : TagSerializable {
 
     public TileData(Tile tile) {
         type = tile.HasTile ? tile.TileType : -1;
-        #if DEBUG
+        if (LWM.IsDebug) {
             type = ModContent.GetModTile(tile.TileType) is SkipTile ? -2 : tile.TileType;
-        #endif
+        }
         isActivated = tile.HasTile;
         isHalfBlock = tile.IsHalfBlock;
         frameNumber = tile.TileFrameNumber;
@@ -106,11 +106,12 @@ public readonly struct TileData : TagSerializable {
         hasYellowWire = tile.YellowWire;
         liquidType = tile.LiquidType;
         liquidAmount = tile.LiquidAmount;
-        #if DEBUG
+        if (LWM.IsDebug) {
             wallType = ModContent.GetModWall(tile.WallType) is SkipWall ? -1 : tile.WallType;
-        #else
-        wallType = tile.WallType;
-        #endif
+        }
+        else {
+            wallType = tile.WallType;
+        }
         wallColor = tile.WallColor;
         wallFrame = tile.WallFrameNumber;
         wallFrameX = tile.WallFrameX;
@@ -130,9 +131,9 @@ public readonly struct TileData : TagSerializable {
         int wallFrameX, int wallFrameY, string modTileName, string modTileOwner, string modWallName, string modWallOwner
     ) {
         this.type = isActivated ? type : -1;
-        #if DEBUG
+        if (LWM.IsDebug) {
             this.type = modTileOwner == nameof(LivingWorldMod) && modTileName == nameof(SkipTile) ? -2 : type;
-        #endif
+        }
         this.isActivated = isActivated;
         this.isHalfBlock = isHalfBlock;
         this.frameNumber = frameNumber;
@@ -148,11 +149,12 @@ public readonly struct TileData : TagSerializable {
         this.hasYellowWire = hasYellowWire;
         this.liquidType = liquidType;
         this.liquidAmount = liquidAmount;
-        #if DEBUG
+        if (LWM.IsDebug) {
             this.wallType = modWallOwner == nameof(LivingWorldMod) && modWallName == nameof(SkipWall) ? -1 : wallType;
-        #else
-        this.wallType = wallType;
-        #endif
+        }
+        else {
+            this.wallType = wallType;
+        }
         this.wallColor = wallColor;
         this.wallFrame = wallFrame;
         this.wallFrameX = wallFrameX;
