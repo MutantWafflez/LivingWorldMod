@@ -35,7 +35,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     /// <summary>
     /// The side length of the square that represents the zone in which the PathFinder will search for a path.
     /// </summary>
-    public const int PathFinderZoneSideLength = 256;
+    public const int PathFinderZoneSideLength = 64;
 
     private const float RenewPathThreshold = 300f;
 
