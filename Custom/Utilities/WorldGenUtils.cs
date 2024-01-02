@@ -13,23 +13,12 @@ public static partial class Utilities {
     /// <summary>
     /// Returns world size of the current world being played.
     /// </summary>
-    public static WorldSize CurrentWorldSize {
-        get {
-            switch (Main.maxTilesX) {
-                case 4200: //Small
-                    return WorldSize.Small;
-
-                case 6300: //Medium
-                    return WorldSize.Medium;
-
-                case 8400: //Large
-                    return WorldSize.Large;
-
-                default: //Non-vanilla world size
-                    return WorldSize.Custom;
-            }
-        }
-    }
+    public static WorldSize CurrentWorldSize => Main.maxTilesX switch {
+        WorldGen.WorldSizeSmallX when Main.maxTilesY == WorldGen.WorldSizeSmallY => WorldSize.Small,
+        WorldGen.WorldSizeMediumX when Main.maxTilesY == WorldGen.WorldSizeMediumY => WorldSize.Medium,
+        WorldGen.WorldSizeLargeX when Main.maxTilesY == WorldGen.WorldSizeLargeY => WorldSize.Large,
+        _ => WorldSize.Custom
+    };
 
     /// <summary>
     /// Generates a given Structure into the world using a StructureData struct.

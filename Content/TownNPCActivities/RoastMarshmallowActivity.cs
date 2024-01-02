@@ -22,7 +22,7 @@ public class RoastMarshmallowActivity : TownNPCActivity {
     private Point _standingLocation;
     private bool _isAtStandingLocation;
 
-    public override void FrameNPC(TownAIGlobalNPC globalNPC, NPC npc, int frameHeight) {
+    public override void FrameNPC(TownGlobalNPC globalNPC, NPC npc, int frameHeight) {
         if (!_isAtStandingLocation) {
             return;
         }
@@ -30,7 +30,7 @@ public class RoastMarshmallowActivity : TownNPCActivity {
         npc.frame.Y = frameHeight * 17;
     }
 
-    public override void PostDrawNPC(TownAIGlobalNPC globalNPC, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+    public override void PostDrawNPC(TownGlobalNPC globalNPC, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
         if (!_isAtStandingLocation) {
             return;
         }
@@ -43,7 +43,7 @@ public class RoastMarshmallowActivity : TownNPCActivity {
         );
     }
 
-    public override void DoState(TownAIGlobalNPC globalNPC, NPC npc) {
+    public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         if ((npc.BottomLeft + new Vector2(0, -2)).ToTileCoordinates() == _standingLocation) {
             _isAtStandingLocation = true;
             npc.direction = 1;
@@ -54,7 +54,7 @@ public class RoastMarshmallowActivity : TownNPCActivity {
         _isAtStandingLocation = false;
     }
 
-    public override bool CanDoActivity(TownAIGlobalNPC globalNPC, NPC npc) {
+    public override bool CanDoActivity(TownGlobalNPC globalNPC, NPC npc) {
         Point origin = globalNPC.PathfinderModule.TopLeftOfPathfinderZone;
         List<Point> campfires = new();
         for (int i = origin.X; i < origin.X + TownNPCPathfinderModule.PathFinderZoneSideLength; i++) {

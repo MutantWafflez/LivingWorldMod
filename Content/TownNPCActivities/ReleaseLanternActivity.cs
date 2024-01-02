@@ -2,16 +2,14 @@
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Content.TownNPCAIStates;
 using Microsoft.Xna.Framework;
-using Terraria;
 using Terraria.GameContent.Events;
-using Terraria.ID;
 
 namespace LivingWorldMod.Content.TownNPCActivities;
 
 public class ReleaseLanternActivity : TownNPCActivity {
     public override int ReservedStateInteger => 28;
 
-    public override void DoState(TownAIGlobalNPC globalNPC, NPC npc) {
+    public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         switch (npc.ai[1]) {
             case 0f when ++npc.ai[2] > 45: {
                 npc.ai[1] = 1f;
@@ -34,9 +32,9 @@ public class ReleaseLanternActivity : TownNPCActivity {
         }
     }
 
-    public override bool CanDoActivity(TownAIGlobalNPC globalNPC, NPC npc) => LanternNight.LanternsUp;
+    public override bool CanDoActivity(TownGlobalNPC globalNPC, NPC npc) => LanternNight.LanternsUp;
 
-    public override void FrameNPC(TownAIGlobalNPC globalNPC, NPC npc, int frameHeight) {
+    public override void FrameNPC(TownGlobalNPC globalNPC, NPC npc, int frameHeight) {
         int nonAttackFrameCount = Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type];
         switch (npc.ai[2]) {
             case < 15:

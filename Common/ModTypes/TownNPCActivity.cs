@@ -1,5 +1,4 @@
 ﻿using LivingWorldMod.Common.GlobalNPCs;
-using Terraria;
 
 namespace LivingWorldMod.Common.ModTypes;
 
@@ -26,5 +25,5 @@ public abstract class TownNPCActivity : TownNPCAIState {
     /// Returns whether or not the passed in NPC can do this activity. Determines
     /// whether or not this activity will be performed.
     /// </summary>
-    public abstract bool CanDoActivity(TownAIGlobalNPC globalNPC, NPC npc);
+    public abstract bool CanDoActivity(TownGlobalNPC globalNPC, NPC npc);
 }

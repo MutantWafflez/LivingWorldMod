@@ -12,9 +12,9 @@ namespace LivingWorldMod.Content.TownNPCAIStates;
 public sealed class GoHomeAIState : TownNPCAIState {
     public override int ReservedStateInteger => 27;
 
-    public override void DoState(TownAIGlobalNPC globalNPC, NPC npc) {
+    public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         if (globalNPC.HousingModule.RestPos is not { } restPos) {
-            TownAIGlobalNPC.RefreshToState<DefaultAIState>(npc);
+            TownGlobalNPC.RefreshToState<DefaultAIState>(npc);
             return;
         }
 
@@ -70,7 +70,7 @@ public sealed class GoHomeAIState : TownNPCAIState {
         }
     }
 
-    public override void FrameNPC(TownAIGlobalNPC globalNPC, NPC npc, int frameHeight) {
+    public override void FrameNPC(TownGlobalNPC globalNPC, NPC npc, int frameHeight) {
         // TODO: Likely redundant check, investigate if it can be removed
         if (globalNPC.HousingModule.RestPos is not { } restPos) {
             return;
@@ -83,7 +83,7 @@ public sealed class GoHomeAIState : TownNPCAIState {
         }
     }
 
-    public override void PostDrawNPC(TownAIGlobalNPC globalNPC, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+    public override void PostDrawNPC(TownGlobalNPC globalNPC, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
         Main.instance.LoadItem(ItemID.SleepingIcon);
 
         if (npc.ai[1] != 1f) {

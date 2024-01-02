@@ -12,7 +12,7 @@ namespace LivingWorldMod.Content.TownNPCAIStates;
 public class WanderAIState : TownNPCAIState {
     public override int ReservedStateInteger => 1;
 
-    public override void DoState(TownAIGlobalNPC globalNPC, NPC npc) {
+    public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         TownNPCPathfinderModule pathfinderModule = globalNPC.PathfinderModule;
         if (npc.ai[2] == 0f) {
             const int maxTileThreshold = TownNPCPathfinderModule.PathFinderZoneSideLength / 4;
@@ -37,7 +37,7 @@ public class WanderAIState : TownNPCAIState {
             }
 
             if (!wanderPoints.elements.Any()) {
-                TownAIGlobalNPC.RefreshToState<DefaultAIState>(npc);
+                TownGlobalNPC.RefreshToState<DefaultAIState>(npc);
                 npc.ai[1] = Utilities.RealLifeSecond * 3;
                 return;
             }
@@ -47,7 +47,7 @@ public class WanderAIState : TownNPCAIState {
             npc.netUpdate = true;
         }
         else if (npc.ai[2] == 1f && !pathfinderModule.IsPathfinding) {
-            TownAIGlobalNPC.RefreshToState<DefaultAIState>(npc);
+            TownGlobalNPC.RefreshToState<DefaultAIState>(npc);
             npc.ai[1] = Utilities.RealLifeSecond * 3;
         }
 

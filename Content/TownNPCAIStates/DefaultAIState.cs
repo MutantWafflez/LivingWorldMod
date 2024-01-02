@@ -12,9 +12,9 @@ namespace LivingWorldMod.Content.TownNPCAIStates;
 public class DefaultAIState : TownNPCAIState {
     public override int ReservedStateInteger => 0;
 
-    public override void DoState(TownAIGlobalNPC globalNPC, NPC npc) {
+    public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         if (npc.breath == 0) {
-            TownAIGlobalNPC.RefreshToState<WanderAIState>(npc);
+            TownGlobalNPC.RefreshToState<WanderAIState>(npc);
             return;
         }
 
@@ -23,7 +23,7 @@ public class DefaultAIState : TownNPCAIState {
         }
 
         if (Main.rand.NextBool(4, 10)) {
-            TownAIGlobalNPC.RefreshToState<WanderAIState>(npc);
+            TownGlobalNPC.RefreshToState<WanderAIState>(npc);
             return;
         }
 

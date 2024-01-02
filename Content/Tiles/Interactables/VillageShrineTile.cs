@@ -72,11 +72,12 @@ public class VillageShrineTile : BasePylon {
     }
 
 
+    //TODO: Re-add tile animation once reputation system re-implemented
+    /*
     public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
-        //TODO: Re-add tile animation once reputation system re-implemented
         Point topLeft = Utilities.GetCornerOfMultiTile(Framing.GetTileSafely(i, j), i, j, Utilities.CornerType.TopLeft);
         Tile topLeftTile = Framing.GetTileSafely(topLeft);
-    }
+    }*/
 
     //Since these "pylons" aren't a traditional vanilla pylon (with no visual crystal), we override the base implementation to prevent it.
     public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) { }

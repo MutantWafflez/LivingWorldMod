@@ -5,6 +5,7 @@ using Hjson;
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Content.TownNPCAIStates;
 using LivingWorldMod.Custom.Classes;
+using LivingWorldMod.Custom.Classes.TownNPCModules;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
@@ -17,7 +18,7 @@ namespace LivingWorldMod.Common.GlobalNPCs;
 /// <summary>
 /// Global NPC that handles exclusively the AI overhaul for Town NPCs.
 /// </summary>
-public class TownAIGlobalNPC : GlobalNPC {
+public class TownGlobalNPC : GlobalNPC {
     /// <summary>
     /// How many activities are remembered by this NPC for the
     /// purpose of preventing activity repetition.
@@ -167,7 +168,7 @@ public class TownAIGlobalNPC : GlobalNPC {
     }
 
     public override GlobalNPC NewInstance(NPC target) {
-        TownAIGlobalNPC instance = (TownAIGlobalNPC)base.NewInstance(target);
+        TownGlobalNPC instance = (TownGlobalNPC)base.NewInstance(target);
 
         instance.PathfinderModule = new TownNPCPathfinderModule(target);
         instance.MoodModule = new TownNPCMoodModule(target);

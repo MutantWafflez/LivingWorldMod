@@ -62,7 +62,7 @@ public class UIShopItem : UIImage {
         itemNameText.Left.Set(94f, 0f);
         Append(itemNameText);
 
-        itemCostDisplay = new UICoinDisplay(displayedCost, CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) {
+        itemCostDisplay = new UICoinDisplay(displayedCost, UICoinDisplay.CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) {
             VAlign = 0.5f
         };
         itemCostDisplay.Left.Set(-itemCostDisplay.Width.Pixels - 12f, 1f);

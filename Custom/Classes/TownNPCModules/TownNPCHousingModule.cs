@@ -77,7 +77,7 @@ public class TownNPCHousingModule : TownNPCModule {
 
         int goHomeState = TownNPCAIState.GetStateInteger<GoHomeAIState>();
         if (npc.ai[0] != goHomeState) {
-            TownAIGlobalNPC.RefreshToState(npc, goHomeState);
+            TownGlobalNPC.RefreshToState(npc, goHomeState);
         }
 
         bool nearbyPlayers = false;

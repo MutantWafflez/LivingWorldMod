@@ -16,14 +16,14 @@ public class SantaGiftingActivity : TownNPCActivity {
 
     private NPC _receivingNPC;
 
-    public override void DoState(TownAIGlobalNPC globalNPC, NPC npc) { }
+    public override void DoState(TownGlobalNPC globalNPC, NPC npc) { }
 
-    public override bool CanDoActivity(TownAIGlobalNPC globalNPC, NPC npc) {
+    public override bool CanDoActivity(TownGlobalNPC globalNPC, NPC npc) {
         if (npc.type != NPCID.SantaClaus) {
             return false;
         }
 
-        List<NPC> allTownNPCs = Utilities.GetAllNPCs(otherNPC => otherNPC.TryGetGlobalNPC(out TownAIGlobalNPC _) && globalNPC.PathfinderModule.EntityWithinPathfinderZone(otherNPC));
+        List<NPC> allTownNPCs = Utilities.GetAllNPCs(otherNPC => otherNPC.TryGetGlobalNPC(out TownGlobalNPC _) && globalNPC.PathfinderModule.EntityWithinPathfinderZone(otherNPC));
         if (!allTownNPCs.Any()) {
             return false;
         }

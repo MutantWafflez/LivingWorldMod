@@ -91,7 +91,7 @@ public sealed class TownNPCChatModule : TownNPCModule {
             || !Main.rand.NextBool(ChitChatChanceDenominator)
             || Utilities.Utilities.GetFirstNPC(otherNPC =>
                 npc != otherNPC &&
-                otherNPC.TryGetGlobalNPC(out TownAIGlobalNPC otherGlobalNPC)
+                otherNPC.TryGetGlobalNPC(out TownGlobalNPC otherGlobalNPC)
                 && !otherGlobalNPC.ChatModule.IsSpeaking
                 && npc.Center.Distance(otherNPC.Center) <= 100f
                 && Collision.CanHit(npc.Center, 0, 0, otherNPC.Center, 0, 0)

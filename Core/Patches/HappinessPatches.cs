@@ -23,7 +23,7 @@ public sealed class HappinessPatches : LoadablePatch {
 
     private void MoodOverhaulChanges(On_ShopHelper.orig_ProcessMood orig, ShopHelper self, Player player, NPC npc) {
         orig(self, player, npc);
-        if (!npc.TryGetGlobalNPC(out TownAIGlobalNPC globalNPC)) {
+        if (!npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
             return;
         }
 
@@ -66,7 +66,7 @@ public sealed class HappinessPatches : LoadablePatch {
         string flavorText = Language.GetTextValueWith(text + "." + textKeyInCategory, substitutes);
         // To prevent the "content" modifier from showing up when other modifiers are present
         self._currentHappiness = " ";
-        if (self._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownAIGlobalNPC globalNPC)) {
+        if (self._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
             globalNPC.MoodModule.AddModifier(textKeyInCategory.Split('_')[0], flavorText, 0);
         }
     }

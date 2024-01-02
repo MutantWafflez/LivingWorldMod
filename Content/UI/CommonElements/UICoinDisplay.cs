@@ -1,5 +1,4 @@
-﻿using LivingWorldMod.Custom.Enums;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Terraria.UI;
@@ -11,6 +10,29 @@ namespace LivingWorldMod.Content.UI.CommonElements;
 /// kind of coin count, such as for a price in the villager shop UI.
 /// </summary>
 public class UICoinDisplay : UIElement {
+    /// <summary>
+    /// The style of how coins are drawn in a UICoinDisplay.
+    /// </summary>
+    public enum CoinDrawStyle {
+        /// <summary>
+        /// Vanilla drawing style. This means that all coins will be drawn regardless of what their
+        /// value is.
+        /// </summary>
+        Vanilla,
+
+        /// <summary>
+        /// Any coin, regardless of the statuses of other coins, won't be drawn if it has no value.
+        /// </summary>
+        NoCoinsWithZeroValue,
+
+        /// <summary>
+        /// Same as NoCoinsWithZeroValue, except if a larger coin has a value and a lesser coin
+        /// doesn't, the lesser coin will be drawn. For example, if the display is showing 1 gold
+        /// exactly, it will display 1 gold 0 silver and 0 copper.
+        /// </summary>
+        LargerCoinsForceDrawLesserCoins
+    }
+
     /// <summary>
     /// The total monetary value to display on this element.
     /// </summary>

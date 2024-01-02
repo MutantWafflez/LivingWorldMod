@@ -2,15 +2,13 @@ using System;
 using LivingWorldMod.Common.GlobalNPCs;
 using LivingWorldMod.Common.ModTypes;
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
 
 namespace LivingWorldMod.Content.TownNPCAIStates;
 
 public class NurseHealAIState : TownNPCAIState {
     public override int ReservedStateInteger => 13;
 
-    public override void DoState(TownAIGlobalNPC globalNPC, NPC npc) {
+    public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         npc.ai[1] -= 1f;
         npc.localAI[3] += 1f;
         if (npc.localAI[3] == 1f && Main.netMode != NetmodeID.MultiplayerClient) {

@@ -1,10 +1,9 @@
 ﻿using LivingWorldMod.Common.GlobalNPCs;
-using Terraria;
 
 namespace LivingWorldMod.Custom.Classes;
 
 public abstract class TownNPCModule {
-    protected TownAIGlobalNPC GlobalNPC => npc.GetGlobalNPC<TownAIGlobalNPC>();
+    protected TownGlobalNPC GlobalNPC => npc.GetGlobalNPC<TownGlobalNPC>();
 
     protected readonly NPC npc;
 

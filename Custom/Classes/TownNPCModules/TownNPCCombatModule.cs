@@ -5,9 +5,6 @@ using LivingWorldMod.Content.TownNPCAIStates;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Custom.Classes;
 
@@ -83,7 +80,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
             isCapableOfViolence = NPCID.Sets.AttackType[npc.type] > -1;
             int wanderState = TownNPCAIState.GetStateInteger<WanderAIState>();
             if (npc.ai[0] != wanderState) {
-                TownAIGlobalNPC.RefreshToState(npc, wanderState);
+                TownGlobalNPC.RefreshToState(npc, wanderState);
             }
         }
 

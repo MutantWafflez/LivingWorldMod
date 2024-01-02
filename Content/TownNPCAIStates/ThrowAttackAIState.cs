@@ -3,16 +3,13 @@ using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.TownNPCAIStates;
 
 public class ThrowAttackAIState : TownNPCAIState {
     public override int ReservedStateInteger => 10;
 
-    public override void DoState(TownAIGlobalNPC globalNPC, NPC npc) {
+    public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         TownNPCCombatModule combatModule = globalNPC.CombatModule;
         TownNPCProjAttackData attackData = TownNPCCombatModule.projAttackData[npc.type];
 

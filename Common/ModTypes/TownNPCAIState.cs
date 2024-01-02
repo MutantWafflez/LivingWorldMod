@@ -1,8 +1,6 @@
 using LivingWorldMod.Common.GlobalNPCs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.ModTypes;
 
@@ -41,37 +39,37 @@ public abstract class TownNPCAIState : ModType {
     /// frame for this activity.
     /// </summary>
     /// <remarks>
-    /// The <see cref="TownAIGlobalNPC"/> parameter is added for your convenience, so you don't have to manually call
+    /// The <see cref="TownGlobalNPC"/> parameter is added for your convenience, so you don't have to manually call
     /// <see cref="NPC.GetGlobalNPC"/>.
     /// </remarks>
-    public virtual void FrameNPC(TownAIGlobalNPC globalNPC, NPC npc, int frameHeight) { }
+    public virtual void FrameNPC(TownGlobalNPC globalNPC, NPC npc, int frameHeight) { }
 
     /// <summary>
     /// Called every draw frame that the given Town NPC is doing the given activity
     /// (see <see cref="DoActivity"/>). Use this to draw things BEHIND the NPC.
     /// </summary>
     /// <remarks>
-    /// The <see cref="TownAIGlobalNPC"/> parameter is added for your convenience, so you don't have to manually call
+    /// The <see cref="TownGlobalNPC"/> parameter is added for your convenience, so you don't have to manually call
     /// <see cref="NPC.GetGlobalNPC"/>.
     /// </remarks>
-    public virtual void PreDrawNPC(TownAIGlobalNPC globalNPC, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { }
+    public virtual void PreDrawNPC(TownGlobalNPC globalNPC, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { }
 
     /// <summary>
     /// Called every draw frame that the given Town NPC is doing the given activity
     /// (see <see cref="DoActivity"/>). Use this to draw things IN FRONT OF the NPC.
     /// </summary>
     /// <remarks>
-    /// The <see cref="TownAIGlobalNPC"/> parameter is added for your convenience, so you don't have to manually call
+    /// The <see cref="TownGlobalNPC"/> parameter is added for your convenience, so you don't have to manually call
     /// <see cref="NPC.GetGlobalNPC"/>.
     /// </remarks>
-    public virtual void PostDrawNPC(TownAIGlobalNPC globalNPC, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { }
+    public virtual void PostDrawNPC(TownGlobalNPC globalNPC, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { }
 
     public sealed override void SetupContent() => SetStaticDefaults();
 
     /// <summary>
     /// Called every tick that the given Town NPC is in this state.
     /// </summary>
-    public abstract void DoState(TownAIGlobalNPC globalNPC, NPC npc);
+    public abstract void DoState(TownGlobalNPC globalNPC, NPC npc);
 
     /// <summary>
     /// Retrieves the state integer associated with the type <typeparamref name="T"/>.
