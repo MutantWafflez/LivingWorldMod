@@ -3,10 +3,8 @@ using Hjson;
 
 namespace LivingWorldMod.Custom.Utilities;
 
-/// <summary>
-/// Utilities class that assists with JSON files.
-/// </summary>
-public static class JsonUtils {
+// Utilities class that assists with JSON files.
+public static partial class Utilities {
     /// <summary>
     /// Gets and returns the json data from the specified file path. This is for specifically
     /// LWM, so the file path does not need to include "LivingWorldMod".

@@ -3,12 +3,9 @@ using LivingWorldMod.Content.StatusEffects.Debuffs.Consumables;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
-using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.Food;
 
@@ -53,7 +50,7 @@ public class EffervescentNugget : BaseItem {
         int drawWidth = Item.width;
         int drawHeight = Item.height + 2;
 
-        DrawingUtils.DrawTextureWithArmorShader(
+        Utilities.DrawTextureWithArmorShader(
             spriteBatch,
             drawTexture,
             GameShaders.Armor.GetShaderIdFromItemId(ItemID.HallowBossDye),
@@ -73,7 +70,7 @@ public class EffervescentNugget : BaseItem {
         int drawWidth = Item.width;
         int drawHeight = Item.height + 2;
 
-        DrawingUtils.DrawTextureWithArmorShader(
+        Utilities.DrawTextureWithArmorShader(
             spriteBatch,
             drawTexture,
             GameShaders.Armor.GetShaderIdFromItemId(ItemID.HallowBossDye),

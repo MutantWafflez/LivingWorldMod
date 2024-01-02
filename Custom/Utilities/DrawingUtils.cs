@@ -1,15 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 
 namespace LivingWorldMod.Custom.Utilities;
 
-/// <summary>
-/// Utilities class that has helper methods for drawing any assortment of things.
-/// </summary>
-public static class DrawingUtils {
+// Utilities class that has helper methods for drawing any assortment of things.
+public static partial class Utilities {
     /// <summary>
     /// Draws a given texture with the specified armor shader id.
     /// </summary>

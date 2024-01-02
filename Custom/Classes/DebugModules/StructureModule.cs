@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using LivingWorldMod.Custom.Structs;
-using LivingWorldMod.Custom.Utilities;
-using Terraria;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Custom.Classes.DebugModules;
@@ -24,7 +22,7 @@ public class StructureModule : RegionModule {
 
         StructureData structData = new(tileData.Count, tileData[0].Count, tileData);
 
-        string outputPath = IOUtils.GetLWMFilePath() + $"/StructureOutput_{DateTime.Now.ToShortTimeString().Replace(':', '_').Replace(' ', '_')}.struct";
+        string outputPath = Utilities.Utilities.GetLWMFilePath() + $"/StructureOutput_{DateTime.Now.ToShortTimeString().Replace(':', '_').Replace(' ', '_')}.struct";
 
         TagIO.ToFile(new TagCompound { { "structureData", structData } }, outputPath);
 

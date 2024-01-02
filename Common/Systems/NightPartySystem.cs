@@ -2,10 +2,8 @@
 using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using Terraria;
 using Terraria.GameContent.Achievements;
 using Terraria.GameContent.Events;
-using Terraria.ID;
 using Terraria.Localization;
 using Party = Terraria.GameContent.Events.BirthdayParty;
 
@@ -39,7 +37,7 @@ public sealed class NightPartySystem : BaseModSystem<NightPartySystem> {
     private void StartNightParty() {
         Party.GenuineParty = true;
         Party.PartyDaysOnCooldown = Main.rand.Next(1, 3);
-        Party.CelebratingNPCs = NPCUtils.GetAllNPCs(Party.CanNPCParty).Select(npc => npc.whoAmI).ToList();
+        Party.CelebratingNPCs = Utilities.GetAllNPCs(Party.CanNPCParty).Select(npc => npc.whoAmI).ToList();
         NPC.freeCake = true;
 
         Color partyColor = new(255, 0, 160);

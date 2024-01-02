@@ -60,7 +60,7 @@ public class ShrinePacketHandler : PacketHandler {
                         Point16 entityPos = reader.ReadVector2().ToPoint16();
 
                         if (TileEntity.ByPosition.TryGetValue(entityPos, out TileEntity entity) && entity is VillageShrineEntity shrineEntity) {
-                            Main.LocalPlayer.QuickSpawnItem(new EntitySource_Sync(), NPCUtils.VillagerTypeToRespawnItemType(shrineEntity.shrineType));
+                            Main.LocalPlayer.QuickSpawnItem(new EntitySource_Sync(), Utilities.VillagerTypeToRespawnItemType(shrineEntity.shrineType));
 
                             ModContent.GetInstance<VillageShrineUISystem>().OpenOrRegenShrineState(entityPos);
                         }
@@ -100,7 +100,7 @@ public class ShrinePacketHandler : PacketHandler {
                     }
                     else {
                         if (TileEntity.ByPosition.TryGetValue(entityPos, out TileEntity entity) && entity is VillageShrineEntity shrineEntity) {
-                            Main.LocalPlayer.QuickSpawnItem(new EntitySource_Sync(), NPCUtils.VillagerTypeToRespawnItemType(shrineEntity.shrineType));
+                            Main.LocalPlayer.QuickSpawnItem(new EntitySource_Sync(), Utilities.VillagerTypeToRespawnItemType(shrineEntity.shrineType));
 
                             ModContent.GetInstance<VillageShrineUISystem>().OpenOrRegenShrineState(entityPos);
                         }

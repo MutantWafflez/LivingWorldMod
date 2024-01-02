@@ -1,8 +1,5 @@
-﻿using LivingWorldMod.Custom.Utilities;
-using Microsoft.Xna.Framework;
-using Terraria;
+﻿using Microsoft.Xna.Framework;
 using Terraria.Audio;
-using Terraria.ID;
 
 namespace LivingWorldMod.Custom.Classes;
 
@@ -22,10 +19,10 @@ public sealed class WaystoneActivationEntity {
     public bool isFinished;
 
     private readonly Vector2 _position;
+    private readonly Color _waystoneColor;
     private int _activationVFXStage;
     private int _activationVFXTimer;
     private int _activationVFXSecondaryTimer;
-    private readonly Color _waystoneColor;
 
     public WaystoneActivationEntity(Vector2 position, Color activationColor) {
         _position = position;
@@ -66,7 +63,7 @@ public sealed class WaystoneActivationEntity {
             int circlePullThreshold = 30;
             int finaleThreshold = 5;
 
-            DustUtils.CreateCircle(_position, circleRadius * (1f - _activationVFXTimer / (float)circlePullThreshold), DustID.GoldCoin, newColor: _waystoneColor, angleChange: 20f);
+            Utilities.Utilities.CreateCircle(_position, circleRadius * (1f - _activationVFXTimer / (float)circlePullThreshold), DustID.GoldCoin, newColor: _waystoneColor, angleChange: 20f);
 
             // Step RAPIDLY closer
             _activationVFXTimer++;
@@ -76,7 +73,7 @@ public sealed class WaystoneActivationEntity {
                 // Play finale sound and give text confirmation
                 SoundEngine.PlaySound(SoundID.Item113, _position);
 
-                Main.NewText(LocalizationUtils.GetLWMTextValue("Event.WaystoneActivation"), Color.Yellow);
+                Main.NewText(Utilities.Utilities.GetLWMTextValue("Event.WaystoneActivation"), Color.Yellow);
             }
             else if (_activationVFXTimer > circlePullThreshold + finaleThreshold) {
                 // Internally end sequence

@@ -7,12 +7,9 @@ using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
-using Terraria;
 using Terraria.GameContent.Events;
 using Terraria.Localization;
-using Terraria.ModLoader;
 using Terraria.Utilities;
-using NPCUtils = LivingWorldMod.Custom.Utilities.NPCUtils;
 
 namespace LivingWorldMod.Common.Systems;
 
@@ -46,8 +43,8 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
         Dictionary<string, LocalizedText> translationDict = typeof(LanguageManager).GetField("_localizedTexts", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(LanguageManager.Instance) as Dictionary<string, LocalizedText>;
         Dictionary<string, LocalizedText> allDialogue = translationDict!.Where(pair => pair.Value.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue")).ToDictionary(pair => pair.Key, pair => pair.Value);
 
-        JsonValue jsonReputationData = JsonUtils.GetJSONFromFile("Assets/JSONData/DialogueWeights.json");
-        for (VillagerType type = 0; (int)type < NPCUtils.GetTotalVillagerTypeCount(); type++) {
+        JsonValue jsonReputationData = Utilities.GetJSONFromFile("Assets/JSONData/DialogueWeights.json");
+        for (VillagerType type = 0; (int)type < Utilities.GetTotalVillagerTypeCount(); type++) {
             List<DialogueData> finalDialogueData = new();
 
             string keyStart = $"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{type}";

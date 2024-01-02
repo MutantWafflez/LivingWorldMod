@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Terraria;
 
 namespace LivingWorldMod.Custom.Utilities;
 
-/// <summary>
-/// Utilities class that holds methods that pertains to players.
-/// </summary>
-public static class PlayerUtils {
+// Utilities class that holds methods that pertains to players.
+public static partial class Utilities {
     /// <summary>
     /// Calculates and returns the entirety of the savings of the player in all applicable inventories.
     /// </summary>

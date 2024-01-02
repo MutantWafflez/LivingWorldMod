@@ -1,14 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Custom.Utilities;
 
-/// <summary>
-/// Utilities class that holds methods that deal specifically within the realm of Tile Entities.
-/// </summary>
-public static class TileEntityUtils {
+// Utilities class that holds methods that deal specifically within the realm of Tile Entities.
+public static partial class Utilities {
     /// <summary>
     /// Tries to find an entity of the specified Type. Returns whether or not it found the
     /// entity or not.

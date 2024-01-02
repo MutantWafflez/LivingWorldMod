@@ -72,7 +72,7 @@ public class NPCHousingPatches : LoadablePatch {
             Rectangle roomInQuestion = new(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1, WorldGen.roomY2 - WorldGen.roomY1);
 
             ModNPC modNPC = ModContent.GetModNPC(type);
-            List<VillageShrineEntity> shrines = TileEntityUtils.GetAllEntityOfType<VillageShrineEntity>().ToList();
+            List<VillageShrineEntity> shrines = Utilities.GetAllEntityOfType<VillageShrineEntity>().ToList();
 
             //HOWEVER, if the Town NPC can spawn here, we need to do additional checks to make sure it's not a non-villager spawning in a villager home
             //Additionally, we can't have villagers in a non-village home, which is the second check.
@@ -187,7 +187,7 @@ public class NPCHousingPatches : LoadablePatch {
         }
         else {
             //Throw error is the code does not match, since this IL edit is kind of a necessary functionality of the mod
-            throw new PatchingUtils.InstructionNotFoundException();
+            throw new Utilities.InstructionNotFoundException();
         }
 
         //IL Block in question ^:
@@ -263,7 +263,7 @@ public class NPCHousingPatches : LoadablePatch {
         //Load the current texture to the stack
         c.Emit(OpCodes.Ldloc_S, bannerAssetLocalNumber);
         //If this NPC is a villager, adjust the framing rectangle to use our modded proportions. If not, return the normal vanilla value
-        c.EmitDelegate<Func<NPC, Texture2D, Rectangle>>((npc, texture) => npc.ModNPC is Villager ? texture.Frame(2, NPCUtils.GetTotalVillagerTypeCount()) : texture.Frame(2, 2));
+        c.EmitDelegate<Func<NPC, Texture2D, Rectangle>>((npc, texture) => npc.ModNPC is Villager ? texture.Frame(2, Utilities.GetTotalVillagerTypeCount()) : texture.Frame(2, 2));
 
         //IL block for the above two edits ^:
         /*/* (30124,5)-(30124,55) tModLoader\src\tModLoader\Terraria\Main.cs #1#
@@ -356,7 +356,7 @@ public class NPCHousingPatches : LoadablePatch {
         c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
         //Add onto the normal text if villager and not well-liked enough
         c.EmitDelegate<Func<string, NPC, string>>((normalText, npc) =>
-            normalText + (npc.ModNPC is Villager { RelationshipStatus: < VillagerRelationship.Like } villager ? $"\n{LocalizationUtils.GetLWMTextValue("UI.VillagerHousing.VillagerTypeLocked", villager.VillagerType.ToString())}" : "")
+            normalText + (npc.ModNPC is Villager { RelationshipStatus: < VillagerRelationship.Like } villager ? $"\n{Utilities.GetLWMTextValue("UI.VillagerHousing.VillagerTypeLocked", villager.VillagerType.ToString())}" : "")
         );
 
         //IL block for above edit ^:
@@ -427,7 +427,7 @@ public class NPCHousingPatches : LoadablePatch {
         c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCall<WorldGen>("ScoreRoom_IsThisRoomOccupiedBySomeone"));
 
         //Emit our check to see if our IgnoreOccupancy in HousingUtils.cs is true, and if so, automatically return false, ignoring occupancy
-        c.EmitDelegate<Func<bool, bool>>(isOccupied => !HousingUtils.IgnoreHouseOccupancy && isOccupied);
+        c.EmitDelegate<Func<bool, bool>>(isOccupied => !Utilities.IgnoreHouseOccupancy && isOccupied);
     }
 
     private void FindRoomBed(ILContext il) {
@@ -451,7 +451,7 @@ public class NPCHousingPatches : LoadablePatch {
                 for (int j = startY + 2; j < endY + 2; j++) {
                     Tile tile = Framing.GetTileSafely(i, j);
                     if (tile is { HasTile: true, TileType: TileID.Beds }) {
-                        HouseBedPosition = TileUtils.GetTopLeftOfMultiTile(tile, i, j, 4).ToPoint();
+                        HouseBedPosition = Utilities.GetTopLeftOfMultiTile(tile, i, j, 4).ToPoint();
                         return;
                     }
                 }

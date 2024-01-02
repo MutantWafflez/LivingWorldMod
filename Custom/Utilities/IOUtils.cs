@@ -4,10 +4,8 @@ using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Custom.Utilities;
 
-/// <summary>
-/// Utilities class that handles reading, writing, and general I/O management.
-/// </summary>
-public static class IOUtils {
+// Utilities class that handles reading, writing, and general I/O management.
+public static partial class Utilities {
     /// <summary>
     /// Returns the LWM File path in the ModLoader folder, and creates the directory if it does
     /// not exist.

@@ -3,12 +3,9 @@ using LivingWorldMod.Common.GlobalNPCs;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.Events;
-using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Core.Patches;
 
@@ -32,11 +29,11 @@ public sealed class HappinessPatches : LoadablePatch {
 
         TownNPCMoodModule moodModule = globalNPC.MoodModule;
         if (npc.life < npc.lifeMax) {
-            moodModule.AddModifier("Injured", LocalizationUtils.GetLWMTextValue("TownNPCMoodFlavorText.Injured"), 0);
+            moodModule.AddModifier("Injured", Utilities.GetLWMTextValue("TownNPCMoodFlavorText.Injured"), 0);
         }
 
         if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && BirthdayParty.CelebratingNPCs.Contains(npc.whoAmI)) {
-            moodModule.AddModifier("Party", LocalizationUtils.GetLWMTextValue("TownNPCMoodFlavorText.Party"), 0);
+            moodModule.AddModifier("Party", Utilities.GetLWMTextValue("TownNPCMoodFlavorText.Party"), 0);
         }
 
         float currentMood = moodModule.CurrentMood;

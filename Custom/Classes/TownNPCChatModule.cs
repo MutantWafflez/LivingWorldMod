@@ -1,5 +1,4 @@
 ﻿using LivingWorldMod.Common.GlobalNPCs;
-using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -10,7 +9,7 @@ using Terraria.UI.Chat;
 namespace LivingWorldMod.Custom.Classes;
 
 public sealed class TownNPCChatModule : TownNPCModule {
-    private const int DefaultChatBubbleDuration = (int)(UnitUtils.RealLifeSecond * 5d);
+    private const int DefaultChatBubbleDuration = (int)(Utilities.Utilities.RealLifeSecond * 5d);
 
     /// <summary>
     /// The denominator of the fractional chance that a NPC who otherwise can chat will
@@ -78,7 +77,7 @@ public sealed class TownNPCChatModule : TownNPCModule {
 
             _currentSentence = null;
             _chatBubbleDuration = 0;
-            _chatCooldown = Main.rand.Next((int)(UnitUtils.RealLifeSecond * 3d), (int)(UnitUtils.RealLifeSecond * 5d));
+            _chatCooldown = Main.rand.Next((int)(Utilities.Utilities.RealLifeSecond * 3d), (int)(Utilities.Utilities.RealLifeSecond * 5d));
         }
 
         if (--_chatCooldown <= 0) {
@@ -90,7 +89,7 @@ public sealed class TownNPCChatModule : TownNPCModule {
 
         if (IsSpeaking
             || !Main.rand.NextBool(ChitChatChanceDenominator)
-            || NPCUtils.GetFirstNPC(otherNPC =>
+            || Utilities.Utilities.GetFirstNPC(otherNPC =>
                 npc != otherNPC &&
                 otherNPC.TryGetGlobalNPC(out TownAIGlobalNPC otherGlobalNPC)
                 && !otherGlobalNPC.ChatModule.IsSpeaking
@@ -111,7 +110,7 @@ public sealed class TownNPCChatModule : TownNPCModule {
             Adjective = Language.SelectRandom(Lang.CreateDialogFilter("RandomWorldName_Adjective.")).Value.ToLower(),
             Location = Language.SelectRandom(Lang.CreateDialogFilter("RandomWorldName_Location.")).Value,
             RandomItemName = Language.SelectRandom(Lang.CreateDialogFilter("ItemName.")).Value,
-            RandomPlayer = Main.rand.Next(PlayerUtils.GetAllPlayers(_ => true)).name
+            RandomPlayer = Main.rand.Next(Utilities.Utilities.GetAllPlayers(_ => true)).name
         };
 
         _currentSentence = chatTemplate.FormatWith(chatSubstitutions);
@@ -128,7 +127,7 @@ public sealed class TownNPCChatModule : TownNPCModule {
         DynamicSpriteFont font = FontAssets.MouseText.Value;
         const float maxWidth = 200f;
         Vector2 textScale = new(0.45f);
-        float fadeAlpha = MathHelper.Clamp(_chatBubbleDuration / (float)UnitUtils.RealLifeSecond, 0f, 1f);
+        float fadeAlpha = MathHelper.Clamp(_chatBubbleDuration / (float)Utilities.Utilities.RealLifeSecond, 0f, 1f);
 
         Vector2 textSize = ChatManager.GetStringSize(font, _currentSentence, textScale, maxWidth);
         Vector2 textDrawPos = npc.Top - screenPos + new Vector2(-textSize.X / 2f, -textSize.Y);

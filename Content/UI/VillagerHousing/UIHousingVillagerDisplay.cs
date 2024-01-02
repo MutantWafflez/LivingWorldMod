@@ -3,11 +3,9 @@ using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
-using Terraria.ID;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.VillagerHousing;
@@ -66,7 +64,7 @@ public class UIHousingVillagerDisplay : UIElement {
         }
 
         Main.LocalPlayer.mouseInterface = true;
-        Main.instance.MouseText(IsAllowed ? myVillager.NPC.GivenName : LocalizationUtils.GetLWMTextValue("UI.VillagerHousing.VillagerTypeLocked", myVillager.VillagerType.ToString()));
+        Main.instance.MouseText(IsAllowed ? myVillager.NPC.GivenName : Utilities.GetLWMTextValue("UI.VillagerHousing.VillagerTypeLocked", myVillager.VillagerType.ToString()));
     }
 
     protected override void DrawChildren(SpriteBatch spriteBatch) {

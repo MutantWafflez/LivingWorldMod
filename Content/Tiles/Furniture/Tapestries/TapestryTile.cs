@@ -2,9 +2,7 @@
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.Tiles.Furniture.Tapestries;
@@ -49,7 +47,7 @@ public class TapestryTile : BaseTile {
     public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
         Tile tile = Main.tile[i, j];
         if (tile is { TileFrameX: 0, TileFrameY: 0 }) {
-            TileUtils.AddSpecialPoint.DynamicInvoke(i, j, 5 /* MultiTileVine */);
+            Utilities.AddSpecialPoint.DynamicInvoke(i, j, 5 /* MultiTileVine */);
         }
 
         return false;

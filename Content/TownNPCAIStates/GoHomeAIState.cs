@@ -5,9 +5,7 @@ using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.GameContent;
-using Terraria.ID;
 
 namespace LivingWorldMod.Content.TownNPCAIStates;
 
@@ -34,12 +32,12 @@ public sealed class GoHomeAIState : TownNPCAIState {
                         npc.ai[2] = 0f;
                     }
                     else {
-                        npc.ai[2] = (int)(UnitUtils.RealLifeMinute / 2f);
+                        npc.ai[2] = (int)(Utilities.RealLifeMinute / 2f);
                     }
                 });
             }
             else if (pathfinderModule.IsPathfinding || !hasPath) {
-                npc.ai[2] = (int)(UnitUtils.RealLifeMinute / 2f);
+                npc.ai[2] = (int)(Utilities.RealLifeMinute / 2f);
             }
         }
         else if (npc.ai[1] == 1f) {

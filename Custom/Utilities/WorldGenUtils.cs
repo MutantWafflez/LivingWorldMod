@@ -3,16 +3,13 @@ using System.Linq;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Custom.Utilities;
 
 /// <summary>
 /// Class that holds methods and properties that assist with world generation or world related matters.
 /// </summary>
-public static class WorldGenUtils {
+public static partial class Utilities {
     /// <summary>
     /// Returns world size of the current world being played.
     /// </summary>

@@ -5,8 +5,6 @@ using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
 using Terraria.Utilities;
 
 namespace LivingWorldMod.Content.TownNPCAIStates;
@@ -24,7 +22,7 @@ public class WanderAIState : TownNPCAIState {
             Vector2 homePos = new(npc.homeTileX, npc.homeTileY);
             for (int i = 0; i < 360; i += 15) {
                 Vector2 displacement = new Vector2(0, -Main.rand.Next(minTileThreshold, maxTileThreshold) * 16).RotatedBy(MathHelper.ToRadians(i));
-                if (TileUtils.DropUntilCondition(
+                if (Utilities.DropUntilCondition(
                         ValidWanderPoint,
                         pathfinderModule.BottomLeftTileOfNPC + displacement.ToTileCoordinates(),
                         maxTileThreshold + 1) is not { } point
@@ -40,7 +38,7 @@ public class WanderAIState : TownNPCAIState {
 
             if (!wanderPoints.elements.Any()) {
                 TownAIGlobalNPC.RefreshToState<DefaultAIState>(npc);
-                npc.ai[1] = UnitUtils.RealLifeSecond * 3;
+                npc.ai[1] = Utilities.RealLifeSecond * 3;
                 return;
             }
 
@@ -50,7 +48,7 @@ public class WanderAIState : TownNPCAIState {
         }
         else if (npc.ai[2] == 1f && !pathfinderModule.IsPathfinding) {
             TownAIGlobalNPC.RefreshToState<DefaultAIState>(npc);
-            npc.ai[1] = UnitUtils.RealLifeSecond * 3;
+            npc.ai[1] = Utilities.RealLifeSecond * 3;
         }
 
         return;

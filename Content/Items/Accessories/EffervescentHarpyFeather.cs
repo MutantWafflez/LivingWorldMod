@@ -1,10 +1,8 @@
 ﻿using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
-using Terraria.ID;
 
 namespace LivingWorldMod.Content.Items.Accessories;
 
@@ -39,7 +37,7 @@ public class EffervescentHarpyFeather : BaseItem {
     public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
         Texture2D drawTexture = TextureAssets.Item[ItemID.GiantHarpyFeather].Value;
 
-        DrawingUtils.DrawTextureWithArmorShader(
+        Utilities.DrawTextureWithArmorShader(
             spriteBatch,
             drawTexture,
             GameShaders.Armor.GetShaderIdFromItemId(ItemID.HallowBossDye),
@@ -57,7 +55,7 @@ public class EffervescentHarpyFeather : BaseItem {
     public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
         Texture2D drawTexture = TextureAssets.Item[ItemID.GiantHarpyFeather].Value;
 
-        DrawingUtils.DrawTextureWithArmorShader(
+        Utilities.DrawTextureWithArmorShader(
             spriteBatch,
             drawTexture,
             GameShaders.Armor.GetShaderIdFromItemId(ItemID.HallowBossDye),

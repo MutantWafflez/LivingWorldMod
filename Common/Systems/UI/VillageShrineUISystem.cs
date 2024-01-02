@@ -3,10 +3,8 @@ using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Content.UI.VillageShrine;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameInput;
-using Terraria.ID;
 using Terraria.UI;
 
 namespace LivingWorldMod.Common.Systems.UI;
@@ -25,7 +23,7 @@ public class VillageShrineUISystem : UISystem<VillageShrineUIState> {
             dust.noGravity = true;
             dust.scale = 1.25f;
 
-            DustUtils.CreateCircle(dust.position, VillageShrineEntity.DefaultVillageRadius, dust);
+            Utilities.CreateCircle(dust.position, VillageShrineEntity.DefaultVillageRadius, dust);
         }
     }
 

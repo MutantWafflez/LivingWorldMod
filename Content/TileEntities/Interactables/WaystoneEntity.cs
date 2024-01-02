@@ -4,9 +4,6 @@ using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.Default;
 using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
@@ -65,7 +62,7 @@ public class WaystoneEntity : TEModdedPylon {
             return -1;
         }
 
-        if (ManualPlace(topLeftX, topLeftY, (WaystoneType)style) && TileEntityUtils.TryFindModEntity(topLeftX, topLeftY, out WaystoneEntity entity)) {
+        if (ManualPlace(topLeftX, topLeftY, (WaystoneType)style) && Utilities.TryFindModEntity(topLeftX, topLeftY, out WaystoneEntity entity)) {
             return entity.ID;
         }
 
@@ -127,7 +124,7 @@ public class WaystoneEntity : TEModdedPylon {
 
         // Then, place tile entity and assign its type
         Place(i, j);
-        if (TileEntityUtils.TryFindModEntity(i, j, out WaystoneEntity retrievedEntity)) {
+        if (Utilities.TryFindModEntity(i, j, out WaystoneEntity retrievedEntity)) {
             retrievedEntity.waystoneType = type;
             retrievedEntity.isActivated = isActivated;
             return true;

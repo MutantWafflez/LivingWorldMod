@@ -14,7 +14,7 @@ public sealed class RainProfile : ITownNPCProfile {
     public string GetNameForVariant(NPC npc) => npc.getNewNPCName();
 
     public Asset<Texture2D> GetTextureNPCShouldUse(NPC npc) {
-        if (!npc.IsABestiaryIconDummy && Main.raining && npc.Center.Y < Main.rockLayer * 16f && npc.Center.Y > Main.worldSurface * 0.35f * 16f && !NPCUtils.IsEntityUnderRoof(npc)) {
+        if (!npc.IsABestiaryIconDummy && Main.raining && npc.Center.Y < Main.rockLayer * 16f && npc.Center.Y > Main.worldSurface * 0.35f * 16f && !Utilities.IsEntityUnderRoof(npc)) {
             Asset<Texture2D> rainVariant = ModContent.Request<Texture2D>($"{LWM.SpritePath}NPCProfiles/Guide_Rain");
             npc.frame.Width = rainVariant.Width();
             npc.frame.Height = rainVariant.Height() / Main.npcFrameCount[npc.type];

@@ -7,9 +7,7 @@ using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.GameContent;
-using Terraria.ID;
 using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Content.TownNPCActivities;
@@ -66,7 +64,7 @@ public class RoastMarshmallowActivity : TownNPCActivity {
                     continue;
                 }
 
-                Point bottomLeftOfCampfire = TileUtils.GetCornerOfMultiTile(tile, i, j, TileUtils.CornerType.BottomLeft);
+                Point bottomLeftOfCampfire = Utilities.GetCornerOfMultiTile(tile, i, j, Utilities.CornerType.BottomLeft);
                 if (campfires.Contains(bottomLeftOfCampfire)) {
                     continue;
                 }

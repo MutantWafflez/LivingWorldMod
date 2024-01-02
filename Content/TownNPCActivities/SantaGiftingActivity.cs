@@ -4,9 +4,6 @@ using LivingWorldMod.Common.GlobalNPCs;
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Content.TownNPCAIStates;
 using LivingWorldMod.Custom.Utilities;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.TownNPCActivities;
 
@@ -26,7 +23,7 @@ public class SantaGiftingActivity : TownNPCActivity {
             return false;
         }
 
-        List<NPC> allTownNPCs = NPCUtils.GetAllNPCs(otherNPC => otherNPC.TryGetGlobalNPC(out TownAIGlobalNPC _) && globalNPC.PathfinderModule.EntityWithinPathfinderZone(otherNPC));
+        List<NPC> allTownNPCs = Utilities.GetAllNPCs(otherNPC => otherNPC.TryGetGlobalNPC(out TownAIGlobalNPC _) && globalNPC.PathfinderModule.EntityWithinPathfinderZone(otherNPC));
         if (!allTownNPCs.Any()) {
             return false;
         }

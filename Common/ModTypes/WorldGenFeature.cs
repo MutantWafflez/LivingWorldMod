@@ -3,7 +3,6 @@ using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Terraria.IO;
-using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Common.ModTypes;
@@ -42,7 +41,7 @@ public abstract class WorldGenFeature : ModType {
     /// <summary>
     /// The size of the world that is currently being generated.
     /// </summary>
-    public WorldSize CurrentWorldSize => WorldGenUtils.CurrentWorldSize;
+    public WorldSize CurrentWorldSize => Utilities.CurrentWorldSize;
 
     /// <summary>
     /// Allows for modification of the list directly. Do not use this to add new passes, only

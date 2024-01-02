@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Reflection;
 using Microsoft.Xna.Framework;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
-using Terraria.ID;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Custom.Utilities;
@@ -12,7 +10,7 @@ namespace LivingWorldMod.Custom.Utilities;
 /// <summary>
 /// Utilities class that deals with the Tile class and tiles in general.
 /// </summary>
-public static class TileUtils {
+public static partial class Utilities {
     public enum CornerType : byte {
         TopLeft,
         TopRight,

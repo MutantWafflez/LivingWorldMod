@@ -94,7 +94,7 @@ public class TownAIGlobalNPC : GlobalNPC {
                                                                                 && entity.type != NPCID.TravellingMerchant;
 
     public override void Load() {
-        JsonObject jsonAttackData = JsonUtils.GetJSONFromFile("Assets/JSONData/TownNPCAttackData.json").Qo();
+        JsonObject jsonAttackData = Utilities.GetJSONFromFile("Assets/JSONData/TownNPCAttackData.json").Qo();
 
         JsonObject projJSONAttackData = jsonAttackData["ProjNPCs"].Qo();
         JsonObject meleeJSONAttackData = jsonAttackData["MeleeNPCs"].Qo();
@@ -135,7 +135,7 @@ public class TownAIGlobalNPC : GlobalNPC {
         }
         TownNPCCombatModule.meleeAttackData = meleeDict;
 
-        JsonObject jsonMoodValues = JsonUtils.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
+        JsonObject jsonMoodValues = Utilities.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
         Dictionary<string, TownNPCMoodModule.MoodModifier> moodModifierDict = new();
         foreach ((string moodModifier, JsonValue jsonValue) in jsonMoodValues) {
             JsonObject jsonObject = jsonValue.Qo();

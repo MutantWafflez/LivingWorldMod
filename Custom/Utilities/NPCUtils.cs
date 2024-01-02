@@ -6,16 +6,12 @@ using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Custom.Utilities;
 
-/// <summary>
-/// Class that handles all utility functions for NPCs.
-/// </summary>
-public static class NPCUtils {
+// Class that handles all utility functions for NPCs.
+public static partial class Utilities {
     /// <summary>
     /// Returns the price multiplier that will affect shop prices depending on the status of a
     /// villager's relationship with the players.

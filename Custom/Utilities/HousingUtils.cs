@@ -2,15 +2,12 @@
 using System.Linq;
 using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
-using Terraria;
 using Terraria.DataStructures;
 
 namespace LivingWorldMod.Custom.Utilities;
 
-/// <summary>
 /// Utilities class that has helper methods for specifically NPC housing.
-/// </summary>
-public static class HousingUtils {
+public static partial class Utilities {
     /// <summary>
     /// Whether or not, during the ScoreRoom process, to ignore if there is currently an NPC within the specified house.
     /// Be careful with this, making sure to set it to FALSE once you're done with the score room process, or an infinite

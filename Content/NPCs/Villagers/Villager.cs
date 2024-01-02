@@ -15,7 +15,6 @@ using Terraria.DataStructures;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
-using NPCUtils = LivingWorldMod.Custom.Utilities.NPCUtils;
 
 namespace LivingWorldMod.Content.NPCs.Villagers;
 
@@ -116,9 +115,9 @@ public abstract class Villager : ModNPC {
 
         // Villager Names
         Dictionary<VillagerType, IReadOnlyList<string>> tempVillagerNames = new();
-        JsonValue villagerNameData = JsonUtils.GetJSONFromFile("Assets/JSONData/VillagerNames.json");
+        JsonValue villagerNameData = Utilities.GetJSONFromFile("Assets/JSONData/VillagerNames.json");
 
-        for (VillagerType villagerType = 0; (int)villagerType < NPCUtils.GetTotalVillagerTypeCount(); villagerType++) {
+        for (VillagerType villagerType = 0; (int)villagerType < Utilities.GetTotalVillagerTypeCount(); villagerType++) {
             tempVillagerNames[villagerType] = villagerNameData[villagerType.ToString()].Qa().Select(value => value.Qs()).ToList();
         }
 
@@ -169,7 +168,7 @@ public abstract class Villager : ModNPC {
 
     public override void SetChatButtons(ref string button, ref string button2) {
         button = Language.GetTextValue("LegacyInterface.28"); //"Shop"
-        button2 = LocalizationUtils.GetLWMTextValue("Common.Reputation");
+        button2 = Utilities.GetLWMTextValue("Common.Reputation");
     }
 
     public override void OnChatButtonClicked(bool firstButton, ref string shopName) {
@@ -254,7 +253,7 @@ public abstract class Villager : ModNPC {
 
         if (_homelessCounter >= 60 * 60 * 2) {
             Color leavingColor = new(255, 25, 25);
-            string leavingText = LocalizationUtils.GetLWMTextValue($"Event.VillagerLeft.{VillagerType}", NPC.GivenOrTypeName);
+            string leavingText = Utilities.GetLWMTextValue($"Event.VillagerLeft.{VillagerType}", NPC.GivenOrTypeName);
 
             NPC.active = false;
             if (Main.netMode == NetmodeID.Server) {

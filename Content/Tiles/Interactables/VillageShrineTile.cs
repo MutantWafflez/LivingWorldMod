@@ -74,7 +74,7 @@ public class VillageShrineTile : BasePylon {
 
     public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
         //TODO: Re-add tile animation once reputation system re-implemented
-        Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, FullTileWidth);
+        Point16 topLeft = Utilities.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, FullTileWidth);
         Tile topLeftTile = Framing.GetTileSafely(topLeft);
     }
 
@@ -91,9 +91,9 @@ public class VillageShrineTile : BasePylon {
     }
 
     public override bool RightClick(int i, int j) {
-        Point16 topLeft = TileUtils.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, FullTileWidth);
+        Point16 topLeft = Utilities.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, FullTileWidth);
 
-        if (!TileEntityUtils.TryFindModEntity(topLeft.X, topLeft.Y, out VillageShrineEntity entity)) {
+        if (!Utilities.TryFindModEntity(topLeft.X, topLeft.Y, out VillageShrineEntity entity)) {
             return false;
         }
 
@@ -104,7 +104,7 @@ public class VillageShrineTile : BasePylon {
 
     public override bool ValidTeleportCheck_NPCCount(TeleportPylonInfo pylonInfo, int defaultNecessaryNPCCount) {
         //There must be at least 2 villagers within the village zone (by default, granted that defaulNecessaryNPCCount doesn't change) in order to teleport.
-        if (TileEntityUtils.TryFindModEntity(pylonInfo.PositionInTiles.X, pylonInfo.PositionInTiles.Y, out VillageShrineEntity entity)) {
+        if (Utilities.TryFindModEntity(pylonInfo.PositionInTiles.X, pylonInfo.PositionInTiles.Y, out VillageShrineEntity entity)) {
             return entity.CurrentHousedVillagersCount >= defaultNecessaryNPCCount;
         }
 
@@ -114,7 +114,7 @@ public class VillageShrineTile : BasePylon {
     public override bool CanPlacePylon() => true;
 
     public override void DrawMapIcon(ref MapOverlayDrawContext context, ref string mouseOverText, TeleportPylonInfo pylonInfo, bool isNearPylon, Color drawColor, float deselectedScale, float selectedScale) {
-        if (!TileEntityUtils.TryFindModEntity(pylonInfo.PositionInTiles.X, pylonInfo.PositionInTiles.Y, out VillageShrineEntity foundEntity) || !IsShrineVisibleOnMap(foundEntity.shrineType)) {
+        if (!Utilities.TryFindModEntity(pylonInfo.PositionInTiles.X, pylonInfo.PositionInTiles.Y, out VillageShrineEntity foundEntity) || !IsShrineVisibleOnMap(foundEntity.shrineType)) {
             return;
         }
 

@@ -1,11 +1,7 @@
-﻿using Terraria;
+﻿namespace LivingWorldMod.Custom.Utilities;
 
-namespace LivingWorldMod.Custom.Utilities;
-
-/// <summary>
-/// Utilities that help with unit conversions.
-/// </summary>
-public static class UnitUtils {
+// Utilities that help with unit conversions.
+public static partial class Utilities {
     /// <summary>
     /// Ticks in a real world second.
     /// </summary>
