@@ -1,10 +1,11 @@
-﻿using LivingWorldMod.Content.NPCs.Villagers;
+﻿using System.Linq;
+using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
-using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.UI;
 
@@ -20,6 +21,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
 
         // TODO: Make array when more villages are added
         private readonly LayeredDrawObject _drawObject;
+        private int[] _portraitDrawIndices;
         private VillagerPortraitExpression _currentExpression;
         private Villager _villager;
 
@@ -28,7 +30,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             Width.Set(190f, 0f);
             Height.Set(190f, 0f);
 
-            _drawObject = DrawingUtils.LoadDrawObject(new[] { 5, 5, 5, 15 }, new[] { "Base", "Outfit", "Hair", "Face" }, PortraitSpritePath);
+            _drawObject = new LayeredDrawObject(new[] { ("Base", 5), ("Outfit", 5), ("Hair", 5), ("Face", 15) }, PortraitSpritePath);
         }
 
         public override void OnInitialize() {
@@ -69,36 +71,41 @@ namespace LivingWorldMod.Content.UI.VillagerShop {
             // Here for readability
             const int tanSkinIndex = 2;
 
-            LayeredDrawObject drawObject = _villager.drawObject;
-            int faceSkinFrame = drawObject.drawIndices[HarpyVillager.BodyIndexID] switch {
+            int[] villagerDrawIndices = _villager.DrawIndices;
+            int faceSkinFrame = villagerDrawIndices[HarpyVillager.BodyIndexID] switch {
                 < tanSkinIndex => paleSkinFrame,
                 tanSkinIndex => tanSkinFrame,
                 > tanSkinIndex => darkSkinFrame
             };
 
-            _drawObject.drawIndices = new[] {
-                drawObject.drawIndices[HarpyVillager.BodyIndexID],
-                drawObject.drawIndices[HarpyVillager.OutfitIndexID],
-                drawObject.drawIndices[HarpyVillager.HairIndexID],
-                drawObject.drawIndices[HarpyVillager.FaceIndexID] * 3 + faceSkinFrame
+            _portraitDrawIndices = new[] {
+                villagerDrawIndices[HarpyVillager.BodyIndexID],
+                villagerDrawIndices[HarpyVillager.OutfitIndexID],
+                villagerDrawIndices[HarpyVillager.HairIndexID],
+                villagerDrawIndices[HarpyVillager.FaceIndexID] * 3 + faceSkinFrame
             };
         }
 
 
         protected override void DrawSelf(SpriteBatch spriteBatch) {
-            int frameWidth = _drawObject.GetFrameWidth();
-            int frameHeight = _drawObject.GetFrameHeight();
+            int frameWidth = _drawObject.GetLayerFrameWidth();
+            int frameHeight = _drawObject.GetLayerFrameHeight();
 
             Rectangle faceRect = new(0, (int)(temporaryExpressionTimer > 0 ? temporaryExpression : _currentExpression) * frameHeight, frameWidth, frameHeight);
-
-            _drawObject.Draw(spriteBatch,
+            DrawData defaultDrawData = new(
+                null,
                 GetDimensions().ToRectangle(),
-                new Rectangle?[] { null, null, null, faceRect },
+                null,
                 Color.White,
                 0f,
                 default(Vector2),
-                SpriteEffects.None,
-                0f
+                SpriteEffects.None
+            );
+
+            _drawObject.Draw(
+                spriteBatch,
+                Enumerable.Repeat(defaultDrawData, _portraitDrawIndices.Length - 1).Append(defaultDrawData with { sourceRect = faceRect }).ToArray(),
+                _portraitDrawIndices
             );
         }
 

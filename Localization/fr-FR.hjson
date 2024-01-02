@@ -25,6 +25,7 @@ Mods: {
 
 		Event: {
 			WaystoneActivation: Waystone Activated!
+			// NightPartyStarted: The townsfolk are throwing a party in celebration of your victory!
 			VillagerRespawned.Harpy: "{0} the Harpy Villager has hatched!"
 			VillagerLeft.Harpy: "{0} the Harpy Vilager has departed for a new home!"
 		}
@@ -352,6 +353,53 @@ Mods: {
 			SkywareWall.MapEntry: Mods.LivingWorldMod.Walls.SkywareWall.MapEntry
 			SkywareFenceWall.MapEntry: Mods.LivingWorldMod.Walls.SkywareFenceWall.MapEntry
 			PyramidBrickWall.MapEntry: Mods.LivingWorldMod.Walls.PyramidBrickWall.MapEntry
+		}
+
+		Configs: {
+			DebugConfig: {
+				// DisplayName: Debug Config
+
+				forceDebugMode: {
+					// Label: Force Debug Mode
+					/* Tooltip:
+						'''
+						Forces the mod to enter Debug mode, regardless of if the mod is being built from an IDE.
+						ONLY enable this if you know what you're doing.
+						''' */
+				}
+			}
+		}
+
+		TownNPCMoodFlavorText: {
+			// Injured: I'm injured!
+			// SleptWell: A good night's rest!
+			// Party: What a wonderful party!
+		}
+
+		InterTownNPCChat: {
+			// NiceJoke: "{SpeakingNPC} makes a light-hearted joke about {RandomNPCName} while chatting with {ChatRecipient}."
+			// MeanJoke: "{SpeakingNPC} makes a mean-spirited joke about {RandomNPCName} by calling it {Adjective} while chatting with {ChatRecipient}."
+			// Pun: "{SpeakingNPC} makes a pun about {RandomNPCName} in the presence of {ChatRecipient}."
+			// Validity: "{SpeakingNPC} questions the validity of {RandomNPCName} while making eye contact with {ChatRecipient}."
+			// Existential: "{SpeakingNPC} ponders with {ChatRecipient} on the meaning of life, the universe, and everything."
+			// SillyExistential: "{SpeakingNPC} ponders the existence of {RandomNPCName} with {ChatRecipient}."
+			// Economic: "{SpeakingNPC} discusses the socio-economic implications of {RandomNPCName} with {ChatRecipient}."
+			// Geopolitical: "{SpeakingNPC} debates {ChatRecipient} on the geo-political ramifications of {RandomNPCName} armed with {RandomItemName}."
+			// Argument: "{SpeakingNPC} argues that {RandomNPCName} is the direct cause of {Noun} in {RandomNPCNameTwo}."
+			// Adjective: "{SpeakingNPC} states that {RandomNPCName} is {Adjective}."
+			// Dismissive: "{SpeakingNPC} maintains that {RandomNPCName} is not {Adjective}, despite {ChatRecipient} making a persuasive argument."
+			// Cheers: "{SpeakingNPC} cheers {ChatRecipient} to their well-being."
+			// DeepExistential: "{SpeakingNPC} deeply contemplates with {ChatRecipient} on the devastating reality where {RandomNPCName} exist along-side {RandomNPCNameTwo}."
+			// FreeNoun: "{SpeakingNPC} whispers to {ChatRecipient} that {RandomNPCName} in The {Location} is giving out free {Noun}."
+			// ScaryLocation: "{SpeakingNPC} warns {ChatRecipient} that The {Location} is packed with evil {Noun}."
+			// Smelly: "{SpeakingNPC} tries to politely let {ChatRecipient} know that they reek of {RandomNPCName}."
+			// WishingForItem: "{SpeakingNPC} lets {ChatRecipient} know that they still really want {RandomItemName}."
+			// ItemRumor: "{SpeakingNPC} relays to {ChatRecipient} that there's a rumor floating around about {RandomItemName} being in The {Location}, guarded by {RandomNPCName}."
+			// WhodWinAFight: "{SpeakingNPC} insists to {ChatRecipient} that {RandomNPCName} would win in a fight against {RandomPlayer}, assuming no {RandomItemName} is allowed."
+			// WhodLoseAFight: "{SpeakingNPC} asks {ChatRecipient} who would lose the matchup between {RandomNPCName} and {RandomNPCNameTwo}."
+			// NoJokingAbout: "{SpeakingNPC} tries to stop {ChatRecipient} from making a joke about {RandomNPCName} and {RandomPlayer}."
+			// Whistleblower: "{SpeakingNPC} overzealously presses {ChatRecipient} on the The {RandomItemName} Event that triggered The {Location} Crisis a couple years ago."
+			// PlayerConcern: "{SpeakingNPC} murmurs to {ChatRecipient} with concern that they saw {RandomPlayer} rambling about {RandomNPCName} brawling with {RandomNPCNameTwo} in The {Location}."
 		}
 	}
 }

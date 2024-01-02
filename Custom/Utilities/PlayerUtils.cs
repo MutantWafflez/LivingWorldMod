@@ -1,4 +1,6 @@
-﻿using Terraria;
+﻿using System;
+using System.Collections.Generic;
+using Terraria;
 
 namespace LivingWorldMod.Custom.Utilities {
     /// <summary>
@@ -20,6 +22,25 @@ namespace LivingWorldMod.Custom.Utilities {
             long voidVaultCashCount = Utils.CoinsCount(out _, player.bank4.item);
 
             return Utils.CoinsCombineStacks(out _, playerInvCashCount, piggyCashCount, safeCashCount, defForgeCashCount, voidVaultCashCount);
+        }
+
+        /// <summary>
+        /// Get all Players that meet the passed in predicate.
+        /// </summary>
+        /// <remarks>
+        /// Note that <see cref="Player.active"/> is checked by default, along-side the predicate.
+        /// </remarks>
+        public static List<Player> GetAllPlayers(Predicate<Player> predicate) {
+            List<Player> players = new();
+            for (int i = 0; i < Main.maxPlayers; i++) {
+                Player player = Main.player[i];
+
+                if (player.active && predicate.Invoke(player)) {
+                    players.Add(player);
+                }
+            }
+
+            return players;
         }
     }
 }

@@ -5,12 +5,20 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;
+using Terraria.ObjectData;
 
 namespace LivingWorldMod.Custom.Utilities {
     /// <summary>
     /// Utilities class that deals with the Tile class and tiles in general.
     /// </summary>
     public static class TileUtils {
+        public enum CornerType : byte {
+            TopLeft,
+            TopRight,
+            BottomLeft,
+            BottomRight
+        }
+
         /// <summary>
         /// Allows for calling of the private method "AddSpecialPoint(int, int, int)" in <see cref="TileDrawing"/>.
         /// </summary>
@@ -43,14 +51,6 @@ namespace LivingWorldMod.Custom.Utilities {
         }
 
         /// <summary>
-        /// Returns the top left coordinate of the passed in tile which should be a type of multi-tile.
-        /// </summary>
-        /// <param name="tile"> A tile within the multi-tile. </param>
-        /// <param name="x"> The x coordinate of the specified tile. </param>
-        /// <param name="y"> The y coordinate of the specified tile. </param>
-        public static Point16 GetTopLeftOfMultiTile(Tile tile, int x, int y) => new(x - tile.TileFrameX / 18, y - tile.TileFrameY / 18);
-
-        /// <summary>
         /// Returns the top left coordinate of the passed in tile which should be a type of multi-tile. This overload takes into
         /// account multi-styled multi-tiles.
         /// </summary>
@@ -61,12 +61,46 @@ namespace LivingWorldMod.Custom.Utilities {
         /// The width of the full multi-tile, in tiles.
         /// Assumes multi-tile sprite uses 16x16 for each tile frame, with 2 pixels worth of padding.
         /// </param>
-        public static Point16 GetTopLeftOfMultiTile(Tile tile, int x, int y, int multiTileWidth) {
-            int pixelWidthOfFullTile = multiTileWidth * 18;
-            //Calculate proper displacement
-            int frameXDisplacement = tile.TileFrameX >= pixelWidthOfFullTile ? (int)(tile.TileFrameX / (float)pixelWidthOfFullTile) * pixelWidthOfFullTile : 0;
+        //TODO: Replace all references to GetCornerOfMultiTile and delete this method
+        public static Point16 GetTopLeftOfMultiTile(Tile tile, int x, int y, int multiTileWidth) => GetCornerOfMultiTile(tile, x, y, CornerType.TopLeft).ToVector2().ToPoint16();
 
-            return new Point16(x - (tile.TileFrameX - frameXDisplacement) / 18, y - tile.TileFrameY / 18);
+        public static Point GetCornerOfMultiTile(Tile tile, int x, int y, CornerType corner) {
+            TileObjectData data = TileObjectData.GetTileData(tile);
+            Point topLeft = new(x - tile.TileFrameX % data.CoordinateFullWidth / 18, y - tile.TileFrameY % data.CoordinateFullHeight / 18);
+
+            return corner switch {
+                CornerType.TopLeft => topLeft,
+                CornerType.TopRight => topLeft + new Point(data.Width - 1, 0),
+                CornerType.BottomLeft => topLeft + new Point(0, data.Height - 1),
+                CornerType.BottomRight => topLeft + new Point(data.Width - 1, data.Height - 1),
+                _ => topLeft
+            };
+        }
+
+        /// <summary>
+        /// Method that starts at a specified initial tile position, and moves down until the passed in conditional is
+        /// satisfied. Returns the first point that meets the conditions, or if one isn't found (or if the maximum drop is
+        /// reached), returns null.
+        /// </summary>
+        /// <param name="condition"> The condition function that will determine if a tile position is valid. </param>
+        /// <param name="initialPoint"> The initial tile point to start searching from. </param>
+        /// <param name="maximumDrop">
+        /// The maximum distance from the initial Y point. Exceeding will forcefully trigger
+        /// failure.
+        /// </param>
+        /// <returns></returns>
+        public static Point? DropUntilCondition(Func<Point, bool> condition, Point initialPoint, int maximumDrop) {
+            Point point = new(initialPoint.X, initialPoint.Y);
+
+            for (int i = 0; i <= maximumDrop; i++) {
+                if (condition(point)) {
+                    return point;
+                }
+
+                point.Y++;
+            }
+
+            return null;
         }
     }
 }

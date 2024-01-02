@@ -1,10 +1,11 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using System;
+using System.Collections.Generic;
+using LivingWorldMod.Common.Systems;
+using LivingWorldMod.Content.Items.RespawnItems;
 using LivingWorldMod.Content.NPCs.Villagers;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
-using System;
-using LivingWorldMod.Content.Items.RespawnItems;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
@@ -78,6 +79,46 @@ namespace LivingWorldMod.Custom.Utilities {
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Returns a precise version of the rectangle bounding box of this npc.
+        /// </summary>
+        public static PreciseRectangle GetPreciseRectangle(this NPC npc) => new(npc.position, npc.Size);
+
+        /// <summary>
+        /// Returns the first NPC that meets the passed in function requirement.
+        /// </summary>
+        /// <remarks>
+        /// Note that <see cref="NPC.active"/> is checked by default, along-side the predicate.
+        /// </remarks>
+        public static NPC GetFirstNPC(Predicate<NPC> npcPredicate) {
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+                if (npc.active && npcPredicate.Invoke(npc)) {
+                    return npc;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns all NPCs that meet the passed in function requirement.
+        /// </summary>
+        /// <remarks>
+        /// Note that <see cref="NPC.active"/> is checked by default, along-side the predicate.
+        /// </remarks>
+        public static List<NPC> GetAllNPCs(Predicate<NPC> npcPredicate) {
+            List<NPC> npcList = new();
+            for (int i = 0; i < Main.maxNPCs; i++) {
+                NPC npc = Main.npc[i];
+                if (npc.active && npcPredicate.Invoke(npc)) {
+                    npcList.Add(npc);
+                }
+            }
+
+            return npcList;
         }
     }
 }

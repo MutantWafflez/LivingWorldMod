@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Content.Items.Pets;
+﻿using System.Linq;
+using LivingWorldMod.Content.Items.Pets;
 using LivingWorldMod.Content.Items.Placeables.Building;
 using LivingWorldMod.Content.Items.Placeables.Furniture.Critter;
 using LivingWorldMod.Content.Items.Placeables.Furniture.Harpy;
@@ -65,7 +66,10 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         public HarpyVillager() {
-            drawObject = DrawingUtils.LoadDrawObject(new[] { 5, 5, 5, 5, 5 }, new[] { "Body", "Outfit", "Hair", "Face", "Wings" }, LivingWorldMod.LWMSpritePath + "NPCs/Villagers/Harpy/");
+            string[] layerNames = { "Body", "Outfit", "Hair", "Face", "Wings" };
+
+            DrawIndices = Enumerable.Repeat(0, layerNames.Length).ToArray();
+            drawObject = new LayeredDrawObject(layerNames, LivingWorldMod.LWMSpritePath + "NPCs/Villagers/Harpy/", 5);
         }
 
         public override void SetStaticDefaults() {

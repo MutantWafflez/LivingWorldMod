@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.UI;
@@ -81,17 +82,21 @@ namespace LivingWorldMod.Content.UI.VillagerHousing {
 
 
             LayeredDrawObject drawObject = myVillager.drawObject;
-            Rectangle textureDrawRegion = new(0, 0, drawObject.GetFrameWidth(), drawObject.GetFrameHeight(Main.npcFrameCount[myVillager.Type]));
+            Rectangle textureDrawRegion = new(0, 0, drawObject.GetLayerFrameWidth(0), drawObject.GetLayerFrameHeight(0, 0, Main.npcFrameCount[myVillager.Type]));
 
-            drawObject.Draw(spriteBatch,
-                GetDimensions().Center(),
-                textureDrawRegion,
-                IsSelected ? Color.Yellow : Color.White,
-                0f,
-                new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f * 1.15f),
-                0.75f,
-                SpriteEffects.None,
-                0f
+            drawObject.Draw(
+                spriteBatch,
+                new DrawData(
+                    null,
+                    GetDimensions().Center(),
+                    textureDrawRegion,
+                    IsSelected ? Color.Yellow : Color.White,
+                    0f,
+                    new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f * 1.15f),
+                    0.75f,
+                    SpriteEffects.None
+                ),
+                myVillager.DrawIndices
             );
 
             //Draw lock icon if not "allowed" (player is not high enough rep)

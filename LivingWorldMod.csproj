@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\tModLoader.targets" />
-  <PropertyGroup>
-    <AssemblyName>LivingWorldMod</AssemblyName>
-    <TargetFramework>net6.0</TargetFramework>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
-  </ItemGroup>
+    <Import Project="..\tModLoader.targets" />
+    <PropertyGroup>
+        <AssemblyName>LivingWorldMod</AssemblyName>
+        <TargetFramework>net6.0</TargetFramework>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <LangVersion>latest</LangVersion>
+
+        <DotNetPath Condition="'$(OS)' == 'Windows_NT'">dotnet.exe</DotNetPath>
+        <DotNetPath Condition="'$(OS)' == 'Unix'">dotnet/6.0.0/dotnet</DotNetPath>
+        <DotNetPath Condition="'$(DotNetPath)' == ''">dotnet/6.0.0/dotnet</DotNetPath>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
+        <PackageReference Include="Krafs.Publicizer" Version="2.2.1" PrivateAssets="all" />
+
+        <Publicize Include="tModLoader:Terraria.NPC.AI_007_TownEntities_IsInAGoodRestingSpot" />
+        <Publicize Include="tModLoader:Terraria.GameContent.Events.BirthdayParty.CanNPCParty" />
+
+        <!-- Shop Helper Publicizing -->
+        <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentNPCBeingTalkedTo" />
+        <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentPriceAdjustment" />
+        <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentHappiness" />
+
+    </ItemGroup>
 </Project>

@@ -1,0 +1,71 @@
+{
+	"Content": {
+		"MoodOffset": 0,
+		"MaxStacks": 1
+	},
+	"NoHome": {
+		"MoodOffset": -20,
+		"MaxStacks": 1
+	},
+	"FarFromHome": {
+		"MoodOffset": -20,
+		"MaxStacks": 1
+	},
+	"DislikeCrowded": {
+		"MoodOffset": -10,
+		"MaxStacks": 1
+	},
+	"HateCrowded": {
+		"MoodOffset": -20,
+		"MaxStacks": 1
+	},
+	"LoveSpace": {
+		"MoodOffset": 20,
+		"MaxStacks": 1
+	},
+	"LikeBiome": {
+		"MoodOffset": 15,
+		"MaxStacks": 1
+	},
+	"LoveBiome": {
+		"MoodOffset": 25,
+		"MaxStacks": 1
+	},
+	"DislikeBiome": {
+		"MoodOffset": -15,
+		"MaxStacks": 1
+	},
+	"HateBiome": {
+		"MoodOffset": -25,
+		"MaxStacks": 1
+	},
+	"LikeNPC": {
+		"MoodOffset": 10,
+		"MaxStacks": 1
+	},
+	"LoveNPC": {
+		"MoodOffset": 20,
+		"MaxStacks": 1
+	},
+	"DislikeNPC": {
+		"MoodOffset": -10,
+		"MaxStacks": 1
+	},
+	"HateNPC": {
+		"MoodOffset": -20,
+		"MaxStacks": 1
+	},
+
+	"Injured": {
+		"MoodOffset": -10,
+		"MaxStacks": 1
+	},
+	"SleptWell": {
+		"MoodOffset": 10,
+		"MaxStacks": 1
+	},
+	"Party": {
+		"MoodOffset": 15,
+		"MaxStacks": 1
+	}
+}

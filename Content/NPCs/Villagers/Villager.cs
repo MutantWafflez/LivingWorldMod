@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Chat;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -55,6 +56,14 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// to.
         /// </summary>
         public VillagerRelationship RelationshipStatus => ReputationSystem.Instance.GetVillageRelationship(VillagerType);
+
+        /// <summary>
+        /// The array of indices that denote the sprite differences for this villager.
+        /// </summary>
+        public int[] DrawIndices {
+            get;
+            protected set;
+        }
 
         /// <summary>
         /// The draw object used to draw this villager.
@@ -132,7 +141,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         public override bool NeedSaving() => true;
 
         public override void SaveData(TagCompound tag) {
-            tag["LayerIndices"] = drawObject.drawIndices;
+            tag["LayerIndices"] = DrawIndices;
             tag["Shop"] = shopInventory;
 
             tag["DisplayName"] = NPC.GivenName;
@@ -143,7 +152,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
 
         public override void LoadData(TagCompound tag) {
             if (tag.TryGet("LayerIndices", out int[] indices)) {
-                drawObject.drawIndices = indices;
+                DrawIndices = indices;
             }
             else {
                 RandomizeFeatures();
@@ -184,23 +193,34 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            SpriteEffects spriteDirection = NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            drawObject.Draw(
+                spriteBatch,
+                new DrawData(
+                    null,
+                    new Rectangle(
+                        (int)(NPC.Right.X - NPC.frame.Width / 1.5 - screenPos.X),
+                        (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f),
+                        NPC.frame.Width,
+                        NPC.frame.Height
+                    ),
+                    NPC.frame,
+                    NPC.GetShimmerColor(drawColor),
+                    NPC.rotation,
+                    default(Vector2),
+                    NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally
+                ),
+                DrawIndices
+            );
 
-            Rectangle drawArea = new((int)(NPC.Right.X - NPC.frame.Width / 1.5 - screenPos.X),
-                (int)(NPC.Bottom.Y - NPC.frame.Height - screenPos.Y + 2f),
-                NPC.frame.Width,
-                NPC.frame.Height);
-
-            drawObject.Draw(spriteBatch, drawArea, NPC.frame, NPC.GetShimmerColor(drawColor), NPC.rotation, default(Vector2), spriteDirection, 0);
             return false;
         }
 
         public override void SendExtraAI(BinaryWriter writer) {
-            int layerCount = drawObject.drawIndices.Length;
+            int layerCount = DrawIndices.Length;
 
             writer.Write(layerCount);
             for (int i = 0; i < layerCount; i++) {
-                writer.Write(drawObject.drawIndices[i]);
+                writer.Write(DrawIndices[i]);
             }
         }
 
@@ -208,7 +228,7 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
             int layerCount = reader.ReadInt32();
 
             for (int i = 0; i < layerCount; i++) {
-                drawObject.drawIndices[i] = reader.ReadInt32();
+                DrawIndices[i] = reader.ReadInt32();
             }
         }
 
@@ -271,8 +291,8 @@ namespace LivingWorldMod.Content.NPCs.Villagers {
         /// Randomizes all features of this villager.
         /// </summary>
         public void RandomizeFeatures() {
-            for (int i = 0; i < drawObject.allLayerTextures.Length; i++) {
-                drawObject.drawIndices[i] = Main.rand.Next(drawObject.allLayerTextures[i].Length);
+            for (int i = 0; i < DrawIndices.Length; i++) {
+                DrawIndices[i] = Main.rand.Next(drawObject.GetLayerVariations(i));
             }
         }
     }

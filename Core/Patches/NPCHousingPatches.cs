@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Achievements;
 using Terraria.GameInput;
@@ -130,16 +131,21 @@ namespace LivingWorldMod.Core.Patches {
             c.EmitDelegate(() => {
                 if (Main.instance.mouseNPCIndex > -1 && Main.npc[Main.instance.mouseNPCIndex].ModNPC is Villager villager) {
                     LayeredDrawObject drawObject = villager.drawObject;
-                    Rectangle textureDrawRegion = new(0, 0, drawObject.GetFrameWidth(), drawObject.GetFrameHeight(Main.npcFrameCount[villager.Type]));
+                    Rectangle textureDrawRegion = new(0, 0, drawObject.GetLayerFrameWidth(), drawObject.GetLayerFrameHeight(frameCount: Main.npcFrameCount[villager.Type]));
 
-                    drawObject.Draw(Main.spriteBatch,
-                        new Vector2(Main.mouseX, Main.mouseY),
-                        textureDrawRegion, Color.White,
-                        0f,
-                        Vector2.Zero,
-                        Main.cursorScale * 0.67f,
-                        SpriteEffects.None,
-                        0f
+                    drawObject.Draw(
+                        Main.spriteBatch,
+                        new DrawData(
+                            null,
+                            new Vector2(Main.mouseX, Main.mouseY),
+                            textureDrawRegion,
+                            Color.White,
+                            0f,
+                            Vector2.Zero,
+                            Main.cursorScale * 0.67f,
+                            SpriteEffects.None
+                        ),
+                        villager.DrawIndices
                     );
 
                     //If a type of villager, we do not want the head drawing function, so skip it by returning true
@@ -311,17 +317,21 @@ namespace LivingWorldMod.Core.Patches {
                 }
 
                 LayeredDrawObject drawObject = villager.drawObject;
-                Rectangle textureDrawRegion = new(0, 0, drawObject.GetFrameWidth(), drawObject.GetFrameHeight(Main.npcFrameCount[villager.Type]));
+                Rectangle textureDrawRegion = new(0, 0, drawObject.GetLayerFrameWidth(), drawObject.GetLayerFrameHeight(frameCount: Main.npcFrameCount[villager.Type]));
 
-                drawObject.Draw(Main.spriteBatch,
-                    new Vector2(homeTileX * 16f - Main.screenPosition.X + 10f, homeTileYPixels - Main.screenPosition.Y + 18f),
-                    textureDrawRegion,
-                    Lighting.GetColor(homeTileX, homeTileY),
-                    0f,
-                    new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f),
-                    0.5f,
-                    Main.LocalPlayer.gravDir != -1 ? SpriteEffects.None : SpriteEffects.FlipVertically, //Take into account possible gravity swapping
-                    0f
+                drawObject.Draw(
+                    Main.spriteBatch,
+                    new DrawData(
+                        null,
+                        new Vector2(homeTileX * 16f - Main.screenPosition.X + 10f, homeTileYPixels - Main.screenPosition.Y + 18f),
+                        textureDrawRegion,
+                        Lighting.GetColor(homeTileX, homeTileY),
+                        0f,
+                        new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f),
+                        0.5f,
+                        Main.LocalPlayer.gravDir != -1 ? SpriteEffects.None : SpriteEffects.FlipVertically //Take into account possible gravity swapping
+                    ),
+                    villager.DrawIndices
                 );
             });
 

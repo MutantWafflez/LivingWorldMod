@@ -1,11 +1,8 @@
-﻿using LivingWorldMod.Custom.Classes;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Custom.Utilities {
     /// <summary>
@@ -44,30 +41,6 @@ namespace LivingWorldMod.Custom.Utilities {
 
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, Main.Rasterizer, null, drawMatrix);
-        }
-
-        /// <summary>
-        /// Creates a new instance of a <see cref="LayeredDrawObject"/> based on the specified variation
-        /// numbers and names. Uses the length of the <see cref="layerVariations"/> parameter to determine
-        /// how many layers there are; make sure it is of proper length! Layer names are also case sensitive
-        /// to their respective texture names.
-        /// </summary>
-        /// <remarks>
-        /// Texture path should include the ending slash, for example "LivingWorldMod/Assets/Sprites/".
-        /// </remarks>
-        public static LayeredDrawObject LoadDrawObject(int[] layerVariations, string[] layerNames, string texturePath) {
-            Asset<Texture2D>[][] villagerTextures = new Asset<Texture2D>[layerVariations.Length][];
-
-            for (int i = 0; i < layerVariations.Length; i++) {
-                villagerTextures[i] = new Asset<Texture2D>[layerVariations[i]];
-
-                for (int j = 0; j < layerVariations[i]; j++) {
-                    villagerTextures[i][j] = ModContent.Request<Texture2D>($"{texturePath}{layerNames[i]}_{j}");
-                }
-            }
-
-            int[] layerIndices = new int[layerVariations.Length];
-            return new LayeredDrawObject(villagerTextures, layerIndices);
         }
     }
 }
