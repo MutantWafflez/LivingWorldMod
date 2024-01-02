@@ -1,5 +1,6 @@
-INDEV RELEASE v0.3.0.2 [Revitalization Hotfix #2] (January 2nd, 2024)
+INDEV RELEASE v0.3.1.0 [Town NPC Un-vitalization] (January 2nd, 2024)
 Changes:
-* A *ton* of internal code re-formatting; no effect on gameplay but I'd thought I mention it
-Fixes:
-* Fixed crash that would occur when a mod with a Town NPC loaded after LWM
+* Disabled Town NPC Revitalization features, including sleep system, mood system, and pathfinding
+	-> Will be re-enabled when rather problematic bugs are fixed (namely NPCs vanishing out of thin air)
+Notes:
+* Other non-Town NPC features of v0.3 will still be available, such as the new tapestries and Harpy sprite variations

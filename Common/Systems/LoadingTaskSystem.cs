@@ -15,7 +15,8 @@ namespace LivingWorldMod.Common.Systems;
 /// </summary>
 public class LoadingTaskSystem : BaseModSystem<LoadingTaskSystem> {
     public override void PostSetupContent() {
-        Main.QueueMainThreadAction(GenerateTalkBlinkTextures);
+        // TODO: Uncomment once town NPCs are fixed
+        //Main.QueueMainThreadAction(GenerateTalkBlinkTextures);
     }
 
     private void GenerateTalkBlinkTextures() {
