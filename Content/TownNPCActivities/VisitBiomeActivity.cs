@@ -70,13 +70,11 @@ public class VisitBiomeActivity : TownNPCActivity {
             globalNPC.GenerateNewPath(npc, _destinationPylonPos);
 
             if (!globalNPC.IsFollowingPath) {
-                // TODO: timeRemaining = 0;
                 return;
             }
 
             _activityStage = 1;
         }
-        // TODO: Wandering
 
     }
 }
