@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Items.DebugItems;
 
@@ -10,7 +8,7 @@ namespace LivingWorldMod.Content.Items.DebugItems;
 /// Item that is only loaded when in Debug mode.
 /// </summary>
 public abstract class DebugItem : ModItem {
-    public override bool IsLoadingEnabled(Mod mod) => LivingWorldMod.IsDebug;
+    public override bool IsLoadingEnabled(Mod mod) => LWM.IsDebug;
 
     public override void ModifyTooltips(List<TooltipLine> tooltips) {
         //Name will be a very weird color to signify debug-ness (in case anyone couldn't figure it out)

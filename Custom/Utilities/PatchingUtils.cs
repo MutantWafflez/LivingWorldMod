@@ -1,7 +1,6 @@
 ﻿using System;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Custom.Utilities;
 
@@ -23,7 +22,7 @@ public static class PatchingUtils {
             return;
         }
 
-        throw new ILPatchFailureException(ModContent.GetInstance<LivingWorldMod>(), cursor.Context, new InstructionNotFoundException());
+        throw new ILPatchFailureException(ModContent.GetInstance<LWM>(), cursor.Context, new InstructionNotFoundException());
     }
 
     /// <summary>
@@ -35,7 +34,7 @@ public static class PatchingUtils {
             return;
         }
 
-        throw new ILPatchFailureException(ModContent.GetInstance<LivingWorldMod>(), cursor.Context, new InstructionNotFoundException());
+        throw new ILPatchFailureException(ModContent.GetInstance<LWM>(), cursor.Context, new InstructionNotFoundException());
     }
 
     /// <summary>
@@ -47,7 +46,7 @@ public static class PatchingUtils {
             return;
         }
 
-        throw new ILPatchFailureException(ModContent.GetInstance<LivingWorldMod>(), cursor.Context, new InstructionNotFoundException());
+        throw new ILPatchFailureException(ModContent.GetInstance<LWM>(), cursor.Context, new InstructionNotFoundException());
     }
 
     /// <summary>
@@ -59,7 +58,7 @@ public static class PatchingUtils {
             return;
         }
 
-        throw new ILPatchFailureException(ModContent.GetInstance<LivingWorldMod>(), cursor.Context, new InstructionNotFoundException());
+        throw new ILPatchFailureException(ModContent.GetInstance<LWM>(), cursor.Context, new InstructionNotFoundException());
     }
 
     /// <summary>

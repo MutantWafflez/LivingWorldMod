@@ -4,9 +4,7 @@ using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Interfaces;
 using LivingWorldMod.Custom.Structs;
-using Terraria;
 using Terraria.GameContent.Generation;
-using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Common.Systems;
@@ -39,7 +37,7 @@ public class WorldCreationSystem : BaseModSystem<WorldCreationSystem> {
             }
             else {
                 tasks.Add(new PassLegacy(feature.InternalGenerationName, feature.Generate));
-                ModContent.GetInstance<LivingWorldMod>().Logger.Warn($"Pass Named {feature.InsertionPassNameForFeature} not found, feature {feature.InternalGenerationName} placed at end of task list!");
+                ModContent.GetInstance<LWM>().Logger.Warn($"Pass Named {feature.InsertionPassNameForFeature} not found, feature {feature.InternalGenerationName} placed at end of task list!");
             }
         }
     }

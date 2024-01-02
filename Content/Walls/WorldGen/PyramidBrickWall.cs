@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Terraria.ID;
 
 namespace LivingWorldMod.Content.Walls.WorldGen;
 
@@ -22,6 +21,6 @@ public class PyramidBrickWall : BaseWall {
 
     public override void KillWall(int i, int j, ref bool fail) {
         //Unbreakables
-        fail = !LivingWorldMod.IsDebug;
+        fail = !LWM.IsDebug;
     }
 }

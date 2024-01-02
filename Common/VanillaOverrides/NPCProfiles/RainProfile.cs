@@ -1,9 +1,7 @@
 ﻿using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using Terraria;
 using Terraria.GameContent;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.VanillaOverrides.NPCProfiles;
 
@@ -17,7 +15,7 @@ public sealed class RainProfile : ITownNPCProfile {
 
     public Asset<Texture2D> GetTextureNPCShouldUse(NPC npc) {
         if (!npc.IsABestiaryIconDummy && Main.raining && npc.Center.Y < Main.rockLayer * 16f && npc.Center.Y > Main.worldSurface * 0.35f * 16f && !NPCUtils.IsEntityUnderRoof(npc)) {
-            Asset<Texture2D> rainVariant = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}NPCProfiles/Guide_Rain");
+            Asset<Texture2D> rainVariant = ModContent.Request<Texture2D>($"{LWM.SpritePath}NPCProfiles/Guide_Rain");
             npc.frame.Width = rainVariant.Width();
             npc.frame.Height = rainVariant.Height() / Main.npcFrameCount[npc.type];
             if (npc.frame.Y % npc.frame.Height != 0) {

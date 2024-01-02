@@ -5,14 +5,11 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
 using Terraria.GameContent.ObjectInteractions;
-using Terraria.ID;
 using Terraria.Map;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Terraria.UI;
 
@@ -32,7 +29,7 @@ public class WaystoneTile : BasePylon {
     private readonly int _fullTileWidth = 2;
 
     public override void Load() {
-        waystoneMapIcons = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}MapIcons/WaystoneIcons");
+        waystoneMapIcons = ModContent.Request<Texture2D>($"{LWM.SpritePath}MapIcons/WaystoneIcons");
     }
 
     public override void SetStaticDefaults() {
@@ -71,9 +68,9 @@ public class WaystoneTile : BasePylon {
         AnimationFrameHeight = 54;
     }
 
-    public override bool CanKillTile(int i, int j, ref bool blockDamaged) => LivingWorldMod.IsDebug;
+    public override bool CanKillTile(int i, int j, ref bool blockDamaged) => LWM.IsDebug;
 
-    public override bool CanExplode(int i, int j) => LivingWorldMod.IsDebug;
+    public override bool CanExplode(int i, int j) => LWM.IsDebug;
 
     public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 

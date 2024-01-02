@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using LivingWorldMod.Custom.Structs;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Custom.Utilities;
@@ -33,7 +32,7 @@ public static class IOUtils {
     /// <param name="path"> The path in the LivingWorldMod folder to go to. </param>
     /// <returns> </returns>
     public static StructureData GetStructureFromFile(string path) {
-        LivingWorldMod modInstance = ModContent.GetInstance<LivingWorldMod>();
+        LWM modInstance = ModContent.GetInstance<LWM>();
 
         Stream fileStream = modInstance.GetFileStream(path);
 

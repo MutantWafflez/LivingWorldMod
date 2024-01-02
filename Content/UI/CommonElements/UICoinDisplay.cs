@@ -1,10 +1,7 @@
 ﻿using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.GameContent;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.CommonElements;
@@ -83,7 +80,7 @@ public class UICoinDisplay : UIElement {
                 break;
 
             default:
-                ModContent.GetInstance<LivingWorldMod>().Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
+                ModContent.GetInstance<LWM>().Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
 
                 break;
         }
@@ -199,7 +196,7 @@ public class UICoinDisplay : UIElement {
                 break;
 
             default:
-                ModContent.GetInstance<LivingWorldMod>().Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
+                ModContent.GetInstance<LWM>().Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
                 break;
         }
     }

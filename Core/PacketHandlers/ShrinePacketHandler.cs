@@ -3,10 +3,7 @@ using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.Systems.UI;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Utilities;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Core.PacketHandlers;
 
@@ -68,7 +65,7 @@ public class ShrinePacketHandler : PacketHandler {
                             ModContent.GetInstance<VillageShrineUISystem>().OpenOrRegenShrineState(entityPos);
                         }
                         else {
-                            ModContent.GetInstance<LivingWorldMod>().Logger.Error($"Failed AddRespawnItem received, but got invalid/no entity at position: {entityPos}");
+                            ModContent.GetInstance<LWM>().Logger.Error($"Failed AddRespawnItem received, but got invalid/no entity at position: {entityPos}");
                         }
                     }
                 }
@@ -99,7 +96,7 @@ public class ShrinePacketHandler : PacketHandler {
                     Point16 entityPos = reader.ReadVector2().ToPoint16();
 
                     if (!reader.ReadBoolean()) {
-                        ModContent.GetInstance<LivingWorldMod>().Logger.Warn($"Client attempted TakeRespawnItem when Server had no respawn items left at position: {entityPos}");
+                        ModContent.GetInstance<LWM>().Logger.Warn($"Client attempted TakeRespawnItem when Server had no respawn items left at position: {entityPos}");
                     }
                     else {
                         if (TileEntity.ByPosition.TryGetValue(entityPos, out TileEntity entity) && entity is VillageShrineEntity shrineEntity) {
@@ -108,7 +105,7 @@ public class ShrinePacketHandler : PacketHandler {
                             ModContent.GetInstance<VillageShrineUISystem>().OpenOrRegenShrineState(entityPos);
                         }
                         else {
-                            ModContent.GetInstance<LivingWorldMod>().Logger.Error($"Successful TakeRespawnItem received, but got invalid/no entity at position: {entityPos}");
+                            ModContent.GetInstance<LWM>().Logger.Error($"Successful TakeRespawnItem received, but got invalid/no entity at position: {entityPos}");
                         }
                     }
                 }
@@ -121,12 +118,12 @@ public class ShrinePacketHandler : PacketHandler {
                         shrineEntity.ForceRecalculateAndSync();
                     }
                     else {
-                        ModContent.GetInstance<LivingWorldMod>().Logger.Error($"TriggerForceSync received, but got invalid/no entity at position: {entityPos}");
+                        ModContent.GetInstance<LWM>().Logger.Error($"TriggerForceSync received, but got invalid/no entity at position: {entityPos}");
                     }
                 }
                 break;
             default:
-                ModContent.GetInstance<LivingWorldMod>().Logger.Warn($"Invalid ShrinePacketHandler Packet Type of {packetType}");
+                ModContent.GetInstance<LWM>().Logger.Warn($"Invalid ShrinePacketHandler Packet Type of {packetType}");
                 break;
         }
     }

@@ -1,6 +1,4 @@
-﻿using Terraria.ModLoader;
-
-namespace LivingWorldMod.Content.StatusEffects;
+﻿namespace LivingWorldMod.Content.StatusEffects;
 
 /// <summary>
 /// Base class for all LWM Status Effects (buffs, debuffs, etc.) that currently only has the functionality of overriding
@@ -10,7 +8,7 @@ namespace LivingWorldMod.Content.StatusEffects;
 public abstract class BaseStatusEffect : ModBuff {
     public override string Texture => GetType()
                                       .Namespace?
-                                      .Replace($"{nameof(LivingWorldMod)}.Content.", LivingWorldMod.LWMSpritePath)
+                                      .Replace($"{nameof(LivingWorldMod)}.Content.", LWM.SpritePath)
                                       .Replace('.', '/')
                                       + $"/{Name}";
 }

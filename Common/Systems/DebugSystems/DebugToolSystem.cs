@@ -2,8 +2,6 @@
 using System.Linq;
 using LivingWorldMod.Custom.Classes.DebugModules;
 using Microsoft.Xna.Framework.Input;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.Systems.DebugSystems;
 
@@ -18,7 +16,7 @@ public class DebugToolSystem : ModSystem {
 
     private List<DebugModule> _allModules;
 
-    public override bool IsLoadingEnabled(Mod mod) => LivingWorldMod.IsDebug;
+    public override bool IsLoadingEnabled(Mod mod) => LWM.IsDebug;
 
     public override void Load() {
         _allModules = new List<DebugModule> {

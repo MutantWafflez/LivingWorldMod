@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using Hjson;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Custom.Utilities;
 
@@ -13,7 +12,7 @@ public static class JsonUtils {
     /// LWM, so the file path does not need to include "LivingWorldMod".
     /// </summary>
     public static JsonValue GetJSONFromFile(string filePath) {
-        Stream jsonStream = ModContent.GetInstance<LivingWorldMod>().GetFileStream(filePath);
+        Stream jsonStream = ModContent.GetInstance<LWM>().GetFileStream(filePath);
         JsonValue jsonData = JsonValue.Load(jsonStream);
         jsonStream.Close();
 

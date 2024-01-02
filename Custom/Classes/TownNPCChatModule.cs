@@ -3,10 +3,8 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.Localization;
-using Terraria.ModLoader;
 using Terraria.UI.Chat;
 
 namespace LivingWorldMod.Custom.Classes;
@@ -138,7 +136,7 @@ public sealed class TownNPCChatModule : TownNPCModule {
         // Manual panel drawing, since we have to deal with variable text sizes. Not perfect, but it's better than nothing
         const int panelPadding = 6;
         const int cornerPixelSize = 2;
-        Texture2D chatBottomTexture = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}UI/TownNPCChats/Chat_Bottom").Value;
+        Texture2D chatBottomTexture = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/TownNPCChats/Chat_Bottom").Value;
 
         Color topLeftBorderColor = new(71, 83, 156);
         Rectangle topBorderRect = new((int)(textDrawPos.X - panelPadding + cornerPixelSize), (int)(textDrawPos.Y - panelPadding), (int)textSize.X + panelPadding * 2, cornerPixelSize);

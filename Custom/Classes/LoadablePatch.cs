@@ -1,6 +1,5 @@
 ﻿using System;
 using MonoMod.Cil;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Custom.Classes;
 
@@ -23,7 +22,7 @@ public abstract class LoadablePatch : ILoadable {
     public abstract void LoadPatches();
 
     public void Load(Mod mod) {
-        if (!LivingWorldMod.EnableILPatches) {
+        if (!LWM.EnableILPatches) {
             return;
         }
 
@@ -35,7 +34,7 @@ public abstract class LoadablePatch : ILoadable {
             throw;
         }
         catch (Exception ex) {
-            throw new ILPatchFailureException(ModContent.GetInstance<LivingWorldMod>(), currentContext, ex);
+            throw new ILPatchFailureException(ModContent.GetInstance<LWM>(), currentContext, ex);
         }
     }
 

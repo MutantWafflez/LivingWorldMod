@@ -9,13 +9,10 @@ using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.DataStructures;
-using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 using NPCUtils = LivingWorldMod.Custom.Utilities.NPCUtils;
@@ -32,7 +29,7 @@ public abstract class Villager : ModNPC {
     /// </summary>
     public static IReadOnlyDictionary<VillagerType, IReadOnlyList<string>> villagerNames;
 
-    public sealed override string Texture => LivingWorldMod.LWMSpritePath + $"NPCs/Villagers/{VillagerType}/DefaultStyle";
+    public sealed override string Texture => LWM.SpritePath + $"NPCs/Villagers/{VillagerType}/DefaultStyle";
 
     public override bool IsCloneable => true;
 

@@ -2,8 +2,6 @@
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Content.Biomes;
 
@@ -11,7 +9,7 @@ namespace LivingWorldMod.Content.Biomes;
 /// "Biome" that surrounds a given harpy shrine.
 /// </summary>
 public class HarpyVillageBiome : ModBiome {
-    public override int Music => MusicLoader.GetMusicSlot(Mod, LivingWorldMod.LWMMusicPath + $"Village/Harpy{(Main.dayTime ? "Day" : "Night")}");
+    public override int Music => MusicLoader.GetMusicSlot(Mod, LWM.MusicPath + $"Village/Harpy{(Main.dayTime ? "Day" : "Night")}");
 
     public override SceneEffectPriority Priority => SceneEffectPriority.Environment;
 

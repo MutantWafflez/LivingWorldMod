@@ -3,10 +3,7 @@ using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.TileEntities.Interactables;
 using LivingWorldMod.Custom.Utilities;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Core.PacketHandlers;
 
@@ -51,7 +48,7 @@ public class WaystonePacketHandler : PacketHandler {
                 }
                 break;
             default:
-                ModContent.GetInstance<LivingWorldMod>().Logger.Warn($"Invalid WaystonePacketHandler Packet Type of {packetType}");
+                ModContent.GetInstance<LWM>().Logger.Warn($"Invalid WaystonePacketHandler Packet Type of {packetType}");
                 break;
         }
     }

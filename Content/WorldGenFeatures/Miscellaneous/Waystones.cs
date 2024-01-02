@@ -7,10 +7,7 @@ using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
 using Terraria.IO;
-using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous;
@@ -99,8 +96,8 @@ public class Waystones : WorldGenFeature {
                 }
 
                 //Place tile entities
-                if (waystoneEntity.ManualPlace(i, j, WaystoneType.Mushroom, LivingWorldMod.IsDebug) && LivingWorldMod.IsDebug) {
-                    ModContent.GetInstance<LivingWorldMod>().Logger.Info($"Placed Waystone at {i}, {j}");
+                if (waystoneEntity.ManualPlace(i, j, WaystoneType.Mushroom, LWM.IsDebug) && LWM.IsDebug) {
+                    ModContent.GetInstance<LWM>().Logger.Info($"Placed Waystone at {i}, {j}");
                 }
 
                 //Assuming we get here, break and move out of loop
@@ -168,8 +165,8 @@ public class Waystones : WorldGenFeature {
                 }
 
                 //Place tile entities
-                if (waystoneEntity.ManualPlace(i, j, determinedWaystoneType, LivingWorldMod.IsDebug) && LivingWorldMod.IsDebug) {
-                    ModContent.GetInstance<LivingWorldMod>().Logger.Info($"Placed Waystone at {i}, {j}");
+                if (waystoneEntity.ManualPlace(i, j, determinedWaystoneType, LWM.IsDebug) && LWM.IsDebug) {
+                    ModContent.GetInstance<LWM>().Logger.Info($"Placed Waystone at {i}, {j}");
                 }
 
                 ContinueLoop: ;

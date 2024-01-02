@@ -8,13 +8,10 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
-using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.VillagerShop;
@@ -60,7 +57,7 @@ public class ShopUIState : UIState {
     private UIShopItem _selectedItem;
 
     public override void OnInitialize() {
-        string shopUIPath = $"{LivingWorldMod.LWMSpritePath}UI/ShopUI/Harpy/";
+        string shopUIPath = $"{LWM.SpritePath}UI/ShopUI/Harpy/";
 
         //Background Zone
         backImage = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage", AssetRequestMode.ImmediateLoad)) {
@@ -269,7 +266,7 @@ public class ShopUIState : UIState {
     public void ReloadUI(Villager newVillager) {
         currentVillager = newVillager;
 
-        string shopUIPath = $"{LivingWorldMod.LWMSpritePath}UI/ShopUI/{currentVillager.VillagerType}/";
+        string shopUIPath = $"{LWM.SpritePath}UI/ShopUI/{currentVillager.VillagerType}/";
 
         backImage.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage", AssetRequestMode.ImmediateLoad));
 

@@ -13,13 +13,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Achievements;
 using Terraria.GameInput;
-using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Core.Patches;
 
@@ -253,7 +250,7 @@ public class NPCHousingPatches : LoadablePatch {
         //Load this NPC to stack
         c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
         //If this NPC is a villager, use our own modded banners. If not, return the normal one
-        c.EmitDelegate<Func<NPC, Texture2D>>(npc => npc.ModNPC is Villager ? ModContent.Request<Texture2D>(LivingWorldMod.LWMSpritePath + "UI/VillagerHousingUI/VillagerHousing_Banners").Value : TextureAssets.HouseBanner.Value);
+        c.EmitDelegate<Func<NPC, Texture2D>>(npc => npc.ModNPC is Villager ? ModContent.Request<Texture2D>(LWM.SpritePath + "UI/VillagerHousingUI/VillagerHousing_Banners").Value : TextureAssets.HouseBanner.Value);
 
         //Navigate to the banner framing rectangle
         c.ErrorOnFailedGotoNext(i => i.MatchStloc(framingRectangleLocalNumber));

@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.ID;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.VillagerShop;
@@ -15,7 +14,7 @@ namespace LivingWorldMod.Content.UI.VillagerShop;
 /// UIElement class extension that handles and creates portraits for villagers in the shop UI, primarily.
 /// </summary>
 public class UIPortrait : UIElement {
-    private string PortraitSpritePath => $"{LivingWorldMod.LWMSpritePath}UI/ShopUI/{_villager.VillagerType}/Portraits/";
+    private string PortraitSpritePath => $"{LWM.SpritePath}UI/ShopUI/{_villager.VillagerType}/Portraits/";
 
     public VillagerPortraitExpression temporaryExpression;
     public float temporaryExpressionTimer;

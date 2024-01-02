@@ -4,11 +4,8 @@ using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using Terraria;
 using Terraria.Audio;
-using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 
@@ -21,7 +18,7 @@ public class VillagerHousingUIState : UIState {
     /// <summary>
     /// Path to the sprites for this UI.
     /// </summary>
-    private string HousingTexturePath => LivingWorldMod.LWMSpritePath + "UI/VillagerHousingUI/";
+    private string HousingTexturePath => LWM.SpritePath + "UI/VillagerHousingUI/";
 
     /// <summary>
     /// Whether or not the menu that shows each of the villagers is visible (open).

@@ -10,10 +10,7 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using Terraria;
 using Terraria.GameContent;
-using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace LivingWorldMod.Common.GlobalNPCs;
 
@@ -242,7 +239,7 @@ public class TownAIGlobalNPC : GlobalNPC {
         SpriteModule.DrawOntoNPC(spriteBatch, screenPos, drawColor);
         ChatModule.DoChatDrawing(spriteBatch, screenPos, drawColor);
 
-        if (!LivingWorldMod.IsDebug) {
+        if (!LWM.IsDebug) {
             return;
         }
 

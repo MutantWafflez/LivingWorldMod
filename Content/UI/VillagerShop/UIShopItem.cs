@@ -4,11 +4,8 @@ using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.UI.VillagerShop;
@@ -38,7 +35,7 @@ public class UIShopItem : UIImage {
 
     private float _manualUpdateTime;
 
-    public UIShopItem(ShopItem pertainedInventoryItem, long displayedCost, VillagerType villagerType) : base(ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}UI/ShopUI/{villagerType}/ShopItemBox")) {
+    public UIShopItem(ShopItem pertainedInventoryItem, long displayedCost, VillagerType villagerType) : base(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/ShopUI/{villagerType}/ShopItemBox")) {
         this.pertainedInventoryItem = pertainedInventoryItem;
         displayedItem = new Item();
         displayedItem.SetDefaults(pertainedInventoryItem.itemType);

@@ -5,13 +5,10 @@ using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
-using Terraria.ID;
 using Terraria.Map;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Terraria.UI;
 
@@ -34,7 +31,7 @@ public class VillageShrineTile : BasePylon {
     public Asset<Texture2D> shrineIcons;
 
     public override void Load() {
-        shrineIcons = ModContent.Request<Texture2D>($"{LivingWorldMod.LWMSpritePath}MapIcons/ShrineIcons");
+        shrineIcons = ModContent.Request<Texture2D>($"{LWM.SpritePath}MapIcons/ShrineIcons");
     }
 
     public override void SetStaticDefaults() {
@@ -142,7 +139,7 @@ public class VillageShrineTile : BasePylon {
             case VillagerType.Harpy:
                 return Main.BestiaryTracker.Chats.GetWasChatWith($"{nameof(LivingWorldMod)}/HarpyVillager");
             default:
-                ModContent.GetInstance<LivingWorldMod>().Logger.Error($"Villager Type of {type} is not valid for shrine visibility.");
+                ModContent.GetInstance<LWM>().Logger.Error($"Villager Type of {type} is not valid for shrine visibility.");
                 return false;
         }
     }

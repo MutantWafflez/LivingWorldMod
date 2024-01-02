@@ -7,10 +7,7 @@ using LivingWorldMod.Content.Items.Placeables.Furniture.Tapestries;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
-using Terraria;
 using Terraria.GameContent.Bestiary;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.Utilities;
 
 namespace LivingWorldMod.Content.NPCs.Villagers;
@@ -70,7 +67,7 @@ public class HarpyVillager : Villager {
         string[] layerNames = { "Body", "Outfit", "Hair", "Face", "Wings" };
 
         DrawIndices = Enumerable.Repeat(0, layerNames.Length).ToArray();
-        drawObject = new LayeredDrawObject(layerNames, LivingWorldMod.LWMSpritePath + "NPCs/Villagers/Harpy/", 5);
+        drawObject = new LayeredDrawObject(layerNames, LWM.SpritePath + "NPCs/Villagers/Harpy/", 5);
     }
 
     public override void SetStaticDefaults() {
