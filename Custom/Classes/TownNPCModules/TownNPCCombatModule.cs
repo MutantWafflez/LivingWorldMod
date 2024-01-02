@@ -6,7 +6,7 @@ using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 
-namespace LivingWorldMod.Custom.Classes;
+namespace LivingWorldMod.Custom.Classes.TownNPCModules;
 
 /// <summary>
 /// Module for the Town NPC revitalization that handles combat for

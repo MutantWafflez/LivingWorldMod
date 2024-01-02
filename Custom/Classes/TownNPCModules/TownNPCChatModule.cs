@@ -6,7 +6,7 @@ using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.UI.Chat;
 
-namespace LivingWorldMod.Custom.Classes;
+namespace LivingWorldMod.Custom.Classes.TownNPCModules;
 
 public sealed class TownNPCChatModule : TownNPCModule {
     private const int DefaultChatBubbleDuration = (int)(Utilities.Utilities.RealLifeSecond * 5d);

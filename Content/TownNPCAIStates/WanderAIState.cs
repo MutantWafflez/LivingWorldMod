@@ -2,7 +2,7 @@
 using System.Linq;
 using LivingWorldMod.Common.GlobalNPCs;
 using LivingWorldMod.Common.ModTypes;
-using LivingWorldMod.Custom.Classes;
+using LivingWorldMod.Custom.Classes.TownNPCModules;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria.Utilities;

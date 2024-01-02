@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 
-namespace LivingWorldMod.Custom.Classes;
+namespace LivingWorldMod.Custom.Classes.TownNPCModules;
 
 public sealed class TownNPCPathfinderModule : TownNPCModule {
     private sealed class PathfinderResult {

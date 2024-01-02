@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Terraria.GameContent.Events;
 
-namespace LivingWorldMod.Custom.Classes;
+namespace LivingWorldMod.Custom.Classes.TownNPCModules;
 
 public class TownNPCHousingModule : TownNPCModule {
     public Rectangle? RoomBoundingBox {
