@@ -2,18 +2,18 @@
 using Terraria;
 using Terraria.ID;
 
-namespace LivingWorldMod.Content.Tiles.Building {
-    public class SkywareBlockTile : BaseTile {
-        public override Color? TileColorOnMap => Color.LightBlue;
+namespace LivingWorldMod.Content.Tiles.Building;
 
-        public override void SetStaticDefaults() {
-            Main.tileSolid[Type] = true;
-            Main.tileNoSunLight[Type] = true;
-            Main.tileMergeDirt[Type] = false;
+public class SkywareBlockTile : BaseTile {
+    public override Color? TileColorOnMap => Color.LightBlue;
 
-            MineResist = 1.15f;
+    public override void SetStaticDefaults() {
+        Main.tileSolid[Type] = true;
+        Main.tileNoSunLight[Type] = true;
+        Main.tileMergeDirt[Type] = false;
 
-            DustType = DustID.BlueMoss;
-        }
+        MineResist = 1.15f;
+
+        DustType = DustID.BlueMoss;
     }
 }

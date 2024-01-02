@@ -3,23 +3,23 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Content.Tiles.Building {
-    public class StarshineBlockTile : BaseTile {
-        public override Color? TileColorOnMap => Color.DarkBlue;
+namespace LivingWorldMod.Content.Tiles.Building;
 
-        public override void SetStaticDefaults() {
-            Main.tileSolid[Type] = true;
-            Main.tileNoSunLight[Type] = true;
-            Main.tileMergeDirt[Type] = true;
-            Main.tileMerge[Type][ModContent.TileType<SunslabBlockTile>()] = true;
-            Main.tileMerge[Type][TileID.Sunplate] = true;
-            Main.tileMerge[TileID.Sunplate][Type] = true;
+public class StarshineBlockTile : BaseTile {
+    public override Color? TileColorOnMap => Color.DarkBlue;
 
-            MineResist = 1.34f;
+    public override void SetStaticDefaults() {
+        Main.tileSolid[Type] = true;
+        Main.tileNoSunLight[Type] = true;
+        Main.tileMergeDirt[Type] = true;
+        Main.tileMerge[Type][ModContent.TileType<SunslabBlockTile>()] = true;
+        Main.tileMerge[Type][TileID.Sunplate] = true;
+        Main.tileMerge[TileID.Sunplate][Type] = true;
 
-            DustType = DustID.BlueTorch;
-        }
+        MineResist = 1.34f;
 
-        public override bool HasWalkDust() => true;
+        DustType = DustID.BlueTorch;
     }
+
+    public override bool HasWalkDust() => true;
 }

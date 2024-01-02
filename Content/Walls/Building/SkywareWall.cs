@@ -2,16 +2,16 @@
 using Terraria;
 using Terraria.ID;
 
-namespace LivingWorldMod.Content.Walls.Building {
-    public class SkywareWall : BaseWall {
-        public override Color? WallColorOnMap => Color.Cyan;
+namespace LivingWorldMod.Content.Walls.Building;
 
-        public override void SetStaticDefaults() {
-            Main.wallHouse[Type] = true;
+public class SkywareWall : BaseWall {
+    public override Color? WallColorOnMap => Color.Cyan;
 
-            DustType = DustID.BlueMoss;
+    public override void SetStaticDefaults() {
+        Main.wallHouse[Type] = true;
 
-            base.SetStaticDefaults();
-        }
+        DustType = DustID.BlueMoss;
+
+        base.SetStaticDefaults();
     }
 }

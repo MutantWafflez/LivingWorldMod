@@ -2,17 +2,17 @@
 using Terraria;
 using Terraria.ID;
 
-namespace LivingWorldMod.Content.Walls.Building {
-    public class SandstoneSlabWall : BaseWall {
-        public override Color? WallColorOnMap => new Color(108, 103, 72);
+namespace LivingWorldMod.Content.Walls.Building;
 
-        public override void SetStaticDefaults() {
-            Main.wallHouse[Type] = true;
-            Main.wallLargeFrames[Type] = Main.wallLargeFrames[WallID.StoneSlab];
+public class SandstoneSlabWall : BaseWall {
+    public override Color? WallColorOnMap => new Color(108, 103, 72);
 
-            DustType = DustID.Sand;
+    public override void SetStaticDefaults() {
+        Main.wallHouse[Type] = true;
+        Main.wallLargeFrames[Type] = Main.wallLargeFrames[WallID.StoneSlab];
 
-            base.SetStaticDefaults();
-        }
+        DustType = DustID.Sand;
+
+        base.SetStaticDefaults();
     }
 }

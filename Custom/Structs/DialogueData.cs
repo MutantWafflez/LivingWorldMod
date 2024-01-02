@@ -1,40 +1,39 @@
-﻿using System.Linq;
-using Terraria.Localization;
-using Terraria.ModLoader;
+﻿using Terraria.Localization;
 
-namespace LivingWorldMod.Custom.Structs {
+namespace LivingWorldMod.Custom.Structs;
+
+/// <summary>
+/// Struct that holds data on a specific line of dialogue, including its translation key, weight (if applicable), and if
+/// any events are
+/// required for it to appear.
+/// </summary>
+public readonly struct DialogueData {
     /// <summary>
-    /// Struct that holds data on a specific line of dialogue, including its translation key, weight (if applicable), and if any events are
-    /// required for it to appear.
+    /// The actual text of the dialogue.
     /// </summary>
-    public readonly struct DialogueData {
-        /// <summary>
-        /// The actual text of the dialogue.
-        /// </summary>
-        public readonly LocalizedText dialogue;
+    public readonly LocalizedText dialogue;
 
-        /// <summary>
-        /// The weight of this dialogue, taken into account when selecting a dialogue line from a list.
-        /// </summary>
-        public readonly double weight;
+    /// <summary>
+    /// The weight of this dialogue, taken into account when selecting a dialogue line from a list.
+    /// </summary>
+    public readonly double weight;
 
-        /// <summary>
-        /// The priority of this dialogue. The highest priority dialogues will be chosen.
-        /// </summary>
-        public readonly int priority;
+    /// <summary>
+    /// The priority of this dialogue. The highest priority dialogues will be chosen.
+    /// </summary>
+    public readonly int priority;
 
-        /// <summary>
-        /// If any events are required for this line, this array holds them. Null if no events are required.
-        /// </summary>
-        public readonly string[] requiredEvents;
+    /// <summary>
+    /// If any events are required for this line, this array holds them. Null if no events are required.
+    /// </summary>
+    public readonly string[] requiredEvents;
 
-        public DialogueData(LocalizedText dialogue, double weight, int priority, string[] requiredEvents) {
-            this.dialogue = dialogue;
-            this.weight = weight;
-            this.priority = priority;
-            this.requiredEvents = requiredEvents;
-        }
-
-        public override string ToString() => $"Key: {dialogue.Key.Replace("Mods.LivingWorldMod.VillagerDialogue.", "...")} Weight: {weight} Events: {(requiredEvents is null ? "None" : string.Join(", ", requiredEvents))}";
+    public DialogueData(LocalizedText dialogue, double weight, int priority, string[] requiredEvents) {
+        this.dialogue = dialogue;
+        this.weight = weight;
+        this.priority = priority;
+        this.requiredEvents = requiredEvents;
     }
+
+    public override string ToString() => $"Key: {dialogue.Key.Replace("Mods.LivingWorldMod.VillagerDialogue.", "...")} Weight: {weight} Events: {(requiredEvents is null ? "None" : string.Join(", ", requiredEvents))}";
 }

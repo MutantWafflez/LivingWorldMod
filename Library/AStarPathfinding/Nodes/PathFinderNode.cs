@@ -13,18 +13,18 @@
 // Modified by MutantWafflez for usage within a Terraria XNA/FNA context.
 // All Source files in their original form can be found at https://www.codeproject.com/articles/15307/a-algorithm-implementation-in-c
 
-namespace LivingWorldMod.Library.AStarPathfinding.Nodes {
-    public struct PathFinderNode {
-        #region Variables Declaration
+namespace LivingWorldMod.Library.AStarPathfinding.Nodes;
 
-        public int F;
-        public int G;
-        public int H; // f = gone + heuristic
-        public int X;
-        public int Y;
-        public int PX; // Parent
-        public int PY;
+public struct PathFinderNode {
+    #region Variables Declaration
 
-        #endregion
-    }
+    public int F;
+    public int G;
+    public int H; // f = gone + heuristic
+    public int X;
+    public int Y;
+    public int PX; // Parent
+    public int PY;
+
+    #endregion
 }

@@ -13,13 +13,13 @@
 // Modified by MutantWafflez for usage within a Terraria XNA/FNA context.
 // All Source files in their original form can be found at https://www.codeproject.com/articles/15307/a-algorithm-implementation-in-c
 
-namespace LivingWorldMod.Library.AStarPathfinding {
-    public enum HeuristicFormula : byte {
-        Manhattan = 1,
-        MaxDXDY = 2,
-        DiagonalShortCut = 3,
-        Euclidean = 4,
-        EuclideanNoSQR = 5,
-        Custom1 = 6
-    }
+namespace LivingWorldMod.Library.AStarPathfinding;
+
+public enum HeuristicFormula : byte {
+    Manhattan = 1,
+    MaxDXDY = 2,
+    DiagonalShortCut = 3,
+    Euclidean = 4,
+    EuclideanNoSQR = 5,
+    Custom1 = 6
 }

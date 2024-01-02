@@ -3,54 +3,57 @@ using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Custom.Utilities {
+namespace LivingWorldMod.Custom.Utilities;
+
+/// <summary>
+/// Utilities class that holds methods that deal specifically within the realm of Tile Entities.
+/// </summary>
+public static class TileEntityUtils {
     /// <summary>
-    /// Utilities class that holds methods that deal specifically within the realm of Tile Entities.
+    /// Tries to find an entity of the specified Type. Returns whether or not it found the
+    /// entity or not.
     /// </summary>
-    public static class TileEntityUtils {
-        /// <summary>
-        /// Tries to find an entity of the specified Type. Returns whether or not it found the
-        /// entity or not.
-        /// </summary>
-        /// <typeparam name="T"> </typeparam>
-        /// <param name="x"> The x coordinate of the potential entity. </param>
-        /// <param name="y"> The y coordinate of the potential entity. </param>
-        /// <param name="entity"> The potential entity. </param>
-        public static bool TryFindModEntity<T>(int x, int y, out T entity) where T : ModTileEntity {
-            TileEntity.ByPosition.TryGetValue(new Point16(x, y), out TileEntity retrievedEntity);
+    /// <typeparam name="T"> </typeparam>
+    /// <param name="x"> The x coordinate of the potential entity. </param>
+    /// <param name="y"> The y coordinate of the potential entity. </param>
+    /// <param name="entity"> The potential entity. </param>
+    public static bool TryFindModEntity<T>(int x, int y, out T entity)
+        where T : ModTileEntity {
+        TileEntity.ByPosition.TryGetValue(new Point16(x, y), out TileEntity retrievedEntity);
 
-            if (retrievedEntity is T castEntity) {
-                entity = castEntity;
-                return true;
-            }
-
-            entity = null;
-            return false;
+        if (retrievedEntity is T castEntity) {
+            entity = castEntity;
+            return true;
         }
 
-        /// <summary>
-        /// Tries to find an entity of the specified Type. Returns whether or not it found the
-        /// entity or not.
-        /// </summary>
-        /// <typeparam name="T"> </typeparam>
-        /// <param name="ID"> The ID of the potential entity. </param>
-        /// <param name="entity"> The potential entity. </param>
-        public static bool TryFindModEntity<T>(int ID, out T entity) where T : ModTileEntity {
-            TileEntity retrievedEntity = TileEntity.ByID[ID];
-
-            if (retrievedEntity is T castEntity) {
-                entity = castEntity;
-                return true;
-            }
-
-            entity = null;
-            return false;
-        }
-
-        /// <summary>
-        /// Gets and returns all currently living tile entities of the specified type.
-        /// </summary>
-        /// <typeparam name="T"> The type of ModTileEntity you want to find all living entities of. </typeparam>
-        public static IEnumerable<T> GetAllEntityOfType<T>() where T : ModTileEntity => TileEntity.ByID.Values.OfType<T>();
+        entity = null;
+        return false;
     }
+
+    /// <summary>
+    /// Tries to find an entity of the specified Type. Returns whether or not it found the
+    /// entity or not.
+    /// </summary>
+    /// <typeparam name="T"> </typeparam>
+    /// <param name="ID"> The ID of the potential entity. </param>
+    /// <param name="entity"> The potential entity. </param>
+    public static bool TryFindModEntity<T>(int ID, out T entity)
+        where T : ModTileEntity {
+        TileEntity retrievedEntity = TileEntity.ByID[ID];
+
+        if (retrievedEntity is T castEntity) {
+            entity = castEntity;
+            return true;
+        }
+
+        entity = null;
+        return false;
+    }
+
+    /// <summary>
+    /// Gets and returns all currently living tile entities of the specified type.
+    /// </summary>
+    /// <typeparam name="T"> The type of ModTileEntity you want to find all living entities of. </typeparam>
+    public static IEnumerable<T> GetAllEntityOfType<T>()
+        where T : ModTileEntity => TileEntity.ByID.Values.OfType<T>();
 }

@@ -1,5 +1,5 @@
-﻿namespace LivingWorldMod.Custom.Enums {
-    public enum VillagerType {
-        Harpy
-    }
+﻿namespace LivingWorldMod.Custom.Enums;
+
+public enum VillagerType {
+    Harpy
 }

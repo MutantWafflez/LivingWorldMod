@@ -2,18 +2,18 @@
 using Terraria;
 using Terraria.ID;
 
-namespace LivingWorldMod.Content.Walls.Fences {
-    public class SkywareFenceWall : BaseWall {
-        public override Color? WallColorOnMap => Color.LightBlue;
+namespace LivingWorldMod.Content.Walls.Fences;
 
-        public override void SetStaticDefaults() {
-            Main.wallHouse[Type] = true;
-            WallID.Sets.AllowsWind[Type] = true;
-            WallID.Sets.Transparent[Type] = true;
+public class SkywareFenceWall : BaseWall {
+    public override Color? WallColorOnMap => Color.LightBlue;
 
-            DustType = DustID.t_LivingWood;
+    public override void SetStaticDefaults() {
+        Main.wallHouse[Type] = true;
+        WallID.Sets.AllowsWind[Type] = true;
+        WallID.Sets.Transparent[Type] = true;
 
-            base.SetStaticDefaults();
-        }
+        DustType = DustID.t_LivingWood;
+
+        base.SetStaticDefaults();
     }
 }

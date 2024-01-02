@@ -15,17 +15,17 @@
 
 using System.Runtime.InteropServices;
 
-namespace LivingWorldMod.Library.AStarPathfinding.Nodes {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct InternalPathFinderNode {
-        #region Variables Declaration
+namespace LivingWorldMod.Library.AStarPathfinding.Nodes;
 
-        public int F; // f = gone + heuristic
-        public int G;
-        public ushort PX; // Parent
-        public ushort PY;
-        public byte Status;
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct InternalPathFinderNode {
+    #region Variables Declaration
 
-        #endregion
-    }
+    public int F; // f = gone + heuristic
+    public int G;
+    public ushort PX; // Parent
+    public ushort PY;
+    public byte Status;
+
+    #endregion
 }

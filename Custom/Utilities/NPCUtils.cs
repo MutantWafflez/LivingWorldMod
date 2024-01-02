@@ -10,115 +10,115 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
-namespace LivingWorldMod.Custom.Utilities {
+namespace LivingWorldMod.Custom.Utilities;
+
+/// <summary>
+/// Class that handles all utility functions for NPCs.
+/// </summary>
+public static class NPCUtils {
     /// <summary>
-    /// Class that handles all utility functions for NPCs.
+    /// Returns the price multiplier that will affect shop prices depending on the status of a
+    /// villager's relationship with the players.
     /// </summary>
-    public static class NPCUtils {
-        /// <summary>
-        /// Returns the price multiplier that will affect shop prices depending on the status of a
-        /// villager's relationship with the players.
-        /// </summary>
-        public static float GetPriceMultiplierFromRep(Villager villager) {
-            if (villager.RelationshipStatus == VillagerRelationship.Neutral) {
-                return 1f;
+    public static float GetPriceMultiplierFromRep(Villager villager) {
+        if (villager.RelationshipStatus == VillagerRelationship.Neutral) {
+            return 1f;
+        }
+
+        ReputationThresholdData thresholds = ReputationSystem.Instance.villageThresholdData[villager.VillagerType];
+
+        float reputationValue = ReputationSystem.Instance.GetNumericVillageReputation(villager.VillagerType);
+        float centerPoint = (thresholds.likeThreshold - thresholds.dislikeThreshold) / 2f;
+
+        return MathHelper.Clamp(1 - reputationValue / (ReputationSystem.VillageReputationConstraint - centerPoint) / 2f, 0.67f, 1.67f);
+    }
+
+    /// <summary>
+    /// Returns the count of all defined villager types as defined by the <seealso cref="VillagerType"/> enum.
+    /// </summary>
+    /// <returns></returns>
+    public static int GetTotalVillagerTypeCount() => Enum.GetValues<VillagerType>().Length;
+
+    /// <summary>
+    /// Gets &amp; returns the respective NPC for the given villager type passed in.
+    /// </summary>
+    /// <param name="type"> The type of villager you want to NPC equivalent of. </param>
+    public static int VillagerTypeToNPCType(VillagerType type) {
+        return type switch {
+            VillagerType.Harpy => ModContent.NPCType<HarpyVillager>(),
+            _ => -1
+        };
+    }
+
+    /// <summary>
+    /// Gets &amp; returns the respective Respawn Item for the given villager type passed in.
+    /// </summary>
+    /// <param name="type"> The type of villager you want to Respawn Item equivalent of. </param>
+    public static int VillagerTypeToRespawnItemType(VillagerType type) {
+        return type switch {
+            VillagerType.Harpy => ModContent.ItemType<HarpyEgg>(),
+            _ => -1
+        };
+    }
+
+    /// <summary>
+    /// Returns whether or not the specified entity is under a roof or not.
+    /// </summary>
+    /// <param name="entity"> The entity in question. </param>
+    /// <param name="maxRoofHeight"> The maximum height from the top of the entity that can be considered to be a "roof".  </param>
+    /// <returns></returns>
+    public static bool IsEntityUnderRoof(Entity entity, int maxRoofHeight = 32) {
+        for (int i = 0; i < maxRoofHeight; i++) {
+            if (!WorldGen.InWorld((int)((entity.Center.X + entity.direction) / 16), (int)(entity.Center.Y / 16) - i)) {
+                return false;
             }
 
-            ReputationThresholdData thresholds = ReputationSystem.Instance.villageThresholdData[villager.VillagerType];
-
-            float reputationValue = ReputationSystem.Instance.GetNumericVillageReputation(villager.VillagerType);
-            float centerPoint = (thresholds.likeThreshold - thresholds.dislikeThreshold) / 2f;
-
-            return MathHelper.Clamp(1 - reputationValue / (ReputationSystem.VillageReputationConstraint - centerPoint) / 2f, 0.67f, 1.67f);
-        }
-
-        /// <summary>
-        /// Returns the count of all defined villager types as defined by the <seealso cref="VillagerType"/> enum.
-        /// </summary>
-        /// <returns></returns>
-        public static int GetTotalVillagerTypeCount() => Enum.GetValues<VillagerType>().Length;
-
-        /// <summary>
-        /// Gets &amp; returns the respective NPC for the given villager type passed in.
-        /// </summary>
-        /// <param name="type"> The type of villager you want to NPC equivalent of. </param>
-        public static int VillagerTypeToNPCType(VillagerType type) {
-            return type switch {
-                VillagerType.Harpy => ModContent.NPCType<HarpyVillager>(),
-                _ => -1
-            };
-        }
-
-        /// <summary>
-        /// Gets &amp; returns the respective Respawn Item for the given villager type passed in.
-        /// </summary>
-        /// <param name="type"> The type of villager you want to Respawn Item equivalent of. </param>
-        public static int VillagerTypeToRespawnItemType(VillagerType type) {
-            return type switch {
-                VillagerType.Harpy => ModContent.ItemType<HarpyEgg>(),
-                _ => -1
-            };
-        }
-
-        /// <summary>
-        /// Returns whether or not the specified entity is under a roof or not.
-        /// </summary>
-        /// <param name="entity"> The entity in question. </param>
-        /// <param name="maxRoofHeight"> The maximum height from the top of the entity that can be considered to be a "roof".  </param>
-        /// <returns></returns>
-        public static bool IsEntityUnderRoof(Entity entity, int maxRoofHeight = 32) {
-            for (int i = 0; i < maxRoofHeight; i++) {
-                if (!WorldGen.InWorld((int)((entity.Center.X + entity.direction) / 16), (int)(entity.Center.Y / 16) - i)) {
-                    return false;
-                }
-
-                Tile tile = Framing.GetTileSafely(entity.Center.ToTileCoordinates16() + new Point16(0, -i));
-                if (tile.HasTile && Main.tileSolid[tile.TileType]) {
-                    return true;
-                }
+            Tile tile = Framing.GetTileSafely(entity.Center.ToTileCoordinates16() + new Point16(0, -i));
+            if (tile.HasTile && Main.tileSolid[tile.TileType]) {
+                return true;
             }
-
-            return false;
         }
 
-        /// <summary>
-        /// Returns a precise version of the rectangle bounding box of this npc.
-        /// </summary>
-        public static PreciseRectangle GetPreciseRectangle(this NPC npc) => new(npc.position, npc.Size);
+        return false;
+    }
 
-        /// <summary>
-        /// Returns the first NPC that meets the passed in function requirement.
-        /// </summary>
-        /// <remarks>
-        /// Note that <see cref="NPC.active"/> is checked by default, along-side the predicate.
-        /// </remarks>
-        public static NPC GetFirstNPC(Predicate<NPC> npcPredicate) {
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (npc.active && npcPredicate.Invoke(npc)) {
-                    return npc;
-                }
+    /// <summary>
+    /// Returns a precise version of the rectangle bounding box of this npc.
+    /// </summary>
+    public static PreciseRectangle GetPreciseRectangle(this NPC npc) => new(npc.position, npc.Size);
+
+    /// <summary>
+    /// Returns the first NPC that meets the passed in function requirement.
+    /// </summary>
+    /// <remarks>
+    /// Note that <see cref="NPC.active"/> is checked by default, along-side the predicate.
+    /// </remarks>
+    public static NPC GetFirstNPC(Predicate<NPC> npcPredicate) {
+        for (int i = 0; i < Main.maxNPCs; i++) {
+            NPC npc = Main.npc[i];
+            if (npc.active && npcPredicate.Invoke(npc)) {
+                return npc;
             }
-
-            return null;
         }
 
-        /// <summary>
-        /// Returns all NPCs that meet the passed in function requirement.
-        /// </summary>
-        /// <remarks>
-        /// Note that <see cref="NPC.active"/> is checked by default, along-side the predicate.
-        /// </remarks>
-        public static List<NPC> GetAllNPCs(Predicate<NPC> npcPredicate) {
-            List<NPC> npcList = new();
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (npc.active && npcPredicate.Invoke(npc)) {
-                    npcList.Add(npc);
-                }
+        return null;
+    }
+
+    /// <summary>
+    /// Returns all NPCs that meet the passed in function requirement.
+    /// </summary>
+    /// <remarks>
+    /// Note that <see cref="NPC.active"/> is checked by default, along-side the predicate.
+    /// </remarks>
+    public static List<NPC> GetAllNPCs(Predicate<NPC> npcPredicate) {
+        List<NPC> npcList = new();
+        for (int i = 0; i < Main.maxNPCs; i++) {
+            NPC npc = Main.npc[i];
+            if (npc.active && npcPredicate.Invoke(npc)) {
+                npcList.Add(npc);
             }
-
-            return npcList;
         }
+
+        return npcList;
     }
 }
