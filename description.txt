@@ -8,7 +8,7 @@ Currently implemented features:
 - Harpy Village w/ unique shop system
 - Waystones (pylons that spawn in the wild)
 - Several new sky related items (furniture, pets)
-- Town NPC mood system, sleep system, and inter-NPC chats
+- Town NPC mood system, sleep system, and inter-NPC chats (CURRENTLY DISABLED)
 
 Features in development:
 - Town NPC Revitalization (Part 2)
