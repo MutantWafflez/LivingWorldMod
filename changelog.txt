@@ -1,5 +1,5 @@
-INDEV RELEASE v0.3.0.1 [Revitalization Hotfix #1] (January 1st, 2024)
+INDEV RELEASE v0.3.0.2 [Revitalization Hotfix #2] (January 2nd, 2024)
 Changes:
-* Added some additional logging for potential error handling
+* A *ton* of internal code re-formatting; no effect on gameplay but I'd thought I mention it
 Fixes:
-* Tentatively fixed memory access error
+* Fixed crash that would occur when a mod with a Town NPC loaded after LWM
