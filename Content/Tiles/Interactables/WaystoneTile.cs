@@ -75,7 +75,7 @@ public class WaystoneTile : BasePylon {
     public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
     public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
-        Point16 topLeft = Utilities.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
+        Point topLeft = Utilities.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
 
         if (Utilities.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity foundEntity) && foundEntity.isActivated) {
             frameYOffset += AnimationFrameHeight;
@@ -87,7 +87,7 @@ public class WaystoneTile : BasePylon {
 
     public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) {
         // Lightly glow while activated
-        Point16 topLeft = Utilities.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
+        Point topLeft = Utilities.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
 
         if (Utilities.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity foundEntity) && foundEntity.isActivated) {
             Color waystoneColor = foundEntity.WaystoneColor;
@@ -103,7 +103,7 @@ public class WaystoneTile : BasePylon {
     }
 
     public override bool RightClick(int i, int j) {
-        Point16 topLeft = Utilities.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
+        Point topLeft = Utilities.GetTopLeftOfMultiTile(Framing.GetTileSafely(i, j), i, j, _fullTileWidth);
 
         if (!Utilities.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity entity) || entity.isActivated || entity.DoingActivationVFX) {
             return false;

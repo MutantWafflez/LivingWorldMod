@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using Microsoft.Xna.Framework;
-using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using Terraria.ObjectData;
 
@@ -61,7 +60,7 @@ public static partial class Utilities {
     /// Assumes multi-tile sprite uses 16x16 for each tile frame, with 2 pixels worth of padding.
     /// </param>
     //TODO: Replace all references to GetCornerOfMultiTile and delete this method
-    public static Point16 GetTopLeftOfMultiTile(Tile tile, int x, int y, int multiTileWidth) => GetCornerOfMultiTile(tile, x, y, CornerType.TopLeft).ToVector2().ToPoint16();
+    public static Point GetTopLeftOfMultiTile(Tile tile, int x, int y, int multiTileWidth) => GetCornerOfMultiTile(tile, x, y, CornerType.TopLeft);
 
     public static Point GetCornerOfMultiTile(Tile tile, int x, int y, CornerType corner) {
         TileObjectData data = TileObjectData.GetTileData(tile);

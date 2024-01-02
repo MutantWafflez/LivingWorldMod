@@ -308,7 +308,7 @@ public class HarpyVillage : WorldGenFeature {
                         continue;
                     }
 
-                    Point16 topLeft = Utilities.GetTopLeftOfMultiTile(currentTile, currentPos.X, currentPos.Y, VillageShrineTile.FullTileWidth);
+                    Point topLeft = Utilities.GetTopLeftOfMultiTile(currentTile, currentPos.X, currentPos.Y, VillageShrineTile.FullTileWidth);
 
                     ModContent.GetInstance<VillageShrineEntity>().Place(topLeft.X, topLeft.Y);
                 }

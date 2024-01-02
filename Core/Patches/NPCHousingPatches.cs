@@ -451,7 +451,7 @@ public class NPCHousingPatches : LoadablePatch {
                 for (int j = startY + 2; j < endY + 2; j++) {
                     Tile tile = Framing.GetTileSafely(i, j);
                     if (tile is { HasTile: true, TileType: TileID.Beds }) {
-                        HouseBedPosition = Utilities.GetTopLeftOfMultiTile(tile, i, j, 4).ToPoint();
+                        HouseBedPosition = Utilities.GetTopLeftOfMultiTile(tile, i, j, 4);
                         return;
                     }
                 }
