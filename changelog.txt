@@ -1,10 +1,5 @@
-INDEV RELEASE v0.3.0 [Town NPC Revitilization Part 1] (January 1st, 2024)
-Additions:
-+ Added two new tapestries, sold by the Harpy Villagers
-+ Added over 5,000 new Harpy Villager sprite variations
-+ Town NPC path-finding, "Mood" system, conversation overhaul (between Town NPCs), and sleep system
-+ Night-time parties that occur in tandem with Lantern Nights
+INDEV RELEASE v0.3.0.1 [Revitalization Hotfix #1] (January 1st, 2024)
 Changes:
-* Several furniture tiles have new sprites
-	-> Village Shrines are now 5x3 instead of 5x4 tiles as a result of the re-sprite
-* Town NPCs now get a mood/happiness boost during a party
+* Added some additional logging for potential error handling
+Fixes:
+* Tentatively fixed memory access error
