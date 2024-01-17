@@ -94,7 +94,7 @@ public class HarpyVillage : WorldGenFeature {
             //Clear village zone
             for (int i = villageZone.Left; i < villageZone.Right; i++) {
                 for (int j = villageZone.Top; j < villageZone.Bottom; j++) {
-                    Utilities.PurgeStructure(i, j);
+                    LWMUtils.PurgeStructure(i, j);
                 }
             }
         }
@@ -199,7 +199,7 @@ public class HarpyVillage : WorldGenFeature {
 
             possibleHouses.Remove(selectedHouseType);
 
-            StructureData groundHouseData = Utilities.GetStructureFromFile(LWM.StructurePath + $"/Villages/Harpy/{selectedHouseType}.struct");
+            StructureData groundHouseData = LWMUtils.GetStructureFromFile(LWM.StructurePath + $"/Villages/Harpy/{selectedHouseType}.struct");
 
             for (int xOffset = leftOffset * (1 - i); xOffset <= 0 + i * Math.Abs(leftOffset); xOffset++) {
                 if (WorldUtils.Find(new Point(originPoint.X + xOffset, originPoint.Y), Searches.Chain(new Searches.Up(25), new Conditions.IsTile(TileID.Grass).AreaAnd(groundHouseData.structureWidth, 1)), out Point groundHouseResult)) {
@@ -212,7 +212,7 @@ public class HarpyVillage : WorldGenFeature {
             if (possiblePlacementPoints.Any()) {
                 Point middlePlacement = possiblePlacementPoints.ElementAt(possiblePlacementPoints.Count / 2);
 
-                Utilities.GenerateStructure(groundHouseData, middlePlacement.X, middlePlacement.Y - groundHouseData.structureHeight);
+                LWMUtils.GenerateStructure(groundHouseData, middlePlacement.X, middlePlacement.Y - groundHouseData.structureHeight);
             }
         }
 
@@ -232,11 +232,11 @@ public class HarpyVillage : WorldGenFeature {
         ));
 
         //Place "church" building
-        StructureData churchBuildingData = Utilities.GetStructureFromFile(LWM.StructurePath + $"/Villages/Harpy/ChurchBuilding{WorldGen.genRand.Next(2)}.struct");
+        StructureData churchBuildingData = LWMUtils.GetStructureFromFile(LWM.StructurePath + $"/Villages/Harpy/ChurchBuilding{WorldGen.genRand.Next(2)}.struct");
 
         if (WorldUtils.Find(new Point(originPoint.X - churchBuildingData.structureWidth / 2, originPoint.Y + upOffset),
                 Searches.Chain(new Searches.Up(75), new IsAir().AreaAnd(churchBuildingData.structureWidth, churchBuildingData.structureHeight)), out Point churchResult)) {
-            Utilities.GenerateStructure(churchBuildingData, churchResult.X, churchResult.Y);
+            LWMUtils.GenerateStructure(churchBuildingData, churchResult.X, churchResult.Y);
         }
 
         //"High Rise" houses are not allowed to generate on the mini islands, so they are removed before the mini islands are generated
@@ -249,7 +249,7 @@ public class HarpyVillage : WorldGenFeature {
                 string selectedHouseType = WorldGen.genRand.Next(possibleHouses);
                 possibleHouses.Remove(selectedHouseType);
 
-                StructureData cloudHouseData = Utilities.GetStructureFromFile(LWM.StructurePath + $"/Villages/Harpy/{selectedHouseType}.struct");
+                StructureData cloudHouseData = LWMUtils.GetStructureFromFile(LWM.StructurePath + $"/Villages/Harpy/{selectedHouseType}.struct");
                 Point miniIslandOrigin = new(originPoint.X + (int)(leftOffset * i * (j == 0 ? 1.15f : 0.775f)), originPoint.Y + upOffset * (int)(j == 0 ? 2f : 6.25f));
 
                 float miniYScale = 0.34f;
@@ -289,7 +289,7 @@ public class HarpyVillage : WorldGenFeature {
                 ));
 
                 //Generate building
-                Utilities.GenerateStructure(cloudHouseData,
+                LWMUtils.GenerateStructure(cloudHouseData,
                     miniIslandOrigin.X - cloudHouseData.structureWidth / 2,
                     miniIslandOrigin.Y + miniIslandData.GetData().Min(point => point.Y) - cloudHouseData.structureHeight);
             }
@@ -308,7 +308,7 @@ public class HarpyVillage : WorldGenFeature {
                         continue;
                     }
 
-                    Point topLeft = Utilities.GetCornerOfMultiTile(currentTile, currentPos.X, currentPos.Y, Utilities.CornerType.TopLeft);
+                    Point topLeft = LWMUtils.GetCornerOfMultiTile(currentTile, currentPos.X, currentPos.Y, LWMUtils.CornerType.TopLeft);
 
                     ModContent.GetInstance<VillageShrineEntity>().Place(topLeft.X, topLeft.Y);
                 }

@@ -3,7 +3,7 @@
 namespace LivingWorldMod.Custom.Utilities;
 
 // Utilities class which holds methods that deals with localization.
-public static partial class Utilities {
+public static partial class LWMUtils {
     /// <summary>
     /// Shortcut for getting LivingWorldMod localization strings, where the "key" is the
     /// direction within the Mods.LivingWorldMod. For example, to get a Villager name

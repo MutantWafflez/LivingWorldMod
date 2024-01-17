@@ -64,7 +64,7 @@ public class UIHousingVillagerDisplay : UIElement {
         }
 
         Main.LocalPlayer.mouseInterface = true;
-        Main.instance.MouseText(IsAllowed ? myVillager.NPC.GivenName : Utilities.GetLWMTextValue("UI.VillagerHousing.VillagerTypeLocked", myVillager.VillagerType.ToString()));
+        Main.instance.MouseText(IsAllowed ? myVillager.NPC.GivenName : LWMUtils.GetLWMTextValue("UI.VillagerHousing.VillagerTypeLocked", myVillager.VillagerType.ToString()));
     }
 
     protected override void DrawChildren(SpriteBatch spriteBatch) {

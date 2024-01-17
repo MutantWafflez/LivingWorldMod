@@ -25,7 +25,7 @@ public class Waystones : WorldGenFeature {
         progress.Set(0f);
 
         // How many times we will cut up the world when searching for places to put Waystones
-        float worldDivisions = Utilities.CurrentWorldSize switch {
+        float worldDivisions = LWMUtils.CurrentWorldSize switch {
             WorldSize.Small => 500f,
             WorldSize.Medium => 1000f,
             WorldSize.Large => 1500f,
@@ -33,7 +33,7 @@ public class Waystones : WorldGenFeature {
             _ => 50f
         };
 
-        int minTilesBetweenWaystones = Utilities.CurrentWorldSize switch {
+        int minTilesBetweenWaystones = LWMUtils.CurrentWorldSize switch {
             WorldSize.Small => 250,
             WorldSize.Medium => 325,
             WorldSize.Large => 375,
@@ -138,7 +138,7 @@ public class Waystones : WorldGenFeature {
                 }
 
                 //Finally, for the last check, make sure it isn't too close to any other Waystones
-                foreach (WaystoneEntity entity in Utilities.GetAllEntityOfType<WaystoneEntity>()) {
+                foreach (WaystoneEntity entity in LWMUtils.GetAllEntityOfType<WaystoneEntity>()) {
                     if (entity.Position.ToVector2().Distance(searchOrigin.ToVector2()) < minTilesBetweenWaystones) {
                         goto ContinueLoop;
                     }

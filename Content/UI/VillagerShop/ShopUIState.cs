@@ -340,7 +340,7 @@ public class ShopUIState : UIState {
     private void PopulateShopList() {
         shopList.Clear();
 
-        float priceMult = Utilities.GetPriceMultiplierFromRep(currentVillager);
+        float priceMult = LWMUtils.GetPriceMultiplierFromRep(currentVillager);
 
         foreach (ShopItem item in currentVillager.shopInventory) {
             UIShopItem element = new(item,

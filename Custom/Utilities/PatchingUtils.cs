@@ -5,7 +5,7 @@ using MonoMod.Cil;
 namespace LivingWorldMod.Custom.Utilities;
 
 // Utilities class that holds methods that deals with patching, whether it be IL or detouring
-public static partial class Utilities {
+public static partial class LWMUtils {
     /// <summary>
     /// Exception that designates the given IL search parameters did not yield any found instruction.
     /// </summary>

@@ -9,7 +9,7 @@ namespace LivingWorldMod.Custom.Utilities;
 /// <summary>
 /// Utilities class that deals with the Tile class and tiles in general.
 /// </summary>
-public static partial class Utilities {
+public static partial class LWMUtils {
     public enum CornerType : byte {
         TopLeft,
         TopRight,

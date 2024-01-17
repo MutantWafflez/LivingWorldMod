@@ -16,7 +16,7 @@ public class DisableWaystonesCommand : DebugCommand {
     public override CommandType Type => CommandType.World;
 
     public override void Action(CommandCaller caller, string input, string[] args) {
-        foreach (WaystoneEntity entity in Utilities.GetAllEntityOfType<WaystoneEntity>()) {
+        foreach (WaystoneEntity entity in LWMUtils.GetAllEntityOfType<WaystoneEntity>()) {
             entity.isActivated = false;
             if (Main.netMode == NetmodeID.Server) {
                 NetMessage.SendData(MessageID.TileEntitySharing, number: entity.ID, number2: entity.Position.X, number3: entity.Position.Y);

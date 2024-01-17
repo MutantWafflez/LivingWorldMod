@@ -1,6 +1,7 @@
 ﻿using LivingWorldMod.Common.GlobalNPCs;
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Content.TownNPCAIStates;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
@@ -98,11 +99,11 @@ public class TownNPCHousingModule : TownNPCModule {
         Tile restTile = Main.tile[finalRestPos.X, finalRestPos.Y];
         if (TileID.Sets.CanBeSleptIn[restTile.TileType]) {
             PlayerSleepingHelper.GetSleepingTargetInfo(finalRestPos.X, finalRestPos.Y, out int targetDirection, out _, out _);
-            finalRestPos = Utilities.Utilities.GetCornerOfMultiTile(restTile, finalRestPos.X, finalRestPos.Y, targetDirection == -1 ? Utilities.Utilities.CornerType.BottomRight : Utilities.Utilities.CornerType.BottomLeft);
+            finalRestPos = LWMUtils.GetCornerOfMultiTile(restTile, finalRestPos.X, finalRestPos.Y, targetDirection == -1 ? LWMUtils.CornerType.BottomRight : LWMUtils.CornerType.BottomLeft);
             finalRestPos.X += targetDirection;
         }
         else {
-            finalRestPos = Utilities.Utilities.GetCornerOfMultiTile(restTile, finalRestPos.X, finalRestPos.Y, Utilities.Utilities.CornerType.BottomLeft);
+            finalRestPos = LWMUtils.GetCornerOfMultiTile(restTile, finalRestPos.X, finalRestPos.Y, LWMUtils.CornerType.BottomLeft);
         }
         finalRestPos.Y++;
 

@@ -1,7 +1,7 @@
 ﻿namespace LivingWorldMod.Custom.Utilities;
 
 // Utilities that help with unit conversions.
-public static partial class Utilities {
+public static partial class LWMUtils {
     /// <summary>
     /// Ticks in a real world second.
     /// </summary>

@@ -70,9 +70,9 @@ public class WaystoneTile : BasePylon {
     public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
     public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
-        Point topLeft = Utilities.GetCornerOfMultiTile(Framing.GetTileSafely(i, j), i, j, Utilities.CornerType.TopLeft);
+        Point topLeft = LWMUtils.GetCornerOfMultiTile(Framing.GetTileSafely(i, j), i, j, LWMUtils.CornerType.TopLeft);
 
-        if (Utilities.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity foundEntity) && foundEntity.isActivated) {
+        if (LWMUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity foundEntity) && foundEntity.isActivated) {
             frameYOffset += AnimationFrameHeight;
         }
     }
@@ -82,9 +82,9 @@ public class WaystoneTile : BasePylon {
 
     public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) {
         // Lightly glow while activated
-        Point topLeft = Utilities.GetCornerOfMultiTile(Framing.GetTileSafely(i, j), i, j, Utilities.CornerType.TopLeft);
+        Point topLeft = LWMUtils.GetCornerOfMultiTile(Framing.GetTileSafely(i, j), i, j, LWMUtils.CornerType.TopLeft);
 
-        if (Utilities.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity foundEntity) && foundEntity.isActivated) {
+        if (LWMUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity foundEntity) && foundEntity.isActivated) {
             Color waystoneColor = foundEntity.WaystoneColor;
 
             r = waystoneColor.R / 255f;
@@ -98,9 +98,9 @@ public class WaystoneTile : BasePylon {
     }
 
     public override bool RightClick(int i, int j) {
-        Point topLeft = Utilities.GetCornerOfMultiTile(Framing.GetTileSafely(i, j), i, j, Utilities.CornerType.TopLeft);
+        Point topLeft = LWMUtils.GetCornerOfMultiTile(Framing.GetTileSafely(i, j), i, j, LWMUtils.CornerType.TopLeft);
 
-        if (!Utilities.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity entity) || entity.isActivated || entity.DoingActivationVFX) {
+        if (!LWMUtils.TryFindModEntity(topLeft.X, topLeft.Y, out WaystoneEntity entity) || entity.isActivated || entity.DoingActivationVFX) {
             return false;
         }
 
@@ -126,7 +126,7 @@ public class WaystoneTile : BasePylon {
     public override bool CanPlacePylon() => true;
 
     public override void DrawMapIcon(ref MapOverlayDrawContext context, ref string mouseOverText, TeleportPylonInfo pylonInfo, bool isNearPylon, Color drawColor, float deselectedScale, float selectedScale) {
-        if (!Utilities.TryFindModEntity(pylonInfo.PositionInTiles.X, pylonInfo.PositionInTiles.Y, out WaystoneEntity foundEntity) || !foundEntity.isActivated) {
+        if (!LWMUtils.TryFindModEntity(pylonInfo.PositionInTiles.X, pylonInfo.PositionInTiles.Y, out WaystoneEntity foundEntity) || !foundEntity.isActivated) {
             return;
         }
 

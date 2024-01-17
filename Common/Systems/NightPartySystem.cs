@@ -38,7 +38,7 @@ public sealed class NightPartySystem : BaseModSystem<NightPartySystem> {
     private void StartNightParty() {
         Party.GenuineParty = true;
         Party.PartyDaysOnCooldown = Main.rand.Next(1, 3);
-        Party.CelebratingNPCs = Utilities.GetAllNPCs(Party.CanNPCParty).Select(npc => npc.whoAmI).ToList();
+        Party.CelebratingNPCs = LWMUtils.GetAllNPCs(Party.CanNPCParty).Select(npc => npc.whoAmI).ToList();
         NPC.freeCake = true;
 
         Color partyColor = new(255, 0, 160);

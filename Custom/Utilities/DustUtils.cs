@@ -3,7 +3,7 @@
 namespace LivingWorldMod.Custom.Utilities;
 
 // Utilities class that holds methods which deal with specifically dust.
-public static partial class Utilities {
+public static partial class LWMUtils {
     /// <summary>
     /// Creates a circle of dust at the specified origin with the passed in radius, dust, and
     /// optional angle change. Radius is in terms of pixels.

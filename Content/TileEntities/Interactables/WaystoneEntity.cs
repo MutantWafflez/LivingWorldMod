@@ -62,7 +62,7 @@ public class WaystoneEntity : TEModdedPylon {
             return -1;
         }
 
-        if (ManualPlace(topLeftX, topLeftY, (WaystoneType)style) && Utilities.TryFindModEntity(topLeftX, topLeftY, out WaystoneEntity entity)) {
+        if (ManualPlace(topLeftX, topLeftY, (WaystoneType)style) && LWMUtils.TryFindModEntity(topLeftX, topLeftY, out WaystoneEntity entity)) {
             return entity.ID;
         }
 
@@ -124,7 +124,7 @@ public class WaystoneEntity : TEModdedPylon {
 
         // Then, place tile entity and assign its type
         Place(i, j);
-        if (Utilities.TryFindModEntity(i, j, out WaystoneEntity retrievedEntity)) {
+        if (LWMUtils.TryFindModEntity(i, j, out WaystoneEntity retrievedEntity)) {
             retrievedEntity.waystoneType = type;
             retrievedEntity.isActivated = isActivated;
             return true;

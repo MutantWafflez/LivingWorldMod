@@ -23,7 +23,7 @@ public class VillageShrineUISystem : UISystem<VillageShrineUIState> {
             dust.noGravity = true;
             dust.scale = 1.25f;
 
-            Utilities.CreateCircle(dust.position, VillageShrineEntity.DefaultVillageRadius, dust);
+            LWMUtils.CreateCircle(dust.position, VillageShrineEntity.DefaultVillageRadius, dust);
         }
     }
 

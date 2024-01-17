@@ -92,9 +92,9 @@ public class VillageShrineTile : BasePylon {
     }
 
     public override bool RightClick(int i, int j) {
-        Point topLeft = Utilities.GetCornerOfMultiTile(Framing.GetTileSafely(i, j), i, j, Utilities.CornerType.TopLeft);
+        Point topLeft = LWMUtils.GetCornerOfMultiTile(Framing.GetTileSafely(i, j), i, j, LWMUtils.CornerType.TopLeft);
 
-        if (!Utilities.TryFindModEntity(topLeft.X, topLeft.Y, out VillageShrineEntity entity)) {
+        if (!LWMUtils.TryFindModEntity(topLeft.X, topLeft.Y, out VillageShrineEntity entity)) {
             return false;
         }
 
@@ -105,7 +105,7 @@ public class VillageShrineTile : BasePylon {
 
     public override bool ValidTeleportCheck_NPCCount(TeleportPylonInfo pylonInfo, int defaultNecessaryNPCCount) {
         //There must be at least 2 villagers within the village zone (by default, granted that defaulNecessaryNPCCount doesn't change) in order to teleport.
-        if (Utilities.TryFindModEntity(pylonInfo.PositionInTiles.X, pylonInfo.PositionInTiles.Y, out VillageShrineEntity entity)) {
+        if (LWMUtils.TryFindModEntity(pylonInfo.PositionInTiles.X, pylonInfo.PositionInTiles.Y, out VillageShrineEntity entity)) {
             return entity.CurrentHousedVillagersCount >= defaultNecessaryNPCCount;
         }
 
@@ -115,7 +115,7 @@ public class VillageShrineTile : BasePylon {
     public override bool CanPlacePylon() => true;
 
     public override void DrawMapIcon(ref MapOverlayDrawContext context, ref string mouseOverText, TeleportPylonInfo pylonInfo, bool isNearPylon, Color drawColor, float deselectedScale, float selectedScale) {
-        if (!Utilities.TryFindModEntity(pylonInfo.PositionInTiles.X, pylonInfo.PositionInTiles.Y, out VillageShrineEntity foundEntity) || !IsShrineVisibleOnMap(foundEntity.shrineType)) {
+        if (!LWMUtils.TryFindModEntity(pylonInfo.PositionInTiles.X, pylonInfo.PositionInTiles.Y, out VillageShrineEntity foundEntity) || !IsShrineVisibleOnMap(foundEntity.shrineType)) {
             return;
         }
 

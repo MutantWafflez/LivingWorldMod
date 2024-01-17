@@ -64,7 +64,7 @@ public class RoastMarshmallowActivity : TownNPCActivity {
                     continue;
                 }
 
-                Point bottomLeftOfCampfire = Utilities.GetCornerOfMultiTile(tile, i, j, Utilities.CornerType.BottomLeft);
+                Point bottomLeftOfCampfire = LWMUtils.GetCornerOfMultiTile(tile, i, j, LWMUtils.CornerType.BottomLeft);
                 if (campfires.Contains(bottomLeftOfCampfire)) {
                     continue;
                 }

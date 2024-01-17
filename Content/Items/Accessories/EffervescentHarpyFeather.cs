@@ -37,7 +37,7 @@ public class EffervescentHarpyFeather : BaseItem {
     public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
         Texture2D drawTexture = TextureAssets.Item[ItemID.GiantHarpyFeather].Value;
 
-        Utilities.DrawTextureWithArmorShader(
+        LWMUtils.DrawTextureWithArmorShader(
             spriteBatch,
             drawTexture,
             GameShaders.Armor.GetShaderIdFromItemId(ItemID.HallowBossDye),
@@ -55,7 +55,7 @@ public class EffervescentHarpyFeather : BaseItem {
     public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI) {
         Texture2D drawTexture = TextureAssets.Item[ItemID.GiantHarpyFeather].Value;
 
-        Utilities.DrawTextureWithArmorShader(
+        LWMUtils.DrawTextureWithArmorShader(
             spriteBatch,
             drawTexture,
             GameShaders.Armor.GetShaderIdFromItemId(ItemID.HallowBossDye),

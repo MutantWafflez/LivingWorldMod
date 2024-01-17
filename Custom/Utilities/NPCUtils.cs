@@ -11,7 +11,7 @@ using Terraria.DataStructures;
 namespace LivingWorldMod.Custom.Utilities;
 
 // Class that handles all utility functions for NPCs.
-public static partial class Utilities {
+public static partial class LWMUtils {
     /// <summary>
     /// Returns the price multiplier that will affect shop prices depending on the status of a
     /// villager's relationship with the players.

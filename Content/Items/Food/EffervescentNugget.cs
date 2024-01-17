@@ -50,7 +50,7 @@ public class EffervescentNugget : BaseItem {
         int drawWidth = Item.width;
         int drawHeight = Item.height + 2;
 
-        Utilities.DrawTextureWithArmorShader(
+        LWMUtils.DrawTextureWithArmorShader(
             spriteBatch,
             drawTexture,
             GameShaders.Armor.GetShaderIdFromItemId(ItemID.HallowBossDye),
@@ -70,7 +70,7 @@ public class EffervescentNugget : BaseItem {
         int drawWidth = Item.width;
         int drawHeight = Item.height + 2;
 
-        Utilities.DrawTextureWithArmorShader(
+        LWMUtils.DrawTextureWithArmorShader(
             spriteBatch,
             drawTexture,
             GameShaders.Armor.GetShaderIdFromItemId(ItemID.HallowBossDye),

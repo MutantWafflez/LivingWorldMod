@@ -6,7 +6,7 @@ using Terraria.Graphics.Shaders;
 namespace LivingWorldMod.Custom.Utilities;
 
 // Utilities class that has helper methods for drawing any assortment of things.
-public static partial class Utilities {
+public static partial class LWMUtils {
     /// <summary>
     /// Draws a given texture with the specified armor shader id.
     /// </summary>

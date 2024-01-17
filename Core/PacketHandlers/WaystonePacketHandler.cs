@@ -26,7 +26,7 @@ public class WaystonePacketHandler : PacketHandler {
                     int entityPosX = reader.ReadInt32();
                     int entityPosY = reader.ReadInt32();
 
-                    if (!Utilities.TryFindModEntity(entityPosX, entityPosY, out WaystoneEntity entity) || entity.DoingActivationVFX) {
+                    if (!LWMUtils.TryFindModEntity(entityPosX, entityPosY, out WaystoneEntity entity) || entity.DoingActivationVFX) {
                         return;
                     }
                     entity.ActivateWaystoneEntity();
@@ -40,7 +40,7 @@ public class WaystonePacketHandler : PacketHandler {
                 else if (Main.netMode == NetmodeID.MultiplayerClient) {
                     Point16 entityPos = new(reader.ReadInt32(), reader.ReadInt32());
 
-                    if (!Utilities.TryFindModEntity(entityPos.X, entityPos.Y, out WaystoneEntity entity)) {
+                    if (!LWMUtils.TryFindModEntity(entityPos.X, entityPos.Y, out WaystoneEntity entity)) {
                         return;
                     }
 

@@ -208,7 +208,7 @@ public class VillageShrineUIState : UIState {
         EntityPosition = entityPos;
         VillagerType shrineType = CurrentEntity.shrineType;
 
-        respawnItemDisplay.SetItem(Utilities.VillagerTypeToRespawnItemType(shrineType));
+        respawnItemDisplay.SetItem(LWMUtils.VillagerTypeToRespawnItemType(shrineType));
         respawnTimerHeader.SetText(Language.GetOrRegister($"Mods.LivingWorldMod.UI.Shrine.{shrineType}Countdown"));
     }
 
@@ -230,7 +230,7 @@ public class VillageShrineUIState : UIState {
 
     private void AddRespawnItem(UIMouseEvent evt, UIElement listeningElement) {
         VillageShrineEntity currentEntity = CurrentEntity;
-        int respawnItemType = Utilities.VillagerTypeToRespawnItemType(currentEntity.shrineType);
+        int respawnItemType = LWMUtils.VillagerTypeToRespawnItemType(currentEntity.shrineType);
         Player player = Main.LocalPlayer;
 
         if (Main.netMode == NetmodeID.MultiplayerClient) {
@@ -254,7 +254,7 @@ public class VillageShrineUIState : UIState {
     private void TakeRespawnItem(UIMouseEvent evt, UIElement listeningElement) {
         VillageShrineEntity currentEntity = CurrentEntity;
         Player player = Main.LocalPlayer;
-        Item respawnItem = new(Utilities.VillagerTypeToRespawnItemType(currentEntity.shrineType));
+        Item respawnItem = new(LWMUtils.VillagerTypeToRespawnItemType(currentEntity.shrineType));
 
         if (Main.netMode == NetmodeID.MultiplayerClient) {
             if (player.CanAcceptItemIntoInventory(respawnItem)) {
@@ -273,7 +273,7 @@ public class VillageShrineUIState : UIState {
     }
 
     private void HoveringVillageRadiusButton() {
-        Main.instance.MouseText(Utilities.GetLWMTextValue("UI.Shrine." + (ShowVillageRadius ? "Disable" : "Enable") + "VillageRadius"));
+        Main.instance.MouseText(LWMUtils.GetLWMTextValue("UI.Shrine." + (ShowVillageRadius ? "Disable" : "Enable") + "VillageRadius"));
     }
 
     private void ClickVillagerRadiusButton(UIMouseEvent evt, UIElement listeningElement) {
@@ -283,7 +283,7 @@ public class VillageShrineUIState : UIState {
     }
 
     private void HoveringShrineSyncButton() {
-        Main.instance.MouseText(Utilities.GetLWMTextValue("UI.Shrine.ForceShrineButtonText"));
+        Main.instance.MouseText(LWMUtils.GetLWMTextValue("UI.Shrine.ForceShrineButtonText"));
     }
 
     private void ClickShrineSyncButton(UIMouseEvent evt, UIElement listeningElement) {

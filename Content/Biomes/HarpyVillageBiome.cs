@@ -17,5 +17,5 @@ public class HarpyVillageBiome : ModBiome {
         // DisplayName.SetDefault("Harpy Village");
     }
 
-    public override bool IsBiomeActive(Player player) => Utilities.GetAllEntityOfType<VillageShrineEntity>().Any(entity => entity.shrineType == VillagerType.Harpy && entity.villageZone.ContainsPoint(player.Center));
+    public override bool IsBiomeActive(Player player) => LWMUtils.GetAllEntityOfType<VillageShrineEntity>().Any(entity => entity.shrineType == VillagerType.Harpy && entity.villageZone.ContainsPoint(player.Center));
 }

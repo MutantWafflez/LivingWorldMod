@@ -5,7 +5,7 @@ using Terraria.DataStructures;
 namespace LivingWorldMod.Custom.Utilities;
 
 // Utilities class that holds methods that deal specifically within the realm of Tile Entities.
-public static partial class Utilities {
+public static partial class LWMUtils {
     /// <summary>
     /// Tries to find an entity of the specified Type. Returns whether or not it found the
     /// entity or not.

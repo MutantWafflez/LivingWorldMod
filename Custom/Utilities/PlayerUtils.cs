@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace LivingWorldMod.Custom.Utilities;
 
 // Utilities class that holds methods that pertains to players.
-public static partial class Utilities {
+public static partial class LWMUtils {
     /// <summary>
     /// Calculates and returns the entirety of the savings of the player in all applicable inventories.
     /// </summary>

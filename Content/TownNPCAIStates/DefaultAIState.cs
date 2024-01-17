@@ -27,7 +27,7 @@ public class DefaultAIState : TownNPCAIState {
             return;
         }
 
-        npc.ai[1] = Main.rand.Next(Utilities.RealLifeSecond * 5, Utilities.RealLifeSecond * 8);
+        npc.ai[1] = Main.rand.Next(LWMUtils.RealLifeSecond * 5, LWMUtils.RealLifeSecond * 8);
         npc.direction = -npc.direction;
         npc.netUpdate = true;
     }

@@ -66,10 +66,10 @@ public class SunslabBlockTile : BaseTile {
 
         //Merge-able tiles. In this array, the 0th index is above, 1st index is the right, 2nd index is the left, 3rd index is below
         bool[] directionsWithMergableTiles = {
-            Utilities.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, -1)),
-            Utilities.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(1, 0)),
-            Utilities.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(-1, 0)),
-            Utilities.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, 1))
+            LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, -1)),
+            LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(1, 0)),
+            LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(-1, 0)),
+            LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, 1))
         };
 
         //The corner type is determined based on this tile's position in the world, based on odds and evens.
@@ -172,10 +172,10 @@ public class SunslabBlockTile : BaseTile {
 
         //Merge-able tiles. In this array, the 0th index is above, 1st index is the right, 2nd index is the left, 3rd index is below
         bool[] directionsWithMergableTiles = {
-            Utilities.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, -1)),
-            Utilities.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(1, 0)),
-            Utilities.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(-1, 0)),
-            Utilities.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, 1))
+            LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, -1)),
+            LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(1, 0)),
+            LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(-1, 0)),
+            LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, 1))
         };
 
         //Vertical frame to begin drawing from
@@ -195,7 +195,7 @@ public class SunslabBlockTile : BaseTile {
                 verticalFrame = 18;
             }
         }
-        else if (thisTile.IsHalfBlock && !Utilities.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, 1))) {
+        else if (thisTile.IsHalfBlock && !LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, 1))) {
             verticalFrame = 19;
         }
 

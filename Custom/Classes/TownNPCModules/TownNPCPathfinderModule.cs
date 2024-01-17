@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Custom.Utilities;
 using LivingWorldMod.Library.AStarPathfinding;
 using LivingWorldMod.Library.AStarPathfinding.Nodes;
 using Microsoft.Xna.Framework;
@@ -80,7 +81,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         // If the NPC does not make meaningful progress to the next node, regenerate the path
         float curDistanceToNextNode = GetDistanceToNode(nextNode);
         if (curDistanceToNextNode >= _prevDistanceToNextNode) {
-            if (++_notMakingProgressCounter >= Utilities.Utilities.RealLifeSecond) {
+            if (++_notMakingProgressCounter >= LWMUtils.RealLifeSecond / 2) {
                 GenerateAndUseNewPath(_currentPathfinderResult.endPoint);
 
                 return;

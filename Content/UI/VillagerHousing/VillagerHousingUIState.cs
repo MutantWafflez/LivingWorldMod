@@ -244,6 +244,6 @@ public class VillagerHousingUIState : UIState {
     }
 
     private void WhileHoveringButton() {
-        Main.instance.MouseText(Utilities.GetLWMTextValue("UI.VillagerHousing.ButtonHoverText"));
+        Main.instance.MouseText(LWMUtils.GetLWMTextValue("UI.VillagerHousing.ButtonHoverText"));
     }
 }

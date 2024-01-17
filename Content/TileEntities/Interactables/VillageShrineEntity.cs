@@ -63,16 +63,16 @@ public class VillageShrineEntity : TEModdedPylon {
 
             SyncDataToClients();
         }
-        int villagerNPCType = Utilities.VillagerTypeToNPCType(shrineType);
+        int villagerNPCType = LWMUtils.VillagerTypeToNPCType(shrineType);
         Circle tileVillageZone = villageZone.ToTileCoordinates();
 
         //Sync from server to clients every 10 seconds
         if (--_syncTimer <= 0) {
             _syncTimer = 60 * 10;
 
-            CurrentHousedVillagersCount = Utilities.NPCCountHousedInZone(tileVillageZone, villagerNPCType);
-            if (_houseLocations is null || !Utilities.LocationsValidForHousing(_houseLocations, villagerNPCType)) {
-                _houseLocations = Utilities.GetValidHousesInZone(tileVillageZone, villagerNPCType);
+            CurrentHousedVillagersCount = LWMUtils.NPCCountHousedInZone(tileVillageZone, villagerNPCType);
+            if (_houseLocations is null || !LWMUtils.LocationsValidForHousing(_houseLocations, villagerNPCType)) {
+                _houseLocations = LWMUtils.GetValidHousesInZone(tileVillageZone, villagerNPCType);
                 CurrentValidHouses = _houseLocations.Count;
             }
 
@@ -116,7 +116,7 @@ public class VillageShrineEntity : TEModdedPylon {
                         Main.npc[npc].homeTileY = WorldGen.bestY;
 
                         Color arrivalColor = new(50, 125, 255);
-                        string arrivalText = Utilities.GetLWMTextValue($"Event.VillagerRespawned.{shrineType}", Main.npc[npc].GivenOrTypeName);
+                        string arrivalText = LWMUtils.GetLWMTextValue($"Event.VillagerRespawned.{shrineType}", Main.npc[npc].GivenOrTypeName);
                         if (Main.netMode == NetmodeID.Server) {
                             ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(arrivalText), arrivalColor);
                         }
@@ -189,7 +189,7 @@ public class VillageShrineEntity : TEModdedPylon {
 
     public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate) {
         int placedEntity = base.Hook_AfterPlacement(i, j, type, style, direction, alternate);
-        if (Utilities.TryFindModEntity(placedEntity, out VillageShrineEntity entity)) {
+        if (LWMUtils.TryFindModEntity(placedEntity, out VillageShrineEntity entity)) {
             entity.InstantiateVillageZone();
             entity.shrineType = (VillagerType)style;
             entity.remainingRespawnTime = EmptyVillageRespawnTime;

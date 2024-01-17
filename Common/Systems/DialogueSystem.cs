@@ -43,8 +43,8 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
         Dictionary<string, LocalizedText> translationDict = typeof(LanguageManager).GetField("_localizedTexts", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(LanguageManager.Instance) as Dictionary<string, LocalizedText>;
         Dictionary<string, LocalizedText> allDialogue = translationDict!.Where(pair => pair.Value.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue")).ToDictionary(pair => pair.Key, pair => pair.Value);
 
-        JsonValue jsonReputationData = Utilities.GetJSONFromFile("Assets/JSONData/DialogueWeights.json");
-        for (VillagerType type = 0; (int)type < Utilities.GetTotalVillagerTypeCount(); type++) {
+        JsonValue jsonReputationData = LWMUtils.GetJSONFromFile("Assets/JSONData/DialogueWeights.json");
+        for (VillagerType type = 0; (int)type < LWMUtils.GetTotalVillagerTypeCount(); type++) {
             List<DialogueData> finalDialogueData = new();
 
             string keyStart = $"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{type}";

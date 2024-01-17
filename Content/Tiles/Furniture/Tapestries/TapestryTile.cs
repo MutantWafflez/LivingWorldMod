@@ -47,7 +47,7 @@ public class TapestryTile : BaseTile {
     public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
         Tile tile = Main.tile[i, j];
         if (tile is { TileFrameX: 0, TileFrameY: 0 }) {
-            Utilities.AddSpecialPoint.DynamicInvoke(i, j, 5 /* MultiTileVine */);
+            LWMUtils.AddSpecialPoint.DynamicInvoke(i, j, 5 /* MultiTileVine */);
         }
 
         return false;

@@ -9,7 +9,7 @@ namespace LivingWorldMod.Custom.Utilities;
 /// <summary>
 /// Class that holds methods and properties that assist with world generation or world related matters.
 /// </summary>
-public static partial class Utilities {
+public static partial class LWMUtils {
     /// <summary>
     /// Returns world size of the current world being played.
     /// </summary>

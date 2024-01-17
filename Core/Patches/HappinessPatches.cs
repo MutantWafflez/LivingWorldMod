@@ -31,11 +31,11 @@ public sealed class HappinessPatches : LoadablePatch {
 
         TownNPCMoodModule moodModule = globalNPC.MoodModule;
         if (npc.life < npc.lifeMax) {
-            moodModule.AddModifier("Injured", Utilities.GetLWMTextValue("TownNPCMoodFlavorText.Injured"), 0);
+            moodModule.AddModifier("Injured", LWMUtils.GetLWMTextValue("TownNPCMoodFlavorText.Injured"), 0);
         }
 
         if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && BirthdayParty.CelebratingNPCs.Contains(npc.whoAmI)) {
-            moodModule.AddModifier("Party", Utilities.GetLWMTextValue("TownNPCMoodFlavorText.Party"), 0);
+            moodModule.AddModifier("Party", LWMUtils.GetLWMTextValue("TownNPCMoodFlavorText.Party"), 0);
         }
 
         float currentMood = moodModule.CurrentMood;
