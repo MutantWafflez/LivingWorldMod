@@ -23,14 +23,13 @@ public class LoadingTaskSystem : BaseModSystem<LoadingTaskSystem> {
         Dictionary<int, (Texture2D, Texture2D)> talkBlinkOverlays = new();
         NPC npc = new();
         TownGlobalNPC townSingletonNPC = ModContent.GetInstance<TownGlobalNPC>();
-        ILog logger = ModContent.GetInstance<LWM>().Logger;
         for (int i = 0; i < NPCLoader.NPCCount; i++) {
             npc.SetDefaults(i);
-            if (!townSingletonNPC.AppliesToEntity(npc, true) || !TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile)) {
+            if (!townSingletonNPC.AppliesToEntity(npc, true)) {
                 continue;
             }
 
-            Asset<Texture2D> npcAsset = profile.GetTextureNPCShouldUse(npc);
+            Asset<Texture2D> npcAsset = TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile) ? profile.GetTextureNPCShouldUse(npc) : TextureAssets.Npc[i];
             string modName = "Terraria";
             if (i >= NPCID.Count) {
                 modName = NPCLoader.GetNPC(i).Mod.Name;
@@ -80,4 +79,6 @@ public class LoadingTaskSystem : BaseModSystem<LoadingTaskSystem> {
 
         TownGlobalNPC.talkBlinkOverlays = talkBlinkOverlays;
     }
+
+    private (Texture2D, Texture2D) 
 }
