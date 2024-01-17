@@ -37,8 +37,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     /// </summary>
     public const int PathFinderZoneSideLength = 64;
 
-    private const float RenewPathThreshold = 300f;
-
     public bool IsPathfinding => _currentPathfinderResult is not null;
 
     public Point BottomLeftTileOfNPC => (npc.BottomLeft + new Vector2(0, -2)).ToTileCoordinates();
@@ -55,6 +53,8 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     public bool canFallThroughPlatforms;
     private readonly List<PathfinderResult> _cachedResults;
 
+    private float _prevDistanceToNextNode;
+    private int _notMakingProgressCounter;
     private GroundedPathFinder _cachedPathfinder;
     private PathfinderResult _currentPathfinderResult;
     private PathfindEndedCallback _currentCallback;
@@ -70,19 +70,26 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             return;
         }
 
-        // Every 5 in-game seconds, regenerate the path (to combat possible disturbances during the npc following the path)
-        if (--npc.ai[3] <= 0f && npc.velocity.Y == 0f) {
-            npc.ai[3] = RenewPathThreshold;
-            GenerateAndUseNewPath(_currentPathfinderResult.endPoint);
-
-            return;
-        }
 
         Point topLeftOfGrid = _currentPathfinderResult.topLeftOfGrid;
         List<PathFinderNode> path = _currentPathfinderResult.path;
         ref PathFinderNode lastConsumedNode = ref _currentPathfinderResult.lastConsumedNode;
 
         PathFinderNode nextNode = path.Last();
+
+        // If the NPC does not make meaningful progress to the next node, regenerate the path
+        float curDistanceToNextNode = GetDistanceToNode(nextNode);
+        if (curDistanceToNextNode >= _prevDistanceToNextNode) {
+            if (++_notMakingProgressCounter >= Utilities.Utilities.RealLifeSecond) {
+                GenerateAndUseNewPath(_currentPathfinderResult.endPoint);
+
+                return;
+            }
+        }
+        else {
+            _notMakingProgressCounter = 0;
+        }
+        _prevDistanceToNextNode = curDistanceToNextNode;
 
         Vector2 nextNodeCenter = (topLeftOfGrid + new Point(nextNode.X, nextNode.Y)).ToWorldCoordinates();
         Vector2 nextNodeBottom = nextNodeCenter + new Vector2(0f, 8f);
@@ -171,7 +178,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
         _currentCallback = endCallback;
         GenerateAndUseNewPath(location);
-        npc.ai[3] = RenewPathThreshold;
         return true;
     }
 
@@ -373,12 +379,16 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             List<PathFinderNode> path = _currentPathfinderResult.path;
             PrunePath(path);
 
+            _prevDistanceToNextNode = GetDistanceToNode(path.Last());
+            _notMakingProgressCounter = 0;
             npc.direction = npc.Center.X > (path.Last().X + _currentPathfinderResult.topLeftOfGrid.X) * 16 + 8 ? -1 : 1;
             npc.velocity.X = npc.direction;
 
             npc.netUpdate = true;
         }
     }
+
+    private float GetDistanceToNode(PathFinderNode nextNode) => npc.BottomLeft.Distance((_currentPathfinderResult.topLeftOfGrid + new Point(nextNode.X, nextNode.Y)).ToWorldCoordinates());
 
     private static void PrunePath(IList<PathFinderNode> path) {
         List<int> indicesToBeRemoved = new();
@@ -400,6 +410,9 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     }
 
     private void EndPathfinding(bool reachedDestination) {
+        _prevDistanceToNextNode = -1f;
+        _notMakingProgressCounter = 0;
+
         npc.velocity.X = 0f;
         _currentPathfinderResult = null;
         _currentCallback?.Invoke(reachedDestination);
