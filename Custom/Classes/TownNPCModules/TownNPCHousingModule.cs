@@ -173,6 +173,7 @@ public class TownNPCHousingModule : TownNPCModule {
 
             npc.velocity = Vector2.Zero;
             npc.BottomLeft = new Vector2(floorX, floorY).ToWorldCoordinates(Vector2.Zero);
+            pathfinderModule.CancelPathfind();
             npc.netUpdate = validHouse = true;
             break;
         }

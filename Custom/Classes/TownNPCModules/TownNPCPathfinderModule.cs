@@ -36,7 +36,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     /// <summary>
     /// The side length of the square that represents the zone in which the PathFinder will search for a path.
     /// </summary>
-    public const int PathFinderZoneSideLength = 64;
+    public const int PathFinderZoneSideLength = 128;
 
     public bool IsPathfinding => _currentPathfinderResult is not null;
 
@@ -70,7 +70,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         if (!IsPathfinding) {
             return;
         }
-
 
         Point topLeftOfGrid = _currentPathfinderResult.topLeftOfGrid;
         List<PathFinderNode> path = _currentPathfinderResult.path;
@@ -136,20 +135,17 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             npc.direction = npc.Left.X > nextNodeCenter.X ? -1 : 1;
         }
 
-
         //Step movements or horizontal movements
         if (Math.Abs(lastConsumedNode.Y - nextNode.Y) == GroundedPathFinder.ExactHeightToBeConsideredStep || lastConsumedNode.Y == nextNode.Y) {
             npc.velocity.X = npc.direction;
             CheckForDoors();
 
-            if (npc.Bottom.Y < nextNodeBottom.Y) {
+            if (lastConsumedNode.Y < nextNode.Y) {
                 Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
             }
-            else if (npc.Bottom.Y > nextNodeBottom.Y) {
+            else if (lastConsumedNode.Y > nextNode.Y) {
                 Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
             }
-
-            npc.direction = npc.Left.X > nextNodeCenter.X ? -1 : 1;
         }
         //Fall movements
         else if (lastConsumedNode.Y - nextNode.Y < 0) {
@@ -411,7 +407,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     }
 
     private void EndPathfinding(bool reachedDestination) {
-        _prevDistanceToNextNode = -1f;
+        _prevDistanceToNextNode = float.MaxValue;
         _notMakingProgressCounter = 0;
 
         npc.velocity.X = 0f;

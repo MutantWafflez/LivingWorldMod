@@ -13,8 +13,9 @@ public class DefaultAIState : TownNPCAIState {
     public override int ReservedStateInteger => 0;
 
     public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
-        if (npc.breath == 0) {
-            TownGlobalNPC.RefreshToState<WanderAIState>(npc);
+        int wanderState = GetStateInteger<WanderAIState>();
+        if (npc.breath == 0 && npc.ai[0] != wanderState) {
+            TownGlobalNPC.RefreshToState(npc, wanderState);
             return;
         }
 

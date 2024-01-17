@@ -62,7 +62,7 @@ public class WanderAIState : TownNPCAIState {
             for (int i = 0; i < npcTileHeight; i++) {
                 point.Y--;
                 Tile upTile = Main.tile[point];
-                if (upTile.HasUnactuatedTile && Main.tileSolid[upTile.TileType] || i == 0 && upTile is { LiquidType: LiquidID.Water, LiquidAmount: > 0 }) {
+                if (upTile.HasUnactuatedTile && Main.tileSolid[upTile.TileType] || i == 0 && upTile is { LiquidType: LiquidID.Water, LiquidAmount: > 127 }) {
                     return false;
                 }
             }
