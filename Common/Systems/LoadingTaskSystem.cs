@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using LivingWorldMod.Common.GlobalNPCs;
 using LivingWorldMod.Common.Systems.BaseSystems;
-using log4net;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -79,6 +78,4 @@ public class LoadingTaskSystem : BaseModSystem<LoadingTaskSystem> {
 
         TownGlobalNPC.talkBlinkOverlays = talkBlinkOverlays;
     }
-
-    private (Texture2D, Texture2D) 
 }
