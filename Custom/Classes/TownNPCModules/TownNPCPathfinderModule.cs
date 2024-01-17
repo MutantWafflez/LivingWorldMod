@@ -274,6 +274,11 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         }
 
         Point topLeftOfGrid = TopLeftOfPathfinderZone;
+
+        const int worldFluff = 10;
+        topLeftOfGrid.X = Utils.Clamp(topLeftOfGrid.X, worldFluff, Main.maxTilesX - PathFinderZoneSideLength - worldFluff - 1);
+        topLeftOfGrid.Y = Utils.Clamp(topLeftOfGrid.Y, 0, Main.maxTilesY - PathFinderZoneSideLength - 1);
+
         GroundedPathFinder pathFinder;
         if (_cachedPathfinder is not null) {
             pathFinder = _cachedPathfinder;
@@ -307,6 +312,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
                     continue;
                 }
 
+                // TODO: Fix IOOB
                 Point npcPathfinderPos = otherNPC.position.ToTileCoordinates() - topLeftOfGrid;
                 for (int j = npcPathfinderPos.X; j < npcPathfinderPos.X + (int)Math.Ceiling(npc.width / 16f); j++) {
                     for (int k = npcPathfinderPos.Y; k < npcPathfinderPos.Y + (int)Math.Ceiling(npc.height / 16f); k++) {
