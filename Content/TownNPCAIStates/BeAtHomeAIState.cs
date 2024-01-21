@@ -19,6 +19,10 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
 
         TownNPCPathfinderModule pathfinderModule = globalNPC.PathfinderModule;
         Point restPos = globalNPC.HousingModule.RestPos;
+        if (!TownGlobalNPC.IsValidStandingPosition(npc, restPos)) {
+            return;
+        }
+
         if (pathfinderModule.BottomLeftTileOfNPC != restPos) {
             npc.ai[1] = 0f;
             pathfinderModule.RequestPathfind(restPos, null);

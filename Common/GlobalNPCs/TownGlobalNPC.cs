@@ -263,6 +263,26 @@ public class TownGlobalNPC : GlobalNPC {
     public static void RefreshToState<T>(NPC npc)
         where T : TownNPCAIState => RefreshToState(npc, TownNPCAIState.GetStateInteger<T>());
 
+    public static bool IsValidStandingPosition(NPC npc, Point tilePos) {
+        for (int i = 0; i < (int)Math.Ceiling(npc.width / 16f); i++) {
+            Tile floorTile = Main.tile[tilePos + new Point(i, 1)];
+            if (!(floorTile.HasUnactuatedTile && (Main.tileSolidTop[floorTile.TileType] || Main.tileSolid[floorTile.TileType]))) {
+                return false;
+            }
+        }
+
+        int npcTileHeight = (int)Math.Ceiling(npc.height / 16f);
+        for (int i = 0; i < npcTileHeight; i++) {
+            tilePos.Y--;
+            Tile upTile = Main.tile[tilePos];
+            if (upTile.HasUnactuatedTile && Main.tileSolid[upTile.TileType]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static void RefreshToState(NPC npc, int stateValue) {
         npc.ai[0] = stateValue;
         npc.ai[1] = npc.ai[2] = 0f;
