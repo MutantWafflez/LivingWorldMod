@@ -1,4 +1,6 @@
 ﻿using LivingWorldMod.Common.GlobalNPCs;
+using LivingWorldMod.Common.ModTypes;
+using LivingWorldMod.Content.TownNPCAIStates;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -89,6 +91,7 @@ public sealed class TownNPCChatModule : TownNPCModule {
         }
 
         if (IsSpeaking
+            || (int)npc.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && npc.ai[1] == 1f
             || !Main.rand.NextBool(ChitChatChanceDenominator)
             || LWMUtils.GetFirstNPC(otherNPC =>
                 npc != otherNPC &&
