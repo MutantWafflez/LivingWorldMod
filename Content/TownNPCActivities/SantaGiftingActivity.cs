@@ -3,7 +3,6 @@ using System.Linq;
 using LivingWorldMod.Common.GlobalNPCs;
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Content.TownNPCAIStates;
-using LivingWorldMod.Custom.Utilities;
 
 namespace LivingWorldMod.Content.TownNPCActivities;
 
@@ -23,7 +22,7 @@ public class SantaGiftingActivity : TownNPCActivity {
             return false;
         }
 
-        List<NPC> allTownNPCs = LWMUtils.GetAllNPCs(otherNPC => otherNPC.TryGetGlobalNPC(out TownGlobalNPC _) && globalNPC.PathfinderModule.EntityWithinPathfinderZone(otherNPC));
+        List<NPC> allTownNPCs = new(); /*LWMUtils.GetAllNPCs(otherNPC => otherNPC.TryGetGlobalNPC(out TownGlobalNPC _) && globalNPC.PathfinderModule.EntityWithinPathfinderZone(otherNPC));*/
         if (!allTownNPCs.Any()) {
             return false;
         }

@@ -44,13 +44,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     public Point TopLeftOfPathfinderZone => BottomLeftTileOfNPC - new Point(PathFinderZoneSideLength / 2, PathFinderZoneSideLength / 2);
 
-    public Rectangle PathfinderZone {
-        get {
-            Point tempTopLeftOfGrid = TopLeftOfPathfinderZone;
-            return new Rectangle(tempTopLeftOfGrid.X, tempTopLeftOfGrid.Y, PathFinderZoneSideLength, PathFinderZoneSideLength);
-        }
-    }
-
     public bool canFallThroughPlatforms;
     private readonly List<PathfinderResult> _cachedResults;
 
@@ -182,14 +175,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     public void CancelPathfind() => EndPathfinding(false);
 
-    public bool EntityWithinPathfinderZone(Entity entity) {
-        Point npcTopLeft = npc.position.ToTileCoordinates();
-
-        return RectangleWithinPathfinderZone(new Rectangle(npcTopLeft.X, npcTopLeft.Y, (int)Math.Ceiling((double)entity.width), (int)Math.Ceiling((double)entity.height)));
-    }
-
-    public bool RectangleWithinPathfinderZone(Rectangle rectangle) => PathfinderZone.Contains(rectangle);
-
     public void DebugDrawPath(SpriteBatch spriteBatch, Vector2 screenPos) {
         if (!IsPathfinding) {
             return;
@@ -306,16 +291,22 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
                 }
             }
 
+            Rectangle gridRect = new(0, 0, PathFinderZoneSideLength, PathFinderZoneSideLength);
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC otherNPC = Main.npc[i];
-                if (!otherNPC.active || otherNPC.friendly || otherNPC.damage <= 0 || !EntityWithinPathfinderZone(otherNPC)) {
+                if (!otherNPC.active || otherNPC.friendly || otherNPC.damage <= 0) {
                     continue;
                 }
 
-                // TODO: Fix IOOB
                 Point npcPathfinderPos = otherNPC.position.ToTileCoordinates() - topLeftOfGrid;
-                for (int j = npcPathfinderPos.X; j < npcPathfinderPos.X + (int)Math.Ceiling(npc.width / 16f); j++) {
-                    for (int k = npcPathfinderPos.Y; k < npcPathfinderPos.Y + (int)Math.Ceiling(npc.height / 16f); k++) {
+                int otherNPCTileWidth = (int)Math.Ceiling(otherNPC.width / 16f);
+                int otherNPCTileHeight = (int)Math.Ceiling(otherNPC.height / 16f);
+                if (!gridRect.Contains(new Rectangle(npcPathfinderPos.X, npcPathfinderPos.Y, otherNPCTileWidth, otherNPCTileHeight))) {
+                    continue;
+                }
+
+                for (int j = npcPathfinderPos.X; j < npcPathfinderPos.X + otherNPCTileWidth; j++) {
+                    for (int k = npcPathfinderPos.Y; k < npcPathfinderPos.Y + otherNPCTileHeight; k++) {
                         if (grid[j, k].ObjectType == GridNodeType.NonSolid) {
                             grid[j, k] = new PathFinder.GridObject(GridNodeType.Impassable, 0);
                         }
