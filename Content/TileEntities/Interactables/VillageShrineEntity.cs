@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using LivingWorldMod.Common.Systems.UI;
 using LivingWorldMod.Content.UI.VillageShrine;
 using LivingWorldMod.Custom.Enums;
@@ -96,41 +97,16 @@ public class VillageShrineEntity : TEModdedPylon {
 
         //NPC respawning
         if (CurrentHousedVillagersCount < CurrentValidHouses && remainingRespawnItems > 0) {
-            Rectangle housingRectangle = tileVillageZone.ToRectangle();
+            if (_houseLocations is not null) {
+                if (_houseLocations.Any(houseLocation => TryVillagerRespawnAtPosition(houseLocation.ToPoint(), tileVillageZone, villagerNPCType))) {
+                    return;
+                }
+            }
 
+            Rectangle housingRectangle = tileVillageZone.ToRectangle();
             for (int i = 0; i < housingRectangle.Width; i += 2) {
                 for (int j = 0; j < housingRectangle.Height; j += 2) {
-                    Point position = new(housingRectangle.X + i, housingRectangle.Y + j);
-
-                    if (WorldGen.InWorld(position.X, position.Y) && WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(villagerNPCType)) {
-                        WorldGen.ScoreRoom(npcTypeAskingToScoreRoom: villagerNPCType);
-
-                        //A "high score" of 0 or less means the room is occupied or the score otherwise failed
-                        if (WorldGen.hiScore <= 0) {
-                            continue;
-                        }
-
-                        int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), WorldGen.bestX * 16, WorldGen.bestY * 16, villagerNPCType);
-
-                        Main.npc[npc].homeTileX = WorldGen.bestX;
-                        Main.npc[npc].homeTileY = WorldGen.bestY;
-
-                        Color arrivalColor = new(50, 125, 255);
-                        string arrivalText = LWMUtils.GetLWMTextValue($"Event.VillagerRespawned.{shrineType}", Main.npc[npc].GivenOrTypeName);
-                        if (Main.netMode == NetmodeID.Server) {
-                            ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(arrivalText), arrivalColor);
-                        }
-                        else {
-                            Main.NewText(arrivalText, arrivalColor);
-                        }
-
-                        remainingRespawnItems--;
-                        CurrentHousedVillagersCount++;
-                        if (CurrentHousedVillagersCount < CurrentValidHouses && remainingRespawnItems > 0) {
-                            continue;
-                        }
-
-                        SyncDataToClients();
+                    if (TryVillagerRespawnAtPosition(new Point(housingRectangle.X + i, housingRectangle.Y + j), tileVillageZone, villagerNPCType)) {
                         return;
                     }
                 }
@@ -146,6 +122,12 @@ public class VillageShrineEntity : TEModdedPylon {
         writer.WriteVector2(villageZone.center);
         writer.Write(villageZone.radius);
 
+        writer.Write(_houseLocations?.Count ?? 0);
+        foreach (Point16 houseLocation in _houseLocations ?? new List<Point16>()) {
+            writer.Write(houseLocation.X);
+            writer.Write(houseLocation.Y);
+        }
+
         writer.Write(remainingRespawnItems);
         writer.Write(remainingRespawnTime);
         writer.Write(respawnTimeCap);
@@ -158,6 +140,13 @@ public class VillageShrineEntity : TEModdedPylon {
         shrineType = (VillagerType)reader.ReadInt32();
 
         villageZone = new Circle(reader.ReadVector2(), reader.ReadSingle());
+
+        int houseLocations = reader.ReadInt32();
+        _houseLocations = new List<Point16>();
+        for (int i = 0; i < houseLocations; i++) {
+            _houseLocations.Add(new Point16(reader.ReadInt16(), reader.ReadInt16()));
+        }
+
         remainingRespawnItems = reader.ReadInt32();
         remainingRespawnTime = reader.ReadInt32();
         respawnTimeCap = reader.ReadInt32();
@@ -231,6 +220,51 @@ public class VillageShrineEntity : TEModdedPylon {
     /// </summary>
     private void InstantiateVillageZone() {
         villageZone = new Circle(Position.ToWorldCoordinates(32f, 40f), DefaultVillageRadius);
+    }
+
+    private bool TryVillagerRespawnAtPosition(Point pos, Circle tileVillageZone, int villagerNPCType) {
+        if (!tileVillageZone.ContainsPoint(pos.ToVector2())) {
+            return false;
+        }
+
+        if (!WorldGen.InWorld(pos.X, pos.Y) || !WorldGen.StartRoomCheck(pos.X, pos.Y) || !WorldGen.RoomNeeds(villagerNPCType)) {
+            return false;
+        }
+
+        WorldGen.ScoreRoom(npcTypeAskingToScoreRoom: villagerNPCType);
+
+        //A "high score" of 0 or less means the room is occupied or the score otherwise failed
+        if (WorldGen.hiScore <= 0) {
+            return false;
+        }
+
+        // If the found room sticks out of the circle at all, skip
+        if (!tileVillageZone.ContainsRectangle(new Rectangle(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1, WorldGen.roomY2 - WorldGen.roomY1))) {
+            return false;
+        }
+
+        int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), WorldGen.bestX * 16, WorldGen.bestY * 16, villagerNPCType);
+
+        Main.npc[npc].homeTileX = WorldGen.bestX;
+        Main.npc[npc].homeTileY = WorldGen.bestY;
+
+        Color arrivalColor = new(50, 125, 255);
+        string arrivalText = LWMUtils.GetLWMTextValue($"Event.VillagerRespawned.{shrineType}", Main.npc[npc].GivenOrTypeName);
+        if (Main.netMode == NetmodeID.Server) {
+            ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(arrivalText), arrivalColor);
+        }
+        else {
+            Main.NewText(arrivalText, arrivalColor);
+        }
+
+        remainingRespawnItems--;
+        CurrentHousedVillagersCount++;
+        if (CurrentHousedVillagersCount < CurrentValidHouses && remainingRespawnItems > 0) {
+            return true;
+        }
+
+        SyncDataToClients();
+        return true;
     }
 
     /// <summary>

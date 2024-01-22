@@ -28,6 +28,8 @@ public struct Circle : TagSerializable, IEquatable<Circle> {
     /// </summary>
     public readonly bool ContainsPoint(Vector2 point) => Math.Abs(center.Distance(point)) < radius;
 
+    public readonly bool ContainsRectangle(Rectangle rect) => ContainsPoint(rect.TopLeft()) && ContainsPoint(rect.TopRight()) && ContainsPoint(rect.BottomLeft()) && ContainsPoint(rect.BottomRight());
+
     /// <summary>
     /// Creates a copy of this Circle equivalent in tile coordinates, assuming that this circle is in world coordinates.
     /// Do note a potential loss of precision with the radius if it is not divisible by 16.

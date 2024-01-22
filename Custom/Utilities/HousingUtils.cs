@@ -34,17 +34,21 @@ public static partial class LWMUtils {
         for (int i = 0; i < rectangle.Width; i += 2) {
             for (int j = 0; j < rectangle.Height; j += 2) {
                 Point position = new(rectangle.X + i, rectangle.Y + j);
-
-                if (WorldGen.InWorld(position.X, position.Y) && WorldGen.StartRoomCheck(position.X, position.Y) && WorldGen.RoomNeeds(npcType)) {
-                    ScoreRoomIgnoringOccupancy(npcTypeAskingToScoreRoom: npcType);
-                    Point16 bestPoint = new(WorldGen.bestX, WorldGen.bestY);
-
-                    if (foundHouses.Contains(bestPoint) || !zone.ContainsPoint(bestPoint.ToVector2()) || WorldGen.hiScore <= 0) {
-                        continue;
-                    }
-
-                    foundHouses.Add(bestPoint);
+                if (!zone.ContainsPoint(position.ToVector2())) {
+                    continue;
                 }
+
+                if (!WorldGen.InWorld(position.X, position.Y) || !WorldGen.StartRoomCheck(position.X, position.Y) || !WorldGen.RoomNeeds(npcType)) {
+                    continue;
+                }
+
+                ScoreRoomIgnoringOccupancy(npcTypeAskingToScoreRoom: npcType);
+                Point16 bestPoint = new(WorldGen.bestX, WorldGen.bestY);
+                if (WorldGen.hiScore <= 0 || foundHouses.Contains(bestPoint) || !zone.ContainsRectangle(new Rectangle(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1, WorldGen.roomY2 - WorldGen.roomY1))) {
+                    continue;
+                }
+
+                foundHouses.Add(bestPoint);
             }
         }
 
