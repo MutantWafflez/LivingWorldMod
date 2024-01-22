@@ -54,6 +54,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                 npc.ai[1] = 1f;
                 npc.ai[2] += 1f;
             }
+            pathfinderModule.CancelPathfind();
         }
     }
 

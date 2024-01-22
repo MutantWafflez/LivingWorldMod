@@ -65,6 +65,7 @@ public sealed class TownNPCChatModule : TownNPCModule {
             IsChattingToPlayer = true;
 
             npc.direction = player.position.X + player.width / 2f < npc.position.X + npc.width / 2f ? -1 : 1;
+            GlobalNPC.PathfinderModule.PausePathfind();
         }
         // End of adapted code
 

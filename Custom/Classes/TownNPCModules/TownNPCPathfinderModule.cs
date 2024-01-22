@@ -49,6 +49,10 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     private float _prevDistanceToNextNode;
     private int _notMakingProgressCounter;
+
+    private bool _isPaused;
+    private bool _wasPaused;
+
     private GroundedPathFinder _cachedPathfinder;
     private PathfinderResult _currentPathfinderResult;
     private PathfindEndedCallback _currentCallback;
@@ -60,6 +64,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     public override void Update() {
         _cachedResults.Clear();
         _cachedPathfinder = null;
+
         if (!IsPathfinding) {
             return;
         }
@@ -69,6 +74,19 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         ref PathFinderNode lastConsumedNode = ref _currentPathfinderResult.lastConsumedNode;
 
         PathFinderNode nextNode = path.Last();
+
+        if (_isPaused) {
+            _isPaused = false;
+            _wasPaused = true;
+            npc.velocity.X = 0f;
+            return;
+        }
+
+        if (_wasPaused) {
+            _wasPaused = false;
+            GenerateAndUseNewPath(_currentPathfinderResult.endPoint);
+            return;
+        }
 
         // If the NPC does not make meaningful progress to the next node, regenerate the path
         float curDistanceToNextNode = GetDistanceToNode(nextNode);
@@ -172,6 +190,8 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     }
 
     public bool HasPath(Point location) => GetPathfinderResult(location) is not null;
+
+    public void PausePathfind() => _isPaused = true;
 
     public void CancelPathfind() => EndPathfinding(false);
 
