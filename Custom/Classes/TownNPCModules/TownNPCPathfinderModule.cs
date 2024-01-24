@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using LivingWorldMod.Custom.Utilities;
 using LivingWorldMod.Library.AStarPathfinding;
 using LivingWorldMod.Library.AStarPathfinding.Nodes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Custom.Classes.TownNPCModules;
 
@@ -24,8 +27,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             this.path = path;
         }
     }
-
-    public delegate void PathfindEndedCallback(bool reachedDestination);
 
     /// <summary>
     /// The maximum amount of tiles Town NPCs can jump from their bottom left. For example, a value of 6 means that a Town NPC
@@ -55,7 +56,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     private GroundedPathFinder _cachedPathfinder;
     private PathfinderResult _currentPathfinderResult;
-    private PathfindEndedCallback _currentCallback;
 
     public TownNPCPathfinderModule(NPC npc) : base(npc) {
         _cachedResults = new List<PathfinderResult>();
@@ -179,12 +179,11 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         }
     }
 
-    public bool RequestPathfind(Point location, PathfindEndedCallback endCallback) {
+    public bool RequestPathfind(Point location) {
         if (IsPathfinding) {
             return false;
         }
 
-        _currentCallback = endCallback;
         GenerateAndUseNewPath(location);
         return true;
     }
@@ -203,6 +202,22 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         foreach (PathFinderNode node in _currentPathfinderResult.path) {
             spriteBatch.Draw(TextureAssets.Extra[66].Value, _currentPathfinderResult.topLeftOfGrid.ToWorldCoordinates(2f, 2.5f) + new Vector2(node.X, node.Y).ToWorldCoordinates(0f, 0f) - screenPos, Color.White);
         }
+    }
+
+    public void SendNetworkData(BitWriter bitWriter, BinaryWriter binaryWriter) {
+        Point16 endPoint = new(_currentPathfinderResult?.endPoint ?? new Point(-1, -1));
+        binaryWriter.Write(endPoint.X);
+        binaryWriter.Write(endPoint.Y);
+    }
+
+    public void ReceiveNetworkData(BitReader bitReader, BinaryReader binaryReader) {
+        Point endPoint = new(binaryReader.ReadInt16(), binaryReader.ReadInt16());
+        EndPathfinding(false);
+        if (endPoint is { X: -1, Y: -1 }) {
+            return;
+        }
+
+        GenerateAndUseNewPath(endPoint);
     }
 
     private void CheckForDoors() {
@@ -397,8 +412,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             _notMakingProgressCounter = 0;
             npc.direction = npc.Center.X > (path.Last().X + _currentPathfinderResult.topLeftOfGrid.X) * 16 + 8 ? -1 : 1;
             npc.velocity.X = npc.direction;
-
-            npc.netUpdate = true;
         }
     }
 
@@ -429,7 +442,5 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
         npc.velocity.X = 0f;
         _currentPathfinderResult = null;
-        _currentCallback?.Invoke(reachedDestination);
-        _currentCallback = null;
     }
 }

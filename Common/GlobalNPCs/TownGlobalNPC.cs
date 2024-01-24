@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Hjson;
 using LivingWorldMod.Common.ModTypes;
@@ -10,6 +11,7 @@ using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Common.GlobalNPCs;
 
@@ -227,6 +229,14 @@ public class TownGlobalNPC : GlobalNPC {
     public override void PostAI(NPC npc) {
         // To make vanilla still draw extras properly
         npc.aiStyle = NPCAIStyleID.Passive;
+    }
+
+    public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) {
+        PathfinderModule.SendNetworkData(bitWriter, binaryWriter);
+    }
+
+    public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader) {
+        PathfinderModule.ReceiveNetworkData(bitReader, binaryReader);
     }
 
     public override bool? CanFallThroughPlatforms(NPC npc) => PathfinderModule.canFallThroughPlatforms ? true : null;

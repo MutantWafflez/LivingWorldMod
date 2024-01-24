@@ -14,7 +14,9 @@ namespace LivingWorldMod.Common.Systems;
 /// </summary>
 public class LoadingTaskSystem : BaseModSystem<LoadingTaskSystem> {
     public override void PostSetupContent() {
-        Main.QueueMainThreadAction(GenerateTalkBlinkTextures);
+        if (Main.netMode != NetmodeID.Server) {
+            Main.QueueMainThreadAction(GenerateTalkBlinkTextures);
+        }
     }
 
     private void GenerateTalkBlinkTextures() {

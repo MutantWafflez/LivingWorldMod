@@ -50,7 +50,7 @@ public class RoastMarshmallowActivity : TownNPCActivity {
             return;
         }
 
-        globalNPC.PathfinderModule.RequestPathfind(_standingLocation, null);
+        globalNPC.PathfinderModule.RequestPathfind(_standingLocation);
         _isAtStandingLocation = false;
     }
 

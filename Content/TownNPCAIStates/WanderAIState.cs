@@ -42,7 +42,7 @@ public class WanderAIState : TownNPCAIState {
                 return;
             }
 
-            pathfinderModule.RequestPathfind(wanderPoints, null);
+            pathfinderModule.RequestPathfind(wanderPoints);
             npc.ai[2] = 1f;
             npc.netUpdate = true;
         }
