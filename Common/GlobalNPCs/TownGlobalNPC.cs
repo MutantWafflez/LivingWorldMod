@@ -293,6 +293,9 @@ public class TownGlobalNPC : GlobalNPC {
         npc.dontTakeDamage = false;
         npc.rotation = 0f;
         NPC.ShimmeredTownNPCs[npc.type] = npc.IsShimmerVariant;
+        if (npc.HasBuff(BuffID.Shimmer)) {
+            PathfinderModule.CancelPathfind();
+        }
 
         if (npc.type == NPCID.SantaClaus && Main.netMode != NetmodeID.MultiplayerClient && !Main.xMas) {
             npc.StrikeInstantKill();

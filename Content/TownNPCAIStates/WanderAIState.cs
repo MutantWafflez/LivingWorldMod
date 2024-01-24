@@ -21,10 +21,10 @@ public class WanderAIState : TownNPCAIState {
             WeightedRandom<Point> wanderPoints = new();
             Vector2 homePos = new(npc.homeTileX, npc.homeTileY);
             for (int i = 0; i < 360; i += 15) {
-                Vector2 displacement = new Vector2(0, -Main.rand.Next(minTileThreshold, maxTileThreshold) * 16).RotatedBy(MathHelper.ToRadians(i));
+                Point displacement = new Vector2(0, -Main.rand.Next(minTileThreshold, maxTileThreshold)).RotatedBy(MathHelper.ToRadians(i)).ToPoint();
                 if (LWMUtils.DropUntilCondition(
                         ValidWanderPoint,
-                        pathfinderModule.BottomLeftTileOfNPC + displacement.ToTileCoordinates(),
+                        pathfinderModule.BottomLeftTileOfNPC + displacement,
                         maxTileThreshold + 1) is not { } point
                     || !pathfinderModule.HasPath(point + new Point(0, -1))
                    ) {
