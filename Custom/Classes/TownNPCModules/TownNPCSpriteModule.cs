@@ -32,7 +32,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
     }
 
     public void AddDrawRequest(Texture2D request) {
-        if (request is null) {
+        if (request is null || Main.netMode == NetmodeID.Server) {
             return;
         }
 
@@ -45,10 +45,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
     }
 
     public void DrawOntoNPC(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-        if (!TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile)) {
-            return;
-        }
-        Asset<Texture2D> npcAsset = profile.GetTextureNPCShouldUse(npc);
+        Asset<Texture2D> npcAsset = TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile) ? profile.GetTextureNPCShouldUse(npc) : TextureAssets.Npc[npc.type];
 
         int frameWidth = npcAsset.Width();
         int frameHeight = npcAsset.Height() / Main.npcFrameCount[npc.type];

@@ -173,7 +173,7 @@ public class TownGlobalNPC : GlobalNPC {
         instance.MoodModule = new TownNPCMoodModule(target);
         instance.CombatModule = new TownNPCCombatModule(target);
 
-        if (talkBlinkOverlays is null) {
+        if (talkBlinkOverlays is null || Main.netMode == NetmodeID.Server) {
             instance.ChatModule = new TownNPCChatModule(target, null);
             instance.SpriteModule = new TownNPCSpriteModule(target, null);
         }

@@ -69,6 +69,10 @@ public sealed class TownNPCChatModule : TownNPCModule {
         }
         // End of adapted code
 
+        if (Main.netMode == NetmodeID.Server) {
+            return;
+        }
+
         if (_currentSentence is not null) {
             // Every other 8 ticks while talking, add the draw call
             if (--_chatBubbleDuration % 16 <= 8) {
