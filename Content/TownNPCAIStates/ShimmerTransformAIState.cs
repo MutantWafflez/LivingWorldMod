@@ -2,7 +2,6 @@ using System;
 using LivingWorldMod.Common.GlobalNPCs;
 using LivingWorldMod.Common.ModTypes;
 using Microsoft.Xna.Framework;
-using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
 
 namespace LivingWorldMod.Content.TownNPCAIStates;
@@ -27,82 +26,7 @@ public class ShimmerTransformAIState : TownNPCAIState {
         }
 
         if (npc.ai[1] == 0f && npc.ai[2] < 1f) {
-            Point point = npc.Top.ToTileCoordinates();
-            int maxYOffset = 30;
-            Vector2? safePosition = null;
-            bool isHomeless = npc.homeless && (npc.homeTileX == -1 || npc.homeTileY == -1);
-
-            for (int i = 1; i < maxYOffset; i += 2) {
-                Vector2? safePos = ShimmerHelper.FindSpotWithoutShimmer(npc, point.X, point.Y, i, isHomeless);
-
-                if (!safePos.HasValue) {
-                    continue;
-                }
-
-                safePosition = safePos.Value;
-                break;
-            }
-
-            if (!safePosition.HasValue && npc.homeTileX != -1 && npc.homeTileY != -1) {
-                for (int i = 1; i < maxYOffset; i += 2) {
-                    Vector2? safePos = ShimmerHelper.FindSpotWithoutShimmer(npc, npc.homeTileX, npc.homeTileY, i, isHomeless);
-
-                    if (!safePos.HasValue) {
-                        continue;
-                    }
-
-                    safePosition = safePos.Value;
-                    break;
-                }
-            }
-
-
-            if (!safePosition.HasValue) {
-                int startingYOffset = isHomeless ? 30 : 0;
-                maxYOffset = 60;
-
-                for (int i = startingYOffset; i < maxYOffset; i += 2) {
-                    Vector2? safePos = ShimmerHelper.FindSpotWithoutShimmer(npc, point.X, point.Y, i, true);
-
-                    if (!safePos.HasValue) {
-                        continue;
-                    }
-
-                    safePosition = safePos.Value;
-                    break;
-                }
-            }
-
-            if (!safePosition.HasValue && npc.homeTileX != -1 && npc.homeTileY != -1) {
-                maxYOffset = 60;
-                for (int l = 30; l < maxYOffset; l += 2) {
-                    Vector2? vector4 = ShimmerHelper.FindSpotWithoutShimmer(npc, npc.homeTileX, npc.homeTileY, l, true);
-
-                    if (!vector4.HasValue) {
-                        continue;
-                    }
-
-                    safePosition = vector4.Value;
-                    break;
-                }
-            }
-
-            if (safePosition.HasValue) {
-                Vector2 oldPos = npc.position;
-                npc.position = safePosition.Value;
-
-                Vector2 positionChangeVector = npc.position - oldPos;
-
-                if (positionChangeVector.Length() >= 560) {
-                    npc.ai[2] = 30f;
-                    ParticleOrchestrator.BroadcastParticleSpawn(ParticleOrchestraType.ShimmerTownNPCSend, new ParticleOrchestraSettings {
-                        PositionInWorld = oldPos + npc.Size / 2f,
-                        MovementVector = positionChangeVector
-                    });
-                }
-
-                npc.netUpdate = true;
-            }
+            npc.AI_007_TownEntities_Shimmer_TeleportToLandingSpot();
         }
 
         if (npc.ai[2] > 0f) {

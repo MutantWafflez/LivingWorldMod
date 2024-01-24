@@ -285,7 +285,7 @@ public class TownGlobalNPC : GlobalNPC {
 
     public static void RefreshToState(NPC npc, int stateValue) {
         npc.ai[0] = stateValue;
-        npc.ai[1] = npc.ai[2] = 0f;
+        npc.ai[1] = npc.ai[2] = npc.ai[3] = 0;
         npc.netUpdate = true;
     }
 

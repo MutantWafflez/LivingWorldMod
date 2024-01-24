@@ -21,9 +21,7 @@
         <Publicize Include="tModLoader:Terraria.GameContent.Events.BirthdayParty.CanNPCParty" />
 
         <!-- NPC Publicizing -->
-        <Publicize Include="tModLoader:Terraria.NPC.AI_007_FindGoodRestingSpot" />
-        <Publicize Include="tModLoader:Terraria.NPC.AI_007_TownEntities_IsInAGoodRestingSpot" />
-        <Publicize Include="tModLoader:Terraria.NPC.AI_007_TownEntities_TeleportToHome" />
+        <Publicize Include="tModLoader:Terraria.NPC.AI_007_TownEntities_Shimmer_TeleportToLandingSpot" />
         
         <!-- Shop Helper Publicizing -->
         <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentNPCBeingTalkedTo" />
