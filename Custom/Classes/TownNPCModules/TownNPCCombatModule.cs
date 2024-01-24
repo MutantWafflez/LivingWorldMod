@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using LivingWorldMod.Common.GlobalNPCs;
 using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Content.TownNPCAIStates;
 using LivingWorldMod.Custom.Structs;
@@ -78,10 +77,11 @@ public sealed class TownNPCCombatModule : TownNPCModule {
 
         if (enemyNearby && NPCID.Sets.PrettySafe[npc.type] != -1 && closestHostileNPCDistance is { } value && NPCID.Sets.PrettySafe[npc.type] < value) {
             isCapableOfViolence = NPCID.Sets.AttackType[npc.type] > -1;
+            /*
             int wanderState = TownNPCAIState.GetStateInteger<WanderAIState>();
             if (npc.ai[0] != wanderState) {
                 TownGlobalNPC.RefreshToState(npc, wanderState);
-            }
+            }*/
         }
 
         if (--npc.localAI[1] > 0) {
