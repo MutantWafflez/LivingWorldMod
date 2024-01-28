@@ -178,7 +178,6 @@ public class TownGlobalNPC : GlobalNPC {
             instance.SpriteModule = new TownNPCSpriteModule(target, null);
         }
         else if (!talkBlinkOverlays.ContainsKey(target.type)) {
-            ModContent.GetInstance<LWM>().Logger.Error($"Valid NPC without talk/blink textures. Type: {target.type}, Type Name: {ModContent.GetModNPC(target.type).Name}");
             instance.ChatModule = new TownNPCChatModule(target, null);
             instance.SpriteModule = new TownNPCSpriteModule(target, null);
         }
