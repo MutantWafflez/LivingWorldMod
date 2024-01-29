@@ -44,47 +44,28 @@ public class NPCHousingPatches : LoadablePatch {
         //In this method, a return of false will mean that the specific NPC cannot spawn in this house, and true means the opposite
         //We check to see if this NPC already CANNOT spawn in said house for whatever reason at the beginning, and that acts as normal if true
         //If the NPC CAN spawn here by normal means, we check to see if the room is within a village and if the NPC is a type of villager, and if both are true, prevent the NPC from taking that house
+        c.GotoNext(i => i.MatchCall(typeof(NPCLoader), nameof(NPCLoader.CheckConditions)));
 
-        //Navigate to first false check
-        c.ErrorOnFailedGotoNext(i => i.MatchCall(typeof(NPCLoader).FullName, nameof(NPCLoader.CheckConditions)));
+        ILLabel doVanillaChecksIfTrueLabel = null;
+        c.GotoNext(i => i.MatchBrtrue(out doVanillaChecksIfTrueLabel));
 
-        //Move to the beginning of the return instruction block and set a label there
-        c.Index += 2;
-        ILLabel falseReturnLabel = c.MarkLabel();
         c.Index = 0;
-        //Get type from passed in parameter
         c.Emit(OpCodes.Ldarg_0);
-        c.EmitDelegate<Func<int, bool>>(type => {
+        c.EmitDelegate<Func<int, bool>>(npcType => {
             Rectangle roomInQuestion = new(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1, WorldGen.roomY2 - WorldGen.roomY1);
 
-            ModNPC modNPC = ModContent.GetModNPC(type);
+            ModNPC modNPC = ModContent.GetModNPC(npcType);
             List<VillageShrineEntity> shrines = LWMUtils.GetAllEntityOfType<VillageShrineEntity>().ToList();
 
             //HOWEVER, if the Town NPC can spawn here, we need to do additional checks to make sure it's not a non-villager spawning in a villager home
             //Additionally, we can't have villagers in a non-village home, which is the second check.
-            if (modNPC is not Villager && shrines.Any(shrine => shrine.villageZone.ContainsPoint(roomInQuestion.Center().ToWorldCoordinates()))
-                || modNPC is Villager && !shrines.Any(shrine => shrine.villageZone.ContainsPoint(roomInQuestion.Center().ToWorldCoordinates()))) {
-                return false;
-            }
-
-            return true;
+            return (modNPC is Villager || !shrines.Any(shrine => shrine.villageZone.ContainsPoint(roomInQuestion.Center().ToWorldCoordinates())))
+                   && (modNPC is not Villager || shrines.Any(shrine => shrine.villageZone.ContainsPoint(roomInQuestion.Center().ToWorldCoordinates())));
         });
-        c.Emit(OpCodes.Brfalse_S, falseReturnLabel);
+        c.Emit(OpCodes.Brtrue_S, doVanillaChecksIfTrueLabel);
 
-        //IL for the above edit (Local variable 1 is the return value calculated beforehand) ^:
-        // /* (1296,4)-(1296,41) tModLoader\src\tModLoader\Terraria\WorldGen.cs */
-        // /* 0x003CEBC0 */ IL_0000: ldarg.0
-        // /* 0x003CEBC1 */ IL_0001: call      bool Terraria.ModLoader.NPCLoader::CheckConditions(int32)
-        // /* 0x003CEBC6 */ IL_0006: brtrue.s  IL_000A
-
-        // /* (1297,5)-(1297,18) tModLoader\src\tModLoader\Terraria\WorldGen.cs */
-        // /* 0x003CEBC8 */ IL_0008: ldc.i4.0
-        // /* 0x003CEBC9 */ IL_0009: ret
-
-        // /* (1298,4)-(1298,20) tModLoader\src\tModLoader\Terraria\WorldGen.cs */
-        // /* 0x003CEBCA */ IL_000A: ldarg.0
-        // /* 0x003CEBCB */ IL_000B: ldc.i4    160
-        // /* 0x003CEBD0 */ IL_0010: bne.un    IL_00B9
+        c.Emit(OpCodes.Ldc_I4_0);
+        c.Emit(OpCodes.Ret);
     }
 
     private void DrawSelectedVillagerOnMouse(ILContext il) {
