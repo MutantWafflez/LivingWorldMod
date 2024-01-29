@@ -46,8 +46,8 @@ public class NPCHousingPatches : LoadablePatch {
         //If the NPC CAN spawn here by normal means, we check to see if the room is within a village and if the NPC is a type of villager, and if both are true, prevent the NPC from taking that house
         c.GotoNext(i => i.MatchCall(typeof(NPCLoader), nameof(NPCLoader.CheckConditions)));
 
-        ILLabel doVanillaChecksIfTrueLabel = null;
-        c.GotoNext(i => i.MatchBrtrue(out doVanillaChecksIfTrueLabel));
+        ILLabel doVanillaChecksIfFalseLabel = null;
+        c.GotoNext(i => i.MatchBrtrue(out doVanillaChecksIfFalseLabel));
 
         c.Index = 0;
         c.Emit(OpCodes.Ldarg_0);
@@ -59,10 +59,10 @@ public class NPCHousingPatches : LoadablePatch {
 
             //HOWEVER, if the Town NPC can spawn here, we need to do additional checks to make sure it's not a non-villager spawning in a villager home
             //Additionally, we can't have villagers in a non-village home, which is the second check.
-            return (modNPC is Villager || !shrines.Any(shrine => shrine.villageZone.ContainsPoint(roomInQuestion.Center().ToWorldCoordinates())))
-                   && (modNPC is not Villager || shrines.Any(shrine => shrine.villageZone.ContainsPoint(roomInQuestion.Center().ToWorldCoordinates())));
+            bool anyVillageContainsHome = shrines.Any(shrine => shrine.villageZone.ToTileCoordinates().ContainsRectangle(roomInQuestion));
+            return modNPC is Villager && !anyVillageContainsHome || modNPC is not Villager && anyVillageContainsHome;
         });
-        c.Emit(OpCodes.Brtrue_S, doVanillaChecksIfTrueLabel);
+        c.Emit(OpCodes.Brfalse_S, doVanillaChecksIfFalseLabel);
 
         c.Emit(OpCodes.Ldc_I4_0);
         c.Emit(OpCodes.Ret);
@@ -130,34 +130,14 @@ public class NPCHousingPatches : LoadablePatch {
 
         ILCursor c = new(il);
 
-        //Navigate to EquipPage check
-        c.ErrorOnFailedGotoNext(i => i.MatchLdsfld<Main>(nameof(Main.EquipPage)));
+        c.GotoNext(i => i.MatchLdsfld<Main>(nameof(Main.EquipPage)));
 
-        //If we correctly navigated to the EquipPage, we need to get the label of the beq_s that is associated with it (see IL block below)
-        if (c.Instrs[c.Index + 2].OpCode == OpCodes.Beq_S) {
-            //Steal the label from the beq_s
-            ILLabel stolenLabel = (ILLabel)c.Instrs[c.Index + 2].Operand;
+        ILLabel showBannersIfTrue = null;
+        c.GotoNext(i => i.MatchBeq(out showBannersIfTrue));
 
-            //Remove all the instructions in this IL block so we can re-add it and slip in our own check
-            for (int i = 0; i < 3; i++) {
-                c.Remove();
-            }
-
-            //Re-add our check, making sure it's inverted compared to the IL, since in IL it determines if the code should run if these values are FALSE,
-            // but since we took control of the instructions, we can test based on if it's true or not for easy understanding
-            c.EmitDelegate(() => Main.EquipPage == 1 || ModContent.GetInstance<VillagerHousingUISystem>().correspondingUIState.isMenuVisible);
-
-            c.Emit(OpCodes.Brtrue_S, stolenLabel);
-        }
-        else {
-            //Throw error is the code does not match, since this IL edit is kind of a necessary functionality of the mod
-            throw new LWMUtils.InstructionNotFoundException();
-        }
-
-        //IL Block in question ^:
-        // /* 0x00112F7D 7E2F030004   */ IL_0001: ldsfld    int32 Terraria.Main::EquipPage
-        // /* 0x00112F82 17           */ IL_0006: ldc.i4.1
-        // /* 0x00112F83 2E14         */ IL_0007: beq.s     IL_001D
+        c.Index = 0;
+        c.EmitDelegate(() => ModContent.GetInstance<VillagerHousingUISystem>().correspondingUIState.isMenuVisible);
+        c.Emit(OpCodes.Brtrue_S, showBannersIfTrue);
     }
 
     private void DrawVillagerBannerInHouses(ILContext il) {
