@@ -21,35 +21,43 @@ public sealed class HappinessPatches : LoadablePatch {
     private const float MaxCostModifier = 1.5f;
 
     public override void LoadPatches() {
-        On_ShopHelper.ProcessMood += MoodOverhaulChanges;
+        IL_ShopHelper.ProcessMood += AddToMoodModule;
         IL_ShopHelper.AddHappinessReportText += HijackReportText;
     }
 
-    private void MoodOverhaulChanges(On_ShopHelper.orig_ProcessMood orig, ShopHelper self, Player player, NPC npc) {
-        orig(self, player, npc);
-        if (!npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
-            return;
-        }
+    private void AddToMoodModule(ILContext il) {
+        currentContext = il;
 
-        TownNPCMoodModule moodModule = globalNPC.MoodModule;
-        if (npc.life < npc.lifeMax) {
-            moodModule.AddModifier("Injured", LWMUtils.GetLWMTextValue("TownNPCMoodFlavorText.Injured"), 0);
-        }
+        ILCursor c = new(il);
 
-        if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && BirthdayParty.CelebratingNPCs.Contains(npc.whoAmI)) {
-            moodModule.AddModifier("Party", LWMUtils.GetLWMTextValue("TownNPCMoodFlavorText.Party"), 0);
-        }
+        c.GotoLastInstruction();
+        c.Emit(OpCodes.Ldarg_0);
+        c.Emit(OpCodes.Ldarg_2);
+        c.EmitDelegate<Action<ShopHelper, NPC>>((shopHelper, npc) => {
+            if (!npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
+                return;
+            }
 
-        float currentMood = moodModule.CurrentMood;
-        self._currentPriceAdjustment = MathHelper.Lerp(MinCostModifier, MaxCostModifier, 1f - currentMood / TownNPCMoodModule.MaxMoodValue);
-        // TODO: Localize properly (or replace with full UI for Part 2)
-        self._currentHappiness =
-            $"Current Mood: {(int)currentMood}/{(int)TownNPCMoodModule.MaxMoodValue}\n"
-            + string.Join('\n', moodModule.GetFlavorTextAndModifiers().Select(flavorTextAndModifer => {
-                    (string flavorText, float moodModifier) = flavorTextAndModifer;
-                    return $"\"{flavorText}\" ({(moodModifier >= 0 ? "+" : "")}{moodModifier})";
-                })
-            );
+            TownNPCMoodModule moodModule = globalNPC.MoodModule;
+            if (npc.life < npc.lifeMax) {
+                moodModule.AddModifier("Injured", LWMUtils.GetLWMTextValue("TownNPCMoodFlavorText.Injured"), 0);
+            }
+
+            if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && BirthdayParty.CelebratingNPCs.Contains(npc.whoAmI)) {
+                moodModule.AddModifier("Party", LWMUtils.GetLWMTextValue("TownNPCMoodFlavorText.Party"), 0);
+            }
+
+            float currentMood = moodModule.CurrentMood;
+            shopHelper._currentPriceAdjustment = MathHelper.Lerp(MinCostModifier, MaxCostModifier, 1f - currentMood / TownNPCMoodModule.MaxMoodValue);
+            // TODO: Localize properly (or replace with full UI for Part 2)
+            shopHelper._currentHappiness =
+                $"Current Mood: {(int)currentMood}/{(int)TownNPCMoodModule.MaxMoodValue}\n"
+                + string.Join('\n', moodModule.GetFlavorTextAndModifiers().Select(flavorTextAndModifer => {
+                        (string flavorText, float moodModifier) = flavorTextAndModifer;
+                        return $"\"{flavorText}\" ({(moodModifier >= 0 ? "+" : "")}{moodModifier})";
+                    })
+                );
+        });
     }
 
     private void HijackReportText(ILContext il) {
