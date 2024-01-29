@@ -173,11 +173,7 @@ public class TownGlobalNPC : GlobalNPC {
         instance.MoodModule = new TownNPCMoodModule(target);
         instance.CombatModule = new TownNPCCombatModule(target);
 
-        if (talkBlinkOverlays is null || Main.netMode == NetmodeID.Server) {
-            instance.ChatModule = new TownNPCChatModule(target, null);
-            instance.SpriteModule = new TownNPCSpriteModule(target, null);
-        }
-        else if (!talkBlinkOverlays.ContainsKey(target.type)) {
+        if (talkBlinkOverlays is null || Main.netMode == NetmodeID.Server || !talkBlinkOverlays.ContainsKey(target.type)) {
             instance.ChatModule = new TownNPCChatModule(target, null);
             instance.SpriteModule = new TownNPCSpriteModule(target, null);
         }
@@ -236,6 +232,14 @@ public class TownGlobalNPC : GlobalNPC {
 
     public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader) {
         PathfinderModule.ReceiveNetworkData(bitReader, binaryReader);
+    }
+
+    public override void SaveData(NPC npc, TagCompound tag) {
+        PathfinderModule.SaveData(tag);
+    }
+
+    public override void LoadData(NPC npc, TagCompound tag) {
+        PathfinderModule.LoadData(tag);
     }
 
     public override bool? CanFallThroughPlatforms(NPC npc) => PathfinderModule.canFallThroughPlatforms ? true : null;

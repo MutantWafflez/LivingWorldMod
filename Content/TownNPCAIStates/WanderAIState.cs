@@ -38,7 +38,7 @@ public class WanderAIState : TownNPCAIState {
 
             if (!wanderPoints.elements.Any()) {
                 TownGlobalNPC.RefreshToState<DefaultAIState>(npc);
-                npc.ai[1] = LWMUtils.RealLifeSecond * 3;
+                npc.ai[1] = Main.rand.Next(LWMUtils.RealLifeSecond * 2, LWMUtils.RealLifeSecond * 5);
                 return;
             }
 

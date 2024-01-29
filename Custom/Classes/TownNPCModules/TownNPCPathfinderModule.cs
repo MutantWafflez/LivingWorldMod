@@ -39,6 +39,8 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     /// </summary>
     public const int PathFinderZoneSideLength = 128;
 
+    private const string SavedEndpointKey = "PathfindingToPoint";
+
     public bool IsPathfinding => _currentPathfinderResult is not null;
 
     public Point BottomLeftTileOfNPC => (npc.BottomLeft + new Vector2(0, -2)).ToTileCoordinates();
@@ -218,6 +220,19 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         }
 
         GenerateAndUseNewPath(endPoint);
+    }
+
+    public void SaveData(TagCompound tag) {
+        tag[SavedEndpointKey] = _currentPathfinderResult?.endPoint ?? new Point(-1, -1);
+    }
+
+    public void LoadData(TagCompound tag) {
+        Point savedPathfindingPoint = tag.Get<Point>(SavedEndpointKey);
+        if (savedPathfindingPoint is { X: -1, Y: -1 }) {
+            return;
+        }
+
+        GenerateAndUseNewPath(savedPathfindingPoint);
     }
 
     private void CheckForDoors() {
