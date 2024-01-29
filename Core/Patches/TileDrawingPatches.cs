@@ -1,10 +1,8 @@
 ﻿using System;
 using LivingWorldMod.Common.Sets;
 using LivingWorldMod.Custom.Classes;
-using LivingWorldMod.Custom.Utilities;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using Terraria;
 using Terraria.GameContent.Drawing;
 using Terraria.ObjectData;
 
@@ -25,25 +23,33 @@ public class TileDrawingPatches : LoadablePatch {
         // This edit allows for this mod to properly incorporate wind-sway for larger tiles
         ILCursor c = new(il);
 
-        byte sizeXVarIndex = 7;
-        byte sizeYVarIndex = 8;
-        byte tileVarIndex = 9;
+        int sizeXVarIndex = -1;
+        c.GotoNext(i => i.MatchLdcI4(1));
+        c.GotoNext(i => i.MatchStloc(out sizeXVarIndex));
 
-        c.ErrorOnFailedGotoNext(i => i.MatchCall<TileDrawing>("DrawMultiTileVinesInWind"));
-        c.Index -= 6;
+        int sizeYVarIndex = -1;
+        c.GotoNext(i => i.MatchLdcI4(1));
+        c.GotoNext(i => i.MatchStloc(out sizeYVarIndex));
+
+        int tileVarIndex = -1;
+        c.GotoNext(i => i.MatchCall<Tilemap>("get_Item"));
+        c.GotoNext(i => i.MatchStloc(out tileVarIndex));
+
+        c.GotoNext(i => i.MatchCall<TileDrawing>("DrawMultiTileVinesInWind"));
+        c.GotoPrev(MoveType.After, i => i.MatchLdarg0());
         // We do this so we don't have to mess with the branches
         c.Emit(OpCodes.Pop);
         c.Emit(OpCodes.Ldarg_0);
         c.Index--;
         //Size X
-        c.Emit(OpCodes.Ldloc_S, sizeXVarIndex);
-        c.Emit(OpCodes.Ldloc_S, tileVarIndex);
+        c.Emit(OpCodes.Ldloc_S, (byte)sizeXVarIndex);
+        c.Emit(OpCodes.Ldloc_S, (byte)tileVarIndex);
         c.EmitDelegate<Func<int, Tile, int>>((sizeX, tile) => TileSets.NeedsAdvancedWindSway[tile.TileType] ? TileObjectData.GetTileData(tile).Width : sizeX);
-        c.Emit(OpCodes.Stloc_S, sizeXVarIndex);
+        c.Emit(OpCodes.Stloc_S, (byte)sizeXVarIndex);
         //Size Y
-        c.Emit(OpCodes.Ldloc_S, sizeYVarIndex);
-        c.Emit(OpCodes.Ldloc_S, tileVarIndex);
+        c.Emit(OpCodes.Ldloc_S, (byte)sizeYVarIndex);
+        c.Emit(OpCodes.Ldloc_S, (byte)tileVarIndex);
         c.EmitDelegate<Func<int, Tile, int>>((sizeY, tile) => TileSets.NeedsAdvancedWindSway[tile.TileType] ? TileObjectData.GetTileData(tile).Height : sizeY);
-        c.Emit(OpCodes.Stloc_S, sizeYVarIndex);
+        c.Emit(OpCodes.Stloc_S, (byte)sizeYVarIndex);
     }
 }
