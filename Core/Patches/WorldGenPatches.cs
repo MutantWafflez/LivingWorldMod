@@ -4,11 +4,9 @@ using System.Reflection;
 using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Content.WorldGenFeatures.Villages;
 using LivingWorldMod.Custom.Classes;
-using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using Terraria;
 
 namespace LivingWorldMod.Core.Patches;
 
@@ -27,13 +25,15 @@ public class WorldGenPatches : LoadablePatch {
         //This filling of holes causes some houses for the harpy village to have their "supports" filled which destroys how the building is supposed to look
         ILCursor c = new(il);
 
-        byte itemLocalNumber = 6; //Called "item" in this case, but this is actually the local variable is the position of the wall "hole"
+        c.GotoNext(i => i.MatchCallvirt(typeof(HashSet<Point>).GetMethod("Contains", BindingFlags.Public | BindingFlags.Instance)!));
+
+        int spotLocalVar = -1;
+        c.GotoPrev(i => i.MatchLdloc(out spotLocalVar));
+        c.GotoNext(i => i.MatchBrfalse(out _));
 
         //IL is quite simple in this case. We're going to hijack one of the checks that determines if a hole area is going to be filled or not.
         //All we do it return true if the point in question is in the Harpy village zone, which prevents the filling at that point
-        c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCallvirt(typeof(HashSet<Point>).GetMethod("Contains", BindingFlags.Public | BindingFlags.Instance)!));
-
-        c.Emit(OpCodes.Ldloc_S, itemLocalNumber);
+        c.Emit(OpCodes.Ldloc_S, (byte)spotLocalVar);
         c.EmitDelegate<Func<bool, Point, bool>>((originalValue, point) =>
             originalValue || WorldCreationSystem.Instance.GetTempWorldGenValue<Rectangle>(HarpyVillage.TemporaryZoneVariableName) is Rectangle rectangle && rectangle.Contains(point));
     }
