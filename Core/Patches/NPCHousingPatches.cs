@@ -81,44 +81,41 @@ public class NPCHousingPatches : LoadablePatch {
         ILLabel exitLabel = c.DefineLabel();
 
         //Get label of instruction we will be transforming to
-        c.ErrorOnFailedGotoNext(i => i.MatchCall<PlayerInput>("get_IgnoreMouseInterface"));
-
+        c.GotoNext(i => i.MatchCall<PlayerInput>("get_IgnoreMouseInterface"));
         exitLabel = c.MarkLabel();
 
-        c.Index = 0;
-
         //If the target instruction is found and we found the exit instruction, draw the villager if applicable
-        c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCall<Main>(nameof(Main.SetMouseNPC_ToHousingQuery)));
-
-        c.Index += 3;
+        c.Index = 0;
+        c.GotoNext(i => i.MatchCall<Main>(nameof(Main.SetMouseNPC_ToHousingQuery)));
+        c.GotoNext(i => i.MatchLdfld<Main>(nameof(Main.mouseNPCIndex)));
+        c.GotoPrev(i => i.MatchLdarg0());
 
         //What we return here will determine whether or not we skip past the drawing head step in the vanilla function.
         c.EmitDelegate(() => {
-            if (Main.instance.mouseNPCIndex > -1 && Main.npc[Main.instance.mouseNPCIndex].ModNPC is Villager villager) {
-                LayeredDrawObject drawObject = villager.drawObject;
-                Rectangle textureDrawRegion = new(0, 0, drawObject.GetLayerFrameWidth(), drawObject.GetLayerFrameHeight(frameCount: Main.npcFrameCount[villager.Type]));
-
-                drawObject.Draw(
-                    Main.spriteBatch,
-                    new DrawData(
-                        null,
-                        new Vector2(Main.mouseX, Main.mouseY),
-                        textureDrawRegion,
-                        Color.White,
-                        0f,
-                        Vector2.Zero,
-                        Main.cursorScale * 0.67f,
-                        SpriteEffects.None
-                    ),
-                    villager.DrawIndices
-                );
-
-                //If a type of villager, we do not want the head drawing function, so skip it by returning true
-                return true;
+            //If not a type of villager or otherwise an invalid index (or just the above if statement failing in general), then return false and have the head draw as normal.
+            if (Main.instance.mouseNPCIndex <= -1 || Main.npc[Main.instance.mouseNPCIndex].ModNPC is not Villager villager) {
+                return false;
             }
 
-            //If not a type of villager or otherwise an invalid index (or just the above if statement failing in general), then return false and have the head draw as normal.
-            return false;
+            LayeredDrawObject drawObject = villager.drawObject;
+            Rectangle textureDrawRegion = new(0, 0, drawObject.GetLayerFrameWidth(), drawObject.GetLayerFrameHeight(frameCount: Main.npcFrameCount[villager.Type]));
+            drawObject.Draw(
+                Main.spriteBatch,
+                new DrawData(
+                    null,
+                    new Vector2(Main.mouseX, Main.mouseY),
+                    textureDrawRegion,
+                    Color.White,
+                    0f,
+                    Vector2.Zero,
+                    Main.cursorScale * 0.67f,
+                    SpriteEffects.None
+                ),
+                villager.DrawIndices
+            );
+
+            //If a type of villager, we do not want the head drawing function, so skip it by returning true
+            return true;
         });
         //Actual instruction that causes the "skipping." This instruction is why the exit label is necessary, since without it, the IL literally won't function and the head will draw.
         c.Emit(OpCodes.Brtrue_S, exitLabel);
