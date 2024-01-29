@@ -1,9 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using LivingWorldMod.Common.GlobalNPCs;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Classes.TownNPCModules;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using Terraria.GameContent;
 using Terraria.GameContent.Events;
 using Terraria.Localization;
@@ -13,14 +16,13 @@ namespace LivingWorldMod.Core.Patches;
 /// <summary>
 /// Patches that deal with Town NPC happiness.
 /// </summary>
-[Autoload(false)]
 public sealed class HappinessPatches : LoadablePatch {
     private const float MinCostModifier = 0.67f;
     private const float MaxCostModifier = 1.5f;
 
     public override void LoadPatches() {
         On_ShopHelper.ProcessMood += MoodOverhaulChanges;
-        On_ShopHelper.AddHappinessReportText += GetMoodModifier;
+        IL_ShopHelper.AddHappinessReportText += HijackReportText;
     }
 
     private void MoodOverhaulChanges(On_ShopHelper.orig_ProcessMood orig, ShopHelper self, Player player, NPC npc) {
@@ -50,26 +52,29 @@ public sealed class HappinessPatches : LoadablePatch {
             );
     }
 
-    private void GetMoodModifier(On_ShopHelper.orig_AddHappinessReportText orig, ShopHelper self, string textKeyInCategory, object substitutes, int otherNPCType) {
-        //Adapted vanilla code
-        string text = "TownNPCMood_" + NPCID.Search.GetName(self._currentNPCBeingTalkedTo.netID);
+    private void HijackReportText(ILContext il) {
+        currentContext = il;
 
-        if (textKeyInCategory == "Princess_LovesNPC") {
-            text = ModContent.GetModNPC(otherNPCType).GetLocalizationKey("TownNPCMood");
-        }
-        else if (self._currentNPCBeingTalkedTo.ModNPC is ModNPC modNPC) {
-            text = modNPC.GetLocalizationKey("TownNPCMood");
-        }
+        ILCursor c = new(il);
 
-        if (self._currentNPCBeingTalkedTo.type == NPCID.BestiaryGirl && self._currentNPCBeingTalkedTo.altTexture == 2) {
-            text += "Transformed";
-        }
+        c.GotoLastInstruction();
+        c.GotoPrev(i => i.MatchCall(typeof(Language), nameof(Language.GetTextValueWith)));
 
-        string flavorText = Language.GetTextValueWith(text + "." + textKeyInCategory, substitutes);
-        // To prevent the "content" modifier from showing up when other modifiers are present
-        self._currentHappiness = " ";
-        if (self._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
-            globalNPC.MoodModule.AddModifier(textKeyInCategory.Split('_')[0], flavorText, 0);
-        }
+        int flavorTextLocal = -1;
+        c.GotoNext(i => i.MatchStloc(out flavorTextLocal));
+
+        c.GotoLastInstruction();
+        c.Emit(OpCodes.Ldarg_0);
+        c.Emit(OpCodes.Ldarg_1);
+        c.Emit(OpCodes.Ldloc, flavorTextLocal);
+        c.EmitDelegate<Action<ShopHelper, string, string>>((shopHelper, keyCategory, flavorText) => {
+            // To prevent the "content" modifier from showing up when other modifiers are present
+            shopHelper._currentHappiness = " ";
+
+            // Add modifiers as normal
+            if (shopHelper._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
+                globalNPC.MoodModule.AddModifier(keyCategory.Split('_')[0], flavorText, 0);
+            }
+        });
     }
 }
