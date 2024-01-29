@@ -11,8 +11,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.GameInput;
 
 namespace LivingWorldMod.Core.Patches;
@@ -143,206 +143,104 @@ public class NPCHousingPatches : LoadablePatch {
     private void DrawVillagerBannerInHouses(ILContext il) {
         currentContext = il;
 
-        //Edit rundown (this one is kinda long):
-        //We need to have the villagers who are living in villager homes be displayed on their banners, like they are for normal town NPCs
-        //We will do this by hijacking the if statement that tests if the NPC is a town NPC and also test whether or not they are a villager
-        //If they are a villager, modify vanilla draw statements, and make sure to transfer the code to draw the villager in their entirety
-        //Next, and lastly, make it so the player cannot modify the housing of the villagers if they are not well-liked enough
+        // Due to the complexity of that this edit would otherwise require, we simply re-create this method for villager drawing instead of modifying
+        // the method to work with villagers. Lose out on some code re-use, but pays off in the long term for the fragility of the edit
 
         ILCursor c = new(il);
+        c.EmitDelegate(() => {
+            foreach (NPC npc in LWMUtils.GetAllNPCs(npc => npc.ModNPC is Villager && !npc.homeless && npc.homeTileX > 0 && npc.homeTileY > 0)) {
+                int bannerTileX = npc.homeTileX;
+                int bannerTileY = npc.homeTileY - 1;
 
-        //Navigate to first TownNPC check
-        c.ErrorOnFailedGotoNext(i => i.MatchLdfld<NPC>(nameof(NPC.townNPC)));
+                const int worldFluff = 10;
+                Tile tile = Main.tile[bannerTileX, bannerTileY];
+                while (!tile.HasTile || !(Main.tileSolid[tile.TileType] || TileID.Sets.Platforms[tile.TileType])) {
+                    tile = Main.tile[bannerTileX, --bannerTileY];
+                    if (bannerTileY < worldFluff) {
+                        break;
+                    }
+                }
 
-        //Remove townNPC check in order to add our villager check
-        c.Remove();
-        //Add villager check
-        c.EmitDelegate<Func<NPC, bool>>(npc => npc.ModNPC is Villager || npc.townNPC);
+                const int bannerXPixelOffset = 8;
+                int bannerYPixelOffset = 18;
+                if (TileID.Sets.Platforms[tile.TileType]) {
+                    bannerYPixelOffset -= 8;
+                }
 
-        //First IL block in question for the edit above ^:
-        // /* 0x00101758 7ED8040004   */ IL_0020: ldsfld    class Terraria.NPC[] Terraria.Main::npc
-        // /* 0x0010175D 06           */ IL_0025: ldloc.0
-        // /* 0x0010175E 9A           */ IL_0026: ldelem.ref
-        // /* 0x0010175F 7BE3070004   */ IL_0027: ldfld     bool Terraria.NPC::townNPC
-        // /* 0x00101764 2C41         */ IL_002C: brfalse.s IL_006F
+                int gravityYPixelCorrection = 0;
+                float bannerWorldY = bannerTileY * 16;
+                bannerWorldY += bannerYPixelOffset;
 
-        //Navigate to second TownNPC check
-        c.ErrorOnFailedGotoNext(i => i.MatchLdfld<NPC>(nameof(NPC.townNPC)));
+                SpriteEffects spriteEffects = SpriteEffects.None;
+                Texture2D bannerTexture = ModContent.Request<Texture2D>(LWM.SpritePath + "UI/VillagerHousingUI/VillagerHousing_Banner").Value;
+                Rectangle bannerFrame = bannerTexture.Frame();
+                if (Main.LocalPlayer.gravDir == -1f) {
+                    bannerWorldY -= Main.screenPosition.Y;
+                    bannerWorldY = Main.screenPosition.Y + Main.screenHeight - bannerWorldY;
+                    bannerWorldY -= bannerFrame.Height;
+                    spriteEffects = SpriteEffects.FlipVertically;
+                    gravityYPixelCorrection = 4;
+                }
 
-        //Remove townNPC check in order to add our villager check (again)
-        c.Remove();
-        //In this context, the game is checking if the npc is NOT a villager/townNPC
-        c.EmitDelegate<Func<NPC, bool>>(npc => npc.ModNPC is not Villager || !npc.townNPC);
-
-        //Second IL block in question for the edit above ^:
-        // /* 0x0010180E 1105         */ IL_00D6: ldloc.s   nPC
-        // /* 0x00101810 7BE3070004   */ IL_00D8: ldfld     bool Terraria.NPC::townNPC
-        // /* 0x00101815 2C2A         */ IL_00DD: brfalse.s IL_0109
-
-        //Next, we will swap out the background banners for our own
-
-        byte npcLocalNumber = 3;
-        byte bannerAssetLocalNumber = 16;
-        byte framingRectangleLocalNumber = 17;
-
-        //Navigate to the asset of the background banner
-        c.ErrorOnFailedGotoNext(i => i.MatchStloc(bannerAssetLocalNumber));
-
-        //Replace the normal call with our own if the npc is a villager
-        //Pop the normal texture asset off the stack
-        c.Emit(OpCodes.Pop);
-        //Load this NPC to stack
-        c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
-        //If this NPC is a villager, use our own modded banners. If not, return the normal one
-        c.EmitDelegate<Func<NPC, Texture2D>>(npc => npc.ModNPC is Villager ? ModContent.Request<Texture2D>(LWM.SpritePath + "UI/VillagerHousingUI/VillagerHousing_Banners").Value : TextureAssets.HouseBanner.Value);
-
-        //Navigate to the banner framing rectangle
-        c.ErrorOnFailedGotoNext(i => i.MatchStloc(framingRectangleLocalNumber));
-
-        //In order for the drawing to be framed properly, we must take into account whether or not it's our modded banners or not
-        //Pop the normal framing rectangle off the stack
-        c.Emit(OpCodes.Pop);
-        //Load this NPC to stack
-        c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
-        //Load the current texture to the stack
-        c.Emit(OpCodes.Ldloc_S, bannerAssetLocalNumber);
-        //If this NPC is a villager, adjust the framing rectangle to use our modded proportions. If not, return the normal vanilla value
-        c.EmitDelegate<Func<NPC, Texture2D, Rectangle>>((npc, texture) => npc.ModNPC is Villager ? texture.Frame(2, LWMUtils.GetTotalVillagerTypeCount()) : texture.Frame(2, 2));
-
-        //IL block for the above two edits ^:
-        /*/* (30124,5)-(30124,55) tModLoader\src\tModLoader\Terraria\Main.cs #1#
-        /* 0x001019F0 7E59490004   #1# IL_02B8: ldsfld    class [ReLogic]ReLogic.Content.Asset`1<class [FNA]Microsoft.Xna.Framework.Graphics.Texture2D> Terraria.GameContent.TextureAssets::HouseBanner
-        /* 0x001019F5 6F6F02000A   #1# IL_02BD: callvirt  instance !0 class [ReLogic]ReLogic.Content.Asset`1<class [FNA]Microsoft.Xna.Framework.Graphics.Texture2D>::get_Value()
-        /* 0x001019FA 1312         #1# IL_02C2: stloc.s   'value'
-        /* (30125,5)-(30125,66) tModLoader\src\tModLoader\Terraria\Main.cs #1#
-        /* 0x001019FC 1112         #1# IL_02C4: ldloc.s   'value'
-        /* 0x001019FE 18           #1# IL_02C6: ldc.i4.2
-        /* 0x001019FF 18           #1# IL_02C7: ldc.i4.2
-        /* 0x00101A00 16           #1# IL_02C8: ldc.i4.0
-        /* 0x00101A01 16           #1# IL_02C9: ldc.i4.0
-        /* 0x00101A02 16           #1# IL_02CA: ldc.i4.0
-        /* 0x00101A03 16           #1# IL_02CB: ldc.i4.0
-        /* 0x00101A04 28DF0C0006   #1# IL_02CC: call      valuetype [FNA]Microsoft.Xna.Framework.Rectangle Terraria.Utils::Frame(class [FNA]Microsoft.Xna.Framework.Graphics.Texture2D, int32, int32, int32, int32, int32, int32)
-        /* 0x00101A09 1313         #1# IL_02D1: stloc.s   value2*/
-
-        //Second to last, we must skip over the head drawing code if the NPC in question is a villager
-
-        //Navigate to our exit instruction in order to skip over the head drawing
-        ILLabel exitInstruction = c.DefineLabel();
-        int preExitJumpIndex = c.Index;
-
-        byte homeTileXLocalNumber = 6;
-        byte homeTileYLocalNumber = 7;
-        byte homeTileYInWorldLocalNumber = 14;
-
-        //Grab exit instruction & do custom drawing code
-        c.ErrorOnFailedGotoNext(i => i.MatchStloc(homeTileXLocalNumber));
-
-        //Move to instruction right AFTER the normal spritebatch call
-        c.Index -= 14;
-        //Load this NPC to stack
-        c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
-        //Place exit instruction on the new instruction we just emitted ^ then return to old instruction
-        c.Index--;
-        exitInstruction = c.MarkLabel();
-        c.Index++;
-        //Load local variable homeTileX in tile coordinates
-        c.Emit(OpCodes.Ldloc_S, homeTileXLocalNumber);
-        //Load local variable homeTileY in tile coordinates
-        c.Emit(OpCodes.Ldloc_S, homeTileYLocalNumber);
-        //Load local variable homeTileY in world coordinates
-        c.Emit(OpCodes.Ldloc_S, homeTileYInWorldLocalNumber);
-        //Apply custom draw code
-        c.EmitDelegate<Action<NPC, int, int, float>>((npc, homeTileX, homeTileY, homeTileYPixels) => {
-            if (npc.ModNPC is not Villager villager) {
-                return;
-            }
-
-            LayeredDrawObject drawObject = villager.drawObject;
-            Rectangle textureDrawRegion = new(0, 0, drawObject.GetLayerFrameWidth(), drawObject.GetLayerFrameHeight(frameCount: Main.npcFrameCount[villager.Type]));
-
-            drawObject.Draw(
-                Main.spriteBatch,
-                new DrawData(
-                    null,
-                    new Vector2(homeTileX * 16f - Main.screenPosition.X + 10f, homeTileYPixels - Main.screenPosition.Y + 18f),
-                    textureDrawRegion,
-                    Lighting.GetColor(homeTileX, homeTileY),
+                Main.spriteBatch.Draw(
+                    bannerTexture,
+                    new Vector2(bannerTileX * 16 - (int)Main.screenPosition.X + bannerXPixelOffset, bannerWorldY - (int)Main.screenPosition.Y + bannerYPixelOffset + gravityYPixelCorrection),
+                    bannerFrame,
+                    Lighting.GetColor(bannerTileX, bannerTileY),
                     0f,
-                    new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f),
-                    0.5f,
-                    Main.LocalPlayer.gravDir != -1 ? SpriteEffects.None : SpriteEffects.FlipVertically //Take into account possible gravity swapping
-                ),
-                villager.DrawIndices
-            );
-        });
+                    new Vector2(bannerFrame.Width / 2f, bannerFrame.Height / 2f),
+                    1f,
+                    spriteEffects,
+                    0f
+                );
 
-        c.Index = preExitJumpIndex;
+                Villager villager = npc.ModNPC as Villager;
+                LayeredDrawObject drawObject = villager!.drawObject;
+                Rectangle textureDrawRegion = new(0, 0, drawObject.GetLayerFrameWidth(), drawObject.GetLayerFrameHeight(frameCount: Main.npcFrameCount[npc.type]));
+                drawObject.Draw(
+                    Main.spriteBatch,
+                    new DrawData(
+                        null,
+                        new Vector2(bannerTileX * 16 - (int)Main.screenPosition.X + bannerXPixelOffset, bannerWorldY - (int)Main.screenPosition.Y + bannerYPixelOffset + 2f),
+                        textureDrawRegion,
+                        Lighting.GetColor(bannerTileX, bannerTileY),
+                        0f,
+                        new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f),
+                        0.5f,
+                        spriteEffects
+                    ),
+                    villager.DrawIndices
+                );
 
-        //Apply exit instruction transfer if the NPC is a villager
-        c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchCallOrCallvirt<SpriteBatch>(nameof(SpriteBatch.Draw)));
-        //Load this NPC to stack
-        c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
-        //Test for villager status
-        c.EmitDelegate<Func<NPC, bool>>(npc => npc.ModNPC is Villager);
-        c.Emit(OpCodes.Brtrue_S, exitInstruction);
 
-        //I would put the IL block in question here, but it is a very small edit and the IL block is really big due to it including
-        // a lot of math instructions and a spritebatch call
+                bannerTileX = bannerTileX * 16 - (int)Main.screenPosition.X + bannerXPixelOffset - bannerFrame.Width / 2;
+                bannerTileY = (int)bannerWorldY - (int)Main.screenPosition.Y + 4;
 
-        //Finally, we are going to change the hover text and prevent the player from un-housing villagers if they are not well-liked enough
-        byte bannerHoverTextLocalNumber = 25;
+                if (Main.mouseX < bannerTileX || Main.mouseX > bannerTileX + bannerFrame.Width || Main.mouseY < bannerTileY || Main.mouseY > bannerTileY + bannerFrame.Height - 8) {
+                    continue;
+                }
 
-        //Navigate to banner hover text variable allocation
-        c.ErrorOnFailedGotoNext(i => i.MatchStloc(bannerHoverTextLocalNumber));
+                bool isLikedWithVillagers = villager.RelationshipStatus >= VillagerRelationship.Like;
+                string villagerLockText = $"\n{LWMUtils.GetLWMTextValue("UI.VillagerHousing.VillagerTypeLocked", villager.VillagerType.ToString())}";
+                Main.instance.MouseText(
+                    Lang.GetNPCHouseBannerText(npc, 0)
+                    + (!isLikedWithVillagers ? villagerLockText : "")
+                );
 
-        //Load this NPC to stack
-        c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
-        //Add onto the normal text if villager and not well-liked enough
-        c.EmitDelegate<Func<string, NPC, string>>((normalText, npc) =>
-            normalText + (npc.ModNPC is Villager { RelationshipStatus: < VillagerRelationship.Like } villager ? $"\n{LWMUtils.GetLWMTextValue("UI.VillagerHousing.VillagerTypeLocked", villager.VillagerType.ToString())}" : "")
-        );
+                if (!Main.mouseRightRelease || !Main.mouseRight) {
+                    continue;
+                }
 
-        //IL block for above edit ^:
-        /* (30154,6)-(30154,72) tModLoader\src\tModLoader\Terraria\Main.cs #1#
-        /* 0x00101CD3 1105         #1# IL_059B: ldloc.s   nPC
-        /* 0x00101CD5 1106         #1# IL_059D: ldloc.s   num2
-        /* 0x00101CD7 2891020006   #1# IL_059F: call      string Terraria.Lang::GetNPCHouseBannerText(class Terraria.NPC, int32)
-        /* 0x00101CDC 132A         #1# IL_05A4: stloc.s   nPCHouseBannerText
-        /* (30155,6)-(30155,42) tModLoader\src\tModLoader\Terraria\Main.cs #1#
-        /* 0x00101CDE 02           #1# IL_05A6: ldarg.0
-        /* 0x00101CDF 112A         #1# IL_05A7: ldloc.s   nPCHouseBannerText
-        /* 0x00101CE1 16           #1# IL_05A9: ldc.i4.0
-        /* 0x00101CE2 16           #1# IL_05AA: ldc.i4.0
-        /* 0x00101CE3 15           #1# IL_05AB: ldc.i4.m1
-        /* 0x00101CE4 15           #1# IL_05AC: ldc.i4.m1
-        /* 0x00101CE5 15           #1# IL_05AD: ldc.i4.m1
-        /* 0x00101CE6 15           #1# IL_05AE: ldc.i4.m1
-        /* 0x00101CE7 16           #1# IL_05AF: ldc.i4.0
-        /* 0x00101CE8 28C3030006   #1# IL_05B0: call      instance void Terraria.Main::MouseText(string, int32, uint8, int32, int32, int32, int32, int32)
-        /* 0x00101CED 00           #1# IL_05B5: nop
-        */
+                Main.mouseRightRelease = false;
+                SoundEngine.PlaySound(SoundID.MenuTick);
+                if (!isLikedWithVillagers) {
+                    Main.NewText(villagerLockText);
+                    return;
+                }
 
-        //Navigate to right-click call in main
-        c.ErrorOnFailedGotoNext(MoveType.After, i => i.MatchLdsfld<Main>(nameof(Main.mouseRight)));
-
-        //Copy the brfalse_S label, then move after the transform command
-        ILLabel falseTransformLabel = (ILLabel)c.Next!.Operand;
-        c.Index++;
-        //Load this NPC to stack
-        c.Emit(OpCodes.Ldloc_S, npcLocalNumber);
-        //Remember that we moved after the right click loading instruction, so we have two things on the stack now
-        c.EmitDelegate<Func<NPC, bool>>(npc => {
-            //Check if the npc is a villager, then return based on whether or not the player is well-liked enough
-            if (npc.ModNPC is Villager villager) {
-                return villager.RelationshipStatus >= VillagerRelationship.Like;
+                WorldGen.kickOut(npc.whoAmI);
             }
-
-            //If the npc is not a villager, then assume vanilla functionality
-            return true;
         });
-        //Finally, add that copied false label we took
-        c.Emit(OpCodes.Brfalse_S, falseTransformLabel);
     }
 
     private void RoomOccupancyCheck(ILContext il) {
