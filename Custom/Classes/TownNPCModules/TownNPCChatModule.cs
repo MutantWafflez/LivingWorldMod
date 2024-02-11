@@ -76,7 +76,7 @@ public sealed class TownNPCChatModule : TownNPCModule {
         if (_currentSentence is not null) {
             // Every other 8 ticks while talking, add the draw call
             if (--_chatBubbleDuration % 16 <= 8) {
-                GlobalNPC.SpriteModule.AddDrawRequest(_talkTexture);
+                GlobalNPC.SpriteModule.RequestOverlay(_talkTexture);
             }
 
             if (_chatBubbleDuration > 0) {

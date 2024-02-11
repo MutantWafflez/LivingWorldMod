@@ -31,7 +31,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         }
     }
 
-    public void AddDrawRequest(Texture2D request) {
+    public void RequestOverlay(Texture2D request) {
         if (request is null || Main.netMode == NetmodeID.Server) {
             return;
         }
@@ -44,7 +44,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         _blinkTimer = duration;
     }
 
-    public void DrawOntoNPC(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+    public void DrawNPCOverlays(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
         Asset<Texture2D> npcAsset = TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile) ? profile.GetTextureNPCShouldUse(npc) : TextureAssets.Npc[npc.type];
 
         int frameWidth = npcAsset.Width();
@@ -86,7 +86,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         }
 
         if (_isBlinking) {
-            AddDrawRequest(_blinkTexture);
+            RequestOverlay(_blinkTexture);
         }
     }
 }

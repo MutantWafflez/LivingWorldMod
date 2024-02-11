@@ -256,7 +256,7 @@ public class TownGlobalNPC : GlobalNPC {
         if (_stateDict.TryGetValue((int)npc.ai[0], out TownNPCAIState state)) {
             state.PostDrawNPC(this, npc, spriteBatch, screenPos, drawColor);
         }
-        SpriteModule.DrawOntoNPC(spriteBatch, screenPos, drawColor);
+        SpriteModule.DrawNPCOverlays(spriteBatch, screenPos, drawColor);
         ChatModule.DoChatDrawing(spriteBatch, screenPos, drawColor);
 
         if (!LWM.IsDebug) {
