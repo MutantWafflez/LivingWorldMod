@@ -268,6 +268,7 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     public override void FindFrame(NPC npc, int frameHeight) {
+        SpriteModule.FrameNPC(frameHeight);
         if (_stateDict.TryGetValue((int)npc.ai[0], out TownNPCAIState state)) {
             state.FrameNPC(this, npc, frameHeight);
         }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -10,13 +11,27 @@ namespace LivingWorldMod.Custom.Classes.TownNPCModules;
 /// Module for Town NPCs that deal with drawing related tasks.
 /// </summary>
 public sealed class TownNPCSpriteModule : TownNPCModule {
+    private const int GivingAnimationDuration = (int)(LWMUtils.RealLifeSecond * 1.5f);
     private const int EyelidClosedDuration = 15;
+
+    public bool IsBlinking {
+        get;
+        private set;
+    }
+
+    public bool IsGiving {
+        get;
+        private set;
+    }
+
     private readonly Texture2D _blinkTexture;
 
     private readonly HashSet<Texture2D> _drawSet;
 
-    private bool _isBlinking;
     private int _blinkTimer;
+
+    private int _givingTimer;
+    private int _givingItemType;
 
     public TownNPCSpriteModule(NPC npc, Texture2D blinkTexture) : base(npc) {
         _blinkTexture = blinkTexture;
@@ -39,8 +54,14 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         _drawSet.Add(request);
     }
 
+    public void RequestGiving(int givingItemType = -1) {
+        IsGiving = true;
+        _givingTimer = GivingAnimationDuration;
+        _givingItemType = givingItemType;
+    }
+
     public void RequestBlink(int duration = EyelidClosedDuration) {
-        _isBlinking = true;
+        IsBlinking = true;
         _blinkTimer = duration;
     }
 
@@ -72,8 +93,32 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         }
     }
 
+    public void FrameNPC(int frameHeight) {
+        if (!IsGiving) {
+            return;
+        }
+
+        if (--_givingTimer <= 0) {
+            IsGiving = false;
+            _givingTimer = 0;
+            _givingItemType = -1;
+            return;
+        }
+
+        int nonAttackFrameCount = Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type];
+
+        const int animationHalf = GivingAnimationDuration / 2;
+        int frame = (_givingTimer < animationHalf ? _givingTimer : animationHalf - _givingTimer % animationHalf) switch {
+            >= 10 and < 16 => nonAttackFrameCount - 5,
+            >= 16 => nonAttackFrameCount - 4,
+            _ => 0
+        };
+
+        npc.frame.Y = frameHeight * frame;
+    }
+
     private void UpdateHead() {
-        if (!_isBlinking) {
+        if (!IsBlinking) {
             if (--_blinkTimer > 0) {
                 return;
             }
@@ -81,11 +126,11 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
             RequestBlink();
         }
         else if (--_blinkTimer <= 0) {
-            _isBlinking = false;
+            IsBlinking = false;
             _blinkTimer = Main.rand.Next(180, 360);
         }
 
-        if (_isBlinking) {
+        if (IsBlinking) {
             RequestOverlay(_blinkTexture);
         }
     }
