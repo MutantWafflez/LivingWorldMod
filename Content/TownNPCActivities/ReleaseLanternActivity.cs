@@ -7,8 +7,6 @@ using Terraria.GameContent.Events;
 namespace LivingWorldMod.Content.TownNPCActivities;
 
 public class ReleaseLanternActivity : TownNPCActivity {
-    public override int ReservedStateInteger => 28;
-
     public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         switch (npc.ai[1]) {
             case 0f when ++npc.ai[2] > 45: {

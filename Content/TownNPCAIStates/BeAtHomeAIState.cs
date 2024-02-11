@@ -9,8 +9,6 @@ using Terraria.GameContent;
 namespace LivingWorldMod.Content.TownNPCAIStates;
 
 public sealed class BeAtHomeAIState : TownNPCAIState {
-    public override int ReservedStateInteger => 27;
-
     public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         if (!TownNPCHousingModule.ShouldGoHome) {
             TownGlobalNPC.RefreshToState<DefaultAIState>(npc);

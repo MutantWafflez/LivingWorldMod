@@ -11,8 +11,6 @@ namespace LivingWorldMod.Content.TownNPCActivities;
 /// </summary>
 [Autoload(false)]
 public class SantaGiftingActivity : TownNPCActivity {
-    public override int ReservedStateInteger => 27;
-
     private NPC _receivingNPC;
 
     public override void DoState(TownGlobalNPC globalNPC, NPC npc) { }

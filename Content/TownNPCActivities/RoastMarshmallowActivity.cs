@@ -17,8 +17,6 @@ namespace LivingWorldMod.Content.TownNPCActivities;
 /// a marshmallow over it.
 /// </summary>
 public class RoastMarshmallowActivity : TownNPCActivity {
-    public override int ReservedStateInteger => 26;
-
     private Point _standingLocation;
     private bool _isAtStandingLocation;
 

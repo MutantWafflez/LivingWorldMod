@@ -9,6 +9,23 @@ namespace LivingWorldMod.Common.ModTypes;
 /// </summary>
 public abstract class TownNPCAIState : ModType {
     /// <summary>
+    /// The next integer value that will be given to <see cref="ReservedStateInteger"/>
+    /// when <see cref="ReserveStateInteger"/> is called.
+    /// </summary>
+    private static int NextReservedStateInteger = -1;
+
+    /// <summary>
+    /// This is the number that will be used to denote that the Town NPC
+    /// is in this AI state. Different AI State classes cannot have a same value
+    /// for this property.
+    /// </summary>
+    /// <remarks>
+    /// <b>NOTE:</b> If you override this property, make sure to give it a POSITIVE
+    /// integer value, to ensure there is no clash with the automatic reservation.
+    /// </remarks>
+    public virtual int ReservedStateInteger => ReserveStateInteger();
+
+    /// <summary>
     /// The internal numeric type of this state. Auto-assigned at initialization.
     /// </summary>
     public byte Type {
@@ -22,15 +39,6 @@ public abstract class TownNPCAIState : ModType {
     public static byte StateCount {
         get;
         private set;
-    }
-
-    /// <summary>
-    /// This is the number that will be used to denote that the Town NPC
-    /// is in this AI state. Different AI State classes cannot have a same value
-    /// for this property.
-    /// </summary>
-    public abstract int ReservedStateInteger {
-        get;
     }
 
     /// <summary>
@@ -81,4 +89,6 @@ public abstract class TownNPCAIState : ModType {
         ModTypeLookup<TownNPCAIState>.Register(this);
         Type = StateCount++;
     }
+
+    protected static int ReserveStateInteger() => NextReservedStateInteger--;
 }
