@@ -167,7 +167,7 @@ public class GroundedPathFinder : PathFinder {
             }
 
             // Vertical Only Jump Movement
-            for (int j = 2; j < maxUpwardMovement; j++) {
+            for (int j = MinimumHeightToBeConsideredJump; j < maxUpwardMovement; j++) {
                 ushort upLocationY = (ushort)(mLocationY - j);
 
                 if (!RectangleHasNoTiles(mLocationX, upLocationY, rectSizeX, rectSizeY)) {
@@ -184,7 +184,7 @@ public class GroundedPathFinder : PathFinder {
             }
 
             // Ledge Jump Movement
-            for (int j = 2; j < maxUpwardMovement; j++) {
+            for (int j = MinimumHeightToBeConsideredJump; j < maxUpwardMovement; j++) {
                 ushort upLocationY = (ushort)(mLocationY - j);
 
                 if (!RectangleHasNoTiles(mLocationX, upLocationY, rectSizeX, rectSizeY)) {
