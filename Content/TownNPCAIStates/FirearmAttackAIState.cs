@@ -11,9 +11,9 @@ public class FirearmAttackAIState : TownNPCAIState {
 
     public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         TownNPCCombatModule combatModule = globalNPC.CombatModule;
-        TownNPCProjAttackData attackData = TownNPCCombatModule.projAttackData[npc.type];
-        bool inBetweenShots = false;
+        TownNPCCombatModule.projAttackData.TryGetValue(npc.type, out TownNPCProjAttackData attackData);
 
+        bool inBetweenShots = false;
         // Everything in this switch block is vanilla hardcode, unmanagable with a JSON file, so here it stays
         switch (npc.type) {
             case NPCID.ArmsDealer: {

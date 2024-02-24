@@ -11,7 +11,7 @@ public class ThrowAttackAIState : TownNPCAIState {
 
     public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         TownNPCCombatModule combatModule = globalNPC.CombatModule;
-        TownNPCProjAttackData attackData = TownNPCCombatModule.projAttackData[npc.type];
+        TownNPCCombatModule.projAttackData.TryGetValue(npc.type, out TownNPCProjAttackData attackData);
 
         switch (npc.type) {
             case NPCID.BestiaryGirl:

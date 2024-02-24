@@ -11,7 +11,7 @@ public class MagicAttackAIState : TownNPCAIState {
 
     public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         TownNPCCombatModule combatModule = globalNPC.CombatModule;
-        TownNPCProjAttackData attackData = TownNPCCombatModule.projAttackData[npc.type];
+        TownNPCCombatModule.projAttackData.TryGetValue(npc.type, out TownNPCProjAttackData attackData);
         float auraLightMultiplier = 1f;
 
         NPCLoader.TownNPCAttackStrength(npc, ref attackData.projDamage, ref attackData.knockBack);

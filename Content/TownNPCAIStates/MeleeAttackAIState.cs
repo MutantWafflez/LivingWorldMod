@@ -12,7 +12,7 @@ public class MeleeAttackAIState : TownNPCAIState {
 
     public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         TownNPCCombatModule combatModule = globalNPC.CombatModule;
-        TownNPCMeleeAttackData attackData = TownNPCCombatModule.meleeAttackData[npc.type];
+        TownNPCCombatModule.meleeAttackData.TryGetValue(npc.type, out TownNPCMeleeAttackData attackData);
 
         // More vanilla hard-code
         if (npc.type == NPCID.TaxCollector && npc.GivenName == "Andrew") {
