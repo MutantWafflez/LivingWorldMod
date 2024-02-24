@@ -34,6 +34,8 @@ public class VillageShrineTile : BasePylon {
         shrineIcons = ModContent.Request<Texture2D>($"{LWM.SpritePath}MapIcons/ShrineIcons");
     }
 
+    public override NPCShop.Entry GetNPCShopEntry() => null;
+
     public override void SetStaticDefaults() {
         Main.tileFrameImportant[Type] = true;
         Main.tileNoAttach[Type] = true;
