@@ -118,7 +118,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             path.RemoveAt(path.Count - 1);
 
             if (!path.Any()) {
-                EndPathfinding(true);
+                EndPathfinding();
                 return;
             }
 
@@ -194,7 +194,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     public void PausePathfind() => _isPaused = true;
 
-    public void CancelPathfind() => EndPathfinding(false);
+    public void CancelPathfind() => EndPathfinding();
 
     public void DebugDrawPath(SpriteBatch spriteBatch, Vector2 screenPos) {
         if (!IsPathfinding) {
@@ -214,7 +214,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     public void ReceiveNetworkData(BitReader bitReader, BinaryReader binaryReader) {
         Point endPoint = new(binaryReader.ReadInt16(), binaryReader.ReadInt16());
-        EndPathfinding(false);
+        EndPathfinding();
         if (endPoint is { X: -1, Y: -1 }) {
             return;
         }
@@ -417,7 +417,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         _currentPathfinderResult = GetPathfinderResult(endPoint);
 
         if (_currentPathfinderResult is null) {
-            EndPathfinding(false);
+            EndPathfinding();
         }
         else {
             List<PathFinderNode> path = _currentPathfinderResult.path;
@@ -451,7 +451,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         }
     }
 
-    private void EndPathfinding(bool reachedDestination) {
+    private void EndPathfinding() {
         _prevDistanceToNextNode = float.MaxValue;
         _notMakingProgressCounter = 0;
 
