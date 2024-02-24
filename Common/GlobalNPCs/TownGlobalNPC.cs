@@ -281,7 +281,7 @@ public class TownGlobalNPC : GlobalNPC {
         bool foundTileToStandOn = false;
         for (int i = 0; i < (int)Math.Ceiling(npc.width / 16f); i++) {
             Tile floorTile = Main.tile[tilePos + new Point(i, 1)];
-            if (!floorTile.HasUnactuatedTile || !Main.tileSolidTop[floorTile.TileType] && !Main.tileSolid[floorTile.TileType]) {
+            if (!floorTile.HasUnactuatedTile || floorTile.IsHalfBlock || !Main.tileSolidTop[floorTile.TileType] && !Main.tileSolid[floorTile.TileType]) {
                 continue;
             }
 
