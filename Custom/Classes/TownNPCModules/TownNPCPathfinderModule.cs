@@ -364,16 +364,10 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
                 }
             }
 
-            pathFinder = new GroundedPathFinder(grid);
+            pathFinder = new GroundedPathFinder(topLeftOfGrid, PathFinderZoneSideLength, 6, (int)Math.Ceiling(npc.width / 16f), (int)Math.Ceiling(npc.height / 16f));
         }
 
-        List<PathFinderNode> path = pathFinder.FindPath(
-            BottomLeftTileOfNPC - topLeftOfGrid,
-            endPoint - topLeftOfGrid,
-            MaxTileJumpHeight,
-            (int)Math.Ceiling(npc.width / 16f),
-            (int)Math.Ceiling(npc.height / 16f)
-        );
+        List<PathFinderNode> path = pathFinder.FindPath(BottomLeftTileOfNPC - topLeftOfGrid, endPoint - topLeftOfGrid);
 
         if (path is null) {
             return null;

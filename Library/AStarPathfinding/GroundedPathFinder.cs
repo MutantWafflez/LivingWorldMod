@@ -31,7 +31,11 @@ namespace LivingWorldMod.Library.AStarPathfinding;
 public class GroundedPathFinder : PathFinder {
     #region Constructors
 
-    public GroundedPathFinder(GridObject[,] grid) : base(grid) { }
+    public GroundedPathFinder(Point topLeftOfGrid, ushort gridSideLength, int maxJumpCost, int rectSizeX, int rectSizeY) : this(topLeftOfGrid, gridSideLength, gridSideLength, maxJumpCost, rectSizeX, rectSizeY) { }
+
+    public GroundedPathFinder(Point topLeftOfGrid, ushort gridWidth, ushort gridHeight, int maxJumpCost, int rectSizeX, int rectSizeY) : base(topLeftOfGrid, gridWidth, gridHeight, rectSizeX, rectSizeY) {
+        _maxJumpCost = maxJumpCost;
+    }
 
     #endregion
 
@@ -48,6 +52,8 @@ public class GroundedPathFinder : PathFinder {
     /// for such a movement to be considered a "step."
     /// </summary>
     public const int ExactHeightToBeConsideredStep = 1;
+
+    private readonly int _maxJumpCost;
 
     #endregion
 
@@ -167,7 +173,7 @@ public class GroundedPathFinder : PathFinder {
             }
 
             // Vertical Only Jump Movement
-            for (int j = MinimumHeightToBeConsideredJump; j < maxUpwardMovement; j++) {
+            for (int j = MinimumHeightToBeConsideredJump; j < _maxJumpCost; j++) {
                 ushort upLocationY = (ushort)(mLocationY - j);
 
                 if (!RectangleHasNoTiles(mLocationX, upLocationY, rectSizeX, rectSizeY)) {
@@ -184,7 +190,7 @@ public class GroundedPathFinder : PathFinder {
             }
 
             // Ledge Jump Movement
-            for (int j = MinimumHeightToBeConsideredJump; j < maxUpwardMovement; j++) {
+            for (int j = MinimumHeightToBeConsideredJump; j < _maxJumpCost; j++) {
                 ushort upLocationY = (ushort)(mLocationY - j);
 
                 if (!RectangleHasNoTiles(mLocationX, upLocationY, rectSizeX, rectSizeY)) {
@@ -217,7 +223,7 @@ public class GroundedPathFinder : PathFinder {
             return;
         }
 
-        mNewG = mCalcGrid[mLocation].G + mGrid[mNewLocationX, mNewLocationY].MovementWeight;
+        mNewG = mCalcGrid[mLocation].G + GetGridData(mNewLocationX, mNewLocationY).MovementWeight;
 
         if (PunishChangeDirection) {
             if (mNewLocationX - mLocationX != 0) {
@@ -301,7 +307,7 @@ public class GroundedPathFinder : PathFinder {
         }
 
         for (int i = 0; i < rectWidth; i++) {
-            if (mGrid[bottomLeftTileX + i, bottomLeftTileY + 1].ObjectType is GridNodeType.Solid or GridNodeType.SolidTop) {
+            if (GetGridData(bottomLeftTileX + i, bottomLeftTileY + 1).ObjectType is GridNodeType.Solid or GridNodeType.SolidTop) {
                 return true;
             }
         }

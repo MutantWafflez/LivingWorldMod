@@ -23,10 +23,15 @@ namespace LivingWorldMod.Library.AStarPathfinding;
 public class PathFinder {
     #region Constructors
 
-    public PathFinder(GridObject[,] grid) {
-        mGrid = grid ?? throw new Exception("Grid cannot be null");
-        mGridX = (ushort)(mGrid.GetUpperBound(0) + 1);
-        mGridY = (ushort)(mGrid.GetUpperBound(1) + 1);
+    public PathFinder(Point topLeftOfGrid, ushort gridSideLength, int rectSizeX, int rectSizeY) : this(topLeftOfGrid, gridSideLength, gridSideLength, rectSizeX, rectSizeY) { }
+
+    public PathFinder(Point topLeftOfGrid, ushort gridWidth, ushort gridHeight, int rectSizeX, int rectSizeY) {
+        _topLeftOfGrid = topLeftOfGrid;
+        this.rectSizeX = rectSizeX;
+        this.rectSizeY = rectSizeY;
+
+        mGridX = gridWidth;
+        mGridY = gridHeight;
         mGridXMinus1 = (ushort)(mGridX - 1);
         mGridYLog2 = (ushort)Math.Log(mGridY, 2);
 
@@ -36,10 +41,7 @@ public class PathFinder {
             throw new Exception("Invalid Grid, size in X and Y must be power of 2");
         }
 
-        if (mCalcGrid == null || mCalcGrid.Length != mGridX * mGridY) {
-            mCalcGrid = new InternalPathFinderNode[mGridX * mGridY];
-        }
-
+        mCalcGrid = new InternalPathFinderNode[mGridX * mGridY];
         mOpen = new PriorityQueueB<int>(new ComparePFNodeMatrix(mCalcGrid));
     }
 
@@ -99,7 +101,6 @@ public class PathFinder {
     #region Variables Declaration
 
     // Heap variables are initializated to default, but I like to do it anyway
-    protected readonly GridObject[,] mGrid;
     protected readonly PriorityQueueB<int> mOpen;
     protected readonly List<PathFinderNode> mClose = new();
     protected bool mStop;
@@ -128,9 +129,9 @@ public class PathFinder {
     protected int mNewG;
 
     // "Parameter" variables
+    private readonly Point _topLeftOfGrid;
     protected Point start;
     protected Point end;
-    protected int maxUpwardMovement;
     protected int rectSizeX;
     protected int rectSizeY;
 
@@ -190,14 +191,15 @@ public class PathFinder {
 
     #region Methods
 
-    public List<PathFinderNode> FindPath(Point startPoint, Point endPoint, int maximalUpwardMovement = 0, int rectangleSizeX = 1, int rectangleSizeY = 1) {
+    public List<PathFinderNode> FindPath(Point startPoint, Point endPoint) {
         lock (this) {
             // Is faster if we don't clear the matrix, just assign different values for open and close and ignore the rest
             // I could have user Array.Clear() but using unsafe code is faster, no much but it is.
             //fixed (PathFinderNodeFast* pGrid = tmpGrid) 
             //    ZeroMemory((byte*) pGrid, sizeof(PathFinderNodeFast) * 1000000);
 
-            InitializeParameterVariables(startPoint, endPoint, maximalUpwardMovement, rectangleSizeX, rectangleSizeY);
+            start = startPoint;
+            end = endPoint;
 
             if (!EnsureStartAndEndValidity()) {
                 return null;
@@ -209,14 +211,6 @@ public class PathFinder {
 
             return FinalizePath();
         }
-    }
-
-    protected virtual void InitializeParameterVariables(Point startPoint, Point endPoint, int maximalUpwardMovement = 0, int rectangleSizeX = 1, int rectangleSizeY = 1) {
-        start = startPoint;
-        end = endPoint;
-        maxUpwardMovement = maximalUpwardMovement;
-        rectSizeX = rectangleSizeX;
-        rectSizeY = rectangleSizeY;
     }
 
     protected virtual bool EnsureStartAndEndValidity() {
@@ -300,10 +294,10 @@ public class PathFinder {
                 }
 
                 if (HeavyDiagonals && i > 3) {
-                    mNewG = mCalcGrid[mLocation].G + (int)(mGrid[mNewLocationX, mNewLocationY].MovementWeight * 2.41);
+                    mNewG = mCalcGrid[mLocation].G + (int)(GetGridData(mNewLocationX, mNewLocationY).MovementWeight * 2.41);
                 }
                 else {
-                    mNewG = mCalcGrid[mLocation].G + mGrid[mNewLocationX, mNewLocationY].MovementWeight;
+                    mNewG = mCalcGrid[mLocation].G + GetGridData(mNewLocationX, mNewLocationY).MovementWeight;
                 }
 
                 if (PunishChangeDirection) {
@@ -430,6 +424,48 @@ public class PathFinder {
         return null;
     }
 
+    protected GridObject GetGridData(int x, int y) {
+        Tile tile = Main.tile[_topLeftOfGrid + new Point(x, y)];
+
+        bool hasTile = tile.HasTile;
+        bool isActuated = tile.IsActuated;
+        bool isSolid = Main.tileSolid[tile.TileType];
+        bool isPlatform = TileID.Sets.Platforms[tile.TileType];
+        bool isDoor = TileLoader.OpenDoorID(tile) > 0 || TileLoader.CloseDoorID(tile) > 0;
+        bool hasLava = tile is { LiquidAmount: > 0, LiquidType: LiquidID.Lava };
+        bool hasShimmer = tile is { LiquidAmount: >= 200, LiquidType: LiquidID.Shimmer };
+
+        return hasTile switch {
+            true when !isActuated && isSolid && !isDoor && !isPlatform => new GridObject(GridNodeType.Solid, 0),
+            true when !isActuated && isPlatform => new GridObject(GridNodeType.SolidTop, 0),
+            false when hasLava || hasShimmer => new GridObject(GridNodeType.Impassable, 0),
+            _ => new GridObject(GridNodeType.NonSolid, GetTileMovementCost(tile))
+        };
+    }
+
+    protected virtual byte GetTileMovementCost(Tile tile) {
+        byte tileCost = 1;
+
+        if (TileID.Sets.AvoidedByNPCs[tile.TileType]) {
+            tileCost += 8;
+        }
+
+        if (tile.LiquidAmount <= 0) {
+            return tileCost;
+        }
+
+        switch (tile.LiquidType) {
+            case LiquidID.Water:
+                tileCost += 8;
+                break;
+            case LiquidID.Honey:
+                tileCost += 12;
+                break;
+        }
+
+        return tileCost;
+    }
+
     /// <summary>
     /// Returns whether or not the passed in rectangular parameters form a rectangle with no tiles in it.
     /// </summary>
@@ -443,7 +479,7 @@ public class PathFinder {
 
         for (int i = bottomLeftTileX; i < bottomLeftTileX + sizeX; i++) {
             for (int j = bottomLeftTileY; j > bottomLeftTileY - sizeY; j--) {
-                if (mGrid[i, j].ObjectType is GridNodeType.Solid or GridNodeType.Impassable) {
+                if (GetGridData(i, j).ObjectType is GridNodeType.Solid or GridNodeType.Impassable) {
                     return false;
                 }
             }
