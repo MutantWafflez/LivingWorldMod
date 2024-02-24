@@ -14,7 +14,7 @@ public class DefaultAIState : TownNPCAIState {
 
     public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         if (npc.breath == 0) {
-            TownGlobalNPC.RefreshToState<WanderAIState>(npc);
+            TownGlobalNPC.RefreshToState<WalkToRandomPosState>(npc);
             return;
         }
 
@@ -23,7 +23,7 @@ public class DefaultAIState : TownNPCAIState {
         }
 
         if (Main.rand.NextBool(4, 10)) {
-            TownGlobalNPC.RefreshToState<WanderAIState>(npc);
+            TownGlobalNPC.RefreshToState<WalkToRandomPosState>(npc);
             return;
         }
 

@@ -23,7 +23,9 @@ public abstract class TownNPCAIState : ModType {
     /// <b>NOTE:</b> If you override this property, make sure to give it a POSITIVE
     /// integer value, to ensure there is no clash with the automatic reservation.
     /// </remarks>
-    public virtual int ReservedStateInteger => ReserveStateInteger();
+    public virtual int ReservedStateInteger {
+        get;
+    } = ReserveStateInteger();
 
     /// <summary>
     /// The internal numeric type of this state. Auto-assigned at initialization.

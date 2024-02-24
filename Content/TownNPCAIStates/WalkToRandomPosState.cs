@@ -9,7 +9,7 @@ using Terraria.Utilities;
 
 namespace LivingWorldMod.Content.TownNPCAIStates;
 
-public class WanderAIState : TownNPCAIState {
+public class WalkToRandomPosState : TownNPCAIState {
     public override int ReservedStateInteger => 1;
 
     public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
