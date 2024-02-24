@@ -173,6 +173,7 @@ public class GroundedPathFinder : PathFinder {
             }
 
             // Vertical Only Jump Movement
+            // TODO: Change jumping to be cost based instead of tile based
             for (int j = MinimumHeightToBeConsideredJump; j < _maxJumpCost; j++) {
                 ushort upLocationY = (ushort)(mLocationY - j);
 
