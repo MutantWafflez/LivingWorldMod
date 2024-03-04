@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
-using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Utilities;
 
 namespace LivingWorldMod.Content.Villages.Globals.NPCs;
 

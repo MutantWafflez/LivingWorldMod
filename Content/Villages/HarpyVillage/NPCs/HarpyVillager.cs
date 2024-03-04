@@ -6,7 +6,7 @@ using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture.Tapestries;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
-using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Utilities;
 using Terraria.GameContent.Bestiary;
 using Terraria.Utilities;
 

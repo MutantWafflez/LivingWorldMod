@@ -9,7 +9,7 @@ using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 
-namespace LivingWorldMod.Custom.Utilities;
+namespace LivingWorldMod.Utilities;
 
 // Class that handles all utility functions for NPCs.
 public static partial class LWMUtils {

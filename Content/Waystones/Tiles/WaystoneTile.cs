@@ -1,7 +1,7 @@
 ﻿using LivingWorldMod.Content.Waystones.Globals.PacketHandlers;
 using LivingWorldMod.Content.Waystones.Globals.Systems;
-using LivingWorldMod.Custom.Utilities;
 using LivingWorldMod.Globals.BaseTypes.Tiles;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

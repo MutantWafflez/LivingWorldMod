@@ -1,5 +1,5 @@
-﻿using LivingWorldMod.Custom.Utilities;
-using LivingWorldMod.Globals.Sets;
+﻿using LivingWorldMod.Globals.Sets;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.DataStructures;

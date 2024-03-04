@@ -5,7 +5,7 @@ using LivingWorldMod.Content.Villages.Globals.Systems.UI;
 using LivingWorldMod.Content.Villages.UI.VillageShrine;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
-using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria.Chat;
 using Terraria.DataStructures;

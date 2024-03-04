@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Terraria.GameContent.Drawing;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Custom.Utilities;
+namespace LivingWorldMod.Utilities;
 
 /// <summary>
 /// Utilities class that deals with the Tile class and tiles in general.

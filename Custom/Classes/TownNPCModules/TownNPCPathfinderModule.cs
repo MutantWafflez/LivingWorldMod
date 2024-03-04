@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using LivingWorldMod.Custom.Utilities;
 using LivingWorldMod.Library.AStarPathfinding;
 using LivingWorldMod.Library.AStarPathfinding.Nodes;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.DataStructures;

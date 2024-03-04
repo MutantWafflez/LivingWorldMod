@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using LivingWorldMod.Custom.Utilities;
 using LivingWorldMod.Globals.Systems.BaseSystems;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent.Achievements;
 using Terraria.GameContent.Events;

@@ -6,7 +6,7 @@ using LivingWorldMod.Content.Villages.Globals.Systems;
 using LivingWorldMod.Content.Villages.Globals.Systems.UI;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
-using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Audio;

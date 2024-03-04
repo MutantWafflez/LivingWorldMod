@@ -1,5 +1,5 @@
-﻿using LivingWorldMod.Custom.Utilities;
-using LivingWorldMod.Globals.BaseTypes.Tiles;
+﻿using LivingWorldMod.Globals.BaseTypes.Tiles;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

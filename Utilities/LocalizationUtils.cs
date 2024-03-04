@@ -1,6 +1,6 @@
 ﻿using Terraria.Localization;
 
-namespace LivingWorldMod.Custom.Utilities;
+namespace LivingWorldMod.Utilities;
 
 // Utilities class which holds methods that deals with localization.
 public static partial class LWMUtils {

@@ -2,7 +2,7 @@
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 
-namespace LivingWorldMod.Custom.Utilities;
+namespace LivingWorldMod.Utilities;
 
 // Utilities class that holds methods that deals with patching, whether it be IL or detouring
 public static partial class LWMUtils {

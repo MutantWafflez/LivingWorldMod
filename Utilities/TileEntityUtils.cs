@@ -2,7 +2,7 @@
 using System.Linq;
 using Terraria.DataStructures;
 
-namespace LivingWorldMod.Custom.Utilities;
+namespace LivingWorldMod.Utilities;
 
 // Utilities class that holds methods that deal specifically within the realm of Tile Entities.
 public static partial class LWMUtils {

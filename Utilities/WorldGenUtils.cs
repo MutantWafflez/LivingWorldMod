@@ -4,7 +4,7 @@ using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
 
-namespace LivingWorldMod.Custom.Utilities;
+namespace LivingWorldMod.Utilities;
 
 /// <summary>
 /// Class that holds methods and properties that assist with world generation or world related matters.

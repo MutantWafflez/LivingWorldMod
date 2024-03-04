@@ -2,7 +2,7 @@
 using LivingWorldMod.Custom.Structs;
 using Terraria.ModLoader.IO;
 
-namespace LivingWorldMod.Custom.Utilities;
+namespace LivingWorldMod.Utilities;
 
 // Utilities class that handles reading, writing, and general I/O management.
 public static partial class LWMUtils {

@@ -1,7 +1,7 @@
 ﻿using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 using LivingWorldMod.Content.Villages.UI.VillageShrine;
-using LivingWorldMod.Custom.Utilities;
 using LivingWorldMod.Globals.Systems.BaseSystems;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Terraria.GameInput;

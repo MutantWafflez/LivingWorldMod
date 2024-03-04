@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using LivingWorldMod.Custom.Structs;
-using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Utilities;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Custom.Classes.DebugModules;

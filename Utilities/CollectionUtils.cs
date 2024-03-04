@@ -1,7 +1,7 @@
 ﻿using System;
 using Terraria.Utilities;
 
-namespace LivingWorldMod.Custom.Utilities;
+namespace LivingWorldMod.Utilities;
 
 // Utilities class that holds methods for Collections.
 public static partial class LWMUtils {

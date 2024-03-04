@@ -4,7 +4,7 @@ using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 
-namespace LivingWorldMod.Custom.Utilities;
+namespace LivingWorldMod.Utilities;
 
 /// Utilities class that has helper methods for specifically NPC housing.
 public static partial class LWMUtils {

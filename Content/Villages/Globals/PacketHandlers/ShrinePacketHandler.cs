@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using LivingWorldMod.Content.Villages.Globals.Systems.UI;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
-using LivingWorldMod.Custom.Utilities;
 using LivingWorldMod.Globals.ModTypes;
+using LivingWorldMod.Utilities;
 using Terraria.DataStructures;
 
 namespace LivingWorldMod.Content.Villages.Globals.PacketHandlers;

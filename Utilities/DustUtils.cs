@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace LivingWorldMod.Custom.Utilities;
+namespace LivingWorldMod.Utilities;
 
 // Utilities class that holds methods which deal with specifically dust.
 public static partial class LWMUtils {

@@ -1,7 +1,7 @@
 ﻿using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Custom.Enums;
-using LivingWorldMod.Custom.Utilities;
 using LivingWorldMod.Globals.UIElements;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria.Audio;

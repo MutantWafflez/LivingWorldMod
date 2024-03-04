@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Hjson;
 
-namespace LivingWorldMod.Custom.Utilities;
+namespace LivingWorldMod.Utilities;
 
 // Utilities class that assists with JSON files.
 public static partial class LWMUtils {

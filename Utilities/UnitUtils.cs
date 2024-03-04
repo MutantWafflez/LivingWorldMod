@@ -1,4 +1,4 @@
-﻿namespace LivingWorldMod.Custom.Utilities;
+﻿namespace LivingWorldMod.Utilities;
 
 // Utilities that help with unit conversions.
 public static partial class LWMUtils {
