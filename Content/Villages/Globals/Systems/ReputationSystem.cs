@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Hjson;
 using LivingWorldMod.Custom.Enums;
-using LivingWorldMod.Custom.Structs;
+using LivingWorldMod.DataStatuctures.Structs;
 using LivingWorldMod.Globals.Systems.BaseSystems;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;

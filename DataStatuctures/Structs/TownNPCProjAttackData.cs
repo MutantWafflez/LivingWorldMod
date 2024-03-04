@@ -1,4 +1,4 @@
-﻿namespace LivingWorldMod.Custom.Structs;
+﻿namespace LivingWorldMod.DataStatuctures.Structs;
 
 /// <summary>
 /// Struct holding data for Town NPC attacks where a projectile is created.

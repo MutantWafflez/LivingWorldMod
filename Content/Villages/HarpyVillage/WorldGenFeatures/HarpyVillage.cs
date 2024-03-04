@@ -6,7 +6,7 @@ using LivingWorldMod.Content.Villages.HarpyVillage.NPCs;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Blocks;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 using LivingWorldMod.Custom.Enums;
-using LivingWorldMod.Custom.Structs;
+using LivingWorldMod.DataStatuctures.Structs;
 using LivingWorldMod.Globals.ModTypes;
 using LivingWorldMod.Globals.Systems;
 using LivingWorldMod.Utilities;

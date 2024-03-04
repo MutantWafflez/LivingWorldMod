@@ -1,4 +1,4 @@
-﻿namespace LivingWorldMod.Custom.Structs;
+﻿namespace LivingWorldMod.DataStatuctures.Structs;
 
 /// <summary>
 /// Struct that holds data for a given village type on their thresholds for reputation with the player.

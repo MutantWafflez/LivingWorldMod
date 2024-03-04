@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader.IO;
 
-namespace LivingWorldMod.Custom.Structs;
+namespace LivingWorldMod.DataStatuctures.Structs;
 
 /// <summary>
 /// Relatively simple Circle structure, that explains what it does on the tin.

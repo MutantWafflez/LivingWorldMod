@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
-using LivingWorldMod.Custom.Structs;
+using LivingWorldMod.DataStatuctures.Structs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 

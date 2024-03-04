@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using LivingWorldMod.Custom.Structs;
+using LivingWorldMod.DataStatuctures.Structs;
 using LivingWorldMod.Utilities;
 using Terraria.ModLoader.IO;
 

@@ -1,6 +1,6 @@
 ﻿using Terraria.Localization;
 
-namespace LivingWorldMod.Custom.Structs;
+namespace LivingWorldMod.DataStatuctures.Structs;
 
 /// <summary>
 /// Struct that holds data on a specific line of dialogue, including its translation key, weight (if applicable), and if

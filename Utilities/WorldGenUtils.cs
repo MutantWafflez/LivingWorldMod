@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Custom.Enums;
-using LivingWorldMod.Custom.Structs;
+using LivingWorldMod.DataStatuctures.Structs;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Utilities;
