@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace LivingWorldMod.DataStatuctures.Classes.TownNPCModules;
+namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
 /// <summary>
 /// Class that handles the new "mood" feature that replaces Town NPC happiness.

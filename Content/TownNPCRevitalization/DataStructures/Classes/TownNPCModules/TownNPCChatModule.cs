@@ -1,6 +1,7 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.DataStatuctures.Classes;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,7 +10,7 @@ using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.UI.Chat;
 
-namespace LivingWorldMod.DataStatuctures.Classes.TownNPCModules;
+namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
 public sealed class TownNPCChatModule : TownNPCModule {
     private const int DefaultChatBubbleDuration = (int)(LWMUtils.RealLifeSecond * 5d);

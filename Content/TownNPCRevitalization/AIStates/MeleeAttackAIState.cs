@@ -1,8 +1,8 @@
 using System;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
-using LivingWorldMod.DataStatuctures.Classes.TownNPCModules;
-using LivingWorldMod.DataStatuctures.Structs;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;

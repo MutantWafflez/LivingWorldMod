@@ -11,7 +11,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ModLoader.IO;
 
-namespace LivingWorldMod.DataStatuctures.Classes.TownNPCModules;
+namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
 public sealed class TownNPCPathfinderModule : TownNPCModule {
     private sealed class PathfinderResult {

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.DataStatuctures.Structs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 
-namespace LivingWorldMod.DataStatuctures.Classes.TownNPCModules;
+namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
 /// <summary>
 /// Module for the Town NPC revitalization that handles combat for

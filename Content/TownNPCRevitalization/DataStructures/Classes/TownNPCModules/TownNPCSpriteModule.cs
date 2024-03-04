@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria.GameContent;
 
-namespace LivingWorldMod.DataStatuctures.Classes.TownNPCModules;
+namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
 /// <summary>
 /// Module for Town NPCs that deal with drawing related tasks.

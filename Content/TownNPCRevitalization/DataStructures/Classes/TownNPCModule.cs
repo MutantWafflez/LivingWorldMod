@@ -1,6 +1,6 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 
-namespace LivingWorldMod.DataStatuctures.Classes;
+namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 
 public abstract class TownNPCModule {
     protected TownGlobalNPC GlobalNPC => npc.GetGlobalNPC<TownGlobalNPC>();
