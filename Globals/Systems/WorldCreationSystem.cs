@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Custom.Interfaces;
+using LivingWorldMod.DataStatuctures.Interfaces;
 using LivingWorldMod.DataStatuctures.Structs;
 using LivingWorldMod.Globals.ModTypes;
 using LivingWorldMod.Globals.Systems.BaseSystems;

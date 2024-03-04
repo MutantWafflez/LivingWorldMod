@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.DataStatuctures.Enums;
 using LivingWorldMod.DataStatuctures.Structs;
 using Microsoft.Xna.Framework;
 

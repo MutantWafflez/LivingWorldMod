@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Hjson;
-using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.DataStatuctures.Enums;
 using LivingWorldMod.DataStatuctures.Structs;
 using LivingWorldMod.Globals.Systems.BaseSystems;
 using LivingWorldMod.Utilities;

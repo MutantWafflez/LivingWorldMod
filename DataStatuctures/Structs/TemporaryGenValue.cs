@@ -1,4 +1,4 @@
-﻿using LivingWorldMod.Custom.Interfaces;
+﻿using LivingWorldMod.DataStatuctures.Interfaces;
 
 namespace LivingWorldMod.DataStatuctures.Structs;
 

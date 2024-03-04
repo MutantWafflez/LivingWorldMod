@@ -1,6 +1,6 @@
 using System.IO;
-using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.DataStatuctures.Classes;
+using LivingWorldMod.DataStatuctures.Enums;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader.Default;

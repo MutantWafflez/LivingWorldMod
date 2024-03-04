@@ -1,4 +1,4 @@
-﻿namespace LivingWorldMod.Custom.Enums;
+﻿namespace LivingWorldMod.DataStatuctures.Enums;
 
 /// <summary>
 /// Small enum that defines what expression fits with what sprite on the portraits of the shop

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
-using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.DataStatuctures.Enums;
 using LivingWorldMod.Utilities;
 
 namespace LivingWorldMod.Content.Villages.HarpyVillage.Biomes;

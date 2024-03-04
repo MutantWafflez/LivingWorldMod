@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Hjson;
-using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.DataStatuctures.Enums;
 using LivingWorldMod.DataStatuctures.Structs;
 using LivingWorldMod.Globals.Systems.BaseSystems;
 using LivingWorldMod.Utilities;

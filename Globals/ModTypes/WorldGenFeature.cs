@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.DataStatuctures.Enums;
 using LivingWorldMod.Globals.Systems;
 using LivingWorldMod.Utilities;
 using Terraria.IO;

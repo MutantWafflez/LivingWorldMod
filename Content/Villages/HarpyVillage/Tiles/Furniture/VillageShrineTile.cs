@@ -1,5 +1,5 @@
 ﻿using LivingWorldMod.Content.Villages.Globals.Systems.UI;
-using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.DataStatuctures.Enums;
 using LivingWorldMod.Globals.BaseTypes.Tiles;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;

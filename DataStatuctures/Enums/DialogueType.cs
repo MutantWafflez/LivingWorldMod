@@ -1,4 +1,4 @@
-﻿namespace LivingWorldMod.Custom.Enums;
+﻿namespace LivingWorldMod.DataStatuctures.Enums;
 
 /// <summary>
 /// Enum that specifies what kind of dialogue is wanted in tandem with the Dialogue request system for

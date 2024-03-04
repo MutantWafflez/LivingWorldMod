@@ -1,6 +1,6 @@
 ﻿using LivingWorldMod.DataStatuctures.Structs;
 
-namespace LivingWorldMod.Custom.Interfaces;
+namespace LivingWorldMod.DataStatuctures.Interfaces;
 
 /// <summary>
 /// Interface that purely exists in order to create collections of
