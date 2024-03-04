@@ -1,5 +1,5 @@
-﻿using LivingWorldMod.Content.Walls;
-using LivingWorldMod.Globals.BaseTypes.Items;
+﻿using LivingWorldMod.Globals.BaseTypes.Items;
+using LivingWorldMod.Globals.BaseTypes.Walls;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.Villages.HarpyVillage.Walls;

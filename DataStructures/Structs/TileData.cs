@@ -1,6 +1,5 @@
 ﻿using System;
-using LivingWorldMod.Content.Tiles.DebugTiles;
-using LivingWorldMod.Content.Walls.DebugWalls;
+using LivingWorldMod.DataStructures.Classes.DebugModules;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.DataStructures.Structs;

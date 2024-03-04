@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria.Localization;
 
-namespace LivingWorldMod.Content.Walls;
+namespace LivingWorldMod.Globals.BaseTypes.Walls;
 
 /// <summary>
 /// Base class for all LWM Walls that has some functionality for the streamlining of the wall

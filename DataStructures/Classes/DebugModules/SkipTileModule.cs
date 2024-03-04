@@ -1,4 +1,4 @@
-﻿using LivingWorldMod.Content.Tiles.DebugTiles;
+﻿using LivingWorldMod.Globals.BaseTypes.Tiles;
 
 namespace LivingWorldMod.DataStructures.Classes.DebugModules;
 
@@ -17,5 +17,26 @@ public class SkipTileModule : RegionModule {
         }
 
         Main.NewText("Tiles Placed!");
+    }
+}
+
+/// <summary>
+/// Tile used for "skipping" over certain tile positions when used in conjunction with the
+/// structure stick.
+/// </summary>
+public class SkipTile : BaseTile {
+    public override string Texture => "Terraria/Images/Tiles_" + TileID.TeamBlockWhite;
+
+    public override bool IsLoadingEnabled(Mod mod) => LWM.IsDebug;
+
+    public override void SetStaticDefaults() {
+        Main.tileNoAttach[Type] = false;
+        Main.tileNoSunLight[Type] = false;
+        Main.tileLavaDeath[Type] = false;
+        Main.tileWaterDeath[Type] = false;
+        Main.tileSolid[Type] = false;
+        Main.tileMergeDirt[Type] = false;
+
+        TileID.Sets.HousingWalls[Type] = false;
     }
 }

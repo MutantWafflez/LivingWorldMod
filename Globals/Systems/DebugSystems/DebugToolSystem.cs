@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.DataStructures.Classes.DebugModules;
 using Microsoft.Xna.Framework.Input;
 
