@@ -1,6 +1,6 @@
 ﻿using Terraria.WorldBuilding;
 
-namespace LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
+namespace LivingWorldMod.DataStructures.Classes.GenConditions;
 
 /// <summary>
 /// Simple GenCondition that checks whether or not the specified tile has no liquid of any type.

@@ -1,4 +1,4 @@
-﻿namespace LivingWorldMod.Common.Commands.DebugCommands;
+﻿namespace LivingWorldMod.Globals.BaseTypes.Commands;
 
 /// <summary>
 /// Command that is loaded only in Debug mode.

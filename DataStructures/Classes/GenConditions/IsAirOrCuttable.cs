@@ -1,8 +1,6 @@
-﻿using Terraria;
-using Terraria.ID;
-using Terraria.WorldBuilding;
+﻿using Terraria.WorldBuilding;
 
-namespace LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
+namespace LivingWorldMod.DataStructures.Classes.GenConditions;
 
 /// <summary>
 /// Simple GenCondition that checks whether or not the specified tile is air or a "tile" that can be cut, such as grass.

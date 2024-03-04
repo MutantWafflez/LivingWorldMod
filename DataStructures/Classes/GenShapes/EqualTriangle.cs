@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria.WorldBuilding;
 
-namespace LivingWorldMod.Common.VanillaOverrides.WorldGen.GenShapes;
+namespace LivingWorldMod.DataStructures.Classes.GenShapes;
 
 /// <summary>
 /// GenShape that generates an "equilateral" triangle with the passed in side length.

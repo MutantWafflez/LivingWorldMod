@@ -1,7 +1,8 @@
 ﻿using LivingWorldMod.Content.Waystones.Tiles;
+using LivingWorldMod.Globals.BaseTypes.Commands;
 using LivingWorldMod.Utilities;
 
-namespace LivingWorldMod.Common.Commands.DebugCommands;
+namespace LivingWorldMod.Content.Waystones.Globals.Commands;
 
 /// <summary>
 /// Debug Command that will disable all Waystones in this world. Be careful with this.

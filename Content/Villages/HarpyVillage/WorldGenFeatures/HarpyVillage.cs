@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
 using LivingWorldMod.Content.Villages.HarpyVillage.NPCs;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Blocks;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
+using LivingWorldMod.DataStructures.Classes.GenConditions;
 using LivingWorldMod.DataStructures.Enums;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Globals.ModTypes;
