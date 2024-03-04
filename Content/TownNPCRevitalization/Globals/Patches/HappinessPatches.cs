@@ -11,7 +11,7 @@ using Terraria.GameContent;
 using Terraria.GameContent.Events;
 using Terraria.Localization;
 
-namespace LivingWorldMod.Globals.Patches;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 
 /// <summary>
 /// Patches that deal with Town NPC happiness.
