@@ -1,4 +1,4 @@
-﻿namespace LivingWorldMod.DataStructures.Enums;
+﻿namespace LivingWorldMod.Content.Waystones.DataStructures.Enums;
 
 public enum WaystoneType {
     Desert,

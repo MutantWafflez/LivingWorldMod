@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
+using LivingWorldMod.Content.Waystones.DataStructures.Enums;
 using LivingWorldMod.Content.Waystones.Tiles;
 using LivingWorldMod.DataStructures.Enums;
 using LivingWorldMod.Globals.ModTypes;

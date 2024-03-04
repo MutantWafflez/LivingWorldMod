@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using LivingWorldMod.DataStructures.Classes;
+using LivingWorldMod.Content.Waystones.DataStructures.Classes;
 using LivingWorldMod.Globals.Systems.BaseSystems;
 using Microsoft.Xna.Framework;
 

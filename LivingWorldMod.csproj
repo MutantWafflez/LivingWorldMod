@@ -29,7 +29,4 @@
         <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentHappiness" />
 
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Content\Waystones\DataStructures\" />
-    </ItemGroup>
 </Project>
