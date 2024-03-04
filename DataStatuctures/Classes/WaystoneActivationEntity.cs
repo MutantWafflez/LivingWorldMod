@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Terraria.Audio;
 
-namespace LivingWorldMod.Custom.Classes;
+namespace LivingWorldMod.DataStatuctures.Classes;
 
 /// <summary>
 /// Psuedo-Entity that exists during the Activation Process for Waystones. This exists mainly for consistency between

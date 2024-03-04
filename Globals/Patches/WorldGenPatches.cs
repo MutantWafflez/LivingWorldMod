@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using LivingWorldMod.Content.Villages.HarpyVillage.WorldGenFeatures;
-using LivingWorldMod.Custom.Classes;
+using LivingWorldMod.DataStatuctures.Classes;
 using LivingWorldMod.Globals.Systems;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;

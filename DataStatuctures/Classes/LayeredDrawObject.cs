@@ -2,11 +2,9 @@
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 
-namespace LivingWorldMod.Custom.Classes;
+namespace LivingWorldMod.DataStatuctures.Classes;
 
 /// <summary>
 /// Represents a set of <see cref="Texture2D"/> objects that are

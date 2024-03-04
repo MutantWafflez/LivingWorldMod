@@ -1,7 +1,7 @@
 ﻿using System;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
-using LivingWorldMod.Custom.Classes.TownNPCModules;
+using LivingWorldMod.DataStatuctures.Classes.TownNPCModules;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;

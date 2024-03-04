@@ -1,5 +1,5 @@
 ﻿using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
-using LivingWorldMod.Custom.Classes;
+using LivingWorldMod.DataStatuctures.Classes;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

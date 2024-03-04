@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
-using LivingWorldMod.Custom.Classes;
-using LivingWorldMod.Custom.Classes.TownNPCModules;
+using LivingWorldMod.DataStatuctures.Classes;
+using LivingWorldMod.DataStatuctures.Classes.TownNPCModules;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;

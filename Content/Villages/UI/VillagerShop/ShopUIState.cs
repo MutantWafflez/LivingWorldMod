@@ -2,8 +2,8 @@
 using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.Villages.Globals.Systems;
 using LivingWorldMod.Content.Villages.HarpyVillage.NPCs;
-using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.DataStatuctures.Classes;
 using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;

@@ -1,9 +1,6 @@
 ﻿using LivingWorldMod.Content.Walls.DebugWalls;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 
-namespace LivingWorldMod.Custom.Classes.DebugModules;
+namespace LivingWorldMod.DataStatuctures.Classes.DebugModules;
 
 /// <summary>
 /// Module that places Skip Walls over all tiles without walls in the region.

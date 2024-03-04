@@ -1,8 +1,6 @@
 ﻿using LivingWorldMod.Content.Tiles.DebugTiles;
-using Terraria;
-using Terraria.ModLoader;
 
-namespace LivingWorldMod.Custom.Classes.DebugModules;
+namespace LivingWorldMod.DataStatuctures.Classes.DebugModules;
 
 /// <summary>
 /// Module that places Skip Tiles over all air tiles in the region.

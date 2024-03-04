@@ -1,7 +1,7 @@
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
-using LivingWorldMod.Custom.Classes.TownNPCModules;
 using LivingWorldMod.Custom.Structs;
+using LivingWorldMod.DataStatuctures.Classes.TownNPCModules;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;

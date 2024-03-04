@@ -1,7 +1,7 @@
 ﻿using System;
 using Terraria.ModLoader.IO;
 
-namespace LivingWorldMod.Custom.Classes;
+namespace LivingWorldMod.DataStatuctures.Classes;
 
 /// <summary>
 /// Class that does what it says on the tin. Has fields for an instance of a shop item for

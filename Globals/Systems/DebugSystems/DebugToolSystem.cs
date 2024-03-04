@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Custom.Classes.DebugModules;
+using LivingWorldMod.DataStatuctures.Classes.DebugModules;
 using Microsoft.Xna.Framework.Input;
 
 namespace LivingWorldMod.Globals.Systems.DebugSystems;

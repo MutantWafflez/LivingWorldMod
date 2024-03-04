@@ -1,10 +1,9 @@
 ﻿using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Terraria;
 using Terraria.DataStructures;
 
-namespace LivingWorldMod.Custom.Classes.DebugModules;
+namespace LivingWorldMod.DataStatuctures.Classes.DebugModules;
 
 /// <summary>
 /// Abstract module used for applying effects to a certain region of tiles.

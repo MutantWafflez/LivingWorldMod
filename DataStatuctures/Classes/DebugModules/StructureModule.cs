@@ -4,7 +4,7 @@ using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Utilities;
 using Terraria.ModLoader.IO;
 
-namespace LivingWorldMod.Custom.Classes.DebugModules;
+namespace LivingWorldMod.DataStatuctures.Classes.DebugModules;
 
 /// <summary>
 /// Saves the selected region to a structure file.
