@@ -18,7 +18,7 @@ public class GravityTapestryItem : BaseItem {
     }
 
     public override bool IsLoadingEnabled(Mod mod) {
-        mod.AddContent(new TapestryTile(Name, Color.LightGray));
+        mod.AddContent(new TapestryTile(this, Color.LightGray));
 
         return true;
     }

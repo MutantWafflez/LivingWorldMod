@@ -18,7 +18,7 @@ public class StormTapestryItem : BaseItem {
     }
 
     public override bool IsLoadingEnabled(Mod mod) {
-        mod.AddContent(new TapestryTile(Name, Color.CadetBlue));
+        mod.AddContent(new TapestryTile(this, Color.CadetBlue));
 
         return true;
     }

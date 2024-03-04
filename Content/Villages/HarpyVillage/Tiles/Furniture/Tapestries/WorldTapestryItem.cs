@@ -18,7 +18,7 @@ public class WorldTapestryItem : BaseItem {
     }
 
     public override bool IsLoadingEnabled(Mod mod) {
-        mod.AddContent(new TapestryTile(Name, Color.LightGoldenrodYellow));
+        mod.AddContent(new TapestryTile(this, Color.LightGoldenrodYellow));
 
         return true;
     }

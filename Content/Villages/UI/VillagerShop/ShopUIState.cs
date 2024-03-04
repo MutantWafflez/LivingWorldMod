@@ -267,7 +267,7 @@ public class ShopUIState : UIState {
     public void ReloadUI(Villager newVillager) {
         currentVillager = newVillager;
 
-        string shopUIPath = $"{LWM.SpritePath}UI/ShopUI/{currentVillager.VillagerType}/";
+        string shopUIPath = $"{LWM.SpritePath}Villages/UI/ShopUI/{currentVillager.VillagerType}/";
 
         backImage.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage", AssetRequestMode.ImmediateLoad));
 

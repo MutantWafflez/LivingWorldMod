@@ -13,6 +13,8 @@ namespace LivingWorldMod.Globals.BaseTypes.Tiles;
 /// </summary>
 [Autoload(false)]
 public class TapestryTile : BaseTile {
+    public override string Texture => _parentItem.Texture;
+
     public override string Name {
         get;
     }
@@ -21,8 +23,11 @@ public class TapestryTile : BaseTile {
         get;
     }
 
-    public TapestryTile(string placeItemName, Color? mapColor) {
-        Name = placeItemName.Replace("Item", "Tile");
+    private readonly ModItem _parentItem;
+
+    public TapestryTile(ModItem parentItem, Color? mapColor) {
+        _parentItem = parentItem;
+        Name = parentItem.Name.Replace("Item", "Tile");
         TileColorOnMap = mapColor;
     }
 

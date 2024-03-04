@@ -18,7 +18,7 @@ public class SunTapestryItem : BaseItem {
     }
 
     public override bool IsLoadingEnabled(Mod mod) {
-        mod.AddContent(new TapestryTile(Name, Color.DarkSlateGray));
+        mod.AddContent(new TapestryTile(this, Color.DarkSlateGray));
 
         return true;
     }
