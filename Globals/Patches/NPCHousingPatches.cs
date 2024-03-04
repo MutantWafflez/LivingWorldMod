@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Content.Villages.DataStructures.Enums;
 using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.Villages.Globals.Systems.UI;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 using LivingWorldMod.DataStatuctures.Classes;
-using LivingWorldMod.DataStatuctures.Enums;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

@@ -1,5 +1,5 @@
-﻿using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
-using LivingWorldMod.DataStatuctures.Enums;
+﻿using LivingWorldMod.Content.Villages.DataStructures.Enums;
+using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework.Graphics;

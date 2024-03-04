@@ -1,9 +1,9 @@
 ﻿using System;
+using LivingWorldMod.Content.Villages.DataStructures.Classes;
+using LivingWorldMod.Content.Villages.DataStructures.Enums;
 using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.Villages.Globals.Systems;
 using LivingWorldMod.Content.Villages.HarpyVillage.NPCs;
-using LivingWorldMod.DataStatuctures.Classes;
-using LivingWorldMod.DataStatuctures.Enums;
 using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -242,7 +242,7 @@ public class ShopUIState : UIState {
                     savingsDisplay.moneyToDisplay = player.CalculateTotalSavings();
 
                     if (currentVillager.RelationshipStatus >= VillagerRelationship.Dislike) {
-                        portrait.temporaryExpression = VillagerPortraitExpression.Happy;
+                        portrait.temporaryExpression = UIPortrait.VillagerPortraitExpression.Happy;
                         portrait.temporaryExpressionTimer = 120f;
                     }
 

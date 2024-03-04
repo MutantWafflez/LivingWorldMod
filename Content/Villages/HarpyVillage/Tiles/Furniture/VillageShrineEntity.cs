@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using LivingWorldMod.Content.Villages.DataStructures.Enums;
 using LivingWorldMod.Content.Villages.Globals.Systems.UI;
 using LivingWorldMod.Content.Villages.UI.VillageShrine;
-using LivingWorldMod.DataStatuctures.Enums;
 using LivingWorldMod.DataStatuctures.Structs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;

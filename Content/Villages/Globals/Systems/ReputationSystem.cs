@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Hjson;
-using LivingWorldMod.DataStatuctures.Enums;
-using LivingWorldMod.DataStatuctures.Structs;
+using LivingWorldMod.Content.Villages.DataStructures.Enums;
+using LivingWorldMod.Content.Villages.DataStructures.Structs;
 using LivingWorldMod.Globals.Systems.BaseSystems;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;

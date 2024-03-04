@@ -1,4 +1,4 @@
-﻿namespace LivingWorldMod.DataStatuctures.Enums;
+﻿namespace LivingWorldMod.Content.Villages.DataStructures.Enums;
 
 /// <summary>
 /// Enum that details what the relationship is between a given set of villagers and the player.

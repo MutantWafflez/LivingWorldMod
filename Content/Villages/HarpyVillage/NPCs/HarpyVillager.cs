@@ -1,11 +1,12 @@
 ﻿using System.Linq;
+using LivingWorldMod.Content.Villages.DataStructures.Classes;
+using LivingWorldMod.Content.Villages.DataStructures.Enums;
 using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.Villages.HarpyVillage.Pets;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Blocks;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture.Tapestries;
 using LivingWorldMod.DataStatuctures.Classes;
-using LivingWorldMod.DataStatuctures.Enums;
 using LivingWorldMod.Utilities;
 using Terraria.GameContent.Bestiary;
 using Terraria.Utilities;
