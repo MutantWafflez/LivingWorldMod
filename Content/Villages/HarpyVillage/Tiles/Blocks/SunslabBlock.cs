@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Globals.BaseTypes.Tiles;
+﻿using LivingWorldMod.Globals.BaseTypes.Items;
+using LivingWorldMod.Globals.BaseTypes.Tiles;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -206,5 +207,18 @@ public class SunslabBlockTile : BaseTile {
                 new Rectangle(thisTile.TileFrameX, 18 * verticalFrame, 16, 16),
                 Lighting.GetColor(i, j), 0f, default(Vector2), 1f, SpriteEffects.None, 0f);
         }
+    }
+}
+
+public class SunslabBlockItem : BaseItem {
+    public override void SetStaticDefaults() {
+        Item.ResearchUnlockCount = 50;
+    }
+
+    public override void SetDefaults() {
+        Item.CloneDefaults(ItemID.DirtBlock);
+        Item.value = Item.buyPrice(silver: 1);
+        Item.placeStyle = 0;
+        Item.createTile = ModContent.TileType<SunslabBlockTile>();
     }
 }

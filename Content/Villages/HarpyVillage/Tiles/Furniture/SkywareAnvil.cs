@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Globals.BaseTypes.Tiles;
+﻿using LivingWorldMod.Globals.BaseTypes.Items;
+using LivingWorldMod.Globals.BaseTypes.Tiles;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -22,5 +23,18 @@ public class SkywareAnvilTile : BaseTile {
         TileObjectData.addTile(Type);
 
         AdjTiles = new int[] { TileID.Anvils };
+    }
+}
+
+public class SkywareAnvilItem : BaseItem {
+    public override void SetStaticDefaults() {
+        Item.ResearchUnlockCount = 1;
+    }
+
+    public override void SetDefaults() {
+        Item.CloneDefaults(ItemID.IronAnvil);
+        Item.placeStyle = 0;
+        Item.value = Item.buyPrice(silver: 5);
+        Item.createTile = ModContent.TileType<SkywareAnvilTile>();
     }
 }

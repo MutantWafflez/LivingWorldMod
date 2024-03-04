@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Content.Walls;
+using LivingWorldMod.Globals.BaseTypes.Items;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.Villages.HarpyVillage.Walls;
@@ -14,5 +15,18 @@ public class SkywareFenceWall : BaseWall {
         DustType = DustID.t_LivingWood;
 
         base.SetStaticDefaults();
+    }
+}
+
+public class SkywareFenceItem : BaseItem {
+    public override void SetStaticDefaults() {
+        Item.ResearchUnlockCount = 40;
+    }
+
+    public override void SetDefaults() {
+        Item.CloneDefaults(ItemID.DirtWall);
+        Item.placeStyle = 0;
+        Item.value = Item.buyPrice(copper: 25);
+        Item.createWall = ModContent.WallType<SkywareFenceWall>();
     }
 }

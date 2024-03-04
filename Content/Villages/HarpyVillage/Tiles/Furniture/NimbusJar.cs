@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Globals.BaseTypes.Tiles;
+﻿using LivingWorldMod.Globals.BaseTypes.Items;
+using LivingWorldMod.Globals.BaseTypes.Tiles;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -34,5 +35,19 @@ public class NimbusJarTile : BaseTile {
             frameCounter = 0;
             frame++;
         }
+    }
+}
+
+public class NimbusJarItem : BaseItem {
+    public override void SetStaticDefaults() {
+        Item.ResearchUnlockCount = 1;
+    }
+
+    public override void SetDefaults() {
+        Item.CloneDefaults(ItemID.BirdCage);
+        Item.rare = ItemRarityID.Blue;
+        Item.placeStyle = 0;
+        Item.value = Item.buyPrice(gold: 1);
+        Item.createTile = ModContent.TileType<NimbusJarTile>();
     }
 }

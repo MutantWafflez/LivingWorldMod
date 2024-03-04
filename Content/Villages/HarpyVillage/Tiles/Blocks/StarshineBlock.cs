@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Globals.BaseTypes.Tiles;
+﻿using LivingWorldMod.Globals.BaseTypes.Items;
+using LivingWorldMod.Globals.BaseTypes.Tiles;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Blocks;
@@ -20,4 +21,17 @@ public class StarshineBlockTile : BaseTile {
     }
 
     public override bool HasWalkDust() => true;
+}
+
+public class StarshineBlockItem : BaseItem {
+    public override void SetStaticDefaults() {
+        Item.ResearchUnlockCount = 50;
+    }
+
+    public override void SetDefaults() {
+        Item.CloneDefaults(ItemID.DirtBlock);
+        Item.value = Item.buyPrice(silver: 1);
+        Item.placeStyle = 0;
+        Item.createTile = ModContent.TileType<StarshineBlockTile>();
+    }
 }

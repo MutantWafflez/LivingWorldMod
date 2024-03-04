@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Globals.BaseTypes.Tiles;
+﻿using LivingWorldMod.Globals.BaseTypes.Items;
+using LivingWorldMod.Globals.BaseTypes.Tiles;
 using LivingWorldMod.Globals.Systems;
 using Microsoft.Xna.Framework;
 
@@ -34,5 +35,18 @@ public class StarshardCloudTile : BaseTile {
         r = BlockLightSystem.Instance.starCloudColor.R / 255f * 0.5f;
         g = BlockLightSystem.Instance.starCloudColor.G / 255f * 0.5f;
         b = BlockLightSystem.Instance.starCloudColor.B / 255f * 0.5f;
+    }
+}
+
+public class StarshardCloudItem : BaseItem {
+    public override void SetStaticDefaults() {
+        Item.ResearchUnlockCount = 50;
+    }
+
+    public override void SetDefaults() {
+        Item.CloneDefaults(ItemID.DirtBlock);
+        Item.value = Item.buyPrice(copper: 75);
+        Item.placeStyle = 0;
+        Item.createTile = ModContent.TileType<StarshardCloudTile>();
     }
 }
