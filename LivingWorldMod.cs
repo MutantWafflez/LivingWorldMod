@@ -3,6 +3,7 @@ global using Terraria.ModLoader;
 global using Terraria.ID;
 global using LWM = LivingWorldMod.LivingWorldMod;
 using System.IO;
+using LivingWorldMod.Globals.Configs;
 using LivingWorldMod.Globals.ModTypes;
 
 namespace LivingWorldMod;
@@ -20,11 +21,13 @@ public class LivingWorldMod : Mod {
     /// </summary>
     public static bool IsDebug {
         get {
+            bool isDebug = ModContent.GetInstance<DebugConfig>().forceDebugMode;
+
             #if DEBUG
-            return true;
-            #else
-            return ModContent.GetInstance<DebugConfig>().forceDebugMode;
+            isDebug = true;
             #endif
+
+            return isDebug;
         }
     }
 
