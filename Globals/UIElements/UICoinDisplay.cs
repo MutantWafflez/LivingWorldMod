@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.CommonElements;
+namespace LivingWorldMod.Globals.UIElements;
 
 /// <summary>
 /// UIElement class that draws coins as either the monetary savings of the player or as some

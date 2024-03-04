@@ -1,6 +1,6 @@
-﻿using LivingWorldMod.Common.GlobalNPCs;
+﻿using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 
-namespace LivingWorldMod.Common.ModTypes;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 
 /// <summary>
 /// More advanced version of a <see cref="TownNPCAIState"/> that requires

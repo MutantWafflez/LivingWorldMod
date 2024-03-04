@@ -2,8 +2,8 @@
 using System.IO;
 using System.Linq;
 using Hjson;
-using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Common.Systems.UI;
+using LivingWorldMod.Content.Villages.Globals.Systems;
+using LivingWorldMod.Content.Villages.Globals.Systems.UI;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
@@ -16,7 +16,7 @@ using Terraria.Localization;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 
-namespace LivingWorldMod.Content.NPCs.Villagers;
+namespace LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 
 /// <summary>
 /// Base class for all of the villager NPCs in the mod. Has several properties that can be

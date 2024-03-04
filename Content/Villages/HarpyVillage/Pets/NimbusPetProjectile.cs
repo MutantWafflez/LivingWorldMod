@@ -1,11 +1,10 @@
 ﻿using System;
-using LivingWorldMod.Common.Players;
+using LivingWorldMod.Globals.BaseTypes.Projectiles;
+using LivingWorldMod.Globals.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using Terraria.ModLoader;
 
-namespace LivingWorldMod.Content.Projectiles.Friendly.Pets;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Pets;
 
 //Thanks Trivaxy for the code! :-)
 public class NimbusPetProjectile : BaseProjectile {

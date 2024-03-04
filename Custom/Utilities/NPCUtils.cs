@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Content.Items.RespawnItems;
-using LivingWorldMod.Content.NPCs.Villagers;
+using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
+using LivingWorldMod.Content.Villages.Globals.Systems;
+using LivingWorldMod.Content.Villages.HarpyVillage.Materials;
+using LivingWorldMod.Content.Villages.HarpyVillage.NPCs;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;

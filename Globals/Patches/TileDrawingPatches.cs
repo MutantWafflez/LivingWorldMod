@@ -1,12 +1,12 @@
 ﻿using System;
-using LivingWorldMod.Common.Sets;
 using LivingWorldMod.Custom.Classes;
+using LivingWorldMod.Globals.Sets;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria.GameContent.Drawing;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Core.Patches;
+namespace LivingWorldMod.Globals.Patches;
 
 /// <summary>
 /// Handles all patches that relate to tile drawing.

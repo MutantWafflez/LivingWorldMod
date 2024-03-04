@@ -1,10 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
+﻿using LivingWorldMod.Globals.BaseTypes.Tiles;
+using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
-using Terraria.ID;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Content.Tiles.Furniture.Harpy;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 
 public class SkywareLoomTile : BaseTile {
     public override Color? TileColorOnMap => Color.FloralWhite;

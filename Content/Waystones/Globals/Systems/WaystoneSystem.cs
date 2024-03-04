@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Classes;
+using LivingWorldMod.Globals.Systems.BaseSystems;
 using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
 
-namespace LivingWorldMod.Common.Systems;
+namespace LivingWorldMod.Content.Waystones.Globals.Systems;
 
 /// <summary>
 /// ModSystem that helps with client-side Waystone functionality.

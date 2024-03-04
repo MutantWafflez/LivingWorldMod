@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 
-namespace LivingWorldMod.Content.Items.DebugItems;
+namespace LivingWorldMod.Globals.BaseTypes.Items;
 
 /// <summary>
 /// Item that is only loaded when in Debug mode.

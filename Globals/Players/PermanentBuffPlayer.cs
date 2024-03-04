@@ -1,8 +1,6 @@
-﻿using Terraria;
-using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
+﻿using Terraria.ModLoader.IO;
 
-namespace LivingWorldMod.Common.Players;
+namespace LivingWorldMod.Globals.Players;
 
 /// <summary>
 /// ModPlayer that handles all saving and applying of buffs that are permanent

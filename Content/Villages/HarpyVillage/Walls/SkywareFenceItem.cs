@@ -1,9 +1,6 @@
-﻿using LivingWorldMod.Content.Walls.Fences;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using LivingWorldMod.Globals.BaseTypes.Items;
 
-namespace LivingWorldMod.Content.Items.Walls.Fences;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Walls;
 
 public class SkywareFenceItem : BaseItem {
     public override void SetStaticDefaults() {

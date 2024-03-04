@@ -1,13 +1,11 @@
-﻿using LivingWorldMod.Common.Systems.BaseSystems;
-using LivingWorldMod.Content.NPCs.Villagers;
-using LivingWorldMod.Content.UI.VillagerShop;
+﻿using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
+using LivingWorldMod.Content.Villages.UI.VillagerShop;
+using LivingWorldMod.Globals.Systems.BaseSystems;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using Terraria;
 using Terraria.Audio;
-using Terraria.ID;
 
-namespace LivingWorldMod.Common.Systems.UI;
+namespace LivingWorldMod.Content.Villages.Globals.Systems.UI;
 
 /// <summary>
 /// System that handles the initialization and opening/closing of the Shop UI for Villagers.

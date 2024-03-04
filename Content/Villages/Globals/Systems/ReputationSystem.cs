@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Hjson;
-using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.Systems.BaseSystems;
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader.IO;
 
-namespace LivingWorldMod.Common.Systems;
+namespace LivingWorldMod.Content.Villages.Globals.Systems;
 
 /// <summary>
 /// System that handles reputations for all of the villages in the mod.

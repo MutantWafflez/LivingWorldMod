@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.CommonElements;
+namespace LivingWorldMod.Globals.UIElements;
 
 /// <summary>
 /// A better version of Vanilla's UIItemIcon class. Can use position or the center to draw from,
@@ -25,9 +24,10 @@ public class UIBetterItemIcon : UIElement {
     /// </summary>
     public Color? overrideDrawColor = null;
 
-    private Item _displayedItem;
     private readonly float _sizeLimit;
     private readonly bool _drawFromCenter;
+
+    private Item _displayedItem;
 
     public UIBetterItemIcon(Item displayedItem, float sizeLimit, bool drawFromCenter) {
         _displayedItem = displayedItem;

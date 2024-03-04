@@ -1,8 +1,6 @@
-﻿using LivingWorldMod.Core.Patches;
-using Terraria.ID;
-using Terraria.ObjectData;
+﻿using Terraria.ObjectData;
 
-namespace LivingWorldMod.Common.Sets;
+namespace LivingWorldMod.Globals.Sets;
 
 /// <summary>
 /// Class that acts as a psuedo-extension of vanilla's <seealso cref="TileID.Sets"/>,

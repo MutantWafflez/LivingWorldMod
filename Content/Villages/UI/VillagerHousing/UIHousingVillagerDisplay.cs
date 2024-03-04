@@ -1,4 +1,4 @@
-﻿using LivingWorldMod.Content.NPCs.Villagers;
+﻿using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
@@ -8,7 +8,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.VillagerHousing;
+namespace LivingWorldMod.Content.Villages.UI.VillagerHousing;
 
 /// <summary>
 /// Element that shows a specific villager in the housing menu. An instance of this is created

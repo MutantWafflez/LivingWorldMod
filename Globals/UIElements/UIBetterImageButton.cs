@@ -2,13 +2,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using Terraria;
 using Terraria.Audio;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.CommonElements;
+namespace LivingWorldMod.Globals.UIElements;
 
 /// <summary>
 /// A better version of vanilla's UIImage Button, with much more functionality than the vanilla

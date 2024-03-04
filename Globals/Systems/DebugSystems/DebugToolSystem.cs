@@ -3,7 +3,7 @@ using System.Linq;
 using LivingWorldMod.Custom.Classes.DebugModules;
 using Microsoft.Xna.Framework.Input;
 
-namespace LivingWorldMod.Common.Systems.DebugSystems;
+namespace LivingWorldMod.Globals.Systems.DebugSystems;
 
 /// <summary>
 /// ModSystem that only loads in debug mode that uses <seealso cref="DebugModule"/> objects for functionality.

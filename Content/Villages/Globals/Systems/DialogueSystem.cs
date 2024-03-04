@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Hjson;
-using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.Systems.BaseSystems;
 using Terraria.GameContent.Events;
 using Terraria.Localization;
 using Terraria.Utilities;
 
-namespace LivingWorldMod.Common.Systems;
+namespace LivingWorldMod.Content.Villages.Globals.Systems;
 
 /// <summary>
 /// ModSystem that handles Dialogue for the various types of the villagers, including dialogue weights & event

@@ -1,9 +1,8 @@
-﻿using LivingWorldMod.Common.Systems.BaseSystems;
-using LivingWorldMod.Content.UI.VillagerHousing;
+﻿using LivingWorldMod.Content.Villages.UI.VillagerHousing;
+using LivingWorldMod.Globals.Systems.BaseSystems;
 using Microsoft.Xna.Framework;
-using Terraria;
 
-namespace LivingWorldMod.Common.Systems.UI;
+namespace LivingWorldMod.Content.Villages.Globals.Systems.UI;
 
 /// <summary>
 /// System that handles the initialization and opening/closing of the Villager Housing UI.

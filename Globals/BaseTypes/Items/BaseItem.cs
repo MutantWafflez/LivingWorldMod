@@ -1,4 +1,4 @@
-﻿namespace LivingWorldMod.Content.Items;
+﻿namespace LivingWorldMod.Globals.BaseTypes.Items;
 
 /// <summary>
 /// Base class for all LWM Items that currently only has the functionality of overriding the

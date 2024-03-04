@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
-using LivingWorldMod.Common.GlobalNPCs;
-using LivingWorldMod.Common.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Custom.Classes.TownNPCModules;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria.Utilities;
 
-namespace LivingWorldMod.Content.TownNPCAIStates;
+namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 
 public class WalkToRandomPosState : TownNPCAIState {
     public override int ReservedStateInteger => 1;

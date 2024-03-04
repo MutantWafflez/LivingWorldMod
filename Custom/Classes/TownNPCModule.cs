@@ -1,4 +1,4 @@
-﻿using LivingWorldMod.Common.GlobalNPCs;
+﻿using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 
 namespace LivingWorldMod.Custom.Classes;
 

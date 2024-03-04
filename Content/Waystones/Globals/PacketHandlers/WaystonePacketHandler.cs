@@ -1,11 +1,11 @@
 ﻿using System.IO;
-using LivingWorldMod.Common.ModTypes;
-using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Content.TileEntities.Interactables;
+using LivingWorldMod.Content.Waystones.Globals.Systems;
+using LivingWorldMod.Content.Waystones.Tiles;
 using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.ModTypes;
 using Terraria.DataStructures;
 
-namespace LivingWorldMod.Core.PacketHandlers;
+namespace LivingWorldMod.Content.Waystones.Globals.PacketHandlers;
 
 /// <summary>
 /// PacketHandler that handles all packets relating to Waystones.

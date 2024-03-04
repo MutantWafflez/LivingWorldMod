@@ -1,11 +1,11 @@
 ﻿using System.IO;
-using LivingWorldMod.Common.ModTypes;
-using LivingWorldMod.Common.Systems.UI;
-using LivingWorldMod.Content.TileEntities.Interactables;
+using LivingWorldMod.Content.Villages.Globals.Systems.UI;
+using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.ModTypes;
 using Terraria.DataStructures;
 
-namespace LivingWorldMod.Core.PacketHandlers;
+namespace LivingWorldMod.Content.Villages.Globals.PacketHandlers;
 
 /// <summary>
 /// PacketHandler that handles all packet functionality in relation to Village Shrines.

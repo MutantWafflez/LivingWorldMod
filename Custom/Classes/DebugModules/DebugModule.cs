@@ -1,4 +1,4 @@
-﻿using LivingWorldMod.Common.Systems.DebugSystems;
+﻿using LivingWorldMod.Globals.Systems.DebugSystems;
 using Microsoft.Xna.Framework.Input;
 
 namespace LivingWorldMod.Custom.Classes.DebugModules;

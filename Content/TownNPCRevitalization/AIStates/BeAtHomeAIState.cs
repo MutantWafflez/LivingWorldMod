@@ -1,12 +1,12 @@
 ﻿using System;
-using LivingWorldMod.Common.GlobalNPCs;
-using LivingWorldMod.Common.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Custom.Classes.TownNPCModules;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 
-namespace LivingWorldMod.Content.TownNPCAIStates;
+namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 
 public sealed class BeAtHomeAIState : TownNPCAIState {
     public override void DoState(TownGlobalNPC globalNPC, NPC npc) {

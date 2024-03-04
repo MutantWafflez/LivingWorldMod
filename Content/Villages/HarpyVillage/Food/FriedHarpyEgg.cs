@@ -1,10 +1,9 @@
-﻿using LivingWorldMod.Content.Items.RespawnItems;
+﻿using LivingWorldMod.Content.Villages.HarpyVillage.Materials;
+using LivingWorldMod.Globals.BaseTypes.Items;
 using Microsoft.Xna.Framework;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ID;
 
-namespace LivingWorldMod.Content.Items.Food;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Food;
 
 public class FriedHarpyEgg : BaseItem {
     public override void SetStaticDefaults() {

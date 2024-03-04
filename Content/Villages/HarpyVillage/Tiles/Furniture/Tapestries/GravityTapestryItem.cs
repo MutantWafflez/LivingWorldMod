@@ -1,10 +1,8 @@
-﻿using LivingWorldMod.Content.Tiles.Furniture.Tapestries;
+﻿using LivingWorldMod.Globals.BaseTypes.Items;
+using LivingWorldMod.Globals.BaseTypes.Tiles;
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 
-namespace LivingWorldMod.Content.Items.Placeables.Furniture.Tapestries;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture.Tapestries;
 
 public class GravityTapestryItem : BaseItem {
     public override void SetStaticDefaults() {

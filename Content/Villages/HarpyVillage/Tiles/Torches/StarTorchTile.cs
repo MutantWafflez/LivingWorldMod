@@ -1,13 +1,12 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using LivingWorldMod.Globals.BaseTypes.Tiles;
+using LivingWorldMod.Globals.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.ID;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Content.Tiles.Torches;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Torches;
 
 public class StarTorchTile : BaseTile {
     public override Color? TileColorOnMap => Color.Yellow;

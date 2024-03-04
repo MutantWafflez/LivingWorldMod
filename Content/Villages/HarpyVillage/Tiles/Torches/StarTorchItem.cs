@@ -1,11 +1,8 @@
-﻿using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Content.Tiles.Torches;
+﻿using LivingWorldMod.Globals.BaseTypes.Items;
+using LivingWorldMod.Globals.Systems;
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 
-namespace LivingWorldMod.Content.Items.Placeables.Torches;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Torches;
 
 public class StarTorchItem : BaseItem {
     public override void SetStaticDefaults() {

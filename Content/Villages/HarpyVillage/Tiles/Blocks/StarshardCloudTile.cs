@@ -1,9 +1,8 @@
-﻿using LivingWorldMod.Common.Systems;
+﻿using LivingWorldMod.Globals.BaseTypes.Tiles;
+using LivingWorldMod.Globals.Systems;
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
 
-namespace LivingWorldMod.Content.Tiles.Building;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Blocks;
 
 public class StarshardCloudTile : BaseTile {
     public override Color? TileColorOnMap => Color.LightYellow;

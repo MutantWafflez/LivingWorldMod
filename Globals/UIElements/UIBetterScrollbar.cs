@@ -1,9 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.GameContent.UI.Elements;
 
-namespace LivingWorldMod.Content.UI.CommonElements;
+namespace LivingWorldMod.Globals.UIElements;
 
 /// <summary>
 /// "Better" version of the vanilla scrollbar. Right now, all it does is allow for visibility

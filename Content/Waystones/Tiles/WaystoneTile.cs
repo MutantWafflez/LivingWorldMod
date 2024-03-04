@@ -1,7 +1,7 @@
-﻿using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Content.TileEntities.Interactables;
-using LivingWorldMod.Core.PacketHandlers;
+﻿using LivingWorldMod.Content.Waystones.Globals.PacketHandlers;
+using LivingWorldMod.Content.Waystones.Globals.Systems;
 using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.BaseTypes.Tiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -13,7 +13,7 @@ using Terraria.Map;
 using Terraria.ObjectData;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.Tiles.Interactables;
+namespace LivingWorldMod.Content.Waystones.Tiles;
 
 /// <summary>
 /// Class for Waystone tiles, which are basically Pylons but in the wild.

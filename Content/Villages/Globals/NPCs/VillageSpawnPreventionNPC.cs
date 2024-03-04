@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Content.TileEntities.Interactables;
+using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 using LivingWorldMod.Custom.Utilities;
 
-namespace LivingWorldMod.Common.GlobalNPCs;
+namespace LivingWorldMod.Content.Villages.Globals.NPCs;
 
 /// <summary>
 /// Simple GlobalNPC that prevents spawning if the player is within a village.

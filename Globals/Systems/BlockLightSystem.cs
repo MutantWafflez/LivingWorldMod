@@ -1,9 +1,7 @@
-﻿using LivingWorldMod.Common.Systems.BaseSystems;
+﻿using LivingWorldMod.Globals.Systems.BaseSystems;
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ModLoader;
 
-namespace LivingWorldMod.Common.Systems;
+namespace LivingWorldMod.Globals.Systems;
 
 /// <summary>
 /// Small ModSystem that handles color changing for blocks, or potentially other applications.

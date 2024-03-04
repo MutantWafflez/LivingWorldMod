@@ -1,9 +1,6 @@
-﻿using LivingWorldMod.Content.StatusEffects.Buffs.Pets;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using LivingWorldMod.Globals.BaseTypes.Items;
 
-namespace LivingWorldMod.Content.Items.Pets;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Pets;
 
 //Thanks Trivaxy for the code! :-)
 public class NimbusInABottle : BaseItem {

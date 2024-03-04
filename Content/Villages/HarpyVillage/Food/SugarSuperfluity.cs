@@ -1,12 +1,10 @@
-﻿using LivingWorldMod.Content.Items.Food;
+﻿using LivingWorldMod.Globals.BaseTypes.StatusEffects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
-using Terraria.ID;
 
-namespace LivingWorldMod.Content.StatusEffects.Debuffs.Consumables;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Food;
 
 /// <summary>
 /// Granted by the <see cref="EffervescentNugget"/> food item.

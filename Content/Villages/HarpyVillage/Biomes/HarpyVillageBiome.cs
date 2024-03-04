@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-using LivingWorldMod.Content.TileEntities.Interactables;
+using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 
-namespace LivingWorldMod.Content.Biomes;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Biomes;
 
 /// <summary>
 /// "Biome" that surrounds a given harpy shrine.

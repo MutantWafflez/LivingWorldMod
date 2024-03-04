@@ -1,14 +1,14 @@
-﻿using LivingWorldMod.Common.Systems.UI;
-using LivingWorldMod.Content.UI.CommonElements;
+﻿using LivingWorldMod.Content.Villages.Globals.Systems.UI;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
+using LivingWorldMod.Globals.UIElements;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.VillagerShop;
+namespace LivingWorldMod.Content.Villages.UI.VillagerShop;
 
 /// <summary>
 /// UIImage class that holds different UITexts and UIElements that is the index in a given shop
@@ -35,7 +35,7 @@ public class UIShopItem : UIImage {
 
     private float _manualUpdateTime;
 
-    public UIShopItem(ShopItem pertainedInventoryItem, long displayedCost, VillagerType villagerType) : base(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/ShopUI/{villagerType}/ShopItemBox")) {
+    public UIShopItem(ShopItem pertainedInventoryItem, long displayedCost, VillagerType villagerType) : base(ModContent.Request<Texture2D>($"{LWM.SpritePath}Villages/UI/ShopUI/{villagerType}/ShopItemBox")) {
         this.pertainedInventoryItem = pertainedInventoryItem;
         displayedItem = new Item();
         displayedItem.SetDefaults(pertainedInventoryItem.itemType);

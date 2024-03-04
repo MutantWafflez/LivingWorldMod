@@ -1,10 +1,11 @@
 ﻿using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.BaseTypes.Items;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
 
-namespace LivingWorldMod.Content.Items.Accessories;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Accessories;
 
 /// <summary>
 /// While equipped, grants the feather-fall potion effect, and increases

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria.Localization;
 
-namespace LivingWorldMod.Content.Tiles;
+namespace LivingWorldMod.Globals.BaseTypes.Tiles;
 
 /// <summary>
 /// Simple class that is the base class for all tiles in this mod. Has a couple pieces of functionality

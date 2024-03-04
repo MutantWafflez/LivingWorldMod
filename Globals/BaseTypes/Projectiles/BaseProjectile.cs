@@ -1,4 +1,4 @@
-﻿namespace LivingWorldMod.Content.Projectiles;
+﻿namespace LivingWorldMod.Globals.BaseTypes.Projectiles;
 
 /// <summary>
 /// Base class for all LWM Projectiles that currently only has the functionality of overriding

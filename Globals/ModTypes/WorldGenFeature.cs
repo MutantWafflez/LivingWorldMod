@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.Systems;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
-namespace LivingWorldMod.Common.ModTypes;
+namespace LivingWorldMod.Globals.ModTypes;
 
 /// <summary>
 /// ModType that is used for WorldGen features. Provides the <see cref="Generate"/> method for

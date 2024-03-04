@@ -1,10 +1,8 @@
-﻿using LivingWorldMod.Common.Systems.BaseSystems;
-using LivingWorldMod.Content.StatusEffects.Debuffs.Consumables;
+﻿using LivingWorldMod.Content.Villages.HarpyVillage.Food;
+using LivingWorldMod.Globals.Systems.BaseSystems;
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ModLoader;
 
-namespace LivingWorldMod.Common.Systems;
+namespace LivingWorldMod.Globals.Systems;
 
 /// <summary>
 /// System that handles client-side changes to the screen, whether that be zooming, transforming,

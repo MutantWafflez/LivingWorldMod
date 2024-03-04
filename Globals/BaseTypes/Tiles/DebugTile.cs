@@ -1,4 +1,4 @@
-﻿namespace LivingWorldMod.Content.Tiles.DebugTiles;
+﻿namespace LivingWorldMod.Globals.BaseTypes.Tiles;
 
 /// <summary>
 /// Tile that is only loaded when in Debug mode.

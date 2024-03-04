@@ -1,9 +1,6 @@
-﻿using LivingWorldMod.Content.Tiles.Building;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using LivingWorldMod.Globals.BaseTypes.Items;
 
-namespace LivingWorldMod.Content.Items.Placeables.Building;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Blocks;
 
 public class SunslabBlockItem : BaseItem {
     public override void SetStaticDefaults() {

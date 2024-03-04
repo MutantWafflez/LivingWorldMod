@@ -1,11 +1,11 @@
 using System;
-using LivingWorldMod.Common.GlobalNPCs;
-using LivingWorldMod.Common.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Custom.Classes.TownNPCModules;
 using LivingWorldMod.Custom.Structs;
 using Microsoft.Xna.Framework;
 
-namespace LivingWorldMod.Content.TownNPCAIStates;
+namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 
 public class MeleeAttackAIState : TownNPCAIState {
     public override int ReservedStateInteger => 15;

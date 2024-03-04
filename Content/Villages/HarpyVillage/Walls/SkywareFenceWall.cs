@@ -1,8 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
+﻿using LivingWorldMod.Content.Walls;
+using Microsoft.Xna.Framework;
 
-namespace LivingWorldMod.Content.Walls.Fences;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Walls;
 
 public class SkywareFenceWall : BaseWall {
     public override Color? WallColorOnMap => Color.LightBlue;

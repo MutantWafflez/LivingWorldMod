@@ -2,12 +2,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.CommonElements;
+namespace LivingWorldMod.Globals.UIElements;
 
 /// <summary>
 /// Slightly better version of UIText that will properly scale based on width specified in a

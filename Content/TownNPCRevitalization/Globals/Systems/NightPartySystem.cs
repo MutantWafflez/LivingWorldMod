@@ -1,13 +1,13 @@
 ﻿using System.Linq;
-using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.Systems.BaseSystems;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent.Achievements;
 using Terraria.GameContent.Events;
 using Terraria.Localization;
 using Party = Terraria.GameContent.Events.BirthdayParty;
 
-namespace LivingWorldMod.Common.Systems;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 
 /// <summary>
 /// ModSystem that handles special "night" parties that happen in tandem with

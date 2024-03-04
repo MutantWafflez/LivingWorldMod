@@ -1,8 +1,6 @@
-﻿using LivingWorldMod.Content.Tiles.Interactables;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using LivingWorldMod.Globals.BaseTypes.Items;
 
-namespace LivingWorldMod.Content.Items.Placeables.Interactables;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 
 public class HarpyShrineItem : BaseItem {
     public override void SetStaticDefaults() {

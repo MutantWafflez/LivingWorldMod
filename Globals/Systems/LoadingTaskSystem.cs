@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using LivingWorldMod.Common.GlobalNPCs;
-using LivingWorldMod.Common.Systems.BaseSystems;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Globals.Systems.BaseSystems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria.GameContent;
 
-namespace LivingWorldMod.Common.Systems;
+namespace LivingWorldMod.Globals.Systems;
 
 /// <summary>
 /// Mod system that handles miscellaneous loading tasks that otherwise

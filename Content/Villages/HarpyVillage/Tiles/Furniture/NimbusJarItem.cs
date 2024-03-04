@@ -1,9 +1,6 @@
-﻿using LivingWorldMod.Content.Tiles.Furniture.Critter;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using LivingWorldMod.Globals.BaseTypes.Items;
 
-namespace LivingWorldMod.Content.Items.Placeables.Furniture.Critter;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 
 public class NimbusJarItem : BaseItem {
     public override void SetStaticDefaults() {

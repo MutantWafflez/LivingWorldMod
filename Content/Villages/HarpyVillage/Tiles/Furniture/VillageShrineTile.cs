@@ -1,7 +1,7 @@
-﻿using LivingWorldMod.Common.Systems.UI;
-using LivingWorldMod.Content.TileEntities.Interactables;
+﻿using LivingWorldMod.Content.Villages.Globals.Systems.UI;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.BaseTypes.Tiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -12,7 +12,7 @@ using Terraria.Map;
 using Terraria.ObjectData;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.Tiles.Interactables;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 
 [LegacyName("HarpyShrineTile")]
 public class VillageShrineTile : BasePylon {

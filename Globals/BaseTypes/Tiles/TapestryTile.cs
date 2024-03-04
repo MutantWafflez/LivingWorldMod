@@ -1,11 +1,11 @@
-﻿using LivingWorldMod.Common.Sets;
-using LivingWorldMod.Custom.Utilities;
+﻿using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.Sets;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.DataStructures;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Content.Tiles.Furniture.Tapestries;
+namespace LivingWorldMod.Globals.BaseTypes.Tiles;
 
 /// <summary>
 /// Generic tile class that serves as the template for all tapestry tile types.

@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Common.ModTypes;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
-using LivingWorldMod.Content.TileEntities.Interactables;
-using LivingWorldMod.Content.Tiles.Interactables;
+using LivingWorldMod.Content.Waystones.Tiles;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.ModTypes;
 using Microsoft.Xna.Framework;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
-namespace LivingWorldMod.Content.WorldGenFeatures.Miscellaneous;
+namespace LivingWorldMod.Content.Waystones.WorldGenFeatures;
 
 /// <summary>
 /// Handles the Worldgen pass that handles the placement of Waystones.

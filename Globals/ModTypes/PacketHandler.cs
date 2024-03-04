@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terraria.ModLoader;
 
-namespace LivingWorldMod.Common.ModTypes;
+namespace LivingWorldMod.Globals.ModTypes;
 
 /// <summary>
 /// ModType that serves as a handler for specific types of packets, rather than having

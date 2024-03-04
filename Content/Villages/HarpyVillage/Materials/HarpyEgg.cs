@@ -1,8 +1,7 @@
-﻿using LivingWorldMod.Content.Items.Food;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using LivingWorldMod.Content.Villages.HarpyVillage.Food;
+using LivingWorldMod.Globals.BaseTypes.Items;
 
-namespace LivingWorldMod.Content.Items.RespawnItems;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Materials;
 
 /// <summary>
 /// Item used for respawning Harpy Villagers at the Harpy Village shrine.

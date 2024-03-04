@@ -1,9 +1,6 @@
-﻿using LivingWorldMod.Content.Tiles.Furniture.Harpy;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using LivingWorldMod.Globals.BaseTypes.Items;
 
-namespace LivingWorldMod.Content.Items.Placeables.Furniture.Harpy;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 
 public class SkywareLoomItem : BaseItem {
     public override void SetStaticDefaults() {

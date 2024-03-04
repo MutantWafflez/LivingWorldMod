@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Common.GlobalNPCs;
-using LivingWorldMod.Common.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Custom.Classes.TownNPCModules;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Terraria.WorldBuilding;
 
-namespace LivingWorldMod.Content.TownNPCActivities;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Activities;
 
 /// <summary>
 /// Activity where the given NPC will look for the nearest campfire and try to roast

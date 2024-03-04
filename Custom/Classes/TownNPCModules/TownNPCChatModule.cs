@@ -1,6 +1,6 @@
-﻿using LivingWorldMod.Common.GlobalNPCs;
-using LivingWorldMod.Common.ModTypes;
-using LivingWorldMod.Content.TownNPCAIStates;
+﻿using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Custom.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace LivingWorldMod.Common.Systems.BaseSystems;
+namespace LivingWorldMod.Globals.Systems.BaseSystems;
 
 /// <summary>
 /// Unique type of ModSystem that can be extended for automatic setting

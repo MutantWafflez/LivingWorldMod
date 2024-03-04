@@ -1,11 +1,9 @@
-﻿using LivingWorldMod.Common.Players;
-using LivingWorldMod.Content.Projectiles.Friendly.Pets;
+﻿using LivingWorldMod.Globals.BaseTypes.StatusEffects;
+using LivingWorldMod.Globals.Players;
 using Microsoft.Xna.Framework;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 
-namespace LivingWorldMod.Content.StatusEffects.Buffs.Pets;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Pets;
 
 //Thanks Trivaxy for the code! :-)
 public class NimbusPetBuff : BaseStatusEffect {

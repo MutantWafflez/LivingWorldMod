@@ -1,9 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using LivingWorldMod.Globals.BaseTypes.Tiles;
+using Microsoft.Xna.Framework;
 
-namespace LivingWorldMod.Content.Tiles.Building;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Blocks;
 
 public class StarshineBlockTile : BaseTile {
     public override Color? TileColorOnMap => Color.DarkBlue;

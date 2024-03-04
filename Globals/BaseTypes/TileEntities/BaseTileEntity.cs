@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ModLoader;
 
-namespace LivingWorldMod.Content.TileEntities;
+namespace LivingWorldMod.Globals.BaseTypes.TileEntities;
 
 /// <summary>
 /// Base Tile Entity for all other Tile Entities in the mod, which has a ValidTileID property

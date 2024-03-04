@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Common.Systems.UI;
-using LivingWorldMod.Content.NPCs.Villagers;
-using LivingWorldMod.Content.TileEntities.Interactables;
+using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
+using LivingWorldMod.Content.Villages.Globals.Systems.UI;
+using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
@@ -15,7 +15,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameInput;
 
-namespace LivingWorldMod.Core.Patches;
+namespace LivingWorldMod.Globals.Patches;
 
 /// <summary>
 /// Class that contains IL/On patches for NPC housing-related manners.

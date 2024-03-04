@@ -1,8 +1,8 @@
-using LivingWorldMod.Common.GlobalNPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace LivingWorldMod.Common.ModTypes;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 
 /// <summary>
 /// ModType that denotes a certain state of being for Town NPCs.

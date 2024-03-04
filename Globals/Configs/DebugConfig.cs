@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Terraria.ModLoader.Config;
 
-namespace LivingWorldMod.Common.Configs;
+namespace LivingWorldMod.Globals.Configs;
 
 /// <summary>
 /// Config that handles debug related matters in the mod.

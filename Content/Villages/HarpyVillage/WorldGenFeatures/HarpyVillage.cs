@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Common.ModTypes;
-using LivingWorldMod.Common.Systems;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
-using LivingWorldMod.Content.NPCs.Villagers;
-using LivingWorldMod.Content.TileEntities.Interactables;
-using LivingWorldMod.Content.Tiles.Building;
-using LivingWorldMod.Content.Tiles.Interactables;
+using LivingWorldMod.Content.Villages.HarpyVillage.NPCs;
+using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Blocks;
+using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.ModTypes;
+using LivingWorldMod.Globals.Systems;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
-namespace LivingWorldMod.Content.WorldGenFeatures.Villages;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.WorldGenFeatures;
 
 /// <summary>
 /// The Harpy Village structure, generated in the sky as close to the middle of the world as possible.
@@ -27,6 +26,8 @@ public class HarpyVillage : WorldGenFeature {
     /// the rectangle in which the original Harpy Village resides in.
     /// </summary>
     public const string TemporaryZoneVariableName = "HarpyVillageZone";
+
+    private const string VillageStructurePath = $"{nameof(LivingWorldMod)}/Content/Villages/HarpyVillage/Structures/";
 
     public override string InternalGenerationName => "Harpy Village";
 
@@ -199,7 +200,7 @@ public class HarpyVillage : WorldGenFeature {
 
             possibleHouses.Remove(selectedHouseType);
 
-            StructureData groundHouseData = LWMUtils.GetStructureFromFile(LWM.StructurePath + $"/Villages/Harpy/{selectedHouseType}.struct");
+            StructureData groundHouseData = LWMUtils.GetStructureFromFile($"{VillageStructurePath}Villages/Harpy/{selectedHouseType}.struct");
 
             for (int xOffset = leftOffset * (1 - i); xOffset <= 0 + i * Math.Abs(leftOffset); xOffset++) {
                 if (WorldUtils.Find(new Point(originPoint.X + xOffset, originPoint.Y), Searches.Chain(new Searches.Up(25), new Conditions.IsTile(TileID.Grass).AreaAnd(groundHouseData.structureWidth, 1)), out Point groundHouseResult)) {
@@ -232,7 +233,7 @@ public class HarpyVillage : WorldGenFeature {
         ));
 
         //Place "church" building
-        StructureData churchBuildingData = LWMUtils.GetStructureFromFile(LWM.StructurePath + $"/Villages/Harpy/ChurchBuilding{WorldGen.genRand.Next(2)}.struct");
+        StructureData churchBuildingData = LWMUtils.GetStructureFromFile($"{VillageStructurePath}Villages/Harpy/ChurchBuilding{WorldGen.genRand.Next(2)}.struct");
 
         if (WorldUtils.Find(new Point(originPoint.X - churchBuildingData.structureWidth / 2, originPoint.Y + upOffset),
                 Searches.Chain(new Searches.Up(75), new IsAir().AreaAnd(churchBuildingData.structureWidth, churchBuildingData.structureHeight)), out Point churchResult)) {
@@ -249,7 +250,7 @@ public class HarpyVillage : WorldGenFeature {
                 string selectedHouseType = WorldGen.genRand.Next(possibleHouses);
                 possibleHouses.Remove(selectedHouseType);
 
-                StructureData cloudHouseData = LWMUtils.GetStructureFromFile(LWM.StructurePath + $"/Villages/Harpy/{selectedHouseType}.struct");
+                StructureData cloudHouseData = LWMUtils.GetStructureFromFile($"{VillageStructurePath}Villages/Harpy/{selectedHouseType}.struct");
                 Point miniIslandOrigin = new(originPoint.X + (int)(leftOffset * i * (j == 0 ? 1.15f : 0.775f)), originPoint.Y + upOffset * (int)(j == 0 ? 2f : 6.25f));
 
                 float miniYScale = 0.34f;

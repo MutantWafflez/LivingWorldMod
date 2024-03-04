@@ -1,12 +1,10 @@
-﻿using LivingWorldMod.Content.Items.Food;
+﻿using LivingWorldMod.Content.Villages.HarpyVillage.Food;
 using LivingWorldMod.Custom.Classes;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
-using Terraria.ID;
-using Terraria.ModLoader;
 
-namespace LivingWorldMod.Core.Patches;
+namespace LivingWorldMod.Globals.Patches;
 
 /// <summary>
 /// Patches that relate to player drawing.

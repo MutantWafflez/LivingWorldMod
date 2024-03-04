@@ -1,9 +1,10 @@
 ﻿using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.BaseTypes.Tiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 
-namespace LivingWorldMod.Content.Tiles.Building;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Blocks;
 
 public class SunslabBlockTile : BaseTile {
     public override Color? TileColorOnMap => Color.Yellow;

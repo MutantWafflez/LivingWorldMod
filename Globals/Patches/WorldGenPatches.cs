@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Content.WorldGenFeatures.Villages;
+using LivingWorldMod.Content.Villages.HarpyVillage.WorldGenFeatures;
 using LivingWorldMod.Custom.Classes;
+using LivingWorldMod.Globals.Systems;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 
-namespace LivingWorldMod.Core.Patches;
+namespace LivingWorldMod.Globals.Patches;
 
 /// <summary>
 /// Class that contains the IL/On methods for patching various worldgen methods.

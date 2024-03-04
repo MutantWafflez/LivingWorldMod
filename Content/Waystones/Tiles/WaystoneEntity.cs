@@ -1,5 +1,4 @@
 using System.IO;
-using LivingWorldMod.Content.Tiles.Interactables;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
@@ -8,7 +7,7 @@ using Terraria.ModLoader.Default;
 using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Content.TileEntities.Interactables;
+namespace LivingWorldMod.Content.Waystones.Tiles;
 
 /// <summary>
 /// Tile Entity for the Waystone tiles.

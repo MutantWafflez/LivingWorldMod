@@ -3,8 +3,7 @@ global using Terraria.ModLoader;
 global using Terraria.ID;
 global using LWM = LivingWorldMod.LivingWorldMod;
 using System.IO;
-using LivingWorldMod.Common.Configs;
-using LivingWorldMod.Common.ModTypes;
+using LivingWorldMod.Globals.ModTypes;
 
 namespace LivingWorldMod;
 
@@ -22,7 +21,7 @@ public class LivingWorldMod : Mod {
     public static bool IsDebug {
         get {
             #if DEBUG
-                return true;
+            return true;
             #else
             return ModContent.GetInstance<DebugConfig>().forceDebugMode;
             #endif
@@ -33,11 +32,6 @@ public class LivingWorldMod : Mod {
     /// Directory of the Sprites for LivingWorldMod.
     /// </summary>
     public static string SpritePath => nameof(LivingWorldMod) + "/Assets/Sprites/";
-
-    /// <summary>
-    /// Directory of the Structure files for LivingWorldMod.
-    /// </summary>
-    public static string StructurePath => "Content/Structures";
 
     /// <summary>
     /// Directory of the Music files for LivingWorldMod.

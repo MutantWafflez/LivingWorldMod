@@ -1,6 +1,5 @@
 ﻿using LivingWorldMod.Content.Tiles.DebugTiles;
-using Terraria.ID;
-using Terraria.ModLoader;
+using LivingWorldMod.Globals.BaseTypes.Items;
 
 namespace LivingWorldMod.Content.Items.DebugItems;
 

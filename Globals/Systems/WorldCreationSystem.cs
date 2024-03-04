@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Common.ModTypes;
-using LivingWorldMod.Common.Systems.BaseSystems;
 using LivingWorldMod.Custom.Interfaces;
 using LivingWorldMod.Custom.Structs;
+using LivingWorldMod.Globals.ModTypes;
+using LivingWorldMod.Globals.Systems.BaseSystems;
 using Terraria.GameContent.Generation;
 using Terraria.WorldBuilding;
 
-namespace LivingWorldMod.Common.Systems;
+namespace LivingWorldMod.Globals.Systems;
 
 /// <summary>
 /// System that handles the INITIAL world generation steps. This system does NOT handle world

@@ -1,11 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
+﻿using LivingWorldMod.Globals.BaseTypes.Tiles;
+using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.ID;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Content.Tiles.Furniture.Harpy;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 
 public class SkywareAnvilTile : BaseTile {
     public override Color? TileColorOnMap => Color.LightBlue;

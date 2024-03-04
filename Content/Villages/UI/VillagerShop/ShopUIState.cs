@@ -1,10 +1,11 @@
 ﻿using System;
-using LivingWorldMod.Common.Systems;
-using LivingWorldMod.Content.NPCs.Villagers;
-using LivingWorldMod.Content.UI.CommonElements;
+using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
+using LivingWorldMod.Content.Villages.Globals.Systems;
+using LivingWorldMod.Content.Villages.HarpyVillage.NPCs;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.UIElements;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -14,7 +15,7 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.VillagerShop;
+namespace LivingWorldMod.Content.Villages.UI.VillagerShop;
 
 /// <summary>
 /// UIState that handles the entire UI portion of the shop system for all villager types.
@@ -57,7 +58,7 @@ public class ShopUIState : UIState {
     private UIShopItem _selectedItem;
 
     public override void OnInitialize() {
-        string shopUIPath = $"{LWM.SpritePath}UI/ShopUI/Harpy/";
+        string shopUIPath = $"{LWM.SpritePath}Villages/UI/ShopUI/Harpy/";
 
         //Background Zone
         backImage = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage", AssetRequestMode.ImmediateLoad)) {

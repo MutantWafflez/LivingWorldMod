@@ -1,16 +1,16 @@
 ﻿using System.Linq;
-using LivingWorldMod.Content.Items.Pets;
-using LivingWorldMod.Content.Items.Placeables.Building;
-using LivingWorldMod.Content.Items.Placeables.Furniture.Critter;
-using LivingWorldMod.Content.Items.Placeables.Furniture.Harpy;
-using LivingWorldMod.Content.Items.Placeables.Furniture.Tapestries;
+using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
+using LivingWorldMod.Content.Villages.HarpyVillage.Pets;
+using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Blocks;
+using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
+using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture.Tapestries;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
 using Terraria.GameContent.Bestiary;
 using Terraria.Utilities;
 
-namespace LivingWorldMod.Content.NPCs.Villagers;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.NPCs;
 
 public class HarpyVillager : Villager {
     // Layer indices

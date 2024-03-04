@@ -1,4 +1,4 @@
-﻿namespace LivingWorldMod.Content.StatusEffects;
+﻿namespace LivingWorldMod.Globals.BaseTypes.StatusEffects;
 
 /// <summary>
 /// Base class for all LWM Status Effects (buffs, debuffs, etc.) that currently only has the functionality of overriding

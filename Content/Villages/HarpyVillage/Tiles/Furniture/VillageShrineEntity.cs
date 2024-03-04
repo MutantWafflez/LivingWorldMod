@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using LivingWorldMod.Common.Systems.UI;
-using LivingWorldMod.Content.UI.VillageShrine;
+using LivingWorldMod.Content.Villages.Globals.Systems.UI;
+using LivingWorldMod.Content.Villages.UI.VillageShrine;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Structs;
 using LivingWorldMod.Custom.Utilities;
@@ -13,7 +13,7 @@ using Terraria.Localization;
 using Terraria.ModLoader.Default;
 using Terraria.ModLoader.IO;
 
-namespace LivingWorldMod.Content.TileEntities.Interactables;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 
 /// <summary>
 /// Tile Entity within each village shrine of each type, which mainly handles whether or not a

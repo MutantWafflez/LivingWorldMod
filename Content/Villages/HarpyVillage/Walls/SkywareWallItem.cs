@@ -1,10 +1,7 @@
-﻿using LivingWorldMod.Content.Items.Placeables.Building;
-using LivingWorldMod.Content.Walls.Building;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Blocks;
+using LivingWorldMod.Globals.BaseTypes.Items;
 
-namespace LivingWorldMod.Content.Items.Walls.Building;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Walls;
 
 public class SkywareWallItem : BaseItem {
     public override void SetStaticDefaults() {

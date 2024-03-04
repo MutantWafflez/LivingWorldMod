@@ -1,4 +1,4 @@
-﻿using LivingWorldMod.Content.TileEntities.Interactables;
+﻿using LivingWorldMod.Content.Waystones.Tiles;
 using LivingWorldMod.Custom.Utilities;
 
 namespace LivingWorldMod.Common.Commands.DebugCommands;

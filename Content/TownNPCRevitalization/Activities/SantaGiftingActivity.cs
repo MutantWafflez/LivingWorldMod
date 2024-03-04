@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Common.GlobalNPCs;
-using LivingWorldMod.Common.ModTypes;
-using LivingWorldMod.Content.TownNPCAIStates;
+using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 
-namespace LivingWorldMod.Content.TownNPCActivities;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Activities;
 
 /// <summary>
 /// Activity where Santa Claus gives a present to some other NPC.

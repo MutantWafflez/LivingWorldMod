@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using LivingWorldMod.Common.GlobalNPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Classes.TownNPCModules;
 using LivingWorldMod.Custom.Utilities;
@@ -11,7 +11,7 @@ using Terraria.GameContent;
 using Terraria.GameContent.Events;
 using Terraria.Localization;
 
-namespace LivingWorldMod.Core.Patches;
+namespace LivingWorldMod.Globals.Patches;
 
 /// <summary>
 /// Patches that deal with Town NPC happiness.

@@ -1,6 +1,4 @@
-﻿using Terraria.ModLoader;
-
-namespace LivingWorldMod.Common.Systems.BaseSystems;
+﻿namespace LivingWorldMod.Globals.Systems.BaseSystems;
 
 /// <summary>
 /// ModSystem that all other ModSystems in this mod inherit from; we can shorten ModContent.GetInstance

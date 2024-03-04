@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Hjson;
-using LivingWorldMod.Common.ModTypes;
-using LivingWorldMod.Content.TownNPCAIStates;
+using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Classes.TownNPCModules;
 using LivingWorldMod.Custom.Structs;
@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader.IO;
 
-namespace LivingWorldMod.Common.GlobalNPCs;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 
 /// <summary>
 /// Global NPC that handles exclusively the AI overhaul for Town NPCs.

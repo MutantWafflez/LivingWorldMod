@@ -1,8 +1,8 @@
-﻿using LivingWorldMod.Common.GlobalNPCs;
-using LivingWorldMod.Common.ModTypes;
+﻿using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Custom.Utilities;
 
-namespace LivingWorldMod.Content.TownNPCAIStates;
+namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 
 /// <summary>
 /// The state where the NPC is standing still and simply occasionally

@@ -1,13 +1,13 @@
-﻿using LivingWorldMod.Common.Players;
-using LivingWorldMod.Content.StatusEffects.Debuffs.Consumables;
-using LivingWorldMod.Custom.Utilities;
+﻿using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.BaseTypes.Items;
+using LivingWorldMod.Globals.Players;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
 
-namespace LivingWorldMod.Content.Items.Food;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Food;
 
 /// <summary>
 /// Upon first consumption, grants a permanent 5% move speed buff.

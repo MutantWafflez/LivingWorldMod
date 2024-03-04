@@ -1,5 +1,6 @@
 ﻿using System.Linq;
-using LivingWorldMod.Content.NPCs.Villagers;
+using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
+using LivingWorldMod.Content.Villages.HarpyVillage.NPCs;
 using LivingWorldMod.Custom.Classes;
 using LivingWorldMod.Custom.Enums;
 using Microsoft.Xna.Framework;
@@ -8,13 +9,13 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.VillagerShop;
+namespace LivingWorldMod.Content.Villages.UI.VillagerShop;
 
 /// <summary>
 /// UIElement class extension that handles and creates portraits for villagers in the shop UI, primarily.
 /// </summary>
 public class UIPortrait : UIElement {
-    private string PortraitSpritePath => $"{LWM.SpritePath}UI/ShopUI/{_villager.VillagerType}/Portraits/";
+    private string PortraitSpritePath => $"{LWM.SpritePath}Villages/UI/ShopUI/{_villager.VillagerType}/Portraits/";
 
     public VillagerPortraitExpression temporaryExpression;
     public float temporaryExpressionTimer;

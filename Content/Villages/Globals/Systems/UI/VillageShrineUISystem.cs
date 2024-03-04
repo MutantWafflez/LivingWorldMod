@@ -1,13 +1,13 @@
-﻿using LivingWorldMod.Common.Systems.BaseSystems;
-using LivingWorldMod.Content.TileEntities.Interactables;
-using LivingWorldMod.Content.UI.VillageShrine;
+﻿using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
+using LivingWorldMod.Content.Villages.UI.VillageShrine;
 using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.Systems.BaseSystems;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Terraria.GameInput;
 using Terraria.UI;
 
-namespace LivingWorldMod.Common.Systems.UI;
+namespace LivingWorldMod.Content.Villages.Globals.Systems.UI;
 
 public class VillageShrineUISystem : UISystem<VillageShrineUIState> {
     public override string VanillaInterfaceLocation => "Vanilla: Inventory";

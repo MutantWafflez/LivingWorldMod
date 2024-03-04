@@ -1,10 +1,10 @@
 using System;
-using LivingWorldMod.Common.GlobalNPCs;
-using LivingWorldMod.Common.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent.Drawing;
 
-namespace LivingWorldMod.Content.TownNPCAIStates;
+namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 
 public class ShimmerTransformAIState : TownNPCAIState {
     public override int ReservedStateInteger => 25;

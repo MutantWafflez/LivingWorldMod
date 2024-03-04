@@ -1,9 +1,9 @@
 ﻿using System;
-using LivingWorldMod.Content.TileEntities.Interactables;
-using LivingWorldMod.Content.UI.CommonElements;
-using LivingWorldMod.Core.PacketHandlers;
+using LivingWorldMod.Content.Villages.Globals.PacketHandlers;
+using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 using LivingWorldMod.Custom.Enums;
 using LivingWorldMod.Custom.Utilities;
+using LivingWorldMod.Globals.UIElements;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -12,7 +12,7 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
 using Terraria.UI;
 
-namespace LivingWorldMod.Content.UI.VillageShrine;
+namespace LivingWorldMod.Content.Villages.UI.VillageShrine;
 
 /// <summary>
 /// UIState that handles the UI for the village shrine for each type of village.

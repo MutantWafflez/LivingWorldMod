@@ -1,10 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
+﻿using LivingWorldMod.Globals.BaseTypes.Tiles;
+using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ObjectData;
 
-namespace LivingWorldMod.Content.Tiles.Furniture.Critter;
+namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 
 public class NimbusJarTile : BaseTile {
     public override Color? TileColorOnMap => Color.FloralWhite;

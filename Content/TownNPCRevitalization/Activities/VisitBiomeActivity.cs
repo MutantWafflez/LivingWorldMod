@@ -1,4 +1,4 @@
-﻿namespace LivingWorldMod.Content.TownNPCActivities;
+﻿namespace LivingWorldMod.Content.TownNPCRevitalization.Activities;
 /// <summary>
 /// With this activity, the given Town NPC will find the nearest pylon and attempt to
 /// teleport to another pylon of a biome they like for a brief visit.
