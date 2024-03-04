@@ -1,4 +1,4 @@
-﻿namespace LivingWorldMod.DataStatuctures.Enums;
+﻿namespace LivingWorldMod.DataStructures.Enums;
 
 /// <summary>
 /// Designates the different types of world sizes a terraria world can be.

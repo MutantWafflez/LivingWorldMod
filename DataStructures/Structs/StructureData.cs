@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
-namespace LivingWorldMod.DataStatuctures.Structs;
+namespace LivingWorldMod.DataStructures.Structs;
 
 /// <summary>
 /// Struct that holds the data for a specified structure, used for loading and saving structures

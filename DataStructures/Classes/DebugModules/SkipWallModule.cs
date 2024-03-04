@@ -1,6 +1,6 @@
 ﻿using LivingWorldMod.Content.Walls.DebugWalls;
 
-namespace LivingWorldMod.DataStatuctures.Classes.DebugModules;
+namespace LivingWorldMod.DataStructures.Classes.DebugModules;
 
 /// <summary>
 /// Module that places Skip Walls over all tiles without walls in the region.

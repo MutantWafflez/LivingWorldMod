@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using LivingWorldMod.DataStatuctures.Structs;
+using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
 using Terraria.ModLoader.IO;
 
-namespace LivingWorldMod.DataStatuctures.Classes.DebugModules;
+namespace LivingWorldMod.DataStructures.Classes.DebugModules;
 
 /// <summary>
 /// Saves the selected region to a structure file.

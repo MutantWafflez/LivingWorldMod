@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.DataStatuctures.Structs;
+using LivingWorldMod.DataStructures.Structs;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 

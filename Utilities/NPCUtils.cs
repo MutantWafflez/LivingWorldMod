@@ -6,7 +6,7 @@ using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.Villages.Globals.Systems;
 using LivingWorldMod.Content.Villages.HarpyVillage.Materials;
 using LivingWorldMod.Content.Villages.HarpyVillage.NPCs;
-using LivingWorldMod.DataStatuctures.Structs;
+using LivingWorldMod.DataStructures.Structs;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 

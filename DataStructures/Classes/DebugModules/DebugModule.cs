@@ -1,7 +1,7 @@
 ﻿using LivingWorldMod.Globals.Systems.DebugSystems;
 using Microsoft.Xna.Framework.Input;
 
-namespace LivingWorldMod.DataStatuctures.Classes.DebugModules;
+namespace LivingWorldMod.DataStructures.Classes.DebugModules;
 
 /// <summary>
 /// Class that can be extended for debug functionality with the <seealso cref="DebugToolSystem"/> ModSystem.

@@ -1,6 +1,6 @@
 ﻿using LivingWorldMod.Content.Tiles.DebugTiles;
 
-namespace LivingWorldMod.DataStatuctures.Classes.DebugModules;
+namespace LivingWorldMod.DataStructures.Classes.DebugModules;
 
 /// <summary>
 /// Module that places Skip Tiles over all air tiles in the region.

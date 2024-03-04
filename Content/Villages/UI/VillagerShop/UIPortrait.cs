@@ -2,7 +2,7 @@
 using LivingWorldMod.Content.Villages.DataStructures.Enums;
 using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.Villages.HarpyVillage.NPCs;
-using LivingWorldMod.DataStatuctures.Classes;
+using LivingWorldMod.DataStructures.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Audio;

@@ -3,7 +3,7 @@ using LivingWorldMod.Content.Tiles.DebugTiles;
 using LivingWorldMod.Content.Walls.DebugWalls;
 using Terraria.ModLoader.IO;
 
-namespace LivingWorldMod.DataStatuctures.Structs;
+namespace LivingWorldMod.DataStructures.Structs;
 
 /// <summary>
 /// Struct that holds Tile Data, mainly usage being for structures. Used for generating

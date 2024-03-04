@@ -2,7 +2,7 @@
 using System.Linq;
 using LivingWorldMod.Common.VanillaOverrides.WorldGen.GenConditions;
 using LivingWorldMod.Content.Waystones.Tiles;
-using LivingWorldMod.DataStatuctures.Enums;
+using LivingWorldMod.DataStructures.Enums;
 using LivingWorldMod.Globals.ModTypes;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;

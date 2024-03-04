@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace LivingWorldMod.DataStatuctures.Structs;
+namespace LivingWorldMod.DataStructures.Structs;
 
 /// <summary>
 /// Not fully complete re-creation of the <see cref="Rectangle"/> struct with float precision instead

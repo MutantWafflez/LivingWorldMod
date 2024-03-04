@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LivingWorldMod.DataStatuctures.Classes;
+namespace LivingWorldMod.DataStructures.Classes;
 
 /// <summary>
 /// Represents an array of fixed size that will remember only the

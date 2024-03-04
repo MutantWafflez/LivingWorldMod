@@ -1,5 +1,5 @@
 ﻿using LivingWorldMod.Content.Villages.HarpyVillage.Food;
-using LivingWorldMod.DataStatuctures.Classes;
+using LivingWorldMod.DataStructures.Classes;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Shaders;

@@ -2,7 +2,7 @@
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
-using LivingWorldMod.DataStatuctures.Classes;
+using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;

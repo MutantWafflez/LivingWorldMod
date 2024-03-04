@@ -1,6 +1,6 @@
-﻿using LivingWorldMod.DataStatuctures.Interfaces;
+﻿using LivingWorldMod.DataStructures.Interfaces;
 
-namespace LivingWorldMod.DataStatuctures.Structs;
+namespace LivingWorldMod.DataStructures.Structs;
 
 /// <summary>
 /// Struct that acts as a singular generic value type object to be stored temporarily

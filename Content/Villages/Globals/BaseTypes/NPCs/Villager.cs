@@ -6,7 +6,7 @@ using LivingWorldMod.Content.Villages.DataStructures.Classes;
 using LivingWorldMod.Content.Villages.DataStructures.Enums;
 using LivingWorldMod.Content.Villages.Globals.Systems;
 using LivingWorldMod.Content.Villages.Globals.Systems.UI;
-using LivingWorldMod.DataStatuctures.Classes;
+using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

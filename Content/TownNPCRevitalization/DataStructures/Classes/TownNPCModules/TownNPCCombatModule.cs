@@ -2,7 +2,7 @@
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
-using LivingWorldMod.DataStatuctures.Structs;
+using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 

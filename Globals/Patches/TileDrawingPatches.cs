@@ -1,5 +1,5 @@
 ﻿using System;
-using LivingWorldMod.DataStatuctures.Classes;
+using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.Globals.Sets;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;

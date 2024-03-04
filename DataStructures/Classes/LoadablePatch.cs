@@ -1,7 +1,7 @@
 ﻿using System;
 using MonoMod.Cil;
 
-namespace LivingWorldMod.DataStatuctures.Classes;
+namespace LivingWorldMod.DataStructures.Classes;
 
 /// <summary>
 /// Extendable class that should be extended for any IL/On patches that provides extra debug information and

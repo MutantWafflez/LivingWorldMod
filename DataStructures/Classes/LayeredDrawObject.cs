@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria.DataStructures;
 
-namespace LivingWorldMod.DataStatuctures.Classes;
+namespace LivingWorldMod.DataStructures.Classes;
 
 /// <summary>
 /// Represents a set of <see cref="Texture2D"/> objects that are

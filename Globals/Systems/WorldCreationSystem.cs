@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.DataStatuctures.Interfaces;
-using LivingWorldMod.DataStatuctures.Structs;
+using LivingWorldMod.DataStructures.Interfaces;
+using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Globals.ModTypes;
 using LivingWorldMod.Globals.Systems.BaseSystems;
 using Terraria.GameContent.Generation;
