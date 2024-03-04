@@ -13,6 +13,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 /// ModSystem that handles special "night" parties that happen in tandem with
 /// lantern nights.
 /// </summary>
+[Autoload(false)]
 public sealed class NightPartySystem : BaseModSystem<NightPartySystem> {
     private bool shouldNightParty;
 

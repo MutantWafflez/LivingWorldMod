@@ -12,6 +12,7 @@ namespace LivingWorldMod.Globals.Systems;
 /// Mod system that handles miscellaneous loading tasks that otherwise
 /// don't deserve their own mod system.
 /// </summary>
+[Autoload(false)]
 public class LoadingTaskSystem : BaseModSystem<LoadingTaskSystem> {
     public override void PostSetupContent() {
         if (Main.netMode != NetmodeID.Server) {
