@@ -235,14 +235,6 @@ public class TownGlobalNPC : GlobalNPC {
         PathfinderModule.ReceiveNetworkData(bitReader, binaryReader);
     }
 
-    public override void SaveData(NPC npc, TagCompound tag) {
-        PathfinderModule.SaveData(tag);
-    }
-
-    public override void LoadData(NPC npc, TagCompound tag) {
-        PathfinderModule.LoadData(tag);
-    }
-
     public override bool? CanFallThroughPlatforms(NPC npc) => PathfinderModule.canFallThroughPlatforms ? true : null;
 
     public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
