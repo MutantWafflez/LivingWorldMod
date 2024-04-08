@@ -295,7 +295,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
         TownNPCPathfinder pathFinder =
             _cachedPathfinder
-            ?? new TownNPCPathfinder(new UPoint16(topLeftOfGrid.X, topLeftOfGrid.Y), PathFinderZoneSideLength, 6, (ushort)Math.Ceiling(npc.width / 16f), (ushort)Math.Ceiling(npc.height / 16f));
+            ?? new TownNPCPathfinder(new UPoint16(topLeftOfGrid.X, topLeftOfGrid.Y), PathFinderZoneSideLength, (ushort)Math.Ceiling(npc.width / 16f), (ushort)Math.Ceiling(npc.height / 16f));
 
         List<PathNode> path = pathFinder.FindPath(new UPoint16(BottomLeftTileOfNPC - topLeftOfGrid), new UPoint16(endPoint - topLeftOfGrid));
 

@@ -18,7 +18,6 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 /// <summary>
 /// Global NPC that handles exclusively the AI overhaul for Town NPCs.
 /// </summary>
-[Autoload(false)]
 public class TownGlobalNPC : GlobalNPC {
     public static IReadOnlyDictionary<int, (Texture2D, Texture2D)> talkBlinkOverlays;
 

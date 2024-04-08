@@ -30,4 +30,6 @@ public struct UPoint16(ushort x, ushort y) {
     public override readonly bool Equals(object obj) => obj is UPoint16 other && Equals(other);
 
     public override readonly int GetHashCode() => HashCode.Combine(x, y);
+
+    public override readonly string ToString() => $"X: {x}, Y: {y}";
 }

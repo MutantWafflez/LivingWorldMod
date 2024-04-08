@@ -175,7 +175,7 @@ public class TownNPCPathfinder {
 
     private bool EnsureStartAndEndValidity() {
         // If the path is outside the bounds of the grid, return null
-        if (!RectangleWithinGrid(_start, _rectSizeX, _gridSizeY) || !RectangleWithinGrid(_end, _rectSizeX, _gridSizeY)) {
+        if (!RectangleWithinGrid(_start, _rectSizeX, _rectSizeY) || !RectangleWithinGrid(_end, _rectSizeX, _rectSizeY)) {
             return false;
         }
 
@@ -433,7 +433,7 @@ public class TownNPCPathfinder {
 
         for (int i = 0; i < rectWidth; i++) {
             TileFlags tileFlags = _tileGrid[bottomLeft.x + i, bottomLeft.y + 1].flags;
-            if (tileFlags.HasFlag(TileFlags.Solid | TileFlags.SolidTop)) {
+            if (tileFlags.HasFlag(TileFlags.Solid) || tileFlags.HasFlag(TileFlags.SolidTop)) {
                 return true;
             }
         }
