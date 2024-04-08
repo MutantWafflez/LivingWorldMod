@@ -2,30 +2,24 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using LivingWorldMod.Library.AStarPathfinding;
-using LivingWorldMod.Library.AStarPathfinding.Nodes;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ModLoader.IO;
+using PathNode = LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCPathfinder.PathNode;
+using NodeMovementType = LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCPathfinder.NodeMovementType;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
 public sealed class TownNPCPathfinderModule : TownNPCModule {
-    private sealed class PathfinderResult {
-        public readonly Point topLeftOfGrid;
-        public readonly Point endPoint;
-        public readonly List<PathFinderNode> path;
-        public PathFinderNode lastConsumedNode;
-
-        public PathfinderResult(Point topLeftOfGrid, Point endPoint, PathFinderNode lastConsumedNode, List<PathFinderNode> path) {
-            this.topLeftOfGrid = topLeftOfGrid;
-            this.endPoint = endPoint;
-            this.lastConsumedNode = lastConsumedNode;
-            this.path = path;
-        }
+    private sealed class PathfinderResult(Point topLeftOfGrid, Point endPoint, PathNode lastConsumedNode, List<PathNode> path) {
+        public readonly Point topLeftOfGrid = topLeftOfGrid;
+        public readonly Point endPoint = endPoint;
+        public readonly List<PathNode> path = path;
+        public PathNode lastConsumedNode = lastConsumedNode;
     }
 
     /// <summary>
@@ -54,7 +48,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     private bool _isPaused;
     private bool _wasPaused;
 
-    private GroundedPathFinder _cachedPathfinder;
+    private TownNPCPathfinder _cachedPathfinder;
     private PathfinderResult _currentPathfinderResult;
 
     public TownNPCPathfinderModule(NPC npc) : base(npc) {
@@ -70,10 +64,10 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         }
 
         Point topLeftOfGrid = _currentPathfinderResult.topLeftOfGrid;
-        List<PathFinderNode> path = _currentPathfinderResult.path;
-        ref PathFinderNode lastConsumedNode = ref _currentPathfinderResult.lastConsumedNode;
+        List<PathNode> path = _currentPathfinderResult.path;
+        ref PathNode lastConsumedNode = ref _currentPathfinderResult.lastConsumedNode;
 
-        PathFinderNode nextNode = path.Last();
+        PathNode nextNode = path.Last();
 
         if (_isPaused) {
             _isPaused = false;
@@ -102,7 +96,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         }
         _prevDistanceToNextNode = curDistanceToNextNode;
 
-        Vector2 nextNodeCenter = (topLeftOfGrid + new Point(nextNode.X, nextNode.Y)).ToWorldCoordinates();
+        Vector2 nextNodeCenter = (topLeftOfGrid + new Point(nextNode.nodePos.x, nextNode.nodePos.y)).ToWorldCoordinates();
         Vector2 nextNodeBottom = nextNodeCenter + new Vector2(0f, 8f);
 
         Rectangle nodeRectangle = new((int)(nextNodeCenter.X - 8f), (int)(nextNodeCenter.Y - 8f), 16, 16);
@@ -111,7 +105,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         bool leftHasBreachedNode = npc.direction == 1 ? npc.Left.X >= nextNodeCenter.X : npc.Left.X <= nextNodeCenter.X;
 
         canFallThroughPlatforms = false;
-        if (leftHasBreachedNode && nodeRectangle.Intersects(npcNodeCollisionRectangle) && (lastConsumedNode.Y - nextNode.Y < GroundedPathFinder.MinimumHeightToBeConsideredJump || npc.velocity.Y == 0f)) {
+        if (leftHasBreachedNode && nodeRectangle.Intersects(npcNodeCollisionRectangle) && (lastConsumedNode.movementType is not NodeMovementType.Jump || npc.velocity.Y == 0f)) {
             lastConsumedNode = nextNode;
             path.RemoveAt(path.Count - 1);
 
@@ -121,16 +115,16 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             }
 
             nextNode = path.Last();
-            nextNodeCenter = (topLeftOfGrid + new Point(nextNode.X, nextNode.Y)).ToWorldCoordinates();
+            nextNodeCenter = (topLeftOfGrid + new Point(nextNode.nodePos.x, nextNode.nodePos.y)).ToWorldCoordinates();
 
-            if (lastConsumedNode.Y - nextNode.Y >= GroundedPathFinder.MinimumHeightToBeConsideredJump) {
+            if (lastConsumedNode.movementType is NodeMovementType.Jump) {
                 npc.BottomLeft = nextNodeBottom;
 
                 //Reset velocity & calculate jump vector required to reach jump destination
                 npc.velocity *= 0f;
 
                 float npcGravity = npc.gravity;
-                float jumpHeight = npc.BottomLeft.Y - (topLeftOfGrid + new Point(nextNode.X, nextNode.Y)).ToWorldCoordinates(8f, 0f).Y;
+                float jumpHeight = npc.BottomLeft.Y - (topLeftOfGrid + new Point(nextNode.nodePos.x, nextNode.nodePos.y)).ToWorldCoordinates(8f, 0f).Y;
                 float yDisplacement = jumpHeight - npc.height;
 
                 // Horizontal Velocity = X Displacement / (sqrt(-2 * h / g) + sqrt(2(Y Displacement - h) / g))
@@ -147,19 +141,19 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         }
 
         //Step movements or horizontal movements
-        if (Math.Abs(lastConsumedNode.Y - nextNode.Y) == GroundedPathFinder.ExactHeightToBeConsideredStep || lastConsumedNode.Y == nextNode.Y) {
+        if (lastConsumedNode.movementType is NodeMovementType.PureHorizontal or NodeMovementType.Step) {
             npc.velocity.X = npc.direction;
             CheckForDoors();
 
-            if (lastConsumedNode.Y < nextNode.Y) {
+            if (lastConsumedNode.nodePos.y < nextNode.nodePos.y) {
                 Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
             }
-            else if (lastConsumedNode.Y > nextNode.Y) {
+            else if (lastConsumedNode.nodePos.y > nextNode.nodePos.y) {
                 Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
             }
         }
         //Fall movements
-        else if (lastConsumedNode.Y - nextNode.Y < 0) {
+        else if (lastConsumedNode.movementType is NodeMovementType.Fall) {
             if (npc.velocity.Y == 0f) {
                 npc.velocity.X = npc.direction;
             }
@@ -199,8 +193,8 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             return;
         }
 
-        foreach (PathFinderNode node in _currentPathfinderResult.path) {
-            spriteBatch.Draw(TextureAssets.Extra[66].Value, _currentPathfinderResult.topLeftOfGrid.ToWorldCoordinates(2f, 2.5f) + new Vector2(node.X, node.Y).ToWorldCoordinates(0f, 0f) - screenPos, Color.White);
+        foreach (PathNode node in _currentPathfinderResult.path) {
+            spriteBatch.Draw(TextureAssets.Extra[66].Value, _currentPathfinderResult.topLeftOfGrid.ToWorldCoordinates(2f, 2.5f) + new Vector2(node.nodePos.x, node.nodePos.y).ToWorldCoordinates(0f, 0f) - screenPos, Color.White);
         }
     }
 
@@ -299,92 +293,20 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         topLeftOfGrid.X = Utils.Clamp(topLeftOfGrid.X, worldFluff, Main.maxTilesX - PathFinderZoneSideLength - worldFluff - 1);
         topLeftOfGrid.Y = Utils.Clamp(topLeftOfGrid.Y, 0, Main.maxTilesY - PathFinderZoneSideLength - 1);
 
-        GroundedPathFinder pathFinder;
-        if (_cachedPathfinder is not null) {
-            pathFinder = _cachedPathfinder;
-        }
-        else {
-            PathFinder.GridObject[,] grid = new PathFinder.GridObject[PathFinderZoneSideLength, PathFinderZoneSideLength];
-            for (int i = 0; i < PathFinderZoneSideLength; i++) {
-                for (int j = 0; j < PathFinderZoneSideLength; j++) {
-                    Tile tile = Main.tile[topLeftOfGrid + new Point(i, j)];
+        TownNPCPathfinder pathFinder =
+            _cachedPathfinder
+            ?? new TownNPCPathfinder(new UPoint16(topLeftOfGrid.X, topLeftOfGrid.Y), PathFinderZoneSideLength, 6, (ushort)Math.Ceiling(npc.width / 16f), (ushort)Math.Ceiling(npc.height / 16f));
 
-                    bool hasTile = tile.HasTile;
-                    bool isActuated = tile.IsActuated;
-                    bool isSolid = Main.tileSolid[tile.TileType];
-                    bool isPlatform = TileID.Sets.Platforms[tile.TileType];
-                    bool isDoor = TileLoader.OpenDoorID(tile) > 0 || TileLoader.CloseDoorID(tile) > 0;
-                    bool hasLava = tile is { LiquidAmount: > 0, LiquidType: LiquidID.Lava };
-                    bool hasShimmer = tile is { LiquidAmount: >= 200, LiquidType: LiquidID.Shimmer };
-
-                    grid[i, j] = hasTile switch {
-                        true when !isActuated && isSolid && !isDoor && !isPlatform => new PathFinder.GridObject(GridNodeType.Solid, 0),
-                        true when !isActuated && isPlatform => new PathFinder.GridObject(GridNodeType.SolidTop, 0),
-                        false when hasLava || hasShimmer => new PathFinder.GridObject(GridNodeType.Impassable, 0),
-                        _ => new PathFinder.GridObject(GridNodeType.NonSolid, GetTileMovementCost(tile))
-                    };
-                }
-            }
-
-            Rectangle gridRect = new(0, 0, PathFinderZoneSideLength, PathFinderZoneSideLength);
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC otherNPC = Main.npc[i];
-                if (!otherNPC.active || otherNPC.friendly || otherNPC.damage <= 0) {
-                    continue;
-                }
-
-                Point npcPathfinderPos = otherNPC.position.ToTileCoordinates() - topLeftOfGrid;
-                int otherNPCTileWidth = (int)Math.Ceiling(otherNPC.width / 16f);
-                int otherNPCTileHeight = (int)Math.Ceiling(otherNPC.height / 16f);
-                if (!gridRect.Contains(new Rectangle(npcPathfinderPos.X, npcPathfinderPos.Y, otherNPCTileWidth, otherNPCTileHeight))) {
-                    continue;
-                }
-
-                for (int j = npcPathfinderPos.X; j < npcPathfinderPos.X + otherNPCTileWidth; j++) {
-                    for (int k = npcPathfinderPos.Y; k < npcPathfinderPos.Y + otherNPCTileHeight; k++) {
-                        if (grid[j, k].ObjectType == GridNodeType.NonSolid) {
-                            grid[j, k] = new PathFinder.GridObject(GridNodeType.Impassable, 0);
-                        }
-                    }
-                }
-            }
-
-            pathFinder = new GroundedPathFinder(topLeftOfGrid, PathFinderZoneSideLength, 6, (int)Math.Ceiling(npc.width / 16f), (int)Math.Ceiling(npc.height / 16f));
-        }
-
-        List<PathFinderNode> path = pathFinder.FindPath(BottomLeftTileOfNPC - topLeftOfGrid, endPoint - topLeftOfGrid);
+        List<PathNode> path = pathFinder.FindPath(new UPoint16(BottomLeftTileOfNPC - topLeftOfGrid), new UPoint16(endPoint - topLeftOfGrid));
 
         if (path is null) {
             return null;
         }
 
         PrunePath(path);
-        PathfinderResult result = new(topLeftOfGrid, endPoint, default(PathFinderNode), path);
+        PathfinderResult result = new(topLeftOfGrid, endPoint, default(PathNode), path);
         _cachedResults.Add(result);
         return result;
-    }
-
-    private byte GetTileMovementCost(Tile tile) {
-        byte tileCost = 1;
-
-        if (TileID.Sets.AvoidedByNPCs[tile.TileType]) {
-            tileCost += 8;
-        }
-
-        if (tile.LiquidAmount <= 0) {
-            return tileCost;
-        }
-
-        switch (tile.LiquidType) {
-            case LiquidID.Water:
-                tileCost += 8;
-                break;
-            case LiquidID.Honey:
-                tileCost += 12;
-                break;
-        }
-
-        return tileCost;
     }
 
     private void GenerateAndUseNewPath(Point endPoint) {
@@ -399,27 +321,27 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             EndPathfinding();
         }
         else {
-            List<PathFinderNode> path = _currentPathfinderResult.path;
+            List<PathNode> path = _currentPathfinderResult.path;
             PrunePath(path);
 
             _prevDistanceToNextNode = GetDistanceToNode(path.Last());
             _notMakingProgressCounter = 0;
-            npc.direction = npc.Center.X > (path.Last().X + _currentPathfinderResult.topLeftOfGrid.X) * 16 + 8 ? -1 : 1;
+            npc.direction = npc.Center.X > (path.Last().nodePos.x + _currentPathfinderResult.topLeftOfGrid.X) * 16 + 8 ? -1 : 1;
             npc.velocity.X = npc.direction;
         }
     }
 
-    private float GetDistanceToNode(PathFinderNode nextNode) => npc.BottomLeft.Distance((_currentPathfinderResult.topLeftOfGrid + new Point(nextNode.X, nextNode.Y)).ToWorldCoordinates());
+    private float GetDistanceToNode(PathNode nextNode) => npc.BottomLeft.Distance((_currentPathfinderResult.topLeftOfGrid + new Point(nextNode.nodePos.x, nextNode.nodePos.y)).ToWorldCoordinates());
 
-    private static void PrunePath(IList<PathFinderNode> path) {
+    private static void PrunePath(IList<PathNode> path) {
         List<int> indicesToBeRemoved = new();
 
         for (int i = path.Count - 2; i > 0; i--) {
-            PathFinderNode prevNode = path[i + 1];
-            PathFinderNode curNode = path[i];
-            PathFinderNode nextNode = path[i - 1];
+            PathNode prevNode = path[i + 1];
+            PathNode curNode = path[i];
+            PathNode nextNode = path[i - 1];
 
-            if (curNode.Y == prevNode.Y && curNode.Y == nextNode.Y) {
+            if (curNode.movementType == NodeMovementType.PureHorizontal) {
                 indicesToBeRemoved.Add(i);
             }
         }
