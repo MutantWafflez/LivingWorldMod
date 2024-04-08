@@ -119,7 +119,7 @@ public class TownNPCPathfinder {
         _start = startPoint;
         _end = endPoint;
 
-        if (!EnsureStartAndEndValidity()) {
+        if (!StartAndEndPointsAreValid()) {
             return null;
         }
 
@@ -173,27 +173,13 @@ public class TownNPCPathfinder {
         return grid;
     }
 
-    private bool EnsureStartAndEndValidity() {
-        // If the path is outside the bounds of the grid, return null
-        if (!RectangleWithinGrid(_start, _rectSizeX, _rectSizeY) || !RectangleWithinGrid(_end, _rectSizeX, _rectSizeY)) {
-            return false;
-        }
-
-        // If the start/end position does not fit the entity, then obviously we can't pathfind to it
-        if (!RectangleHasNoTiles(_start, _rectSizeX, _rectSizeY) && !RectangleHasNoTiles(_end, _rectSizeX, _rectSizeY)) {
-            return false;
-        }
-
-        if (!PointOnStandableTiles(_start, _rectSizeX, true)) {
-            return false;
-        }
-
-        if (!PointOnStandableTiles(_end, _rectSizeX, true)) {
-            return false;
-        }
-
-        return true;
-    }
+    private bool StartAndEndPointsAreValid() =>
+        RectangleWithinGrid(_start, _rectSizeX, _rectSizeY)
+        && RectangleWithinGrid(_end, _rectSizeX, _rectSizeY)
+        && RectangleHasNoTiles(_start, _rectSizeX, _rectSizeY)
+        && RectangleHasNoTiles(_end, _rectSizeX, _rectSizeY)
+        && PointOnStandableTiles(_start, _rectSizeX, true)
+        && PointOnStandableTiles(_end, _rectSizeX, true);
 
     private void InitiatePathingVariables() {
         _reachedGoal = _pathfindingStopped = false;
@@ -368,20 +354,23 @@ public class TownNPCPathfinder {
 
     private List<PathNode> FinalizePath() {
         if (!_reachedGoal) {
+            _pathfindingStopped = true;
             return null;
         }
 
         List<PathNode> foundPath = new();
+        InternalNode curNode = _nodeGrid[_end.x, _end.y];
         UPoint16 curNodePos = _end;
 
-        while (curNodePos != _start) {
-            InternalNode internalNode = _nodeGrid[curNodePos.x, curNodePos.y];
-            foundPath.Add(internalNode.ToPathNode(curNodePos));
+        while (curNodePos != curNode.parentPos) {
+            curNode = _nodeGrid[curNodePos.x, curNodePos.y];
+            foundPath.Add(curNode.ToPathNode(curNodePos));
 
-            curNodePos = internalNode.parentPos;
+            curNodePos = curNode.parentPos;
         }
 
         foundPath.Add(_nodeGrid[curNodePos.x, curNodePos.y].ToPathNode(curNodePos));
+        _pathfindingStopped = true;
         return foundPath;
     }
 
@@ -408,7 +397,7 @@ public class TownNPCPathfinder {
         for (int i = bottomLeft.x; i < bottomLeft.x + sizeX; i++) {
             for (int j = bottomLeft.y; j > bottomLeft.y - sizeY; j--) {
                 TileFlags tileFlags = _tileGrid[i, j].flags;
-                if (tileFlags is TileFlags.Empty || tileFlags.HasFlag(TileFlags.SolidTop)) {
+                if (tileFlags.HasFlag(TileFlags.Solid) || tileFlags.HasFlag(TileFlags.Impassable)) {
                     return false;
                 }
             }

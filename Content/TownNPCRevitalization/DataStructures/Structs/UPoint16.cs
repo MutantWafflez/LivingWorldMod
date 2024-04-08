@@ -17,7 +17,7 @@ public struct UPoint16(ushort x, ushort y) {
 
     public UPoint16(Point point) : this(point.X, point.Y) { }
 
-    public static UPoint16 operator +(UPoint16 pointOne, UPoint16 pointTwo) => new((ushort)(pointOne.x + pointTwo.x), (ushort)(pointOne.y + pointTwo.x));
+    public static UPoint16 operator +(UPoint16 pointOne, UPoint16 pointTwo) => new((ushort)(pointOne.x + pointTwo.x), (ushort)(pointOne.y + pointTwo.y));
 
     public static bool operator ==(UPoint16 pointOne, UPoint16 pointTwo) => pointOne.Equals(pointTwo);
 

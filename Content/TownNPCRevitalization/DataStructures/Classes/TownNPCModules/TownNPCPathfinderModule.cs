@@ -194,7 +194,14 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         }
 
         foreach (PathNode node in _currentPathfinderResult.path) {
-            spriteBatch.Draw(TextureAssets.Extra[66].Value, _currentPathfinderResult.topLeftOfGrid.ToWorldCoordinates(2f, 2.5f) + new Vector2(node.nodePos.x, node.nodePos.y).ToWorldCoordinates(0f, 0f) - screenPos, Color.White);
+            Color nodeColor = node.movementType switch {
+                NodeMovementType.Step => Color.ForestGreen,
+                NodeMovementType.Jump => Color.Green,
+                NodeMovementType.Fall => Color.Red,
+                _ => Color.White
+            };
+
+            spriteBatch.Draw(TextureAssets.Extra[66].Value, _currentPathfinderResult.topLeftOfGrid.ToWorldCoordinates(2f, 2.5f) + new Vector2(node.nodePos.x, node.nodePos.y).ToWorldCoordinates(0f, 0f) - screenPos, nodeColor);
         }
     }
 

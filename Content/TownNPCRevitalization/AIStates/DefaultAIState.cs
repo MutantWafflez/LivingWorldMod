@@ -1,5 +1,6 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Globals.Configs;
 using LivingWorldMod.Utilities;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
@@ -22,7 +23,7 @@ public class DefaultAIState : TownNPCAIState {
             return;
         }
 
-        if (Main.rand.NextBool(4, 10)) {
+        if (LWM.IsDebug && ModContent.GetInstance<DebugConfig>().guaranteedWanderOffCooldown || Main.rand.NextBool(4, 10)) {
             TownGlobalNPC.RefreshToState<WalkToRandomPosState>(npc);
             return;
         }

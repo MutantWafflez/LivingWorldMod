@@ -367,6 +367,11 @@ Mods: {
 						ONLY enable this if you know what you're doing.
 						'''
 				}
+
+				guaranteedWanderOffCooldown: {
+					Label: Guaranteed Town NPC Wandering
+					Tooltip: Guarantees Town NPC wandering while in the Default AI State instead of it being a chance.
+				}
 			}
 		}
 

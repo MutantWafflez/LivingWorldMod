@@ -12,4 +12,7 @@ public class DebugConfig : ModConfig {
     [DefaultValue(false)]
     [ReloadRequired]
     public bool forceDebugMode;
+
+    [DefaultValue(false)]
+    public bool guaranteedWanderOffCooldown;
 }
