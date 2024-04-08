@@ -96,7 +96,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         }
         _prevDistanceToNextNode = curDistanceToNextNode;
 
-        Vector2 nextNodeCenter = (topLeftOfGrid + new Point(nextNode.nodePos.x, nextNode.nodePos.y)).ToWorldCoordinates();
+        Vector2 nextNodeCenter = (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates();
         Vector2 nextNodeBottom = nextNodeCenter + new Vector2(0f, 8f);
 
         Rectangle nodeRectangle = new((int)(nextNodeCenter.X - 8f), (int)(nextNodeCenter.Y - 8f), 16, 16);
@@ -105,7 +105,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         bool leftHasBreachedNode = npc.direction == 1 ? npc.Left.X >= nextNodeCenter.X : npc.Left.X <= nextNodeCenter.X;
 
         canFallThroughPlatforms = false;
-        if (leftHasBreachedNode && nodeRectangle.Intersects(npcNodeCollisionRectangle) && (lastConsumedNode.movementType is not NodeMovementType.Jump || npc.velocity.Y == 0f)) {
+        if (leftHasBreachedNode && nodeRectangle.Intersects(npcNodeCollisionRectangle) && (lastConsumedNode.MovementType is not NodeMovementType.Jump || npc.velocity.Y == 0f)) {
             lastConsumedNode = nextNode;
             path.RemoveAt(path.Count - 1);
 
@@ -115,16 +115,16 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             }
 
             nextNode = path.Last();
-            nextNodeCenter = (topLeftOfGrid + new Point(nextNode.nodePos.x, nextNode.nodePos.y)).ToWorldCoordinates();
+            nextNodeCenter = (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates();
 
-            if (lastConsumedNode.movementType is NodeMovementType.Jump) {
+            if (lastConsumedNode.MovementType is NodeMovementType.Jump) {
                 npc.BottomLeft = nextNodeBottom;
 
                 //Reset velocity & calculate jump vector required to reach jump destination
                 npc.velocity *= 0f;
 
                 float npcGravity = npc.gravity;
-                float jumpHeight = npc.BottomLeft.Y - (topLeftOfGrid + new Point(nextNode.nodePos.x, nextNode.nodePos.y)).ToWorldCoordinates(8f, 0f).Y;
+                float jumpHeight = npc.BottomLeft.Y - (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates(8f, 0f).Y;
                 float yDisplacement = jumpHeight - npc.height;
 
                 // Horizontal Velocity = X Displacement / (sqrt(-2 * h / g) + sqrt(2(Y Displacement - h) / g))
@@ -140,36 +140,40 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             npc.direction = npc.Left.X > nextNodeCenter.X ? -1 : 1;
         }
 
-        //Step movements or horizontal movements
-        if (lastConsumedNode.movementType is NodeMovementType.PureHorizontal or NodeMovementType.Step) {
-            npc.velocity.X = npc.direction;
-            CheckForDoors();
-
-            if (lastConsumedNode.nodePos.y < nextNode.nodePos.y) {
-                Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
-            }
-            else if (lastConsumedNode.nodePos.y > nextNode.nodePos.y) {
-                Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
-            }
-        }
-        //Fall movements
-        else if (lastConsumedNode.movementType is NodeMovementType.Fall) {
-            if (npc.velocity.Y == 0f) {
+        switch (lastConsumedNode.MovementType) {
+            //Step movements or horizontal movements
+            case NodeMovementType.PureHorizontal or NodeMovementType.Step: {
                 npc.velocity.X = npc.direction;
+                CheckForDoors();
+
+                if (lastConsumedNode.NodePos.y < nextNode.NodePos.y) {
+                    Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
+                }
+                else if (lastConsumedNode.NodePos.y > nextNode.NodePos.y) {
+                    Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
+                }
+                break;
             }
+            //Fall movements
+            case NodeMovementType.Fall: {
+                if (npc.velocity.Y == 0f) {
+                    npc.velocity.X = npc.direction;
+                }
 
-            if (!leftHasBreachedNode) {
-                return;
+                if (!leftHasBreachedNode) {
+                    return;
+                }
+
+                npc.velocity.X = 0f;
+
+                if (npc.velocity.Y != 0f) {
+                    return;
+                }
+
+                npc.velocity.Y = 0.1f;
+                canFallThroughPlatforms = true;
+                break;
             }
-
-            npc.velocity.X = 0f;
-
-            if (npc.velocity.Y != 0f) {
-                return;
-            }
-
-            npc.velocity.Y = 0.1f;
-            canFallThroughPlatforms = true;
         }
     }
 
@@ -194,14 +198,14 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         }
 
         foreach (PathNode node in _currentPathfinderResult.path) {
-            Color nodeColor = node.movementType switch {
+            Color nodeColor = node.MovementType switch {
                 NodeMovementType.Step => Color.ForestGreen,
                 NodeMovementType.Jump => Color.Green,
                 NodeMovementType.Fall => Color.Red,
                 _ => Color.White
             };
 
-            spriteBatch.Draw(TextureAssets.Extra[66].Value, _currentPathfinderResult.topLeftOfGrid.ToWorldCoordinates(2f, 2.5f) + new Vector2(node.nodePos.x, node.nodePos.y).ToWorldCoordinates(0f, 0f) - screenPos, nodeColor);
+            spriteBatch.Draw(TextureAssets.Extra[66].Value, _currentPathfinderResult.topLeftOfGrid.ToWorldCoordinates(2f, 2.5f) + new Vector2(node.NodePos.x, node.NodePos.y).ToWorldCoordinates(0f, 0f) - screenPos, nodeColor);
         }
     }
 
@@ -333,12 +337,12 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
             _prevDistanceToNextNode = GetDistanceToNode(path.Last());
             _notMakingProgressCounter = 0;
-            npc.direction = npc.Center.X > (path.Last().nodePos.x + _currentPathfinderResult.topLeftOfGrid.X) * 16 + 8 ? -1 : 1;
+            npc.direction = npc.Center.X > (path.Last().NodePos.x + _currentPathfinderResult.topLeftOfGrid.X) * 16 + 8 ? -1 : 1;
             npc.velocity.X = npc.direction;
         }
     }
 
-    private float GetDistanceToNode(PathNode nextNode) => npc.BottomLeft.Distance((_currentPathfinderResult.topLeftOfGrid + new Point(nextNode.nodePos.x, nextNode.nodePos.y)).ToWorldCoordinates());
+    private float GetDistanceToNode(PathNode nextNode) => npc.BottomLeft.Distance((_currentPathfinderResult.topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates());
 
     private static void PrunePath(IList<PathNode> path) {
         List<int> indicesToBeRemoved = new();
@@ -348,8 +352,8 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             PathNode curNode = path[i];
             PathNode nextNode = path[i - 1];
 
-            if (curNode.movementType == NodeMovementType.PureHorizontal) {
-                indicesToBeRemoved.Add(i);
+            if (curNode.MovementType == NodeMovementType.PureHorizontal) {
+                //indicesToBeRemoved.Add(i);
             }
         }
 

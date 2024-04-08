@@ -14,11 +14,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 /// https://www.codeproject.com/articles/15307/a-algorithm-implementation-in-c.
 /// </remarks>
 public class TownNPCPathfinder {
-    public readonly struct PathNode(UPoint16 nodePos, UPoint16 parentNodePos, NodeMovementType movementType) {
-        public readonly UPoint16 nodePos = nodePos;
-        public readonly UPoint16 parentNodePos = parentNodePos;
-        public readonly NodeMovementType movementType = movementType;
-    }
+    public record struct PathNode(UPoint16 NodePos, UPoint16 ParentNodePos, NodeMovementType MovementType);
 
     private readonly struct TileData(byte weight, TileFlags flags) {
         public readonly byte weight = weight;
@@ -34,8 +30,6 @@ public class TownNPCPathfinder {
         public UPoint16 parentPos;
         public byte nodeStatusInteger;
         public NodeMovementType movementType;
-
-        public readonly PathNode ToPathNode(UPoint16 position) => new(position, parentPos, movementType);
     }
 
     public enum NodeMovementType : byte {
@@ -358,18 +352,22 @@ public class TownNPCPathfinder {
             return null;
         }
 
+
         List<PathNode> foundPath = new();
-        InternalNode curNode = _nodeGrid[_end.x, _end.y];
-        UPoint16 curNodePos = _end;
+        InternalNode curInternalNode = _nodeGrid[_end.x, _end.y];
+        NodeMovementType parentConnectType = curInternalNode.movementType;
+        PathNode curPathNode = new(_end, curInternalNode.parentPos, NodeMovementType.PureHorizontal);
 
-        while (curNodePos != curNode.parentPos) {
-            curNode = _nodeGrid[curNodePos.x, curNodePos.y];
-            foundPath.Add(curNode.ToPathNode(curNodePos));
+        while (curPathNode.NodePos != curPathNode.ParentNodePos) {
+            foundPath.Add(curPathNode);
+            curInternalNode = _nodeGrid[curPathNode.ParentNodePos.x, curPathNode.ParentNodePos.y];
+            NodeMovementType oldConnect = curInternalNode.movementType;
 
-            curNodePos = curNode.parentPos;
+            curPathNode = new PathNode(curPathNode.ParentNodePos, curInternalNode.parentPos, parentConnectType);
+            parentConnectType = oldConnect;
         }
 
-        foundPath.Add(_nodeGrid[curNodePos.x, curNodePos.y].ToPathNode(curNodePos));
+        foundPath.Add(curPathNode);
         _pathfindingStopped = true;
         return foundPath;
     }
