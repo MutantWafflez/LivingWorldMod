@@ -155,6 +155,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
                 break;
             }
             //Fall movements
+            // TODO: Investigate fall functionality issues due to pathfinder re-write
             case NodeMovementType.Fall: {
                 if (npc.velocity.Y == 0f) {
                     npc.velocity.X = npc.direction;
@@ -350,7 +351,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         for (int i = path.Count - 2; i > 0; i--) {
             PathNode prevNode = path[i + 1];
             PathNode curNode = path[i];
-            PathNode nextNode = path[i - 1];
+            //PathNode nextNode = path[i - 1];
 
             if (curNode.MovementType == NodeMovementType.PureHorizontal && prevNode.MovementType == NodeMovementType.PureHorizontal) {
                 indicesToBeRemoved.Add(i);

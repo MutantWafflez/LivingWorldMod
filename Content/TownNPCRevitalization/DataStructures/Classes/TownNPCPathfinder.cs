@@ -199,10 +199,10 @@ public class TownNPCPathfinder {
     }
 
     private void DoPathfindingLoop() {
+        // TODO: Benchmark, optimize
         while (_openQueue.Count > 0 && !_pathfindingStopped) {
             UPoint16 curNodePos = _openQueue.Dequeue();
 
-            //Is it in closed list? means this node was already processed
             if (_nodeGrid[curNodePos].nodeStatusInteger == _currentClosedNodeValue) {
                 continue;
             }
@@ -215,13 +215,13 @@ public class TownNPCPathfinder {
 
             if (_nodesClosed > MaxNodeSearch) {
                 _pathfindingStopped = true;
-                return;
+                break;
             }
 
 
             // Direct Horizontal Movement
             for (int k = -1; k < 2; k += 2) {
-                UPoint16 nextNodePos = curNodePos + new UPoint16(k, 0);
+                UPoint16 nextNodePos = new(curNodePos.x + k, curNodePos.y);
 
                 if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
                     continue;
@@ -230,26 +230,28 @@ public class TownNPCPathfinder {
                 DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 0, NodeMovementType.PureHorizontal);
             }
 
-            if (RectangleHasNoTiles(curNodePos + new UPoint16(0, -1), _rectSizeX, _rectSizeY)) {
-                // Upward Staircase Movement
-                for (int k = -1; k < 2; k += 2) {
-                    UPoint16 nextNodePos = new(curNodePos.x + k, curNodePos.y - 1);
-                    if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
-                        continue;
-                    }
-
+            if (RectangleHasNoTiles(new UPoint16(curNodePos.x, curNodePos.y - 1), _rectSizeX, _rectSizeY)) {
+                // Upward Left Staircase Movement
+                UPoint16 nextNodePos = new(curNodePos.x - 1, curNodePos.y - 1);
+                if (RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) && NPCCanStepUp(nextNodePos, _rectSizeX, true)) {
                     DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 1, NodeMovementType.Step);
                 }
 
-                // Downward Staircase Movement
-                for (int k = -1; k < 2; k += 2) {
-                    UPoint16 nextNodePos = new(curNodePos.x + k, curNodePos.y + 1);
-                    if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
-                        continue;
-                    }
-
+                //Upward Right Staircase Movement
+                nextNodePos = new UPoint16(curNodePos.x + 1, curNodePos.y - 1);
+                if (RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) && NPCCanStepUp(nextNodePos, _rectSizeX, false)) {
                     DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 1, NodeMovementType.Step);
                 }
+            }
+
+            // Downward Staircase Movement
+            for (int k = -1; k < 2; k += 2) {
+                UPoint16 nextNodePos = new(curNodePos.x + k, curNodePos.y + 1);
+                if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
+                    continue;
+                }
+
+                DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 1, NodeMovementType.Step);
             }
 
             // Straight Fall Movement
@@ -290,7 +292,7 @@ public class TownNPCPathfinder {
 
                 for (int k = -1; k < 2; k += 2) {
                     nextNodePos = new UPoint16(nextNodePos.x + k, nextNodePos.y);
-                    if (!PointOnStandableTile(nextNodePos, _rectSizeX)) {
+                    if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
                         continue;
                     }
 
@@ -315,9 +317,9 @@ public class TownNPCPathfinder {
     }
 
     private void DoSuccessorChecksAndCalculations(UPoint16 currentNodePos, UPoint16 nextNodePos, ushort gCostModifier, NodeMovementType movementType) {
-        ushort mNewG = (ushort)(_nodeGrid[currentNodePos].g + _tileGrid[nextNodePos].weight + gCostModifier);
+        ushort newG = (ushort)(_nodeGrid[currentNodePos].g + _tileGrid[nextNodePos].weight + gCostModifier);
         if (_nodeGrid[nextNodePos].nodeStatusInteger == _currentOpenNodeValue || _nodeGrid[nextNodePos].nodeStatusInteger == _currentClosedNodeValue) {
-            if (_nodeGrid[nextNodePos].g <= mNewG) {
+            if (_nodeGrid[nextNodePos].g <= newG) {
                 return;
             }
         }
@@ -325,9 +327,9 @@ public class TownNPCPathfinder {
         _nodeGrid[currentNodePos].movementType = movementType;
         _nodeGrid[nextNodePos] = _nodeGrid[nextNodePos] with {
             parentPos = currentNodePos,
-            g = mNewG,
+            g = newG,
             // Manhattan distance heuristic
-            f = (ushort)(mNewG + ManhattanEstimateTuneValue * (Math.Abs(nextNodePos.x - _end.x) + Math.Abs(nextNodePos.y - _end.y))),
+            f = (ushort)(newG + ManhattanEstimateTuneValue * (Math.Abs(nextNodePos.x - _end.x) + Math.Abs(nextNodePos.y - _end.y))),
             nodeStatusInteger = _currentOpenNodeValue
         };
 
@@ -340,19 +342,14 @@ public class TownNPCPathfinder {
             return null;
         }
 
-
         List<PathNode> foundPath = new();
         InternalNode curInternalNode = _nodeGrid[_end];
-        NodeMovementType parentConnectType = curInternalNode.movementType;
         PathNode curPathNode = new(_end, curInternalNode.parentPos, NodeMovementType.PureHorizontal);
 
         while (curPathNode.NodePos != curPathNode.ParentNodePos) {
             foundPath.Add(curPathNode);
             curInternalNode = _nodeGrid[curPathNode.ParentNodePos];
-            NodeMovementType oldConnect = curInternalNode.movementType;
-
-            curPathNode = new PathNode(curPathNode.ParentNodePos, curInternalNode.parentPos, parentConnectType);
-            parentConnectType = oldConnect;
+            curPathNode = new PathNode(curPathNode.ParentNodePos, curInternalNode.parentPos, curInternalNode.movementType);
         }
 
         foundPath.Add(curPathNode);
