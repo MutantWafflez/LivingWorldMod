@@ -32,6 +32,11 @@ public class TownNPCPathfinder {
         public NodeMovementType movementType;
     }
 
+    private sealed class PointGrid<T>(T[,] grid)
+        where T : struct {
+        public ref T this[UPoint16 point] => ref grid[point.x, point.y];
+    }
+
     public enum NodeMovementType : byte {
         PureHorizontal,
         Step,
@@ -83,9 +88,9 @@ public class TownNPCPathfinder {
     private readonly ushort _rectSizeY;
     private readonly ushort _gridSizeX;
     private readonly ushort _gridSizeY;
-    private readonly InternalNode[,] _nodeGrid;
-    private readonly TileData[,] _tileGrid;
-    private readonly PriorityQueue<UPoint16, int> _openQueue;
+    private readonly PointGrid<InternalNode> _nodeGrid;
+    private readonly PointGrid<TileData> _tileGrid;
+    private readonly PriorityQueue<UPoint16, UPoint16> _openQueue;
     private UPoint16 _start;
     private UPoint16 _end;
     private bool _pathfindingStopped;
@@ -104,9 +109,9 @@ public class TownNPCPathfinder {
         _gridSizeX = gridSizeWidth;
         _gridSizeY = gridSizeHeight;
 
-        _nodeGrid = new InternalNode[_gridSizeX, _gridSizeY];
-        _tileGrid = GenerateTileGrid();
-        _openQueue = new PriorityQueue<UPoint16, int>();
+        _nodeGrid = new PointGrid<InternalNode>(new InternalNode[_gridSizeX, _gridSizeY]);
+        _tileGrid = new PointGrid<TileData>(GenerateTileGrid());
+        _openQueue = new PriorityQueue<UPoint16, UPoint16>(Comparer<UPoint16>.Create((pointOne, pointTwo) => _nodeGrid[pointOne].f.CompareTo(_nodeGrid[pointTwo].f)));
     }
 
     public List<PathNode> FindPath(UPoint16 startPoint, UPoint16 endPoint) {
@@ -172,8 +177,8 @@ public class TownNPCPathfinder {
         && RectangleWithinGrid(_end, _rectSizeX, _rectSizeY)
         && RectangleHasNoTiles(_start, _rectSizeX, _rectSizeY)
         && RectangleHasNoTiles(_end, _rectSizeX, _rectSizeY)
-        && PointOnStandableTiles(_start, _rectSizeX, true)
-        && PointOnStandableTiles(_end, _rectSizeX, true);
+        && PointOnStandableTile(_start, _rectSizeX)
+        && PointOnStandableTile(_end, _rectSizeX);
 
     private void InitiatePathingVariables() {
         _reachedGoal = _pathfindingStopped = false;
@@ -182,25 +187,28 @@ public class TownNPCPathfinder {
         _currentClosedNodeValue += 2;
         _openQueue.Clear();
 
-        _nodeGrid[_start.x, _start.y] = new InternalNode {
+        _nodeGrid[_start] = new InternalNode {
             g = 0,
             f = ManhattanEstimateTuneValue,
             parentPos = _start,
-            nodeStatusInteger = _currentOpenNodeValue
+            nodeStatusInteger = _currentOpenNodeValue,
+            movementType = NodeMovementType.PureHorizontal
         };
 
-        _openQueue.Enqueue(_start, ManhattanEstimateTuneValue);
+        _openQueue.Enqueue(_start, _start);
     }
 
     private void DoPathfindingLoop() {
         while (_openQueue.Count > 0 && !_pathfindingStopped) {
             UPoint16 curNodePos = _openQueue.Dequeue();
-            if (_nodeGrid[curNodePos.x, curNodePos.y].nodeStatusInteger == _currentClosedNodeValue) {
+
+            //Is it in closed list? means this node was already processed
+            if (_nodeGrid[curNodePos].nodeStatusInteger == _currentClosedNodeValue) {
                 continue;
             }
 
             if (curNodePos == _end) {
-                _nodeGrid[curNodePos.x, curNodePos.y].nodeStatusInteger = _currentClosedNodeValue;
+                _nodeGrid[curNodePos].nodeStatusInteger = _currentClosedNodeValue;
                 _reachedGoal = true;
                 break;
             }
@@ -210,132 +218,112 @@ public class TownNPCPathfinder {
                 return;
             }
 
-            // Horizontal Left
-            UPoint16 nextNodePos = new(curNodePos.x - 1, curNodePos.y);
-            bool directLeftInBounds = PointWithinGrid(nextNodePos);
-            if (directLeftInBounds && RectangleHasNoTiles(nextNodePos, 1, _rectSizeY) && PointOnStandableTiles(nextNodePos, _rectSizeX)) {
+
+            // Direct Horizontal Movement
+            for (int k = -1; k < 2; k += 2) {
+                UPoint16 nextNodePos = curNodePos + new UPoint16(k, 0);
+
+                if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
+                    continue;
+                }
+
                 DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 0, NodeMovementType.PureHorizontal);
             }
 
-            // Horizontal Right
-            nextNodePos = new UPoint16(curNodePos.x + 1, curNodePos.y);
-            UPoint16 boundCheckPos = nextNodePos + new UPoint16(Math.Max(_rectSizeX - 1, 1), 0);
-            bool directRightInBounds = PointWithinGrid(boundCheckPos);
-            if (directRightInBounds && RectangleHasNoTiles(boundCheckPos, 1, _rectSizeY) && PointOnStandableTiles(nextNodePos, _rectSizeX)) {
-                DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 0, NodeMovementType.PureHorizontal);
-            }
+            if (RectangleHasNoTiles(curNodePos + new UPoint16(0, -1), _rectSizeX, _rectSizeY)) {
+                // Upward Staircase Movement
+                for (int k = -1; k < 2; k += 2) {
+                    UPoint16 nextNodePos = new(curNodePos.x + k, curNodePos.y - 1);
+                    if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
+                        continue;
+                    }
 
-            nextNodePos = new UPoint16(curNodePos.x, curNodePos.y - 1);
-            boundCheckPos = nextNodePos + new UPoint16(0, -Math.Max(_rectSizeY - 1, 1));
-            bool directUpInBounds = PointWithinGrid(boundCheckPos);
-            if (directUpInBounds && RectangleHasNoTiles(boundCheckPos, _rectSizeX, 1)) {
-                // Upward Left Step
-                nextNodePos = new UPoint16(curNodePos.x - 1, curNodePos.y - 1);
-                if (directLeftInBounds && RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) && NPCCanStepUp(nextNodePos, _rectSizeX, true)) {
                     DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 1, NodeMovementType.Step);
                 }
 
-                // Upward Right Step
-                nextNodePos = new UPoint16(curNodePos.x + 1, curNodePos.y - 1);
-                if (directRightInBounds && RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) && NPCCanStepUp(nextNodePos, _rectSizeX, false)) {
+                // Downward Staircase Movement
+                for (int k = -1; k < 2; k += 2) {
+                    UPoint16 nextNodePos = new(curNodePos.x + k, curNodePos.y + 1);
+                    if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
+                        continue;
+                    }
+
                     DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 1, NodeMovementType.Step);
                 }
+            }
 
-                // Vertical Only Jump Movement
-                for (int j = 1; j < MaxJumpHeight; j++) {
-                    nextNodePos = new UPoint16(curNodePos.x, curNodePos.y - j);
+            // Straight Fall Movement
+            AttemptFallFromPos(curNodePos, curNodePos);
 
-                    if (!PointWithinGrid(nextNodePos) || !RectangleHasNoTiles(nextNodePos, _rectSizeX, 1)) {
-                        break;
-                    }
+            // Downward Ledge Movement
+            for (int k = -1; k < 2; k += 2) {
+                UPoint16 startNodePos = new(curNodePos.x + k, curNodePos.y);
 
-                    if (PointOnStandableTiles(nextNodePos, _rectSizeX)) {
-                        DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(j * 2), NodeMovementType.Jump);
-                    }
+                if (!RectangleHasNoTiles(startNodePos, _rectSizeX, _rectSizeY)) {
+                    continue;
                 }
 
-                // Ledge Jump Movement
-                for (int j = 1; j < MaxJumpHeight; j++) {
-                    nextNodePos = new UPoint16(curNodePos.x, curNodePos.y - j);
+                AttemptFallFromPos(startNodePos, curNodePos);
+            }
 
-                    if (!PointWithinGrid(nextNodePos) || !RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
-                        break;
-                    }
-
-                    // Left
-                    nextNodePos = new UPoint16(curNodePos.x - 1, nextNodePos.y);
-                    if (directLeftInBounds && RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) && PointOnStandableTiles(nextNodePos, _rectSizeX)) {
-                        DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(1 + j * 2), NodeMovementType.Jump);
-                    }
-
-                    // Right
-                    nextNodePos = new UPoint16(curNodePos.x + 1, nextNodePos.y);
-                    if (directRightInBounds && RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) && PointOnStandableTiles(nextNodePos, _rectSizeX)) {
-                        DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(1 + j * 2), NodeMovementType.Jump);
-                    }
+            // Vertical Only Jump Movement
+            for (int j = 1; j < MaxJumpHeight; j++) {
+                UPoint16 nextNodePos = new(curNodePos.x, curNodePos.y - j);
+                if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
+                    break;
                 }
+
+                if (!PointOnStandableTile(nextNodePos, _rectSizeX)) {
+                    continue;
+                }
+
+                DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(j * 2), NodeMovementType.Jump);
             }
 
-            bool directDownInBounds = PointWithinGrid(new UPoint16(curNodePos.x, nextNodePos.y));
-            if (!directDownInBounds) {
-                continue;
-            }
+            // Ledge Jump Movement
+            for (int j = 1; j < MaxJumpHeight; j++) {
+                UPoint16 nextNodePos = new(curNodePos.x, curNodePos.y - j);
 
-            // Down Left Step
-            nextNodePos = new UPoint16(curNodePos.x - 1, curNodePos.y + 1);
-            if (directLeftInBounds && RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) && PointOnStandableTiles(nextNodePos, _rectSizeX, true)) {
-                DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 1, NodeMovementType.Step);
-            }
+                if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
+                    break;
+                }
 
-            // Down Right Step
-            nextNodePos = new UPoint16(curNodePos.x + 1, curNodePos.y + 1);
-            if (directRightInBounds && RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) && PointOnStandableTiles(nextNodePos, _rectSizeX, true)) {
-                DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 1, NodeMovementType.Step);
-            }
+                for (int k = -1; k < 2; k += 2) {
+                    nextNodePos = new UPoint16(nextNodePos.x + k, nextNodePos.y);
+                    if (!PointOnStandableTile(nextNodePos, _rectSizeX)) {
+                        continue;
+                    }
 
-            // Straight Fall
-            CheckFallFromPos(curNodePos);
-
-            // Left Ledge Fall
-            nextNodePos = new UPoint16(curNodePos.x - 1, curNodePos.y);
-            if (directLeftInBounds && RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
-                CheckFallFromPos(nextNodePos);
-            }
-
-            // Right Ledge Fall
-            nextNodePos = new UPoint16(curNodePos.x + 1, curNodePos.y);
-            if (directRightInBounds && RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
-                CheckFallFromPos(nextNodePos);
+                    DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(j * 2), NodeMovementType.Jump);
+                }
             }
         }
     }
 
-    private void CheckFallFromPos(UPoint16 startPos) {
-        for (ushort j = (ushort)(startPos.y + 1); j < _gridSizeY - 2; j++) {
-            UPoint16 nextNodePos = new(startPos.x, j);
-            if (!PointWithinGrid(nextNodePos) || !RectangleHasNoTiles(nextNodePos, _rectSizeX, 1)) {
+    private void AttemptFallFromPos(UPoint16 startPos, UPoint16 curPos) {
+        for (UPoint16 nextNodePos = new(startPos.x, startPos.y + 1); nextNodePos.y < _gridSizeY - 2; nextNodePos.y++) {
+            if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
                 break;
             }
-
-            if (!PointOnStandableTiles(nextNodePos, _rectSizeX, true)) {
+            if (!PointOnStandableTile(nextNodePos, _rectSizeX)) {
                 continue;
             }
 
-            DoSuccessorChecksAndCalculations(startPos, nextNodePos, (ushort)(nextNodePos.y - startPos.y), NodeMovementType.Fall);
+            DoSuccessorChecksAndCalculations(curPos, nextNodePos, (ushort)Math.Round((nextNodePos.y - startPos.y) * 1.5f), NodeMovementType.Fall);
             break;
         }
     }
 
     private void DoSuccessorChecksAndCalculations(UPoint16 currentNodePos, UPoint16 nextNodePos, ushort gCostModifier, NodeMovementType movementType) {
-        ushort mNewG = (ushort)(_nodeGrid[currentNodePos.x, currentNodePos.y].g + _tileGrid[nextNodePos.x, nextNodePos.y].weight + gCostModifier);
-        if (_nodeGrid[nextNodePos.x, nextNodePos.y].nodeStatusInteger == _currentOpenNodeValue || _nodeGrid[nextNodePos.x, nextNodePos.y].nodeStatusInteger == _currentClosedNodeValue) {
-            if (_nodeGrid[nextNodePos.x, nextNodePos.y].g <= mNewG) {
+        ushort mNewG = (ushort)(_nodeGrid[currentNodePos].g + _tileGrid[nextNodePos].weight + gCostModifier);
+        if (_nodeGrid[nextNodePos].nodeStatusInteger == _currentOpenNodeValue || _nodeGrid[nextNodePos].nodeStatusInteger == _currentClosedNodeValue) {
+            if (_nodeGrid[nextNodePos].g <= mNewG) {
                 return;
             }
         }
 
-        _nodeGrid[currentNodePos.x, currentNodePos.y].movementType = movementType;
-        _nodeGrid[nextNodePos.x, nextNodePos.y] = _nodeGrid[nextNodePos.x, nextNodePos.y] with {
+        _nodeGrid[currentNodePos].movementType = movementType;
+        _nodeGrid[nextNodePos] = _nodeGrid[nextNodePos] with {
             parentPos = currentNodePos,
             g = mNewG,
             // Manhattan distance heuristic
@@ -343,7 +331,7 @@ public class TownNPCPathfinder {
             nodeStatusInteger = _currentOpenNodeValue
         };
 
-        _openQueue.Enqueue(nextNodePos, _nodeGrid[nextNodePos.x, nextNodePos.y].f);
+        _openQueue.Enqueue(nextNodePos, nextNodePos);
     }
 
     private List<PathNode> FinalizePath() {
@@ -354,13 +342,13 @@ public class TownNPCPathfinder {
 
 
         List<PathNode> foundPath = new();
-        InternalNode curInternalNode = _nodeGrid[_end.x, _end.y];
+        InternalNode curInternalNode = _nodeGrid[_end];
         NodeMovementType parentConnectType = curInternalNode.movementType;
         PathNode curPathNode = new(_end, curInternalNode.parentPos, NodeMovementType.PureHorizontal);
 
         while (curPathNode.NodePos != curPathNode.ParentNodePos) {
             foundPath.Add(curPathNode);
-            curInternalNode = _nodeGrid[curPathNode.ParentNodePos.x, curPathNode.ParentNodePos.y];
+            curInternalNode = _nodeGrid[curPathNode.ParentNodePos];
             NodeMovementType oldConnect = curInternalNode.movementType;
 
             curPathNode = new PathNode(curPathNode.ParentNodePos, curInternalNode.parentPos, parentConnectType);
@@ -392,9 +380,13 @@ public class TownNPCPathfinder {
     }
 
     private bool RectangleHasNoTiles(UPoint16 bottomLeft, ushort sizeX, ushort sizeY) {
-        for (int i = bottomLeft.x; i < bottomLeft.x + sizeX; i++) {
-            for (int j = bottomLeft.y; j > bottomLeft.y - sizeY; j--) {
-                TileFlags tileFlags = _tileGrid[i, j].flags;
+        if (!RectangleWithinGrid(bottomLeft + new UPoint16(0, -sizeY + 1), sizeX, sizeY)) {
+            return false;
+        }
+
+        for (ushort i = bottomLeft.x; i < bottomLeft.x + sizeX; i++) {
+            for (ushort j = bottomLeft.y; j > bottomLeft.y - sizeY; j--) {
+                TileFlags tileFlags = _tileGrid[new UPoint16(i, j)].flags;
                 if (tileFlags.HasFlag(TileFlags.Solid) || tileFlags.HasFlag(TileFlags.Impassable)) {
                     return false;
                 }
@@ -404,8 +396,6 @@ public class TownNPCPathfinder {
         return true;
     }
 
-    private bool PointWithinGrid(UPoint16 point) => point.x < _gridSizeX && point.y < _gridSizeY;
-
     private bool RectangleWithinGrid(UPoint16 bottomLeft, ushort sizeX, ushort sizeY) {
         ushort outerBoundX = (ushort)(bottomLeft.x + sizeX - 1);
         ushort outerBoundY = (ushort)(bottomLeft.y - sizeY + 1);
@@ -413,13 +403,13 @@ public class TownNPCPathfinder {
         return bottomLeft.x < _gridSizeX && bottomLeft.y < _gridSizeY && outerBoundX < _gridSizeX && outerBoundY < _gridSizeY;
     }
 
-    private bool PointOnStandableTiles(UPoint16 bottomLeft, ushort rectWidth, bool boundCheck = false) {
-        if (boundCheck && !RectangleWithinGrid(bottomLeft, rectWidth, 1)) {
+    private bool PointOnStandableTile(UPoint16 bottomLeft, ushort rectWidth) {
+        if (!RectangleWithinGrid(bottomLeft + new UPoint16(0, 1), rectWidth, 1)) {
             return false;
         }
 
-        for (int i = 0; i < rectWidth; i++) {
-            TileFlags tileFlags = _tileGrid[bottomLeft.x + i, bottomLeft.y + 1].flags;
+        for (ushort i = 0; i < rectWidth; i++) {
+            TileFlags tileFlags = _tileGrid[new UPoint16(bottomLeft.x + i, bottomLeft.y + 1)].flags;
             if (tileFlags.HasFlag(TileFlags.Solid) || tileFlags.HasFlag(TileFlags.SolidTop)) {
                 return true;
             }
@@ -429,11 +419,11 @@ public class TownNPCPathfinder {
     }
 
     private bool NPCCanStepUp(UPoint16 wantedStepPos, ushort rectWidth, bool fromLeft) {
-        if (!PointOnStandableTiles(wantedStepPos, rectWidth)) {
+        if (!PointOnStandableTile(wantedStepPos, rectWidth)) {
             return false;
         }
 
-        TileFlags gridObjectFlags = _tileGrid[wantedStepPos.x, wantedStepPos.y + 1].flags;
+        TileFlags gridObjectFlags = _tileGrid[new UPoint16(wantedStepPos.x, wantedStepPos.y + 1)].flags;
         return gridObjectFlags.HasFlag(fromLeft ? TileFlags.CanStepWhenComingFromLeft : TileFlags.CanStepWhenComingFromRight);
     }
 }

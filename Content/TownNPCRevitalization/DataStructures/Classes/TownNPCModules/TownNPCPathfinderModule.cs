@@ -352,8 +352,8 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             PathNode curNode = path[i];
             PathNode nextNode = path[i - 1];
 
-            if (curNode.MovementType == NodeMovementType.PureHorizontal) {
-                //indicesToBeRemoved.Add(i);
+            if (curNode.MovementType == NodeMovementType.PureHorizontal && prevNode.MovementType == NodeMovementType.PureHorizontal) {
+                indicesToBeRemoved.Add(i);
             }
         }
 
