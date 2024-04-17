@@ -298,7 +298,7 @@ public class TownNPCPathfinder {
                         continue;
                     }
 
-                    DoSuccessorChecksAndCalculations(curOpenNode, nextNodePos, (ushort)(j * 2), NodeMovementType.Jump);
+                    DoSuccessorChecksAndCalculations(curOpenNode, nextNodePos, (ushort)(1 + j * 2), NodeMovementType.Jump);
                 }
             }
         }
