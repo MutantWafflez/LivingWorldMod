@@ -29,7 +29,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     public bool IsPathfinding => _currentPathfinderResult is not null;
 
-    public Point BottomLeftTileOfNPC => (npc.BottomLeft + new Vector2(0, -2)).ToTileCoordinates();
+    public Point BottomLeftTileOfNPC => npc.BottomLeft.ToTileCoordinates() + new Point(0, -1);
 
     public Point TopLeftOfPathfinderZone => BottomLeftTileOfNPC - new Point(PathFinderZoneSideLength / 2, PathFinderZoneSideLength / 2);
 
