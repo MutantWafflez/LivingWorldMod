@@ -23,12 +23,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     }
 
     /// <summary>
-    /// The maximum amount of tiles Town NPCs can jump from their bottom left. For example, a value of 6 means that a Town NPC
-    /// can jump on top of a 6 tile tall pillar.
-    /// </summary>
-    public const int MaxTileJumpHeight = 6;
-
-    /// <summary>
     /// The side length of the square that represents the zone in which the PathFinder will search for a path.
     /// </summary>
     public const int PathFinderZoneSideLength = 128;
@@ -200,8 +194,8 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
         foreach (PathNode node in _currentPathfinderResult.path) {
             Color nodeColor = node.MovementType switch {
-                NodeMovementType.Step => Color.ForestGreen,
-                NodeMovementType.Jump => Color.Green,
+                NodeMovementType.Step => Color.Green,
+                NodeMovementType.Jump => Color.Purple,
                 NodeMovementType.Fall => Color.Red,
                 _ => Color.White
             };

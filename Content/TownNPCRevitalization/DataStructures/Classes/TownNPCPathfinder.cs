@@ -139,22 +139,23 @@ public class TownNPCPathfinder {
                 bool hasTile = tile.HasTile;
                 bool isActuated = tile.IsActuated;
                 bool isSolid = Main.tileSolid[tile.TileType];
+                bool isPlatform = TileID.Sets.Platforms[tile.TileType];
                 bool isClosedDoor = TileLoader.CloseDoorID(tile) > 0;
 
                 if (hasTile && !isActuated && isSolid && !isClosedDoor) {
-                    grid[i, j] = new TileData(0, TileFlags.Solid | (TileID.Sets.IgnoredByNpcStepUp[tile.TileType] ? TileFlags.Empty : TileFlags.CanStepWhenComingFromLeft | TileFlags.CanStepWhenComingFromRight));
-                    continue;
-                }
+                    if (!isPlatform) {
+                        grid[i, j] = new TileData(0, TileFlags.Solid | (TileID.Sets.IgnoredByNpcStepUp[tile.TileType] ? TileFlags.Empty : TileFlags.CanStepWhenComingFromLeft | TileFlags.CanStepWhenComingFromRight));
+                    }
+                    else {
+                        TileFlags slopeFlag = tile.Slope switch {
+                            SlopeType.SlopeUpRight => TileFlags.CanStepWhenComingFromLeft,
+                            SlopeType.SlopeUpLeft => TileFlags.CanStepWhenComingFromRight,
+                            _ => TileFlags.Empty
+                        };
 
-                bool isPlatform = TileID.Sets.Platforms[tile.TileType];
-                if (hasTile && !isActuated && isPlatform) {
-                    TileFlags slopeFlag = tile.Slope switch {
-                        SlopeType.SlopeUpRight => TileFlags.CanStepWhenComingFromLeft,
-                        SlopeType.SlopeUpLeft => TileFlags.CanStepWhenComingFromRight,
-                        _ => TileFlags.Empty
-                    };
+                        grid[i, j] = new TileData(0, TileFlags.SolidTop | slopeFlag);
+                    }
 
-                    grid[i, j] = new TileData(0, TileFlags.SolidTop | slopeFlag);
                     continue;
                 }
 
@@ -173,9 +174,7 @@ public class TownNPCPathfinder {
     }
 
     private bool StartAndEndPointsAreValid() =>
-        RectangleWithinGrid(_start, _rectSizeX, _rectSizeY)
-        && RectangleWithinGrid(_end, _rectSizeX, _rectSizeY)
-        && RectangleHasNoTiles(_start, _rectSizeX, _rectSizeY)
+        RectangleHasNoTiles(_start, _rectSizeX, _rectSizeY)
         && RectangleHasNoTiles(_end, _rectSizeX, _rectSizeY)
         && PointOnStandableTile(_start, _rectSizeX)
         && PointOnStandableTile(_end, _rectSizeX);
@@ -233,14 +232,14 @@ public class TownNPCPathfinder {
             if (RectangleHasNoTiles(new UPoint16(curNodePos.x, curNodePos.y - 1), _rectSizeX, _rectSizeY)) {
                 // Upward Left Staircase Movement
                 UPoint16 nextNodePos = new(curNodePos.x - 1, curNodePos.y - 1);
-                if (RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) && NPCCanStepUp(nextNodePos, _rectSizeX, true)) {
-                    DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 1, NodeMovementType.Step);
+                if (RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) && NPCCanStepUp(nextNodePos, _rectSizeX, false)) {
+                    DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 0, NodeMovementType.Step);
                 }
 
                 //Upward Right Staircase Movement
                 nextNodePos = new UPoint16(curNodePos.x + 1, curNodePos.y - 1);
-                if (RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) && NPCCanStepUp(nextNodePos, _rectSizeX, false)) {
-                    DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 1, NodeMovementType.Step);
+                if (RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) && NPCCanStepUp(nextNodePos, _rectSizeX, true)) {
+                    DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 0, NodeMovementType.Step);
                 }
             }
 
@@ -251,7 +250,7 @@ public class TownNPCPathfinder {
                     continue;
                 }
 
-                DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 1, NodeMovementType.Step);
+                DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 0, NodeMovementType.Step);
             }
 
             // Straight Fall Movement
@@ -291,7 +290,7 @@ public class TownNPCPathfinder {
                 }
 
                 for (int k = -1; k < 2; k += 2) {
-                    nextNodePos = new UPoint16(nextNodePos.x + k, nextNodePos.y);
+                    nextNodePos = new UPoint16(curNodePos.x + k, nextNodePos.y);
                     if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
                         continue;
                     }
@@ -377,7 +376,7 @@ public class TownNPCPathfinder {
     }
 
     private bool RectangleHasNoTiles(UPoint16 bottomLeft, ushort sizeX, ushort sizeY) {
-        if (!RectangleWithinGrid(bottomLeft + new UPoint16(0, -sizeY + 1), sizeX, sizeY)) {
+        if (!RectangleWithinGrid(bottomLeft, sizeX, sizeY)) {
             return false;
         }
 
