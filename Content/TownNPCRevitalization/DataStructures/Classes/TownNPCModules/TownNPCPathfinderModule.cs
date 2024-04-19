@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
+using LivingWorldMod.Globals.Configs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -340,12 +341,14 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     private float GetDistanceToNode(PathNode nextNode) => npc.BottomLeft.Distance((_currentPathfinderResult.topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates());
 
     private static void PrunePath(IList<PathNode> path) {
-        List<int> indicesToBeRemoved = new();
+        if (LWM.IsDebug && ModContent.GetInstance<DebugConfig>().disablePathPruning) {
+            return;
+        }
 
+        List<int> indicesToBeRemoved = new();
         for (int i = path.Count - 2; i > 0; i--) {
             PathNode prevNode = path[i + 1];
             PathNode curNode = path[i];
-            //PathNode nextNode = path[i - 1];
 
             if (curNode.MovementType == NodeMovementType.PureHorizontal && prevNode.MovementType == NodeMovementType.PureHorizontal) {
                 indicesToBeRemoved.Add(i);

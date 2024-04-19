@@ -29,10 +29,7 @@ public class TownNPCPathfinder {
         public ushort g;
         public UPoint16 parentPos;
         public byte nodeStatusInteger;
-        public NodeMovementType movementType;
     }
-
-    private record struct OpenNode(UPoint16 NodePos, NodeMovementType MovementType);
 
     private sealed class PointGrid<T>(T[,] grid)
         where T : struct {
@@ -69,13 +66,13 @@ public class TownNPCPathfinder {
 
         /// <summary>
         /// For tiles that can be stepped up if the pathfinder is coming from the right, and moving
-        /// to the left.
+        /// to the left. Vice versa for stepping down.
         /// </summary>
         CanStepWhenComingFromRight = 8,
 
         /// <summary>
         /// For tiles that can be stepped up if the pathfinder is coming from the left, and moving
-        /// to the right.
+        /// to the right. Vice versa for stepping down.
         /// </summary>
         CanStepWhenComingFromLeft = 16
     }
@@ -92,7 +89,7 @@ public class TownNPCPathfinder {
     private readonly ushort _gridSizeY;
     private readonly PointGrid<InternalNode> _nodeGrid;
     private readonly PointGrid<TileData> _tileGrid;
-    private readonly PriorityQueue<OpenNode, UPoint16> _openQueue;
+    private readonly PriorityQueue<UPoint16, UPoint16> _openQueue;
     private UPoint16 _start;
     private UPoint16 _end;
     private bool _pathfindingStopped;
@@ -113,7 +110,7 @@ public class TownNPCPathfinder {
 
         _nodeGrid = new PointGrid<InternalNode>(new InternalNode[_gridSizeX, _gridSizeY]);
         _tileGrid = new PointGrid<TileData>(GenerateTileGrid());
-        _openQueue = new PriorityQueue<OpenNode, UPoint16>(Comparer<UPoint16>.Create((pointOne, pointTwo) => _nodeGrid[pointOne].f.CompareTo(_nodeGrid[pointTwo].f)));
+        _openQueue = new PriorityQueue<UPoint16, UPoint16>(Comparer<UPoint16>.Create((pointOne, pointTwo) => _nodeGrid[pointOne].f.CompareTo(_nodeGrid[pointTwo].f)));
     }
 
     public List<PathNode> FindPath(UPoint16 startPoint, UPoint16 endPoint) {
@@ -192,25 +189,22 @@ public class TownNPCPathfinder {
             g = 0,
             f = ManhattanEstimateTuneValue,
             parentPos = _start,
-            nodeStatusInteger = _currentOpenNodeValue,
-            movementType = NodeMovementType.PureHorizontal
+            nodeStatusInteger = _currentOpenNodeValue
         };
 
-        _openQueue.Enqueue(new OpenNode(_start, NodeMovementType.PureHorizontal), _start);
+        _openQueue.Enqueue(_start, _start);
     }
 
     private void DoPathfindingLoop() {
         // TODO: Benchmark, optimize
         while (_openQueue.Count > 0 && !_pathfindingStopped) {
-            OpenNode curOpenNode = _openQueue.Dequeue();
-            UPoint16 curNodePos = curOpenNode.NodePos;
+            UPoint16 curNodePos = _openQueue.Dequeue();
 
             if (_nodeGrid[curNodePos].nodeStatusInteger == _currentClosedNodeValue) {
                 continue;
             }
 
             if (curNodePos == _end) {
-                _nodeGrid[_nodeGrid[curNodePos].parentPos].movementType = curOpenNode.MovementType;
                 _nodeGrid[curNodePos].nodeStatusInteger = _currentClosedNodeValue;
                 _reachedGoal = true;
                 break;
@@ -222,107 +216,81 @@ public class TownNPCPathfinder {
             }
 
 
-            // Direct Horizontal Movement
-            for (int k = -1; k < 2; k += 2) {
-                UPoint16 nextNodePos = new(curNodePos.x + k, curNodePos.y);
+            // Left or right pure horizontal
+            for (int i = -1; i < 2; i += 2) {
+                UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y);
 
                 if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
                     continue;
                 }
 
-                DoSuccessorChecksAndCalculations(curOpenNode, nextNodePos, 0, NodeMovementType.PureHorizontal);
+                DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 1);
             }
 
             // One tile move up (step or jump)
             if (RectangleHasNoTiles(new UPoint16(curNodePos.x, curNodePos.y - 1), _rectSizeX, _rectSizeY)) {
-                bool fromLeft = false;
-                for (int k = -1; k < 2; k += 2) {
-                    UPoint16 nextNodePos = new(curNodePos.x + k, curNodePos.y - 1);
+                for (int i = -1; i < 2; i += 2) {
+                    UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y - 1);
                     if (RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) && PointOnStandableTile(nextNodePos, _rectSizeX)) {
-                        DoSuccessorChecksAndCalculations(curOpenNode, nextNodePos, 0, NPCCanStepUp(nextNodePos, _rectSizeX, fromLeft) ? NodeMovementType.Step : NodeMovementType.Jump);
+                        DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 3);
                     }
-
-                    fromLeft = !fromLeft;
                 }
             }
 
             // One tile move down
-            for (int k = -1; k < 2; k += 2) {
-                UPoint16 nextNodePos = new(curNodePos.x + k, curNodePos.y + 1);
-                if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
+            for (int i = -1; i < 2; i += 2) {
+                UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y + 1);
+                if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, (ushort)(_rectSizeY + 1)) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
                     continue;
                 }
 
-                DoSuccessorChecksAndCalculations(curOpenNode, nextNodePos, 0, NodeMovementType.Step);
+                DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 0);
             }
 
-            // Straight Fall Movement
-            AttemptFallFromPos(curNodePos, curOpenNode);
+            // Falls
+            for (int i = -1; i < 2; i++) {
+                UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y);
 
-            // Downward Ledge Movement
-            for (int k = -1; k < 2; k += 2) {
-                UPoint16 startNodePos = new(curNodePos.x + k, curNodePos.y);
-
-                if (!RectangleHasNoTiles(startNodePos, _rectSizeX, _rectSizeY)) {
+                if (i != 0 && !RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
                     continue;
                 }
 
-                AttemptFallFromPos(startNodePos, curOpenNode);
-            }
+                for (nextNodePos.y += 2; nextNodePos.y < _gridSizeY - 2; nextNodePos.y++) {
+                    if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
+                        break;
+                    }
 
-            // Vertical Only Jump Movement
-            for (int j = 2; j < MaxJumpHeight; j++) {
-                UPoint16 nextNodePos = new(curNodePos.x, curNodePos.y - j);
-                if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
-                    break;
-                }
-
-                if (!PointOnStandableTile(nextNodePos, _rectSizeX)) {
-                    continue;
-                }
-
-                DoSuccessorChecksAndCalculations(curOpenNode, nextNodePos, (ushort)(j * 2), NodeMovementType.Jump);
-            }
-
-            // Ledge Jump Movement
-            for (int j = 2; j < MaxJumpHeight; j++) {
-                UPoint16 nextNodePos = new(curNodePos.x, curNodePos.y - j);
-
-                if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
-                    break;
-                }
-
-                for (int k = -1; k < 2; k += 2) {
-                    nextNodePos = new UPoint16(curNodePos.x + k, nextNodePos.y);
-                    if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
+                    if (!PointOnStandableTile(nextNodePos, _rectSizeX)) {
                         continue;
                     }
 
-                    DoSuccessorChecksAndCalculations(curOpenNode, nextNodePos, (ushort)(1 + j * 2), NodeMovementType.Jump);
+                    DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(Math.Abs(i) + (nextNodePos.y - curNodePos.y) * 2));
+                    break;
+                }
+            }
+
+            // Jump and/or step up
+            for (int i = 2; i < MaxJumpHeight; i++) {
+                UPoint16 nextNodePos = new(curNodePos.x, curNodePos.y - i);
+                if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
+                    break;
+                }
+
+                for (int j = -1; j < 2; j++) {
+                    nextNodePos = new UPoint16(curNodePos.x + j, nextNodePos.y);
+                    if (j != 0 && !RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
+                        continue;
+                    }
+
+                    DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(Math.Abs(j) + i * 2));
                 }
             }
         }
     }
 
-    private void AttemptFallFromPos(UPoint16 startPos, OpenNode curOpenNode) {
-        for (UPoint16 nextNodePos = new(startPos.x, startPos.y + 1); nextNodePos.y < _gridSizeY - 2; nextNodePos.y++) {
-            if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
-                break;
-            }
-            if (!PointOnStandableTile(nextNodePos, _rectSizeX)) {
-                continue;
-            }
-
-            DoSuccessorChecksAndCalculations(curOpenNode, nextNodePos, (ushort)Math.Round((nextNodePos.y - startPos.y) * 1.5f), NodeMovementType.Fall);
-            break;
-        }
-    }
-
-    private void DoSuccessorChecksAndCalculations(OpenNode curOpenNode, UPoint16 nextNodePos, ushort gCostModifier, NodeMovementType movementType) {
-        UPoint16 curNodePos = curOpenNode.NodePos;
+    private void DoSuccessorChecksAndCalculations(UPoint16 curNodePos, UPoint16 nextNodePos, ushort gCostModifier) {
         ushort newG = (ushort)(_nodeGrid[curNodePos].g + _tileGrid[nextNodePos].weight + gCostModifier);
 
-        _nodeGrid[_nodeGrid[curNodePos].parentPos].movementType = curOpenNode.MovementType;
         if (_nodeGrid[nextNodePos].nodeStatusInteger == _currentOpenNodeValue || _nodeGrid[nextNodePos].nodeStatusInteger == _currentClosedNodeValue) {
             if (_nodeGrid[nextNodePos].g <= newG) {
                 return;
@@ -337,7 +305,7 @@ public class TownNPCPathfinder {
             nodeStatusInteger = _currentOpenNodeValue
         };
 
-        _openQueue.Enqueue(new OpenNode(nextNodePos, movementType), nextNodePos);
+        _openQueue.Enqueue(nextNodePos, nextNodePos);
     }
 
     private List<PathNode> FinalizePath() {
@@ -352,8 +320,40 @@ public class TownNPCPathfinder {
 
         while (curPathNode.NodePos != curPathNode.ParentNodePos) {
             foundPath.Add(curPathNode);
-            curInternalNode = _nodeGrid[curPathNode.ParentNodePos];
-            curPathNode = new PathNode(curPathNode.ParentNodePos, curInternalNode.parentPos, curInternalNode.movementType);
+
+            NodeMovementType nextMovementType;
+            UPoint16 parentNodePos = curPathNode.ParentNodePos;
+            int yNodeDiff = parentNodePos.y - curPathNode.NodePos.y;
+            int xNodeDiff = parentNodePos.x - curPathNode.NodePos.x;
+            // Remember that to construct the path from END to START. So everything is reversed
+            switch (yNodeDiff) {
+                case 0:
+                    nextMovementType = NodeMovementType.PureHorizontal;
+                    break;
+                case 1: {
+                    nextMovementType = NodeMovementType.Jump;
+                    if (xNodeDiff != 0 && NPCCanStepUp(curPathNode.NodePos, _rectSizeX, xNodeDiff < 0)) {
+                        nextMovementType = NodeMovementType.Step;
+                    }
+                    break;
+                }
+                case -1: {
+                    nextMovementType = NodeMovementType.Fall;
+                    if (xNodeDiff != 0 && NPCCanStepDown(parentNodePos, _rectSizeX, xNodeDiff < 0)) {
+                        nextMovementType = NodeMovementType.Step;
+                    }
+                    break;
+                }
+                case > 1:
+                    nextMovementType = NodeMovementType.Jump;
+                    break;
+                default:
+                    nextMovementType = NodeMovementType.Fall;
+                    break;
+            }
+
+            curInternalNode = _nodeGrid[parentNodePos];
+            curPathNode = new PathNode(curPathNode.ParentNodePos, curInternalNode.parentPos, nextMovementType);
         }
 
         foundPath.Add(curPathNode);
@@ -428,5 +428,26 @@ public class TownNPCPathfinder {
         }
 
         return false;
+    }
+
+    private bool NPCCanStepDown(UPoint16 startNodePos, ushort rectWidth, bool fromLeft) {
+        TileFlags wantedFlag = fromLeft ? TileFlags.CanStepWhenComingFromRight : TileFlags.CanStepWhenComingFromLeft;
+        bool noSolidTopTile = true;
+        bool hasSteppableTile = false;
+        for (ushort i = 0; i < rectWidth; i++) {
+            TileFlags flags = _tileGrid[new UPoint16(startNodePos.x + i, startNodePos.y + 1)].flags;
+            if (flags.HasFlag(wantedFlag)) {
+                hasSteppableTile = true;
+            }
+
+            if (!flags.HasFlag(TileFlags.SolidTop)) {
+                continue;
+            }
+
+            noSolidTopTile = false;
+            break;
+        }
+
+        return noSolidTopTile && hasSteppableTile;
     }
 }

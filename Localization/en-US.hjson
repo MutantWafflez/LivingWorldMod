@@ -372,6 +372,11 @@ Mods: {
 					Label: Guaranteed Town NPC Wandering
 					Tooltip: Guarantees Town NPC wandering while in the Default AI State instead of it being a chance.
 				}
+
+				disablePathPruning: {
+					Label: Disable Path Pruning
+					Tooltip: Disables the optimization that prunes Town NPC paths.
+				}
 			}
 		}
 

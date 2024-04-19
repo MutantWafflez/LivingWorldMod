@@ -15,4 +15,7 @@ public class DebugConfig : ModConfig {
 
     [DefaultValue(false)]
     public bool guaranteedWanderOffCooldown;
+
+    [DefaultValue(false)]
+    public bool disablePathPruning;
 }
