@@ -147,6 +147,10 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     public override void Unload() {
+        if (talkBlinkOverlays is null) {
+            return;
+        }
+
         Main.QueueMainThreadAction(() => {
             foreach ((Texture2D talkTexture, Texture2D blinkTexture) in talkBlinkOverlays.Values) {
                 talkTexture.Dispose();
