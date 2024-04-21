@@ -339,6 +339,7 @@ public class TownNPCPathfinder {
             // Remember that to construct the path from END to START. So everything is reversed
             switch (yNodeDiff) {
                 case 0:
+                    //TODO: Further investigate half tile issues
                     nextMovementType = IsStandingOnHalfTile(parentNodePos) ? NodeMovementType.StepUp : NodeMovementType.PureHorizontal;
                     nextMovementType = NodeMovementType.PureHorizontal;
                     break;
