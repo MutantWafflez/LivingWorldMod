@@ -238,7 +238,7 @@ public class TownGlobalNPC : GlobalNPC {
         PathfinderModule.ReceiveNetworkData(bitReader, binaryReader);
     }
 
-    public override bool? CanFallThroughPlatforms(NPC npc) => PathfinderModule.canFallThroughPlatforms ? true : null;
+    public override bool? CanFallThroughPlatforms(NPC npc) => PathfinderModule.fallThroughPlatforms;
 
     public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
         if (_stateDict.TryGetValue((int)npc.ai[0], out TownNPCAIState state)) {

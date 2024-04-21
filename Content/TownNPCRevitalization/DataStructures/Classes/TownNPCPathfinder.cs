@@ -39,7 +39,6 @@ public class TownNPCPathfinder {
     public enum NodeMovementType : byte {
         PureHorizontal,
         StepUp,
-        StepDown,
         Jump,
         Fall
     }
@@ -235,7 +234,7 @@ public class TownNPCPathfinder {
                     continue;
                 }
 
-                DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 1);
+                DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 0);
             }
 
             // One tile move up (step or jump)
@@ -243,19 +242,9 @@ public class TownNPCPathfinder {
                 for (int i = -1; i < 2; i += 2) {
                     UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y - 1);
                     if (RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) && PointOnStandableTile(nextNodePos, _rectSizeX)) {
-                        DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 3);
+                        DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 2);
                     }
                 }
-            }
-
-            // One tile move down
-            for (int i = -1; i < 2; i += 2) {
-                UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y + 1);
-                if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, (ushort)(_rectSizeY + 1)) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
-                    continue;
-                }
-
-                DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 0);
             }
 
             // Falls
@@ -266,7 +255,7 @@ public class TownNPCPathfinder {
                     continue;
                 }
 
-                for (nextNodePos.y += 2; nextNodePos.y < _gridSizeY - 2; nextNodePos.y++) {
+                for (nextNodePos.y += 1; nextNodePos.y < _gridSizeY - 2; nextNodePos.y++) {
                     if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
                         break;
                     }
@@ -347,13 +336,6 @@ public class TownNPCPathfinder {
                     nextMovementType = NodeMovementType.Jump;
                     if (xNodeDiff != 0 && NPCCanStepUp(curPathNode.NodePos, _rectSizeX, xNodeDiff < 0)) {
                         nextMovementType = NodeMovementType.StepUp;
-                    }
-                    break;
-                }
-                case -1: {
-                    nextMovementType = NodeMovementType.Fall;
-                    if (xNodeDiff != 0 && NPCCanStepDown(parentNodePos, _rectSizeX, xNodeDiff < 0)) {
-                        nextMovementType = NodeMovementType.StepDown;
                     }
                     break;
                 }
@@ -443,26 +425,5 @@ public class TownNPCPathfinder {
         }
 
         return false;
-    }
-
-    private bool NPCCanStepDown(UPoint16 startNodePos, ushort rectWidth, bool fromLeft) {
-        TileFlags wantedFlag = fromLeft ? TileFlags.CanStepWhenComingFromRight : TileFlags.CanStepWhenComingFromLeft;
-        bool noSolidTopTile = true;
-        bool hasSteppableTile = false;
-        for (ushort i = 0; i < rectWidth; i++) {
-            TileFlags flags = _tileGrid[new UPoint16(startNodePos.x + i, startNodePos.y + 1)].flags;
-            if (flags.HasFlag(wantedFlag)) {
-                hasSteppableTile = true;
-            }
-
-            if (!flags.HasFlag(TileFlags.SolidTop)) {
-                continue;
-            }
-
-            noSolidTopTile = false;
-            break;
-        }
-
-        return noSolidTopTile && hasSteppableTile;
     }
 }

@@ -34,7 +34,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     public Point TopLeftOfPathfinderZone => BottomLeftTileOfNPC - new Point(PathFinderZoneSideLength / 2, PathFinderZoneSideLength / 2);
 
-    public bool canFallThroughPlatforms;
+    public bool fallThroughPlatforms;
     private readonly List<PathfinderResult> _cachedResults;
 
     private float _prevDistanceToNextNode;
@@ -99,7 +99,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
         bool leftHasBreachedNode = npc.direction == 1 ? npc.Left.X >= nextNodeCenter.X : npc.Left.X <= nextNodeCenter.X;
 
-        canFallThroughPlatforms = false;
+        fallThroughPlatforms = false;
         if (leftHasBreachedNode && nodeRectangle.Intersects(npcNodeCollisionRectangle) && (lastConsumedNode.MovementType is not NodeMovementType.Jump || npc.velocity.Y == 0f)) {
             lastConsumedNode = nextNode;
             path.RemoveAt(path.Count - 1);
@@ -140,9 +140,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             case NodeMovementType.StepUp:
                 Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
                 goto case NodeMovementType.PureHorizontal;
-            case NodeMovementType.StepDown:
-                Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
-                goto case NodeMovementType.PureHorizontal;
             case NodeMovementType.PureHorizontal: {
                 npc.velocity.X = npc.direction;
                 CheckForDoors();
@@ -164,8 +161,8 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
                     return;
                 }
 
-                npc.velocity.Y = 0.1f;
-                canFallThroughPlatforms = true;
+                //npc.velocity.Y = 0.1f;
+                fallThroughPlatforms = true;
                 break;
             }
         }
@@ -194,7 +191,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         foreach (PathNode node in _currentPathfinderResult.path) {
             Color nodeColor = node.MovementType switch {
                 NodeMovementType.StepUp => Color.Green,
-                NodeMovementType.StepDown => Color.Lime,
                 NodeMovementType.Jump => Color.Purple,
                 NodeMovementType.Fall => Color.Red,
                 _ => Color.White
