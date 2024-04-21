@@ -31,7 +31,7 @@ public class TownNPCPathfinder {
         public byte nodeStatusInteger;
     }
 
-    private sealed class PointGrid<T>(T[,] grid)
+    private readonly struct PointGrid<T>(T[,] grid)
         where T : struct {
         public ref T this[UPoint16 point] => ref grid[point.x, point.y];
     }
