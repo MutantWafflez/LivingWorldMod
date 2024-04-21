@@ -137,20 +137,18 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
         switch (lastConsumedNode.MovementType) {
             //Step movements or horizontal movements
-            case NodeMovementType.PureHorizontal or NodeMovementType.Step: {
+            case NodeMovementType.StepUp:
+                Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
+                goto case NodeMovementType.PureHorizontal;
+            case NodeMovementType.StepDown:
+                Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
+                goto case NodeMovementType.PureHorizontal;
+            case NodeMovementType.PureHorizontal: {
                 npc.velocity.X = npc.direction;
                 CheckForDoors();
-
-                if (lastConsumedNode.NodePos.y < nextNode.NodePos.y) {
-                    Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
-                }
-                else if (lastConsumedNode.NodePos.y > nextNode.NodePos.y) {
-                    Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
-                }
                 break;
             }
             //Fall movements
-            // TODO: Investigate fall functionality issues due to pathfinder re-write
             case NodeMovementType.Fall: {
                 if (npc.velocity.Y == 0f) {
                     npc.velocity.X = npc.direction;
@@ -195,7 +193,8 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
         foreach (PathNode node in _currentPathfinderResult.path) {
             Color nodeColor = node.MovementType switch {
-                NodeMovementType.Step => Color.Green,
+                NodeMovementType.StepUp => Color.Green,
+                NodeMovementType.StepDown => Color.Lime,
                 NodeMovementType.Jump => Color.Purple,
                 NodeMovementType.Fall => Color.Red,
                 _ => Color.White

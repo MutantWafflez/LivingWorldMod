@@ -38,7 +38,8 @@ public class TownNPCPathfinder {
 
     public enum NodeMovementType : byte {
         PureHorizontal,
-        Step,
+        StepUp,
+        StepDown,
         Jump,
         Fall
     }
@@ -74,7 +75,12 @@ public class TownNPCPathfinder {
         /// For tiles that can be stepped up if the pathfinder is coming from the left, and moving
         /// to the right. Vice versa for stepping down.
         /// </summary>
-        CanStepWhenComingFromLeft = 16
+        CanStepWhenComingFromLeft = 16,
+
+        /// <summary>
+        /// For solid tiles that are in their half-block slope form.
+        /// </summary>
+        HalfTile = 32
     }
 
     private const int MaxNodeSearch = 2000;
@@ -143,7 +149,12 @@ public class TownNPCPathfinder {
 
                 if (hasTile && !isActuated && isSolid && !isClosedDoor) {
                     if (!isPlatform) {
-                        grid[i, j] = new TileData(0, TileFlags.Solid | (TileID.Sets.IgnoredByNpcStepUp[tile.TileType] ? TileFlags.Empty : TileFlags.CanStepWhenComingFromLeft | TileFlags.CanStepWhenComingFromRight));
+                        TileFlags additionalFlags = TileID.Sets.IgnoredByNpcStepUp[tile.TileType] ? TileFlags.Empty : TileFlags.CanStepWhenComingFromLeft | TileFlags.CanStepWhenComingFromRight;
+                        if (tile.IsHalfBlock) {
+                            additionalFlags |= TileFlags.HalfTile;
+                        }
+
+                        grid[i, j] = new TileData(0, TileFlags.Solid | additionalFlags);
                     }
                     else {
                         TileFlags slopeFlag = tile.Slope switch {
@@ -328,19 +339,20 @@ public class TownNPCPathfinder {
             // Remember that to construct the path from END to START. So everything is reversed
             switch (yNodeDiff) {
                 case 0:
+                    nextMovementType = IsStandingOnHalfTile(parentNodePos) ? NodeMovementType.StepUp : NodeMovementType.PureHorizontal;
                     nextMovementType = NodeMovementType.PureHorizontal;
                     break;
                 case 1: {
                     nextMovementType = NodeMovementType.Jump;
                     if (xNodeDiff != 0 && NPCCanStepUp(curPathNode.NodePos, _rectSizeX, xNodeDiff < 0)) {
-                        nextMovementType = NodeMovementType.Step;
+                        nextMovementType = NodeMovementType.StepUp;
                     }
                     break;
                 }
                 case -1: {
                     nextMovementType = NodeMovementType.Fall;
                     if (xNodeDiff != 0 && NPCCanStepDown(parentNodePos, _rectSizeX, xNodeDiff < 0)) {
-                        nextMovementType = NodeMovementType.Step;
+                        nextMovementType = NodeMovementType.StepDown;
                     }
                     break;
                 }
@@ -418,6 +430,8 @@ public class TownNPCPathfinder {
 
         return false;
     }
+
+    private bool IsStandingOnHalfTile(UPoint16 bottomLeft) => _tileGrid[new UPoint16(bottomLeft.x, bottomLeft.y + 1)].flags.HasFlag(TileFlags.HalfTile);
 
     private bool NPCCanStepUp(UPoint16 wantedStepPos, ushort rectWidth, bool fromLeft) {
         TileFlags wantedFlag = fromLeft ? TileFlags.CanStepWhenComingFromLeft : TileFlags.CanStepWhenComingFromRight;
