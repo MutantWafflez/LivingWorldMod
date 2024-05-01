@@ -85,6 +85,14 @@ public class TownGlobalNPC : GlobalNPC {
         private set;
     }
 
+    /// <summary>
+    /// Instance of the module that handles special collision logic.
+    /// </summary>
+    public TownNPCCollisionModule CollisionModule {
+        get;
+        private set;
+    }
+
     private ForgetfulArray<TownNPCActivity> _lastActivities;
 
     public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => lateInstantiation
@@ -187,6 +195,7 @@ public class TownGlobalNPC : GlobalNPC {
         }
 
         instance.HousingModule = new TownNPCHousingModule(target);
+        instance.CollisionModule = new TownNPCCollisionModule(target);
         instance._lastActivities = new ForgetfulArray<TownNPCActivity>(LastActivityMemoryLimit);
 
         return instance;
@@ -238,7 +247,7 @@ public class TownGlobalNPC : GlobalNPC {
         PathfinderModule.ReceiveNetworkData(bitReader, binaryReader);
     }
 
-    public override bool? CanFallThroughPlatforms(NPC npc) => PathfinderModule.fallThroughPlatforms;
+    public override bool? CanFallThroughPlatforms(NPC npc) => CollisionModule.fallThroughPlatforms;
 
     public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
         if (_stateDict.TryGetValue((int)npc.ai[0], out TownNPCAIState state)) {

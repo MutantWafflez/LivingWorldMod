@@ -34,7 +34,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     public Point TopLeftOfPathfinderZone => BottomLeftTileOfNPC - new Point(PathFinderZoneSideLength / 2, PathFinderZoneSideLength / 2);
 
-    public bool fallThroughPlatforms;
     private readonly List<PathfinderResult> _cachedResults;
 
     private float _prevDistanceToNextNode;
@@ -99,7 +98,8 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
         bool leftHasBreachedNode = npc.direction == 1 ? npc.Left.X >= nextNodeCenter.X : npc.Left.X <= nextNodeCenter.X;
 
-        fallThroughPlatforms = false;
+        TownNPCCollisionModule collisionModule = GlobalNPC.CollisionModule;
+        collisionModule.fallThroughPlatforms = false;
         if (leftHasBreachedNode && nodeRectangle.Intersects(npcNodeCollisionRectangle) && (lastConsumedNode.MovementType is not NodeMovementType.Jump || npc.velocity.Y == 0f)) {
             lastConsumedNode = nextNode;
             path.RemoveAt(path.Count - 1);
@@ -138,11 +138,17 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         switch (lastConsumedNode.MovementType) {
             //Step movements or horizontal movements
             case NodeMovementType.StepUp:
+                npc.velocity.X = npc.direction;
                 Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
-                goto case NodeMovementType.PureHorizontal;
+                CheckForDoors();
+
+                collisionModule.ignoreStairs = false;
+                break;
             case NodeMovementType.PureHorizontal: {
                 npc.velocity.X = npc.direction;
                 CheckForDoors();
+
+                collisionModule.ignoreStairs = true;
                 break;
             }
             //Fall movements
@@ -162,7 +168,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
                 }
 
                 //npc.velocity.Y = 0.1f;
-                fallThroughPlatforms = true;
+                collisionModule.fallThroughPlatforms = true;
                 break;
             }
         }
