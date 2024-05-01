@@ -113,6 +113,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             nextNodeCenter = (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates();
 
             if (lastConsumedNode.MovementType is NodeMovementType.Jump) {
+                collisionModule.ignoreStairs = false;
                 npc.BottomLeft = nextNodeBottom;
 
                 //Reset velocity & calculate jump vector required to reach jump destination
@@ -153,6 +154,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             }
             //Fall movements
             case NodeMovementType.Fall: {
+                collisionModule.ignoreStairs = false;
                 if (npc.velocity.Y == 0f) {
                     npc.velocity.X = npc.direction;
                 }

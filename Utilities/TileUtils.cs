@@ -86,4 +86,18 @@ public static partial class LWMUtils {
 
         return null;
     }
+
+    /// <summary>
+    /// Runs the given function for each tile inside the provided rectangle. If the function returns true on
+    /// a given index, then this method terminates.
+    /// </summary>
+    public static void DoInRectangle(Rectangle rectangle, Func<Point, bool> function) {
+        for (int i = rectangle.X; i < rectangle.X + rectangle.Width; i++) {
+            for (int j = rectangle.Y; j < rectangle.Y + rectangle.Height; j++) {
+                if (function(new Point(i, j))) {
+                    return;
+                }
+            }
+        }
+    }
 }

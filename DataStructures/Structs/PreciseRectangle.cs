@@ -32,6 +32,19 @@ public struct PreciseRectangle : IEquatable<PreciseRectangle> {
 
     public readonly Vector2 Center => new(X + Width / 2f, Y + Height / 2f);
 
+    public readonly Vector2 TopRight => position + new Vector2(size.X, 0);
+
+    public readonly Vector2 BottomLeft => position + new Vector2(0, size.Y);
+
+    public readonly Vector2 BottomRight => position + new Vector2(size.X, size.Y);
+
+    public readonly Rectangle ToWorldCoordinates() => new(
+        (int)(position.X / 16f),
+        (int)(position.Y / 16f),
+        (int)(size.X / 16f),
+        (int)(size.Y / 16f)
+    );
+
     public bool Equals(PreciseRectangle other) => position.Equals(other.position) && size.Equals(other.size);
 
     public override bool Equals(object obj) => obj is PreciseRectangle other && Equals(other);
