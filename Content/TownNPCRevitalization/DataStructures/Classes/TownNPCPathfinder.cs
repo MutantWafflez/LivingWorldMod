@@ -238,6 +238,7 @@ public class TownNPCPathfinder {
             }
 
             // One tile move up (step or jump)
+            // TODO: Prevent jumping onto stairs
             if (RectangleHasNoTiles(new UPoint16(curNodePos.x, curNodePos.y - 1), _rectSizeX, _rectSizeY)) {
                 for (int i = -1; i < 2; i += 2) {
                     UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y - 1);
