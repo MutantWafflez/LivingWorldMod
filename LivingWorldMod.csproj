@@ -21,7 +21,14 @@
         <Publicize Include="tModLoader:Terraria.GameContent.Events.BirthdayParty.CanNPCParty" />
 
         <!-- NPC Publicizing -->
-        <Publicize Include="tModLoader:Terraria.NPC.AI_007_TownEntities_Shimmer_TeleportToLandingSpot" />
+            <!-- AI Publicizing -->
+            <Publicize Include="tModLoader:Terraria.NPC.AI_007_TownEntities_Shimmer_TeleportToLandingSpot" />
+            <!-- Collision Publicizing -->
+            <Publicize Include="tModLoader:Terraria.NPC.Collision_WalkDownSlopes" />
+            <Publicize Include="tModLoader:Terraria.NPC.Collision_LavaCollision" />
+            <Publicize Include="tModLoader:Terraria.NPC.Collision_WaterCollision" />
+            <Publicize Include="tModLoader:Terraria.NPC.Collision_DecideFallThroughPlatforms" />
+            <Publicize Include="tModLoader:Terraria.NPC.Collision_MoveSlopesAndStairFall" />
         
         <!-- Shop Helper Publicizing -->
         <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentNPCBeingTalkedTo" />
