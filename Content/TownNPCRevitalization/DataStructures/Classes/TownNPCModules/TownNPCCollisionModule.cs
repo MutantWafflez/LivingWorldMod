@@ -9,7 +9,8 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.To
 /// </summary>
 public class TownNPCCollisionModule(NPC npc) : TownNPCModule(npc) {
     public bool fallThroughPlatforms;
-    public bool ignoreStairs;
+    public bool fallThroughStairs;
+    public bool walkThroughStairs;
 
     /// <summary>
     /// This method is called in <seealso cref="TownNPCCollisionPatches"/>.
@@ -73,13 +74,13 @@ public class TownNPCCollisionModule(NPC npc) : TownNPCModule(npc) {
     }
 
     private void AttemptSlopeCollision() {
-        npc.stairFall = ignoreStairs;
+        npc.stairFall = fallThroughStairs;
         npc.GetTileCollisionParameters(out Vector2 cPosition, out int cWidth, out int cHeight);
         Vector2 endPosOffset = npc.position - cPosition;
-        Vector4 newPosAndVelocity = Collision.SlopeCollision(cPosition, npc.velocity, cWidth, cHeight, npc.gravity, fallThroughPlatforms);
+        Vector4 newPosAndVelocity = Collision.SlopeCollision(cPosition, npc.velocity, cWidth, cHeight, npc.gravity, fallThroughStairs);
         Vector2 newPos = newPosAndVelocity.XY(), newVelocity = newPosAndVelocity.ZW();
 
-        if (npc.velocity.Y <= 0 && Collision.stair && ignoreStairs) {
+        if (npc.velocity.Y <= 0 && Collision.stair && walkThroughStairs) {
             newPos = npc.position;
             newVelocity.Y = 0f;
         }

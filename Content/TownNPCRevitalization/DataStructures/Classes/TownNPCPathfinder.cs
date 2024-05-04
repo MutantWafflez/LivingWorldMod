@@ -39,6 +39,7 @@ public class TownNPCPathfinder {
     public enum NodeMovementType : byte {
         PureHorizontal,
         StepUp,
+        StepDown,
         Jump,
         Fall
     }
@@ -340,7 +341,7 @@ public class TownNPCPathfinder {
                     break;
                 case 1: {
                     nextMovementType = NodeMovementType.Jump;
-                    if (xNodeDiff != 0 && NPCCanStepUp(curPathNode.NodePos, _rectSizeX, xNodeDiff < 0)) {
+                    if (xNodeDiff != 0 && CanStep(curPathNode.NodePos, _rectSizeX, xNodeDiff < 0)) {
                         nextMovementType = NodeMovementType.StepUp;
                     }
                     break;
@@ -348,6 +349,13 @@ public class TownNPCPathfinder {
                 case > 1:
                     nextMovementType = NodeMovementType.Jump;
                     break;
+                case -1: {
+                    nextMovementType = NodeMovementType.Fall;
+                    if (xNodeDiff != 0 && CanStepDown(parentNodePos, _rectSizeX, xNodeDiff < 0)) {
+                        nextMovementType = NodeMovementType.StepDown;
+                    }
+                    break;
+                }
                 default:
                     nextMovementType = NodeMovementType.Fall;
                     break;
@@ -427,7 +435,7 @@ public class TownNPCPathfinder {
 
     private bool IsStandingOnHalfTile(UPoint16 bottomLeft) => _tileGrid[new UPoint16(bottomLeft.x, bottomLeft.y + 1)].flags.HasFlag(TileFlags.HalfTile);
 
-    private bool NPCCanStepUp(UPoint16 wantedStepPos, ushort rectWidth, bool fromLeft) {
+    private bool CanStep(UPoint16 wantedStepPos, ushort rectWidth, bool fromLeft) {
         TileFlags wantedFlag = fromLeft ? TileFlags.CanStepWhenComingFromLeft : TileFlags.CanStepWhenComingFromRight;
         for (ushort i = 0; i < rectWidth; i++) {
             if (_tileGrid[new UPoint16(wantedStepPos.x + i, wantedStepPos.y + 1)].flags.HasFlag(wantedFlag)) {
@@ -437,4 +445,6 @@ public class TownNPCPathfinder {
 
         return false;
     }
+
+    private bool CanStepDown(UPoint16 startNodePos, ushort rectWidth, bool fromLeft) => CanStep(startNodePos, rectWidth, !fromLeft);
 }
