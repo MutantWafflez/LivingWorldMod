@@ -60,9 +60,9 @@ public class TownNPCPathfinder {
         Impassable = 2,
 
         /// <summary>
-        /// For tiles/spaces that have collision from the top. This primarily includes platforms.
+        /// For tiles/spaces that are classified as platforms, and only have collision from the top.
         /// </summary>
-        SolidTop = 4,
+        Platform = 4,
 
         /// <summary>
         /// For tiles that can be stepped up if the pathfinder is coming from the right, and moving
@@ -156,13 +156,19 @@ public class TownNPCPathfinder {
                         grid[i, j] = new TileData(0, TileFlags.Solid | additionalFlags);
                     }
                     else {
+                        /*
+                        SlopeDownLeft = ◣
+                        SlopeDownRight = ◢
+                        SlopeUpLeft = ◤
+                        SlopeUpRight = ◥
+                         */
                         TileFlags slopeFlag = tile.Slope switch {
-                            SlopeType.SlopeUpRight => TileFlags.CanStepWhenComingFromLeft,
-                            SlopeType.SlopeUpLeft => TileFlags.CanStepWhenComingFromRight,
+                            SlopeType.SlopeDownLeft => TileFlags.CanStepWhenComingFromRight,
+                            SlopeType.SlopeDownRight => TileFlags.CanStepWhenComingFromLeft,
                             _ => TileFlags.Empty
                         };
 
-                        grid[i, j] = new TileData(0, TileFlags.SolidTop | slopeFlag);
+                        grid[i, j] = new TileData(0, TileFlags.Platform | slopeFlag);
                     }
 
                     continue;
@@ -234,11 +240,10 @@ public class TownNPCPathfinder {
                     continue;
                 }
 
-                DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 0);
+                DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 1);
             }
 
             // One tile move up (step or jump)
-            // TODO: Prevent jumping onto stairs
             if (RectangleHasNoTiles(new UPoint16(curNodePos.x, curNodePos.y - 1), _rectSizeX, _rectSizeY)) {
                 for (int i = -1; i < 2; i += 2) {
                     UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y - 1);
@@ -270,7 +275,7 @@ public class TownNPCPathfinder {
                 }
             }
 
-            // Jump and/or step up
+            // Jumps
             for (int i = 2; i < MaxJumpHeight; i++) {
                 UPoint16 nextNodePos = new(curNodePos.x, curNodePos.y - i);
                 if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
@@ -279,7 +284,7 @@ public class TownNPCPathfinder {
 
                 for (int j = -1; j < 2; j++) {
                     nextNodePos = new UPoint16(curNodePos.x + j, nextNodePos.y);
-                    if (j != 0 && !RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
+                    if (j != 0 && !RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX, true)) {
                         continue;
                     }
 
@@ -400,14 +405,19 @@ public class TownNPCPathfinder {
         return bottomLeft.x < _gridSizeX && bottomLeft.y < _gridSizeY && outerBoundX < _gridSizeX && outerBoundY < _gridSizeY;
     }
 
-    private bool PointOnStandableTile(UPoint16 bottomLeft, ushort rectWidth) {
+    private bool PointOnStandableTile(UPoint16 bottomLeft, ushort rectWidth, bool disallowPlatformStairs = false) {
         if (!RectangleWithinGrid(bottomLeft + new UPoint16(0, 1), rectWidth, 1)) {
             return false;
         }
 
         for (ushort i = 0; i < rectWidth; i++) {
             TileFlags tileFlags = _tileGrid[new UPoint16(bottomLeft.x + i, bottomLeft.y + 1)].flags;
-            if (tileFlags.HasFlag(TileFlags.Solid) || tileFlags.HasFlag(TileFlags.SolidTop)) {
+            bool isPlatform = tileFlags.HasFlag(TileFlags.Platform);
+            if (!tileFlags.HasFlag(TileFlags.Solid) && !isPlatform) {
+                continue;
+            }
+
+            if (!isPlatform || !disallowPlatformStairs || !tileFlags.HasFlag(TileFlags.CanStepWhenComingFromLeft) && !tileFlags.HasFlag(TileFlags.CanStepWhenComingFromRight)) {
                 return true;
             }
         }
