@@ -232,9 +232,8 @@ public class TownNPCPathfinder {
                 break;
             }
 
-
             // Left or right pure horizontal
-            for (int i = -1; i < 2; i += 2) {
+            for (sbyte i = -1; i < 2; i += 2) {
                 UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y);
 
                 if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
@@ -246,7 +245,7 @@ public class TownNPCPathfinder {
 
             // One tile move up (step or jump)
             if (RectangleHasNoTiles(new UPoint16(curNodePos.x, curNodePos.y - 1), _rectSizeX, _rectSizeY)) {
-                for (int i = -1; i < 2; i += 2) {
+                for (sbyte i = -1; i < 2; i += 2) {
                     UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y - 1);
                     if (RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) && PointOnStandableTile(nextNodePos, _rectSizeX)) {
                         DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 2);
@@ -254,15 +253,28 @@ public class TownNPCPathfinder {
                 }
             }
 
-            // Falls
-            for (int i = -1; i < 2; i++) {
-                UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y);
-
-                if (i != 0 && !RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
+            // One tile move down (step or fall)
+            for (sbyte i = -1; i < 2; i += 2) {
+                UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y + 1);
+                if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, (ushort)(_rectSizeY + 1)) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
                     continue;
                 }
 
-                for (nextNodePos.y += 1; nextNodePos.y < _gridSizeY - 2; nextNodePos.y++) {
+                DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 2);
+            }
+
+            // Additional cost to dissuade jumping off of or falling through platforms
+            // Has the overall effect of making NPC movement more "natural" by preferring to use stairs
+            ushort startingPlatformCost = (ushort)(PointOnPlatform(curNodePos, _rectSizeX) ? 10 : 0);
+
+            // Falls
+            for (sbyte i = -1; i < 2; i++) {
+                UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y);
+                if (!RectangleHasNoTiles(new UPoint16(nextNodePos.x, nextNodePos.y + 1), _rectSizeX, 1) || i != 0 && !RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
+                    continue;
+                }
+
+                for (nextNodePos.y += 2; nextNodePos.y < _gridSizeY - 2; nextNodePos.y++) {
                     if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
                         break;
                     }
@@ -271,25 +283,29 @@ public class TownNPCPathfinder {
                         continue;
                     }
 
-                    DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(Math.Abs(i) + (nextNodePos.y - curNodePos.y) * 2));
+                    // Add additional weight if the end location is a platform, for more dissuading
+                    ushort finalPlatformCost = (ushort)(startingPlatformCost + (PointOnPlatform(nextNodePos, _rectSizeX) ? 10 : 0));
+                    DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(Math.Abs(i) + finalPlatformCost + (nextNodePos.y - curNodePos.y) * 2));
                     break;
                 }
             }
 
             // Jumps
-            for (int i = 2; i < MaxJumpHeight; i++) {
+            for (ushort i = 2; i < MaxJumpHeight; i++) {
                 UPoint16 nextNodePos = new(curNodePos.x, curNodePos.y - i);
                 if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
                     break;
                 }
 
-                for (int j = -1; j < 2; j++) {
+                for (sbyte j = -1; j < 2; j++) {
                     nextNodePos = new UPoint16(curNodePos.x + j, nextNodePos.y);
-                    if (j != 0 && !RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX, true)) {
+                    if (j != 0 && !RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
                         continue;
                     }
 
-                    DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(Math.Abs(j) + i * 2));
+                    // Add additional weight if the end location is a platform, for more dissuading
+                    ushort finalPlatformCost = (ushort)(startingPlatformCost + (PointOnPlatform(nextNodePos, _rectSizeX) ? 10 : 0));
+                    DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(Math.Abs(j) + finalPlatformCost + i * 2));
                 }
             }
         }
@@ -413,19 +429,29 @@ public class TownNPCPathfinder {
         return bottomLeft.x < _gridSizeX && bottomLeft.y < _gridSizeY && outerBoundX < _gridSizeX && outerBoundY < _gridSizeY;
     }
 
-    private bool PointOnStandableTile(UPoint16 bottomLeft, ushort rectWidth, bool disallowPlatformStairs = false) {
+    private bool PointOnStandableTile(UPoint16 bottomLeft, ushort rectWidth) {
+        // if (!RectangleWithinGrid(bottomLeft + new UPoint16(0, 1), rectWidth, 1)) {
+        //     return false;
+        // }
+
+        for (ushort i = 0; i < rectWidth; i++) {
+            TileFlags tileFlags = _tileGrid[new UPoint16(bottomLeft.x + i, bottomLeft.y + 1)].flags;
+            if (tileFlags.HasFlag(TileFlags.Solid) || tileFlags.HasFlag(TileFlags.Platform)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool PointOnPlatform(UPoint16 bottomLeft, ushort rectWidth) {
         if (!RectangleWithinGrid(bottomLeft + new UPoint16(0, 1), rectWidth, 1)) {
             return false;
         }
 
         for (ushort i = 0; i < rectWidth; i++) {
             TileFlags tileFlags = _tileGrid[new UPoint16(bottomLeft.x + i, bottomLeft.y + 1)].flags;
-            bool isPlatform = tileFlags.HasFlag(TileFlags.Platform);
-            if (!tileFlags.HasFlag(TileFlags.Solid) && !isPlatform) {
-                continue;
-            }
-
-            if (!isPlatform || !disallowPlatformStairs || !tileFlags.HasFlag(TileFlags.CanStepWhenComingFromLeft) && !tileFlags.HasFlag(TileFlags.CanStepWhenComingFromRight)) {
+            if (tileFlags.HasFlag(TileFlags.Platform)) {
                 return true;
             }
         }
