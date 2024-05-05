@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Configs;
 using LivingWorldMod.Globals.Configs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -23,18 +24,15 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         public PathNode lastConsumedNode = lastConsumedNode;
     }
 
-    /// <summary>
-    /// The side length of the square that represents the zone in which the PathFinder will search for a path.
-    /// </summary>
-    public const int PathFinderZoneSideLength = 128;
-
     private const int MaxPathRecyclesBeforeFailure = 5;
+
+    public static int PathfinderSize => ModContent.GetInstance<TownNPCConfig>().pathfinderSize;
 
     public bool IsPathfinding => _currentPathfinderResult is not null;
 
     public Point BottomLeftTileOfNPC => npc.BottomLeft.ToTileCoordinates() + new Point(0, -1);
 
-    public Point TopLeftOfPathfinderZone => BottomLeftTileOfNPC - new Point(PathFinderZoneSideLength / 2, PathFinderZoneSideLength / 2);
+    public Point TopLeftOfPathfinderZone => BottomLeftTileOfNPC - new Point(PathfinderSize / 2, PathfinderSize / 2);
 
     private readonly List<PathfinderResult> _cachedResults;
 
@@ -314,12 +312,12 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         Point topLeftOfGrid = TopLeftOfPathfinderZone;
 
         const int worldFluff = 10;
-        topLeftOfGrid.X = Utils.Clamp(topLeftOfGrid.X, worldFluff, Main.maxTilesX - PathFinderZoneSideLength - worldFluff - 1);
-        topLeftOfGrid.Y = Utils.Clamp(topLeftOfGrid.Y, 0, Main.maxTilesY - PathFinderZoneSideLength - 1);
+        topLeftOfGrid.X = Utils.Clamp(topLeftOfGrid.X, worldFluff, Main.maxTilesX - PathfinderSize - worldFluff - 1);
+        topLeftOfGrid.Y = Utils.Clamp(topLeftOfGrid.Y, 0, Main.maxTilesY - PathfinderSize - 1);
 
         TownNPCPathfinder pathFinder =
             _cachedPathfinder
-            ?? new TownNPCPathfinder(new UPoint16(topLeftOfGrid.X, topLeftOfGrid.Y), PathFinderZoneSideLength, (ushort)Math.Ceiling(npc.width / 16f), (ushort)Math.Ceiling(npc.height / 16f));
+            ?? new TownNPCPathfinder(new UPoint16(topLeftOfGrid.X, topLeftOfGrid.Y), (ushort)PathfinderSize, (ushort)Math.Ceiling(npc.width / 16f), (ushort)Math.Ceiling(npc.height / 16f));
 
         List<PathNode> path = pathFinder.FindPath(new UPoint16(BottomLeftTileOfNPC - topLeftOfGrid), new UPoint16(endPoint - topLeftOfGrid));
 

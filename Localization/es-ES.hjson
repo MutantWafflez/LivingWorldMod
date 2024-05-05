@@ -378,6 +378,15 @@ Mods: {
 					// Tooltip: Disables the optimization that prunes Town NPC paths.
 				}
 			}
+
+			TownNPCConfig: {
+				// DisplayName: Town N P C Config
+
+				pathfinderSize: {
+					// Label: pathfinder Size
+					// Tooltip: ""
+				}
+			}
 		}
 
 		TownNPCMoodFlavorText: {

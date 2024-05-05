@@ -15,8 +15,8 @@ public class WalkToRandomPosState : TownNPCAIState {
     public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         TownNPCPathfinderModule pathfinderModule = globalNPC.PathfinderModule;
         if (npc.ai[2] == 0f) {
-            const int maxTileThreshold = TownNPCPathfinderModule.PathFinderZoneSideLength / 4;
-            const int minTileThreshold = 8;
+            int maxTileThreshold = TownNPCPathfinderModule.PathfinderSize / 4;
+            int minTileThreshold = Math.ILogB(TownNPCPathfinderModule.PathfinderSize);
 
             WeightedRandom<Point> wanderPoints = new();
             Vector2 homePos = new(npc.homeTileX, npc.homeTileY);
