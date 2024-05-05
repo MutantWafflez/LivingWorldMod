@@ -22,7 +22,7 @@ public class SkywareAnvilTile : BaseTile {
         TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
         TileObjectData.addTile(Type);
 
-        AdjTiles = new int[] { TileID.Anvils };
+        AdjTiles = [TileID.Anvils];
     }
 }
 

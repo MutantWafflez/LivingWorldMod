@@ -47,7 +47,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     private PathfinderResult _currentPathfinderResult;
 
     public TownNPCPathfinderModule(NPC npc) : base(npc) {
-        _cachedResults = new List<PathfinderResult>();
+        _cachedResults = [];
     }
 
     public override void Update() {
@@ -109,7 +109,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             lastConsumedNode = nextNode;
             path.RemoveAt(path.Count - 1);
 
-            if (!path.Any()) {
+            if (path.Count == 0) {
                 EndPathfinding();
                 return;
             }
@@ -360,7 +360,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             return;
         }
 
-        List<int> indicesToBeRemoved = new();
+        List<int> indicesToBeRemoved = [];
         for (int i = path.Count - 2; i > 0; i--) {
             PathNode prevNode = path[i + 1];
             PathNode curNode = path[i];

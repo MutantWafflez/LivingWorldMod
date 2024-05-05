@@ -13,7 +13,7 @@ public class WaystoneSystem : BaseModSystem<WaystoneSystem> {
     private List<WaystoneActivationEntity> _activationEntities;
 
     public override void OnWorldLoad() {
-        _activationEntities = new List<WaystoneActivationEntity>();
+        _activationEntities = [];
     }
 
     public override void PostUpdateEverything() {

@@ -197,7 +197,7 @@ public class ShopUIState : UIState {
         shopScrollbar.Height.Set(464f, 0f);
         shopZone.Append(shopScrollbar);
 
-        shopList = new UIList();
+        shopList = [];
         shopList.Width.Set(470f, 0f);
         shopList.Height.Set(512f, 0f);
         shopList.SetPadding(6f);

@@ -20,7 +20,7 @@ public class WorldCreationSystem : BaseModSystem<WorldCreationSystem> {
     public List<ITemporaryGenValue> tempWorldGenValues;
 
     public override void Load() {
-        tempWorldGenValues = new List<ITemporaryGenValue>();
+        tempWorldGenValues = [];
     }
 
     public override void Unload() { }
@@ -43,7 +43,7 @@ public class WorldCreationSystem : BaseModSystem<WorldCreationSystem> {
     }
 
     public override void PreWorldGen() {
-        tempWorldGenValues = new List<ITemporaryGenValue>();
+        tempWorldGenValues = [];
     }
 
     public override void PostWorldGen() {

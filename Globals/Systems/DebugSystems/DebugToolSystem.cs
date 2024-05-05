@@ -20,11 +20,11 @@ public class DebugToolSystem : ModSystem {
     public override bool IsLoadingEnabled(Mod mod) => LWM.IsDebug;
 
     public override void Load() {
-        _allModules = new List<DebugModule> {
+        _allModules = [
             new StructureModule(),
             new SkipWallModule(),
             new SkipTileModule()
-        };
+        ];
     }
 
     public override void PostUpdateEverything() {

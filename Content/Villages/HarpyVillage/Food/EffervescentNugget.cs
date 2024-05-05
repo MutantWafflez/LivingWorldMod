@@ -31,7 +31,7 @@ public class EffervescentNugget : BaseItem {
         Main.RegisterItemAnimation(Type, new DrawAnimationVertical(int.MaxValue, 3));
 
         ItemID.Sets.IsFood[Type] = true;
-        ItemID.Sets.FoodParticleColors[Type] = new[] {
+        ItemID.Sets.FoodParticleColors[Type] = [
             Color.Red,
             Color.Orange,
             Color.Yellow,
@@ -39,7 +39,7 @@ public class EffervescentNugget : BaseItem {
             Color.Blue,
             Color.Indigo,
             Color.Violet
-        };
+        ];
     }
 
     public override void OnConsumeItem(Player player) {

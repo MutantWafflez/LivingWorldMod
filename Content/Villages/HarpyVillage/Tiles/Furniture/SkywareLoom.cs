@@ -22,7 +22,7 @@ public class SkywareLoomTile : BaseTile {
         TileObjectData.newTile.Origin = new Point16(0, 2);
         TileObjectData.addTile(Type);
 
-        AdjTiles = new int[] { TileID.Loom };
+        AdjTiles = [TileID.Loom];
     }
 }
 

@@ -45,7 +45,7 @@ public class TapestryTile : BaseTile {
         TileObjectData.newTile.Width = 3;
         TileObjectData.newTile.Height = 3;
         TileObjectData.newTile.Origin = new Point16(1, 0);
-        TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16 };
+        TileObjectData.newTile.CoordinateHeights = [16, 16, 16];
         TileObjectData.addTile(Type);
     }
 

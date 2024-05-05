@@ -45,7 +45,7 @@ public class WaystoneTile : BasePylon {
         TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
         TileObjectData.newTile.Origin = Point16.Zero;
         TileObjectData.newTile.Height = 3;
-        TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16 };
+        TileObjectData.newTile.CoordinateHeights = [16, 16, 16];
         TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
         TileObjectData.newTile.DrawYOffset = 2;
 

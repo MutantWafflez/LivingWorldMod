@@ -28,7 +28,7 @@ public static partial class LWMUtils {
     /// type.
     /// </param>
     public static List<Point16> GetValidHousesInZone(Circle zone, int npcType) {
-        List<Point16> foundHouses = new();
+        List<Point16> foundHouses = [];
         Rectangle rectangle = zone.ToRectangle();
 
         for (int i = 0; i < rectangle.Width; i += 2) {

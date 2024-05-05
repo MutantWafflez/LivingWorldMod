@@ -65,7 +65,7 @@ public class HarpyVillager : Villager {
     }
 
     public HarpyVillager() {
-        string[] layerNames = { "Body", "Outfit", "Hair", "Face", "Wings" };
+        string[] layerNames = ["Body", "Outfit", "Hair", "Face", "Wings"];
 
         DrawIndices = Enumerable.Repeat(0, layerNames.Length).ToArray();
         drawObject = new LayeredDrawObject(layerNames, LWM.SpritePath + "NPCs/Villagers/Harpy/", 5);

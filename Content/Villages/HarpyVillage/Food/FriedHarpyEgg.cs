@@ -17,11 +17,11 @@ public class FriedHarpyEgg : BaseItem {
         Main.RegisterItemAnimation(Type, new DrawAnimationVertical(int.MaxValue, 3));
 
         ItemID.Sets.IsFood[Type] = true;
-        ItemID.Sets.FoodParticleColors[Type] = new[] {
+        ItemID.Sets.FoodParticleColors[Type] = [
             Color.White,
             Color.LightGray,
             Color.Blue
-        };
+        ];
     }
 
     public override void AddRecipes() {

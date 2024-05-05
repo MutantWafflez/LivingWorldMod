@@ -29,7 +29,7 @@ public static partial class LWMUtils {
     /// Note that <see cref="Player.active"/> is checked by default, along-side the predicate.
     /// </remarks>
     public static List<Player> GetAllPlayers(Predicate<Player> predicate) {
-        List<Player> players = new();
+        List<Player> players = [];
         for (int i = 0; i < Main.maxPlayers; i++) {
             Player player = Main.player[i];
 

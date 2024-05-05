@@ -34,7 +34,7 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     private readonly List<MoodModifierInstance> _currentMoodModifiers;
 
     public TownNPCMoodModule(NPC npc) : base(npc) {
-        _currentMoodModifiers = new List<MoodModifierInstance>();
+        _currentMoodModifiers = [];
     }
 
     public override void Update() {

@@ -67,12 +67,12 @@ public class SunslabBlockTile : BaseTile {
          */
 
         //Merge-able tiles. In this array, the 0th index is above, 1st index is the right, 2nd index is the left, 3rd index is below
-        bool[] directionsWithMergableTiles = {
+        bool[] directionsWithMergableTiles = [
             LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, -1)),
             LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(1, 0)),
             LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(-1, 0)),
             LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, 1))
-        };
+        ];
 
         //The corner type is determined based on this tile's position in the world, based on odds and evens.
 
@@ -173,12 +173,12 @@ public class SunslabBlockTile : BaseTile {
         Point thisTilePosition = new(i, j);
 
         //Merge-able tiles. In this array, the 0th index is above, 1st index is the right, 2nd index is the left, 3rd index is below
-        bool[] directionsWithMergableTiles = {
+        bool[] directionsWithMergableTiles = [
             LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, -1)),
             LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(1, 0)),
             LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(-1, 0)),
             LWMUtils.CanMergeWithTile(thisTile.TileType, thisTilePosition, new Point(0, 1))
-        };
+        ];
 
         //Vertical frame to begin drawing from
         int verticalFrame = 0;

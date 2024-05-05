@@ -41,7 +41,7 @@ public class LayeredDrawObject {
             _layers[i] = new Layer(layerVariations, name);
         }
 
-        _disabledLayers = new HashSet<string>();
+        _disabledLayers = [];
     }
 
     /// <summary>

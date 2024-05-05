@@ -43,11 +43,11 @@ public class Waystones : WorldGenFeature {
 
         //Define what waystone types can have what tiles under them
         Dictionary<WaystoneType, ushort[]> typeToValidTiles = new() {
-            { WaystoneType.Desert, new[] { TileID.HardenedSand, TileID.Sandstone } },
-            { WaystoneType.Jungle, new[] { TileID.JungleGrass } },
-            { WaystoneType.Mushroom, new[] { TileID.MushroomGrass } },
-            { WaystoneType.Caverns, new[] { TileID.Stone } },
-            { WaystoneType.Ice, new[] { TileID.IceBlock, TileID.SnowBlock } }
+            { WaystoneType.Desert, [TileID.HardenedSand, TileID.Sandstone] },
+            { WaystoneType.Jungle, [TileID.JungleGrass] },
+            { WaystoneType.Mushroom, [TileID.MushroomGrass] },
+            { WaystoneType.Caverns, [TileID.Stone] },
+            { WaystoneType.Ice, [TileID.IceBlock, TileID.SnowBlock] }
         };
 
         //Get all the valid tiles together for faster searching

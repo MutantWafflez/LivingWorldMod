@@ -35,7 +35,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
 
     public TownNPCSpriteModule(NPC npc, Texture2D blinkTexture) : base(npc) {
         _blinkTexture = blinkTexture;
-        _drawSet = new HashSet<Texture2D>();
+        _drawSet = [];
     }
 
     public override void Update() {

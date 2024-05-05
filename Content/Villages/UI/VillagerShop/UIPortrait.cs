@@ -41,7 +41,7 @@ public class UIPortrait : UIElement {
         Width.Set(190f, 0f);
         Height.Set(190f, 0f);
 
-        _drawObject = new LayeredDrawObject(new[] { ("Base", 5), ("Outfit", 5), ("Hair", 5), ("Face", 15) }, PortraitSpritePath);
+        _drawObject = new LayeredDrawObject([("Base", 5), ("Outfit", 5), ("Hair", 5), ("Face", 15)], PortraitSpritePath);
     }
 
     public override void OnInitialize() {
@@ -89,12 +89,12 @@ public class UIPortrait : UIElement {
             > tanSkinIndex => darkSkinFrame
         };
 
-        _portraitDrawIndices = new[] {
+        _portraitDrawIndices = [
             villagerDrawIndices[HarpyVillager.BodyIndexID],
             villagerDrawIndices[HarpyVillager.OutfitIndexID],
             villagerDrawIndices[HarpyVillager.HairIndexID],
             villagerDrawIndices[HarpyVillager.FaceIndexID] * 3 + faceSkinFrame
-        };
+        ];
     }
 
 

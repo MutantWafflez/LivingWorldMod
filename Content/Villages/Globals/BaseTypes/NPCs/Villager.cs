@@ -272,7 +272,7 @@ public abstract class Villager : ModNPC {
     /// Restocks the shop of this villager, drawing from the SpawnPool property.
     /// </summary>
     public void RestockShop() {
-        shopInventory = new List<ShopItem>();
+        shopInventory = [];
 
         int shopLength = Main.rand.Next(6, 8);
 

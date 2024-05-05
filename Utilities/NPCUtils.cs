@@ -109,7 +109,7 @@ public static partial class LWMUtils {
     /// Note that <see cref="NPC.active"/> is checked by default, along-side the predicate.
     /// </remarks>
     public static List<NPC> GetAllNPCs(Predicate<NPC> npcPredicate) {
-        List<NPC> npcList = new();
+        List<NPC> npcList = [];
         for (int i = 0; i < Main.maxNPCs; i++) {
             NPC npc = Main.npc[i];
             if (npc.active && npcPredicate.Invoke(npc)) {

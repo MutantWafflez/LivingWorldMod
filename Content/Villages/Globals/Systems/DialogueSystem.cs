@@ -45,7 +45,7 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
 
         JsonValue jsonReputationData = LWMUtils.GetJSONFromFile("Assets/JSONData/DialogueWeights.json");
         for (VillagerType type = 0; (int)type < LWMUtils.GetTotalVillagerTypeCount(); type++) {
-            List<DialogueData> finalDialogueData = new();
+            List<DialogueData> finalDialogueData = [];
 
             string keyStart = $"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{type}";
             Dictionary<string, LocalizedText> typeDialogue = allDialogue.Where(pair => pair.Key.StartsWith(keyStart)).ToDictionary(pair => pair.Key, pair => pair.Value);

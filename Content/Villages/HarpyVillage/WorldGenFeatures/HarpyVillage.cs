@@ -50,7 +50,7 @@ public class HarpyVillage : WorldGenFeature {
         int searchRightX = midWorld + 400;
         int startingYLevel = (int)(Main.maxTilesY * 0.025f);
 
-        List<Point> possibleIslandPlacements = new();
+        List<Point> possibleIslandPlacements = [];
         for (int i = searchLeftX; i < searchRightX; i += 5) {
             progress.Set((i - searchLeftX) / (float)(searchRightX - searchLeftX));
 
@@ -188,13 +188,13 @@ public class HarpyVillage : WorldGenFeature {
         ));
 
         //Place ground houses on main island
-        List<string> possibleHouses = new() {
+        List<string> possibleHouses = [
             "HighRise0", "HighRise1", "HighRise2",
             "GroundHouse0", "GroundHouse1", "GroundHouse2", "GroundHouse3", "GroundHouse4", "GroundHouse5"
-        };
+        ];
 
         for (int i = 0; i < 2; i++) {
-            List<Point> possiblePlacementPoints = new();
+            List<Point> possiblePlacementPoints = [];
 
             string selectedHouseType = WorldGen.genRand.Next(possibleHouses);
 
