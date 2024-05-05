@@ -412,7 +412,7 @@ public class TownNPCPathfinder {
         }
 
         for (ushort i = bottomLeft.x; i < bottomLeft.x + sizeX; i++) {
-            for (ushort j = bottomLeft.y; j > bottomLeft.y - sizeY; j--) {
+            for (ushort j = (ushort)(bottomLeft.y - sizeY + 1); j <= bottomLeft.y; j++) {
                 TileFlags tileFlags = _tileGrid[new UPoint16(i, j)].flags;
                 if (tileFlags.HasFlag(TileFlags.Solid) || tileFlags.HasFlag(TileFlags.Impassable)) {
                     return false;
