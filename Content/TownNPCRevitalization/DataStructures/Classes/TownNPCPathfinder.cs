@@ -87,6 +87,7 @@ public class TownNPCPathfinder {
     private const int ManhattanEstimateTuneValue = 2;
 
     private const int MaxJumpHeight = 6;
+    private const int AdditionalCostForStairs = 15;
 
     private readonly UPoint16 _topLeftOfGrid;
     private readonly ushort _rectSizeX;
@@ -265,7 +266,7 @@ public class TownNPCPathfinder {
 
             // Additional cost to dissuade jumping off of or falling through platforms
             // Has the overall effect of making NPC movement more "natural" by preferring to use stairs
-            ushort startingPlatformCost = (ushort)(PointOnPlatform(curNodePos, _rectSizeX) ? 10 : 0);
+            ushort startingPlatformCost = (ushort)(PointOnPlatform(curNodePos, _rectSizeX) ? AdditionalCostForStairs : 0);
 
             // Falls
             for (sbyte i = -1; i < 2; i++) {
@@ -284,7 +285,7 @@ public class TownNPCPathfinder {
                     }
 
                     // Add additional weight if the end location is a platform, for more dissuading
-                    ushort finalPlatformCost = (ushort)(startingPlatformCost + (PointOnPlatform(nextNodePos, _rectSizeX) ? 10 : 0));
+                    ushort finalPlatformCost = (ushort)(startingPlatformCost + (PointOnPlatform(nextNodePos, _rectSizeX) ? AdditionalCostForStairs : 0));
                     DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(Math.Abs(i) + finalPlatformCost + (nextNodePos.y - curNodePos.y) * 2));
                     break;
                 }
@@ -304,7 +305,7 @@ public class TownNPCPathfinder {
                     }
 
                     // Add additional weight if the end location is a platform, for more dissuading
-                    ushort finalPlatformCost = (ushort)(startingPlatformCost + (PointOnPlatform(nextNodePos, _rectSizeX) ? 10 : 0));
+                    ushort finalPlatformCost = (ushort)(startingPlatformCost + (PointOnPlatform(nextNodePos, _rectSizeX) ? AdditionalCostForStairs : 0));
                     DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(Math.Abs(j) + finalPlatformCost + i * 2));
                 }
             }
