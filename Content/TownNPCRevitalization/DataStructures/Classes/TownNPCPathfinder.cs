@@ -431,10 +431,6 @@ public class TownNPCPathfinder {
     }
 
     private bool PointOnStandableTile(UPoint16 bottomLeft, ushort rectWidth) {
-        // if (!RectangleWithinGrid(bottomLeft + new UPoint16(0, 1), rectWidth, 1)) {
-        //     return false;
-        // }
-
         for (ushort i = 0; i < rectWidth; i++) {
             TileFlags tileFlags = _tileGrid[new UPoint16(bottomLeft.x + i, bottomLeft.y + 1)].flags;
             if (tileFlags.HasFlag(TileFlags.Solid) || tileFlags.HasFlag(TileFlags.Platform)) {
@@ -445,14 +441,14 @@ public class TownNPCPathfinder {
         return false;
     }
 
-    private bool PointOnPlatform(UPoint16 bottomLeft, ushort rectWidth) {
+    private bool PointOnPlatform(UPoint16 bottomLeft, ushort rectWidth, bool stairCheck = false) {
         if (!RectangleWithinGrid(bottomLeft + new UPoint16(0, 1), rectWidth, 1)) {
             return false;
         }
 
         for (ushort i = 0; i < rectWidth; i++) {
             TileFlags tileFlags = _tileGrid[new UPoint16(bottomLeft.x + i, bottomLeft.y + 1)].flags;
-            if (tileFlags.HasFlag(TileFlags.Platform)) {
+            if (tileFlags.HasFlag(TileFlags.Platform) && (!stairCheck || !tileFlags.HasFlag(TileFlags.CanStepWhenComingFromLeft) && !tileFlags.HasFlag(TileFlags.CanStepWhenComingFromRight))) {
                 return true;
             }
         }
@@ -473,5 +469,5 @@ public class TownNPCPathfinder {
         return false;
     }
 
-    private bool CanStepDown(UPoint16 startNodePos, ushort rectWidth, bool fromLeft) => CanStep(startNodePos, rectWidth, !fromLeft);
+    private bool CanStepDown(UPoint16 startNodePos, ushort rectWidth, bool fromLeft) => !PointOnPlatform(startNodePos, rectWidth, true) && CanStep(startNodePos, rectWidth, !fromLeft);
 }

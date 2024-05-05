@@ -147,7 +147,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             case NodeMovementType.StepDown:
                 npc.velocity.X = npc.direction;
 
-                collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = collisionModule.walkThroughStairs = false;
+                collisionModule.fallThroughStairs = collisionModule.walkThroughStairs = collisionModule.fallThroughPlatforms = false;
                 CheckForDoors();
                 break;
             case NodeMovementType.PureHorizontal: {
@@ -175,7 +175,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
                     return;
                 }
 
-                //npc.velocity.Y = 0.01f;
                 collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = true;
                 break;
             }
