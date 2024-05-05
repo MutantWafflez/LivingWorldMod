@@ -28,6 +28,8 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     /// </summary>
     public const int PathFinderZoneSideLength = 128;
 
+    private const int MaxPathRecyclesBeforeFailure = 5;
+
     public bool IsPathfinding => _currentPathfinderResult is not null;
 
     public Point BottomLeftTileOfNPC => npc.BottomLeft.ToTileCoordinates() + new Point(0, -1);
@@ -38,6 +40,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     private float _prevDistanceToNextNode;
     private int _notMakingProgressCounter;
+    private int _pathRestartCount;
 
     private bool _isPaused;
     private bool _wasPaused;
@@ -80,6 +83,11 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         float curDistanceToNextNode = GetDistanceToNode(nextNode);
         if (curDistanceToNextNode >= _prevDistanceToNextNode) {
             if (++_notMakingProgressCounter >= LWMUtils.RealLifeSecond / 2) {
+                if (_pathRestartCount++ > MaxPathRecyclesBeforeFailure) {
+                    EndPathfinding();
+                    return;
+                }
+
                 GenerateAndUseNewPath(_currentPathfinderResult.endPoint);
 
                 return;
@@ -372,7 +380,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     private void EndPathfinding() {
         _prevDistanceToNextNode = float.MaxValue;
-        _notMakingProgressCounter = 0;
+        _pathRestartCount = _notMakingProgressCounter = 0;
 
         npc.velocity.X = 0f;
         _currentPathfinderResult = null;
