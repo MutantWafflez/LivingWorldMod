@@ -116,7 +116,7 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
     }
 
     /// <summary>
-    /// Takes the passed in events and checks to see if any pass. Returns true if all passed or it is null, false otherwise.
+    /// Takes the passed in events and checks to see if any pass. Returns true if all passed, or it is null, false otherwise.
     /// </summary>
     /// <param name="events"> The array of events to check. </param>
     private bool TestEvents(string[] events) {

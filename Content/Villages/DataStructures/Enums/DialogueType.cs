@@ -6,7 +6,7 @@
 /// </summary>
 public enum DialogueType {
     /// <summary>
-    /// "Normal" dialogue, or what appears when you right click a villager and talk to them.
+    /// "Normal" dialogue, or what appears when you right-click a villager and talk to them.
     /// </summary>
     Normal,
 

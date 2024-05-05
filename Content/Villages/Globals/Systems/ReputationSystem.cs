@@ -11,7 +11,7 @@ using Terraria.ModLoader.IO;
 namespace LivingWorldMod.Content.Villages.Globals.Systems;
 
 /// <summary>
-/// System that handles reputations for all of the villages in the mod.
+/// System that handles reputations for all the villages in the mod.
 /// </summary>
 public class ReputationSystem : BaseModSystem<ReputationSystem> {
     public const int VillageReputationConstraint = 100;

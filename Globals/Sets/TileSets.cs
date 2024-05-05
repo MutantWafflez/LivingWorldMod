@@ -1,4 +1,5 @@
-﻿using Terraria.ObjectData;
+﻿using LivingWorldMod.Globals.Patches;
+using Terraria.ObjectData;
 
 namespace LivingWorldMod.Globals.Sets;
 
@@ -8,7 +9,7 @@ namespace LivingWorldMod.Globals.Sets;
 /// </summary>
 public static class TileSets {
     /// <summary>
-    /// Whether or not this tile needs "advanced" wind sway, i.e needs to be handled in the
+    /// Whether this tile needs "advanced" wind sway, i.e needs to be handled in the
     /// <see cref="TileDrawingPatches.WindDrawingEdit"/> method to function properly.
     /// Basically, this is the more advanced version of the <see cref="TileID.Sets.SwaysInWindBasic"/> set.
     /// </summary>

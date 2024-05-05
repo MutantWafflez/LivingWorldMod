@@ -20,7 +20,7 @@ using Terraria.Utilities;
 namespace LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 
 /// <summary>
-/// Base class for all of the villager NPCs in the mod. Has several properties that can be
+/// Base class for all the villager NPCs in the mod. Has several properties that can be
 /// modified depending on the "personality" of the villagers.
 /// </summary>
 public abstract class Villager : ModNPC {
@@ -104,7 +104,7 @@ public abstract class Villager : ModNPC {
         NPCID.Sets.ActsLikeTownNPC[Type] = true;
         NPCID.Sets.SpawnsWithCustomName[Type] = true;
         NPCID.Sets.AllowDoorInteraction[Type] = true;
-        // Villagers use TownNPC ai, which makes this necessary
+        // Villagers use TownNPC AI, which makes this necessary
         NPCID.Sets.ShimmerTownTransform[Type] = true;
         NPCID.Sets.NoTownNPCHappiness[Type] = true;
 
@@ -184,7 +184,7 @@ public abstract class Villager : ModNPC {
 
     public sealed override string GetChat() {
         if (RelationshipStatus == VillagerRelationship.Hate) {
-            return "..."; //The player should be unable to chat with the villagers if they are hated, but just in case that occurs, return something in order to prevent a error thrown
+            return "..."; //The player should be unable to chat with the villagers if they are hated, but just in case that occurs, return something in order to prevent an error thrown
         }
 
         return DialogueSystem.Instance.GetDialogue(VillagerType, RelationshipStatus, DialogueType.Normal);

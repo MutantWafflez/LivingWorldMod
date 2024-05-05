@@ -144,9 +144,9 @@ public class VillageShrineTile : BasePylon {
     }
 
     /// <summary>
-    /// Returns whether or not the given village type will have their shrine icon visible at all on the map.
+    /// Returns whether the given village type will have their shrine icon visible at all on the map.
     /// </summary>
-    /// <param name="type"> The type of the village who's shrine we are referring to. </param>
+    /// <param name="type"> The type of the village whose shrine we are referring to. </param>
     private bool IsShrineVisibleOnMap(VillagerType type) {
         switch (type) {
             case VillagerType.Harpy:
@@ -159,7 +159,7 @@ public class VillageShrineTile : BasePylon {
 }
 
 /// <summary>
-/// Tile Entity within each village shrine of each type, which mainly handles whether or not a
+/// Tile Entity within each village shrine of each type, which mainly handles whether a
 /// specified player is close enough to the specified shrine to be considered "within the village."
 /// </summary>
 [LegacyName("HarpyShrineEntity")]
@@ -332,7 +332,7 @@ public class VillageShrineEntity : TEModdedPylon {
     }
 
     /// <summary>
-    /// Called when the tile this entity is associated with is right clicked.
+    /// Called when the tile this entity is associated with is right-clicked.
     /// </summary>
     public void RightClicked() {
         VillageShrineUISystem shrineSystem = ModContent.GetInstance<VillageShrineUISystem>();
@@ -359,7 +359,7 @@ public class VillageShrineEntity : TEModdedPylon {
 
     /// <summary>
     /// Really simple method that just sets the village zone field to its proper values given
-    /// the the tile entity's current position.
+    /// the tile entity's current position.
     /// </summary>
     private void InstantiateVillageZone() {
         villageZone = new Circle(Position.ToWorldCoordinates(32f, 40f), DefaultVillageRadius);
@@ -413,7 +413,7 @@ public class VillageShrineEntity : TEModdedPylon {
     /// <summary>
     /// Little helper method that syncs this tile entity from Server to clients.
     /// </summary>
-    /// <param name="doServerCheck"> Whether or not to check if the current Netmode is a Server. </param>
+    /// <param name="doServerCheck"> Whether to check if the current Net-mode is a Server. </param>
     private void SyncDataToClients(bool doServerCheck = true) {
         if (doServerCheck && Main.netMode != NetmodeID.Server) {
             return;

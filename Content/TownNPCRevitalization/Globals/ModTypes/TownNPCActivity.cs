@@ -22,8 +22,8 @@ public abstract class TownNPCActivity : TownNPCAIState {
     }
 
     /// <summary>
-    /// Returns whether or not the passed in NPC can do this activity. Determines
-    /// whether or not this activity will be performed.
+    /// Returns whether the passed in NPC can do this activity. Determines
+    /// whether this activity will be performed.
     /// </summary>
     public abstract bool CanDoActivity(TownGlobalNPC globalNPC, NPC npc);
 }

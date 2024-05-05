@@ -23,7 +23,7 @@ public class EffervescentHarpyFeather : BaseItem {
         Item.rare = ItemRarityID.LightPurple;
         Item.accessory = true;
 
-        // For some reason there is a mis-match with the height and texture, so manually setting it here
+        // For some reason there is a mismatch with the height and texture, so manually setting it here
         Item.height = 34;
     }
 
