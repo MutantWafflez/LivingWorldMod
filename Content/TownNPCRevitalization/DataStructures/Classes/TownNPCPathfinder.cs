@@ -349,7 +349,7 @@ public class TownNPCPathfinder {
             UPoint16 parentNodePos = curPathNode.ParentNodePos;
             int yNodeDiff = parentNodePos.y - curPathNode.NodePos.y;
             int xNodeDiff = parentNodePos.x - curPathNode.NodePos.x;
-            // Remember that to construct the path from END to START. So everything is reversed
+            // Remember that to construct the path we go from END to START. So everything is reversed
             switch (yNodeDiff) {
                 case 0:
                     //TODO: Further investigate half tile issues
