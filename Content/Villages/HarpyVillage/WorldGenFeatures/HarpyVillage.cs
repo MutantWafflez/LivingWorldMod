@@ -66,7 +66,7 @@ public class HarpyVillage : WorldGenFeature {
         }
 
         Point originPoint;
-        if (possibleIslandPlacements.Any()) {
+        if (possibleIslandPlacements.Count != 0) {
             //Get point closest to middle of the world: order the list by distance to the relative "center" of the sky
             originPoint = possibleIslandPlacements.OrderBy(point => point.ToVector2().Distance(new Vector2(midWorld - originHorizontalDisplacement, Main.maxTilesY * 0.06f))).First();
 
@@ -210,7 +210,7 @@ public class HarpyVillage : WorldGenFeature {
             }
 
             //If there is anywhere possible for the house to be placed, it takes the middle element in order to center the house as much as possible
-            if (possiblePlacementPoints.Any()) {
+            if (possiblePlacementPoints.Count != 0) {
                 Point middlePlacement = possiblePlacementPoints.ElementAt(possiblePlacementPoints.Count / 2);
 
                 LWMUtils.GenerateStructure(groundHouseData, middlePlacement.X, middlePlacement.Y - groundHouseData.structureHeight);

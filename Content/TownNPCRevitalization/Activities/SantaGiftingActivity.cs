@@ -21,7 +21,7 @@ public class SantaGiftingActivity : TownNPCActivity {
         }
 
         List<NPC> allTownNPCs = new(); /*LWMUtils.GetAllNPCs(otherNPC => otherNPC.TryGetGlobalNPC(out TownGlobalNPC _) && globalNPC.PathfinderModule.EntityWithinPathfinderZone(otherNPC));*/
-        if (!allTownNPCs.Any()) {
+        if (allTownNPCs.Count == 0) {
             return false;
         }
 

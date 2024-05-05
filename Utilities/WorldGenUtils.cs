@@ -133,7 +133,7 @@ public static partial class LWMUtils {
         }
 
         uint repetitions = 0;
-        while (tiles.Any() && repetitions < maxRepetitions) {
+        while (tiles.Count != 0 && repetitions < maxRepetitions) {
             repetitions++;
 
             Point tilePos = tiles.Dequeue();

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
@@ -36,7 +35,7 @@ public class WalkToRandomPosState : TownNPCAIState {
                 wanderPoints.Add(wanderPoint, distanceFromHome == 0f ? 1f : 1 / distanceFromHome);
             }
 
-            if (!wanderPoints.elements.Any()) {
+            if (wanderPoints.elements.Count == 0) {
                 TownGlobalNPC.RefreshToState<DefaultAIState>(npc);
                 npc.ai[1] = Main.rand.Next(LWMUtils.RealLifeSecond * 2, LWMUtils.RealLifeSecond * 5);
                 return;

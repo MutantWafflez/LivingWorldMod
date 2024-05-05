@@ -88,7 +88,7 @@ public class RoastMarshmallowActivity : TownNPCActivity {
             }
         }
 
-        if (!campfires.Any()) {
+        if (campfires.Count == 0) {
             return false;
         }
 

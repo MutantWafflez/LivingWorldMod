@@ -112,7 +112,7 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
             dialogueOptions.Add(data.dialogue.Value, data.weight);
         }
 
-        return dialogueOptions.elements.Any() ? dialogueOptions : "Dialogue error! No dialogue found, report to devs!";
+        return dialogueOptions.elements.Count != 0 ? dialogueOptions : "Dialogue error! No dialogue found, report to devs!";
     }
 
     /// <summary>
