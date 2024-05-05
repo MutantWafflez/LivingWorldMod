@@ -115,7 +115,7 @@ public abstract class Villager : ModNPC {
         NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 
         // Villager Names
-        Dictionary<VillagerType, IReadOnlyList<string>> tempVillagerNames = new();
+        Dictionary<VillagerType, IReadOnlyList<string>> tempVillagerNames = [];
         JsonValue villagerNameData = LWMUtils.GetJSONFromFile("Assets/JSONData/VillagerNames.json");
 
         for (VillagerType villagerType = 0; (int)villagerType < LWMUtils.GetTotalVillagerTypeCount(); villagerType++) {

@@ -109,7 +109,7 @@ public class TownGlobalNPC : GlobalNPC {
         JsonObject projJSONAttackData = jsonAttackData["ProjNPCs"].Qo();
         JsonObject meleeJSONAttackData = jsonAttackData["MeleeNPCs"].Qo();
 
-        Dictionary<int, TownNPCProjAttackData> projDict = new();
+        Dictionary<int, TownNPCProjAttackData> projDict = [];
         foreach ((string npcName, JsonValue jsonValue) in projJSONAttackData) {
             JsonObject jsonObject = jsonValue.Qo();
             int npcType = NPCID.Search.GetId(npcName);
@@ -129,7 +129,7 @@ public class TownGlobalNPC : GlobalNPC {
         }
         TownNPCCombatModule.projAttackData = projDict;
 
-        Dictionary<int, TownNPCMeleeAttackData> meleeDict = new();
+        Dictionary<int, TownNPCMeleeAttackData> meleeDict = [];
         foreach ((string npcName, JsonValue jsonValue) in meleeJSONAttackData) {
             JsonObject jsonObject = jsonValue.Qo();
             int npcType = NPCID.Search.GetId(npcName);
@@ -146,7 +146,7 @@ public class TownGlobalNPC : GlobalNPC {
         TownNPCCombatModule.meleeAttackData = meleeDict;
 
         JsonObject jsonMoodValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
-        Dictionary<string, TownNPCMoodModule.MoodModifier> moodModifierDict = new();
+        Dictionary<string, TownNPCMoodModule.MoodModifier> moodModifierDict = [];
         foreach ((string moodModifier, JsonValue jsonValue) in jsonMoodValues) {
             JsonObject jsonObject = jsonValue.Qo();
             moodModifierDict[moodModifier] = new TownNPCMoodModule.MoodModifier(jsonObject["MoodOffset"], jsonObject["MaxStacks"]);

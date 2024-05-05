@@ -38,7 +38,7 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
 
 
     public override void PostSetupContent() {
-        _villagerDialogue = new Dictionary<VillagerType, List<DialogueData>>();
+        _villagerDialogue = [];
 
         Dictionary<string, LocalizedText> translationDict = typeof(LanguageManager).GetField("_localizedTexts", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(LanguageManager.Instance) as Dictionary<string, LocalizedText>;
         Dictionary<string, LocalizedText> allDialogue = translationDict!.Where(pair => pair.Value.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue")).ToDictionary(pair => pair.Key, pair => pair.Value);

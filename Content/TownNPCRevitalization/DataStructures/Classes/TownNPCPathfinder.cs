@@ -338,7 +338,7 @@ public class TownNPCPathfinder {
             return null;
         }
 
-        List<PathNode> foundPath = new();
+        List<PathNode> foundPath = [];
         InternalNode curInternalNode = _nodeGrid[_end];
         PathNode curPathNode = new(_end, curInternalNode.parentPos, NodeMovementType.PureHorizontal);
 

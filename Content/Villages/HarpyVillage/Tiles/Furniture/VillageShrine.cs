@@ -63,7 +63,7 @@ public class VillageShrineTile : BasePylon {
         TileObjectData.newTile.Origin = tileOrigin;
         TileObjectData.newTile.StyleHorizontal = true;
         TileObjectData.newTile.CoordinatePadding = 2;
-        TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16, 16, 16 };
+        TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16];
         TileObjectData.newTile.Height = 5;
         TileObjectData.newTile.CoordinateWidth = 16;
         TileObjectData.newTile.Width = FullTileWidth;
@@ -266,7 +266,7 @@ public class VillageShrineEntity : TEModdedPylon {
         writer.Write(villageZone.radius);
 
         writer.Write(_houseLocations?.Count ?? 0);
-        foreach (Point16 houseLocation in _houseLocations ?? new List<Point16>()) {
+        foreach (Point16 houseLocation in _houseLocations ?? []) {
             writer.Write(houseLocation.X);
             writer.Write(houseLocation.Y);
         }
@@ -285,7 +285,7 @@ public class VillageShrineEntity : TEModdedPylon {
         villageZone = new Circle(reader.ReadVector2(), reader.ReadSingle());
 
         int houseLocations = reader.ReadInt32();
-        _houseLocations = new List<Point16>();
+        _houseLocations = [];
         for (int i = 0; i < houseLocations; i++) {
             _houseLocations.Add(new Point16(reader.ReadInt16(), reader.ReadInt16()));
         }

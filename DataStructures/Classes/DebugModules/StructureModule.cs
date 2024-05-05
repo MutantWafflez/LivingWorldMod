@@ -11,10 +11,10 @@ namespace LivingWorldMod.DataStructures.Classes.DebugModules;
 /// </summary>
 public class StructureModule : RegionModule {
     protected override void ApplyEffectOnRegion() {
-        List<List<TileData>> tileData = new();
+        List<List<TileData>> tileData = [];
 
         for (int x = 0; x <= bottomRight.X - topLeft.X; x++) {
-            tileData.Add(new List<TileData>());
+            tileData.Add([]);
             for (int y = 0; y <= bottomRight.Y - topLeft.Y; y++) {
                 Tile requestedTile = Framing.GetTileSafely(x + topLeft.X, y + topLeft.Y);
                 tileData[x].Add(new TileData(requestedTile));

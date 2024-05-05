@@ -20,7 +20,7 @@ public class LoadingTaskSystem : BaseModSystem<LoadingTaskSystem> {
     }
 
     private void GenerateTalkBlinkTextures() {
-        Dictionary<int, (Texture2D, Texture2D)> talkBlinkOverlays = new();
+        Dictionary<int, (Texture2D, Texture2D)> talkBlinkOverlays = [];
         NPC npc = new();
         TownGlobalNPC townSingletonNPC = ModContent.GetInstance<TownGlobalNPC>();
         for (int i = 0; i < NPCLoader.NPCCount; i++) {

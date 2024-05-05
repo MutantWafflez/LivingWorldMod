@@ -20,7 +20,7 @@ public class SantaGiftingActivity : TownNPCActivity {
             return false;
         }
 
-        List<NPC> allTownNPCs = new(); /*LWMUtils.GetAllNPCs(otherNPC => otherNPC.TryGetGlobalNPC(out TownGlobalNPC _) && globalNPC.PathfinderModule.EntityWithinPathfinderZone(otherNPC));*/
+        List<NPC> allTownNPCs = []; /*LWMUtils.GetAllNPCs(otherNPC => otherNPC.TryGetGlobalNPC(out TownGlobalNPC _) && globalNPC.PathfinderModule.EntityWithinPathfinderZone(otherNPC));*/
         if (allTownNPCs.Count == 0) {
             return false;
         }
