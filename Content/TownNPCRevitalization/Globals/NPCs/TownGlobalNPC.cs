@@ -277,8 +277,7 @@ public class TownGlobalNPC : GlobalNPC {
         }
     }
 
-    public static void RefreshToState<T>(NPC npc)
-        where T : TownNPCAIState => RefreshToState(npc, TownNPCAIState.GetStateInteger<T>());
+    public static void RefreshToState<T>(NPC npc) where T : TownNPCAIState => RefreshToState(npc, TownNPCAIState.GetStateInteger<T>());
 
     public static bool IsValidStandingPosition(NPC npc, Point tilePos) {
         bool foundTileToStandOn = false;
