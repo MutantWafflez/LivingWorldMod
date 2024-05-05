@@ -380,11 +380,16 @@ Mods: {
 			}
 
 			TownNPCConfig: {
-				// DisplayName: Town N P C Config
+				// DisplayName: Town NPC Config
 
 				pathfinderSize: {
-					// Label: pathfinder Size
-					// Tooltip: ""
+					// Label: Pathfinder Search Size
+					/* Tooltip:
+						'''
+						The side length of the square, centered on a Town NPC, that the Pathfinder for said NPC can search.
+						WARNING! Increasing this will allow the NPC to find locations further away, but will negatively impact performance!
+						Defaults to a size of 128 (128x128), which is the recommended size.
+						''' */
 				}
 			}
 		}
