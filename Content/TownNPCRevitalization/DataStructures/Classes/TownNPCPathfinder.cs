@@ -87,8 +87,8 @@ public class TownNPCPathfinder {
     private const int MaxNodeSearch = 2000;
     private const int ManhattanEstimateTuneValue = 2;
 
-    private const int MaxJumpHeight = 6;
-    private const int MaxFallDistance = 10;
+    private const int MaxJumpHeight = 7;
+    private const int MaxFallDistance = 11;
     private const int AdditionalCostForStairs = 15;
 
     private readonly UPoint16 _topLeftOfGrid;
