@@ -139,6 +139,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
             leftHasBreachedNode = false;
             npc.direction = npc.Left.X > nextNodeCenter.X ? -1 : 1;
+            collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = collisionModule.walkThroughStairs = false;
         }
 
         switch (lastConsumedNode.MovementType) {
@@ -176,7 +177,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
                 }
 
                 npc.velocity.X = 0f;
-
                 if (npc.velocity.Y != 0f) {
                     return;
                 }
