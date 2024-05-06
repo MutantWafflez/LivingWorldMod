@@ -146,7 +146,8 @@ public class TownNPCPathfinder {
                 bool isActuated = tile.IsActuated;
                 bool isSolid = Main.tileSolid[tile.TileType];
                 bool isPlatform = TileID.Sets.Platforms[tile.TileType];
-                bool isClosedDoor = TileLoader.CloseDoorID(tile) > 0;
+                bool isClosedDoor = TileLoader.OpenDoorID(tile) > 0;
+
 
                 if (hasTile && !isActuated && isSolid && !isClosedDoor) {
                     if (!isPlatform) {
@@ -431,6 +432,10 @@ public class TownNPCPathfinder {
     }
 
     private bool PointOnStandableTile(UPoint16 bottomLeft, ushort rectWidth) {
+        if (!RectangleWithinGrid(bottomLeft + new UPoint16(0, 1), rectWidth, 1)) {
+            return false;
+        }
+
         for (ushort i = 0; i < rectWidth; i++) {
             TileFlags tileFlags = _tileGrid[new UPoint16(bottomLeft.x + i, bottomLeft.y + 1)].flags;
             if (tileFlags.HasFlag(TileFlags.Solid) || tileFlags.HasFlag(TileFlags.Platform)) {
@@ -457,10 +462,6 @@ public class TownNPCPathfinder {
     }
 
     private bool IsStandingOnHalfTile(UPoint16 bottomLeft, ushort rectWidth) {
-        if (!RectangleWithinGrid(bottomLeft + new UPoint16(0, 1), rectWidth, 1)) {
-            return false;
-        }
-
         for (ushort i = 0; i < rectWidth; i++) {
             TileFlags tileFlags = _tileGrid[new UPoint16(bottomLeft.x + i, bottomLeft.y + 1)].flags;
             if (tileFlags.HasFlag(TileFlags.HalfTile)) {
