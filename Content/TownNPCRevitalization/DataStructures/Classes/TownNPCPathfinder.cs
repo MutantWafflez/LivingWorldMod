@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 
@@ -432,57 +433,26 @@ public class TownNPCPathfinder {
         return bottomLeft.x < _gridSizeX && bottomLeft.y < _gridSizeY && outerBoundX < _gridSizeX && outerBoundY < _gridSizeY;
     }
 
-    private bool PointOnStandableTile(UPoint16 bottomLeft, ushort rectWidth) {
+    private IEnumerable<TileFlags> FlagsOfTilesRectangleIsOn(UPoint16 bottomLeft, ushort rectWidth) {
         if (!RectangleWithinGrid(bottomLeft + new UPoint16(0, 1), rectWidth, 1)) {
-            return false;
+            yield break;
         }
 
         for (ushort i = 0; i < rectWidth; i++) {
-            TileFlags tileFlags = _tileGrid[new UPoint16(bottomLeft.x + i, bottomLeft.y + 1)].flags;
-            if (tileFlags.HasFlag(TileFlags.Solid) || tileFlags.HasFlag(TileFlags.Platform)) {
-                return true;
-            }
+            yield return _tileGrid[new UPoint16(bottomLeft.x + i, bottomLeft.y + 1)].flags;
         }
-
-        return false;
     }
 
-    private bool PointOnPlatform(UPoint16 bottomLeft, ushort rectWidth, bool stairCheck = false) {
-        if (!RectangleWithinGrid(bottomLeft + new UPoint16(0, 1), rectWidth, 1)) {
-            return false;
-        }
+    private bool PointOnStandableTile(UPoint16 bottomLeft, ushort rectWidth) => FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth).Any(flags => flags.HasFlag(TileFlags.Solid) || flags.HasFlag(TileFlags.Platform));
 
-        for (ushort i = 0; i < rectWidth; i++) {
-            TileFlags tileFlags = _tileGrid[new UPoint16(bottomLeft.x + i, bottomLeft.y + 1)].flags;
-            if (tileFlags.HasFlag(TileFlags.Platform) && (!stairCheck || !tileFlags.HasFlag(TileFlags.CanStepWhenComingFromLeft) && !tileFlags.HasFlag(TileFlags.CanStepWhenComingFromRight))) {
-                return true;
-            }
-        }
+    private bool PointOnPlatform(UPoint16 bottomLeft, ushort rectWidth, bool stairCheck = false)
+        => FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth)
+            .Any(flags => flags.HasFlag(TileFlags.Platform) && (!stairCheck || !flags.HasFlag(TileFlags.CanStepWhenComingFromLeft) && !flags.HasFlag(TileFlags.CanStepWhenComingFromRight)));
 
-        return false;
-    }
+    private bool IsStandingOnHalfTile(UPoint16 bottomLeft, ushort rectWidth) => FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth).Any(flags => flags.HasFlag(TileFlags.HalfTile));
 
-    private bool IsStandingOnHalfTile(UPoint16 bottomLeft, ushort rectWidth) {
-        for (ushort i = 0; i < rectWidth; i++) {
-            TileFlags tileFlags = _tileGrid[new UPoint16(bottomLeft.x + i, bottomLeft.y + 1)].flags;
-            if (tileFlags.HasFlag(TileFlags.HalfTile)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private bool CanStep(UPoint16 wantedStepPos, ushort rectWidth, bool fromLeft) {
-        TileFlags wantedFlag = fromLeft ? TileFlags.CanStepWhenComingFromLeft : TileFlags.CanStepWhenComingFromRight;
-        for (ushort i = 0; i < rectWidth; i++) {
-            if (_tileGrid[new UPoint16(wantedStepPos.x + i, wantedStepPos.y + 1)].flags.HasFlag(wantedFlag)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
+    private bool CanStep(UPoint16 wantedStepPos, ushort rectWidth, bool fromLeft)
+        => FlagsOfTilesRectangleIsOn(wantedStepPos, rectWidth).Any(flags => flags.HasFlag(fromLeft ? TileFlags.CanStepWhenComingFromLeft : TileFlags.CanStepWhenComingFromRight));
 
     private bool CanStepDown(UPoint16 startNodePos, ushort rectWidth, bool fromLeft) => !PointOnPlatform(startNodePos, rectWidth, true) && CanStep(startNodePos, rectWidth, !fromLeft);
 }
