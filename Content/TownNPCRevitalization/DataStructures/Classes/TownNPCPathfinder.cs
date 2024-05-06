@@ -353,8 +353,8 @@ public class TownNPCPathfinder {
             switch (yNodeDiff) {
                 case 0:
                     //TODO: Further investigate half tile issues
-                    nextMovementType = IsStandingOnHalfTile(parentNodePos) ? NodeMovementType.StepUp : NodeMovementType.PureHorizontal;
-                    nextMovementType = NodeMovementType.PureHorizontal;
+                    nextMovementType = IsStandingOnHalfTile(parentNodePos, _rectSizeX) ? NodeMovementType.StepUp : NodeMovementType.PureHorizontal;
+                    //nextMovementType = NodeMovementType.PureHorizontal;
                     break;
                 case 1: {
                     nextMovementType = NodeMovementType.Jump;
@@ -456,7 +456,20 @@ public class TownNPCPathfinder {
         return false;
     }
 
-    private bool IsStandingOnHalfTile(UPoint16 bottomLeft) => _tileGrid[new UPoint16(bottomLeft.x, bottomLeft.y + 1)].flags.HasFlag(TileFlags.HalfTile);
+    private bool IsStandingOnHalfTile(UPoint16 bottomLeft, ushort rectWidth) {
+        if (!RectangleWithinGrid(bottomLeft + new UPoint16(0, 1), rectWidth, 1)) {
+            return false;
+        }
+
+        for (ushort i = 0; i < rectWidth; i++) {
+            TileFlags tileFlags = _tileGrid[new UPoint16(bottomLeft.x + i, bottomLeft.y + 1)].flags;
+            if (tileFlags.HasFlag(TileFlags.HalfTile)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     private bool CanStep(UPoint16 wantedStepPos, ushort rectWidth, bool fromLeft) {
         TileFlags wantedFlag = fromLeft ? TileFlags.CanStepWhenComingFromLeft : TileFlags.CanStepWhenComingFromRight;
