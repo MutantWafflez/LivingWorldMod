@@ -87,6 +87,7 @@ public class TownNPCPathfinder {
     private const int ManhattanEstimateTuneValue = 2;
 
     private const int MaxJumpHeight = 6;
+    private const int MaxFallDistance = 10;
     private const int AdditionalCostForStairs = 15;
 
     private readonly UPoint16 _topLeftOfGrid;
@@ -276,7 +277,7 @@ public class TownNPCPathfinder {
                     continue;
                 }
 
-                for (nextNodePos.y += 2; nextNodePos.y < _gridSizeY - 2; nextNodePos.y++) {
+                for (nextNodePos.y += 2; nextNodePos.y <= curNodePos.y + MaxFallDistance; nextNodePos.y++) {
                     if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
                         break;
                     }
