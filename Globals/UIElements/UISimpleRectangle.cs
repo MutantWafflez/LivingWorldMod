@@ -14,12 +14,11 @@ public class UISimpleRectangle(Color color) : UIElement {
         CalculatedStyle dimensions = GetDimensions();
         spriteBatch.Draw(
             TextureAssets.MagicPixel.Value,
-            dimensions.Position(),
+            dimensions.ToRectangle(),
             null,
             color,
             0f,
             Vector2.Zero,
-            new Vector2(dimensions.Width, dimensions.Height),
             SpriteEffects.None,
             0.0f
         );
