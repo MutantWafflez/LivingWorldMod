@@ -6,6 +6,13 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 public class HappinessUISystem : UISystem<HappinessUIState> {
     public override string InternalInterfaceName => "Town NPC Happiness";
 
+    public override void PostUpdateEverything() {
+        int talkNPC = Main.LocalPlayer.talkNPC;
+        if (correspondingInterface.CurrentState != null && (talkNPC == -1 || (Main.npc[talkNPC]?.type ?? -1) != correspondingUIState.NPCBeingTalkedTo.type)) {
+            correspondingInterface.SetState(null);
+        }
+    }
+
     public void OpenHappinessState(NPC npc) {
         correspondingUIState.SetStateToNPC(npc);
         correspondingInterface.SetState(correspondingUIState);

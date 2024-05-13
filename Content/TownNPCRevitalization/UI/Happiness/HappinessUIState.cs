@@ -17,6 +17,15 @@ public class HappinessUIState : UIState {
 
     public UISquarePanel happinessBarBackPanel;
 
+    public UISimpleRectangle happinessBar;
+
+    public UIImage desiredHappinessArrow;
+
+    public UIPanel modifierListBackPanel;
+
+    public UIBetterScrollbar modifierScrollbar;
+
+    public UIList modifierList;
 
     public override void OnInitialize() {
         Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
@@ -27,10 +36,10 @@ public class HappinessUIState : UIState {
             BackgroundColor = new Color(59, 97, 203),
             BorderColor = Color.White,
             HAlign = 0.5f,
-            VAlign = 0.5f
+            VAlign = 0.5f,
+            Width = StyleDimension.FromPixels(200f),
+            Height = StyleDimension.FromPixels(300f)
         };
-        backPanel.Width.Set(200f, 0f);
-        backPanel.Height.Set(300f, 0f);
         backPanel.SetPadding(12f);
 
         happinessBarBackPanel = new UISquarePanel(new Color(22, 29, 107), new Color(46, 46, 159)) {
@@ -38,6 +47,41 @@ public class HappinessUIState : UIState {
             Height = StyleDimension.FromPixels(50f)
         };
         backPanel.Append(happinessBarBackPanel);
+
+        happinessBar = new UISimpleRectangle(Color.White) {
+            Height = StyleDimension.FromPercent(0.75f),
+            Width = StyleDimension.FromPercent(0.5f),
+            VAlign = 0.5f
+        };
+        happinessBarBackPanel.innerRectangle.Append(happinessBar);
+
+        desiredHappinessArrow = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/VK_Shift")) {
+            VAlign = 1f,
+            Left = StyleDimension.FromPixelsAndPercent(-13f, 0.5f)
+        };
+        happinessBarBackPanel.Append(desiredHappinessArrow);
+
+        modifierListBackPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) {
+            BackgroundColor = new Color(46, 46, 159),
+            BorderColor = new Color(22, 29, 107),
+            Width = StyleDimension.Fill,
+            Height = StyleDimension.FromPixels(200f),
+            VAlign = 1f
+        };
+        backPanel.Append(modifierListBackPanel);
+
+        modifierScrollbar = new UIBetterScrollbar {
+            Left = StyleDimension.FromPixelsAndPercent(-20f, 1f),
+            Height = StyleDimension.Fill
+        };
+        modifierListBackPanel.Append(modifierScrollbar);
+
+        modifierList = new UIList {
+            Width = StyleDimension.FromPixels(160f),
+            Height = StyleDimension.Fill
+        };
+        modifierList.SetScrollbar(modifierScrollbar);
+        modifierListBackPanel.Append(modifierList);
 
         Append(backPanel);
     }
