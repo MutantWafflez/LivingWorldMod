@@ -5,7 +5,10 @@ using Terraria.UI;
 namespace LivingWorldMod.Globals.UIElements;
 
 public class UITooltipElement(LocalizedText tooltipText) : UIElement {
-    private static readonly Item DummyItem = new(ItemID.DirtBlock);
+    private static readonly Item DummyItem = new(ItemID.None, 0) {
+        // Can be any item - just so that the tooltip actually shows up.
+        type = ItemID.IronPickaxe
+    };
 
     public LocalizedText tooltipText = tooltipText;
 
