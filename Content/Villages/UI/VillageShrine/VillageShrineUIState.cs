@@ -273,7 +273,7 @@ public class VillageShrineUIState : UIState {
     }
 
     private void HoveringVillageRadiusButton() {
-        Main.instance.MouseText(LWMUtils.GetLWMTextValue("UI.Shrine." + (ShowVillageRadius ? "Disable" : "Enable") + "VillageRadius"));
+        Main.instance.MouseText(("UI.Shrine." + (ShowVillageRadius ? "Disable" : "Enable") + "VillageRadius").Localized().Value);
     }
 
     private void ClickVillagerRadiusButton(UIMouseEvent evt, UIElement listeningElement) {
@@ -283,7 +283,7 @@ public class VillageShrineUIState : UIState {
     }
 
     private void HoveringShrineSyncButton() {
-        Main.instance.MouseText(LWMUtils.GetLWMTextValue("UI.Shrine.ForceShrineButtonText"));
+        Main.instance.MouseText("UI.Shrine.ForceShrineButtonText".Localized().Value);
     }
 
     private void ClickShrineSyncButton(UIMouseEvent evt, UIElement listeningElement) {

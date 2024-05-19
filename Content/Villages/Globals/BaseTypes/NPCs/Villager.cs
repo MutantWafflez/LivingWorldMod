@@ -169,7 +169,7 @@ public abstract class Villager : ModNPC {
 
     public override void SetChatButtons(ref string button, ref string button2) {
         button = Language.GetTextValue("LegacyInterface.28"); //"Shop"
-        button2 = LWMUtils.GetLWMTextValue("Common.Reputation");
+        button2 = "Common.Reputation".Localized().Value;
     }
 
     public override void OnChatButtonClicked(bool firstButton, ref string shopName) {
@@ -254,7 +254,7 @@ public abstract class Villager : ModNPC {
 
         if (_homelessCounter >= 60 * 60 * 2) {
             Color leavingColor = new(255, 25, 25);
-            string leavingText = LWMUtils.GetLWMTextValue($"Event.VillagerLeft.{VillagerType}", NPC.GivenOrTypeName);
+            string leavingText = $"Event.VillagerLeft.{VillagerType}".Localized(NPC.GivenOrTypeName).Value;
 
             NPC.active = false;
             if (Main.netMode == NetmodeID.Server) {

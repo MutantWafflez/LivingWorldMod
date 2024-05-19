@@ -221,7 +221,7 @@ public class NPCHousingPatches : LoadablePatch {
                 }
 
                 bool isLikedWithVillagers = villager.RelationshipStatus >= VillagerRelationship.Like;
-                string villagerLockText = $"\n{LWMUtils.GetLWMTextValue("UI.VillagerHousing.VillagerTypeLocked", villager.VillagerType.ToString())}";
+                string villagerLockText = $"\n{"UI.VillagerHousing.VillagerTypeLocked".Localized(villager.VillagerType.ToString())}";
                 Main.instance.MouseText(
                     Lang.GetNPCHouseBannerText(npc, 0)
                     + (!isLikedWithVillagers ? villagerLockText : "")
