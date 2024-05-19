@@ -9,7 +9,19 @@ using Terraria.UI;
 namespace LivingWorldMod.Content.TownNPCRevitalization.UI.Happiness;
 
 public class HappinessUIState : UIState {
-    private static readonly Item _dummyItem = new();
+
+    private sealed class UIHappinessModifier : UIElement {
+
+        public UIBetterText 
+
+
+        public UIHappinessModifier() {
+            Height = StyleDimension.FromPixels(40f);
+            Width = StyleDimension.Fill;
+        }
+
+
+    }
 
     public NPC NPCBeingTalkedTo {
         get;
@@ -26,7 +38,9 @@ public class HappinessUIState : UIState {
 
     public UIBetterText discountTextNumber;
 
-    public UITooltipImage moneyBagIcon;
+    public UIImage moneyBagIcon;
+
+    public UITooltipElement moneyBagTooltipElement;
 
     public UIPanel modifierListBackPanel;
 
@@ -73,16 +87,22 @@ public class HappinessUIState : UIState {
         };
         happinessBarBackPanel.Append(desiredHappinessArrow);
 
-        moneyBagIcon = new UITooltipImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/MoneyBag"), "UI.NPCHappiness.Discount".Localized()) {
+        moneyBagIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/MoneyBag")) {
             Top = StyleDimension.FromPixels(100f)
         };
         backPanel.Append(moneyBagIcon);
+
+        moneyBagTooltipElement = new UITooltipElement("UI.NPCHappiness.Discount".Localized()) {
+            Width = StyleDimension.Fill,
+            Height = StyleDimension.Fill
+        };
+        moneyBagIcon.Append(moneyBagTooltipElement);
 
         discountTextNumber = new UIBetterText("88%", 0.75f, true) {
             Top = StyleDimension.FromPixels(2f),
             Left = StyleDimension.FromPixelsAndPercent(8f, 1f)
         };
-        moneyBagIcon.Append(discountTextNumber);
+        moneyBagTooltipElement.Append(discountTextNumber);
 
         modifierListBackPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) {
             BackgroundColor = new Color(46, 46, 159),

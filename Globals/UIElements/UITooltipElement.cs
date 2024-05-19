@@ -1,22 +1,13 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
-using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
+using Terraria.UI;
 
 namespace LivingWorldMod.Globals.UIElements;
 
-public class UITooltipImage : UIImage {
+public class UITooltipElement(LocalizedText tooltipText) : UIElement {
     private static readonly Item DummyItem = new(ItemID.DirtBlock);
 
-    public LocalizedText tooltipText;
-
-    public UITooltipImage(Asset<Texture2D> texture, LocalizedText tooltipText) : base(texture) {
-        this.tooltipText = tooltipText;
-    }
-
-    public UITooltipImage(Texture2D nonReloadingTexture, LocalizedText tooltipText) : base(nonReloadingTexture) {
-        this.tooltipText = tooltipText;
-    }
+    public LocalizedText tooltipText = tooltipText;
 
     protected override void DrawSelf(SpriteBatch spriteBatch) {
         base.DrawSelf(spriteBatch);
