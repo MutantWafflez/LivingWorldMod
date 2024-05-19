@@ -396,6 +396,12 @@ Mods: {
 			}
 		}
 
+		TowNPCMoodDescription: {
+			Injured: Injured
+			SleptWell: Well Rested
+			Party: Attended a Party
+		}
+
 		TownNPCMoodFlavorText: {
 			Injured: I'm injured!
 			SleptWell: A good night's rest!

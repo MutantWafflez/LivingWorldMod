@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Terraria.Localization;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
@@ -7,19 +8,11 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.To
 /// Class that handles the new "mood" feature that replaces Town NPC happiness.
 /// </summary>
 public sealed class TownNPCMoodModule : TownNPCModule {
-    // TODO: Add stack functionality
-    public sealed record MoodModifier(float MoodOffset, int MaxStacks);
+    public record struct MoodModifier(LocalizedText ModifierDesc, LocalizedText FlavorText, float MoodOffset);
 
-    private sealed class MoodModifierInstance {
-        public readonly MoodModifier modifier;
-        public readonly string flavorText;
-        public int duration;
-
-        public MoodModifierInstance(MoodModifier modifier, string flavorText, int duration) {
-            this.modifier = modifier;
-            this.flavorText = flavorText;
-            this.duration = duration;
-        }
+    private struct MoodModifierInstance(MoodModifier modifierType, int duration) {
+        public readonly MoodModifier modifierType = modifierType;
+        public int duration = duration;
     }
 
     public const float MaxMoodValue = 100f;
@@ -29,7 +22,7 @@ public sealed class TownNPCMoodModule : TownNPCModule {
 
     private const float BaseMoodValue = 50;
 
-    public float CurrentMood => Utils.Clamp(BaseMoodValue + _currentMoodModifiers.Sum(modifier => modifier.modifier.MoodOffset), MinMoodValue, MaxMoodValue);
+    public float CurrentMood => Utils.Clamp(BaseMoodValue + _currentMoodModifiers.Sum(modifier => modifier.modifierType.MoodOffset), MinMoodValue, MaxMoodValue);
 
     private readonly List<MoodModifierInstance> _currentMoodModifiers;
 
@@ -46,13 +39,11 @@ public sealed class TownNPCMoodModule : TownNPCModule {
         }
     }
 
-    public void AddModifier(string modifierKey, string flavorText, int duration) {
-        if (!moodModifiers.TryGetValue(modifierKey, out MoodModifier modifier)) {
+    public void AddModifier(string modifierKey, int duration) {
+        if (!moodModifiers.TryGetValue(modifierKey, out MoodModifier moodModifier)) {
             return;
         }
 
-        _currentMoodModifiers.Add(new MoodModifierInstance(modifier, flavorText, duration));
+        _currentMoodModifiers.Add(new MoodModifierInstance(moodModifier, duration));
     }
-
-    public List<(string, float)> GetFlavorTextAndModifiers() => _currentMoodModifiers.OrderByDescending(modifier => modifier.modifier.MoodOffset).Select(modifier => (modifier.flavorText, modifier.modifier.MoodOffset)).ToList();
 }

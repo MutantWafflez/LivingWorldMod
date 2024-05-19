@@ -147,9 +147,9 @@ public class TownGlobalNPC : GlobalNPC {
 
         JsonObject jsonMoodValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
         Dictionary<string, TownNPCMoodModule.MoodModifier> moodModifierDict = [];
-        foreach ((string moodModifier, JsonValue jsonValue) in jsonMoodValues) {
-            JsonObject jsonObject = jsonValue.Qo();
-            moodModifierDict[moodModifier] = new TownNPCMoodModule.MoodModifier(jsonObject["MoodOffset"], jsonObject["MaxStacks"]);
+        //TODO: Populate vanilla flavor text
+        foreach ((string moodModifierKey, float moodOffset) in jsonMoodValues) {
+            moodModifierDict[moodModifierKey] = new TownNPCMoodModule.MoodModifier($"TowNPCMoodDescription.{moodModifierKey}".Localized(), $"TownNPCMoodFlavorText.{moodModifierKey}".Localized(), moodOffset);
         }
         TownNPCMoodModule.moodModifiers = moodModifierDict;
     }

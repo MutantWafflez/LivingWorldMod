@@ -6,7 +6,7 @@ namespace LivingWorldMod.Globals.UIElements;
 
 public class UITooltipElement(LocalizedText tooltipText) : UIElement {
     private static readonly Item DummyItem = new(ItemID.None, 0) {
-        // Can be any item - just so that the tooltip actually shows up.
+        // Can be any item - just can't be 0 (otherwise the tooltip won't draw)
         type = ItemID.IronPickaxe
     };
 
