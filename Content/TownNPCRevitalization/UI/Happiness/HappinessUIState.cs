@@ -65,7 +65,7 @@ public class HappinessUIState : UIState {
             BackgroundColor = new Color(46, 46, 159),
             BorderColor = new Color(22, 29, 107),
             Width = StyleDimension.Fill,
-            Height = StyleDimension.FromPixels(200f),
+            Height = StyleDimension.FromPixels(180f),
             VAlign = 1f
         };
         backPanel.Append(modifierListBackPanel);
