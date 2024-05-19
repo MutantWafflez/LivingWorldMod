@@ -326,6 +326,8 @@ Mods: {
 		Projectiles.NimbusPetProjectile.DisplayName: Nimbus Pet
 
 		UI: {
+			NPCHappiness.Discount: Discount
+
 			VillagerShop: {
 				Buying: Buying:
 				Stock: Stock:

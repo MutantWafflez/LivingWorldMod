@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Globals.UIElements;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -8,6 +9,8 @@ using Terraria.UI;
 namespace LivingWorldMod.Content.TownNPCRevitalization.UI.Happiness;
 
 public class HappinessUIState : UIState {
+    private static readonly Item _dummyItem = new();
+
     public NPC NPCBeingTalkedTo {
         get;
         private set;
@@ -21,23 +24,32 @@ public class HappinessUIState : UIState {
 
     public UIImage desiredHappinessArrow;
 
+    public UIBetterText discountTextNumber;
+
+    public UITooltipImage moneyBagIcon;
+
     public UIPanel modifierListBackPanel;
 
     public UIBetterScrollbar modifierScrollbar;
 
     public UIList modifierList;
 
-    public override void OnInitialize() {
+    public override void OnInitialize() { }
+
+    public override void Update(GameTime gameTime) {
+        base.Update(gameTime);
+
         Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
         Asset<Texture2D> gradientPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder");
         Asset<Texture2D> shadowedPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/ShadowedPanelBorder");
 
         backPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
+            IgnoresMouseInteraction = true,
             BackgroundColor = new Color(59, 97, 203),
             BorderColor = Color.White,
             HAlign = 0.5f,
             VAlign = 0.5f,
-            Width = StyleDimension.FromPixels(200f),
+            Width = StyleDimension.FromPixels(300f),
             Height = StyleDimension.FromPixels(300f)
         };
         backPanel.SetPadding(12f);
@@ -56,16 +68,27 @@ public class HappinessUIState : UIState {
         happinessBarBackPanel.innerRectangle.Append(happinessBar);
 
         desiredHappinessArrow = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/VK_Shift")) {
-            VAlign = 1f,
-            Left = StyleDimension.FromPixelsAndPercent(-13f, 0.5f)
+            Left = StyleDimension.FromPixelsAndPercent(-13f, 0.5f),
+            Top = StyleDimension.FromPixelsAndPercent(4f, 1f)
         };
         happinessBarBackPanel.Append(desiredHappinessArrow);
+
+        moneyBagIcon = new UITooltipImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/MoneyBag"), "UI.NPCHappiness.Discount".Localized()) {
+            Top = StyleDimension.FromPixels(100f)
+        };
+        backPanel.Append(moneyBagIcon);
+
+        discountTextNumber = new UIBetterText("88%", 0.75f, true) {
+            Top = StyleDimension.FromPixels(2f),
+            Left = StyleDimension.FromPixelsAndPercent(8f, 1f)
+        };
+        moneyBagIcon.Append(discountTextNumber);
 
         modifierListBackPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) {
             BackgroundColor = new Color(46, 46, 159),
             BorderColor = new Color(22, 29, 107),
             Width = StyleDimension.Fill,
-            Height = StyleDimension.FromPixels(180f),
+            Height = StyleDimension.FromPixels(140f),
             VAlign = 1f
         };
         backPanel.Append(modifierListBackPanel);
@@ -83,6 +106,7 @@ public class HappinessUIState : UIState {
         modifierList.SetScrollbar(modifierScrollbar);
         modifierListBackPanel.Append(modifierList);
 
+        RemoveAllChildren();
         Append(backPanel);
     }
 

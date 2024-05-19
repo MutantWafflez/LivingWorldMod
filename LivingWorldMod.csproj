@@ -13,6 +13,9 @@
         <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     </PropertyGroup>
     <ItemGroup>
+      <None Remove="Assets\Sprites\UI\Icons\MoneyBag.png" />
+    </ItemGroup>
+    <ItemGroup>
         <PackageReference Include="Krafs.Publicizer" Version="2.2.1" PrivateAssets="all" />
 
         <Publicize Include="tModLoader:Terraria.GameContent.Events.BirthdayParty.CanNPCParty" />
