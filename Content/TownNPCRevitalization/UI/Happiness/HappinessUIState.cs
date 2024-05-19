@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Globals.UIElements;
+﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
+using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,18 +10,12 @@ using Terraria.UI;
 namespace LivingWorldMod.Content.TownNPCRevitalization.UI.Happiness;
 
 public class HappinessUIState : UIState {
-
-    private sealed class UIHappinessModifier : UIElement {
-
-        public UIBetterText 
-
-
-        public UIHappinessModifier() {
+    private sealed class UIHappinessModifier : UIPanel {
+        //TODO: Use Scalie's asset generator?
+        public UIHappinessModifier(TownNPCMoodModule.MoodModifier modifier) : base(Main.Assets.Request<Texture2D>("Images/UI/PanelBackground"), ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder")) {
             Height = StyleDimension.FromPixels(40f);
             Width = StyleDimension.Fill;
         }
-
-
     }
 
     public NPC NPCBeingTalkedTo {
