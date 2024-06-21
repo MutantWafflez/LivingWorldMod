@@ -396,10 +396,44 @@ Mods: {
 			}
 		}
 
+		TowNPCMoodDescription: {
+			// Injured: Injured
+			// SleptWell: Well Rested
+			// Party: Attended a Party
+			// Content: Mods.LivingWorldMod.TowNPCMoodDescription.Content
+			// NoHome: Mods.LivingWorldMod.TowNPCMoodDescription.NoHome
+			// FarFromHome: Mods.LivingWorldMod.TowNPCMoodDescription.FarFromHome
+			// DislikeCrowded: Mods.LivingWorldMod.TowNPCMoodDescription.DislikeCrowded
+			// HateCrowded: Mods.LivingWorldMod.TowNPCMoodDescription.HateCrowded
+			// LoveSpace: Mods.LivingWorldMod.TowNPCMoodDescription.LoveSpace
+			// LikeBiome: Mods.LivingWorldMod.TowNPCMoodDescription.LikeBiome
+			// LoveBiome: Mods.LivingWorldMod.TowNPCMoodDescription.LoveBiome
+			// DislikeBiome: Mods.LivingWorldMod.TowNPCMoodDescription.DislikeBiome
+			// HateBiome: Mods.LivingWorldMod.TowNPCMoodDescription.HateBiome
+			// LikeNPC: Mods.LivingWorldMod.TowNPCMoodDescription.LikeNPC
+			// LoveNPC: Mods.LivingWorldMod.TowNPCMoodDescription.LoveNPC
+			// DislikeNPC: Mods.LivingWorldMod.TowNPCMoodDescription.DislikeNPC
+			// HateNPC: Mods.LivingWorldMod.TowNPCMoodDescription.HateNPC
+		}
+
 		TownNPCMoodFlavorText: {
 			// Injured: I'm injured!
 			// SleptWell: A good night's rest!
 			// Party: What a wonderful party!
+			// Content: Mods.LivingWorldMod.TownNPCMoodFlavorText.Content
+			// NoHome: Mods.LivingWorldMod.TownNPCMoodFlavorText.NoHome
+			// FarFromHome: Mods.LivingWorldMod.TownNPCMoodFlavorText.FarFromHome
+			// DislikeCrowded: Mods.LivingWorldMod.TownNPCMoodFlavorText.DislikeCrowded
+			// HateCrowded: Mods.LivingWorldMod.TownNPCMoodFlavorText.HateCrowded
+			// LoveSpace: Mods.LivingWorldMod.TownNPCMoodFlavorText.LoveSpace
+			// LikeBiome: Mods.LivingWorldMod.TownNPCMoodFlavorText.LikeBiome
+			// LoveBiome: Mods.LivingWorldMod.TownNPCMoodFlavorText.LoveBiome
+			// DislikeBiome: Mods.LivingWorldMod.TownNPCMoodFlavorText.DislikeBiome
+			// HateBiome: Mods.LivingWorldMod.TownNPCMoodFlavorText.HateBiome
+			// LikeNPC: Mods.LivingWorldMod.TownNPCMoodFlavorText.LikeNPC
+			// LoveNPC: Mods.LivingWorldMod.TownNPCMoodFlavorText.LoveNPC
+			// DislikeNPC: Mods.LivingWorldMod.TownNPCMoodFlavorText.DislikeNPC
+			// HateNPC: Mods.LivingWorldMod.TownNPCMoodFlavorText.HateNPC
 		}
 
 		InterTownNPCChat: {

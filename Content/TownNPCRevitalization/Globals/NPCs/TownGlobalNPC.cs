@@ -5,7 +5,6 @@ using System.Linq;
 using Hjson;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.Utilities;
@@ -16,25 +15,27 @@ using Terraria.ModLoader.IO;
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 
 /// <summary>
-/// Global NPC that handles exclusively the AI overhaul for Town NPCs.
+///     Global NPC that handles exclusively the AI overhaul for Town NPCs.
 /// </summary>
 public class TownGlobalNPC : GlobalNPC {
-    public static IReadOnlyDictionary<int, (Texture2D, Texture2D)> talkBlinkOverlays;
-
     /// <summary>
-    /// How many activities are remembered by this NPC for the
-    /// purpose of preventing activity repetition.
+    ///     How many activities are remembered by this NPC for the
+    ///     purpose of preventing activity repetition.
     /// </summary>
     private const int LastActivityMemoryLimit = 5;
+
+    public static IReadOnlyDictionary<int, (Texture2D, Texture2D)> talkBlinkOverlays;
 
     private static IReadOnlyDictionary<int, TownNPCAIState> _stateDict;
     private static IReadOnlyList<TownNPCActivity> _allActivities;
 
+    private ForgetfulArray<TownNPCActivity> _lastActivities;
+
     public override bool InstancePerEntity => true;
 
     /// <summary>
-    /// Instance of the module that handles all path-finding
-    /// for this specific Town NPC.
+    ///     Instance of the module that handles all path-finding
+    ///     for this specific Town NPC.
     /// </summary>
     public TownNPCPathfinderModule PathfinderModule {
         get;
@@ -42,8 +43,8 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     /// <summary>
-    /// Instance of the module that handles the mood for this
-    /// specific Town NPC.
+    ///     Instance of the module that handles the mood for this
+    ///     specific Town NPC.
     /// </summary>
     public TownNPCMoodModule MoodModule {
         get;
@@ -51,8 +52,8 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     /// <summary>
-    /// Instance of the module that handles attacks & general
-    /// combat for this specific Town NPC.
+    ///     Instance of the module that handles attacks & general
+    ///     combat for this specific Town NPC.
     /// </summary>
     public TownNPCCombatModule CombatModule {
         get;
@@ -60,8 +61,8 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     /// <summary>
-    /// Instance of the module that handles NPCs being chatted to
-    /// by players or talking to other NPCs.
+    ///     Instance of the module that handles NPCs being chatted to
+    ///     by players or talking to other NPCs.
     /// </summary>
     public TownNPCChatModule ChatModule {
         get;
@@ -69,8 +70,8 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     /// <summary>
-    /// Instance of the module that handles any miscellaneous drawing
-    /// tasks.
+    ///     Instance of the module that handles any miscellaneous drawing
+    ///     tasks.
     /// </summary>
     public TownNPCSpriteModule SpriteModule {
         get;
@@ -78,7 +79,7 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     /// <summary>
-    /// Instance of the module that handles housing tasks and bounding.
+    ///     Instance of the module that handles housing tasks and bounding.
     /// </summary>
     public TownNPCHousingModule HousingModule {
         get;
@@ -86,14 +87,12 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     /// <summary>
-    /// Instance of the module that handles special collision logic.
+    ///     Instance of the module that handles special collision logic.
     /// </summary>
     public TownNPCCollisionModule CollisionModule {
         get;
         private set;
     }
-
-    private ForgetfulArray<TownNPCActivity> _lastActivities;
 
     public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => lateInstantiation
                                                                                 && entity.aiStyle == NPCAIStyleID.Passive
@@ -104,46 +103,7 @@ public class TownGlobalNPC : GlobalNPC {
                                                                                 && entity.type != NPCID.TravellingMerchant;
 
     public override void Load() {
-        JsonObject jsonAttackData = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCAttackData.json").Qo();
-
-        JsonObject projJSONAttackData = jsonAttackData["ProjNPCs"].Qo();
-        JsonObject meleeJSONAttackData = jsonAttackData["MeleeNPCs"].Qo();
-
-        Dictionary<int, TownNPCProjAttackData> projDict = [];
-        foreach ((string npcName, JsonValue jsonValue) in projJSONAttackData) {
-            JsonObject jsonObject = jsonValue.Qo();
-            int npcType = NPCID.Search.GetId(npcName);
-
-            projDict[npcType] = new TownNPCProjAttackData(
-                jsonObject.Qi("projType"),
-                jsonObject.Qi("projDamage"),
-                (float)jsonObject.Qd("knockBack"),
-                (float)jsonObject.Qd("speedMult"),
-                jsonObject.Qi("attackDelay"),
-                jsonObject.Qi("attackCooldown"),
-                jsonObject.Qi("maxValue"),
-                jsonObject.Qi("gravityCorrection"),
-                NPCID.Sets.DangerDetectRange[npcType],
-                (float)jsonObject.Qd("randomOffset")
-            );
-        }
-        TownNPCCombatModule.projAttackData = projDict;
-
-        Dictionary<int, TownNPCMeleeAttackData> meleeDict = [];
-        foreach ((string npcName, JsonValue jsonValue) in meleeJSONAttackData) {
-            JsonObject jsonObject = jsonValue.Qo();
-            int npcType = NPCID.Search.GetId(npcName);
-
-            meleeDict[npcType] = new TownNPCMeleeAttackData(
-                jsonObject.Qi("attackCooldown"),
-                jsonObject.Qi("maxValue"),
-                jsonObject.Qi("damage"),
-                (float)jsonObject.Qd("knockBack"),
-                jsonObject.Qi("itemWidth"),
-                jsonObject.Qi("itemHeight")
-            );
-        }
-        TownNPCCombatModule.meleeAttackData = meleeDict;
+        CombatModule.Load();
 
         JsonObject jsonMoodValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
         Dictionary<string, TownNPCMoodModule.MoodModifier> moodModifierDict = [];
