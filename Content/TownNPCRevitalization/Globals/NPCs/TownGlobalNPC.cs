@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Hjson;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.DataStructures.Classes;
-using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader.IO;
@@ -94,6 +92,42 @@ public class TownGlobalNPC : GlobalNPC {
         private set;
     }
 
+    public static void RefreshToState<T>(NPC npc) where T : TownNPCAIState => RefreshToState(npc, TownNPCAIState.GetStateInteger<T>());
+
+    public static bool IsValidStandingPosition(NPC npc, Point tilePos) {
+        bool foundTileToStandOn = false;
+        for (int i = 0; i < (int)Math.Ceiling(npc.width / 16f); i++) {
+            Tile floorTile = Main.tile[tilePos + new Point(i, 1)];
+            if (!floorTile.HasUnactuatedTile || floorTile.IsHalfBlock || !Main.tileSolidTop[floorTile.TileType] && !Main.tileSolid[floorTile.TileType]) {
+                continue;
+            }
+
+            foundTileToStandOn = true;
+            break;
+        }
+
+        if (!foundTileToStandOn) {
+            return false;
+        }
+
+        int npcTileHeight = (int)Math.Ceiling(npc.height / 16f);
+        for (int i = 0; i < npcTileHeight; i++) {
+            tilePos.Y--;
+            Tile upTile = Main.tile[tilePos];
+            if (upTile.HasUnactuatedTile && Main.tileSolid[upTile.TileType]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static void RefreshToState(NPC npc, int stateValue) {
+        npc.ai[0] = stateValue;
+        npc.ai[1] = npc.ai[2] = npc.ai[3] = 0;
+        npc.netUpdate = true;
+    }
+
     public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => lateInstantiation
                                                                                 && entity.aiStyle == NPCAIStyleID.Passive
                                                                                 && entity.townNPC
@@ -104,14 +138,7 @@ public class TownGlobalNPC : GlobalNPC {
 
     public override void Load() {
         CombatModule.Load();
-
-        JsonObject jsonMoodValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
-        Dictionary<string, TownNPCMoodModule.MoodModifier> moodModifierDict = [];
-        //TODO: Populate vanilla flavor text
-        foreach ((string moodModifierKey, float moodOffset) in jsonMoodValues) {
-            moodModifierDict[moodModifierKey] = new TownNPCMoodModule.MoodModifier($"TowNPCMoodDescription.{moodModifierKey}".Localized(), $"TownNPCMoodFlavorText.{moodModifierKey}".Localized(), moodOffset);
-        }
-        TownNPCMoodModule.moodModifiers = moodModifierDict;
+        MoodModule.Load();
     }
 
     public override void Unload() {
@@ -235,42 +262,6 @@ public class TownGlobalNPC : GlobalNPC {
         if (_stateDict.TryGetValue((int)npc.ai[0], out TownNPCAIState state)) {
             state.FrameNPC(this, npc, frameHeight);
         }
-    }
-
-    public static void RefreshToState<T>(NPC npc) where T : TownNPCAIState => RefreshToState(npc, TownNPCAIState.GetStateInteger<T>());
-
-    public static bool IsValidStandingPosition(NPC npc, Point tilePos) {
-        bool foundTileToStandOn = false;
-        for (int i = 0; i < (int)Math.Ceiling(npc.width / 16f); i++) {
-            Tile floorTile = Main.tile[tilePos + new Point(i, 1)];
-            if (!floorTile.HasUnactuatedTile || floorTile.IsHalfBlock || !Main.tileSolidTop[floorTile.TileType] && !Main.tileSolid[floorTile.TileType]) {
-                continue;
-            }
-
-            foundTileToStandOn = true;
-            break;
-        }
-
-        if (!foundTileToStandOn) {
-            return false;
-        }
-
-        int npcTileHeight = (int)Math.Ceiling(npc.height / 16f);
-        for (int i = 0; i < npcTileHeight; i++) {
-            tilePos.Y--;
-            Tile upTile = Main.tile[tilePos];
-            if (upTile.HasUnactuatedTile && Main.tileSolid[upTile.TileType]) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public static void RefreshToState(NPC npc, int stateValue) {
-        npc.ai[0] = stateValue;
-        npc.ai[1] = npc.ai[2] = npc.ai[3] = 0;
-        npc.netUpdate = true;
     }
 
     private void SetMiscNPCFields(NPC npc) {
