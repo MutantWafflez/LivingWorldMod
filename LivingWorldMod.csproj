@@ -6,15 +6,12 @@
         <LangVersion>latest</LangVersion>
 
         <DotNetPath Condition="'$(OS)' == 'Windows_NT'">dotnet.exe</DotNetPath>
-        <DotNetPath Condition="'$(OS)' == 'Unix'">dotnet/8.0.0/dotnet</DotNetPath>
-        <DotNetPath Condition="'$(DotNetPath)' == ''">dotnet/8.0.0/dotnet</DotNetPath>
+        <DotNetPath Condition="'$(OS)' == 'Unix'">dotnet/dotnet</DotNetPath>
+        <DotNetPath Condition="'$(DotNetPath)' == ''">dotnet/dotnet</DotNetPath>
 
         <NoWarn>IDE0034;CS0436</NoWarn>
         <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     </PropertyGroup>
-    <ItemGroup>
-      <None Remove="Assets\Sprites\UI\Icons\MoneyBag.png" />
-    </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Krafs.Publicizer" Version="2.2.1" PrivateAssets="all" />
 
