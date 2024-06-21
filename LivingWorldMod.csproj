@@ -6,8 +6,8 @@
         <LangVersion>latest</LangVersion>
 
         <DotNetPath Condition="'$(OS)' == 'Windows_NT'">dotnet.exe</DotNetPath>
-        <DotNetPath Condition="'$(OS)' == 'Unix'">dotnet/6.0.0/dotnet</DotNetPath>
-        <DotNetPath Condition="'$(DotNetPath)' == ''">dotnet/6.0.0/dotnet</DotNetPath>
+        <DotNetPath Condition="'$(OS)' == 'Unix'">dotnet/8.0.0/dotnet</DotNetPath>
+        <DotNetPath Condition="'$(DotNetPath)' == ''">dotnet/8.0.0/dotnet</DotNetPath>
 
         <NoWarn>IDE0034;CS0436</NoWarn>
         <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
