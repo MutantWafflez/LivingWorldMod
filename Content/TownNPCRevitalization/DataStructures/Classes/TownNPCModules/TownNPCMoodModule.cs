@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Hjson;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Utilities;
-using Terraria.Localization;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
@@ -10,13 +11,6 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.To
 ///     Class that handles the new "mood" feature that replaces Town NPC happiness.
 /// </summary>
 public sealed class TownNPCMoodModule : TownNPCModule {
-    public record struct MoodModifier(LocalizedText ModifierDesc, LocalizedText FlavorText, float MoodOffset);
-
-    private struct MoodModifierInstance(MoodModifier modifierType, int duration) {
-        public readonly MoodModifier modifierType = modifierType;
-        public int duration = duration;
-    }
-
     public const float MaxMoodValue = 100f;
     public const float MinMoodValue = 0f;
 
