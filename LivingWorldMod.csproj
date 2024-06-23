@@ -1,36 +1,39 @@
-
 <Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="..\tModLoader.targets" />
+    <Import Project="..\tModLoader.targets"/>
+    <PropertyGroup>
+        <DotNetPath Condition=" '$(OS)' == 'Windows_NT' ">dotnet.exe</DotNetPath>
+        <DotNetPath Condition=" '$(OS)' == 'Unix' ">dotnet/dotnet</DotNetPath>
+        <DotNetPath Condition=" '$(DotNetPath)' == '' ">dotnet/dotnet</DotNetPath>
+    </PropertyGroup>
+
     <PropertyGroup>
         <AssemblyName>LivingWorldMod</AssemblyName>
         <LangVersion>latest</LangVersion>
-
-        <DotNetPath Condition="'$(OS)' == 'Windows_NT'">dotnet.exe</DotNetPath>
-        <DotNetPath Condition="'$(OS)' == 'Unix'">dotnet/dotnet</DotNetPath>
-        <DotNetPath Condition="'$(DotNetPath)' == ''">dotnet/dotnet</DotNetPath>
 
         <NoWarn>IDE0034;CS0436</NoWarn>
         <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Krafs.Publicizer" Version="2.2.1" PrivateAssets="all" />
+        <PackageReference Include="Krafs.Publicizer" Version="2.2.1" PrivateAssets="all"/>
 
-        <Publicize Include="tModLoader:Terraria.GameContent.Events.BirthdayParty.CanNPCParty" />
+        <Publicize Include="tModLoader:Terraria.GameContent.Events.BirthdayParty.CanNPCParty"/>
 
         <!-- NPC Publicizing -->
-            <!-- AI Publicizing -->
-            <Publicize Include="tModLoader:Terraria.NPC.AI_007_TownEntities_Shimmer_TeleportToLandingSpot" />
-            <!-- Collision Publicizing -->
-            <Publicize Include="tModLoader:Terraria.NPC.Collision_WalkDownSlopes" />
-            <Publicize Include="tModLoader:Terraria.NPC.Collision_LavaCollision" />
-            <Publicize Include="tModLoader:Terraria.NPC.Collision_WaterCollision" />
-            <Publicize Include="tModLoader:Terraria.NPC.Collision_DecideFallThroughPlatforms" />
-            <Publicize Include="tModLoader:Terraria.NPC.Collision_MoveSlopesAndStairFall" />
-        
-        <!-- Shop Helper Publicizing -->
-        <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentNPCBeingTalkedTo" />
-        <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentPriceAdjustment" />
-        <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentHappiness" />
+        <!-- AI Publicizing -->
+        <Publicize Include="tModLoader:Terraria.NPC.AI_007_TownEntities_Shimmer_TeleportToLandingSpot"/>
+        <!-- Collision Publicizing -->
+        <Publicize Include="tModLoader:Terraria.NPC.Collision_WalkDownSlopes"/>
+        <Publicize Include="tModLoader:Terraria.NPC.Collision_LavaCollision"/>
+        <Publicize Include="tModLoader:Terraria.NPC.Collision_WaterCollision"/>
+        <Publicize Include="tModLoader:Terraria.NPC.Collision_DecideFallThroughPlatforms"/>
+        <Publicize Include="tModLoader:Terraria.NPC.Collision_MoveSlopesAndStairFall"/>
 
+        <!-- Shop Helper Publicizing -->
+        <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentNPCBeingTalkedTo"/>
+        <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentPriceAdjustment"/>
+        <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentHappiness"/>
+
+        <!-- Language/Localization Publicizing -->
+        <Publicize Include="tModLoader:Terraria.Localization.LanguageManager._localizedTexts"/>
     </ItemGroup>
 </Project>

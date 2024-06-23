@@ -17,8 +17,6 @@ public sealed class TownNPCCombatModule : TownNPCModule {
     public static IReadOnlyDictionary<int, TownNPCProjAttackData> projAttackData;
     public static IReadOnlyDictionary<int, TownNPCMeleeAttackData> meleeAttackData;
 
-    public TownNPCCombatModule(NPC npc) : base(npc) { }
-
     public bool IsAttacking => npc.ai[0] >= TownNPCAIState.GetStateInteger<ThrowAttackAIState>() && npc.ai[0] <= TownNPCAIState.GetStateInteger<MeleeAttackAIState>();
 
     public float CurrentDamageMultiplier {
@@ -31,7 +29,9 @@ public sealed class TownNPCCombatModule : TownNPCModule {
         private set;
     }
 
-    public override void Load() {
+    public TownNPCCombatModule(NPC npc) : base(npc) { }
+
+    public static void Load() {
         JsonObject jsonAttackData = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCAttackData.json").Qo();
 
         JsonObject projJSONAttackData = jsonAttackData["ProjNPCs"].Qo();

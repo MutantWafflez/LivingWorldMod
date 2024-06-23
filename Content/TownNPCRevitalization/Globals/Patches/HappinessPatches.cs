@@ -13,7 +13,7 @@ using Terraria.Localization;
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 
 /// <summary>
-/// Patches that deal with Town NPC happiness.
+///     Patches that deal with Town NPC happiness.
 /// </summary>
 public sealed class HappinessPatches : LoadablePatch {
     private const float MinCostModifier = 0.67f;
@@ -39,11 +39,11 @@ public sealed class HappinessPatches : LoadablePatch {
 
             TownNPCMoodModule moodModule = globalNPC.MoodModule;
             if (npc.life < npc.lifeMax) {
-                moodModule.AddModifier("Injured", 0);
+                moodModule.AddModifier("Injured", "FlavorText", 0);
             }
 
             if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && BirthdayParty.CelebratingNPCs.Contains(npc.whoAmI)) {
-                moodModule.AddModifier("Party", 0);
+                moodModule.AddModifier("Party", "FlavorText", 0);
             }
 
             float currentMood = moodModule.CurrentMood;

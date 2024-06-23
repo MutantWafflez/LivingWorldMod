@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Hjson;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Utilities;
+using Terraria.Localization;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
@@ -16,7 +18,10 @@ public sealed class TownNPCMoodModule : TownNPCModule {
 
     private const float BaseMoodValue = 50;
 
-    private static IReadOnlyDictionary<string, MoodModifier> _moodModifiers;
+    private static Dictionary<string, MoodModifier> _moodModifiers;
+
+    private static Dictionary<string, Dictionary<string, LocalizedText>> _npcFlavorTexts;
+    private static readonly Regex FlavorTextLoadRegex = new(@"(.+\.(?<Name>.+)\.TownNPCMood|TownNPCMood_(?<Name>.+))\.(?<Mood>.+)");
 
     private readonly List<MoodModifierInstance> _currentMoodModifiers;
 
@@ -26,14 +31,31 @@ public sealed class TownNPCMoodModule : TownNPCModule {
         _currentMoodModifiers = [];
     }
 
-    public override void Load() {
+    public static void Load() {
         JsonObject jsonMoodValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
-        Dictionary<string, MoodModifier> moodModifierDict = [];
-        //TODO: Populate vanilla flavor text
+        _moodModifiers = new Dictionary<string, MoodModifier>();
         foreach ((string moodModifierKey, float moodOffset) in jsonMoodValues) {
-            moodModifierDict[moodModifierKey] = new MoodModifier($"TowNPCMoodDescription.{moodModifierKey}".Localized(), $"TownNPCMoodFlavorText.{moodModifierKey}".Localized(), moodOffset);
+            _moodModifiers[moodModifierKey] = new MoodModifier($"TowNPCMoodDescription.{moodModifierKey}".Localized(), moodOffset);
         }
-        _moodModifiers = moodModifierDict;
+
+        _npcFlavorTexts = new Dictionary<string, Dictionary<string, LocalizedText>>();
+        foreach ((string key, LocalizedText text) in LanguageManager.Instance._localizedTexts) {
+            if (!key.Contains("TownNPCMood")) {
+                continue;
+            }
+
+            Match moodMatch = FlavorTextLoadRegex.Match(key);
+            if (moodMatch == Match.Empty) {
+                continue;
+            }
+
+            if (!_npcFlavorTexts.TryGetValue(moodMatch.Groups["Name"].Value, out Dictionary<string, LocalizedText> value)) {
+                value = new Dictionary<string, LocalizedText>();
+                _npcFlavorTexts[moodMatch.Groups["Name"].Value] = value;
+            }
+
+            value[moodMatch.Groups["Mood"].Value] = text;
+        }
     }
 
     public override void Update() {
@@ -45,11 +67,11 @@ public sealed class TownNPCMoodModule : TownNPCModule {
         }
     }
 
-    public void AddModifier(string modifierKey, int duration) {
+    public void AddModifier(string modifierKey, string flavorText, int duration) {
         if (!_moodModifiers.TryGetValue(modifierKey, out MoodModifier moodModifier)) {
             return;
         }
 
-        _currentMoodModifiers.Add(new MoodModifierInstance(moodModifier, duration));
+        _currentMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, duration));
     }
 }

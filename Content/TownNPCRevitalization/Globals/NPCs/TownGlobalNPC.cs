@@ -137,8 +137,8 @@ public class TownGlobalNPC : GlobalNPC {
                                                                                 && entity.type != NPCID.TravellingMerchant;
 
     public override void Load() {
-        CombatModule.Load();
-        MoodModule.Load();
+        TownNPCCombatModule.Load();
+        TownNPCMoodModule.Load();
     }
 
     public override void Unload() {
