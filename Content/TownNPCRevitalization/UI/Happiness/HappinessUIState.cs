@@ -1,4 +1,7 @@
-﻿using LivingWorldMod.Globals.UIElements;
+﻿using System.Linq;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,17 +12,41 @@ using Terraria.UI;
 namespace LivingWorldMod.Content.TownNPCRevitalization.UI.Happiness;
 
 public class HappinessUIState : UIState {
-    private sealed class UIHappinessModifier : UIPanel {
+    private sealed class UIMoodModifier : UIElement {
         //TODO: Use Scalie's asset generator?
-        public UIHappinessModifier() : base(Main.Assets.Request<Texture2D>("Images/UI/PanelBackground"), ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder")) {
+
+        public readonly UITooltipElement tooltipElement;
+        public readonly UIPanel backPanel;
+
+        public readonly UIBetterText moodDescriptionText;
+        public readonly UIBetterText moodOffsetText;
+
+        public UIMoodModifier(MoodModifierInstance instance) {
             Height = StyleDimension.FromPixels(40f);
             Width = StyleDimension.Fill;
-        }
-    }
 
-    public NPC NPCBeingTalkedTo {
-        get;
-        private set;
+            tooltipElement = new UITooltipElement(instance.flavorText);
+            Append(tooltipElement);
+
+            backPanel = new UIPanel(Main.Assets.Request<Texture2D>("Images/UI/PanelBackground"), ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder")) {
+                Width = StyleDimension.Fill,
+                Height = StyleDimension.Fill
+            };
+            tooltipElement.Append(backPanel);
+
+            moodDescriptionText = new UIBetterText(instance.modifierType.ModifierDesc) {
+                Height = StyleDimension.Fill,
+                VAlign = 0.5f
+            };
+            backPanel.Append(moodDescriptionText);
+
+            moodOffsetText = new UIBetterText(instance.modifierType.MoodOffset.ToString("F")) {
+                Height = StyleDimension.Fill,
+                HAlign = 1f,
+                VAlign = 0.5f
+            };
+            backPanel.Append(moodOffsetText);
+        }
     }
 
     public UIPanel backPanel;
@@ -42,11 +69,12 @@ public class HappinessUIState : UIState {
 
     public UIList modifierList;
 
-    public override void OnInitialize() { }
+    public NPC NPCBeingTalkedTo {
+        get;
+        private set;
+    }
 
-    public override void Update(GameTime gameTime) {
-        base.Update(gameTime);
-
+    public override void OnInitialize() {
         Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
         Asset<Texture2D> gradientPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder");
         Asset<Texture2D> shadowedPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/ShadowedPanelBorder");
@@ -124,8 +152,18 @@ public class HappinessUIState : UIState {
         Append(backPanel);
     }
 
+    public override void Update(GameTime gameTime) {
+        base.Update(gameTime);
+        modifierList.Clear();
+
+        TownGlobalNPC globalNPC = NPCBeingTalkedTo.GetGlobalNPC<TownGlobalNPC>();
+        foreach (MoodModifierInstance instance in globalNPC.MoodModule.CurrentStaticMoodModifiers.Concat(globalNPC.MoodModule.CurrentDynamicMoodModifiers)) {
+            modifierList.Add(new UIMoodModifier(instance));
+        }
+    }
+
     public void SetStateToNPC(NPC npc) {
         NPCBeingTalkedTo = npc;
-        
+        modifierList.Clear();
     }
 }

@@ -38,12 +38,13 @@ public sealed class HappinessPatches : LoadablePatch {
             }
 
             TownNPCMoodModule moodModule = globalNPC.MoodModule;
+            moodModule.ResetStaticModifiers();
             if (npc.life < npc.lifeMax) {
-                moodModule.AddModifier("Injured", "FlavorText", 0);
+                moodModule.AddStaticModifier("Injured", LocalizedText.Empty);
             }
 
             if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && BirthdayParty.CelebratingNPCs.Contains(npc.whoAmI)) {
-                moodModule.AddModifier("Party", "FlavorText", 0);
+                moodModule.AddStaticModifier("Party", LocalizedText.Empty);
             }
 
             float currentMood = moodModule.CurrentMood;
@@ -81,7 +82,7 @@ public sealed class HappinessPatches : LoadablePatch {
             // Add modifiers as normal
             if (shopHelper._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
                 //TODO: Rework to add into mood system
-                //globalNPC.MoodModule.AddModifier(keyCategory.Split('_')[0], flavorText, 0);
+                globalNPC.MoodModule.AddStaticModifier(keyCategory.Split('_')[0], LocalizedText.Empty);
             }
         });
     }

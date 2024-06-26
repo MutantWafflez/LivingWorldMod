@@ -23,12 +23,18 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     private static Dictionary<string, Dictionary<string, LocalizedText>> _npcFlavorTexts;
     private static readonly Regex FlavorTextLoadRegex = new(@"(.+\.(?<Name>.+)\.TownNPCMood|TownNPCMood_(?<Name>.+))\.(?<Mood>.+)");
 
-    private readonly List<MoodModifierInstance> _currentMoodModifiers;
+    private readonly List<MoodModifierInstance> _currentStaticMoodModifiers;
+    private readonly List<MoodModifierInstance> _currentDynamicMoodModifiers;
 
-    public float CurrentMood => Utils.Clamp(BaseMoodValue + _currentMoodModifiers.Sum(modifier => modifier.modifierType.MoodOffset), MinMoodValue, MaxMoodValue);
+    public IReadOnlyList<MoodModifierInstance> CurrentDynamicMoodModifiers => _currentDynamicMoodModifiers;
+
+    public IReadOnlyList<MoodModifierInstance> CurrentStaticMoodModifiers => _currentStaticMoodModifiers;
+
+    public float CurrentMood => Utils.Clamp(BaseMoodValue + _currentDynamicMoodModifiers.Concat(_currentStaticMoodModifiers).Sum(modifier => modifier.modifierType.MoodOffset), MinMoodValue, MaxMoodValue);
 
     public TownNPCMoodModule(NPC npc) : base(npc) {
-        _currentMoodModifiers = [];
+        _currentStaticMoodModifiers = [];
+        _currentDynamicMoodModifiers = [];
     }
 
     public static void Load() {
@@ -49,9 +55,10 @@ public sealed class TownNPCMoodModule : TownNPCModule {
                 continue;
             }
 
-            if (!_npcFlavorTexts.TryGetValue(moodMatch.Groups["Name"].Value, out Dictionary<string, LocalizedText> value)) {
+            string npcName = moodMatch.Groups["Name"].Value;
+            if (!_npcFlavorTexts.TryGetValue(npcName, out Dictionary<string, LocalizedText> value)) {
                 value = new Dictionary<string, LocalizedText>();
-                _npcFlavorTexts[moodMatch.Groups["Name"].Value] = value;
+                _npcFlavorTexts[npcName] = value;
             }
 
             value[moodMatch.Groups["Mood"].Value] = text;
@@ -59,19 +66,31 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     }
 
     public override void Update() {
-        for (int i = 0; i < _currentMoodModifiers.Count; i++) {
-            MoodModifierInstance instance = _currentMoodModifiers[i];
+        for (int i = 0; i < _currentDynamicMoodModifiers.Count; i++) {
+            MoodModifierInstance instance = _currentDynamicMoodModifiers[i];
             if (--instance.duration <= 0) {
-                _currentMoodModifiers.RemoveAt(i--);
+                _currentDynamicMoodModifiers.RemoveAt(i--);
             }
         }
     }
 
-    public void AddModifier(string modifierKey, string flavorText, int duration) {
+    public void AddStaticModifier(string modifierKey, LocalizedText flavorText) {
         if (!_moodModifiers.TryGetValue(modifierKey, out MoodModifier moodModifier)) {
             return;
         }
 
-        _currentMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, duration));
+        _currentStaticMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, 0));
+    }
+
+    public void AddDynamicModifier(string modifierKey, LocalizedText flavorText, int duration) {
+        if (!_moodModifiers.TryGetValue(modifierKey, out MoodModifier moodModifier)) {
+            return;
+        }
+
+        _currentDynamicMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, duration));
+    }
+
+    public void ResetStaticModifiers() {
+        _currentStaticMoodModifiers.Clear();
     }
 }
