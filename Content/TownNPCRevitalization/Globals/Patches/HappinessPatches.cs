@@ -38,7 +38,6 @@ public sealed class HappinessPatches : LoadablePatch {
             }
 
             TownNPCMoodModule moodModule = globalNPC.MoodModule;
-            moodModule.ResetStaticModifiers();
             if (npc.life < npc.lifeMax) {
                 moodModule.AddStaticModifier("Injured", LocalizedText.Empty);
             }
@@ -82,6 +81,7 @@ public sealed class HappinessPatches : LoadablePatch {
             // Add modifiers as normal
             if (shopHelper._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
                 //TODO: Rework to add into mood system
+                // globalNPC.MoodModule.ResetStaticModifiers();
                 globalNPC.MoodModule.AddStaticModifier(keyCategory.Split('_')[0], LocalizedText.Empty);
             }
         });

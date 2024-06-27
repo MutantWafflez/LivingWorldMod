@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Globals.UIElements;
@@ -25,7 +26,10 @@ public class HappinessUIState : UIState {
             Height = StyleDimension.FromPixels(40f);
             Width = StyleDimension.Fill;
 
-            tooltipElement = new UITooltipElement(instance.flavorText);
+            tooltipElement = new UITooltipElement(instance.flavorText) {
+                Width = StyleDimension.Fill,
+                Height = StyleDimension.Fill
+            };
             Append(tooltipElement);
 
             backPanel = new UIPanel(Main.Assets.Request<Texture2D>("Images/UI/PanelBackground"), ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder")) {
@@ -40,10 +44,11 @@ public class HappinessUIState : UIState {
             };
             backPanel.Append(moodDescriptionText);
 
-            moodOffsetText = new UIBetterText(instance.modifierType.MoodOffset.ToString("F")) {
+            moodOffsetText = new UIBetterText(instance.modifierType.MoodOffset.ToString("#.##")) {
                 Height = StyleDimension.Fill,
                 HAlign = 1f,
-                VAlign = 0.5f
+                VAlign = 0.5f,
+                TextColor = instance.modifierType.MoodOffset < 0f ? Color.Red : Color.Lime
             };
             backPanel.Append(moodOffsetText);
         }
@@ -142,7 +147,7 @@ public class HappinessUIState : UIState {
         modifierListBackPanel.Append(modifierScrollbar);
 
         modifierList = new UIList {
-            Width = StyleDimension.FromPixels(160f),
+            Width = StyleDimension.FromPixels(220f),
             Height = StyleDimension.Fill
         };
         modifierList.SetScrollbar(modifierScrollbar);
@@ -154,16 +159,18 @@ public class HappinessUIState : UIState {
 
     public override void Update(GameTime gameTime) {
         base.Update(gameTime);
-        modifierList.Clear();
-
         TownGlobalNPC globalNPC = NPCBeingTalkedTo.GetGlobalNPC<TownGlobalNPC>();
-        foreach (MoodModifierInstance instance in globalNPC.MoodModule.CurrentStaticMoodModifiers.Concat(globalNPC.MoodModule.CurrentDynamicMoodModifiers)) {
+        TownNPCMoodModule moodModule = globalNPC.MoodModule;
+
+        discountTextNumber.SetText(Main.ShopHelper._currentPriceAdjustment.ToString("P1"));
+
+        modifierList.Clear();
+        foreach (MoodModifierInstance instance in moodModule.CurrentStaticMoodModifiers.Concat(moodModule.CurrentDynamicMoodModifiers)) {
             modifierList.Add(new UIMoodModifier(instance));
         }
     }
 
     public void SetStateToNPC(NPC npc) {
         NPCBeingTalkedTo = npc;
-        modifierList.Clear();
     }
 }
