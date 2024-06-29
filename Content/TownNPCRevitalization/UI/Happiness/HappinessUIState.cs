@@ -91,7 +91,6 @@ public class HappinessUIState : UIState {
         Asset<Texture2D> shadowedPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/ShadowedPanelBorder");
 
         backPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
-            IgnoresMouseInteraction = true,
             BackgroundColor = new Color(59, 97, 203),
             BorderColor = Color.White,
             HAlign = 0.5f,
@@ -200,7 +199,7 @@ public class HappinessUIState : UIState {
             Numerator = moodModule.CurrentMood,
             Denominator = TownNPCMoodModule.MaxMoodValue
         });
-        happinessBar.Width.Percent = moodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue;
+        happinessBar.Width.Percent = Utils.Clamp(moodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue, 0f, 1f);
 
         modifierList.Clear();
         foreach (MoodModifierInstance instance in moodModule.CurrentStaticMoodModifiers.Concat(moodModule.CurrentDynamicMoodModifiers)) {
