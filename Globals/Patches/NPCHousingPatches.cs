@@ -18,7 +18,7 @@ using Terraria.GameInput;
 namespace LivingWorldMod.Globals.Patches;
 
 /// <summary>
-/// Class that contains IL/On patches for NPC housing-related manners.
+///     Class that contains IL/On patches for NPC housing-related manners.
 /// </summary>
 public class NPCHousingPatches : LoadablePatch {
     public override void LoadPatches() {
@@ -221,7 +221,7 @@ public class NPCHousingPatches : LoadablePatch {
                 }
 
                 bool isLikedWithVillagers = villager.RelationshipStatus >= VillagerRelationship.Like;
-                string villagerLockText = $"\n{"UI.VillagerHousing.VillagerTypeLocked".Localized(villager.VillagerType.ToString())}";
+                string villagerLockText = $"\n{"UI.VillagerHousing.VillagerTypeLocked".Localized().FormatWith(villager.VillagerType.ToString())}";
                 Main.instance.MouseText(
                     Lang.GetNPCHouseBannerText(npc, 0)
                     + (!isLikedWithVillagers ? villagerLockText : "")

@@ -20,63 +20,64 @@ using Terraria.Utilities;
 namespace LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 
 /// <summary>
-/// Base class for all the villager NPCs in the mod. Has several properties that can be
-/// modified depending on the "personality" of the villagers.
+///     Base class for all the villager NPCs in the mod. Has several properties that can be
+///     modified depending on the "personality" of the villagers.
 /// </summary>
 public abstract class Villager : ModNPC {
     /// <summary>
-    /// A dictionary holding all villager names for each type.
+    ///     A dictionary holding all villager names for each type.
     /// </summary>
     public static IReadOnlyDictionary<VillagerType, IReadOnlyList<string>> villagerNames;
+
+    /// <summary>
+    ///     The draw object used to draw this villager.
+    /// </summary>
+    public LayeredDrawObject drawObject;
+
+    /// <summary>
+    ///     A list of shop items that this specific villager is selling at this very moment.
+    /// </summary>
+    public List<ShopItem> shopInventory;
+
+    /// <summary>
+    ///     A counter for how long this Villager has been homeless for, used for automatically leaving
+    /// </summary>
+    private int _homelessCounter;
 
     public sealed override string Texture => LWM.SpritePath + $"NPCs/Villagers/{VillagerType}/DefaultStyle";
 
     public override bool IsCloneable => true;
 
     /// <summary>
-    /// What type of villager this class pertains to. Vital for several functions in the class
-    /// and must be defined.
+    ///     What type of villager this class pertains to. Vital for several functions in the class
+    ///     and must be defined.
     /// </summary>
     public abstract VillagerType VillagerType {
         get;
     }
 
     /// <summary>
-    /// A list of ALL POSSIBLE shop items that villagers of this given type can ever sell. This
-    /// list is checked upon every restock.
+    ///     A list of ALL POSSIBLE shop items that villagers of this given type can ever sell. This
+    ///     list is checked upon every restock.
     /// </summary>
     public abstract WeightedRandom<ShopItem> ShopPool {
         get;
     }
 
     /// <summary>
-    /// Shorthand get property for acquiring the current relationship status of whatever type of village this villager belongs
-    /// to.
+    ///     Shorthand get property for acquiring the current relationship status of whatever type of village this villager
+    ///     belongs
+    ///     to.
     /// </summary>
     public VillagerRelationship RelationshipStatus => ReputationSystem.Instance.GetVillageRelationship(VillagerType);
 
     /// <summary>
-    /// The array of indices that denote the sprite differences for this villager.
+    ///     The array of indices that denote the sprite differences for this villager.
     /// </summary>
     public int[] DrawIndices {
         get;
         protected set;
     }
-
-    /// <summary>
-    /// The draw object used to draw this villager.
-    /// </summary>
-    public LayeredDrawObject drawObject;
-
-    /// <summary>
-    /// A list of shop items that this specific villager is selling at this very moment.
-    /// </summary>
-    public List<ShopItem> shopInventory;
-
-    /// <summary>
-    /// A counter for how long this Villager has been homeless for, used for automatically leaving
-    /// </summary>
-    private int _homelessCounter;
 
     public override ModNPC NewInstance(NPC entity) {
         Villager instance = (Villager)base.NewInstance(entity);
@@ -254,7 +255,7 @@ public abstract class Villager : ModNPC {
 
         if (_homelessCounter >= 60 * 60 * 2) {
             Color leavingColor = new(255, 25, 25);
-            string leavingText = $"Event.VillagerLeft.{VillagerType}".Localized(NPC.GivenOrTypeName).Value;
+            string leavingText = $"Event.VillagerLeft.{VillagerType}".Localized().FormatWith(NPC.GivenOrTypeName);
 
             NPC.active = false;
             if (Main.netMode == NetmodeID.Server) {
@@ -269,7 +270,7 @@ public abstract class Villager : ModNPC {
     }
 
     /// <summary>
-    /// Restocks the shop of this villager, drawing from the SpawnPool property.
+    ///     Restocks the shop of this villager, drawing from the SpawnPool property.
     /// </summary>
     public void RestockShop() {
         shopInventory = [];
@@ -286,7 +287,7 @@ public abstract class Villager : ModNPC {
     }
 
     /// <summary>
-    /// Randomizes all features of this villager.
+    ///     Randomizes all features of this villager.
     /// </summary>
     public void RandomizeFeatures() {
         for (int i = 0; i < DrawIndices.Length; i++) {

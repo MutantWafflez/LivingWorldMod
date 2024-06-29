@@ -3,9 +3,9 @@ using Terraria.Localization;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 
-public struct MoodModifierInstance(MoodModifier modifierType, LocalizedText flavorText, int duration, params string[] flavorTextParameters) {
+public struct MoodModifierInstance(MoodModifier modifierType, LocalizedText flavorText, int duration, object flavorTextSubstitutes = null) {
     public readonly MoodModifier modifierType = modifierType;
     public readonly LocalizedText flavorText = flavorText;
-    public readonly string[] flavorTextParameters = flavorTextParameters;
+    public readonly object flavorTextSubstitutes = flavorTextSubstitutes;
     public int duration = duration;
 }

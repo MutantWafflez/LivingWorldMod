@@ -26,7 +26,7 @@ public class HappinessUIState : UIState {
             Height = StyleDimension.FromPixels(40f);
             Width = StyleDimension.Fill;
 
-            tooltipElement = new UITooltipElement(instance.flavorText) {
+            tooltipElement = new UITooltipElement(instance.flavorText, instance.flavorTextSubstitutes) {
                 Width = StyleDimension.Fill,
                 Height = StyleDimension.Fill
             };
@@ -95,7 +95,10 @@ public class HappinessUIState : UIState {
         };
         backPanel.SetPadding(12f);
 
-        happinessBarZone = new UITooltipElement("UI.Fraction".Localized(), 0, 0) {
+        happinessBarZone = new UITooltipElement("UI.Fraction".Localized(), new {
+            Numerator = 0,
+            Denominator = 0
+        }) {
             Width = StyleDimension.Fill,
             Height = StyleDimension.FromPixels(50f)
         };
@@ -162,7 +165,10 @@ public class HappinessUIState : UIState {
         TownNPCMoodModule moodModule = globalNPC.MoodModule;
 
         priceModifierTextNumber.SetText(Main.ShopHelper._currentPriceAdjustment.ToString("P1"));
-        happinessBarZone.ReformatText(moodModule.CurrentMood, TownNPCMoodModule.MaxMoodValue);
+        happinessBarZone.ReformatText(new {
+            Numerator = moodModule.CurrentMood,
+            Denominator = TownNPCMoodModule.MaxMoodValue
+        });
         happinessBar.Width.Percent = moodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue;
 
         modifierList.Clear();

@@ -4,21 +4,21 @@ using Terraria.UI;
 
 namespace LivingWorldMod.Globals.UIElements;
 
-public class UITooltipElement(LocalizedText tooltipText, params object[] formatObjects) : UIElement {
+public class UITooltipElement(LocalizedText tooltipText, object formatSubstitutesObject = null) : UIElement {
     private static readonly Item DummyItem = new(ItemID.None, 0) {
         // Can be any item - just can't be 0 (otherwise the tooltip won't draw)
         type = ItemID.IronPickaxe
     };
 
-    private string _formattedTooltipText = tooltipText.Format(formatObjects);
+    private string _formattedTooltipText = tooltipText.FormatWith(formatSubstitutesObject);
 
-    public void SetText(LocalizedText newText, params object[] formatObjects) {
+    public void SetText(LocalizedText newText, object formatSubstitutesObject = null) {
         tooltipText = newText;
-        _formattedTooltipText = newText.Format(formatObjects);
+        _formattedTooltipText = newText.FormatWith(formatSubstitutesObject);
     }
 
-    public void ReformatText(params object[] formatObjects) {
-        _formattedTooltipText = tooltipText.Format(formatObjects);
+    public void ReformatText(object formatSubstitutesObject = null) {
+        _formattedTooltipText = tooltipText.FormatWith(formatSubstitutesObject);
     }
 
     protected override void DrawSelf(SpriteBatch spriteBatch) {

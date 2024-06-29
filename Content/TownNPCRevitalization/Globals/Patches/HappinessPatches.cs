@@ -80,14 +80,14 @@ public sealed class HappinessPatches : LoadablePatch {
         c.Emit(OpCodes.Ldarg_0);
         c.Emit(OpCodes.Ldloc, townNPCNameKeyLocal);
         c.Emit(OpCodes.Ldarg_1);
-        c.EmitDelegate<Action<ShopHelper, string, string>>((shopHelper, townNPCMoodName, keyCategory) => {
+        c.Emit(OpCodes.Ldarg_2);
+        c.EmitDelegate<Action<ShopHelper, string, string, object>>((shopHelper, townNPCMoodName, keyCategory, flavorTextSubstituteObject) => {
             // To prevent the "content" modifier from showing up when other modifiers are present
             shopHelper._currentHappiness = " ";
 
             // Add modifiers as normal
             if (shopHelper._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
-                // globalNPC.MoodModule.ResetStaticModifiers();
-                globalNPC.MoodModule.AddStaticModifier(keyCategory.Split('_')[0], townNPCMoodName.Split("_")[1]);
+                globalNPC.MoodModule.AddStaticModifier(keyCategory.Split('_')[0], townNPCMoodName.Split("_")[1], flavorTextSubstituteObject);
             }
         });
     }

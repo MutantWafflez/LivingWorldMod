@@ -11,26 +11,26 @@ using Terraria.UI;
 namespace LivingWorldMod.Content.Villages.UI.VillagerHousing;
 
 /// <summary>
-/// Element that shows a specific villager in the housing menu. An instance of this is created
-/// per villager that exists in the world of a given type when the player is in the housing menu.
+///     Element that shows a specific villager in the housing menu. An instance of this is created
+///     per villager that exists in the world of a given type when the player is in the housing menu.
 /// </summary>
 public class UIHousingVillagerDisplay : UIElement {
     /// <summary>
-    /// Whether or not this villager is currently selected.
+    ///     The villager instance that this element is displaying.
+    /// </summary>
+    public Villager myVillager;
+
+    /// <summary>
+    ///     Whether or not this villager is currently selected.
     /// </summary>
     public bool IsSelected => myVillager.NPC.whoAmI == Main.instance.mouseNPCIndex;
 
     /// <summary>
-    /// Whether or not this NPC is "allowed" to be housed, which is to say whether or not the
-    /// village that the villager belongs to likes the player.
+    ///     Whether or not this NPC is "allowed" to be housed, which is to say whether or not the
+    ///     village that the villager belongs to likes the player.
     /// </summary>
     //TODO: Swap back to commented expression when Reputation system is re-implemented
     public bool IsAllowed => true; //myVillager.RelationshipStatus >= VillagerRelationship.Like;
-
-    /// <summary>
-    /// The villager instance that this element is displaying.
-    /// </summary>
-    public Villager myVillager;
 
     public UIHousingVillagerDisplay(Villager villager) {
         myVillager = villager;
@@ -64,7 +64,7 @@ public class UIHousingVillagerDisplay : UIElement {
         }
 
         Main.LocalPlayer.mouseInterface = true;
-        Main.instance.MouseText(IsAllowed ? myVillager.NPC.GivenName : "UI.VillagerHousing.VillagerTypeLocked".Localized(myVillager.VillagerType.ToString()).Value);
+        Main.instance.MouseText(IsAllowed ? myVillager.NPC.GivenName : "UI.VillagerHousing.VillagerTypeLocked".Localized().FormatWith(myVillager.VillagerType.ToString()));
     }
 
     protected override void DrawChildren(SpriteBatch spriteBatch) {

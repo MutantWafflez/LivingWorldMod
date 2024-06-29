@@ -27,18 +27,18 @@ namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 [LegacyName("HarpyShrineTile")]
 public class VillageShrineTile : BasePylon {
     /// <summary>
-    /// The tile width of Village Shrines. Used for tile entity placement/destroying calculations.
+    ///     The tile width of Village Shrines. Used for tile entity placement/destroying calculations.
     /// </summary>
     public const int FullTileWidth = 3;
 
-    public override Color? TileColorOnMap => Color.Yellow;
-
     /// <summary>
-    /// The displacement for which the tile is placed, used for tile entity shenanigans.
+    ///     The displacement for which the tile is placed, used for tile entity shenanigans.
     /// </summary>
     public readonly Point16 tileOrigin = new(1, 2);
 
     public Asset<Texture2D> shrineIcons;
+
+    public override Color? TileColorOnMap => Color.Yellow;
 
     public override void Load() {
         shrineIcons = ModContent.Request<Texture2D>($"{LWM.SpritePath}MapIcons/ShrineIcons");
@@ -144,7 +144,7 @@ public class VillageShrineTile : BasePylon {
     }
 
     /// <summary>
-    /// Returns whether the given village type will have their shrine icon visible at all on the map.
+    ///     Returns whether the given village type will have their shrine icon visible at all on the map.
     /// </summary>
     /// <param name="type"> The type of the village whose shrine we are referring to. </param>
     private bool IsShrineVisibleOnMap(VillagerType type) {
@@ -159,8 +159,8 @@ public class VillageShrineTile : BasePylon {
 }
 
 /// <summary>
-/// Tile Entity within each village shrine of each type, which mainly handles whether a
-/// specified player is close enough to the specified shrine to be considered "within the village."
+///     Tile Entity within each village shrine of each type, which mainly handles whether a
+///     specified player is close enough to the specified shrine to be considered "within the village."
 /// </summary>
 [LegacyName("HarpyShrineEntity")]
 public class VillageShrineEntity : TEModdedPylon {
@@ -169,16 +169,6 @@ public class VillageShrineEntity : TEModdedPylon {
     public const int EmptyVillageRespawnTime = 60 * 60 * 15;
 
     public const int FullVillageRespawnTime = 60 * 60 * 3;
-
-    public int CurrentHousedVillagersCount {
-        get;
-        private set;
-    }
-
-    public int CurrentValidHouses {
-        get;
-        private set;
-    }
 
     public VillagerType shrineType;
 
@@ -197,6 +187,16 @@ public class VillageShrineEntity : TEModdedPylon {
     private int _syncTimer;
 
     private List<Point16> _houseLocations;
+
+    public int CurrentHousedVillagersCount {
+        get;
+        private set;
+    }
+
+    public int CurrentValidHouses {
+        get;
+        private set;
+    }
 
     public override void Update() {
         //This is only here for backwards compatibility, if someone is loading a world from where
@@ -332,7 +332,7 @@ public class VillageShrineEntity : TEModdedPylon {
     }
 
     /// <summary>
-    /// Called when the tile this entity is associated with is right-clicked.
+    ///     Called when the tile this entity is associated with is right-clicked.
     /// </summary>
     public void RightClicked() {
         VillageShrineUISystem shrineSystem = ModContent.GetInstance<VillageShrineUISystem>();
@@ -349,8 +349,8 @@ public class VillageShrineEntity : TEModdedPylon {
     }
 
     /// <summary>
-    /// Forcefully triggers a village housing recalculation during the next update &amp; instantly syncs said information.
-    /// Should be called on the Server in MP.
+    ///     Forcefully triggers a village housing recalculation during the next update &amp; instantly syncs said information.
+    ///     Should be called on the Server in MP.
     /// </summary>
     public void ForceRecalculateAndSync() {
         _syncTimer = 0;
@@ -358,8 +358,8 @@ public class VillageShrineEntity : TEModdedPylon {
     }
 
     /// <summary>
-    /// Really simple method that just sets the village zone field to its proper values given
-    /// the tile entity's current position.
+    ///     Really simple method that just sets the village zone field to its proper values given
+    ///     the tile entity's current position.
     /// </summary>
     private void InstantiateVillageZone() {
         villageZone = new Circle(Position.ToWorldCoordinates(32f, 40f), DefaultVillageRadius);
@@ -392,7 +392,7 @@ public class VillageShrineEntity : TEModdedPylon {
         Main.npc[npc].homeTileY = WorldGen.bestY;
 
         Color arrivalColor = new(50, 125, 255);
-        string arrivalText = $"Event.VillagerRespawned.{shrineType}".Localized(Main.npc[npc].GivenOrTypeName).Value;
+        string arrivalText = $"Event.VillagerRespawned.{shrineType}".Localized().FormatWith(Main.npc[npc].GivenOrTypeName);
         if (Main.netMode == NetmodeID.Server) {
             ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(arrivalText), arrivalColor);
         }
@@ -411,7 +411,7 @@ public class VillageShrineEntity : TEModdedPylon {
     }
 
     /// <summary>
-    /// Little helper method that syncs this tile entity from Server to clients.
+    ///     Little helper method that syncs this tile entity from Server to clients.
     /// </summary>
     /// <param name="doServerCheck"> Whether to check if the current Net-mode is a Server. </param>
     private void SyncDataToClients(bool doServerCheck = true) {
