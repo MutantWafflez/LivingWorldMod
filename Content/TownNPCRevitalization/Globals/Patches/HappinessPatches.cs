@@ -9,6 +9,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria.GameContent;
 using Terraria.GameContent.Events;
+using Terraria.Localization;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 
@@ -56,11 +57,11 @@ public sealed partial class HappinessPatches : LoadablePatch {
 
             TownNPCMoodModule moodModule = globalNPC.MoodModule;
             if (npc.life < npc.lifeMax) {
-                moodModule.AddStaticModifier("Injured", "Guide");
+                moodModule.AddStaticModifier("Injured", LocalizedText.Empty);
             }
 
             if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && BirthdayParty.CelebratingNPCs.Contains(npc.whoAmI)) {
-                moodModule.AddStaticModifier("Party", "Guide");
+                moodModule.AddStaticModifier("Party", LocalizedText.Empty);
             }
 
             float currentMood = moodModule.CurrentMood;
@@ -88,7 +89,7 @@ public sealed partial class HappinessPatches : LoadablePatch {
             // Add modifiers as normal
             if (shopHelper._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownGlobalNPC globalNPC) && TownNPCNameRegex.Match(townNPCLocalizationKey) is { } match && match != Match.Empty) {
                 // We split moodModifierKey for scenarios such as LovesNPC_Princess, where we want the mood modifier to be "LovesNPC" as a catch-all
-                globalNPC.MoodModule.AddStaticModifier(moodModifierKey.Split('_')[0], match.Groups["Name"].Value, flavorTextSubstituteObject);
+                globalNPC.MoodModule.AddStaticModifier(moodModifierKey.Split('_')[0], Language.GetText($"{townNPCLocalizationKey}.{moodModifierKey}"), flavorTextSubstituteObject);
             }
         });
     }

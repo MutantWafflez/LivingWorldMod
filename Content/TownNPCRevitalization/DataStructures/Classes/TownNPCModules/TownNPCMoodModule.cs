@@ -20,9 +20,6 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
 
     private static Dictionary<string, MoodModifier> _moodModifiers;
 
-    private static Dictionary<string, Dictionary<string, LocalizedText>> _npcFlavorTexts;
-    private static readonly Regex FlavorTextLoadRegex = LoadFlavorTextRegex();
-
     private readonly List<MoodModifierInstance> _currentStaticMoodModifiers;
     private readonly List<MoodModifierInstance> _currentDynamicMoodModifiers;
 
@@ -37,34 +34,6 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
         _currentDynamicMoodModifiers = [];
     }
 
-    public static void Load() {
-        JsonObject jsonMoodValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
-        _moodModifiers = new Dictionary<string, MoodModifier>();
-        foreach ((string moodModifierKey, float moodOffset) in jsonMoodValues) {
-            _moodModifiers[moodModifierKey] = new MoodModifier($"TowNPCMoodDescription.{moodModifierKey}".Localized(), moodOffset);
-        }
-
-        _npcFlavorTexts = new Dictionary<string, Dictionary<string, LocalizedText>>();
-        foreach ((string key, LocalizedText text) in LanguageManager.Instance._localizedTexts) {
-            if (!key.Contains("TownNPCMood")) {
-                continue;
-            }
-
-            Match moodMatch = FlavorTextLoadRegex.Match(key);
-            if (moodMatch == Match.Empty) {
-                continue;
-            }
-
-            string npcName = moodMatch.Groups["Name"].Value;
-            if (!_npcFlavorTexts.TryGetValue(npcName, out Dictionary<string, LocalizedText> value)) {
-                value = new Dictionary<string, LocalizedText>();
-                _npcFlavorTexts[npcName] = value;
-            }
-
-            value[moodMatch.Groups["Mood"].Value] = text;
-        }
-    }
-
     public override void Update() {
         for (int i = 0; i < _currentDynamicMoodModifiers.Count; i++) {
             MoodModifierInstance instance = _currentDynamicMoodModifiers[i];
@@ -74,26 +43,32 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
         }
     }
 
-    public void AddStaticModifier(string modifierKey, string internalNPCName, object flavorTextSubstitutes = null) {
-        if (!_moodModifiers.TryGetValue(modifierKey, out MoodModifier moodModifier)) {
-            return;
+    public static void Load() {
+        JsonObject jsonMoodValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
+        _moodModifiers = new Dictionary<string, MoodModifier>();
+        foreach ((string moodModifierKey, float moodOffset) in jsonMoodValues) {
+            _moodModifiers[moodModifierKey] = new MoodModifier($"TowNPCMoodDescription.{moodModifierKey}".Localized(), moodOffset);
         }
-
-        _currentStaticMoodModifiers.Add(new MoodModifierInstance(moodModifier, _npcFlavorTexts[internalNPCName][modifierKey], 0, flavorTextSubstitutes));
     }
 
-    public void AddDynamicModifier(string modifierKey, string internalNPCName, int duration, object flavorTextSubstitutes = null) {
+    public void AddStaticModifier(string modifierKey, LocalizedText flavorText, object flavorTextSubstitutes = null) {
         if (!_moodModifiers.TryGetValue(modifierKey, out MoodModifier moodModifier)) {
             return;
         }
 
-        _currentDynamicMoodModifiers.Add(new MoodModifierInstance(moodModifier, _npcFlavorTexts[internalNPCName][modifierKey], duration, flavorTextSubstitutes));
+
+        _currentStaticMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, 0, flavorTextSubstitutes));
+    }
+
+    public void AddDynamicModifier(string modifierKey, int duration, LocalizedText flavorText, object flavorTextSubstitutes = null) {
+        if (!_moodModifiers.TryGetValue(modifierKey, out MoodModifier moodModifier)) {
+            return;
+        }
+
+        _currentDynamicMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, duration, flavorTextSubstitutes));
     }
 
     public void ResetStaticModifiers() {
         _currentStaticMoodModifiers.Clear();
     }
-
-    [GeneratedRegex(@"(.+\.(?<Name>.+)\.TownNPCMood|TownNPCMood_(?<Name>.+))\.(?<Mood>.+)")]
-    private static partial Regex LoadFlavorTextRegex();
 }
