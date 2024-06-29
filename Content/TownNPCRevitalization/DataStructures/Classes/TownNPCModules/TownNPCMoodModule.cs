@@ -74,20 +74,20 @@ public sealed class TownNPCMoodModule : TownNPCModule {
         }
     }
 
-    public void AddStaticModifier(string modifierKey, LocalizedText flavorText) {
+    public void AddStaticModifier(string modifierKey, string internalNPCName) {
         if (!_moodModifiers.TryGetValue(modifierKey, out MoodModifier moodModifier)) {
             return;
         }
 
-        _currentStaticMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, 0));
+        _currentStaticMoodModifiers.Add(new MoodModifierInstance(moodModifier, _npcFlavorTexts[internalNPCName][modifierKey], 0));
     }
 
-    public void AddDynamicModifier(string modifierKey, LocalizedText flavorText, int duration) {
+    public void AddDynamicModifier(string modifierKey, string internalNPCName, int duration) {
         if (!_moodModifiers.TryGetValue(modifierKey, out MoodModifier moodModifier)) {
             return;
         }
 
-        _currentDynamicMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, duration));
+        _currentDynamicMoodModifiers.Add(new MoodModifierInstance(moodModifier, _npcFlavorTexts[internalNPCName][modifierKey], duration));
     }
 
     public void ResetStaticModifiers() {

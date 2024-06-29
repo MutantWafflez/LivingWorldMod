@@ -326,7 +326,7 @@ Mods: {
 		Projectiles.NimbusPetProjectile.DisplayName: Zwierzak Nimbus
 
 		UI: {
-			// NPCHappiness.Discount: Discount
+			// NPCHappiness.PriceModifier: Price Modifier
 
 			VillagerShop: {
 				Buying: Buying:

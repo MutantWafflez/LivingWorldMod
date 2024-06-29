@@ -56,13 +56,13 @@ public class HappinessUIState : UIState {
 
     public UIPanel backPanel;
 
+    public UITooltipElement happinessBarZone;
+
     public UISquarePanel happinessBarBackPanel;
 
     public UISimpleRectangle happinessBar;
 
-    public UIImage desiredHappinessArrow;
-
-    public UIBetterText discountTextNumber;
+    public UIBetterText priceModifierTextNumber;
 
     public UIImage moneyBagIcon;
 
@@ -95,11 +95,17 @@ public class HappinessUIState : UIState {
         };
         backPanel.SetPadding(12f);
 
-        happinessBarBackPanel = new UISquarePanel(new Color(22, 29, 107), new Color(46, 46, 159)) {
+        happinessBarZone = new UITooltipElement("UI.Fraction".Localized(), 0, 0) {
             Width = StyleDimension.Fill,
             Height = StyleDimension.FromPixels(50f)
         };
-        backPanel.Append(happinessBarBackPanel);
+        backPanel.Append(happinessBarZone);
+
+        happinessBarBackPanel = new UISquarePanel(new Color(22, 29, 107), new Color(46, 46, 159)) {
+            Width = StyleDimension.Fill,
+            Height = StyleDimension.Fill
+        };
+        happinessBarZone.Append(happinessBarBackPanel);
 
         happinessBar = new UISimpleRectangle(Color.White) {
             Height = StyleDimension.FromPercent(0.75f),
@@ -108,28 +114,22 @@ public class HappinessUIState : UIState {
         };
         happinessBarBackPanel.innerRectangle.Append(happinessBar);
 
-        desiredHappinessArrow = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/VK_Shift")) {
-            Left = StyleDimension.FromPixelsAndPercent(-13f, 0.5f),
-            Top = StyleDimension.FromPixelsAndPercent(4f, 1f)
-        };
-        happinessBarBackPanel.Append(desiredHappinessArrow);
-
-        moneyBagIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/MoneyBag")) {
+        moneyBagIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/MoneyBag", AssetRequestMode.ImmediateLoad)) {
             Top = StyleDimension.FromPixels(100f)
         };
         backPanel.Append(moneyBagIcon);
 
-        moneyBagTooltipElement = new UITooltipElement("UI.NPCHappiness.Discount".Localized()) {
+        moneyBagTooltipElement = new UITooltipElement("UI.NPCHappiness.PriceModifier".Localized()) {
             Width = StyleDimension.Fill,
             Height = StyleDimension.Fill
         };
         moneyBagIcon.Append(moneyBagTooltipElement);
 
-        discountTextNumber = new UIBetterText("88%", 0.75f, true) {
+        priceModifierTextNumber = new UIBetterText("", 0.75f, true) {
             Top = StyleDimension.FromPixels(2f),
             Left = StyleDimension.FromPixelsAndPercent(8f, 1f)
         };
-        moneyBagTooltipElement.Append(discountTextNumber);
+        moneyBagTooltipElement.Append(priceModifierTextNumber);
 
         modifierListBackPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) {
             BackgroundColor = new Color(46, 46, 159),
@@ -153,7 +153,6 @@ public class HappinessUIState : UIState {
         modifierList.SetScrollbar(modifierScrollbar);
         modifierListBackPanel.Append(modifierList);
 
-        RemoveAllChildren();
         Append(backPanel);
     }
 
@@ -162,7 +161,9 @@ public class HappinessUIState : UIState {
         TownGlobalNPC globalNPC = NPCBeingTalkedTo.GetGlobalNPC<TownGlobalNPC>();
         TownNPCMoodModule moodModule = globalNPC.MoodModule;
 
-        discountTextNumber.SetText(Main.ShopHelper._currentPriceAdjustment.ToString("P1"));
+        priceModifierTextNumber.SetText(Main.ShopHelper._currentPriceAdjustment.ToString("P1"));
+        happinessBarZone.ReformatText(moodModule.CurrentMood, TownNPCMoodModule.MaxMoodValue);
+        happinessBar.Width.Percent = moodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue;
 
         modifierList.Clear();
         foreach (MoodModifierInstance instance in moodModule.CurrentStaticMoodModifiers.Concat(moodModule.CurrentDynamicMoodModifiers)) {

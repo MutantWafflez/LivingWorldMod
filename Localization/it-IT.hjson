@@ -326,7 +326,7 @@ Mods: {
 		Projectiles.NimbusPetProjectile.DisplayName: Nuvoletta domestica
 
 		UI: {
-			// NPCHappiness.Discount: Discount
+			// NPCHappiness.PriceModifier: Price Modifier
 
 			VillagerShop: {
 				Buying: Buying:
