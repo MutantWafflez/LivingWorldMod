@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Classes;
@@ -14,9 +15,14 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 /// <summary>
 ///     Patches that deal with Town NPC happiness.
 /// </summary>
-public sealed class HappinessPatches : LoadablePatch {
+public sealed partial class HappinessPatches : LoadablePatch {
     private const float MinCostModifier = 0.67f;
     private const float MaxCostModifier = 1.5f;
+
+    private static readonly Regex TownNPCNameRegex = LoadNPCNameRegex();
+
+    [GeneratedRegex(@"(.+\.(?<Name>.+)\.TownNPCMood|TownNPCMood_(?<Name>.+))")]
+    private static partial Regex LoadNPCNameRegex();
 
     public override void LoadPatches() {
         IL_ShopHelper.ProcessMood += AddToMoodModule;
@@ -56,12 +62,6 @@ public sealed class HappinessPatches : LoadablePatch {
             float currentMood = moodModule.CurrentMood;
             shopHelper._currentPriceAdjustment = MathHelper.Lerp(MinCostModifier, MaxCostModifier, 1f - currentMood / TownNPCMoodModule.MaxMoodValue);
             shopHelper._currentHappiness = "Not empty string here";
-            // $"Current Mood: {(int)currentMood}/{(int)TownNPCMoodModule.MaxMoodValue}\n"
-            // + string.Join('\n', moodModule.GetFlavorTextAndModifiers().Select(flavorTextAndModifer => {
-            //         (string flavorText, float moodModifier) = flavorTextAndModifer;
-            //         return $"\"{flavorText}\" ({(moodModifier >= 0 ? "+" : "")}{moodModifier})";
-            //     })
-            // );
         });
     }
 
@@ -81,13 +81,13 @@ public sealed class HappinessPatches : LoadablePatch {
         c.Emit(OpCodes.Ldloc, townNPCNameKeyLocal);
         c.Emit(OpCodes.Ldarg_1);
         c.Emit(OpCodes.Ldarg_2);
-        c.EmitDelegate<Action<ShopHelper, string, string, object>>((shopHelper, townNPCMoodName, keyCategory, flavorTextSubstituteObject) => {
+        c.EmitDelegate<Action<ShopHelper, string, string, object>>((shopHelper, townNPCLocalizationKey, moodModifierKey, flavorTextSubstituteObject) => {
             // To prevent the "content" modifier from showing up when other modifiers are present
             shopHelper._currentHappiness = " ";
 
             // Add modifiers as normal
-            if (shopHelper._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
-                globalNPC.MoodModule.AddStaticModifier(keyCategory.Split('_')[0], townNPCMoodName.Split("_")[1], flavorTextSubstituteObject);
+            if (shopHelper._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownGlobalNPC globalNPC) && TownNPCNameRegex.Match(townNPCLocalizationKey) is { } match && match != Match.Empty) {
+                globalNPC.MoodModule.AddStaticModifier(moodModifierKey, match.Groups["Name"].Value, flavorTextSubstituteObject);
             }
         });
     }
