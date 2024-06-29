@@ -415,6 +415,7 @@ Mods: {
 			// LoveNPC: Loves Neighbor
 			// DislikeNPC: Dislikes Neighbor
 			// HateNPC: Hates Neighbor
+			// HateLonely: Lonely
 		}
 
 		InterTownNPCChat: {

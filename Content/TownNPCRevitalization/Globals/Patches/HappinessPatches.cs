@@ -88,7 +88,7 @@ public sealed partial class HappinessPatches : LoadablePatch {
             // Add modifiers as normal
             if (shopHelper._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownGlobalNPC globalNPC) && TownNPCNameRegex.Match(townNPCLocalizationKey) is { } match && match != Match.Empty) {
                 // We split moodModifierKey for scenarios such as LovesNPC_Princess, where we want the mood modifier to be "LovesNPC" as a catch-all
-                globalNPC.MoodModule.AddStaticModifier(moodModifierKey.Split(' ')[0], match.Groups["Name"].Value, flavorTextSubstituteObject);
+                globalNPC.MoodModule.AddStaticModifier(moodModifierKey.Split('_')[0], match.Groups["Name"].Value, flavorTextSubstituteObject);
             }
         });
     }
