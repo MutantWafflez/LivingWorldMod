@@ -62,6 +62,12 @@ public class HappinessUIState : UIState {
 
     public UISimpleRectangle happinessBar;
 
+    public UIImage moodLowIcon;
+
+    public UIImage moodMidIcon;
+
+    public UIImage moodHighIcon;
+
     public UIBetterText priceModifierTextNumber;
 
     public UIImage moneyBagIcon;
@@ -117,8 +123,33 @@ public class HappinessUIState : UIState {
         };
         happinessBarBackPanel.innerRectangle.Append(happinessBar);
 
-        moneyBagIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/MoneyBag", AssetRequestMode.ImmediateLoad)) {
-            Top = StyleDimension.FromPixels(100f)
+        moodLowIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/TownNPCMoodLow")) {
+            Top = StyleDimension.FromPixelsAndPercent(4f, 1f),
+            Width = StyleDimension.FromPixels(32),
+            Height = StyleDimension.FromPercent(32)
+        };
+        happinessBarZone.Append(moodLowIcon);
+
+        moodMidIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/TownNPCMoodMid")) {
+            Top = StyleDimension.FromPixelsAndPercent(4f, 1f),
+            HAlign = 0.5f,
+            Width = StyleDimension.FromPixels(32),
+            Height = StyleDimension.FromPercent(32)
+        };
+        happinessBarZone.Append(moodMidIcon);
+
+        moodHighIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/TownNPCMoodHigh")) {
+            Top = StyleDimension.FromPixelsAndPercent(4f, 1f),
+            HAlign = 1f,
+            Width = StyleDimension.FromPixels(32),
+            Height = StyleDimension.FromPercent(32)
+        };
+        happinessBarZone.Append(moodHighIcon);
+
+        moneyBagIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/MoneyBag")) {
+            Top = StyleDimension.FromPixels(100f),
+            Width = StyleDimension.FromPixels(32),
+            Height = StyleDimension.FromPixels(32)
         };
         backPanel.Append(moneyBagIcon);
 
