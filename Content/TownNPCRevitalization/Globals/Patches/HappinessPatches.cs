@@ -64,8 +64,7 @@ public sealed partial class HappinessPatches : LoadablePatch {
                 moodModule.AddStaticModifier("Party", LocalizedText.Empty);
             }
 
-            float currentMood = moodModule.CurrentMood;
-            shopHelper._currentPriceAdjustment = MathHelper.Lerp(MinCostModifier, MaxCostModifier, 1f - currentMood / TownNPCMoodModule.MaxMoodValue);
+            shopHelper._currentPriceAdjustment = MathHelper.Lerp(MinCostModifier, MaxCostModifier, 1f - moodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue);
         });
     }
 

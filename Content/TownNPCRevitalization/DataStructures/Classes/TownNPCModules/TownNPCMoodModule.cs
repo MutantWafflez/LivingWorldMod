@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Hjson;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
@@ -12,7 +11,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.To
 /// <summary>
 ///     Class that handles the new "mood" feature that replaces Town NPC happiness.
 /// </summary>
-public sealed partial class TownNPCMoodModule : TownNPCModule {
+public sealed class TownNPCMoodModule : TownNPCModule {
     public const float MaxMoodValue = 100f;
     public const float MinMoodValue = 0f;
 
@@ -45,6 +44,7 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
 
     public static void Load() {
         JsonObject jsonMoodValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
+
         _moodModifiers = new Dictionary<string, MoodModifier>();
         foreach ((string moodModifierKey, float moodOffset) in jsonMoodValues) {
             _moodModifiers[moodModifierKey] = new MoodModifier($"TowNPCMoodDescription.{moodModifierKey}".Localized(), moodOffset);
@@ -55,7 +55,6 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
         if (!_moodModifiers.TryGetValue(modifierKey, out MoodModifier moodModifier)) {
             return;
         }
-
 
         _currentStaticMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, 0, flavorTextSubstitutes));
     }
