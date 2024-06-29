@@ -12,7 +12,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.To
 /// <summary>
 ///     Class that handles the new "mood" feature that replaces Town NPC happiness.
 /// </summary>
-public sealed class TownNPCMoodModule : TownNPCModule {
+public sealed partial class TownNPCMoodModule : TownNPCModule {
     public const float MaxMoodValue = 100f;
     public const float MinMoodValue = 0f;
 
@@ -21,7 +21,7 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     private static Dictionary<string, MoodModifier> _moodModifiers;
 
     private static Dictionary<string, Dictionary<string, LocalizedText>> _npcFlavorTexts;
-    private static readonly Regex FlavorTextLoadRegex = new(@"(.+\.(?<Name>.+)\.TownNPCMood|TownNPCMood_(?<Name>.+))\.(?<Mood>.+)");
+    private static readonly Regex FlavorTextLoadRegex = LoadFlavorTextRegex();
 
     private readonly List<MoodModifierInstance> _currentStaticMoodModifiers;
     private readonly List<MoodModifierInstance> _currentDynamicMoodModifiers;
@@ -93,4 +93,7 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     public void ResetStaticModifiers() {
         _currentStaticMoodModifiers.Clear();
     }
+
+    [GeneratedRegex(@"(.+\.(?<Name>.+)\.TownNPCMood|TownNPCMood_(?<Name>.+))\.(?<Mood>.+)")]
+    private static partial Regex LoadFlavorTextRegex();
 }
