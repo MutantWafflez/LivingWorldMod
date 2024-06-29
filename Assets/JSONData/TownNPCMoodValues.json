@@ -13,6 +13,7 @@
   "LoveNPC": 20,
   "DislikeNPC": -10,
   "HateNPC": -20,
+  "HateLonely": -30,
   "Injured": -10,
   "SleptWell": 10,
   "Party": 15
