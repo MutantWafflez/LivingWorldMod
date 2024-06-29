@@ -24,12 +24,7 @@ public sealed partial class HappinessPatches : LoadablePatch {
     [GeneratedRegex(@"(.+\.(?<Name>.+)\.TownNPCMood|TownNPCMood_(?<Name>.+))")]
     private static partial Regex LoadNPCNameRegex();
 
-    public override void LoadPatches() {
-        IL_ShopHelper.ProcessMood += AddToMoodModule;
-        IL_ShopHelper.AddHappinessReportText += HijackReportText;
-    }
-
-    private void AddToMoodModule(ILContext il) {
+    private static void AddToMoodModule(ILContext il) {
         currentContext = il;
 
         ILCursor c = new(il);
@@ -65,7 +60,7 @@ public sealed partial class HappinessPatches : LoadablePatch {
         });
     }
 
-    private void HijackReportText(ILContext il) {
+    private static void HijackReportText(ILContext il) {
         currentContext = il;
 
         ILCursor c = new(il);
@@ -90,5 +85,10 @@ public sealed partial class HappinessPatches : LoadablePatch {
                 globalNPC.MoodModule.AddStaticModifier(moodModifierKey, match.Groups["Name"].Value, flavorTextSubstituteObject);
             }
         });
+    }
+
+    public override void LoadPatches() {
+        IL_ShopHelper.ProcessMood += AddToMoodModule;
+        IL_ShopHelper.AddHappinessReportText += HijackReportText;
     }
 }

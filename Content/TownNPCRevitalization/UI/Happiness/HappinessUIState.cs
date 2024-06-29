@@ -209,5 +209,8 @@ public class HappinessUIState : UIState {
 
     public void SetStateToNPC(NPC npc) {
         NPCBeingTalkedTo = npc;
+        modifierScrollbar.ViewPosition = 0f;
+
+        RecalculateChildren();
     }
 }

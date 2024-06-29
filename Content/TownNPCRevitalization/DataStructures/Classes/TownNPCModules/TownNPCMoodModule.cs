@@ -16,7 +16,7 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
     public const float MaxMoodValue = 100f;
     public const float MinMoodValue = 0f;
 
-    private const float BaseMoodValue = 50;
+    private const float BaseMoodValue = 50f;
 
     private static Dictionary<string, MoodModifier> _moodModifiers;
 
