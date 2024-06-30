@@ -25,6 +25,16 @@ public sealed partial class HappinessPatches : LoadablePatch {
     [GeneratedRegex(@"(.+\.(?<Name>.+)\.TownNPCMood|TownNPCMood_(?<Name>.+))")]
     private static partial Regex LoadNPCNameRegex();
 
+    private static void ApplyStaticModifiers(NPC npc, TownNPCMoodModule moodModule) {
+        if (npc.life < npc.lifeMax) {
+            moodModule.AddStaticModifier("Injured", LocalizedText.Empty);
+        }
+
+        if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && BirthdayParty.CelebratingNPCs.Contains(npc.whoAmI)) {
+            moodModule.AddStaticModifier("AtParty", LocalizedText.Empty);
+        }
+    }
+
     private static void AddToMoodModule(ILContext il) {
         currentContext = il;
 
@@ -54,13 +64,7 @@ public sealed partial class HappinessPatches : LoadablePatch {
             }
 
             TownNPCMoodModule moodModule = globalNPC.MoodModule;
-            if (npc.life < npc.lifeMax) {
-                moodModule.AddStaticModifier("Injured", LocalizedText.Empty);
-            }
-
-            if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && BirthdayParty.CelebratingNPCs.Contains(npc.whoAmI)) {
-                moodModule.AddStaticModifier("Party", LocalizedText.Empty);
-            }
+            ApplyStaticModifiers(npc, moodModule);
 
             shopHelper._currentPriceAdjustment = MathHelper.Lerp(MinCostModifier, MaxCostModifier, 1f - moodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue);
         });
