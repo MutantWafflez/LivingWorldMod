@@ -60,8 +60,8 @@ public sealed class TownNPCMoodModule : TownNPCModule {
             return;
         }
 
-        if (flavorText.Key == flavorText.Value) {
-            _defaultFlavorTexts.TryGetValue(modifierKey, out flavorText);
+        if (flavorText.Key == flavorText.Value && _defaultFlavorTexts.TryGetValue(modifierKey, out LocalizedText defaultFlavorText)) {
+            flavorText = defaultFlavorText;
         }
 
         _currentStaticMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, 0, flavorTextSubstitutes));
@@ -72,8 +72,8 @@ public sealed class TownNPCMoodModule : TownNPCModule {
             return;
         }
 
-        if (flavorText.Key == flavorText.Value) {
-            _defaultFlavorTexts.TryGetValue(modifierKey, out flavorText);
+        if (flavorText.Key == flavorText.Value && _defaultFlavorTexts.TryGetValue(modifierKey, out LocalizedText defaultFlavorText)) {
+            flavorText = defaultFlavorText;
         }
 
         _currentDynamicMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, duration, flavorTextSubstitutes));

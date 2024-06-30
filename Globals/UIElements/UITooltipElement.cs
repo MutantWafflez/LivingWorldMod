@@ -12,15 +12,6 @@ public class UITooltipElement(LocalizedText tooltipText, object formatSubstitute
 
     private string _formattedTooltipText = tooltipText.FormatWith(formatSubstitutesObject);
 
-    public void SetText(LocalizedText newText, object formatSubstitutesObject = null) {
-        tooltipText = newText;
-        _formattedTooltipText = newText.FormatWith(formatSubstitutesObject);
-    }
-
-    public void ReformatText(object formatSubstitutesObject = null) {
-        _formattedTooltipText = tooltipText.FormatWith(formatSubstitutesObject);
-    }
-
     protected override void DrawSelf(SpriteBatch spriteBatch) {
         base.DrawSelf(spriteBatch);
 
@@ -32,5 +23,14 @@ public class UITooltipElement(LocalizedText tooltipText, object formatSubstitute
         Main.HoverItem = DummyItem;
         Main.instance.MouseText("");
         Main.mouseText = true;
+    }
+
+    public void SetText(LocalizedText newText, object formatSubstitutesObject = null) {
+        tooltipText = newText;
+        _formattedTooltipText = newText.FormatWith(formatSubstitutesObject);
+    }
+
+    public void ReformatText(object formatSubstitutesObject = null) {
+        _formattedTooltipText = tooltipText.FormatWith(formatSubstitutesObject);
     }
 }
