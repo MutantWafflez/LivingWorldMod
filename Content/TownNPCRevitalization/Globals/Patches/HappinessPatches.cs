@@ -29,6 +29,9 @@ public sealed partial class HappinessPatches : LoadablePatch {
         currentContext = il;
 
         ILCursor c = new(il);
+
+        // Jump AFTER vanilla _currentHappiness set, so our "Content" Mood modifier is properly ignored
+        c.GotoNext(MoveType.After, i => i.Match(OpCodes.Stfld));
         c.Emit(OpCodes.Ldarg_0);
         c.Emit(OpCodes.Ldarg_2);
         c.EmitDelegate<Action<ShopHelper, NPC>>((shopHelper, npc) => {
