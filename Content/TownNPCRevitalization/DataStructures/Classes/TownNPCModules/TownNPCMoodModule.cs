@@ -19,6 +19,7 @@ public sealed class TownNPCMoodModule : TownNPCModule {
 
     private static Dictionary<string, MoodModifier> _moodModifiers;
 
+    private static Dictionary<string, LocalizedText> _defaultFlavorTexts;
     private readonly List<MoodModifierInstance> _currentStaticMoodModifiers;
     private readonly List<MoodModifierInstance> _currentDynamicMoodModifiers;
 
@@ -31,6 +32,18 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     public TownNPCMoodModule(NPC npc) : base(npc) {
         _currentStaticMoodModifiers = [];
         _currentDynamicMoodModifiers = [];
+        _defaultFlavorTexts = [];
+    }
+
+    public static void Load() {
+        JsonObject jsonMoodValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
+
+        _moodModifiers = [];
+        foreach ((string moodModifierKey, float moodOffset) in jsonMoodValues) {
+            _moodModifiers[moodModifierKey] = new MoodModifier($"TowNPCMoodDescription.{moodModifierKey}".Localized(), moodOffset);
+        }
+
+        _defaultFlavorTexts = Language.FindAll(Lang.CreateDialogFilter("TownNPCMood.")).ToDictionary(text => text.Key);
     }
 
     public override void Update() {
@@ -42,18 +55,13 @@ public sealed class TownNPCMoodModule : TownNPCModule {
         }
     }
 
-    public static void Load() {
-        JsonObject jsonMoodValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
-
-        _moodModifiers = new Dictionary<string, MoodModifier>();
-        foreach ((string moodModifierKey, float moodOffset) in jsonMoodValues) {
-            _moodModifiers[moodModifierKey] = new MoodModifier($"TowNPCMoodDescription.{moodModifierKey}".Localized(), moodOffset);
-        }
-    }
-
     public void AddStaticModifier(string modifierKey, LocalizedText flavorText, object flavorTextSubstitutes = null) {
         if (!_moodModifiers.TryGetValue(modifierKey, out MoodModifier moodModifier)) {
             return;
+        }
+
+        if (flavorText.Key == flavorText.Value) {
+            _defaultFlavorTexts.TryGetValue(modifierKey, out flavorText);
         }
 
         _currentStaticMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, 0, flavorTextSubstitutes));
@@ -62,6 +70,10 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     public void AddDynamicModifier(string modifierKey, int duration, LocalizedText flavorText, object flavorTextSubstitutes = null) {
         if (!_moodModifiers.TryGetValue(modifierKey, out MoodModifier moodModifier)) {
             return;
+        }
+
+        if (flavorText.Key == flavorText.Value) {
+            _defaultFlavorTexts.TryGetValue(modifierKey, out flavorText);
         }
 
         _currentDynamicMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, duration, flavorTextSubstitutes));

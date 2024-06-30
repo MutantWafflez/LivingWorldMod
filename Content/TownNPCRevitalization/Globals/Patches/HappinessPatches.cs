@@ -22,11 +22,6 @@ public sealed partial class HappinessPatches : LoadablePatch {
 
     private static readonly Regex TownNPCNameRegex = LoadNPCNameRegex();
 
-    public override void LoadPatches() {
-        IL_ShopHelper.ProcessMood += AddToMoodModule;
-        IL_ShopHelper.AddHappinessReportText += HijackReportText;
-    }
-
     [GeneratedRegex(@"(.+\.(?<Name>.+)\.TownNPCMood|TownNPCMood_(?<Name>.+))")]
     private static partial Regex LoadNPCNameRegex();
 
@@ -91,5 +86,10 @@ public sealed partial class HappinessPatches : LoadablePatch {
                 globalNPC.MoodModule.AddStaticModifier(moodModifierKey.Split('_')[0], Language.GetText($"{townNPCLocalizationKey}.{moodModifierKey}"), flavorTextSubstituteObject);
             }
         });
+    }
+
+    public override void LoadPatches() {
+        IL_ShopHelper.ProcessMood += AddToMoodModule;
+        IL_ShopHelper.AddHappinessReportText += HijackReportText;
     }
 }
