@@ -9,7 +9,7 @@ public static class TownNPCSets {
     ///     Whether a given Town NPC gives irritable dialogue when spoken to by the player during the
     ///     Blood Moon event.
     /// </summary>
-    public static readonly bool[] IrritatedByBloodMoon = _factory.CreateBoolSet(false, NPCID.Nurse, NPCID.BestiaryGirl, NPCID.Stylist, NPCID.Dryad, NPCID.Mechanic, NPCID.Steampunker);
+    public static readonly bool[] IrritatedByBloodMoon = Factory.CreateBoolSet(false, NPCID.Nurse, NPCID.BestiaryGirl, NPCID.Stylist, NPCID.Dryad, NPCID.Mechanic, NPCID.Steampunker);
 
-    private static SetFactory _factory => NPCID.Sets.Factory;
+    private static SetFactory Factory => NPCID.Sets.Factory;
 }

@@ -27,6 +27,7 @@ public sealed partial class HappinessPatches : LoadablePatch {
     private static partial Regex LoadNPCNameRegex();
 
     private static void ApplyStaticModifiers(NPC npc, TownNPCMoodModule moodModule) {
+        //TODO: Add flavor text for new static modifiers
         if (npc.life < npc.lifeMax) {
             moodModule.AddStaticModifier("Injured", LocalizedText.Empty);
         }
