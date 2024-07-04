@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Sets;
 using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -32,6 +33,10 @@ public sealed partial class HappinessPatches : LoadablePatch {
 
         if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && BirthdayParty.CelebratingNPCs.Contains(npc.whoAmI)) {
             moodModule.AddStaticModifier("AtParty", LocalizedText.Empty);
+        }
+
+        if (Main.bloodMoon && TownNPCSets.IrritatedByBloodMoon[npc.type]) {
+            moodModule.AddStaticModifier("IrritatedByBloodMoon", LocalizedText.Empty);
         }
     }
 
