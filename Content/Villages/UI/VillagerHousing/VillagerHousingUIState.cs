@@ -12,63 +12,63 @@ using Terraria.UI;
 namespace LivingWorldMod.Content.Villages.UI.VillagerHousing;
 
 /// <summary>
-/// UIState that handles the visuals of the Housing UI.
+///     UIState that handles the visuals of the Housing UI.
 /// </summary>
 public class VillagerHousingUIState : UIState {
     /// <summary>
-    /// Path to the sprites for this UI.
-    /// </summary>
-    private string HousingTexturePath => $"{LWM.SpritePath}Villages/UI/VillagerHousingUI/";
-
-    /// <summary>
-    /// Whether or not the menu that shows each of the villagers is visible (open).
+    ///     Whether or not the menu that shows each of the villagers is visible (open).
     /// </summary>
     public bool isMenuVisible;
 
     /// <summary>
-    /// The Villager type to currently be showing to the player.
+    ///     The Villager type to currently be showing to the player.
     /// </summary>
     public VillagerType typeToShow;
 
     /// <summary>
-    /// The button that closes/opens the menu showing each of the villagers.
+    ///     The button that closes/opens the menu showing each of the villagers.
     /// </summary>
     public UIBetterImageButton openMenuButton;
 
     /// <summary>
-    /// Button that enumerates to the right (up) when clicked when swapping through villager types.
+    ///     Button that enumerates to the right (up) when clicked when swapping through villager types.
     /// </summary>
     public UIBetterImageButton enumerateRightButton;
 
     /// <summary>
-    /// Button that enumerates to the left (down) when clicked when swapping through villager types.
+    ///     Button that enumerates to the left (down) when clicked when swapping through villager types.
     /// </summary>
     public UIBetterImageButton enumerateLeftButton;
 
     /// <summary>
-    /// Element that exists to center the villager type display text.
+    ///     Element that exists to center the villager type display text.
     /// </summary>
     public UIElement villagerTypeCenterElement;
 
     /// <summary>
-    /// Text that displays what type of villager is currently selected for housing.
+    ///     Text that displays what type of villager is currently selected for housing.
     /// </summary>
     public UIBetterText villagerTypeText;
 
     /// <summary>
-    /// The scroll bar for the grid of villagers.
+    ///     The scroll bar for the grid of villagers.
     /// </summary>
     public UIBetterScrollbar gridScrollbar;
 
     /// <summary>
-    /// The grid of villagers of the specified type that are currently being displayed.
+    ///     The grid of villagers of the specified type that are currently being displayed.
     /// </summary>
     public UIGrid gridOfVillagers;
 
     /// <summary>
-    /// The displacement of the menu icon based on the map and its current mode/placement.
+    ///     The displacement of the menu icon based on the map and its current mode/placement.
     /// </summary>
     private int _mapDisplacement;
+
+    /// <summary>
+    ///     Path to the sprites for this UI.
+    /// </summary>
+    private string HousingTexturePath => $"{LWM.SpritePath}Villages/UI/VillagerHousingUI/";
 
     public override void OnInitialize() {
         typeToShow = VillagerType.Harpy;
@@ -80,17 +80,13 @@ public class VillagerHousingUIState : UIState {
         openMenuButton.ProperOnClick += MenuButtonClicked;
         Append(openMenuButton);
 
-        enumerateRightButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Forward", AssetRequestMode.ImmediateLoad)) {
-            isVisible = false
-        };
+        enumerateRightButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Forward", AssetRequestMode.ImmediateLoad)) { isVisible = false };
         enumerateRightButton.Left.Set(Main.screenWidth - 70f, 0f);
         enumerateRightButton.SetVisibility(1f, 0.7f);
         enumerateRightButton.ProperOnClick += EnumerateTypeButtonClicked;
         Append(enumerateRightButton);
 
-        enumerateLeftButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Back", AssetRequestMode.ImmediateLoad)) {
-            isVisible = false
-        };
+        enumerateLeftButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Back", AssetRequestMode.ImmediateLoad)) { isVisible = false };
         enumerateLeftButton.Left.Set(Main.screenWidth - 190f, 0f);
         enumerateLeftButton.SetVisibility(1f, 0.7f);
         enumerateLeftButton.ProperOnClick += EnumerateTypeButtonClicked;
@@ -102,38 +98,22 @@ public class VillagerHousingUIState : UIState {
         Append(villagerTypeCenterElement);
 
         villagerTypeText = new UIBetterText(Language.GetOrRegister("Mods.LivingWorldMod.VillagerType.Harpy"), 1.1f) {
-            isVisible = false,
-            horizontalTextConstraint = villagerTypeCenterElement.Width.Pixels,
-            HAlign = 0.5f,
-            VAlign = 0.5f
+            isVisible = false, horizontalTextConstraint = villagerTypeCenterElement.Width.Pixels, HAlign = 0.5f, VAlign = 0.5f
         };
         villagerTypeCenterElement.Left.Set(Main.screenWidth - 157f, 0f);
         villagerTypeCenterElement.Append(villagerTypeText);
 
-        gridScrollbar = new UIBetterScrollbar {
-            isVisible = false
-        };
+        gridScrollbar = new UIBetterScrollbar { isVisible = false };
         gridScrollbar.Left.Set(Main.screenWidth - 26f, 0f);
         gridScrollbar.Height.Set(390f, 0f);
         Append(gridScrollbar);
 
-        gridOfVillagers = new UIGrid {
-            ListPadding = 4f
-        };
+        gridOfVillagers = new UIGrid { ListPadding = 4f };
         gridOfVillagers.Left.Set(Main.screenWidth - 196f, 0f);
         gridOfVillagers.Width.Set(160f, 0f);
         gridOfVillagers.Height.Set(gridScrollbar.Height.Pixels, 0f);
         gridOfVillagers.SetScrollbar(gridScrollbar);
         Append(gridOfVillagers);
-    }
-
-    /// <summary>
-    /// Simple method that closes the menu. Public for the parent system to use.
-    /// </summary>
-    public void CloseMenu() {
-        isMenuVisible = false;
-        openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off"));
-        gridOfVillagers.Clear();
     }
 
     protected override void DrawChildren(SpriteBatch spriteBatch) {
@@ -183,6 +163,15 @@ public class VillagerHousingUIState : UIState {
         base.DrawChildren(spriteBatch);
     }
 
+    /// <summary>
+    ///     Simple method that closes the menu. Public for the parent system to use.
+    /// </summary>
+    public void CloseMenu() {
+        isMenuVisible = false;
+        openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off"));
+        gridOfVillagers.Clear();
+    }
+
     private void EnumerateTypeButtonClicked(UIMouseEvent evt, UIElement listeningElement) {
         //Up = true, Down = false
         bool enumerateDirection = listeningElement == enumerateRightButton;
@@ -224,7 +213,7 @@ public class VillagerHousingUIState : UIState {
     }
 
     /// <summary>
-    /// Finds and displays the current villagers in the world of the current type.
+    ///     Finds and displays the current villagers in the world of the current type.
     /// </summary>
     private void DisplayAvailableVillagers() {
         //Clear list for re-displaying

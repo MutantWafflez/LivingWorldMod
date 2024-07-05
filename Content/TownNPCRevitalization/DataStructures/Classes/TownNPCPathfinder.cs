@@ -7,15 +7,23 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 
 /// <summary>
-/// Typical A* pathfinder with the stipulation of gravity for determining adjacent nodes.
-/// Main usage is for Town NPCs.
+///     Typical A* pathfinder with the stipulation of gravity for determining adjacent nodes.
+///     Main usage is for Town NPCs.
 /// </summary>
 /// <remarks>
-/// Inspired by generic C# implementation by Gustavo Franco:
-/// https://www.codeproject.com/articles/15307/a-algorithm-implementation-in-c.
+///     Inspired by generic C# implementation by Gustavo Franco:
+///     https://www.codeproject.com/articles/15307/a-algorithm-implementation-in-c.
 /// </remarks>
 public class TownNPCPathfinder {
     public record struct PathNode(UPoint16 NodePos, UPoint16 ParentNodePos, NodeMovementType MovementType);
+
+    public enum NodeMovementType : byte {
+        PureHorizontal,
+        StepUp,
+        StepDown,
+        Jump,
+        Fall
+    }
 
     private readonly struct TileData(byte weight, TileFlags flags) {
         public readonly byte weight = weight;
@@ -37,49 +45,41 @@ public class TownNPCPathfinder {
         public ref T this[UPoint16 point] => ref grid[point.x, point.y];
     }
 
-    public enum NodeMovementType : byte {
-        PureHorizontal,
-        StepUp,
-        StepDown,
-        Jump,
-        Fall
-    }
-
     [Flags]
     private enum TileFlags : byte {
         Empty = 0,
 
         /// <summary>
-        /// For tiles/spaces that are completely solid, and cannot be moved through.
-        /// This includes non-actuated solid tiles.
+        ///     For tiles/spaces that are completely solid, and cannot be moved through.
+        ///     This includes non-actuated solid tiles.
         /// </summary>
         Solid = 1,
 
         /// <summary>
-        /// For tiles/spaces that can't be navigated through, but aren't necessarily
-        /// solid.
+        ///     For tiles/spaces that can't be navigated through, but aren't necessarily
+        ///     solid.
         /// </summary>
         Impassable = 2,
 
         /// <summary>
-        /// For tiles/spaces that are classified as platforms, and only have collision from the top.
+        ///     For tiles/spaces that are classified as platforms, and only have collision from the top.
         /// </summary>
         Platform = 4,
 
         /// <summary>
-        /// For tiles that can be stepped up if the pathfinder is coming from the right, and moving
-        /// to the left. Vice versa for stepping down.
+        ///     For tiles that can be stepped up if the pathfinder is coming from the right, and moving
+        ///     to the left. Vice versa for stepping down.
         /// </summary>
         CanStepWhenComingFromRight = 8,
 
         /// <summary>
-        /// For tiles that can be stepped up if the pathfinder is coming from the left, and moving
-        /// to the right. Vice versa for stepping down.
+        ///     For tiles that can be stepped up if the pathfinder is coming from the left, and moving
+        ///     to the right. Vice versa for stepping down.
         /// </summary>
         CanStepWhenComingFromLeft = 16,
 
         /// <summary>
-        /// For solid tiles that are in their half-block slope form.
+        ///     For solid tiles that are in their half-block slope form.
         /// </summary>
         HalfTile = 32
     }
@@ -120,6 +120,25 @@ public class TownNPCPathfinder {
         _nodeGrid = new PointGrid<InternalNode>(new InternalNode[_gridSizeX, _gridSizeY]);
         _tileGrid = new PointGrid<TileData>(GenerateTileGrid());
         _openQueue = new PriorityQueue<UPoint16, UPoint16>(Comparer<UPoint16>.Create((pointOne, pointTwo) => _nodeGrid[pointOne].f.CompareTo(_nodeGrid[pointTwo].f)));
+    }
+
+    private static byte GetTileMovementCost(Tile tile) {
+        byte tileCost = 0;
+
+        if (tile.LiquidAmount <= 0) {
+            return tileCost;
+        }
+
+        switch (tile.LiquidType) {
+            case LiquidID.Water:
+                tileCost += 8;
+                break;
+            case LiquidID.Honey:
+                tileCost += 12;
+                break;
+        }
+
+        return tileCost;
     }
 
     public List<PathNode> FindPath(UPoint16 startPoint, UPoint16 endPoint) {
@@ -193,8 +212,7 @@ public class TownNPCPathfinder {
         return grid;
     }
 
-    private bool StartAndEndPointsAreValid() =>
-        RectangleHasNoTiles(_start, _rectSizeX, _rectSizeY)
+    private bool StartAndEndPointsAreValid() => RectangleHasNoTiles(_start, _rectSizeX, _rectSizeY)
         && RectangleHasNoTiles(_end, _rectSizeX, _rectSizeY)
         && PointOnStandableTile(_start, _rectSizeX)
         && PointOnStandableTile(_end, _rectSizeX);
@@ -206,12 +224,7 @@ public class TownNPCPathfinder {
         _currentClosedNodeValue += 2;
         _openQueue.Clear();
 
-        _nodeGrid[_start] = new InternalNode {
-            g = 0,
-            f = ManhattanEstimateTuneValue,
-            parentPos = _start,
-            nodeStatusInteger = _currentOpenNodeValue
-        };
+        _nodeGrid[_start] = new InternalNode { g = 0, f = ManhattanEstimateTuneValue, parentPos = _start, nodeStatusInteger = _currentOpenNodeValue };
 
         _openQueue.Enqueue(_start, _start);
     }
@@ -274,7 +287,7 @@ public class TownNPCPathfinder {
             // Falls
             for (sbyte i = -1; i < 2; i++) {
                 UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y);
-                if (!RectangleHasNoTiles(new UPoint16(nextNodePos.x, nextNodePos.y + 1), _rectSizeX, 1) || i != 0 && !RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
+                if (!RectangleHasNoTiles(new UPoint16(nextNodePos.x, nextNodePos.y + 1), _rectSizeX, 1) || (i != 0 && !RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY))) {
                     continue;
                 }
 
@@ -303,7 +316,7 @@ public class TownNPCPathfinder {
 
                 for (sbyte j = -1; j < 2; j++) {
                     nextNodePos = new UPoint16(curNodePos.x + j, nextNodePos.y);
-                    if (j != 0 && !RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
+                    if ((j != 0 && !RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
                         continue;
                     }
 
@@ -364,6 +377,7 @@ public class TownNPCPathfinder {
                     if (xNodeDiff != 0 && CanStep(curPathNode.NodePos, _rectSizeX, xNodeDiff < 0)) {
                         nextMovementType = NodeMovementType.StepUp;
                     }
+
                     break;
                 }
                 case > 1:
@@ -374,6 +388,7 @@ public class TownNPCPathfinder {
                     if (xNodeDiff != 0 && CanStepDown(parentNodePos, _rectSizeX, xNodeDiff < 0)) {
                         nextMovementType = NodeMovementType.StepDown;
                     }
+
                     break;
                 }
                 default:
@@ -388,25 +403,6 @@ public class TownNPCPathfinder {
         foundPath.Add(curPathNode);
         _pathfindingStopped = true;
         return foundPath;
-    }
-
-    private static byte GetTileMovementCost(Tile tile) {
-        byte tileCost = 0;
-
-        if (tile.LiquidAmount <= 0) {
-            return tileCost;
-        }
-
-        switch (tile.LiquidType) {
-            case LiquidID.Water:
-                tileCost += 8;
-                break;
-            case LiquidID.Honey:
-                tileCost += 12;
-                break;
-        }
-
-        return tileCost;
     }
 
     private bool RectangleHasNoTiles(UPoint16 bottomLeft, ushort sizeX, ushort sizeY) {
@@ -443,16 +439,16 @@ public class TownNPCPathfinder {
         }
     }
 
-    private bool PointOnStandableTile(UPoint16 bottomLeft, ushort rectWidth) => FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth).Any(flags => flags.HasFlag(TileFlags.Solid) || flags.HasFlag(TileFlags.Platform));
+    private bool PointOnStandableTile(UPoint16 bottomLeft, ushort rectWidth) =>
+        FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth).Any(flags => flags.HasFlag(TileFlags.Solid) || flags.HasFlag(TileFlags.Platform));
 
-    private bool PointOnPlatform(UPoint16 bottomLeft, ushort rectWidth, bool stairCheck = false)
-        => FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth)
-            .Any(flags => flags.HasFlag(TileFlags.Platform) && (!stairCheck || !flags.HasFlag(TileFlags.CanStepWhenComingFromLeft) && !flags.HasFlag(TileFlags.CanStepWhenComingFromRight)));
+    private bool PointOnPlatform(UPoint16 bottomLeft, ushort rectWidth, bool stairCheck = false) => FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth)
+        .Any(flags => flags.HasFlag(TileFlags.Platform) && (!stairCheck || (!flags.HasFlag(TileFlags.CanStepWhenComingFromLeft) && !flags.HasFlag(TileFlags.CanStepWhenComingFromRight))));
 
     private bool IsStandingOnHalfTile(UPoint16 bottomLeft, ushort rectWidth) => FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth).Any(flags => flags.HasFlag(TileFlags.HalfTile));
 
-    private bool CanStep(UPoint16 wantedStepPos, ushort rectWidth, bool fromLeft)
-        => FlagsOfTilesRectangleIsOn(wantedStepPos, rectWidth).Any(flags => flags.HasFlag(fromLeft ? TileFlags.CanStepWhenComingFromLeft : TileFlags.CanStepWhenComingFromRight));
+    private bool CanStep(UPoint16 wantedStepPos, ushort rectWidth, bool fromLeft) => FlagsOfTilesRectangleIsOn(wantedStepPos, rectWidth)
+        .Any(flags => flags.HasFlag(fromLeft ? TileFlags.CanStepWhenComingFromLeft : TileFlags.CanStepWhenComingFromRight));
 
     private bool CanStepDown(UPoint16 startNodePos, ushort rectWidth, bool fromLeft) => !PointOnPlatform(startNodePos, rectWidth, true) && CanStep(startNodePos, rectWidth, !fromLeft);
 }

@@ -7,7 +7,7 @@ using Terraria.ModLoader.IO;
 namespace LivingWorldMod.DataStructures.Classes.DebugModules;
 
 /// <summary>
-/// Saves the selected region to a structure file.
+///     Saves the selected region to a structure file.
 /// </summary>
 public class StructureModule : RegionModule {
     protected override void ApplyEffectOnRegion() {

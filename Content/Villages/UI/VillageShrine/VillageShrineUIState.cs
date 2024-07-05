@@ -15,29 +15,9 @@ using Terraria.UI;
 namespace LivingWorldMod.Content.Villages.UI.VillageShrine;
 
 /// <summary>
-/// UIState that handles the UI for the village shrine for each type of village.
+///     UIState that handles the UI for the village shrine for each type of village.
 /// </summary>
 public class VillageShrineUIState : UIState {
-    public VillageShrineEntity CurrentEntity {
-        get {
-            if (TileEntity.ByPosition.ContainsKey(EntityPosition) && TileEntity.ByPosition[EntityPosition] is VillageShrineEntity entity) {
-                return entity;
-            }
-
-            return null;
-        }
-    }
-
-    public Point16 EntityPosition {
-        get;
-        private set;
-    }
-
-    public bool ShowVillageRadius {
-        get;
-        private set;
-    }
-
     public UIPanel backPanel;
 
     public UIPanel itemPanel;
@@ -70,44 +50,49 @@ public class VillageShrineUIState : UIState {
 
     private TimeSpan _timeConverter;
 
+    public VillageShrineEntity CurrentEntity {
+        get {
+            if (TileEntity.ByPosition.ContainsKey(EntityPosition) && TileEntity.ByPosition[EntityPosition] is VillageShrineEntity entity) {
+                return entity;
+            }
+
+            return null;
+        }
+    }
+
+    public Point16 EntityPosition {
+        get;
+        private set;
+    }
+
+    public bool ShowVillageRadius {
+        get;
+        private set;
+    }
+
     public override void OnInitialize() {
         Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
         Asset<Texture2D> gradientPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder");
         Asset<Texture2D> shadowedPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/ShadowedPanelBorder");
 
-        backPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
-            BackgroundColor = new Color(59, 97, 203),
-            BorderColor = Color.White
-        };
+        backPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) { BackgroundColor = new Color(59, 97, 203), BorderColor = Color.White };
         backPanel.Width = backPanel.Height = new StyleDimension(194f, 0f);
         Append(backPanel);
 
-        itemPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) {
-            BackgroundColor = new Color(46, 46, 159),
-            BorderColor = new Color(22, 29, 107)
-        };
+        itemPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) { BackgroundColor = new Color(46, 46, 159), BorderColor = new Color(22, 29, 107) };
         itemPanel.Width = itemPanel.Height = new StyleDimension(48f, 0f);
         itemPanel.SetPadding(0f);
         backPanel.Append(itemPanel);
 
-        respawnItemDisplay = new UIBetterItemIcon(new Item(), 48f, true) {
-            overrideDrawColor = Color.White * 0.45f
-        };
+        respawnItemDisplay = new UIBetterItemIcon(new Item(), 48f, true) { overrideDrawColor = Color.White * 0.45f };
         respawnItemDisplay.Width = respawnItemDisplay.Height = itemPanel.Width;
         itemPanel.Append(respawnItemDisplay);
 
-        respawnItemCount = new UIBetterText("0") {
-            horizontalTextConstraint = itemPanel.Width.Pixels,
-            HAlign = 0.5f,
-            VAlign = 0.85f
-        };
+        respawnItemCount = new UIBetterText("0") { horizontalTextConstraint = itemPanel.Width.Pixels, HAlign = 0.5f, VAlign = 0.85f };
         itemPanel.Append(respawnItemCount);
 
         addRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: Language.GetOrRegister("Mods.LivingWorldMod.UI.Shrine.AddText")) {
-            BackgroundColor = backPanel.BackgroundColor,
-            BorderColor = Color.White,
-            Width = itemPanel.Width,
-            preventItemUsageWhileHovering = true
+            BackgroundColor = backPanel.BackgroundColor, BorderColor = Color.White, Width = itemPanel.Width, preventItemUsageWhileHovering = true
         };
         addRespawnButton.Height.Set(30f, 0f);
         addRespawnButton.Top.Set(itemPanel.Height.Pixels + 4f, 0f);
@@ -131,16 +116,10 @@ public class VillageShrineUIState : UIState {
         respawnTimerZone.Height.Set(itemPanel.Height.Pixels, 0f);
         backPanel.Append(respawnTimerZone);
 
-        respawnTimerHeader = new UIBetterText(Language.GetOrRegister("Mods.LivingWorldMod.UI.Shrine.HarpyCountdown")) {
-            HAlign = 0.5f,
-            horizontalTextConstraint = respawnTimerZone.Width.Pixels
-        };
+        respawnTimerHeader = new UIBetterText(Language.GetOrRegister("Mods.LivingWorldMod.UI.Shrine.HarpyCountdown")) { HAlign = 0.5f, horizontalTextConstraint = respawnTimerZone.Width.Pixels };
         respawnTimerZone.Append(respawnTimerHeader);
 
-        respawnTimer = new UIBetterText("00:00", 0.67f, true) {
-            HAlign = 0.5f,
-            horizontalTextConstraint = respawnTimerZone.Width.Pixels
-        };
+        respawnTimer = new UIBetterText("00:00", 0.67f, true) { HAlign = 0.5f, horizontalTextConstraint = respawnTimerZone.Width.Pixels };
         respawnTimer.Top.Set(respawnTimerHeader.Height.Pixels + 12f, 0f);
         respawnTimerZone.Append(respawnTimer);
 
@@ -163,18 +142,12 @@ public class VillageShrineUIState : UIState {
         takenHouseCountText.Left.Set(takenHouseIcon.Width.Pixels + 2f, 0f);
         backPanel.Append(takenHouseCountText);
 
-        showVillageRadiusButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonFavoriteInactive", AssetRequestMode.ImmediateLoad)) {
-            HAlign = 1f,
-            VAlign = 1f
-        };
+        showVillageRadiusButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonFavoriteInactive", AssetRequestMode.ImmediateLoad)) { HAlign = 1f, VAlign = 1f };
         showVillageRadiusButton.WhileHovering += HoveringVillageRadiusButton;
         showVillageRadiusButton.ProperOnClick += ClickVillagerRadiusButton;
         backPanel.Append(showVillageRadiusButton);
 
-        forceShrineSyncButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonCloudActive", AssetRequestMode.ImmediateLoad)) {
-            HAlign = 1f,
-            VAlign = 1f
-        };
+        forceShrineSyncButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonCloudActive", AssetRequestMode.ImmediateLoad)) { HAlign = 1f, VAlign = 1f };
         forceShrineSyncButton.Left.Set(-showVillageRadiusButton.Width.Pixels - 4, 0f);
         forceShrineSyncButton.WhileHovering += HoveringShrineSyncButton;
         forceShrineSyncButton.ProperOnClick += ClickShrineSyncButton;
@@ -200,18 +173,6 @@ public class VillageShrineUIState : UIState {
         base.Update(gameTime);
     }
 
-    /// <summary>
-    /// Regenerates this UI state with the new passed in shrine entity.
-    /// </summary>
-    /// <param name="entityPos"> The position of the new entity to bind to. </param>
-    public void RegenState(Point16 entityPos) {
-        EntityPosition = entityPos;
-        VillagerType shrineType = CurrentEntity.shrineType;
-
-        respawnItemDisplay.SetItem(LWMUtils.VillagerTypeToRespawnItemType(shrineType));
-        respawnTimerHeader.SetText(Language.GetOrRegister($"Mods.LivingWorldMod.UI.Shrine.{shrineType}Countdown"));
-    }
-
     protected override void DrawSelf(SpriteBatch spriteBatch) {
         CalculatedStyle panelDimensions = backPanel.GetDimensions();
         VillageShrineEntity currentEntity = CurrentEntity;
@@ -226,6 +187,18 @@ public class VillageShrineUIState : UIState {
 
         houseCountText.SetText(currentEntity.CurrentValidHouses.ToString());
         takenHouseCountText.SetText(currentEntity.CurrentHousedVillagersCount.ToString());
+    }
+
+    /// <summary>
+    ///     Regenerates this UI state with the new passed in shrine entity.
+    /// </summary>
+    /// <param name="entityPos"> The position of the new entity to bind to. </param>
+    public void RegenState(Point16 entityPos) {
+        EntityPosition = entityPos;
+        VillagerType shrineType = CurrentEntity.shrineType;
+
+        respawnItemDisplay.SetItem(LWMUtils.VillagerTypeToRespawnItemType(shrineType));
+        respawnTimerHeader.SetText(Language.GetOrRegister($"Mods.LivingWorldMod.UI.Shrine.{shrineType}Countdown"));
     }
 
     private void AddRespawnItem(UIMouseEvent evt, UIElement listeningElement) {

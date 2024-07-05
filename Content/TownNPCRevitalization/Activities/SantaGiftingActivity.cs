@@ -7,7 +7,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 namespace LivingWorldMod.Content.TownNPCRevitalization.Activities;
 
 /// <summary>
-/// Activity where Santa Claus gives a present to some other NPC.
+///     Activity where Santa Claus gives a present to some other NPC.
 /// </summary>
 [Autoload(false)]
 public class SantaGiftingActivity : TownNPCActivity {

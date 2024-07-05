@@ -12,20 +12,18 @@ using Terraria.UI;
 namespace LivingWorldMod.Content.Villages.UI.VillagerShop;
 
 /// <summary>
-/// UIElement class extension that handles and creates portraits for villagers in the shop UI, primarily.
+///     UIElement class extension that handles and creates portraits for villagers in the shop UI, primarily.
 /// </summary>
 public class UIPortrait : UIElement {
     /// <summary>
-    /// Small enum that defines what expression fits with what sprite on the portraits of the shop
-    /// UI.
+    ///     Small enum that defines what expression fits with what sprite on the portraits of the shop
+    ///     UI.
     /// </summary>
     public enum VillagerPortraitExpression {
         Neutral,
         Happy,
         Angered
     }
-
-    private string PortraitSpritePath => $"{LWM.SpritePath}Villages/UI/ShopUI/{_villager.VillagerType}/Portraits/";
 
     public VillagerPortraitExpression temporaryExpression;
     public float temporaryExpressionTimer;
@@ -35,6 +33,8 @@ public class UIPortrait : UIElement {
     private int[] _portraitDrawIndices;
     private VillagerPortraitExpression _currentExpression;
     private Villager _villager;
+
+    private string PortraitSpritePath => $"{LWM.SpritePath}Villages/UI/ShopUI/{_villager.VillagerType}/Portraits/";
 
     public UIPortrait(Villager villager) {
         _villager = villager;
@@ -55,6 +55,28 @@ public class UIPortrait : UIElement {
         }
 
         base.Update(gameTime);
+    }
+
+    protected override void DrawSelf(SpriteBatch spriteBatch) {
+        int frameWidth = _drawObject.GetLayerFrameWidth();
+        int frameHeight = _drawObject.GetLayerFrameHeight();
+
+        Rectangle faceRect = new(0, (int)(temporaryExpressionTimer > 0 ? temporaryExpression : _currentExpression) * frameHeight, frameWidth, frameHeight);
+        DrawData defaultDrawData = new(
+            null,
+            GetDimensions().ToRectangle(),
+            null,
+            Color.White,
+            0f,
+            default(Vector2),
+            SpriteEffects.None
+        );
+
+        _drawObject.Draw(
+            spriteBatch,
+            Enumerable.Repeat(defaultDrawData, _portraitDrawIndices.Length - 1).Append(defaultDrawData with { sourceRect = faceRect }).ToArray(),
+            _portraitDrawIndices
+        );
     }
 
     public void ReloadPortrait(Villager newVillager) {
@@ -95,29 +117,6 @@ public class UIPortrait : UIElement {
             villagerDrawIndices[HarpyVillager.HairIndexID],
             villagerDrawIndices[HarpyVillager.FaceIndexID] * 3 + faceSkinFrame
         ];
-    }
-
-
-    protected override void DrawSelf(SpriteBatch spriteBatch) {
-        int frameWidth = _drawObject.GetLayerFrameWidth();
-        int frameHeight = _drawObject.GetLayerFrameHeight();
-
-        Rectangle faceRect = new(0, (int)(temporaryExpressionTimer > 0 ? temporaryExpression : _currentExpression) * frameHeight, frameWidth, frameHeight);
-        DrawData defaultDrawData = new(
-            null,
-            GetDimensions().ToRectangle(),
-            null,
-            Color.White,
-            0f,
-            default(Vector2),
-            SpriteEffects.None
-        );
-
-        _drawObject.Draw(
-            spriteBatch,
-            Enumerable.Repeat(defaultDrawData, _portraitDrawIndices.Length - 1).Append(defaultDrawData with { sourceRect = faceRect }).ToArray(),
-            _portraitDrawIndices
-        );
     }
 
     private void ClickedElement(UIMouseEvent evt, UIElement listeningElement) {

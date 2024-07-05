@@ -6,9 +6,9 @@ using LivingWorldMod.Utilities;
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 
 /// <summary>
-/// The state where the NPC is standing still and simply occasionally
-/// looking left and right. This state is the one all Town NPCs will be
-/// in if they have absolutely nothing to do.
+///     The state where the NPC is standing still and simply occasionally
+///     looking left and right. This state is the one all Town NPCs will be
+///     in if they have absolutely nothing to do.
 /// </summary>
 public class DefaultAIState : TownNPCAIState {
     public override int ReservedStateInteger => 0;
@@ -23,7 +23,7 @@ public class DefaultAIState : TownNPCAIState {
             return;
         }
 
-        if (LWM.IsDebug && ModContent.GetInstance<DebugConfig>().guaranteedWanderOffCooldown || Main.rand.NextBool(4, 10)) {
+        if ((LWM.IsDebug && ModContent.GetInstance<DebugConfig>().guaranteedWanderOffCooldown) || Main.rand.NextBool(4, 10)) {
             TownGlobalNPC.RefreshToState<WalkToRandomPosState>(npc);
             return;
         }

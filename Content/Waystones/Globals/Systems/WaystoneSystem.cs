@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 namespace LivingWorldMod.Content.Waystones.Globals.Systems;
 
 /// <summary>
-/// ModSystem that helps with client-side Waystone functionality.
+///     ModSystem that helps with client-side Waystone functionality.
 /// </summary>
 [Autoload(Side = ModSide.Client)]
 public class WaystoneSystem : BaseModSystem<WaystoneSystem> {
@@ -22,7 +22,7 @@ public class WaystoneSystem : BaseModSystem<WaystoneSystem> {
     }
 
     /// <summary>
-    /// Adds a new activation entity at the specified location. Remember the center is in WORLD coordinates (not tiles).
+    ///     Adds a new activation entity at the specified location. Remember the center is in WORLD coordinates (not tiles).
     /// </summary>
     /// <param name="entityCenter"> The center of the entity. </param>
     /// <param name="waystoneColor"> The color of the Waystone in question. </param>

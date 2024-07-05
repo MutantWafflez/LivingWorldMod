@@ -22,6 +22,7 @@ public class ReleaseLanternActivity : TownNPCActivity {
                         0
                     );
                 }
+
                 break;
             }
             case 1f when ++npc.ai[2] > 90:

@@ -16,8 +16,7 @@ public class EventPreferenceTrait(params EventPreferenceTrait.EventPreference[] 
     public record struct EventPreference(AffectionLevel AffectionLevel, string EventName);
 
     private static readonly Dictionary<string, ActiveEvent> ActiveEventFunctions = new() {
-        { "Party", helperInfo => BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && BirthdayParty.CelebratingNPCs.Contains(helperInfo.npc.type) },
-        { "BloodMoon", _ => Main.bloodMoon }
+        { "Party", helperInfo => BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && BirthdayParty.CelebratingNPCs.Contains(helperInfo.npc.type) }, { "BloodMoon", _ => Main.bloodMoon }
     };
 
     private readonly List<EventPreference> _preferences = [..preferences];

@@ -8,9 +8,8 @@ using ReLogic.Content;
 namespace LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Blocks;
 
 public class SunslabBlockTile : BaseTile {
-    public override Color? TileColorOnMap => Color.Yellow;
-
     private Asset<Texture2D> _baseTexture;
+    public override Color? TileColorOnMap => Color.Yellow;
 
     public override void SetStaticDefaults() {
         Main.tileSolid[Type] = true;
@@ -202,10 +201,17 @@ public class SunslabBlockTile : BaseTile {
         }
 
         if (verticalFrame >= 16) {
-            Main.spriteBatch.Draw(_baseTexture.Value,
+            Main.spriteBatch.Draw(
+                _baseTexture.Value,
                 new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + additionalDisplacement,
                 new Rectangle(thisTile.TileFrameX, 18 * verticalFrame, 16, 16),
-                Lighting.GetColor(i, j), 0f, default(Vector2), 1f, SpriteEffects.None, 0f);
+                Lighting.GetColor(i, j),
+                0f,
+                default(Vector2),
+                1f,
+                SpriteEffects.None,
+                0f
+            );
         }
     }
 }

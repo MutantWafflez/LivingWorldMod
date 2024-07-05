@@ -8,24 +8,24 @@ using Terraria.DataStructures;
 namespace LivingWorldMod.Content.Villages.Globals.PacketHandlers;
 
 /// <summary>
-/// PacketHandler that handles all packet functionality in relation to Village Shrines.
+///     PacketHandler that handles all packet functionality in relation to Village Shrines.
 /// </summary>
 public class ShrinePacketHandler : PacketHandler {
     /// <summary>
-    /// Sent/Received when a player with a shrine UI open wants to add a new respawn item to the
-    /// shrine's inventory.
+    ///     Sent/Received when a player with a shrine UI open wants to add a new respawn item to the
+    ///     shrine's inventory.
     /// </summary>
     public const byte AddRespawnItem = 0;
 
     /// <summary>
-    /// Sent/Received when a player with a shrine UI open wants to take a respawn item from the
-    /// shrine's inventory.
+    ///     Sent/Received when a player with a shrine UI open wants to take a respawn item from the
+    ///     shrine's inventory.
     /// </summary>
     public const byte TakeRespawnItem = 1;
 
     /// <summary>
-    /// Sent by the client when a player with a shrine UI open wants the Server to resync the
-    /// housing for said shrine.
+    ///     Sent by the client when a player with a shrine UI open wants the Server to resync the
+    ///     housing for said shrine.
     /// </summary>
     public const byte TriggerForceSync = 2;
 
@@ -69,6 +69,7 @@ public class ShrinePacketHandler : PacketHandler {
                         }
                     }
                 }
+
                 break;
             case TakeRespawnItem:
                 if (Main.netMode == NetmodeID.Server) {
@@ -109,6 +110,7 @@ public class ShrinePacketHandler : PacketHandler {
                         }
                     }
                 }
+
                 break;
             case TriggerForceSync:
                 if (Main.netMode == NetmodeID.Server) {
@@ -121,6 +123,7 @@ public class ShrinePacketHandler : PacketHandler {
                         ModContent.GetInstance<LWM>().Logger.Error($"TriggerForceSync received, but got invalid/no entity at position: {entityPos}");
                     }
                 }
+
                 break;
             default:
                 ModContent.GetInstance<LWM>().Logger.Warn($"Invalid ShrinePacketHandler Packet Type of {packetType}");

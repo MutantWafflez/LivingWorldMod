@@ -98,7 +98,7 @@ public class TownGlobalNPC : GlobalNPC {
         bool foundTileToStandOn = false;
         for (int i = 0; i < (int)Math.Ceiling(npc.width / 16f); i++) {
             Tile floorTile = Main.tile[tilePos + new Point(i, 1)];
-            if (!floorTile.HasUnactuatedTile || floorTile.IsHalfBlock || !Main.tileSolidTop[floorTile.TileType] && !Main.tileSolid[floorTile.TileType]) {
+            if (!floorTile.HasUnactuatedTile || floorTile.IsHalfBlock || (!Main.tileSolidTop[floorTile.TileType] && !Main.tileSolid[floorTile.TileType])) {
                 continue;
             }
 
@@ -129,12 +129,12 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => lateInstantiation
-                                                                                && entity.aiStyle == NPCAIStyleID.Passive
-                                                                                && entity.townNPC
-                                                                                && !NPCID.Sets.IsTownPet[entity.type]
-                                                                                && !NPCID.Sets.IsTownSlime[entity.type]
-                                                                                && entity.type != NPCID.OldMan
-                                                                                && entity.type != NPCID.TravellingMerchant;
+        && entity.aiStyle == NPCAIStyleID.Passive
+        && entity.townNPC
+        && !NPCID.Sets.IsTownPet[entity.type]
+        && !NPCID.Sets.IsTownSlime[entity.type]
+        && entity.type != NPCID.OldMan
+        && entity.type != NPCID.TravellingMerchant;
 
     public override void Load() {
         TownNPCCombatModule.Load();
@@ -145,12 +145,14 @@ public class TownGlobalNPC : GlobalNPC {
             return;
         }
 
-        Main.QueueMainThreadAction(() => {
-            foreach ((Texture2D talkTexture, Texture2D blinkTexture) in talkBlinkOverlays.Values) {
-                talkTexture.Dispose();
-                blinkTexture.Dispose();
+        Main.QueueMainThreadAction(
+            () => {
+                foreach ((Texture2D talkTexture, Texture2D blinkTexture) in talkBlinkOverlays.Values) {
+                    talkTexture.Dispose();
+                    blinkTexture.Dispose();
+                }
             }
-        });
+        );
     }
 
     public override void SetStaticDefaults() {
@@ -248,6 +250,7 @@ public class TownGlobalNPC : GlobalNPC {
         if (_stateDict.TryGetValue((int)npc.ai[0], out TownNPCAIState state)) {
             state.PostDrawNPC(this, npc, spriteBatch, screenPos, drawColor);
         }
+
         SpriteModule.DrawNPCOverlays(spriteBatch, screenPos, drawColor);
         ChatModule.DoChatDrawing(spriteBatch, screenPos, drawColor);
 

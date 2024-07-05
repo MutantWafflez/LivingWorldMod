@@ -17,9 +17,11 @@ public class NPCChatGUIPatches : LoadablePatch {
 
         c.GotoNext(i => i.MatchLdsfld<Main>(nameof(Main.npcChatFocus4)));
         c.GotoNext(i => i.MatchRet());
-        c.EmitDelegate(() => {
-            Main.npcChatText = "";
-            ModContent.GetInstance<HappinessUISystem>().OpenHappinessState(Main.LocalPlayer.TalkNPC);
-        });
+        c.EmitDelegate(
+            () => {
+                Main.npcChatText = "";
+                ModContent.GetInstance<HappinessUISystem>().OpenHappinessState(Main.LocalPlayer.TalkNPC);
+            }
+        );
     }
 }

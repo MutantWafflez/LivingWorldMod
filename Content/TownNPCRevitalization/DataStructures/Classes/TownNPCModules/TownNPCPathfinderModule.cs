@@ -26,14 +26,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     private const int MaxPathRecyclesBeforeFailure = 5;
 
-    public static int PathfinderSize => ModContent.GetInstance<TownNPCConfig>().pathfinderSize;
-
-    public bool IsPathfinding => _currentPathfinderResult is not null;
-
-    public Point BottomLeftTileOfNPC => (npc.BottomLeft + new Vector2(0f, -2f)).ToTileCoordinates();
-
-    public Point TopLeftOfPathfinderZone => BottomLeftTileOfNPC - new Point(PathfinderSize / 2, PathfinderSize / 2);
-
     private readonly List<PathfinderResult> _cachedResults;
 
     private float _prevDistanceToNextNode;
@@ -46,8 +38,37 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     private TownNPCPathfinder _cachedPathfinder;
     private PathfinderResult _currentPathfinderResult;
 
+    public static int PathfinderSize => ModContent.GetInstance<TownNPCConfig>().pathfinderSize;
+
+    public bool IsPathfinding => _currentPathfinderResult is not null;
+
+    public Point BottomLeftTileOfNPC => (npc.BottomLeft + new Vector2(0f, -2f)).ToTileCoordinates();
+
+    public Point TopLeftOfPathfinderZone => BottomLeftTileOfNPC - new Point(PathfinderSize / 2, PathfinderSize / 2);
+
     public TownNPCPathfinderModule(NPC npc) : base(npc) {
         _cachedResults = [];
+    }
+
+    private static void PrunePath(IList<PathNode> path) {
+        if (LWM.IsDebug && ModContent.GetInstance<DebugConfig>().disablePathPruning) {
+            return;
+        }
+
+        List<int> indicesToBeRemoved = [];
+        for (int i = path.Count - 2; i > 0; i--) {
+            PathNode prevNode = path[i + 1];
+            PathNode curNode = path[i];
+
+            if (curNode.MovementType == NodeMovementType.PureHorizontal && prevNode.MovementType == NodeMovementType.PureHorizontal) {
+                indicesToBeRemoved.Add(i);
+            }
+        }
+
+        int removalCount = 0;
+        for (int i = indicesToBeRemoved.Count - 1; i >= 0; i--) {
+            path.RemoveAt(indicesToBeRemoved[i] - removalCount++);
+        }
     }
 
     public override void Update() {
@@ -94,6 +115,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         else {
             _notMakingProgressCounter = 0;
         }
+
         _prevDistanceToNextNode = curDistanceToNextNode;
 
         Vector2 nextNodeCenter = (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates();
@@ -216,7 +238,11 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
                 _ => Color.White
             };
 
-            spriteBatch.Draw(TextureAssets.Extra[66].Value, _currentPathfinderResult.topLeftOfGrid.ToWorldCoordinates(2f, 2.5f) + new Vector2(node.NodePos.x, node.NodePos.y).ToWorldCoordinates(0f, 0f) - screenPos, nodeColor);
+            spriteBatch.Draw(
+                TextureAssets.Extra[66].Value,
+                _currentPathfinderResult.topLeftOfGrid.ToWorldCoordinates(2f, 2.5f) + new Vector2(node.NodePos.x, node.NodePos.y).ToWorldCoordinates(0f, 0f) - screenPos,
+                nodeColor
+            );
         }
     }
 
@@ -247,7 +273,10 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
                     NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 1, npc.doorX, npc.doorY, npc.direction);
                 }
 
-                if ((npc.position.X + npc.width / 2f) / 16f > npc.doorX + 4 || (npc.position.X + npc.width / 2f) / 16f < npc.doorX - 4 || (npc.position.Y + npc.height / 2f) / 16f > npc.doorY + 4 || (npc.position.Y + npc.height / 2f) / 16f < npc.doorY - 4) {
+                if ((npc.position.X + npc.width / 2f) / 16f > npc.doorX + 4
+                    || (npc.position.X + npc.width / 2f) / 16f < npc.doorX - 4
+                    || (npc.position.Y + npc.height / 2f) / 16f > npc.doorY + 4
+                    || (npc.position.Y + npc.height / 2f) / 16f < npc.doorY - 4) {
                     npc.closeDoor = false;
                 }
             }
@@ -257,7 +286,10 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
                     NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 5, npc.doorX, npc.doorY);
                 }
 
-                if ((npc.position.X + npc.width / 2f) / 16f > npc.doorX + 4 || (npc.position.X + npc.width / 2f) / 16f < npc.doorX - 4 || (npc.position.Y + npc.height / 2f) / 16f > npc.doorY + 4 || (npc.position.Y + npc.height / 2f) / 16f < npc.doorY - 4) {
+                if ((npc.position.X + npc.width / 2f) / 16f > npc.doorX + 4
+                    || (npc.position.X + npc.width / 2f) / 16f < npc.doorX - 4
+                    || (npc.position.Y + npc.height / 2f) / 16f > npc.doorY + 4
+                    || (npc.position.Y + npc.height / 2f) / 16f < npc.doorY - 4) {
                     npc.closeDoor = false;
                 }
             }
@@ -270,7 +302,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         Point headTilePos = new((int)((npc.position.X + npc.width / 2f + 15 * npc.direction) / 16f), (int)((npc.position.Y + npc.height - 16f) / 16f) - 2);
         Tile topTile = Framing.GetTileSafely(headTilePos.X, headTilePos.Y);
 
-        if (!topTile.HasUnactuatedTile || !TileLoader.IsClosedDoor(topTile) && topTile.TileType != TileID.TallGateClosed || Main.netMode == NetmodeID.MultiplayerClient) {
+        if (!topTile.HasUnactuatedTile || (!TileLoader.IsClosedDoor(topTile) && topTile.TileType != TileID.TallGateClosed) || Main.netMode == NetmodeID.MultiplayerClient) {
             return;
         }
 
@@ -354,27 +386,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     }
 
     private float GetDistanceToNode(PathNode nextNode) => npc.BottomLeft.Distance((_currentPathfinderResult.topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates());
-
-    private static void PrunePath(IList<PathNode> path) {
-        if (LWM.IsDebug && ModContent.GetInstance<DebugConfig>().disablePathPruning) {
-            return;
-        }
-
-        List<int> indicesToBeRemoved = [];
-        for (int i = path.Count - 2; i > 0; i--) {
-            PathNode prevNode = path[i + 1];
-            PathNode curNode = path[i];
-
-            if (curNode.MovementType == NodeMovementType.PureHorizontal && prevNode.MovementType == NodeMovementType.PureHorizontal) {
-                indicesToBeRemoved.Add(i);
-            }
-        }
-
-        int removalCount = 0;
-        for (int i = indicesToBeRemoved.Count - 1; i >= 0; i--) {
-            path.RemoveAt(indicesToBeRemoved[i] - removalCount++);
-        }
-    }
 
     private void EndPathfinding() {
         _prevDistanceToNextNode = float.MaxValue;

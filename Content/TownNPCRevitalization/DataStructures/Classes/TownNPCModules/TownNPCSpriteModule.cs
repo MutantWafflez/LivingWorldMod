@@ -8,11 +8,20 @@ using Terraria.GameContent;
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
 /// <summary>
-/// Module for Town NPCs that deal with drawing related tasks.
+///     Module for Town NPCs that deal with drawing related tasks.
 /// </summary>
 public sealed class TownNPCSpriteModule : TownNPCModule {
     private const int GivingAnimationDuration = (int)(LWMUtils.RealLifeSecond * 1.5f);
     private const int EyelidClosedDuration = 15;
+
+    private readonly Texture2D _blinkTexture;
+
+    private readonly HashSet<Texture2D> _drawSet;
+
+    private int _blinkTimer;
+
+    private int _givingTimer;
+    private int _givingItemType;
 
     public bool IsBlinking {
         get;
@@ -23,15 +32,6 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         get;
         private set;
     }
-
-    private readonly Texture2D _blinkTexture;
-
-    private readonly HashSet<Texture2D> _drawSet;
-
-    private int _blinkTimer;
-
-    private int _givingTimer;
-    private int _givingItemType;
 
     public TownNPCSpriteModule(NPC npc, Texture2D blinkTexture) : base(npc) {
         _blinkTexture = blinkTexture;

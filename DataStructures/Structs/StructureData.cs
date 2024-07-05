@@ -6,8 +6,8 @@ using Terraria.ModLoader.IO;
 namespace LivingWorldMod.DataStructures.Structs;
 
 /// <summary>
-/// Struct that holds the data for a specified structure, used for loading and saving structures
-/// from files to generate in the world.
+///     Struct that holds the data for a specified structure, used for loading and saving structures
+///     from files to generate in the world.
 /// </summary>
 public readonly struct StructureData : TagSerializable {
     public static readonly Func<TagCompound, StructureData> DESERIALIZER = Deserialize;

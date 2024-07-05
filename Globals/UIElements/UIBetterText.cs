@@ -9,11 +9,41 @@ using Terraria.UI;
 namespace LivingWorldMod.Globals.UIElements;
 
 /// <summary>
-/// Slightly better version of UIText that will properly scale based on width specified in a
-/// different parameter rather than using InnerDimensions, and other better functionality.
-/// Mostly mimics vanilla's UIText though.
+///     Slightly better version of UIText that will properly scale based on width specified in a
+///     different parameter rather than using InnerDimensions, and other better functionality.
+///     Mostly mimics vanilla's UIText though.
 /// </summary>
 public class UIBetterText : UIElement {
+    /// <summary>
+    ///     If set to a value greater than zero, it will constrain the text to fix within the value
+    ///     set, in pixels. Replaces DynamicallyScaleDownToWidth in UIText.
+    /// </summary>
+    public float horizontalTextConstraint;
+
+    /// <summary>
+    ///     Tells how far the text can be drawn before wrapping around to the next line. Measured in
+    ///     pixels. Only works if isWrapped is true.
+    /// </summary>
+    public float horizontalWrapConstraint;
+
+    /// <summary>
+    ///     Whether or not this element is visible or not, basically meaning whether or not it will
+    ///     be drawn or not. Defaults to true.
+    /// </summary>
+    public bool isVisible = true;
+
+    private object _innerText = "";
+
+    private float _initialTextScale = 1f;
+    private float _dynamicTextScale = 1f;
+    private Vector2 _initialTextSize = Vector2.Zero;
+    private Vector2 _dynamicTextSize = Vector2.Zero;
+
+    private bool _isLarge;
+    private bool _isWrapped;
+
+    private string _visibleText;
+    private string _lastTextReference;
     public string Text => _innerText is LocalizedText translation ? translation.Value : _innerText.ToString();
 
     public float TextOriginX {
@@ -44,37 +74,6 @@ public class UIBetterText : UIElement {
         set;
     } = Color.White;
 
-    /// <summary>
-    /// If set to a value greater than zero, it will constrain the text to fix within the value
-    /// set, in pixels. Replaces DynamicallyScaleDownToWidth in UIText.
-    /// </summary>
-    public float horizontalTextConstraint;
-
-    /// <summary>
-    /// Tells how far the text can be drawn before wrapping around to the next line. Measured in
-    /// pixels. Only works if isWrapped is true.
-    /// </summary>
-    public float horizontalWrapConstraint;
-
-    /// <summary>
-    /// Whether or not this element is visible or not, basically meaning whether or not it will
-    /// be drawn or not. Defaults to true.
-    /// </summary>
-    public bool isVisible = true;
-
-    private object _innerText = "";
-
-    private float _initialTextScale = 1f;
-    private float _dynamicTextScale = 1f;
-    private Vector2 _initialTextSize = Vector2.Zero;
-    private Vector2 _dynamicTextSize = Vector2.Zero;
-
-    private bool _isLarge;
-    private bool _isWrapped;
-
-    private string _visibleText;
-    private string _lastTextReference;
-
     public UIBetterText(string text = "", float textScale = 1f, bool large = false) {
         TextOriginX = 0.5f;
         TextOriginY = 0f;
@@ -94,14 +93,6 @@ public class UIBetterText : UIElement {
     public override void Recalculate() {
         InternalSetText(Text, _initialTextScale, _isLarge);
         base.Recalculate();
-    }
-
-    public void SetText(string text, float scaledText = 0f, bool? large = null) {
-        InternalSetText(text, scaledText == 0f ? _initialTextScale : scaledText, large ?? _isLarge);
-    }
-
-    public void SetText(LocalizedText text, float scaledText = 0f, bool? large = null) {
-        InternalSetText(text, scaledText == 0f ? _initialTextScale : scaledText, large ?? _isLarge);
     }
 
     protected override void DrawSelf(SpriteBatch spriteBatch) {
@@ -133,6 +124,14 @@ public class UIBetterText : UIElement {
         }
     }
 
+    public void SetText(string text, float scaledText = 0f, bool? large = null) {
+        InternalSetText(text, scaledText == 0f ? _initialTextScale : scaledText, large ?? _isLarge);
+    }
+
+    public void SetText(LocalizedText text, float scaledText = 0f, bool? large = null) {
+        InternalSetText(text, scaledText == 0f ? _initialTextScale : scaledText, large ?? _isLarge);
+    }
+
     private void VerifyTextState() {
         if (!ReferenceEquals(_lastTextReference, Text)) {
             InternalSetText(Text, _initialTextScale, _isLarge);
@@ -156,7 +155,9 @@ public class UIBetterText : UIElement {
 
         if (horizontalTextConstraint > 0f && _initialTextSize.X > horizontalTextConstraint) {
             _dynamicTextScale *= horizontalTextConstraint / _initialTextSize.X;
-            _dynamicTextSize = !IsWrapped ? new Vector2(stringSize.X, _isLarge ? 32f : 16f) * _dynamicTextScale : new Vector2(stringSize.X, stringSize.Y + WrappedTextBottomPadding) * _dynamicTextScale;
+            _dynamicTextSize = !IsWrapped
+                ? new Vector2(stringSize.X, _isLarge ? 32f : 16f) * _dynamicTextScale
+                : new Vector2(stringSize.X, stringSize.Y + WrappedTextBottomPadding) * _dynamicTextScale;
         }
         else {
             _dynamicTextScale = _initialTextScale;

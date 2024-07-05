@@ -6,7 +6,7 @@ namespace LivingWorldMod.Utilities;
 // Utilities class that holds methods that pertains to players.
 public static partial class LWMUtils {
     /// <summary>
-    /// Calculates and returns the entirety of the savings of the player in all applicable inventories.
+    ///     Calculates and returns the entirety of the savings of the player in all applicable inventories.
     /// </summary>
     /// <param name="player"> </param>
     /// <returns> </returns>
@@ -23,10 +23,10 @@ public static partial class LWMUtils {
     }
 
     /// <summary>
-    /// Get all Players that meet the passed in predicate.
+    ///     Get all Players that meet the passed in predicate.
     /// </summary>
     /// <remarks>
-    /// Note that <see cref="Player.active"/> is checked by default, along-side the predicate.
+    ///     Note that <see cref="Player.active" /> is checked by default, along-side the predicate.
     /// </remarks>
     public static List<Player> GetAllPlayers(Predicate<Player> predicate) {
         List<Player> players = [];

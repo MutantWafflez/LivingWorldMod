@@ -97,6 +97,7 @@ public class StarTorchItem : BaseItem {
         if (Main.rand.NextBool(player.itemAnimation > 0 ? 40 : 80)) {
             Dust.NewDust(new Vector2(player.itemLocation.X + 16f * player.direction, player.itemLocation.Y - 14f * player.gravDir), 4, 4, DustID.YellowStarDust);
         }
+
         Vector2 position = player.RotatedRelativePoint(new Vector2(player.itemLocation.X + 12f * player.direction + player.velocity.X, player.itemLocation.Y - 14f + player.velocity.Y), true);
         Lighting.AddLight(position, BlockLightSystem.Instance.starTorchColor.ToVector3());
     }

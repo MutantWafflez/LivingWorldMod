@@ -23,7 +23,6 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     private static Dictionary<string, MoodModifier> _moodModifiers;
     private static Dictionary<string, LocalizedText> _defaultFlavorTexts;
 
-
     private readonly List<MoodModifierInstance> _currentStaticMoodModifiers;
     private readonly List<MoodModifierInstance> _currentDynamicMoodModifiers;
 
@@ -31,7 +30,11 @@ public sealed class TownNPCMoodModule : TownNPCModule {
 
     public IReadOnlyList<MoodModifierInstance> CurrentStaticMoodModifiers => _currentStaticMoodModifiers;
 
-    public float CurrentMood => Utils.Clamp(BaseMoodValue + _currentDynamicMoodModifiers.Concat(_currentStaticMoodModifiers).Sum(modifier => modifier.modifierType.MoodOffset), MinMoodValue, MaxMoodValue);
+    public float CurrentMood => Utils.Clamp(
+        BaseMoodValue + _currentDynamicMoodModifiers.Concat(_currentStaticMoodModifiers).Sum(modifier => modifier.modifierType.MoodOffset),
+        MinMoodValue,
+        MaxMoodValue
+    );
 
     public TownNPCMoodModule(NPC npc) : base(npc) {
         _currentStaticMoodModifiers = [];
@@ -49,10 +52,12 @@ public sealed class TownNPCMoodModule : TownNPCModule {
 
         JsonObject jsonEventPreferenceValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCEventPreferences.json").Qo();
         foreach ((string npcName, JsonValue eventData) in jsonEventPreferenceValues) {
-            Main.ShopHelper._database.Register(NPCID.Search.GetId(npcName), new EventPreferenceTrait(
+            Main.ShopHelper._database.Register(
+                NPCID.Search.GetId(npcName),
+                new EventPreferenceTrait(
                     eventData.Qo()
-                             .Select(keyPair => new EventPreferenceTrait.EventPreference(Enum.Parse<AffectionLevel>(keyPair.Value), keyPair.Key))
-                             .ToArray()
+                        .Select(keyPair => new EventPreferenceTrait.EventPreference(Enum.Parse<AffectionLevel>(keyPair.Value), keyPair.Key))
+                        .ToArray()
                 )
             );
         }

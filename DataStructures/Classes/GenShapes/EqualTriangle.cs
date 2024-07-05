@@ -4,7 +4,7 @@ using Terraria.WorldBuilding;
 namespace LivingWorldMod.DataStructures.Classes.GenShapes;
 
 /// <summary>
-/// GenShape that generates an "equilateral" triangle with the passed in side length.
+///     GenShape that generates an "equilateral" triangle with the passed in side length.
 /// </summary>
 public class EqualTriangle : GenShape {
     private readonly int _sideLength;
@@ -27,12 +27,14 @@ public class EqualTriangle : GenShape {
                     return false;
                 }
             }
+
             //Do action on the right side of the center
             for (; x <= layerWidthExcludingCenter + (hasCenter ? 0 : 1); x++) {
                 if (!UnitApply(action, origin, origin.X + x, origin.Y + y)) {
                     return false;
                 }
             }
+
             //Increase length on both sides
             layerWidthExcludingCenter++;
 

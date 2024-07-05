@@ -1,7 +1,7 @@
 ﻿namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 
 /// <summary>
-/// Struct holding data for Town NPC attacks where a projectile is created.
+///     Struct holding data for Town NPC attacks where a projectile is created.
 /// </summary>
 public struct TownNPCProjAttackData {
     public int projType;
@@ -15,7 +15,18 @@ public struct TownNPCProjAttackData {
     public float dangerDetectRange;
     public float randomOffset;
 
-    public TownNPCProjAttackData(int projType, int projDamage, float knockBack, float speedMult, int attackDelay, int attackCooldown, int maxValue, float gravityCorrection, float dangerDetectRange, float randomOffset) {
+    public TownNPCProjAttackData(
+        int projType,
+        int projDamage,
+        float knockBack,
+        float speedMult,
+        int attackDelay,
+        int attackCooldown,
+        int maxValue,
+        float gravityCorrection,
+        float dangerDetectRange,
+        float randomOffset
+    ) {
         this.projType = projType;
         this.projDamage = projDamage;
         this.knockBack = knockBack;

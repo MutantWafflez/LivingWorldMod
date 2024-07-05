@@ -6,7 +6,7 @@ using LivingWorldMod.Utilities;
 namespace LivingWorldMod.Content.Villages.Globals.NPCs;
 
 /// <summary>
-/// Simple GlobalNPC that prevents spawning if the player is within a village.
+///     Simple GlobalNPC that prevents spawning if the player is within a village.
 /// </summary>
 public class VillageSpawnPreventionNPC : GlobalNPC {
     public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo) {

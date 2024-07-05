@@ -6,7 +6,7 @@ using Terraria.DataStructures;
 namespace LivingWorldMod.DataStructures.Classes.DebugModules;
 
 /// <summary>
-/// Abstract module used for applying effects to a certain region of tiles.
+///     Abstract module used for applying effects to a certain region of tiles.
 /// </summary>
 public abstract class RegionModule : DebugModule {
     protected Point16 topLeft = Point16.NegativeOne;
@@ -20,10 +20,12 @@ public abstract class RegionModule : DebugModule {
             topLeft = new Point16((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
             Main.NewText("Top Left Set to: " + topLeft.X + ", " + topLeft.Y);
         }
+
         if (pressedKeys.Contains(Keys.NumPad2)) {
             bottomRight = new Point16((int)(Main.MouseWorld.X / 16f), (int)(Main.MouseWorld.Y / 16f));
             Main.NewText("Bottom Right Set to: " + bottomRight.X + ", " + bottomRight.Y);
         }
+
         if (pressedKeys.Contains(Keys.NumPad3) && !_isDoingEffect && topLeft != Point16.NegativeOne && bottomRight != Point16.NegativeOne) {
             Main.NewText("Applying Effect...");
             _isDoingEffect = true;
@@ -39,8 +41,8 @@ public abstract class RegionModule : DebugModule {
     }
 
     /// <summary>
-    /// This is where you apply the effects on the square region once the
-    /// NumPad3 key is pressed.
+    ///     This is where you apply the effects on the square region once the
+    ///     NumPad3 key is pressed.
     /// </summary>
     protected abstract void ApplyEffectOnRegion();
 }

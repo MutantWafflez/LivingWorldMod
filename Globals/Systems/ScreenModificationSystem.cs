@@ -5,8 +5,8 @@ using Microsoft.Xna.Framework;
 namespace LivingWorldMod.Globals.Systems;
 
 /// <summary>
-/// System that handles client-side changes to the screen, whether that be zooming, transforming,
-/// changing lighting, or applying screen-wide shaders.
+///     System that handles client-side changes to the screen, whether that be zooming, transforming,
+///     changing lighting, or applying screen-wide shaders.
 /// </summary>
 [Autoload(Side = ModSide.Client)]
 public class ScreenModificationSystem : BaseModSystem<ScreenModificationSystem> {

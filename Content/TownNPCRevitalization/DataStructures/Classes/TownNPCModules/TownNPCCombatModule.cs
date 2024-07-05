@@ -55,6 +55,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
                 (float)jsonObject.Qd("randomOffset")
             );
         }
+
         projAttackData = projDict;
 
         Dictionary<int, TownNPCMeleeAttackData> meleeDict = [];
@@ -71,6 +72,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
                 jsonObject.Qi("itemHeight")
             );
         }
+
         meleeAttackData = meleeDict;
     }
 
@@ -107,7 +109,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
                 || otherNPC.friendly
                 || otherNPC.damage <= 0
                 || !(distanceToNPC < dangerDetectRange)
-                || !otherNPC.noTileCollide && !Collision.CanHit(npc.Center, 0, 0, otherNPC.Center, 0, 0)) {
+                || (!otherNPC.noTileCollide && !Collision.CanHit(npc.Center, 0, 0, otherNPC.Center, 0, 0))) {
                 continue;
             }
 
@@ -132,6 +134,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
         if (--npc.localAI[1] > 0) {
             return;
         }
+
         npc.localAI[1] = 0;
 
         if (!enemyNearby

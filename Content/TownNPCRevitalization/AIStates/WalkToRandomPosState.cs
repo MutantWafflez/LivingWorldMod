@@ -24,9 +24,10 @@ public class WalkToRandomPosState : TownNPCAIState {
                 if (LWMUtils.DropUntilCondition(
                         ValidWanderPoint,
                         pathfinderModule.BottomLeftTileOfNPC + displacement,
-                        maxTileThreshold + 1) is not { } point
+                        maxTileThreshold + 1
+                    ) is not { } point
                     || !pathfinderModule.HasPath(point + new Point(0, -1))
-                   ) {
+                ) {
                     continue;
                 }
 
@@ -57,11 +58,12 @@ public class WalkToRandomPosState : TownNPCAIState {
             if (!(tile.HasUnactuatedTile && (Main.tileSolidTop[tile.TileType] || Main.tileSolid[tile.TileType]))) {
                 return false;
             }
+
             int npcTileHeight = (int)Math.Ceiling(npc.height / 16f);
             for (int i = 0; i < npcTileHeight; i++) {
                 point.Y--;
                 Tile upTile = Main.tile[point];
-                if (upTile.HasUnactuatedTile && Main.tileSolid[upTile.TileType] || i == 0 && upTile is { LiquidType: LiquidID.Water, LiquidAmount: > 127 }) {
+                if ((upTile.HasUnactuatedTile && Main.tileSolid[upTile.TileType]) || (i == 0 && upTile is { LiquidType: LiquidID.Water, LiquidAmount: > 127 })) {
                     return false;
                 }
             }

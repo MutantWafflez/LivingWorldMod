@@ -15,8 +15,8 @@ namespace LivingWorldMod.Utilities;
 // Class that handles all utility functions for NPCs.
 public static partial class LWMUtils {
     /// <summary>
-    /// Returns the price multiplier that will affect shop prices depending on the status of a
-    /// villager's relationship with the players.
+    ///     Returns the price multiplier that will affect shop prices depending on the status of a
+    ///     villager's relationship with the players.
     /// </summary>
     public static float GetPriceMultiplierFromRep(Villager villager) {
         if (villager.RelationshipStatus == VillagerRelationship.Neutral) {
@@ -32,13 +32,13 @@ public static partial class LWMUtils {
     }
 
     /// <summary>
-    /// Returns the count of all defined villager types as defined by the <seealso cref="VillagerType"/> enum.
+    ///     Returns the count of all defined villager types as defined by the <seealso cref="VillagerType" /> enum.
     /// </summary>
     /// <returns></returns>
     public static int GetTotalVillagerTypeCount() => Enum.GetValues<VillagerType>().Length;
 
     /// <summary>
-    /// Gets &amp; returns the respective NPC for the given villager type passed in.
+    ///     Gets &amp; returns the respective NPC for the given villager type passed in.
     /// </summary>
     /// <param name="type"> The type of villager you want to NPC equivalent of. </param>
     public static int VillagerTypeToNPCType(VillagerType type) {
@@ -49,7 +49,7 @@ public static partial class LWMUtils {
     }
 
     /// <summary>
-    /// Gets &amp; returns the respective Respawn Item for the given villager type passed in.
+    ///     Gets &amp; returns the respective Respawn Item for the given villager type passed in.
     /// </summary>
     /// <param name="type"> The type of villager you want to Respawn Item equivalent of. </param>
     public static int VillagerTypeToRespawnItemType(VillagerType type) {
@@ -60,7 +60,7 @@ public static partial class LWMUtils {
     }
 
     /// <summary>
-    /// Returns whether or not the specified entity is under a roof or not.
+    ///     Returns whether or not the specified entity is under a roof or not.
     /// </summary>
     /// <param name="entity"> The entity in question. </param>
     /// <param name="maxRoofHeight"> The maximum height from the top of the entity that can be considered to be a "roof".  </param>
@@ -81,15 +81,15 @@ public static partial class LWMUtils {
     }
 
     /// <summary>
-    /// Returns a precise version of the rectangle bounding box of this npc.
+    ///     Returns a precise version of the rectangle bounding box of this npc.
     /// </summary>
     public static PreciseRectangle GetPreciseRectangle(this NPC npc) => new(npc.position, npc.Size);
 
     /// <summary>
-    /// Returns the first NPC that meets the passed in function requirement.
+    ///     Returns the first NPC that meets the passed in function requirement.
     /// </summary>
     /// <remarks>
-    /// Note that <see cref="NPC.active"/> is checked by default, along-side the predicate.
+    ///     Note that <see cref="NPC.active" /> is checked by default, along-side the predicate.
     /// </remarks>
     public static NPC GetFirstNPC(Predicate<NPC> npcPredicate) {
         for (int i = 0; i < Main.maxNPCs; i++) {
@@ -103,10 +103,10 @@ public static partial class LWMUtils {
     }
 
     /// <summary>
-    /// Returns all NPCs that meet the passed in function requirement.
+    ///     Returns all NPCs that meet the passed in function requirement.
     /// </summary>
     /// <remarks>
-    /// Note that <see cref="NPC.active"/> is checked by default, along-side the predicate.
+    ///     Note that <see cref="NPC.active" /> is checked by default, along-side the predicate.
     /// </remarks>
     public static List<NPC> GetAllNPCs(Predicate<NPC> npcPredicate) {
         List<NPC> npcList = [];

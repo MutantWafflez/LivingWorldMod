@@ -10,12 +10,12 @@ using Terraria.WorldBuilding;
 namespace LivingWorldMod.Globals.Systems;
 
 /// <summary>
-/// System that handles the INITIAL world generation steps. This system does NOT handle world
-/// events that occur AFTER the world is created.
+///     System that handles the INITIAL world generation steps. This system does NOT handle world
+///     events that occur AFTER the world is created.
 /// </summary>
 public class WorldCreationSystem : BaseModSystem<WorldCreationSystem> {
     /// <summary>
-    /// List of values that exist temporarily during the world generation process.
+    ///     List of values that exist temporarily during the world generation process.
     /// </summary>
     public List<ITemporaryGenValue> tempWorldGenValues;
 
@@ -53,11 +53,11 @@ public class WorldCreationSystem : BaseModSystem<WorldCreationSystem> {
     }
 
     /// <summary>
-    /// Shorthand method that will search and return the value of the specified type
-    /// with the passed in name. Returns null if nothing is found.
+    ///     Shorthand method that will search and return the value of the specified type
+    ///     with the passed in name. Returns null if nothing is found.
     /// </summary>
     /// <typeparam name="T"> The type of the value you are looking for. </typeparam>
-    /// <param name="name"> The value of <seealso cref="ITemporaryGenValue.Name"/>. </param>
+    /// <param name="name"> The value of <seealso cref="ITemporaryGenValue.Name" />. </param>
     /// <returns></returns>
     public T GetTempWorldGenValue<T>(string name) {
         return tempWorldGenValues.OfType<TemporaryGenValue<T>>().FirstOrDefault(value => value.Name == name).value;

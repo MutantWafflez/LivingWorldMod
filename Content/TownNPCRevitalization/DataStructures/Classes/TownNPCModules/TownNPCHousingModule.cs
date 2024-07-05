@@ -75,7 +75,7 @@ public class TownNPCHousingModule : TownNPCModule {
                 Tile tile = Main.tile[i, j];
                 bool isSittingTile = TileID.Sets.CanBeSatOnForNPCs[tile.TileType];
                 bool isSleepingTile = TileID.Sets.CanBeSleptIn[tile.TileType];
-                if (!tile.HasUnactuatedTile || !isSleepingTile && !isSittingTile) {
+                if (!tile.HasUnactuatedTile || (!isSleepingTile && !isSittingTile)) {
                     continue;
                 }
 
@@ -105,12 +105,12 @@ public class TownNPCHousingModule : TownNPCModule {
         else {
             finalRestPos = LWMUtils.GetCornerOfMultiTile(restTile, finalRestPos.X, finalRestPos.Y, LWMUtils.CornerType.BottomLeft);
         }
+
         finalRestPos.Y++;
 
         floorX = finalRestPos.X;
         floorY = finalRestPos.Y;
     }
-
 
     private void HomelessTeleportCheck() {
         //Adapted vanilla code
@@ -118,7 +118,7 @@ public class TownNPCHousingModule : TownNPCModule {
         FindRestingSpot(out int floorX, out int floorY);
         RestPos = new Point(floorX, floorY - 1);
 
-        if (!WorldGen.InWorld(bottomOfNPC.X, bottomOfNPC.Y) || Main.netMode == NetmodeID.MultiplayerClient && !Main.sectionManager.TileLoaded(bottomOfNPC.X, bottomOfNPC.Y)) {
+        if (!WorldGen.InWorld(bottomOfNPC.X, bottomOfNPC.Y) || (Main.netMode == NetmodeID.MultiplayerClient && !Main.sectionManager.TileLoaded(bottomOfNPC.X, bottomOfNPC.Y))) {
             return;
         }
 

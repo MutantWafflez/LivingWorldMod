@@ -14,8 +14,8 @@ using Terraria.Utilities;
 namespace LivingWorldMod.Content.Villages.Globals.Systems;
 
 /// <summary>
-/// ModSystem that handles Dialogue for the various types of the villagers, including dialogue weights & event
-/// requirements.
+///     ModSystem that handles Dialogue for the various types of the villagers, including dialogue weights & event
+///     requirements.
 /// </summary>
 [Autoload(Side = ModSide.Client)]
 public class DialogueSystem : BaseModSystem<DialogueSystem> {
@@ -36,12 +36,14 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
         };
     }
 
-
     public override void PostSetupContent() {
         _villagerDialogue = [];
 
-        Dictionary<string, LocalizedText> translationDict = typeof(LanguageManager).GetField("_localizedTexts", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(LanguageManager.Instance) as Dictionary<string, LocalizedText>;
-        Dictionary<string, LocalizedText> allDialogue = translationDict!.Where(pair => pair.Value.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue")).ToDictionary(pair => pair.Key, pair => pair.Value);
+        // TODO: Clean this up
+        Dictionary<string, LocalizedText> translationDict =
+            typeof(LanguageManager).GetField("_localizedTexts", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(LanguageManager.Instance) as Dictionary<string, LocalizedText>;
+        Dictionary<string, LocalizedText> allDialogue = translationDict!.Where(pair => pair.Value.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue"))
+            .ToDictionary(pair => pair.Key, pair => pair.Value);
 
         JsonValue jsonReputationData = LWMUtils.GetJSONFromFile("Assets/JSONData/DialogueWeights.json");
         for (VillagerType type = 0; (int)type < LWMUtils.GetTotalVillagerTypeCount(); type++) {
@@ -81,8 +83,8 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
     }
 
     /// <summary>
-    /// Selects a piece of localized dialogue for the specified villager type, based on the current relationship status,
-    /// any possible events, and weights of each dialogue.
+    ///     Selects a piece of localized dialogue for the specified villager type, based on the current relationship status,
+    ///     any possible events, and weights of each dialogue.
     /// </summary>
     /// <param name="villagerType"> The villager type to get the dialogue line of. </param>
     /// <param name="relationshipStatus"> The current relationship status with the villager type in question. </param>
@@ -94,11 +96,11 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
         int priorityThreshold = allDialogue.Min(data => data.priority);
 
         foreach (DialogueData data in dialogueType == DialogueType.Normal
-                     ? allDialogue.Where(dialogue => !dialogue.dialogue.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Shop"))
-                     : allDialogue.Where(dialogue => dialogue.dialogue.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Shop.{dialogueType.ToString().Replace("Shop", "")}"))) {
+            ? allDialogue.Where(dialogue => !dialogue.dialogue.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Shop"))
+            : allDialogue.Where(dialogue => dialogue.dialogue.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Shop.{dialogueType.ToString().Replace("Shop", "")}"))) {
             //So many checks! Conditionals!
-            if (!data.dialogue.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Event")
-                && !data.dialogue.Key.Contains($".{relationshipStatus}.")
+            if ((!data.dialogue.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Event")
+                    && !data.dialogue.Key.Contains($".{relationshipStatus}."))
                 || !TestEvents(data.requiredEvents)
                 || data.priority < priorityThreshold) {
                 continue;
@@ -116,7 +118,7 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
     }
 
     /// <summary>
-    /// Takes the passed in events and checks to see if any pass. Returns true if all passed, or it is null, false otherwise.
+    ///     Takes the passed in events and checks to see if any pass. Returns true if all passed, or it is null, false otherwise.
     /// </summary>
     /// <param name="events"> The array of events to check. </param>
     private bool TestEvents(string[] events) {

@@ -9,13 +9,12 @@ using Terraria.ObjectData;
 namespace LivingWorldMod.Globals.Patches;
 
 /// <summary>
-/// Handles all patches that relate to tile drawing.
+///     Handles all patches that relate to tile drawing.
 /// </summary>
 public class TileDrawingPatches : LoadablePatch {
     public override void LoadPatches() {
         IL_TileDrawing.DrawMultiTileVines += WindDrawingEdit;
     }
-
 
     private void WindDrawingEdit(ILContext il) {
         currentContext = il;

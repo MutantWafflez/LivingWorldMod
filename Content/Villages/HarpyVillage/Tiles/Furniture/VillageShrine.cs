@@ -83,7 +83,6 @@ public class VillageShrineTile : BasePylon {
         AnimationFrameHeight = 90;
     }
 
-
     //TODO: Re-add tile animation once reputation system re-implemented
     /*
     public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset) {
@@ -126,20 +125,29 @@ public class VillageShrineTile : BasePylon {
 
     public override bool CanPlacePylon() => true;
 
-    public override void DrawMapIcon(ref MapOverlayDrawContext context, ref string mouseOverText, TeleportPylonInfo pylonInfo, bool isNearPylon, Color drawColor, float deselectedScale, float selectedScale) {
+    public override void DrawMapIcon(
+        ref MapOverlayDrawContext context,
+        ref string mouseOverText,
+        TeleportPylonInfo pylonInfo,
+        bool isNearPylon,
+        Color drawColor,
+        float deselectedScale,
+        float selectedScale
+    ) {
         if (!LWMUtils.TryFindModEntity(pylonInfo.PositionInTiles.X, pylonInfo.PositionInTiles.Y, out VillageShrineEntity foundEntity) || !IsShrineVisibleOnMap(foundEntity.shrineType)) {
             return;
         }
 
         bool mouseOver = context.Draw(
-                                    shrineIcons.Value,
-                                    pylonInfo.PositionInTiles.ToVector2() + new Vector2(2f, 2.5f),
-                                    drawColor,
-                                    new SpriteFrame(1, 1, 0, (byte)foundEntity.shrineType),
-                                    deselectedScale,
-                                    selectedScale,
-                                    Alignment.Center)
-                                .IsMouseOver;
+                shrineIcons.Value,
+                pylonInfo.PositionInTiles.ToVector2() + new Vector2(2f, 2.5f),
+                drawColor,
+                new SpriteFrame(1, 1, 0, (byte)foundEntity.shrineType),
+                deselectedScale,
+                selectedScale,
+                Alignment.Center
+            )
+            .IsMouseOver;
         DefaultMapClickHandle(mouseOver, pylonInfo, $"Mods.LivingWorldMod.MapInfo.Shrines.{foundEntity.shrineType}", ref mouseOverText);
     }
 
@@ -207,6 +215,7 @@ public class VillageShrineEntity : TEModdedPylon {
 
             SyncDataToClients();
         }
+
         int villagerNPCType = LWMUtils.VillagerTypeToNPCType(shrineType);
         Circle tileVillageZone = villageZone.ToTileCoordinates();
 

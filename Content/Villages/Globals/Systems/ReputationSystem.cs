@@ -11,7 +11,7 @@ using Terraria.ModLoader.IO;
 namespace LivingWorldMod.Content.Villages.Globals.Systems;
 
 /// <summary>
-/// System that handles reputations for all the villages in the mod.
+///     System that handles reputations for all the villages in the mod.
 /// </summary>
 public class ReputationSystem : BaseModSystem<ReputationSystem> {
     public const int VillageReputationConstraint = 100;
@@ -57,14 +57,14 @@ public class ReputationSystem : BaseModSystem<ReputationSystem> {
     }
 
     /// <summary>
-    /// Gets & returns the reputation value of the given villager type specified.
+    ///     Gets & returns the reputation value of the given villager type specified.
     /// </summary>
     /// <returns></returns>
     public int GetNumericVillageReputation(VillagerType villagerType) => _villageReputation[(int)villagerType];
 
     /// <summary>
-    /// The current status of the "relationship" between the specified villager type and the players.
-    /// Returns the enum of said status.
+    ///     The current status of the "relationship" between the specified villager type and the players.
+    ///     Returns the enum of said status.
     /// </summary>
     //TODO: Revert back to commented expression when Reputation system is re-implemented
     public VillagerRelationship GetVillageRelationship(VillagerType villagerType) => VillagerRelationship.Love; /*{
@@ -91,7 +91,7 @@ public class ReputationSystem : BaseModSystem<ReputationSystem> {
     }*/
 
     /// <summary>
-    /// Changes the value of the specified village type's reputation BY the specified amount.
+    ///     Changes the value of the specified village type's reputation BY the specified amount.
     /// </summary>
     public void ChangeVillageReputation(VillagerType villagerType, int changeAmount) {
         _villageReputation[(int)villagerType] += changeAmount;
@@ -100,7 +100,7 @@ public class ReputationSystem : BaseModSystem<ReputationSystem> {
     }
 
     /// <summary>
-    /// Sets the value of the specified village type's reputation TO the specified amount.
+    ///     Sets the value of the specified village type's reputation TO the specified amount.
     /// </summary>
     public void SetVillageReputation(VillagerType villagerType, int setValue) {
         _villageReputation[(int)villagerType] = setValue;

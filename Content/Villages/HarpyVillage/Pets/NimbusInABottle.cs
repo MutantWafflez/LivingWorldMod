@@ -46,7 +46,7 @@ public class NimbusPetBuff : BaseStatusEffect {
     }
 
     public override void Update(Player player, ref int buffIndex) {
-        player.buffTime[buffIndex] = 20000; // stop the buff from expiring on its own
+        player.buffTime[buffIndex] = 20000;                // stop the buff from expiring on its own
         player.GetModPlayer<PetPlayer>().nimbusPet = true; // keep the bool active
 
         int nimbusProjectileID = ModContent.ProjectileType<NimbusPetProjectile>();
@@ -136,7 +136,8 @@ public class NimbusPetProjectile : BaseProjectile {
             Projectile.rotation,
             new Vector2(Projectile.width / 2, Projectile.height / 2),
             Projectile.frame == 0 ? 1 + breathScale * 0.1f : 1f,
-            spriteEffects);
+            spriteEffects
+        );
 
         return false;
     }

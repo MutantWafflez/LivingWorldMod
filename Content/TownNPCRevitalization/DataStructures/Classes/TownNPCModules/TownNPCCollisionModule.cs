@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
 /// <summary>
-/// Town NPC module that handles the special collision of Town NPCs introduced by this mod.
+///     Town NPC module that handles the special collision of Town NPCs introduced by this mod.
 /// </summary>
 public class TownNPCCollisionModule(NPC npc) : TownNPCModule(npc) {
     public bool fallThroughPlatforms;
@@ -13,7 +13,7 @@ public class TownNPCCollisionModule(NPC npc) : TownNPCModule(npc) {
     public bool walkThroughStairs;
 
     /// <summary>
-    /// This method is called in <seealso cref="TownNPCCollisionPatches"/>.
+    ///     This method is called in <seealso cref="TownNPCCollisionPatches" />.
     /// </summary>
     public override void Update() {
         npc.Collision_WalkDownSlopes();
@@ -46,6 +46,7 @@ public class TownNPCCollisionModule(NPC npc) : TownNPCModule(npc) {
                 liquidVelocityModifier = npc.waterMovementSpeed;
             }
         }
+
         ApplyNPCVelocity(oldVelocity, liquidVelocityModifier);
 
         AttemptSlopeCollision();

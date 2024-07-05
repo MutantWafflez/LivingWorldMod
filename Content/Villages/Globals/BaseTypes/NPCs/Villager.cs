@@ -109,10 +109,7 @@ public abstract class Villager : ModNPC {
         NPCID.Sets.ShimmerTownTransform[Type] = true;
         NPCID.Sets.NoTownNPCHappiness[Type] = true;
 
-        NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new() {
-            Velocity = 1f,
-            Direction = -1
-        };
+        NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new() { Velocity = 1f, Direction = -1 };
         NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 
         // Villager Names
@@ -156,6 +153,7 @@ public abstract class Villager : ModNPC {
         else {
             RandomizeFeatures();
         }
+
         shopInventory = tag.Get<List<ShopItem>>("Shop");
 
         NPC.GivenName = tag.GetString("DisplayName");

@@ -31,8 +31,13 @@ public class MagicAttackAIState : TownNPCAIState {
         if (npc.localAI[3] == attackData.attackDelay && Main.netMode != NetmodeID.MultiplayerClient) {
             Vector2 projVelocity = Vector2.Zero;
             if (combatModule.AttackLocation is { } location) {
-                projVelocity = npc.DirectionTo(location.Center + new Vector2(0f,
-                    (0f - attackData.gravityCorrection) * MathHelper.Clamp(npc.Distance(location.Center) / attackData.dangerDetectRange, 0f, 1f)));
+                projVelocity = npc.DirectionTo(
+                    location.Center
+                    + new Vector2(
+                        0f,
+                        (0f - attackData.gravityCorrection) * MathHelper.Clamp(npc.Distance(location.Center) / attackData.dangerDetectRange, 0f, 1f)
+                    )
+                );
             }
 
             if (projVelocity.HasNaNs() || projVelocity == Vector2.Zero) {
@@ -62,6 +67,7 @@ public class MagicAttackAIState : TownNPCAIState {
                         projectile.npcProj = true;
                         projectile.noDropItem = true;
                     }
+
                     break;
                 }
                 case NPCID.Truffle: {
@@ -88,6 +94,7 @@ public class MagicAttackAIState : TownNPCAIState {
                         projectile.npcProj = true;
                         projectile.noDropItem = true;
                     }
+
                     break;
                 }
                 case NPCID.Princess: {
@@ -114,6 +121,7 @@ public class MagicAttackAIState : TownNPCAIState {
                         projectile.npcProj = true;
                         projectile.noDropItem = true;
                     }
+
                     break;
                 }
                 case NPCID.Dryad: {

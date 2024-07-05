@@ -1,7 +1,7 @@
 ﻿namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 
 /// <summary>
-/// Struct holding data for Town NPC attacks where a melee weapon is used.
+///     Struct holding data for Town NPC attacks where a melee weapon is used.
 /// </summary>
 public struct TownNPCMeleeAttackData {
     public int attackCooldown;

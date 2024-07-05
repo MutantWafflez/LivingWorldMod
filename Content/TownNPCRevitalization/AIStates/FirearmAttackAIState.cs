@@ -29,6 +29,7 @@ public class FirearmAttackAIState : TownNPCAIState {
                         inBetweenShots = true;
                     }
                 }
+
                 break;
             }
             case NPCID.Painter: {
@@ -45,6 +46,7 @@ public class FirearmAttackAIState : TownNPCAIState {
                 if (Main.hardMode) {
                     attackData.projDamage += 2;
                 }
+
                 break;
             }
             case NPCID.TravellingMerchant: {
@@ -52,6 +54,7 @@ public class FirearmAttackAIState : TownNPCAIState {
                     attackData.projDamage = 30;
                     attackData.projType = 357;
                 }
+
                 break;
             }
             case NPCID.Guide: {
@@ -61,6 +64,7 @@ public class FirearmAttackAIState : TownNPCAIState {
                     attackData.maxValue = 10;
                     attackData.projDamage += 6;
                 }
+
                 break;
             }
             case NPCID.Steampunker: {
@@ -68,10 +72,12 @@ public class FirearmAttackAIState : TownNPCAIState {
                     attackData.attackDelay = 8;
                     inBetweenShots = true;
                 }
+
                 if (npc.localAI[3] > attackData.attackDelay) {
                     attackData.attackDelay = 16;
                     inBetweenShots = true;
                 }
+
                 break;
             }
             case NPCID.Pirate: {
@@ -92,6 +98,7 @@ public class FirearmAttackAIState : TownNPCAIState {
                     attackData.knockBack = 10f;
                     attackData.speedMult = 24f;
                 }
+
                 break;
             }
             case NPCID.Cyborg:
@@ -122,6 +129,7 @@ public class FirearmAttackAIState : TownNPCAIState {
                         attackData.randomOffset = 0.1f;
                         break;
                 }
+
                 break;
         }
 

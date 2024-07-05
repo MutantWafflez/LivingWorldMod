@@ -9,8 +9,8 @@ using Terraria.GameContent;
 namespace LivingWorldMod.Globals.Systems;
 
 /// <summary>
-/// Mod system that handles miscellaneous loading tasks that otherwise
-/// don't deserve their own mod system.
+///     Mod system that handles miscellaneous loading tasks that otherwise
+///     don't deserve their own mod system.
 /// </summary>
 public class LoadingTaskSystem : BaseModSystem<LoadingTaskSystem> {
     public override void PostSetupContent() {
@@ -34,8 +34,8 @@ public class LoadingTaskSystem : BaseModSystem<LoadingTaskSystem> {
             if (i >= NPCID.Count) {
                 modName = NPCLoader.GetNPC(i).Mod.Name;
             }
-            Texture2D npcTexture = ModContent.Request<Texture2D>($"{modName}/{npcAsset.Name}".Replace("\\", "/"), AssetRequestMode.ImmediateLoad).Value;
 
+            Texture2D npcTexture = ModContent.Request<Texture2D>($"{modName}/{npcAsset.Name}".Replace("\\", "/"), AssetRequestMode.ImmediateLoad).Value;
             int npcFrameHeight = npcTexture.Height / Main.npcFrameCount[i];
             int totalPixelArea = npcTexture.Width * npcFrameHeight;
             int nonAttackFrameCount = Main.npcFrameCount[i] - NPCID.Sets.AttackFrameCount[i];

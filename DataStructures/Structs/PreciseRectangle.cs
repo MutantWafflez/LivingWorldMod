@@ -4,23 +4,12 @@ using Microsoft.Xna.Framework;
 namespace LivingWorldMod.DataStructures.Structs;
 
 /// <summary>
-/// Not fully complete re-creation of the <see cref="Rectangle"/> struct with float precision instead
-/// of int precision.
+///     Not fully complete re-creation of the <see cref="Rectangle" /> struct with float precision instead
+///     of int precision.
 /// </summary>
 public struct PreciseRectangle : IEquatable<PreciseRectangle> {
     public Vector2 position;
     public Vector2 size;
-
-    /// <summary>
-    /// Not fully complete re-creation of the <see cref="Rectangle"/> struct with float precision instead
-    /// of int precision.
-    /// </summary>
-    public PreciseRectangle(Vector2 position, Vector2 size) {
-        this.position = position;
-        this.size = size;
-    }
-
-    public PreciseRectangle(Rectangle rectangle) : this(new Vector2(rectangle.X, rectangle.Y), new Vector2(rectangle.Width, rectangle.Height)) { }
 
     public readonly float X => position.X;
 
@@ -38,6 +27,25 @@ public struct PreciseRectangle : IEquatable<PreciseRectangle> {
 
     public readonly Vector2 BottomRight => position + new Vector2(size.X, size.Y);
 
+    /// <summary>
+    ///     Not fully complete re-creation of the <see cref="Rectangle" /> struct with float precision instead
+    ///     of int precision.
+    /// </summary>
+    public PreciseRectangle(Vector2 position, Vector2 size) {
+        this.position = position;
+        this.size = size;
+    }
+
+    public PreciseRectangle(Rectangle rectangle) : this(new Vector2(rectangle.X, rectangle.Y), new Vector2(rectangle.Width, rectangle.Height)) { }
+
+    public static bool operator ==(PreciseRectangle left, PreciseRectangle right) => left.Equals(right);
+
+    public static bool operator !=(PreciseRectangle left, PreciseRectangle right) => !(left == right);
+
+    public override bool Equals(object obj) => obj is PreciseRectangle other && Equals(other);
+
+    public override int GetHashCode() => HashCode.Combine(position, size);
+
     public readonly Rectangle ToWorldCoordinates() => new(
         (int)(position.X / 16f),
         (int)(position.Y / 16f),
@@ -46,12 +54,4 @@ public struct PreciseRectangle : IEquatable<PreciseRectangle> {
     );
 
     public bool Equals(PreciseRectangle other) => position.Equals(other.position) && size.Equals(other.size);
-
-    public override bool Equals(object obj) => obj is PreciseRectangle other && Equals(other);
-
-    public override int GetHashCode() => HashCode.Combine(position, size);
-
-    public static bool operator ==(PreciseRectangle left, PreciseRectangle right) => left.Equals(right);
-
-    public static bool operator !=(PreciseRectangle left, PreciseRectangle right) => !(left == right);
 }

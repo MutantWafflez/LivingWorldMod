@@ -16,31 +16,10 @@ public sealed class TownNPCChatModule : TownNPCModule {
     private const int DefaultChatBubbleDuration = (int)(LWMUtils.RealLifeSecond * 5d);
 
     /// <summary>
-    /// The denominator of the fractional chance that a NPC who otherwise can chat will
-    /// chat each tick.
+    ///     The denominator of the fractional chance that a NPC who otherwise can chat will
+    ///     chat each tick.
     /// </summary>
     private const int ChitChatChanceDenominator = 75;
-
-    /// <summary>
-    /// Whether this NPC is currently being talked to by a
-    /// player.
-    /// </summary>
-    public bool IsChattingToPlayer {
-        get;
-        private set;
-    }
-
-    /// <summary>
-    /// Whether this NPC is currently chatting to another NPC.
-    /// </summary>
-    public bool IsChattingToNPC => _currentSentence is not null;
-
-    /// <summary>
-    /// Whether this NPC is currently talking to any entity at all.
-    /// </summary>
-    public bool IsSpeaking => IsChattingToPlayer || IsChattingToNPC;
-
-    private static string GenerateRandomNPCName => Language.SelectRandom(Lang.CreateDialogFilter("NPCName.")).Value;
 
     public readonly ForgetfulArray<string> chatHistory = new(50);
     private readonly Texture2D _talkTexture;
@@ -48,6 +27,27 @@ public sealed class TownNPCChatModule : TownNPCModule {
     private string _currentSentence;
     private int _chatBubbleDuration;
     private int _chatCooldown;
+
+    /// <summary>
+    ///     Whether this NPC is currently being talked to by a
+    ///     player.
+    /// </summary>
+    public bool IsChattingToPlayer {
+        get;
+        private set;
+    }
+
+    /// <summary>
+    ///     Whether this NPC is currently chatting to another NPC.
+    /// </summary>
+    public bool IsChattingToNPC => _currentSentence is not null;
+
+    /// <summary>
+    ///     Whether this NPC is currently talking to any entity at all.
+    /// </summary>
+    public bool IsSpeaking => IsChattingToPlayer || IsChattingToNPC;
+
+    private static string GenerateRandomNPCName => Language.SelectRandom(Lang.CreateDialogFilter("NPCName.")).Value;
 
     public TownNPCChatModule(NPC npc, Texture2D talkTexture) : base(npc) {
         _talkTexture = talkTexture;
@@ -97,16 +97,17 @@ public sealed class TownNPCChatModule : TownNPCModule {
         }
 
         if (IsSpeaking
-            || (int)npc.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && npc.ai[1] == 1f
+            || ((int)npc.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && npc.ai[1] == 1f)
             || !Main.rand.NextBool(ChitChatChanceDenominator)
-            || LWMUtils.GetFirstNPC(otherNPC =>
-                npc != otherNPC &&
-                otherNPC.TryGetGlobalNPC(out TownGlobalNPC otherGlobalNPC)
-                && !otherGlobalNPC.ChatModule.IsSpeaking
-                && npc.Center.Distance(otherNPC.Center) <= 100f
-                && Collision.CanHit(npc.Center, 0, 0, otherNPC.Center, 0, 0)
+            || LWMUtils.GetFirstNPC(
+                otherNPC =>
+                    npc != otherNPC
+                    && otherNPC.TryGetGlobalNPC(out TownGlobalNPC otherGlobalNPC)
+                    && !otherGlobalNPC.ChatModule.IsSpeaking
+                    && npc.Center.Distance(otherNPC.Center) <= 100f
+                    && Collision.CanHit(npc.Center, 0, 0, otherNPC.Center, 0, 0)
             ) is not { } chatRecipient
-           ) {
+        ) {
             return;
         }
 

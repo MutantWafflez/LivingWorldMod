@@ -13,7 +13,7 @@ using Terraria.WorldBuilding;
 namespace LivingWorldMod.Content.Waystones.WorldGenFeatures;
 
 /// <summary>
-/// Handles the Worldgen pass that handles the placement of Waystones.
+///     Handles the Worldgen pass that handles the placement of Waystones.
 /// </summary>
 public class Waystones : WorldGenFeature {
     public override string InternalGenerationName => "Waystones";
@@ -67,23 +67,32 @@ public class Waystones : WorldGenFeature {
                 if (!WorldGen.InWorld(i, j, 4)) {
                     continue;
                 }
+
                 Point searchOrigin = new(i, j);
 
                 // Test for 2x3 pocket of air
-                if (!WorldUtils.Find(searchOrigin, Searches.Chain(
+                if (!WorldUtils.Find(
+                        searchOrigin,
+                        Searches.Chain(
                             new Searches.Rectangle(2, 3),
                             new IsAirOrCuttable().AreaAnd(2, 3),
-                            new IsDry().AreaAnd(2, 3)),
-                        out Point _)) {
+                            new IsDry().AreaAnd(2, 3)
+                        ),
+                        out Point _
+                    )) {
                     continue;
                 }
 
                 //Make sure there are two solid mushroom grass tiles
-                if (!WorldUtils.Find(searchOrigin + new Point(0, 3), Searches.Chain(
+                if (!WorldUtils.Find(
+                        searchOrigin + new Point(0, 3),
+                        Searches.Chain(
                             new Searches.Rectangle(2, 1),
                             new Conditions.IsSolid().AreaAnd(2, 1),
-                            new Conditions.IsTile(typeToValidTiles[WaystoneType.Mushroom]).AreaAnd(2, 1)),
-                        out _)) {
+                            new Conditions.IsTile(typeToValidTiles[WaystoneType.Mushroom]).AreaAnd(2, 1)
+                        ),
+                        out _
+                    )) {
                     continue;
                 }
 
@@ -112,23 +121,32 @@ public class Waystones : WorldGenFeature {
                 if (!WorldGen.InWorld(i, j, 4)) {
                     continue;
                 }
+
                 Point searchOrigin = new(i, j);
 
                 // Test for 2x3 pocket of air
-                if (!WorldUtils.Find(searchOrigin, Searches.Chain(
+                if (!WorldUtils.Find(
+                        searchOrigin,
+                        Searches.Chain(
                             new Searches.Rectangle(2, 3),
                             new IsAirOrCuttable().AreaAnd(2, 3),
-                            new IsDry().AreaAnd(2, 3)),
-                        out Point _)) {
+                            new IsDry().AreaAnd(2, 3)
+                        ),
+                        out Point _
+                    )) {
                     continue;
                 }
 
                 //Make sure there are two solid tiles below that pocket of air, and is a valid tile
-                if (!WorldUtils.Find(searchOrigin + new Point(0, 3), Searches.Chain(
+                if (!WorldUtils.Find(
+                        searchOrigin + new Point(0, 3),
+                        Searches.Chain(
                             new Searches.Rectangle(2, 1),
                             new Conditions.IsSolid().AreaAnd(2, 1),
-                            new Conditions.IsTile(allValidTiles)),
-                        out Point tileBasePoint)) {
+                            new Conditions.IsTile(allValidTiles)
+                        ),
+                        out Point tileBasePoint
+                    )) {
                     continue;
                 }
 
@@ -147,10 +165,14 @@ public class Waystones : WorldGenFeature {
                 //Place waystone depending on the tile base
                 WaystoneType determinedWaystoneType = WaystoneType.Desert;
                 for (WaystoneType waystoneType = WaystoneType.Desert; waystoneType <= WaystoneType.Ice; waystoneType = waystoneType.NextEnum()) {
-                    if (WorldUtils.Find(tileBasePoint, Searches.Chain(
+                    if (WorldUtils.Find(
+                            tileBasePoint,
+                            Searches.Chain(
                                 new Searches.Rectangle(2, 1),
-                                new Conditions.IsTile(typeToValidTiles[waystoneType])),
-                            out _)) {
+                                new Conditions.IsTile(typeToValidTiles[waystoneType])
+                            ),
+                            out _
+                        )) {
                         determinedWaystoneType = waystoneType;
                         break;
                     }

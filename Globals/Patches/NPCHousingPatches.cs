@@ -51,17 +51,19 @@ public class NPCHousingPatches : LoadablePatch {
 
         c.Index = 0;
         c.Emit(OpCodes.Ldarg_0);
-        c.EmitDelegate<Func<int, bool>>(npcType => {
-            Rectangle roomInQuestion = new(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1, WorldGen.roomY2 - WorldGen.roomY1);
+        c.EmitDelegate<Func<int, bool>>(
+            npcType => {
+                Rectangle roomInQuestion = new(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1, WorldGen.roomY2 - WorldGen.roomY1);
 
-            ModNPC modNPC = ModContent.GetModNPC(npcType);
-            List<VillageShrineEntity> shrines = LWMUtils.GetAllEntityOfType<VillageShrineEntity>().ToList();
+                ModNPC modNPC = ModContent.GetModNPC(npcType);
+                List<VillageShrineEntity> shrines = LWMUtils.GetAllEntityOfType<VillageShrineEntity>().ToList();
 
-            //HOWEVER, if the Town NPC can spawn here, we need to do additional checks to make sure it's not a non-villager spawning in a villager home
-            //Additionally, we can't have villagers in a non-village home, which is the second check.
-            bool anyVillageContainsHome = shrines.Any(shrine => shrine.villageZone.ToTileCoordinates().ContainsRectangle(roomInQuestion));
-            return modNPC is Villager && !anyVillageContainsHome || modNPC is not Villager && anyVillageContainsHome;
-        });
+                //HOWEVER, if the Town NPC can spawn here, we need to do additional checks to make sure it's not a non-villager spawning in a villager home
+                //Additionally, we can't have villagers in a non-village home, which is the second check.
+                bool anyVillageContainsHome = shrines.Any(shrine => shrine.villageZone.ToTileCoordinates().ContainsRectangle(roomInQuestion));
+                return (modNPC is Villager && !anyVillageContainsHome) || (modNPC is not Villager && anyVillageContainsHome);
+            }
+        );
         c.Emit(OpCodes.Brfalse_S, doVanillaChecksIfFalseLabel);
 
         c.Emit(OpCodes.Ldc_I4_0);
@@ -91,32 +93,34 @@ public class NPCHousingPatches : LoadablePatch {
         c.GotoPrev(i => i.MatchLdarg0());
 
         //What we return here will determine whether or not we skip past the drawing head step in the vanilla function.
-        c.EmitDelegate(() => {
-            //If not a type of villager or otherwise an invalid index (or just the above if statement failing in general), then return false and have the head draw as normal.
-            if (Main.instance.mouseNPCIndex <= -1 || Main.npc[Main.instance.mouseNPCIndex].ModNPC is not Villager villager) {
-                return false;
+        c.EmitDelegate(
+            () => {
+                //If not a type of villager or otherwise an invalid index (or just the above if statement failing in general), then return false and have the head draw as normal.
+                if (Main.instance.mouseNPCIndex <= -1 || Main.npc[Main.instance.mouseNPCIndex].ModNPC is not Villager villager) {
+                    return false;
+                }
+
+                LayeredDrawObject drawObject = villager.drawObject;
+                Rectangle textureDrawRegion = new(0, 0, drawObject.GetLayerFrameWidth(), drawObject.GetLayerFrameHeight(frameCount: Main.npcFrameCount[villager.Type]));
+                drawObject.Draw(
+                    Main.spriteBatch,
+                    new DrawData(
+                        null,
+                        new Vector2(Main.mouseX, Main.mouseY),
+                        textureDrawRegion,
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        Main.cursorScale * 0.67f,
+                        SpriteEffects.None
+                    ),
+                    villager.DrawIndices
+                );
+
+                //If a type of villager, we do not want the head drawing function, so skip it by returning true
+                return true;
             }
-
-            LayeredDrawObject drawObject = villager.drawObject;
-            Rectangle textureDrawRegion = new(0, 0, drawObject.GetLayerFrameWidth(), drawObject.GetLayerFrameHeight(frameCount: Main.npcFrameCount[villager.Type]));
-            drawObject.Draw(
-                Main.spriteBatch,
-                new DrawData(
-                    null,
-                    new Vector2(Main.mouseX, Main.mouseY),
-                    textureDrawRegion,
-                    Color.White,
-                    0f,
-                    Vector2.Zero,
-                    Main.cursorScale * 0.67f,
-                    SpriteEffects.None
-                ),
-                villager.DrawIndices
-            );
-
-            //If a type of villager, we do not want the head drawing function, so skip it by returning true
-            return true;
-        });
+        );
         //Actual instruction that causes the "skipping." This instruction is why the exit label is necessary, since without it, the IL literally won't function and the head will draw.
         c.Emit(OpCodes.Brtrue_S, exitLabel);
     }
@@ -147,100 +151,102 @@ public class NPCHousingPatches : LoadablePatch {
         // the method to work with villagers. Lose out on some code re-use, but pays off in the long term for the fragility of the edit
 
         ILCursor c = new(il);
-        c.EmitDelegate(() => {
-            foreach (NPC npc in LWMUtils.GetAllNPCs(npc => npc.ModNPC is Villager && !npc.homeless && npc.homeTileX > 0 && npc.homeTileY > 0)) {
-                int bannerTileX = npc.homeTileX;
-                int bannerTileY = npc.homeTileY - 1;
+        c.EmitDelegate(
+            () => {
+                foreach (NPC npc in LWMUtils.GetAllNPCs(npc => npc.ModNPC is Villager && !npc.homeless && npc.homeTileX > 0 && npc.homeTileY > 0)) {
+                    int bannerTileX = npc.homeTileX;
+                    int bannerTileY = npc.homeTileY - 1;
 
-                const int worldFluff = 10;
-                Tile tile = Main.tile[bannerTileX, bannerTileY];
-                while (!tile.HasTile || !(Main.tileSolid[tile.TileType] || TileID.Sets.Platforms[tile.TileType])) {
-                    tile = Main.tile[bannerTileX, --bannerTileY];
-                    if (bannerTileY < worldFluff) {
-                        break;
+                    const int worldFluff = 10;
+                    Tile tile = Main.tile[bannerTileX, bannerTileY];
+                    while (!tile.HasTile || !(Main.tileSolid[tile.TileType] || TileID.Sets.Platforms[tile.TileType])) {
+                        tile = Main.tile[bannerTileX, --bannerTileY];
+                        if (bannerTileY < worldFluff) {
+                            break;
+                        }
                     }
-                }
 
-                const int bannerXPixelOffset = 8;
-                int bannerYPixelOffset = 18;
-                if (TileID.Sets.Platforms[tile.TileType]) {
-                    bannerYPixelOffset -= 8;
-                }
+                    const int bannerXPixelOffset = 8;
+                    int bannerYPixelOffset = 18;
+                    if (TileID.Sets.Platforms[tile.TileType]) {
+                        bannerYPixelOffset -= 8;
+                    }
 
-                int gravityYPixelCorrection = 0;
-                float bannerWorldY = bannerTileY * 16;
-                bannerWorldY += bannerYPixelOffset;
+                    int gravityYPixelCorrection = 0;
+                    float bannerWorldY = bannerTileY * 16;
+                    bannerWorldY += bannerYPixelOffset;
 
-                SpriteEffects spriteEffects = SpriteEffects.None;
-                Texture2D bannerTexture = ModContent.Request<Texture2D>(LWM.SpritePath + "Villages/UI/VillagerHousingUI/VillagerHousing_Banner").Value;
-                Rectangle bannerFrame = bannerTexture.Frame();
-                if (Main.LocalPlayer.gravDir == -1f) {
-                    bannerWorldY -= Main.screenPosition.Y;
-                    bannerWorldY = Main.screenPosition.Y + Main.screenHeight - bannerWorldY;
-                    bannerWorldY -= bannerFrame.Height;
-                    spriteEffects = SpriteEffects.FlipVertically;
-                    gravityYPixelCorrection = 4;
-                }
+                    SpriteEffects spriteEffects = SpriteEffects.None;
+                    Texture2D bannerTexture = ModContent.Request<Texture2D>(LWM.SpritePath + "Villages/UI/VillagerHousingUI/VillagerHousing_Banner").Value;
+                    Rectangle bannerFrame = bannerTexture.Frame();
+                    if (Main.LocalPlayer.gravDir == -1f) {
+                        bannerWorldY -= Main.screenPosition.Y;
+                        bannerWorldY = Main.screenPosition.Y + Main.screenHeight - bannerWorldY;
+                        bannerWorldY -= bannerFrame.Height;
+                        spriteEffects = SpriteEffects.FlipVertically;
+                        gravityYPixelCorrection = 4;
+                    }
 
-                Main.spriteBatch.Draw(
-                    bannerTexture,
-                    new Vector2(bannerTileX * 16 - (int)Main.screenPosition.X + bannerXPixelOffset, bannerWorldY - (int)Main.screenPosition.Y + bannerYPixelOffset + gravityYPixelCorrection),
-                    bannerFrame,
-                    Lighting.GetColor(bannerTileX, bannerTileY),
-                    0f,
-                    new Vector2(bannerFrame.Width / 2f, bannerFrame.Height / 2f),
-                    1f,
-                    spriteEffects,
-                    0f
-                );
-
-                Villager villager = npc.ModNPC as Villager;
-                LayeredDrawObject drawObject = villager!.drawObject;
-                Rectangle textureDrawRegion = new(0, 0, drawObject.GetLayerFrameWidth(), drawObject.GetLayerFrameHeight(frameCount: Main.npcFrameCount[npc.type]));
-                drawObject.Draw(
-                    Main.spriteBatch,
-                    new DrawData(
-                        null,
-                        new Vector2(bannerTileX * 16 - (int)Main.screenPosition.X + bannerXPixelOffset, bannerWorldY - (int)Main.screenPosition.Y + bannerYPixelOffset + 2f),
-                        textureDrawRegion,
+                    Main.spriteBatch.Draw(
+                        bannerTexture,
+                        new Vector2(bannerTileX * 16 - (int)Main.screenPosition.X + bannerXPixelOffset, bannerWorldY - (int)Main.screenPosition.Y + bannerYPixelOffset + gravityYPixelCorrection),
+                        bannerFrame,
                         Lighting.GetColor(bannerTileX, bannerTileY),
                         0f,
-                        new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f),
-                        0.5f,
-                        spriteEffects
-                    ),
-                    villager.DrawIndices
-                );
+                        new Vector2(bannerFrame.Width / 2f, bannerFrame.Height / 2f),
+                        1f,
+                        spriteEffects,
+                        0f
+                    );
+
+                    Villager villager = npc.ModNPC as Villager;
+                    LayeredDrawObject drawObject = villager!.drawObject;
+                    Rectangle textureDrawRegion = new(0, 0, drawObject.GetLayerFrameWidth(), drawObject.GetLayerFrameHeight(frameCount: Main.npcFrameCount[npc.type]));
+                    drawObject.Draw(
+                        Main.spriteBatch,
+                        new DrawData(
+                            null,
+                            new Vector2(bannerTileX * 16 - (int)Main.screenPosition.X + bannerXPixelOffset, bannerWorldY - (int)Main.screenPosition.Y + bannerYPixelOffset + 2f),
+                            textureDrawRegion,
+                            Lighting.GetColor(bannerTileX, bannerTileY),
+                            0f,
+                            new Vector2(textureDrawRegion.Width / 2f, textureDrawRegion.Height / 2f),
+                            0.5f,
+                            spriteEffects
+                        ),
+                        villager.DrawIndices
+                    );
 
 
-                bannerTileX = bannerTileX * 16 - (int)Main.screenPosition.X + bannerXPixelOffset - bannerFrame.Width / 2;
-                bannerTileY = (int)bannerWorldY - (int)Main.screenPosition.Y + 4;
+                    bannerTileX = bannerTileX * 16 - (int)Main.screenPosition.X + bannerXPixelOffset - bannerFrame.Width / 2;
+                    bannerTileY = (int)bannerWorldY - (int)Main.screenPosition.Y + 4;
 
-                if (Main.mouseX < bannerTileX || Main.mouseX > bannerTileX + bannerFrame.Width || Main.mouseY < bannerTileY || Main.mouseY > bannerTileY + bannerFrame.Height - 8) {
-                    continue;
+                    if (Main.mouseX < bannerTileX || Main.mouseX > bannerTileX + bannerFrame.Width || Main.mouseY < bannerTileY || Main.mouseY > bannerTileY + bannerFrame.Height - 8) {
+                        continue;
+                    }
+
+                    bool isLikedWithVillagers = villager.RelationshipStatus >= VillagerRelationship.Like;
+                    string villagerLockText = $"\n{"UI.VillagerHousing.VillagerTypeLocked".Localized().FormatWith(villager.VillagerType.ToString())}";
+                    Main.instance.MouseText(
+                        Lang.GetNPCHouseBannerText(npc, 0)
+                        + (!isLikedWithVillagers ? villagerLockText : "")
+                    );
+
+                    if (!Main.mouseRightRelease || !Main.mouseRight) {
+                        continue;
+                    }
+
+                    Main.mouseRightRelease = false;
+                    SoundEngine.PlaySound(SoundID.MenuTick);
+                    if (!isLikedWithVillagers) {
+                        Main.NewText(villagerLockText);
+                        return;
+                    }
+
+                    WorldGen.kickOut(npc.whoAmI);
                 }
-
-                bool isLikedWithVillagers = villager.RelationshipStatus >= VillagerRelationship.Like;
-                string villagerLockText = $"\n{"UI.VillagerHousing.VillagerTypeLocked".Localized().FormatWith(villager.VillagerType.ToString())}";
-                Main.instance.MouseText(
-                    Lang.GetNPCHouseBannerText(npc, 0)
-                    + (!isLikedWithVillagers ? villagerLockText : "")
-                );
-
-                if (!Main.mouseRightRelease || !Main.mouseRight) {
-                    continue;
-                }
-
-                Main.mouseRightRelease = false;
-                SoundEngine.PlaySound(SoundID.MenuTick);
-                if (!isLikedWithVillagers) {
-                    Main.NewText(villagerLockText);
-                    return;
-                }
-
-                WorldGen.kickOut(npc.whoAmI);
             }
-        });
+        );
     }
 
     private void RoomOccupancyCheck(ILContext il) {

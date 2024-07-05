@@ -3,12 +3,12 @@
 namespace LivingWorldMod.Globals.Players;
 
 /// <summary>
-/// ModPlayer that handles all saving and applying of buffs that are permanent
-/// once they are acquired.
+///     ModPlayer that handles all saving and applying of buffs that are permanent
+///     once they are acquired.
 /// </summary>
 public class PermanentBuffPlayer : ModPlayer {
     /// <summary>
-    /// Permanently increases <see cref="Player.moveSpeed"/> by 5%.
+    ///     Permanently increases <see cref="Player.moveSpeed" /> by 5%.
     /// </summary>
     public bool effervescentNuggetBuff;
 

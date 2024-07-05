@@ -18,7 +18,7 @@ using Terraria.UI;
 namespace LivingWorldMod.Content.Villages.UI.VillagerShop;
 
 /// <summary>
-/// UIState that handles the entire UI portion of the shop system for all villager types.
+///     UIState that handles the entire UI portion of the shop system for all villager types.
 /// </summary>
 public class ShopUIState : UIState {
     public Villager currentVillager;
@@ -61,17 +61,10 @@ public class ShopUIState : UIState {
         string shopUIPath = $"{LWM.SpritePath}Villages/UI/ShopUI/Harpy/";
 
         //Background Zone
-        backImage = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage", AssetRequestMode.ImmediateLoad)) {
-            HAlign = 0.5f,
-            VAlign = 0.5f
-        };
+        backImage = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage", AssetRequestMode.ImmediateLoad)) { HAlign = 0.5f, VAlign = 0.5f };
         Append(backImage);
 
-        shopOverlay = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay", AssetRequestMode.ImmediateLoad)) {
-            HAlign = 0.5f,
-            VAlign = 0.5f,
-            IgnoresMouseInteraction = true
-        };
+        shopOverlay = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay", AssetRequestMode.ImmediateLoad)) { HAlign = 0.5f, VAlign = 0.5f, IgnoresMouseInteraction = true };
         Append(shopOverlay);
 
         //Shop Zone
@@ -102,11 +95,7 @@ public class ShopUIState : UIState {
         nameZone.Top.Set(322f, 0f);
         backImage.Append(nameZone);
 
-        nameText = new UIBetterText(large: true) {
-            HAlign = 0.5f,
-            VAlign = 0.5f,
-            horizontalTextConstraint = 184
-        };
+        nameText = new UIBetterText(large: true) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = 184 };
         nameZone.Append(nameText);
 
         //Dialogue Zone
@@ -117,10 +106,7 @@ public class ShopUIState : UIState {
         dialogueZone.Top.Set(388f, 0f);
         backImage.Append(dialogueZone);
 
-        dialogueText = new UIBetterText {
-            IsWrapped = true,
-            horizontalWrapConstraint = 388f
-        };
+        dialogueText = new UIBetterText { IsWrapped = true, horizontalWrapConstraint = 388f };
         dialogueText.SetPadding(12f);
         dialogueZone.Append(dialogueText);
 
@@ -132,40 +118,26 @@ public class ShopUIState : UIState {
         buyItemZone.Top.Set(90f, 0f);
         backImage.Append(buyItemZone);
 
-        buyItemHeader = new UIBetterText(Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Buying"), 1.25f) {
-            isVisible = false,
-            HAlign = 0.5f
-        };
+        buyItemHeader = new UIBetterText(Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Buying"), 1.25f) { isVisible = false, HAlign = 0.5f };
         buyItemHeader.Top.Set(4f, 0f);
         buyItemZone.Append(buyItemHeader);
 
-        buyItemIcon = new UIBetterItemIcon(new Item(ItemID.Acorn), 32f, true) {
-            isVisible = false,
-            HAlign = 0.5f
-        };
+        buyItemIcon = new UIBetterItemIcon(new Item(ItemID.Acorn), 32f, true) { isVisible = false, HAlign = 0.5f };
         buyItemIcon.Width.Set(32f, 0f);
         buyItemIcon.Height.Set(32f, 0f);
         buyItemIcon.Top.Set(26f, 0f);
         buyItemZone.Append(buyItemIcon);
 
-        buyItemStockHeader = new UIBetterText(Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Stock"), 1.25f) {
-            isVisible = false,
-            HAlign = 0.5f
-        };
+        buyItemStockHeader = new UIBetterText(Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Stock"), 1.25f) { isVisible = false, HAlign = 0.5f };
         buyItemStockHeader.Top.Set(56f, 0f);
         buyItemZone.Append(buyItemStockHeader);
 
-        buyItemStock = new UIBetterText("1000", 1.25f) {
-            isVisible = false,
-            horizontalTextConstraint = 150,
-            HAlign = 0.5f
-        };
+        buyItemStock = new UIBetterText("1000", 1.25f) { isVisible = false, horizontalTextConstraint = 150, HAlign = 0.5f };
         buyItemStock.Top.Set(80f, 0f);
         buyItemZone.Append(buyItemStock);
 
         buyItemButton = new UIBetterImageButton(ModContent.Request<Texture2D>(shopUIPath + "BuyButton", AssetRequestMode.ImmediateLoad), Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Buy")) {
-            isVisible = false,
-            HAlign = 0.5f
+            isVisible = false, HAlign = 0.5f
         };
         buyItemButton.Top.Set(102f, 0f);
         buyItemZone.Append(buyItemButton);
@@ -178,16 +150,11 @@ public class ShopUIState : UIState {
         savingsZone.Top.Set(260f, 0f);
         backImage.Append(savingsZone);
 
-        savingsText = new UIBetterText(Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Savings")) {
-            HAlign = 0.5f
-        };
+        savingsText = new UIBetterText(Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Savings")) { HAlign = 0.5f };
         savingsText.Top.Set(-26f, 0f);
         savingsZone.Append(savingsText);
 
-        savingsDisplay = new UICoinDisplay(Main.LocalPlayer.CalculateTotalSavings()) {
-            HAlign = 0.5f,
-            VAlign = 0.5f
-        };
+        savingsDisplay = new UICoinDisplay(Main.LocalPlayer.CalculateTotalSavings()) { HAlign = 0.5f, VAlign = 0.5f };
         savingsZone.Append(savingsDisplay);
 
         //List Zone
@@ -291,8 +258,8 @@ public class ShopUIState : UIState {
     }
 
     /// <summary>
-    /// Changes the currently selected shop item index in order to be potentially bought by the
-    /// player. Passing in null will unselect all of the indices.
+    ///     Changes the currently selected shop item index in order to be potentially bought by the
+    ///     player. Passing in null will unselect all of the indices.
     /// </summary>
     /// <param name="newSelectedItem"> The newly selected shop item. </param>
     /// <param name="playSound"> Whether or not to play the sound of opening/closing the menu. </param>
@@ -335,8 +302,8 @@ public class ShopUIState : UIState {
     }
 
     /// <summary>
-    /// Populates the shop list full of entries of whatever the given villager being spoken to
-    /// is selling at the given moment.
+    ///     Populates the shop list full of entries of whatever the given villager being spoken to
+    ///     is selling at the given moment.
     /// </summary>
     private void PopulateShopList() {
         shopList.Clear();
@@ -344,9 +311,11 @@ public class ShopUIState : UIState {
         float priceMult = LWMUtils.GetPriceMultiplierFromRep(currentVillager);
 
         foreach (ShopItem item in currentVillager.shopInventory) {
-            UIShopItem element = new(item,
+            UIShopItem element = new(
+                item,
                 (long)Math.Round(item.ItemPrice * priceMult),
-                currentVillager.VillagerType);
+                currentVillager.VillagerType
+            );
 
             element.Activate();
 
@@ -355,18 +324,20 @@ public class ShopUIState : UIState {
     }
 
     /// <summary>
-    /// Almost a carbon copy of PopulateShopList that purely exists for the purposes of UI
-    /// initialization. The elements in the list are created upon mod load so when the player
-    /// actually opens the UI, the list is properly initialized and the elements within them
-    /// will be properly scaled in PopulateShopList(). Also used for debug purposes.
+    ///     Almost a carbon copy of PopulateShopList that purely exists for the purposes of UI
+    ///     initialization. The elements in the list are created upon mod load so when the player
+    ///     actually opens the UI, the list is properly initialized and the elements within them
+    ///     will be properly scaled in PopulateShopList(). Also used for debug purposes.
     /// </summary>
     private void DummyPopulateShopList() {
         shopList.Clear();
 
         for (int i = 0; i < Main.rand.Next(10, 51); i++) {
-            UIShopItem element = new(new ShopItem(Main.rand.Next(ItemID.Count), 1000, 0),
+            UIShopItem element = new(
+                new ShopItem(Main.rand.Next(ItemID.Count), 1000, 0),
                 Main.rand.Next(0, 10000000),
-                VillagerType.Harpy);
+                VillagerType.Harpy
+            );
 
             element.Activate();
 

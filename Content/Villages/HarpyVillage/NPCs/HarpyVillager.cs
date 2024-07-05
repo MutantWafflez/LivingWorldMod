@@ -79,10 +79,8 @@ public class HarpyVillager : Villager {
     }
 
     public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) {
-        bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
-            BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Sky,
-
-            new FlavorTextBestiaryInfoElement("Mods.LivingWorldMod.Bestiary.HarpyVillager")
-        });
+        bestiaryEntry.Info.AddRange(
+            new IBestiaryInfoElement[] { BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Sky, new FlavorTextBestiaryInfoElement("Mods.LivingWorldMod.Bestiary.HarpyVillager") }
+        );
     }
 }

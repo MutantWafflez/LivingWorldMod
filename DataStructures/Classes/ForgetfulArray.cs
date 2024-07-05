@@ -5,12 +5,14 @@ using System.Linq;
 namespace LivingWorldMod.DataStructures.Classes;
 
 /// <summary>
-/// Represents an array of fixed size that will remember only the
-/// specified amount of items. Adding an object to this array will
-/// replace the oldest object. Objects cannot be directly removed,
-/// either.
+///     Represents an array of fixed size that will remember only the
+///     specified amount of items. Adding an object to this array will
+///     replace the oldest object. Objects cannot be directly removed,
+///     either.
 /// </summary>
 public class ForgetfulArray<T> : IList<T> {
+    private readonly T[] _array;
+    private int _addPointer;
     public int Count => _array.Length;
 
     public bool IsReadOnly => _array.IsReadOnly;
@@ -19,9 +21,6 @@ public class ForgetfulArray<T> : IList<T> {
         get => _array[index];
         set { }
     }
-
-    private readonly T[] _array;
-    private int _addPointer;
 
     public ForgetfulArray(int sizeLimit) {
         _array = new T[sizeLimit];
@@ -53,8 +52,8 @@ public class ForgetfulArray<T> : IList<T> {
     }
 
     /// <summary>
-    /// Functionally useless. Objects cannot be directly removed
-    /// from this array.
+    ///     Functionally useless. Objects cannot be directly removed
+    ///     from this array.
     /// </summary>
     public bool Remove(T item) => false;
 
@@ -77,8 +76,8 @@ public class ForgetfulArray<T> : IList<T> {
     }
 
     /// <summary>
-    /// Functionally useless. Objects cannot be directly removed
-    /// from this array.
+    ///     Functionally useless. Objects cannot be directly removed
+    ///     from this array.
     /// </summary>
     public void RemoveAt(int index) { }
 

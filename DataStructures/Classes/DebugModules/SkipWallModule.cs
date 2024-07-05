@@ -3,7 +3,7 @@
 namespace LivingWorldMod.DataStructures.Classes.DebugModules;
 
 /// <summary>
-/// Module that places Skip Walls over all tiles without walls in the region.
+///     Module that places Skip Walls over all tiles without walls in the region.
 /// </summary>
 public class SkipWallModule : RegionModule {
     protected override void ApplyEffectOnRegion() {
@@ -21,8 +21,8 @@ public class SkipWallModule : RegionModule {
 }
 
 /// <summary>
-/// Wall used for "skipping" over certain wall positions when used in conjunction with the
-/// structure stick.
+///     Wall used for "skipping" over certain wall positions when used in conjunction with the
+///     structure stick.
 /// </summary>
 public class SkipWall : BaseWall {
     public override string Texture => "Terraria/Images/Wall_" + WallID.StarsWallpaper;

@@ -33,29 +33,33 @@ public sealed partial class HappinessPatches : LoadablePatch {
         c.GotoNext(MoveType.After, i => i.Match(OpCodes.Stfld));
         c.Emit(OpCodes.Ldarg_0);
         c.Emit(OpCodes.Ldarg_2);
-        c.EmitDelegate<Action<ShopHelper, NPC>>((shopHelper, npc) => {
-            if (!npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
-                return;
+        c.EmitDelegate<Action<ShopHelper, NPC>>(
+            (shopHelper, npc) => {
+                if (!npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
+                    return;
+                }
+
+                // To prevent the "content" modifier from showing up when other modifiers are present
+                shopHelper._currentHappiness = " ";
+
+                globalNPC.MoodModule.ResetStaticModifiers();
             }
-
-            // To prevent the "content" modifier from showing up when other modifiers are present
-            shopHelper._currentHappiness = " ";
-
-            globalNPC.MoodModule.ResetStaticModifiers();
-        });
+        );
 
         c.GotoLastInstruction();
         c.Emit(OpCodes.Ldarg_0);
         c.Emit(OpCodes.Ldarg_2);
-        c.EmitDelegate<Action<ShopHelper, NPC>>((shopHelper, npc) => {
-            if (!npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
-                return;
+        c.EmitDelegate<Action<ShopHelper, NPC>>(
+            (shopHelper, npc) => {
+                if (!npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
+                    return;
+                }
+
+                TownNPCMoodModule moodModule = globalNPC.MoodModule;
+
+                shopHelper._currentPriceAdjustment = MathHelper.Lerp(MinCostModifier, MaxCostModifier, 1f - moodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue);
             }
-
-            TownNPCMoodModule moodModule = globalNPC.MoodModule;
-
-            shopHelper._currentPriceAdjustment = MathHelper.Lerp(MinCostModifier, MaxCostModifier, 1f - moodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue);
-        });
+        );
     }
 
     private static void HijackReportText(ILContext il) {
@@ -74,13 +78,15 @@ public sealed partial class HappinessPatches : LoadablePatch {
         c.Emit(OpCodes.Ldloc, townNPCNameKeyLocal);
         c.Emit(OpCodes.Ldarg_1);
         c.Emit(OpCodes.Ldarg_2);
-        c.EmitDelegate<Action<ShopHelper, string, string, object>>((shopHelper, townNPCLocalizationKey, moodModifierKey, flavorTextSubstituteObject) => {
-            // Add modifiers as normal
-            if (shopHelper._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownGlobalNPC globalNPC) && TownNPCNameRegex.Match(townNPCLocalizationKey) is { } match && match != Match.Empty) {
-                // We split moodModifierKey for scenarios such as LovesNPC_Princess, where we want the mood modifier to be "LovesNPC" as a catch-all
-                globalNPC.MoodModule.AddStaticModifier(moodModifierKey.Split('_')[0], Language.GetText($"{townNPCLocalizationKey}.{moodModifierKey}"), flavorTextSubstituteObject);
+        c.EmitDelegate<Action<ShopHelper, string, string, object>>(
+            (shopHelper, townNPCLocalizationKey, moodModifierKey, flavorTextSubstituteObject) => {
+                // Add modifiers as normal
+                if (shopHelper._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownGlobalNPC globalNPC) && TownNPCNameRegex.Match(townNPCLocalizationKey) is { } match && match != Match.Empty) {
+                    // We split moodModifierKey for scenarios such as LovesNPC_Princess, where we want the mood modifier to be "LovesNPC" as a catch-all
+                    globalNPC.MoodModule.AddStaticModifier(moodModifierKey.Split('_')[0], Language.GetText($"{townNPCLocalizationKey}.{moodModifierKey}"), flavorTextSubstituteObject);
+                }
             }
-        });
+        );
     }
 
     public override void LoadPatches() {

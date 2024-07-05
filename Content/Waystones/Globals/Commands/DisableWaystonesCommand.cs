@@ -5,7 +5,7 @@ using LivingWorldMod.Utilities;
 namespace LivingWorldMod.Content.Waystones.Globals.Commands;
 
 /// <summary>
-/// Debug Command that will disable all Waystones in this world. Be careful with this.
+///     Debug Command that will disable all Waystones in this world. Be careful with this.
 /// </summary>
 public class DisableWaystonesCommand : DebugCommand {
     public override string Command => "disableway";

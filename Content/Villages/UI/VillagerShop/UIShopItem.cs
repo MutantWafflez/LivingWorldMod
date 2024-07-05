@@ -11,8 +11,8 @@ using Terraria.UI;
 namespace LivingWorldMod.Content.Villages.UI.VillagerShop;
 
 /// <summary>
-/// UIImage class that holds different UITexts and UIElements that is the index in a given shop
-/// UI list. Holds data on the entire entry for the given item.
+///     UIImage class that holds different UITexts and UIElements that is the index in a given shop
+///     UI list. Holds data on the entire entry for the given item.
 /// </summary>
 public class UIShopItem : UIImage {
     public UIBetterItemIcon itemImage;
@@ -20,8 +20,8 @@ public class UIShopItem : UIImage {
     public UICoinDisplay itemCostDisplay;
 
     /// <summary>
-    /// The ShopItem class object that this element is tied to. Is used to sync the villager's
-    /// inventory with the UI properly.
+    ///     The ShopItem class object that this element is tied to. Is used to sync the villager's
+    ///     inventory with the UI properly.
     /// </summary>
     public ShopItem pertainedInventoryItem;
 
@@ -35,7 +35,9 @@ public class UIShopItem : UIImage {
 
     private float _manualUpdateTime;
 
-    public UIShopItem(ShopItem pertainedInventoryItem, long displayedCost, VillagerType villagerType) : base(ModContent.Request<Texture2D>($"{LWM.SpritePath}Villages/UI/ShopUI/{villagerType}/ShopItemBox")) {
+    public UIShopItem(ShopItem pertainedInventoryItem, long displayedCost, VillagerType villagerType) : base(
+        ModContent.Request<Texture2D>($"{LWM.SpritePath}Villages/UI/ShopUI/{villagerType}/ShopItemBox")
+    ) {
         this.pertainedInventoryItem = pertainedInventoryItem;
         displayedItem = new Item();
         displayedItem.SetDefaults(pertainedInventoryItem.itemType);
@@ -47,24 +49,17 @@ public class UIShopItem : UIImage {
     public override void OnInitialize() {
         float itemImageSize = 32f;
 
-        itemImage = new UIBetterItemIcon(displayedItem, itemImageSize, true) {
-            VAlign = 0.5f
-        };
+        itemImage = new UIBetterItemIcon(displayedItem, itemImageSize, true) { VAlign = 0.5f };
         itemImage.Left.Set(38f, 0f);
         itemImage.Width.Set(itemImageSize, 0f);
         itemImage.Height.Set(itemImageSize, 0f);
         Append(itemImage);
 
-        itemNameText = new UIBetterText(displayedItem.HoverName, 1.25f) {
-            VAlign = 0.5f,
-            horizontalTextConstraint = 194f
-        };
+        itemNameText = new UIBetterText(displayedItem.HoverName, 1.25f) { VAlign = 0.5f, horizontalTextConstraint = 194f };
         itemNameText.Left.Set(94f, 0f);
         Append(itemNameText);
 
-        itemCostDisplay = new UICoinDisplay(displayedCost, UICoinDisplay.CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) {
-            VAlign = 0.5f
-        };
+        itemCostDisplay = new UICoinDisplay(displayedCost, UICoinDisplay.CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) { VAlign = 0.5f };
         itemCostDisplay.Left.Set(-itemCostDisplay.Width.Pixels - 12f, 1f);
         Append(itemCostDisplay);
     }

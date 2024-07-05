@@ -19,6 +19,7 @@ public class ThrowAttackAIState : TownNPCAIState {
                     attackData.projType = 929;
                     attackData.projDamage = (int)(attackData.projDamage * 1.5f);
                 }
+
                 break;
         }
 
@@ -30,6 +31,7 @@ public class ThrowAttackAIState : TownNPCAIState {
         if (Main.expertMode) {
             attackData.projDamage = (int)(attackData.projDamage * Main.GameModeInfo.TownNPCDamageMultiplier);
         }
+
         attackData.projDamage = (int)(attackData.projDamage * combatModule.CurrentDamageMultiplier);
 
         npc.ai[1] -= 1f;
@@ -37,8 +39,13 @@ public class ThrowAttackAIState : TownNPCAIState {
         if (npc.localAI[3] == attackData.attackDelay && Main.netMode != NetmodeID.MultiplayerClient) {
             Vector2 projVelocity = -Vector2.UnitY;
             if (combatModule.AttackLocation is { } location) {
-                projVelocity = npc.DirectionTo(location.Center + new Vector2(0f,
-                    (0f - attackData.gravityCorrection) * MathHelper.Clamp(npc.Distance(location.Center) / attackData.dangerDetectRange, 0f, 1f)));
+                projVelocity = npc.DirectionTo(
+                    location.Center
+                    + new Vector2(
+                        0f,
+                        (0f - attackData.gravityCorrection) * MathHelper.Clamp(npc.Distance(location.Center) / attackData.dangerDetectRange, 0f, 1f)
+                    )
+                );
             }
 
             if (projVelocity.HasNaNs() || projVelocity == -Vector2.UnitY) {

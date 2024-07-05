@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 namespace LivingWorldMod.Content.Villages.Globals.Systems.UI;
 
 /// <summary>
-/// System that handles the initialization and opening/closing of the Villager Housing UI.
+///     System that handles the initialization and opening/closing of the Villager Housing UI.
 /// </summary>
 public class VillagerHousingUISystem : UISystem<VillagerHousingUIState> {
     public override string VanillaInterfaceLocation => "Vanilla: Inventory";
@@ -24,6 +24,7 @@ public class VillagerHousingUISystem : UISystem<VillagerHousingUIState> {
 
             correspondingInterface.SetState(null);
         }
+
         if (correspondingInterface?.CurrentState is not null) {
             correspondingInterface.Update(gameTime);
         }

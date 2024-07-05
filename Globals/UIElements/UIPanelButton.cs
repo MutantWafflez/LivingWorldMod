@@ -10,7 +10,7 @@ using Terraria.UI;
 namespace LivingWorldMod.Globals.UIElements;
 
 /// <summary>
-/// UIPanel extension that has functionality for being a button.
+///     UIPanel extension that has functionality for being a button.
 /// </summary>
 public class UIPanelButton : UIPanel {
     public UIBetterText buttonText;
@@ -18,14 +18,14 @@ public class UIPanelButton : UIPanel {
     public float textSize;
 
     /// <summary>
-    /// Whether or not this element is currently visible, which is to say, whether or not it
-    /// will be drawn. Defaults to true.
+    ///     Whether or not this element is currently visible, which is to say, whether or not it
+    ///     will be drawn. Defaults to true.
     /// </summary>
     public bool isVisible = true;
 
     /// <summary>
-    /// Whether or not, while the mousing is hovering over this element, the player can use an
-    /// item (mouseInterface = true). Defaults to true.
+    ///     Whether or not, while the mousing is hovering over this element, the player can use an
+    ///     item (mouseInterface = true). Defaults to true.
     /// </summary>
     public bool preventItemUsageWhileHovering = true;
 
@@ -34,7 +34,6 @@ public class UIPanelButton : UIPanel {
     private float _activeVisibility = 1f;
 
     private float _inactiveVisibility = 0.4f;
-
 
     public UIPanelButton(Asset<Texture2D> customBackground, Asset<Texture2D> customBorder, int customCornerSize = 12, int customBarSize = 4, string text = null, float textSize = 1f)
         : base(customBackground, customBorder, customCornerSize, customBarSize) {
@@ -64,20 +63,10 @@ public class UIPanelButton : UIPanel {
         }
 
         if (_text is LocalizedText translation) {
-            buttonText = new UIBetterText(translation, textSize) {
-                HAlign = 0.5f,
-                VAlign = 0.5f,
-                horizontalTextConstraint = GetDimensions().Width,
-                IgnoresMouseInteraction = true
-            };
+            buttonText = new UIBetterText(translation, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
         }
         else {
-            buttonText = new UIBetterText(_text as string, textSize) {
-                HAlign = 0.5f,
-                VAlign = 0.5f,
-                horizontalTextConstraint = GetDimensions().Width,
-                IgnoresMouseInteraction = true
-            };
+            buttonText = new UIBetterText(_text as string, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
         }
 
         Append(buttonText);
@@ -101,21 +90,6 @@ public class UIPanelButton : UIPanel {
         ProperOnClick?.Invoke(evt, this);
     }
 
-    public void SetText(string text) {
-        _text = text;
-        RecalculateChildren();
-    }
-
-    public void SetText(LocalizedText text) {
-        _text = text;
-        RecalculateChildren();
-    }
-
-    public void SetVisibility(float whenActive, float whenInactive) {
-        _activeVisibility = MathHelper.Clamp(whenActive, 0.0f, 1f);
-        _inactiveVisibility = MathHelper.Clamp(whenInactive, 0.0f, 1f);
-    }
-
     protected override void DrawSelf(SpriteBatch spriteBatch) {
         if (buttonText is not null) {
             buttonText.isVisible = isVisible;
@@ -124,6 +98,7 @@ public class UIPanelButton : UIPanel {
         if (!isVisible) {
             return;
         }
+
         bool isHovering = ContainsPoint(Main.MouseScreen);
 
         //Have to do some cheaty shenanigans in order to make the visibility work as normal
@@ -148,15 +123,30 @@ public class UIPanelButton : UIPanel {
         }
     }
 
+    public void SetText(string text) {
+        _text = text;
+        RecalculateChildren();
+    }
+
+    public void SetText(LocalizedText text) {
+        _text = text;
+        RecalculateChildren();
+    }
+
+    public void SetVisibility(float whenActive, float whenInactive) {
+        _activeVisibility = MathHelper.Clamp(whenActive, 0.0f, 1f);
+        _inactiveVisibility = MathHelper.Clamp(whenInactive, 0.0f, 1f);
+    }
+
     /// <summary>
-    /// Simple action/event that triggers after every frame while the mouse is currently
-    /// hovering over this element.
+    ///     Simple action/event that triggers after every frame while the mouse is currently
+    ///     hovering over this element.
     /// </summary>
     public event Action WhileHovering;
 
     /// <summary>
-    /// An "override" of the normal OnClick event that takes into account visibility of this
-    /// button. USE THIS INSTEAD OF THE VANILLA EVENT!
+    ///     An "override" of the normal OnClick event that takes into account visibility of this
+    ///     button. USE THIS INSTEAD OF THE VANILLA EVENT!
     /// </summary>
     public event MouseEvent ProperOnClick;
 }

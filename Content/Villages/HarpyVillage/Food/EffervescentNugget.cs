@@ -11,8 +11,8 @@ using Terraria.Graphics.Shaders;
 namespace LivingWorldMod.Content.Villages.HarpyVillage.Food;
 
 /// <summary>
-/// Upon first consumption, grants a permanent 5% move speed buff.
-/// Inflicts the <see cref="SugarSuperfluity"/> debuff for a minute.
+///     Upon first consumption, grants a permanent 5% move speed buff.
+///     Inflicts the <see cref="SugarSuperfluity" /> debuff for a minute.
 /// </summary>
 public class EffervescentNugget : BaseItem {
     public override string Texture => "Terraria/Images/Item_" + ItemID.ChickenNugget;
@@ -31,15 +31,7 @@ public class EffervescentNugget : BaseItem {
         Main.RegisterItemAnimation(Type, new DrawAnimationVertical(int.MaxValue, 3));
 
         ItemID.Sets.IsFood[Type] = true;
-        ItemID.Sets.FoodParticleColors[Type] = [
-            Color.Red,
-            Color.Orange,
-            Color.Yellow,
-            Color.Green,
-            Color.Blue,
-            Color.Indigo,
-            Color.Violet
-        ];
+        ItemID.Sets.FoodParticleColors[Type] = [Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Blue, Color.Indigo, Color.Violet];
     }
 
     public override void OnConsumeItem(Player player) {
@@ -88,8 +80,8 @@ public class EffervescentNugget : BaseItem {
 }
 
 /// <summary>
-/// Granted by the <see cref="EffervescentNugget"/> food item.
-/// Causes lighting to go rainbow for the duration (purely visual).
+///     Granted by the <see cref="EffervescentNugget" /> food item.
+///     Causes lighting to go rainbow for the duration (purely visual).
 /// </summary>
 public class SugarSuperfluity : BaseStatusEffect {
     public override string Texture => "Terraria/Images/Buff_" + BuffID.SugarRush;

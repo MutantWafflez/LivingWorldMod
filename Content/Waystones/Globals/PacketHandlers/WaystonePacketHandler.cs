@@ -8,12 +8,12 @@ using Terraria.DataStructures;
 namespace LivingWorldMod.Content.Waystones.Globals.PacketHandlers;
 
 /// <summary>
-/// PacketHandler that handles all packets relating to Waystones.
+///     PacketHandler that handles all packets relating to Waystones.
 /// </summary>
 public class WaystonePacketHandler : PacketHandler {
     /// <summary>
-    /// Sent/Received when any player/client activates an inactive waystone, and Sync the activation
-    /// with all other clients.
+    ///     Sent/Received when any player/client activates an inactive waystone, and Sync the activation
+    ///     with all other clients.
     /// </summary>
     public const byte InitiateWaystoneActivation = 0;
 
@@ -29,6 +29,7 @@ public class WaystonePacketHandler : PacketHandler {
                     if (!LWMUtils.TryFindModEntity(entityPosX, entityPosY, out WaystoneEntity entity) || entity.DoingActivationVFX) {
                         return;
                     }
+
                     entity.ActivateWaystoneEntity();
 
                     ModPacket packet = GetPacket();
@@ -46,6 +47,7 @@ public class WaystonePacketHandler : PacketHandler {
 
                     WaystoneSystem.Instance.AddNewActivationEntity(entityPos.ToWorldCoordinates(16, 16), entity.WaystoneColor);
                 }
+
                 break;
             default:
                 ModContent.GetInstance<LWM>().Logger.Warn($"Invalid WaystonePacketHandler Packet Type of {packetType}");

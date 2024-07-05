@@ -4,7 +4,7 @@ using LivingWorldMod.Globals.BaseTypes.Items;
 namespace LivingWorldMod.Content.Villages.HarpyVillage.Materials;
 
 /// <summary>
-/// Item used for respawning Harpy Villagers at the Harpy Village shrine.
+///     Item used for respawning Harpy Villagers at the Harpy Village shrine.
 /// </summary>
 public class HarpyEgg : BaseItem {
     public override void SetStaticDefaults() {

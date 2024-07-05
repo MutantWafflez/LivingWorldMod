@@ -7,7 +7,7 @@ using MonoMod.Cil;
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 
 /// <summary>
-/// Patches that deal with special collision with Town NPCs.
+///     Patches that deal with special collision with Town NPCs.
 /// </summary>
 public class TownNPCCollisionPatches : LoadablePatch {
     public override void LoadPatches() {
@@ -20,14 +20,16 @@ public class TownNPCCollisionPatches : LoadablePatch {
 
         ILCursor c = new(il);
         c.Emit(OpCodes.Ldarg_0);
-        c.EmitDelegate<Func<NPC, bool>>(npc => {
-            if (!npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
-                return false;
-            }
+        c.EmitDelegate<Func<NPC, bool>>(
+            npc => {
+                if (!npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
+                    return false;
+                }
 
-            globalNPC.CollisionModule.Update();
-            return true;
-        });
+                globalNPC.CollisionModule.Update();
+                return true;
+            }
+        );
         c.Emit(OpCodes.Brfalse_S, c.DefineLabel());
         c.Emit(OpCodes.Ret);
 

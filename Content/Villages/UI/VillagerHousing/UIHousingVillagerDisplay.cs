@@ -70,14 +70,16 @@ public class UIHousingVillagerDisplay : UIElement {
     protected override void DrawChildren(SpriteBatch spriteBatch) {
         base.DrawChildren(spriteBatch);
 
-        spriteBatch.Draw(TextureAssets.InventoryBack11.Value,
+        spriteBatch.Draw(
+            TextureAssets.InventoryBack11.Value,
             GetDimensions().ToRectangle(),
             null,
             !IsAllowed ? Color.Gray : Color.White,
             0f,
             default(Vector2),
             SpriteEffects.None,
-            0f);
+            0f
+        );
 
 
         LayeredDrawObject drawObject = myVillager.drawObject;
@@ -102,7 +104,8 @@ public class UIHousingVillagerDisplay : UIElement {
         if (!IsAllowed) {
             int lockSize = 22;
 
-            spriteBatch.Draw(TextureAssets.HbLock[0].Value,
+            spriteBatch.Draw(
+                TextureAssets.HbLock[0].Value,
                 GetDimensions().Center(),
                 new Rectangle(0, 0, lockSize, lockSize),
                 Color.White,
@@ -110,7 +113,8 @@ public class UIHousingVillagerDisplay : UIElement {
                 new Vector2(lockSize / 2f, lockSize / 2f),
                 1.25f,
                 SpriteEffects.None,
-                0f);
+                0f
+            );
         }
     }
 }

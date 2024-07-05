@@ -8,8 +8,8 @@ using Terraria.Graphics.Shaders;
 namespace LivingWorldMod.Content.Villages.HarpyVillage.Accessories;
 
 /// <summary>
-/// While equipped, grants the feather-fall potion effect, and increases
-/// DR by 4% while airborne.
+///     While equipped, grants the feather-fall potion effect, and increases
+///     DR by 4% while airborne.
 /// </summary>
 public class EffervescentHarpyFeather : BaseItem {
     public override string Texture => "Terraria/Images/Item_" + ItemID.GiantHarpyFeather;

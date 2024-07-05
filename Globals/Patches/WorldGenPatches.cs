@@ -11,7 +11,7 @@ using MonoMod.Cil;
 namespace LivingWorldMod.Globals.Patches;
 
 /// <summary>
-/// Class that contains the IL/On methods for patching various worldgen methods.
+///     Class that contains the IL/On methods for patching various worldgen methods.
 /// </summary>
 public class WorldGenPatches : LoadablePatch {
     public override void LoadPatches() {
@@ -34,7 +34,9 @@ public class WorldGenPatches : LoadablePatch {
         //IL is quite simple in this case. We're going to hijack one of the checks that determines if a hole area is going to be filled or not.
         //All we do it return true if the point in question is in the Harpy village zone, which prevents the filling at that point
         c.Emit(OpCodes.Ldloc_S, (byte)spotLocalVar);
-        c.EmitDelegate<Func<bool, Point, bool>>((originalValue, point) =>
-            originalValue || WorldCreationSystem.Instance.GetTempWorldGenValue<Rectangle>(HarpyVillage.TemporaryZoneVariableName) is Rectangle rectangle && rectangle.Contains(point));
+        c.EmitDelegate<Func<bool, Point, bool>>(
+            (originalValue, point) =>
+                originalValue || (WorldCreationSystem.Instance.GetTempWorldGenValue<Rectangle>(HarpyVillage.TemporaryZoneVariableName) is Rectangle rectangle && rectangle.Contains(point))
+        );
     }
 }

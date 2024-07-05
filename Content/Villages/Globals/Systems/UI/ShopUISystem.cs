@@ -8,7 +8,7 @@ using Terraria.Audio;
 namespace LivingWorldMod.Content.Villages.Globals.Systems.UI;
 
 /// <summary>
-/// System that handles the initialization and opening/closing of the Shop UI for Villagers.
+///     System that handles the initialization and opening/closing of the Shop UI for Villagers.
 /// </summary>
 public class ShopUISystem : UISystem<ShopUIState> {
     public static Asset<Effect> hoverFlashShader;
@@ -47,7 +47,7 @@ public class ShopUISystem : UISystem<ShopUIState> {
     }
 
     /// <summary>
-    /// Reloads and open the shop UI depending on the villager type being spoken to.
+    ///     Reloads and open the shop UI depending on the villager type being spoken to.
     /// </summary>
     /// <param name="villager"> </param>
     public void OpenShopUI(Villager villager) {
@@ -59,7 +59,7 @@ public class ShopUISystem : UISystem<ShopUIState> {
     }
 
     /// <summary>
-    /// Closes the shop UI. That is all for now.
+    ///     Closes the shop UI. That is all for now.
     /// </summary>
     public void CloseShopUI() {
         correspondingUIState.SetSelectedItem(null, false);

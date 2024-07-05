@@ -8,11 +8,12 @@ using Terraria.ObjectData;
 namespace LivingWorldMod.Globals.BaseTypes.Tiles;
 
 /// <summary>
-/// Generic tile class that serves as the template for all tapestry tile types.
-/// Should be added by the item that places it, in <see cref="ModItem.IsLoadingEnabled"/>.
+///     Generic tile class that serves as the template for all tapestry tile types.
+///     Should be added by the item that places it, in <see cref="ModItem.IsLoadingEnabled" />.
 /// </summary>
 [Autoload(false)]
 public class TapestryTile : BaseTile {
+    private readonly ModItem _parentItem;
     public override string Texture => _parentItem.Texture;
 
     public override string Name {
@@ -22,8 +23,6 @@ public class TapestryTile : BaseTile {
     public override Color? TileColorOnMap {
         get;
     }
-
-    private readonly ModItem _parentItem;
 
     public TapestryTile(ModItem parentItem, Color? mapColor) {
         _parentItem = parentItem;

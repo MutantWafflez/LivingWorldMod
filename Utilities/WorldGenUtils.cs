@@ -7,11 +7,11 @@ using Microsoft.Xna.Framework;
 namespace LivingWorldMod.Utilities;
 
 /// <summary>
-/// Class that holds methods and properties that assist with world generation or world related matters.
+///     Class that holds methods and properties that assist with world generation or world related matters.
 /// </summary>
 public static partial class LWMUtils {
     /// <summary>
-    /// Returns world size of the current world being played.
+    ///     Returns world size of the current world being played.
     /// </summary>
     public static WorldSize CurrentWorldSize => Main.maxTilesX switch {
         WorldGen.WorldSizeSmallX when Main.maxTilesY == WorldGen.WorldSizeSmallY => WorldSize.Small,
@@ -21,14 +21,14 @@ public static partial class LWMUtils {
     };
 
     /// <summary>
-    /// Generates a given Structure into the world using a StructureData struct.
+    ///     Generates a given Structure into the world using a StructureData struct.
     /// </summary>
     /// <param name="data"> The struct containing data for the structure. </param>
     /// <param name="startingX"> Far left location of where the structure will begin to generate. </param>
     /// <param name="startingY"> Top-most location of where the structure will begin to generate. </param>
     /// <param name="autoFrame">
-    /// Whether or not the entire structure should be framed, in terms of both walls and tiles,
-    /// when finished being generated.
+    ///     Whether or not the entire structure should be framed, in terms of both walls and tiles,
+    ///     when finished being generated.
     /// </param>
     public static void GenerateStructure(StructureData data, int startingX, int startingY, bool autoFrame = true) {
         for (int y = 0; y < data.structureHeight; y++) {
@@ -44,6 +44,7 @@ public static partial class LWMUtils {
                         else {
                             selectedTile.TileType = (ushort)tileData.type;
                         }
+
                         selectedTile.HasTile = true;
 
                         selectedTile.IsHalfBlock = tileData.isHalfBlock;
@@ -82,6 +83,7 @@ public static partial class LWMUtils {
                     else {
                         selectedTile.WallType = (ushort)tileData.wallType;
                     }
+
                     selectedTile.WallColor = (byte)tileData.wallColor;
                     selectedTile.WallFrameNumber = (byte)tileData.wallFrame;
                     selectedTile.WallFrameX = tileData.wallFrameX;
@@ -103,20 +105,20 @@ public static partial class LWMUtils {
     }
 
     /// <summary>
-    /// Starting at the specified position, attempts to purge all walls and tiles connected to said tile in any way. This
-    /// includes diagonal tiles.
+    ///     Starting at the specified position, attempts to purge all walls and tiles connected to said tile in any way. This
+    ///     includes diagonal tiles.
     /// </summary>
     /// <param name="x"> The beginning tile X position to begin purging. </param>
     /// <param name="y"> The beginning tile Y position to begin purging. </param>
     /// <param name="ignoredTileTypes">
-    /// An array of tile types to ignore for purging. Defaults to null, or no ignored tile
-    /// types.
+    ///     An array of tile types to ignore for purging. Defaults to null, or no ignored tile
+    ///     types.
     /// </param>
     /// <param name="maxRepetitions"> How many times the purge loops is allowed run, at maximum. Defaults to 500. </param>
     public static void PurgeStructure(int x, int y, int[] ignoredTileTypes = null, uint maxRepetitions = 500) {
         Queue<Point> tiles = new();
         Tile firstTile = Main.tile[x, y];
-        if (firstTile.HasTile && !(ignoredTileTypes?.Contains(firstTile.TileType) ?? false) || firstTile.WallType > WallID.None) {
+        if ((firstTile.HasTile && !(ignoredTileTypes?.Contains(firstTile.TileType) ?? false)) || firstTile.WallType > WallID.None) {
             tiles.Enqueue(new Point(x, y));
         }
 
@@ -125,7 +127,7 @@ public static partial class LWMUtils {
                 for (int l = -1; l <= 1; l += k == 0 ? 2 : 1) {
                     Tile tile = Main.tile[i + k, j + l];
 
-                    if ((tile.HasTile && !(ignoredTileTypes?.Contains(tile.TileType) ?? false) || tile.WallType > WallID.None) && !tiles.Any(point => point.X == i + k && point.Y == j + l)) {
+                    if (((tile.HasTile && !(ignoredTileTypes?.Contains(tile.TileType) ?? false)) || tile.WallType > WallID.None) && !tiles.Any(point => point.X == i + k && point.Y == j + l)) {
                         tiles.Enqueue(new Point(i + k, j + l));
                     }
                 }

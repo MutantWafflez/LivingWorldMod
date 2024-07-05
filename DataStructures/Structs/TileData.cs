@@ -5,8 +5,8 @@ using Terraria.ModLoader.IO;
 namespace LivingWorldMod.DataStructures.Structs;
 
 /// <summary>
-/// Struct that holds Tile Data, mainly usage being for structures. Used for generating
-/// pre-determined structures.
+///     Struct that holds Tile Data, mainly usage being for structures. Used for generating
+///     pre-determined structures.
 /// </summary>
 public readonly struct TileData : TagSerializable {
     /* Relevant Tile Fields/Properties:
@@ -90,6 +90,7 @@ public readonly struct TileData : TagSerializable {
         if (LWM.IsDebug) {
             type = ModContent.GetModTile(tile.TileType) is SkipTile ? -2 : tile.TileType;
         }
+
         isActivated = tile.HasTile;
         isHalfBlock = tile.IsHalfBlock;
         frameNumber = tile.TileFrameNumber;
@@ -111,6 +112,7 @@ public readonly struct TileData : TagSerializable {
         else {
             wallType = tile.WallType;
         }
+
         wallColor = tile.WallColor;
         wallFrame = tile.WallFrameNumber;
         wallFrameX = tile.WallFrameX;
@@ -125,14 +127,37 @@ public readonly struct TileData : TagSerializable {
     }
 
     public TileData(
-        int type, bool isActivated, bool isHalfBlock, int frameNumber, int frameX, int frameY, int slopeType, int color, bool isActuated, bool hasActuator,
-        bool hasRedWire, bool hasBlueWire, bool hasGreenWire, bool hasYellowWire, int liquidType, int liquidAmount, int wallType, int wallColor, int wallFrame,
-        int wallFrameX, int wallFrameY, string modTileName, string modTileOwner, string modWallName, string modWallOwner
+        int type,
+        bool isActivated,
+        bool isHalfBlock,
+        int frameNumber,
+        int frameX,
+        int frameY,
+        int slopeType,
+        int color,
+        bool isActuated,
+        bool hasActuator,
+        bool hasRedWire,
+        bool hasBlueWire,
+        bool hasGreenWire,
+        bool hasYellowWire,
+        int liquidType,
+        int liquidAmount,
+        int wallType,
+        int wallColor,
+        int wallFrame,
+        int wallFrameX,
+        int wallFrameY,
+        string modTileName,
+        string modTileOwner,
+        string modWallName,
+        string modWallOwner
     ) {
         this.type = isActivated ? type : -1;
         if (LWM.IsDebug) {
             this.type = modTileOwner == nameof(LivingWorldMod) && modTileName == nameof(SkipTile) ? -2 : type;
         }
+
         this.isActivated = isActivated;
         this.isHalfBlock = isHalfBlock;
         this.frameNumber = frameNumber;
@@ -154,6 +179,7 @@ public readonly struct TileData : TagSerializable {
         else {
             this.wallType = wallType;
         }
+
         this.wallColor = wallColor;
         this.wallFrame = wallFrame;
         this.wallFrameX = wallFrameX;

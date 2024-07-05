@@ -7,7 +7,7 @@ using Terraria.Graphics.Shaders;
 namespace LivingWorldMod.Globals.Patches;
 
 /// <summary>
-/// Patches that relate to player drawing.
+///     Patches that relate to player drawing.
 /// </summary>
 public class PlayerDrawPatches : LoadablePatch {
     public override void LoadPatches() {

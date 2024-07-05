@@ -3,7 +3,7 @@
 namespace LivingWorldMod.DataStructures.Classes.DebugModules;
 
 /// <summary>
-/// Module that places Skip Tiles over all air tiles in the region.
+///     Module that places Skip Tiles over all air tiles in the region.
 /// </summary>
 public class SkipTileModule : RegionModule {
     protected override void ApplyEffectOnRegion() {
@@ -21,8 +21,8 @@ public class SkipTileModule : RegionModule {
 }
 
 /// <summary>
-/// Tile used for "skipping" over certain tile positions when used in conjunction with the
-/// structure stick.
+///     Tile used for "skipping" over certain tile positions when used in conjunction with the
+///     structure stick.
 /// </summary>
 public class SkipTile : BaseTile {
     public override string Texture => "Terraria/Images/Tiles_" + TileID.TeamBlockWhite;

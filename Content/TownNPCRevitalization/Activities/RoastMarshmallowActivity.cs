@@ -13,8 +13,8 @@ using Terraria.WorldBuilding;
 namespace LivingWorldMod.Content.TownNPCRevitalization.Activities;
 
 /// <summary>
-/// Activity where the given NPC will look for the nearest campfire and try to roast
-/// a marshmallow over it.
+///     Activity where the given NPC will look for the nearest campfire and try to roast
+///     a marshmallow over it.
 /// </summary>
 public class RoastMarshmallowActivity : TownNPCActivity {
     private Point _standingLocation;

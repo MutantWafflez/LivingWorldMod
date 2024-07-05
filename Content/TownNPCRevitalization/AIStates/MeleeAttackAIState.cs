@@ -49,7 +49,7 @@ public class MeleeAttackAIState : TownNPCAIState {
                     || enemyNPC.friendly
                     || enemyNPC.damage <= 0
                     || !itemRectangle.Intersects(enemyNPC.Hitbox)
-                    || !enemyNPC.noTileCollide && !Collision.CanHit(npc.position, npc.width, npc.height, enemyNPC.position, enemyNPC.width, enemyNPC.height)) {
+                    || (!enemyNPC.noTileCollide && !Collision.CanHit(npc.position, npc.width, npc.height, enemyNPC.position, enemyNPC.width, enemyNPC.height))) {
                     continue;
                 }
 

@@ -1,7 +1,7 @@
 ﻿namespace LivingWorldMod.Globals.Players;
 
 /// <summary>
-/// ModPlayer class that handles all pets in the mod.
+///     ModPlayer class that handles all pets in the mod.
 /// </summary>
 public class PetPlayer : ModPlayer {
     public bool nimbusPet;

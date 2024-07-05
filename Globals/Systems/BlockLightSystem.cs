@@ -4,23 +4,23 @@ using Microsoft.Xna.Framework;
 namespace LivingWorldMod.Globals.Systems;
 
 /// <summary>
-/// Small ModSystem that handles color changing for blocks, or potentially other applications.
-/// Has a couple of static fields that pertain to specific block colors.
+///     Small ModSystem that handles color changing for blocks, or potentially other applications.
+///     Has a couple of static fields that pertain to specific block colors.
 /// </summary>
 [Autoload(Side = ModSide.Client)]
 public class BlockLightSystem : BaseModSystem<BlockLightSystem> {
     /// <summary>
-    /// The current glow color of the Starshard Cloud blocks.
+    ///     The current glow color of the Starshard Cloud blocks.
     /// </summary>
     public Color starCloudColor;
 
     /// <summary>
-    /// The glow color the Starshard Cloud blocks are transitioning towards.
+    ///     The glow color the Starshard Cloud blocks are transitioning towards.
     /// </summary>
     public Color targetStarCloudColor;
 
     /// <summary>
-    /// The glow color of the star torches.
+    ///     The glow color of the star torches.
     /// </summary>
     public Color starTorchColor;
 

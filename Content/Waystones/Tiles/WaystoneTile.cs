@@ -21,12 +21,11 @@ using Terraria.UI;
 namespace LivingWorldMod.Content.Waystones.Tiles;
 
 /// <summary>
-/// Class for Waystone tiles, which are basically Pylons but in the wild.
+///     Class for Waystone tiles, which are basically Pylons but in the wild.
 /// </summary>
 public class WaystoneTile : BasePylon {
-    public override Color? TileColorOnMap => Color.White;
-
     public Asset<Texture2D> waystoneMapIcons;
+    public override Color? TileColorOnMap => Color.White;
 
     public override void Load() {
         waystoneMapIcons = ModContent.Request<Texture2D>($"{LWM.SpritePath}MapIcons/WaystoneIcons");
@@ -131,28 +130,43 @@ public class WaystoneTile : BasePylon {
 
     public override bool CanPlacePylon() => true;
 
-    public override void DrawMapIcon(ref MapOverlayDrawContext context, ref string mouseOverText, TeleportPylonInfo pylonInfo, bool isNearPylon, Color drawColor, float deselectedScale, float selectedScale) {
+    public override void DrawMapIcon(
+        ref MapOverlayDrawContext context,
+        ref string mouseOverText,
+        TeleportPylonInfo pylonInfo,
+        bool isNearPylon,
+        Color drawColor,
+        float deselectedScale,
+        float selectedScale
+    ) {
         if (!LWMUtils.TryFindModEntity(pylonInfo.PositionInTiles.X, pylonInfo.PositionInTiles.Y, out WaystoneEntity foundEntity) || !foundEntity.isActivated) {
             return;
         }
 
         bool mouseOver = context.Draw(
-                                    waystoneMapIcons.Value,
-                                    pylonInfo.PositionInTiles.ToVector2() + new Vector2(1f, 1.5f),
-                                    drawColor,
-                                    new SpriteFrame(1, 5, 0, (byte)foundEntity.waystoneType),
-                                    deselectedScale,
-                                    selectedScale,
-                                    Alignment.Center)
-                                .IsMouseOver;
+                waystoneMapIcons.Value,
+                pylonInfo.PositionInTiles.ToVector2() + new Vector2(1f, 1.5f),
+                drawColor,
+                new SpriteFrame(1, 5, 0, (byte)foundEntity.waystoneType),
+                deselectedScale,
+                selectedScale,
+                Alignment.Center
+            )
+            .IsMouseOver;
         DefaultMapClickHandle(mouseOver, pylonInfo, $"Mods.LivingWorldMod.MapInfo.Waystones.{foundEntity.waystoneType}", ref mouseOverText);
     }
 }
 
 /// <summary>
-/// Tile Entity for the Waystone tiles.
+///     Tile Entity for the Waystone tiles.
 /// </summary>
 public class WaystoneEntity : TEModdedPylon {
+    public bool isActivated;
+
+    public WaystoneType waystoneType;
+
+    private int _activationTimer;
+
     public Color WaystoneColor {
         get {
             return waystoneType switch {
@@ -170,12 +184,6 @@ public class WaystoneEntity : TEModdedPylon {
         get;
         private set;
     }
-
-    public bool isActivated;
-
-    public WaystoneType waystoneType;
-
-    private int _activationTimer;
 
     public override void Update() {
         // Update is only called on server; we don't need to do the visual flair for the server, so we just wait until that is done, then update all clients accordingly
@@ -233,9 +241,9 @@ public class WaystoneEntity : TEModdedPylon {
     }
 
     /// <summary>
-    /// Should be called whenever the tile that is entity is associated with is right clicked & activated in SINGLERPLAYER or
-    /// ON THE SERVER. Shouldn't
-    /// be called on any multiplayer client; we handle that with our own packets.
+    ///     Should be called whenever the tile that is entity is associated with is right clicked & activated in SINGLERPLAYER or
+    ///     ON THE SERVER. Shouldn't
+    ///     be called on any multiplayer client; we handle that with our own packets.
     /// </summary>
     public void ActivateWaystoneEntity() {
         if (isActivated || DoingActivationVFX) {
@@ -247,8 +255,8 @@ public class WaystoneEntity : TEModdedPylon {
     }
 
     /// <summary>
-    /// Method use for manual placing of a Waystone Entity. Primary usage is within WorldGen. Will return false
-    /// if the placement is invalid, true otherwise.
+    ///     Method use for manual placing of a Waystone Entity. Primary usage is within WorldGen. Will return false
+    ///     if the placement is invalid, true otherwise.
     /// </summary>
     /// <param name="i"> x location to attempt entity placement. </param>
     /// <param name="j"> y location to attempt entity placement. </param>
@@ -268,6 +276,7 @@ public class WaystoneEntity : TEModdedPylon {
             retrievedEntity.isActivated = isActivated;
             return true;
         }
+
         return false;
     }
 }

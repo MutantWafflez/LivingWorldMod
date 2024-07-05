@@ -7,8 +7,8 @@ namespace LivingWorldMod.Utilities;
 // Utilities class that holds methods that deal specifically within the realm of Tile Entities.
 public static partial class LWMUtils {
     /// <summary>
-    /// Tries to find an entity of the specified Type. Returns whether or not it found the
-    /// entity or not.
+    ///     Tries to find an entity of the specified Type. Returns whether or not it found the
+    ///     entity or not.
     /// </summary>
     /// <typeparam name="T"> </typeparam>
     /// <param name="x"> The x coordinate of the potential entity. </param>
@@ -28,8 +28,8 @@ public static partial class LWMUtils {
     }
 
     /// <summary>
-    /// Tries to find an entity of the specified Type. Returns whether or not it found the
-    /// entity or not.
+    ///     Tries to find an entity of the specified Type. Returns whether or not it found the
+    ///     entity or not.
     /// </summary>
     /// <typeparam name="T"> </typeparam>
     /// <param name="ID"> The ID of the potential entity. </param>
@@ -48,7 +48,7 @@ public static partial class LWMUtils {
     }
 
     /// <summary>
-    /// Gets and returns all currently living tile entities of the specified type.
+    ///     Gets and returns all currently living tile entities of the specified type.
     /// </summary>
     /// <typeparam name="T"> The type of ModTileEntity you want to find all living entities of. </typeparam>
     public static IEnumerable<T> GetAllEntityOfType<T>()

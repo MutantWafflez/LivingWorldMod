@@ -10,16 +10,10 @@ public class UISquarePanel : UIElement {
     public UISquarePanel() : this(Color.Black, Color.White) { }
 
     public UISquarePanel(Color borderColor, Color backgroundColor, int borderSize = 2) {
-        borderRectangle = new UISimpleRectangle(borderColor) {
-            Width = StyleDimension.Fill,
-            Height = StyleDimension.Fill
-        };
+        borderRectangle = new UISimpleRectangle(borderColor) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
         borderRectangle.SetPadding(borderSize);
 
-        innerRectangle = new UISimpleRectangle(backgroundColor) {
-            Width = StyleDimension.Fill,
-            Height = StyleDimension.Fill
-        };
+        innerRectangle = new UISimpleRectangle(backgroundColor) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
         borderRectangle.Append(innerRectangle);
 
         Append(borderRectangle);

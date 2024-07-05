@@ -4,11 +4,9 @@ using Terraria.ModLoader.Config;
 namespace LivingWorldMod.Globals.Configs;
 
 /// <summary>
-/// Config that handles debug related matters in the mod.
+///     Config that handles debug related matters in the mod.
 /// </summary>
 public class DebugConfig : ModConfig {
-    public override ConfigScope Mode => ConfigScope.ServerSide;
-
     [DefaultValue(false)]
     [ReloadRequired]
     public bool forceDebugMode;
@@ -18,4 +16,6 @@ public class DebugConfig : ModConfig {
 
     [DefaultValue(false)]
     public bool disablePathPruning;
+
+    public override ConfigScope Mode => ConfigScope.ServerSide;
 }

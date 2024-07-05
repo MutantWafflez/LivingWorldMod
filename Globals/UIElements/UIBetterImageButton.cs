@@ -9,8 +9,8 @@ using Terraria.UI;
 namespace LivingWorldMod.Globals.UIElements;
 
 /// <summary>
-/// A better version of vanilla's UIImage Button, with much more functionality than the vanilla
-/// counterpart has, for a larger range of uses.
+///     A better version of vanilla's UIImage Button, with much more functionality than the vanilla
+///     counterpart has, for a larger range of uses.
 /// </summary>
 public class UIBetterImageButton : UIElement {
     public UIBetterText buttonText;
@@ -18,14 +18,14 @@ public class UIBetterImageButton : UIElement {
     public float textSize;
 
     /// <summary>
-    /// Whether or not this element is currently visible, which is to say, whether or not it
-    /// will be drawn. Defaults to true.
+    ///     Whether or not this element is currently visible, which is to say, whether or not it
+    ///     will be drawn. Defaults to true.
     /// </summary>
     public bool isVisible = true;
 
     /// <summary>
-    /// Whether or not, while the mousing is hovering over this element, the player can use an
-    /// item (mouseInterface = true). Defaults to true.
+    ///     Whether or not, while the mousing is hovering over this element, the player can use an
+    ///     item (mouseInterface = true). Defaults to true.
     /// </summary>
     public bool preventItemUsageWhileHovering = true;
 
@@ -46,7 +46,6 @@ public class UIBetterImageButton : UIElement {
         Width.Set(buttonTexture.Value.Width, 0f);
         Height.Set(buttonTexture.Value.Height, 0f);
     }
-
 
     //Remember to use ImmediateLoad request mode if you request the texture in the parameter!
     public UIBetterImageButton(Asset<Texture2D> buttonTexture, string text = null, float textSize = 1f) {
@@ -71,20 +70,10 @@ public class UIBetterImageButton : UIElement {
         }
 
         if (_text is LocalizedText translation) {
-            buttonText = new UIBetterText(translation, textSize) {
-                HAlign = 0.5f,
-                VAlign = 0.5f,
-                horizontalTextConstraint = GetDimensions().Width,
-                IgnoresMouseInteraction = true
-            };
+            buttonText = new UIBetterText(translation, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
         }
         else {
-            buttonText = new UIBetterText(_text as string, textSize) {
-                HAlign = 0.5f,
-                VAlign = 0.5f,
-                horizontalTextConstraint = GetDimensions().Width,
-                IgnoresMouseInteraction = true
-            };
+            buttonText = new UIBetterText(_text as string, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
         }
 
         Append(buttonText);
@@ -106,6 +95,35 @@ public class UIBetterImageButton : UIElement {
 
         base.LeftClick(evt);
         ProperOnClick?.Invoke(evt, this);
+    }
+
+    protected override void DrawSelf(SpriteBatch spriteBatch) {
+        if (buttonText is not null) {
+            buttonText.isVisible = isVisible;
+        }
+
+        if (!isVisible) {
+            return;
+        }
+
+        bool isHovering = ContainsPoint(Main.MouseScreen);
+
+        CalculatedStyle dimensions = GetDimensions();
+        spriteBatch.Draw(_buttonTexture.Value, dimensions.Position(), Color.White * (isHovering ? _activeVisibility : _inactiveVisibility));
+
+        //Hovering functionality
+        if (!isHovering) {
+            return;
+        }
+
+        WhileHovering?.Invoke();
+        if (preventItemUsageWhileHovering) {
+            Main.LocalPlayer.mouseInterface = true;
+        }
+
+        if (_borderTexture != null) {
+            spriteBatch.Draw(_borderTexture.Value, dimensions.Position(), Color.White);
+        }
     }
 
     public void SetHoverImage(Asset<Texture2D> texture) => _borderTexture = texture;
@@ -137,43 +155,15 @@ public class UIBetterImageButton : UIElement {
         _inactiveVisibility = MathHelper.Clamp(whenInactive, 0.0f, 1f);
     }
 
-    protected override void DrawSelf(SpriteBatch spriteBatch) {
-        if (buttonText is not null) {
-            buttonText.isVisible = isVisible;
-        }
-
-        if (!isVisible) {
-            return;
-        }
-        bool isHovering = ContainsPoint(Main.MouseScreen);
-
-        CalculatedStyle dimensions = GetDimensions();
-        spriteBatch.Draw(_buttonTexture.Value, dimensions.Position(), Color.White * (isHovering ? _activeVisibility : _inactiveVisibility));
-
-        //Hovering functionality
-        if (!isHovering) {
-            return;
-        }
-
-        WhileHovering?.Invoke();
-        if (preventItemUsageWhileHovering) {
-            Main.LocalPlayer.mouseInterface = true;
-        }
-
-        if (_borderTexture != null) {
-            spriteBatch.Draw(_borderTexture.Value, dimensions.Position(), Color.White);
-        }
-    }
-
     /// <summary>
-    /// Simple action/event that triggers after every frame while the mouse is currently
-    /// hovering over this element.
+    ///     Simple action/event that triggers after every frame while the mouse is currently
+    ///     hovering over this element.
     /// </summary>
     public event Action WhileHovering;
 
     /// <summary>
-    /// An "override" of the normal OnClick event that takes into account visibility of this
-    /// button. USE THIS INSTEAD OF THE VANILLA EVENT!
+    ///     An "override" of the normal OnClick event that takes into account visibility of this
+    ///     button. USE THIS INSTEAD OF THE VANILLA EVENT!
     /// </summary>
     public event MouseEvent ProperOnClick;
 }
