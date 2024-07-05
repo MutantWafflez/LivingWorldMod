@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Classes;
@@ -14,14 +13,9 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 /// <summary>
 ///     Patches that deal with Town NPC happiness.
 /// </summary>
-public sealed partial class HappinessPatches : LoadablePatch {
+public sealed class HappinessPatches : LoadablePatch {
     private const float MinCostModifier = 0.67f;
     private const float MaxCostModifier = 1.5f;
-
-    private static readonly Regex TownNPCNameRegex = LoadNPCNameRegex();
-
-    [GeneratedRegex(@"(.+\.(?<Name>.+)\.TownNPCMood|TownNPCMood_(?<Name>.+))")]
-    private static partial Regex LoadNPCNameRegex();
 
     private static void AddToMoodModule(ILContext il) {
         currentContext = il;
