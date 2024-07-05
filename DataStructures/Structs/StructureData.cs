@@ -9,30 +9,19 @@ namespace LivingWorldMod.DataStructures.Structs;
 ///     Struct that holds the data for a specified structure, used for loading and saving structures
 ///     from files to generate in the world.
 /// </summary>
-public readonly struct StructureData : TagSerializable {
+public readonly struct StructureData (int structureWidth, int structureHeight, List<List<TileData>> structureTileData, Point16 structureDisplacement)
+    : TagSerializable {
     public static readonly Func<TagCompound, StructureData> DESERIALIZER = Deserialize;
 
-    public readonly int structureWidth;
+    public readonly int structureWidth = structureWidth;
 
-    public readonly int structureHeight;
+    public readonly int structureHeight = structureHeight;
 
-    public readonly List<List<TileData>> structureTileData;
+    public readonly List<List<TileData>> structureTileData = structureTileData;
 
-    public readonly Point16 structureDisplacement;
+    public readonly Point16 structureDisplacement = structureDisplacement;
 
-    public StructureData(int structureWidth, int structureHeight, List<List<TileData>> structureTileData) {
-        this.structureWidth = structureWidth;
-        this.structureHeight = structureHeight;
-        this.structureTileData = structureTileData;
-        structureDisplacement = Point16.Zero;
-    }
-
-    public StructureData(int structureWidth, int structureHeight, List<List<TileData>> structureTileData, Point16 structureDisplacement) {
-        this.structureWidth = structureWidth;
-        this.structureHeight = structureHeight;
-        this.structureTileData = structureTileData;
-        this.structureDisplacement = structureDisplacement;
-    }
+    public StructureData(int structureWidth, int structureHeight, List<List<TileData>> structureTileData) : this(structureWidth, structureHeight, structureTileData, Point16.Zero) { }
 
     public static StructureData Deserialize(TagCompound tag) => new(
         tag.GetInt(nameof(structureWidth)),

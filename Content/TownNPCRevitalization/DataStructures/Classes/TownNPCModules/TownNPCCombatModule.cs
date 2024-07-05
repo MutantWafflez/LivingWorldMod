@@ -13,7 +13,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.To
 ///     Module for the Town NPC revitalization that handles combat for
 ///     a given Town NPC.
 /// </summary>
-public sealed class TownNPCCombatModule : TownNPCModule {
+public sealed class TownNPCCombatModule (NPC npc) : TownNPCModule(npc) {
     public static IReadOnlyDictionary<int, TownNPCProjAttackData> projAttackData;
     public static IReadOnlyDictionary<int, TownNPCMeleeAttackData> meleeAttackData;
 
@@ -28,8 +28,6 @@ public sealed class TownNPCCombatModule : TownNPCModule {
         get;
         private set;
     }
-
-    public TownNPCCombatModule(NPC npc) : base(npc) { }
 
     public static void Load() {
         JsonObject jsonAttackData = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCAttackData.json").Qo();

@@ -7,16 +7,11 @@ namespace LivingWorldMod.DataStructures.Structs;
 /// <summary>
 ///     Relatively simple Circle structure, that explains what it does on the tin.
 /// </summary>
-public struct Circle : TagSerializable, IEquatable<Circle> {
+public struct Circle (Vector2 center, float radius) : TagSerializable, IEquatable<Circle> {
     public static readonly Func<TagCompound, Circle> DESERIALIZER = Deserialize;
 
-    public Vector2 center;
-    public float radius;
-
-    public Circle(Vector2 center, float radius) {
-        this.center = center;
-        this.radius = radius;
-    }
+    public Vector2 center = center;
+    public float radius = radius;
 
     public static bool operator ==(Circle left, Circle right) => left.Equals(right);
 

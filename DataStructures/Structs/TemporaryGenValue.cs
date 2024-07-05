@@ -8,15 +8,10 @@ namespace LivingWorldMod.DataStructures.Structs;
 ///     Implements <seealso cref="ITemporaryGenValue" /> in order to create collections
 ///     of these objects even if the type of <seealso cref="T" /> differs between them.
 /// </summary>
-public struct TemporaryGenValue<T> : ITemporaryGenValue {
-    public T value;
+public struct TemporaryGenValue<T> (T value, string name) : ITemporaryGenValue {
+    public T value = value;
 
     public string Name {
         get;
-    }
-
-    public TemporaryGenValue(T value, string name) {
-        this.value = value;
-        Name = name;
-    }
+    } = name;
 }

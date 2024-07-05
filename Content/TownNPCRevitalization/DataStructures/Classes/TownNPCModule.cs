@@ -2,14 +2,10 @@
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 
-public abstract class TownNPCModule {
-    protected readonly NPC npc;
+public abstract class TownNPCModule (NPC npc) {
+    protected readonly NPC npc = npc;
 
     protected TownGlobalNPC GlobalNPC => npc.GetGlobalNPC<TownGlobalNPC>();
-
-    protected TownNPCModule(NPC npc) {
-        this.npc = npc;
-    }
 
     public abstract void Update();
 }

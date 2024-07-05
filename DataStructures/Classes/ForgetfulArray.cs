@@ -10,9 +10,9 @@ namespace LivingWorldMod.DataStructures.Classes;
 ///     replace the oldest object. Objects cannot be directly removed,
 ///     either.
 /// </summary>
-public class ForgetfulArray<T> : IList<T> {
-    private readonly T[] _array;
-    private int _addPointer;
+public class ForgetfulArray<T> (int sizeLimit) : IList<T> {
+    private readonly T[] _array = new T[sizeLimit];
+    private int _addPointer = 0;
     public int Count => _array.Length;
 
     public bool IsReadOnly => _array.IsReadOnly;
@@ -20,11 +20,6 @@ public class ForgetfulArray<T> : IList<T> {
     public T this[int index] {
         get => _array[index];
         set { }
-    }
-
-    public ForgetfulArray(int sizeLimit) {
-        _array = new T[sizeLimit];
-        _addPointer = 0;
     }
 
     public IEnumerator<T> GetEnumerator() => (IEnumerator<T>)_array.GetEnumerator();

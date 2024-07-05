@@ -12,7 +12,7 @@ using Terraria.UI.Chat;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
-public sealed class TownNPCChatModule : TownNPCModule {
+public sealed class TownNPCChatModule (NPC npc, Texture2D talkTexture) : TownNPCModule(npc) {
     private const int DefaultChatBubbleDuration = (int)(LWMUtils.RealLifeSecond * 5d);
 
     /// <summary>
@@ -22,7 +22,6 @@ public sealed class TownNPCChatModule : TownNPCModule {
     private const int ChitChatChanceDenominator = 75;
 
     public readonly ForgetfulArray<string> chatHistory = new(50);
-    private readonly Texture2D _talkTexture;
 
     private string _currentSentence;
     private int _chatBubbleDuration;
@@ -49,10 +48,6 @@ public sealed class TownNPCChatModule : TownNPCModule {
 
     private static string GenerateRandomNPCName => Language.SelectRandom(Lang.CreateDialogFilter("NPCName.")).Value;
 
-    public TownNPCChatModule(NPC npc, Texture2D talkTexture) : base(npc) {
-        _talkTexture = talkTexture;
-    }
-
     public override void Update() {
         // Adapted vanilla code
         IsChattingToPlayer = false;
@@ -77,7 +72,7 @@ public sealed class TownNPCChatModule : TownNPCModule {
         if (_currentSentence is not null) {
             // Every other 8 ticks while talking, add the draw call
             if (--_chatBubbleDuration % 16 <= 8) {
-                GlobalNPC.SpriteModule.RequestOverlay(_talkTexture);
+                GlobalNPC.SpriteModule.RequestOverlay(talkTexture);
             }
 
             if (_chatBubbleDuration > 0) {

@@ -16,7 +16,7 @@ using NodeMovementType = LivingWorldMod.Content.TownNPCRevitalization.DataStruct
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
-public sealed class TownNPCPathfinderModule : TownNPCModule {
+public sealed class TownNPCPathfinderModule (NPC npc) : TownNPCModule(npc) {
     private sealed class PathfinderResult(Point topLeftOfGrid, Point endPoint, PathNode lastConsumedNode, List<PathNode> path) {
         public readonly Point topLeftOfGrid = topLeftOfGrid;
         public readonly Point endPoint = endPoint;
@@ -26,7 +26,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     private const int MaxPathRecyclesBeforeFailure = 5;
 
-    private readonly List<PathfinderResult> _cachedResults;
+    private readonly List<PathfinderResult> _cachedResults = [];
 
     private float _prevDistanceToNextNode;
     private int _notMakingProgressCounter;
@@ -45,10 +45,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     public Point BottomLeftTileOfNPC => (npc.BottomLeft + new Vector2(0f, -2f)).ToTileCoordinates();
 
     public Point TopLeftOfPathfinderZone => BottomLeftTileOfNPC - new Point(PathfinderSize / 2, PathfinderSize / 2);
-
-    public TownNPCPathfinderModule(NPC npc) : base(npc) {
-        _cachedResults = [];
-    }
 
     private static void PrunePath(IList<PathNode> path) {
         if (LWM.IsDebug && ModContent.GetInstance<DebugConfig>().disablePathPruning) {

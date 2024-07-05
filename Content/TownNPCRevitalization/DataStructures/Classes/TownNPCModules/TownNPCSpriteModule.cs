@@ -10,13 +10,11 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.To
 /// <summary>
 ///     Module for Town NPCs that deal with drawing related tasks.
 /// </summary>
-public sealed class TownNPCSpriteModule : TownNPCModule {
+public sealed class TownNPCSpriteModule (NPC npc, Texture2D blinkTexture) : TownNPCModule(npc) {
     private const int GivingAnimationDuration = (int)(LWMUtils.RealLifeSecond * 1.5f);
     private const int EyelidClosedDuration = 15;
 
-    private readonly Texture2D _blinkTexture;
-
-    private readonly HashSet<Texture2D> _drawSet;
+    private readonly HashSet<Texture2D> _drawSet = [];
 
     private int _blinkTimer;
 
@@ -31,11 +29,6 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
     public bool IsGiving {
         get;
         private set;
-    }
-
-    public TownNPCSpriteModule(NPC npc, Texture2D blinkTexture) : base(npc) {
-        _blinkTexture = blinkTexture;
-        _drawSet = [];
     }
 
     public override void Update() {
@@ -131,7 +124,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         }
 
         if (IsBlinking) {
-            RequestOverlay(_blinkTexture);
+            RequestOverlay(blinkTexture);
         }
     }
 }

@@ -7,24 +7,24 @@ namespace LivingWorldMod.Content.Villages.DataStructures.Classes;
 ///     Class that does what it says on the tin. Has fields for an instance of a shop item for
 ///     Villagers to sell as its primary use.
 /// </summary>
-public sealed class ShopItem : TagSerializable, IEquatable<ShopItem> {
+public sealed class ShopItem (int itemType, int remainingStock, long? internalPrice) : TagSerializable, IEquatable<ShopItem> {
     public static readonly Func<TagCompound, ShopItem> DESERIALIZER = Deserialize;
 
     /// <summary>
     ///     The item type that pertains to this shop index.
     /// </summary>
-    public readonly int itemType;
+    public readonly int itemType = itemType;
 
     /// <summary>
     ///     The remaining stock left for the item type pertaining to this shop index.
     /// </summary>
-    public int remainingStock;
+    public int remainingStock = remainingStock;
 
     /// <summary>
     ///     The price of the item type pertaining to this shop index. If null, uses the default
     ///     vanilla value of the item.
     /// </summary>
-    private readonly long? _internalPrice;
+    private readonly long? _internalPrice = internalPrice;
 
     /// <summary>
     ///     The price of the item type pertaining to this shop index.
@@ -39,12 +39,6 @@ public sealed class ShopItem : TagSerializable, IEquatable<ShopItem> {
             item.SetDefaults(itemType);
             return item.value;
         }
-    }
-
-    public ShopItem(int itemType, int remainingStock, long? internalPrice) {
-        this.itemType = itemType;
-        this.remainingStock = remainingStock;
-        _internalPrice = internalPrice;
     }
 
     public static bool operator ==(ShopItem left, ShopItem right) => Equals(left, right);

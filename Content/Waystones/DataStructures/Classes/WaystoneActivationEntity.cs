@@ -8,7 +8,7 @@ namespace LivingWorldMod.Content.Waystones.DataStructures.Classes;
 ///     Psuedo-Entity that exists during the Activation Process for Waystones. This exists mainly for consistency between
 ///     multiplayer and singleplayer, since Tile Entities updating on the client is a bit weird.
 /// </summary>
-public sealed class WaystoneActivationEntity {
+public sealed class WaystoneActivationEntity (Vector2 position, Color activationColor) {
     /// <summary>
     ///     How many ticks it takes to fully complete the activation process.
     /// </summary>
@@ -19,16 +19,9 @@ public sealed class WaystoneActivationEntity {
     /// </summary>
     public bool isFinished;
 
-    private readonly Vector2 _position;
-    private readonly Color _waystoneColor;
     private int _activationVFXStage;
     private int _activationVFXTimer;
     private int _activationVFXSecondaryTimer;
-
-    public WaystoneActivationEntity(Vector2 position, Color activationColor) {
-        _position = position;
-        _waystoneColor = activationColor;
-    }
 
     public void Update() {
         //If this is finished, don't update
@@ -41,7 +34,7 @@ public sealed class WaystoneActivationEntity {
         if (_activationVFXStage == 0) {
             // Generate circle of dust. Would use the Utils method that was made for this, but this is "special" drawing
             for (int x = 0; x <= _activationVFXTimer; x++) {
-                Dust.NewDustPerfect(_position - new Vector2(0, circleRadius).RotatedBy(MathHelper.ToRadians(x * 20f)), DustID.GoldCoin, newColor: _waystoneColor);
+                Dust.NewDustPerfect(position - new Vector2(0, circleRadius).RotatedBy(MathHelper.ToRadians(x * 20f)), DustID.GoldCoin, newColor: activationColor);
             }
 
             if (++_activationVFXSecondaryTimer > 18) {
@@ -49,7 +42,7 @@ public sealed class WaystoneActivationEntity {
                 _activationVFXSecondaryTimer = 0;
                 _activationVFXTimer++;
 
-                SoundEngine.PlaySound(SoundID.Item100, _position - new Vector2(0, circleRadius).RotatedBy(MathHelper.ToRadians(_activationVFXTimer * 20f)));
+                SoundEngine.PlaySound(SoundID.Item100, position - new Vector2(0, circleRadius).RotatedBy(MathHelper.ToRadians(_activationVFXTimer * 20f)));
             }
 
             if (_activationVFXTimer >= 18) {
@@ -64,7 +57,7 @@ public sealed class WaystoneActivationEntity {
             int circlePullThreshold = 30;
             int finaleThreshold = 5;
 
-            LWMUtils.CreateCircle(_position, circleRadius * (1f - _activationVFXTimer / (float)circlePullThreshold), DustID.GoldCoin, newColor: _waystoneColor, angleChange: 20f);
+            LWMUtils.CreateCircle(position, circleRadius * (1f - _activationVFXTimer / (float)circlePullThreshold), DustID.GoldCoin, newColor: activationColor, angleChange: 20f);
 
             // Step RAPIDLY closer
             _activationVFXTimer++;
@@ -72,7 +65,7 @@ public sealed class WaystoneActivationEntity {
             // After center of tile is reached, complete activation
             if (_activationVFXTimer == circlePullThreshold) {
                 // Play finale sound and give text confirmation
-                SoundEngine.PlaySound(SoundID.Item113, _position);
+                SoundEngine.PlaySound(SoundID.Item113, position);
 
                 Main.NewText("Event.WaystoneActivation".Localized(), Color.Yellow);
             }

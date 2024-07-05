@@ -7,33 +7,26 @@ namespace LivingWorldMod.Content.Villages.DataStructures.Structs;
 ///     any events are
 ///     required for it to appear.
 /// </summary>
-public readonly struct DialogueData {
+public readonly struct DialogueData (LocalizedText dialogue, double weight, int priority, string[] requiredEvents) {
     /// <summary>
     ///     The actual text of the dialogue.
     /// </summary>
-    public readonly LocalizedText dialogue;
+    public readonly LocalizedText dialogue = dialogue;
 
     /// <summary>
     ///     The weight of this dialogue, taken into account when selecting a dialogue line from a list.
     /// </summary>
-    public readonly double weight;
+    public readonly double weight = weight;
 
     /// <summary>
     ///     The priority of this dialogue. The highest priority dialogues will be chosen.
     /// </summary>
-    public readonly int priority;
+    public readonly int priority = priority;
 
     /// <summary>
     ///     If any events are required for this line, this array holds them. Null if no events are required.
     /// </summary>
-    public readonly string[] requiredEvents;
-
-    public DialogueData(LocalizedText dialogue, double weight, int priority, string[] requiredEvents) {
-        this.dialogue = dialogue;
-        this.weight = weight;
-        this.priority = priority;
-        this.requiredEvents = requiredEvents;
-    }
+    public readonly string[] requiredEvents = requiredEvents;
 
     public override string ToString() =>
         $"Key: {dialogue.Key.Replace("Mods.LivingWorldMod.VillagerDialogue.", "...")} Weight: {weight} Events: {(requiredEvents is null ? "None" : string.Join(", ", requiredEvents))}";

@@ -12,23 +12,16 @@ namespace LivingWorldMod.Globals.BaseTypes.Tiles;
 ///     Should be added by the item that places it, in <see cref="ModItem.IsLoadingEnabled" />.
 /// </summary>
 [Autoload(false)]
-public class TapestryTile : BaseTile {
-    private readonly ModItem _parentItem;
-    public override string Texture => _parentItem.Texture;
+public class TapestryTile (ModItem parentItem, Color? mapColor) : BaseTile {
+    public override string Texture => parentItem.Texture;
 
     public override string Name {
         get;
-    }
+    } = parentItem.Name.Replace("Item", "Tile");
 
     public override Color? TileColorOnMap {
         get;
-    }
-
-    public TapestryTile(ModItem parentItem, Color? mapColor) {
-        _parentItem = parentItem;
-        Name = parentItem.Name.Replace("Item", "Tile");
-        TileColorOnMap = mapColor;
-    }
+    } = mapColor;
 
     public override void SetStaticDefaults() {
         Main.tileSolid[Type] = false;

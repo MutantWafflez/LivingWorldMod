@@ -9,7 +9,7 @@ using Terraria.GameContent.Events;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
-public class TownNPCHousingModule : TownNPCModule {
+public class TownNPCHousingModule (NPC npc) : TownNPCModule(npc) {
     public static bool ShouldGoHome => ShouldSleep || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
 
     public static bool ShouldSleep => !(Main.dayTime || LanternNight.LanternsUp || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon);
@@ -17,15 +17,11 @@ public class TownNPCHousingModule : TownNPCModule {
     public Rectangle? RoomBoundingBox {
         get;
         private set;
-    }
+    } = null;
 
     public Point RestPos {
         get;
         private set;
-    }
-
-    public TownNPCHousingModule(NPC npc) : base(npc) {
-        RoomBoundingBox = null;
     }
 
     public override void Update() {
