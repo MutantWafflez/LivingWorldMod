@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Utilities;
 using Terraria.GameContent;
 using Terraria.GameContent.Events;
 using Terraria.GameContent.Personalities;
@@ -20,7 +22,9 @@ public class EventPreferenceTrait(EventPreferenceTrait.EventPreference preferenc
 
     public void ModifyShopPrice(HelperInfo info, ShopHelper shopHelperInstance) {
         if (ActiveEventFunctions[preference.EventName](info)) {
-            shopHelperInstance.AddHappinessReportText($"{preference.AffectionLevel}Event_{preference.EventName}");
+            // shopHelperInstance.AddHappinessReportText($"{preference.AffectionLevel}Event_{preference.EventName}");
+            info.npc.GetGlobalNPC<TownGlobalNPC>()
+                .MoodModule.ConvertReportTextToStaticModifier($"TownNPCMoodFlavorText.{info.npc.TypeName}".PrependModKey(), $"{preference.AffectionLevel}Event_{preference.EventName}");
         }
     }
 }
