@@ -50,7 +50,7 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
 
         _moodModifiers = [];
         foreach ((string moodModifierKey, float moodOffset) in jsonMoodValues) {
-            _moodModifiers[moodModifierKey] = new MoodModifier($"TowNPCMoodDescription.{moodModifierKey}".Localized(), moodOffset);
+            _moodModifiers[moodModifierKey] = new MoodModifier($"TownNPCMoodDescription.{moodModifierKey}".Localized(), moodOffset);
         }
 
         JsonObject jsonEventPreferenceValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCEventPreferences.json").Qo();
@@ -101,7 +101,7 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
         _currentDynamicMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, duration, flavorTextSubstitutes));
     }
 
-    public void ConvertReportTextToStaticModifier(string townNPCLocalizationKey, string moodModifierKey, object flavorTextSubstituteObject) {
+    public void ConvertReportTextToStaticModifier(string townNPCLocalizationKey, string moodModifierKey, object flavorTextSubstituteObject = null) {
         if (TownNPCNameRegex.Match(townNPCLocalizationKey) is { } match && match != Match.Empty) {
             // We split moodModifierKey for scenarios such as LovesNPC_Princess, where we want the mood modifier to be "LovesNPC" as a catch-all
             AddStaticModifier(moodModifierKey.Split('_')[0], Language.GetText($"{townNPCLocalizationKey}.{moodModifierKey}"), flavorTextSubstituteObject);

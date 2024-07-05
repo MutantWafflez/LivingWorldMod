@@ -397,7 +397,7 @@ Mods: {
 			}
 		}
 
-		TowNPCMoodDescription: {
+		TownNPCMoodDescription: {
 			// Injured: Injured
 			// SleptWell: Well Rested
 			// Content: Content
