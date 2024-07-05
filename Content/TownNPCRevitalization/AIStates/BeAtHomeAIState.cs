@@ -21,8 +21,8 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
             return;
         }
 
+        npc.ai[1] = 0f;
         if (pathfinderModule.BottomLeftTileOfNPC != restPos) {
-            npc.ai[1] = 0f;
             pathfinderModule.RequestPathfind(restPos);
         }
         else if (TownNPCHousingModule.ShouldSleep) {
