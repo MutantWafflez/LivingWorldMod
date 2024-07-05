@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Hjson;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.ShopPersonalityTraits;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
@@ -14,11 +15,13 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.To
 /// <summary>
 ///     Class that handles the new "mood" feature that replaces Town NPC happiness.
 /// </summary>
-public sealed class TownNPCMoodModule : TownNPCModule {
+public sealed partial class TownNPCMoodModule : TownNPCModule {
     public const float MaxMoodValue = 100f;
     public const float MinMoodValue = 0f;
 
     private const float BaseMoodValue = 50f;
+
+    private static readonly Regex TownNPCNameRegex = LoadNPCNameRegex();
 
     private static Dictionary<string, MoodModifier> _moodModifiers;
     private static Dictionary<string, LocalizedText> _defaultFlavorTexts;
@@ -62,6 +65,9 @@ public sealed class TownNPCMoodModule : TownNPCModule {
         _defaultFlavorTexts = Language.FindAll(Lang.CreateDialogFilter("TownNPCMood.")).ToDictionary(text => text.Key);
     }
 
+    [GeneratedRegex(@"(.+\.(?<Name>.+)\.TownNPCMood|TownNPCMood_(?<Name>.+))")]
+    private static partial Regex LoadNPCNameRegex();
+
     public override void Update() {
         for (int i = 0; i < _currentDynamicMoodModifiers.Count; i++) {
             MoodModifierInstance instance = _currentDynamicMoodModifiers[i];
@@ -93,6 +99,13 @@ public sealed class TownNPCMoodModule : TownNPCModule {
         }
 
         _currentDynamicMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, duration, flavorTextSubstitutes));
+    }
+
+    public void ConvertReportTextToStaticModifier(string townNPCLocalizationKey, string moodModifierKey, object flavorTextSubstituteObject) {
+        if (TownNPCNameRegex.Match(townNPCLocalizationKey) is { } match && match != Match.Empty) {
+            // We split moodModifierKey for scenarios such as LovesNPC_Princess, where we want the mood modifier to be "LovesNPC" as a catch-all
+            AddStaticModifier(moodModifierKey.Split('_')[0], Language.GetText($"{townNPCLocalizationKey}.{moodModifierKey}"), flavorTextSubstituteObject);
+        }
     }
 
     public void ResetStaticModifiers() {

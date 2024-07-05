@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria.GameContent;
-using Terraria.Localization;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 
@@ -39,7 +38,7 @@ public sealed partial class HappinessPatches : LoadablePatch {
                     return;
                 }
 
-                // To prevent the "content" modifier from showing up when other modifiers are present
+                // To prevent the "content" modifier from showing up when no other modifiers are present
                 shopHelper._currentHappiness = " ";
 
                 globalNPC.MoodModule.ResetStaticModifiers();
@@ -80,10 +79,8 @@ public sealed partial class HappinessPatches : LoadablePatch {
         c.Emit(OpCodes.Ldarg_2);
         c.EmitDelegate<Action<ShopHelper, string, string, object>>(
             (shopHelper, townNPCLocalizationKey, moodModifierKey, flavorTextSubstituteObject) => {
-                // Add modifiers as normal
-                if (shopHelper._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownGlobalNPC globalNPC) && TownNPCNameRegex.Match(townNPCLocalizationKey) is { } match && match != Match.Empty) {
-                    // We split moodModifierKey for scenarios such as LovesNPC_Princess, where we want the mood modifier to be "LovesNPC" as a catch-all
-                    globalNPC.MoodModule.AddStaticModifier(moodModifierKey.Split('_')[0], Language.GetText($"{townNPCLocalizationKey}.{moodModifierKey}"), flavorTextSubstituteObject);
+                if (shopHelper._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
+                    globalNPC.MoodModule.ConvertReportTextToStaticModifier(townNPCLocalizationKey, moodModifierKey, flavorTextSubstituteObject);
                 }
             }
         );
