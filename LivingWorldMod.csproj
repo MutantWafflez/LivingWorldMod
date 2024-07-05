@@ -33,6 +33,7 @@
         <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentPriceAdjustment"/>
         <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentHappiness"/>
         <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper.AddHappinessReportText"/>
+        <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._database"/>
 
         <!-- Language/Localization Publicizing -->
         <Publicize Include="tModLoader:Terraria.Localization.LanguageManager._localizedTexts"/>

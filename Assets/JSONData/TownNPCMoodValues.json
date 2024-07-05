@@ -14,7 +14,5 @@
   "DislikeNPC": -10,
   "HateNPC": -20,
   "HateLonely": -30,
-  "Injured": -10,
-  "SleptWell": 10,
-  "AtParty": 15
+  "SleptWell": 10
 }

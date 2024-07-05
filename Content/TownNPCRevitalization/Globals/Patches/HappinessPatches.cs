@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria.GameContent;
-using Terraria.GameContent.Events;
 using Terraria.Localization;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
@@ -24,17 +23,6 @@ public sealed partial class HappinessPatches : LoadablePatch {
 
     [GeneratedRegex(@"(.+\.(?<Name>.+)\.TownNPCMood|TownNPCMood_(?<Name>.+))")]
     private static partial Regex LoadNPCNameRegex();
-
-    private static void ApplyStaticModifiers(NPC npc, TownNPCMoodModule moodModule) {
-        //TODO: Add flavor text for new static modifiers
-        if (npc.life < npc.lifeMax) {
-            moodModule.AddStaticModifier("Injured", LocalizedText.Empty);
-        }
-
-        if (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && BirthdayParty.CelebratingNPCs.Contains(npc.whoAmI)) {
-            moodModule.AddStaticModifier("AtParty", LocalizedText.Empty);
-        }
-    }
 
     private static void AddToMoodModule(ILContext il) {
         currentContext = il;
@@ -65,7 +53,6 @@ public sealed partial class HappinessPatches : LoadablePatch {
             }
 
             TownNPCMoodModule moodModule = globalNPC.MoodModule;
-            ApplyStaticModifiers(npc, moodModule);
 
             shopHelper._currentPriceAdjustment = MathHelper.Lerp(MinCostModifier, MaxCostModifier, 1f - moodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue);
         });

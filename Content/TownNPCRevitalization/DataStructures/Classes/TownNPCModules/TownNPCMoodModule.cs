@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Hjson;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.ShopPersonalityTraits;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Utilities;
+using Terraria.GameContent.Personalities;
 using Terraria.Localization;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
@@ -18,8 +21,9 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     private const float BaseMoodValue = 50f;
 
     private static Dictionary<string, MoodModifier> _moodModifiers;
-
     private static Dictionary<string, LocalizedText> _defaultFlavorTexts;
+
+
     private readonly List<MoodModifierInstance> _currentStaticMoodModifiers;
     private readonly List<MoodModifierInstance> _currentDynamicMoodModifiers;
 
@@ -41,6 +45,16 @@ public sealed class TownNPCMoodModule : TownNPCModule {
         _moodModifiers = [];
         foreach ((string moodModifierKey, float moodOffset) in jsonMoodValues) {
             _moodModifiers[moodModifierKey] = new MoodModifier($"TowNPCMoodDescription.{moodModifierKey}".Localized(), moodOffset);
+        }
+
+        JsonObject jsonEventPreferenceValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCEventPreferences.json").Qo();
+        foreach ((string npcName, JsonValue eventData) in jsonEventPreferenceValues) {
+            Main.ShopHelper._database.Register(NPCID.Search.GetId(npcName), new EventPreferenceTrait(
+                    eventData.Qo()
+                             .Select(keyPair => new EventPreferenceTrait.EventPreference(Enum.Parse<AffectionLevel>(keyPair.Value), keyPair.Key))
+                             .ToArray()
+                )
+            );
         }
 
         _defaultFlavorTexts = Language.FindAll(Lang.CreateDialogFilter("TownNPCMood.")).ToDictionary(text => text.Key);
