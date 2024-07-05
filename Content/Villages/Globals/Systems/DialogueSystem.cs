@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Hjson;
 using LivingWorldMod.Content.Villages.DataStructures.Enums;
 using LivingWorldMod.Content.Villages.DataStructures.Structs;
@@ -11,9 +10,7 @@ using Terraria.GameContent.Events;
 using Terraria.Localization;
 using Terraria.Utilities;
 
-namespace LivingWorldMod.Content.Villages.Globals.Systems;
-
-/// <summary>
+namespace LivingWorldMod.Content.Villages.Globals.Systems; /// <summary>
 ///     ModSystem that handles Dialogue for the various types of the villagers, including dialogue weights & event
 ///     requirements.
 /// </summary>
@@ -39,10 +36,9 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
     public override void PostSetupContent() {
         _villagerDialogue = [];
 
-        // TODO: Clean this up
-        Dictionary<string, LocalizedText> translationDict =
-            typeof(LanguageManager).GetField("_localizedTexts", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(LanguageManager.Instance) as Dictionary<string, LocalizedText>;
-        Dictionary<string, LocalizedText> allDialogue = translationDict!.Where(pair => pair.Value.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue"))
+        Dictionary<string, LocalizedText> translationDict = LanguageManager.Instance._localizedTexts;
+        Dictionary<string, LocalizedText> allDialogue = translationDict
+            .Where(pair => pair.Value.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue"))
             .ToDictionary(pair => pair.Key, pair => pair.Value);
 
         JsonValue jsonReputationData = LWMUtils.GetJSONFromFile("Assets/JSONData/DialogueWeights.json");
@@ -128,15 +124,15 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
 
         foreach (string eventToCheck in events) {
             //Negation functionality
-            if (eventToCheck.StartsWith("!")) {
+            if (eventToCheck.StartsWith('!')) {
                 string eventKey = eventToCheck.TrimStart('!');
 
-                if (_eventCheckers.ContainsKey(eventKey) && _eventCheckers[eventKey]()) {
+                if (_eventCheckers.TryGetValue(eventKey, out Func<bool> value) && value()) {
                     return false;
                 }
             }
             else {
-                if (_eventCheckers.ContainsKey(eventToCheck) && !_eventCheckers[eventToCheck]()) {
+                if (_eventCheckers.TryGetValue(eventToCheck, out Func<bool> value) && !value()) {
                     return false;
                 }
             }
