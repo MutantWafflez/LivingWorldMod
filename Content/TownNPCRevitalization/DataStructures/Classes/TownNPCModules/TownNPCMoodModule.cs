@@ -52,14 +52,11 @@ public sealed class TownNPCMoodModule : TownNPCModule {
 
         JsonObject jsonEventPreferenceValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCEventPreferences.json").Qo();
         foreach ((string npcName, JsonValue eventData) in jsonEventPreferenceValues) {
-            Main.ShopHelper._database.Register(
-                NPCID.Search.GetId(npcName),
-                new EventPreferenceTrait(
-                    eventData.Qo()
-                        .Select(keyPair => new EventPreferenceTrait.EventPreference(Enum.Parse<AffectionLevel>(keyPair.Value), keyPair.Key))
-                        .ToArray()
-                )
-            );
+            int npcType = NPCID.Search.GetId(npcName);
+
+            foreach ((string eventName, JsonValue affectionLevel) in eventData.Qo()) {
+                Main.ShopHelper._database.Register(npcType, new EventPreferenceTrait(new EventPreferenceTrait.EventPreference(Enum.Parse<AffectionLevel>(affectionLevel), eventName)));
+            }
         }
 
         _defaultFlavorTexts = Language.FindAll(Lang.CreateDialogFilter("TownNPCMood.")).ToDictionary(text => text.Key);
