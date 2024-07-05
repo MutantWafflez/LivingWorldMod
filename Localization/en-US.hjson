@@ -400,7 +400,6 @@ Mods: {
 		TowNPCMoodDescription: {
 			Injured: Injured
 			SleptWell: Well Rested
-			AtParty: At Party
 			Content: Content
 			NoHome: Homeless
 			FarFromHome: Far From Housing
@@ -416,7 +415,10 @@ Mods: {
 			DislikeNPC: Dislikes Neighbor
 			HateNPC: Hates Neighbor
 			HateLonely: Lonely
-			IrritatedByBloodMoon: Blood Moon
+			LikeEvent: Likes Event 
+			LoveEvent: Loves Event 
+			DislikeEvent: Dislikes Event 
+			HateEvent: Hates Event 
 		}
 
 		InterTownNPCChat: {

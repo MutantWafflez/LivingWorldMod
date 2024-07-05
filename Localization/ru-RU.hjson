@@ -416,7 +416,10 @@ Mods: {
 			// DislikeNPC: Dislikes Neighbor
 			// HateNPC: Hates Neighbor
 			// HateLonely: Lonely
-			// IrritatedByBloodMoon: Blood Moon
+			// LikeEvent: Mods.LivingWorldMod.TowNPCMoodDescription.LikeEvent
+			// LoveEvent: Mods.LivingWorldMod.TowNPCMoodDescription.LoveEvent
+			// DislikeEvent: Mods.LivingWorldMod.TowNPCMoodDescription.DislikeEvent
+			// HateEvent: Mods.LivingWorldMod.TowNPCMoodDescription.HateEvent
 		}
 
 		InterTownNPCChat: {

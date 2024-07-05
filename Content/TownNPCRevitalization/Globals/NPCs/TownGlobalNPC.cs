@@ -138,7 +138,6 @@ public class TownGlobalNPC : GlobalNPC {
 
     public override void Load() {
         TownNPCCombatModule.Load();
-        TownNPCMoodModule.Load();
     }
 
     public override void Unload() {
@@ -160,6 +159,9 @@ public class TownGlobalNPC : GlobalNPC {
         if (states.Count != states.DistinctBy(state => state.ReservedStateInteger).Count()) {
             throw new Exception("Multiple TownNPCAIState instances with the same ReservedStateInteger");
         }
+
+        // Must be loaded due to tML refreshing the happiness database in-between Load and SetStaticDefaults.
+        TownNPCMoodModule.Load();
 
         _stateDict = states.ToDictionary(state => state.ReservedStateInteger);
         //_allActivities = states.OfType<TownNPCActivity>().ToList();

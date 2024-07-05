@@ -14,5 +14,9 @@
   "DislikeNPC": -10,
   "HateNPC": -20,
   "HateLonely": -30,
-  "SleptWell": 10
+  "SleptWell": 10,
+  "LikeEvent": 10,
+  "LoveEvent": 20,
+  "DislikeEvent": -10,
+  "HateEvent": -20
 }
