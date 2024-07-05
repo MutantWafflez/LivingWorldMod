@@ -10,7 +10,9 @@ using Terraria.GameContent.Events;
 using Terraria.Localization;
 using Terraria.Utilities;
 
-namespace LivingWorldMod.Content.Villages.Globals.Systems; /// <summary>
+namespace LivingWorldMod.Content.Villages.Globals.Systems;
+
+/// <summary>
 ///     ModSystem that handles Dialogue for the various types of the villagers, including dialogue weights & event
 ///     requirements.
 /// </summary>
@@ -45,6 +47,7 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
         for (VillagerType type = 0; (int)type < LWMUtils.GetTotalVillagerTypeCount(); type++) {
             List<DialogueData> finalDialogueData = [];
 
+            // TODO: Use something like Lang.CreateDialogueFilter instead of enumerating manually
             string keyStart = $"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{type}";
             Dictionary<string, LocalizedText> typeDialogue = allDialogue.Where(pair => pair.Key.StartsWith(keyStart)).ToDictionary(pair => pair.Key, pair => pair.Value);
             JsonObject villageSpecificData = jsonReputationData[type.ToString()].Qo();
