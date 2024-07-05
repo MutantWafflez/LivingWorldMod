@@ -400,7 +400,6 @@ Mods: {
 		TowNPCMoodDescription: {
 			// Injured: Injured
 			// SleptWell: Well Rested
-			// AtParty: At Party
 			// Content: Content
 			// NoHome: Homeless
 			// FarFromHome: Far From Housing
@@ -416,10 +415,10 @@ Mods: {
 			// DislikeNPC: Dislikes Neighbor
 			// HateNPC: Hates Neighbor
 			// HateLonely: Lonely
-			// LikeEvent: Mods.LivingWorldMod.TowNPCMoodDescription.LikeEvent
-			// LoveEvent: Mods.LivingWorldMod.TowNPCMoodDescription.LoveEvent
-			// DislikeEvent: Mods.LivingWorldMod.TowNPCMoodDescription.DislikeEvent
-			// HateEvent: Mods.LivingWorldMod.TowNPCMoodDescription.HateEvent
+			// LikeEvent: Likes Event
+			// LoveEvent: Loves Event
+			// DislikeEvent: Dislikes Event
+			// HateEvent: Hates Event
 		}
 
 		InterTownNPCChat: {

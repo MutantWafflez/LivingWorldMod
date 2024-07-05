@@ -415,10 +415,10 @@ Mods: {
 			DislikeNPC: Dislikes Neighbor
 			HateNPC: Hates Neighbor
 			HateLonely: Lonely
-			LikeEvent: Likes Event 
-			LoveEvent: Loves Event 
-			DislikeEvent: Dislikes Event 
-			HateEvent: Hates Event 
+			LikeEvent: Likes Event
+			LoveEvent: Loves Event
+			DislikeEvent: Dislikes Event
+			HateEvent: Hates Event
 		}
 
 		InterTownNPCChat: {
