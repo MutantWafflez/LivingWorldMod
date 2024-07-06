@@ -421,6 +421,15 @@ Mods: {
 			// HateEvent: Hates Event
 		}
 
+		TownNPCMoodFlavorText: {
+			// Nurse.HateEvent_BloodMoon: I'm THIS close to marching up to that moon and destroying it myself!
+			// Zoologist.HateEvent_BloodMoon: GRR! This moon makes me ANGRY!!!
+			// Stylist.HateEvent_BloodMoon: I'm about to use these scissors for MUCH more than cutting hair!
+			// Dryad.HateEvent_BloodMoon: The land is bathed in blood and death. Mother has forsaken us!
+			// Mechanic.HateEvent_BloodMoon: UGH! I'm going to find whoever is in charge of that moon and hit them upside with a wrench!
+			// Steampunker.HateEvent_BloodMoon: Bloody hell, this is!
+		}
+
 		InterTownNPCChat: {
 			// NiceJoke: "{SpeakingNPC} makes a light-hearted joke about {RandomNPCName} while chatting with {ChatRecipient}."
 			// MeanJoke: "{SpeakingNPC} makes a mean-spirited joke about {RandomNPCName} by calling it {Adjective} while chatting with {ChatRecipient}."
