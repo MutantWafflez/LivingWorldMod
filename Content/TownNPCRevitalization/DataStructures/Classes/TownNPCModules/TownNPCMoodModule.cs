@@ -19,8 +19,6 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
     public const float MaxMoodValue = 100f;
     public const float MinMoodValue = 0f;
 
-    private const float BaseMoodValue = 50f;
-
     private static readonly Regex TownNPCNameRegex = LoadNPCNameRegex();
 
     private static Dictionary<string, MoodModifier> _moodModifiers;
@@ -38,6 +36,21 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
         MinMoodValue,
         MaxMoodValue
     );
+
+    private static float BaseMoodValue {
+        get {
+            float baseValue = 50f;
+            if (Main.expertMode) {
+                baseValue -= 5f;
+            }
+
+            if (Main.masterMode) {
+                baseValue -= 5f;
+            }
+
+            return baseValue;
+        }
+    }
 
     public TownNPCMoodModule(NPC npc) : base(npc) {
         _currentStaticMoodModifiers = [];
