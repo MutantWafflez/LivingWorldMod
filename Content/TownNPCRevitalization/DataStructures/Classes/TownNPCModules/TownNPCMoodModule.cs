@@ -58,7 +58,7 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
             int npcType = NPCID.Search.GetId(npcName);
 
             foreach ((string eventName, JsonValue affectionLevel) in eventData.Qo()) {
-                Main.ShopHelper._database.Register(npcType, new EventPreferenceTrait(new EventPreferenceTrait.EventPreference(Enum.Parse<AffectionLevel>(affectionLevel), eventName)));
+                Main.ShopHelper._database.Register(npcType, new EventPreferenceTrait(Enum.Parse<AffectionLevel>(affectionLevel), eventName));
             }
         }
 
