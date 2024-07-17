@@ -167,7 +167,7 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     public override GlobalNPC NewInstance(NPC target) {
-        TownGlobalNPC instance = (TownGlobalNPC)base.NewInstance(target);
+        TownGlobalNPC instance = (TownGlobalNPC)base.NewInstance(target)!;
 
         instance.PathfinderModule = new TownNPCPathfinderModule(target);
         instance.MoodModule = new TownNPCMoodModule(target);
