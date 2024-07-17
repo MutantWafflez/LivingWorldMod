@@ -14,7 +14,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.Sh
 public class HomeProximityTrait : IShopPersonalityTrait {
     public void ModifyShopPrice(HelperInfo info, ShopHelper shopHelperInstance) {
         NPC npc = info.npc;
-        if (Vector2.Distance(new Vector2 (npc.homeTileX, npc.homeTileY), new Vector2 (npc.Center.X / 16f, npc.Center.Y / 16f)) > 120f) {
+        if (Vector2.Distance(new Vector2 (npc.homeTileX, npc.homeTileY), npc.Center.ToTileCoordinates().ToVector2()) > 120f) {
             npc.GetGlobalNPC<TownGlobalNPC>()
                 .MoodModule.AddModifier("TownNPCMoodDescription.FarFromHome".Localized(), Language.GetText($"{TownNPCMoodModule.GetFlavorTextKeyPrefix(info.npc)}.FarFromHome"), -20, 0);
         }
