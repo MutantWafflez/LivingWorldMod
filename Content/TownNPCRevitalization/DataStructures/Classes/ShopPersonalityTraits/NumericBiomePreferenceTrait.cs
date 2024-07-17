@@ -15,7 +15,7 @@ public class NumericBiomePreferenceTrait(int moodOffset, IShoppingBiome biome) :
         info.npc.GetGlobalNPC<TownGlobalNPC>()
             .MoodModule.AddModifier(
                 new SubstitutableLocalizedText("TownNPCMoodDescription.InBiome".Localized(), new { Biome = ShopHelper.BiomeNameByKey(biome.NameKey) }),
-                $"TownNPCMood.{info.npc.TypeName}.Biome_{biome.NameKey}".Localized(),
+                $"TownNPCMood.{LWMUtils.GetTypeNameOrIDName(info.npc.type)}.Biome_{biome.NameKey}".Localized(),
                 moodOffset,
                 0
             );

@@ -12,11 +12,11 @@ public class NumericNPCPreferenceTrait(int moodOffset, int npcType) : IShopPerso
             return;
         }
 
-        string otherNPCTypeName = NPCID.Search.GetName(npcType);
+        string otherNPCTypeName = LWMUtils.GetTypeNameOrIDName(npcType);
         info.npc.GetGlobalNPC<TownGlobalNPC>()
             .MoodModule.AddModifier(
                 new SubstitutableLocalizedText("TownNPCMoodDescription.NeighborNPC".Localized(), new { NPCTypeName = otherNPCTypeName }),
-                new SubstitutableLocalizedText($"TownNPCMood.{info.npc.TypeName}.NPC_{otherNPCTypeName}".Localized(), new { NPCName = NPC.GetFirstNPCNameOrNull(npcType)}),
+                new SubstitutableLocalizedText($"TownNPCMood.{LWMUtils.GetTypeNameOrIDName(info.npc.type)}.NPC_{otherNPCTypeName}".Localized(), new { NPCName = NPC.GetFirstNPCNameOrNull(npcType) }),
                 moodOffset,
                 0
             );

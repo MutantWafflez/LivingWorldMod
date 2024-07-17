@@ -69,7 +69,7 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
 
         foreach ((int npcType, PersonalityProfile profile) in Main.ShopHelper._database._personalityProfiles) {
             ModNPC potentialModNPC = NPCLoader.GetNPC(npcType);
-            string npcTypeName = npcType >= NPCID.Count ? potentialModNPC.Name : NPCID.Search.GetName(npcType);
+            string npcTypeName = LWMUtils.GetTypeNameOrIDName(npcType);
             string moodKeyPrefix = npcType >= NPCID.Count ? potentialModNPC.GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{npcTypeName}";
 
             foreach (NPCPreferenceTrait trait in profile.ShopModifiers.OfType<NPCPreferenceTrait>().ToList()) {
@@ -87,7 +87,7 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
                 );
 
                 LocalizedText currentText = LanguageManager.Instance.GetText($"{moodKeyPrefix}.{trait.Level}NPC");
-                string otherNPCTypeName = trait.NpcId >= NPCID.Count ? NPCLoader.GetNPC(trait.NpcId).Name : NPCID.Search.GetName(trait.NpcId);
+                string otherNPCTypeName = LWMUtils.GetTypeNameOrIDName(trait.NpcId);
 
                 string newKey = $"TownNPCMood.{npcTypeName}.NPC_{otherNPCTypeName}".PrependModKey();
                 LanguageManager.Instance._moddedKeys.Add(newKey);
