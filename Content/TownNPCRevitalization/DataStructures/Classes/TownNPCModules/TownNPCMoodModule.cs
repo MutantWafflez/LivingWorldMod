@@ -34,15 +34,15 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
         MaxMoodValue
     );
 
-    private static float BaseMoodValue {
+    private static int BaseMoodValue {
         get {
-            float baseValue = 50f;
+            int baseValue = 50;
             if (Main.expertMode) {
-                baseValue -= 5f;
+                baseValue -= 5;
             }
 
             if (Main.masterMode) {
-                baseValue -= 5f;
+                baseValue -= 5;
             }
 
             return baseValue;

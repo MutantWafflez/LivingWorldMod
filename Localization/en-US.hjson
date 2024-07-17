@@ -398,7 +398,8 @@ Mods: {
 		}
 
 		TownNPCMoodDescription: {
-	        Event_BloodMoon: Blood Moon	
+	        Event_BloodMoon: Blood Moon
+	        InBiome: In {Biome}
 		}
 
 		TownNPCMoodFlavorText: {
