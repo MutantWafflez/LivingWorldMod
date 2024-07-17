@@ -404,6 +404,8 @@ Mods: {
 			// Crowded: Crowded
 			// VeryCrowded: Very Crowded
 			// NotCrowded: Spacious Housing
+			// Lonely: Lonely
+			// Homeless: Homeless
 		}
 
 		TownNPCMoodFlavorText: {
