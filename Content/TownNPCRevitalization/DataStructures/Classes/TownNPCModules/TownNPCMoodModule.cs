@@ -64,6 +64,10 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
             }
         }
 
+        NPCPreferenceTrait princessPreferenceTrait = new()  { Level = AffectionLevel.Like, NpcId = NPCID.Princess };
+        List<BiomePreferenceListTrait.BiomePreference> evilBiomePreferences = new List<IShoppingBiome>([new CorruptionBiome(), new CrimsonBiome(), new DungeonBiome()])
+            .Select(biome => new BiomePreferenceListTrait.BiomePreference(AffectionLevel.Hate, biome))
+            .ToList();
         foreach ((int npcType, PersonalityProfile profile) in Main.ShopHelper._database._personalityProfiles) {
             ModNPC potentialModNPC = NPCLoader.GetNPC(npcType);
             string npcTypeName = LWMUtils.GetNPCTypeNameOrIDName(npcType);
@@ -72,7 +76,7 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
             // All Town NPCs liking the Princess is not handled through NPCPreferenceTrait (and is instead hard-coded), as such we add a fake preference trait that will be translated numerically below
             List<NPCPreferenceTrait> npcPreferences = profile.ShopModifiers.OfType<NPCPreferenceTrait>().ToList();
             if (npcType is not NPCID.Princess) {
-                npcPreferences.Add(new NPCPreferenceTrait { Level = AffectionLevel.Like, NpcId = NPCID.Princess });
+                npcPreferences.Add(princessPreferenceTrait);
             }
 
             foreach (NPCPreferenceTrait trait in npcPreferences) {
@@ -102,7 +106,11 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
 
             profile.ShopModifiers.RemoveAll(trait => trait is NPCPreferenceTrait);
 
-            foreach (BiomePreferenceListTrait.BiomePreference preference in profile.ShopModifiers.OfType<BiomePreferenceListTrait>().SelectMany(trait => trait.Preferences).ToList()) {
+            // Evil biomes are also not handles through a BiomePreference similar to the NPC situation with the princess, thus we add some fake preferences traits for them to auto translate
+            foreach (BiomePreferenceListTrait.BiomePreference preference in profile.ShopModifiers.OfType<BiomePreferenceListTrait>()
+                .SelectMany(trait => trait.Preferences)
+                .Concat(evilBiomePreferences)
+                .ToList()) {
                 profile.ShopModifiers.Add(
                     new NumericBiomePreferenceTrait(
                         preference.Affection switch {
