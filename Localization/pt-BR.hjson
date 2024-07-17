@@ -398,36 +398,18 @@ Mods: {
 		}
 
 		TownNPCMoodDescription: {
-			// Injured: Injured
-			// SleptWell: Well Rested
-			// Content: Content
-			// NoHome: Homeless
-			// FarFromHome: Far From Housing
-			// DislikeCrowded: Slightly Crowded
-			// HateCrowded: Very Crowded
-			// LoveSpace: Few Neighbors
-			// LikeBiome: Likes Biome
-			// LoveBiome: Loves Biome
-			// DislikeBiome: Dislikes Biome
-			// HateBiome: Hates Biome
-			// LikeNPC: Likes Neighbor
-			// LoveNPC: Loves Neighbor
-			// DislikeNPC: Dislikes Neighbor
-			// HateNPC: Hates Neighbor
-			// HateLonely: Lonely
-			// LikeEvent: Likes Event
-			// LoveEvent: Loves Event
-			// DislikeEvent: Dislikes Event
-			// HateEvent: Hates Event
+			// Event_BloodMoon: Blood Moon
+			// InBiome: In {Biome}
+			// NeighborNPC: Lives near {NPCTypeName}
 		}
 
 		TownNPCMoodFlavorText: {
-			// Nurse.HateEvent_BloodMoon: I'm THIS close to marching up to that moon and destroying it myself!
-			// Zoologist.HateEvent_BloodMoon: GRR! This moon makes me ANGRY!!!
-			// Stylist.HateEvent_BloodMoon: I'm about to use these scissors for MUCH more than cutting hair!
-			// Dryad.HateEvent_BloodMoon: The land is bathed in blood and death. Mother has forsaken us!
-			// Mechanic.HateEvent_BloodMoon: UGH! I'm going to find whoever is in charge of that moon and hit them upside with a wrench!
-			// Steampunker.HateEvent_BloodMoon: Bloody hell, this is!
+			// Nurse.Event_BloodMoon: I'm THIS close to marching up to that moon and destroying it myself!
+			// Zoologist.Event_BloodMoon: GRR! This moon makes me ANGRY!!!
+			// Stylist.Event_BloodMoon: I'm about to use these scissors for MUCH more than cutting hair!
+			// Dryad.Event_BloodMoon: The land is bathed in blood and death. Mother has forsaken us!
+			// Mechanic.Event_BloodMoon: UGH! I'm going to find whoever is in charge of that moon and hit them upside with a wrench!
+			// Steampunker.Event_BloodMoon: Bloody hell, this is!
 		}
 
 		InterTownNPCChat: {

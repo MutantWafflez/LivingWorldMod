@@ -398,9 +398,9 @@ Mods: {
 		}
 
 		TownNPCMoodDescription: {
-	        Event_BloodMoon: Blood Moon
-	        InBiome: In {Biome}
-	        NeighborNPC: Lives near {NPCTypeName}
+			Event_BloodMoon: Blood Moon
+			InBiome: In {Biome}
+			NeighborNPC: Lives near {NPCTypeName}
 		}
 
 		TownNPCMoodFlavorText: {
