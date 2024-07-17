@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Hjson;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.ShopPersonalityTraits;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Utilities;
-using Terraria.GameContent.Personalities;
 using Terraria.Localization;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
@@ -63,8 +61,8 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
         foreach ((string npcName, JsonValue eventData) in jsonEventPreferenceValues) {
             int npcType = NPCID.Search.GetId(npcName);
 
-            foreach ((string eventName, JsonValue affectionLevel) in eventData.Qo()) {
-                Main.ShopHelper._database.Register(npcType, new EventPreferenceTrait(Enum.Parse<AffectionLevel>(affectionLevel), eventName));
+            foreach ((string eventName, JsonValue moodOffset) in eventData.Qo()) {
+                Main.ShopHelper._database.Register(npcType, new EventPreferenceTrait(moodOffset, eventName));
             }
         }
 

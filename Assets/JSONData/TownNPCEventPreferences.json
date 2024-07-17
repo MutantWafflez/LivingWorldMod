@@ -1,20 +1,20 @@
 {
   "Nurse": {
-    "BloodMoon": "Hate"
+    "BloodMoon": -40
   },
   "BestiaryGirl": {
-    "BloodMoon": "Hate"
+    "BloodMoon": -40
   },
   "Stylist": {
-    "BloodMoon": "Hate"
+    "BloodMoon": -40
   },
   "Dryad": {
-    "BloodMoon": "Hate"
+    "BloodMoon": -40
   },
   "Mechanic": {
-    "BloodMoon": "Hate"
+    "BloodMoon": -40
   },
   "Steampunker": {
-    "BloodMoon": "Hate"
+    "BloodMoon": -40
   }
 }

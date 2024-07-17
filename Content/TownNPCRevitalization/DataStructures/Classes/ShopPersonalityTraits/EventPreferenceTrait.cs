@@ -11,7 +11,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.Sh
 ///     Similar to biome/NPC preferences for Town NPCs happiness, except for "events" which are denoted active by some
 ///     arbitrary function returning a bool.
 /// </summary>
-public class EventPreferenceTrait(AffectionLevel affectionLevel, string eventName) : IShopPersonalityTrait {
+public class EventPreferenceTrait(int moodOffset, string eventName) : IShopPersonalityTrait {
     private delegate bool ActiveEvent(HelperInfo helperInfo);
 
     private static readonly Dictionary<string, ActiveEvent> ActiveEventFunctions = new() {
@@ -21,7 +21,7 @@ public class EventPreferenceTrait(AffectionLevel affectionLevel, string eventNam
     public void ModifyShopPrice(HelperInfo info, ShopHelper shopHelperInstance) {
         if (ActiveEventFunctions[eventName](info)) {
             info.npc.GetGlobalNPC<TownGlobalNPC>()
-                .MoodModule.ConvertReportTextToStaticModifier($"TownNPCMoodFlavorText.{info.npc.TypeName}".PrependModKey(), $"{affectionLevel}Event_{eventName}");
+                .MoodModule.ConvertReportTextToStaticModifier($"TownNPCMoodFlavorText.{info.npc.TypeName}".PrependModKey(), $"Event_{eventName}");
         }
     }
 }
