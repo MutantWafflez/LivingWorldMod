@@ -401,6 +401,9 @@ Mods: {
 			// Event_BloodMoon: Blood Moon
 			// InBiome: In {Biome}
 			// NeighborNPC: Lives near {NPCTypeName}
+			// Crowded: Crowded
+			// VeryCrowded: Very Crowded
+			// NotCrowded: Spacious Housing
 		}
 
 		TownNPCMoodFlavorText: {

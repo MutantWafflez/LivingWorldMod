@@ -72,7 +72,7 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
             string npcTypeName = LWMUtils.GetNPCTypeNameOrIDName(npcType);
             string moodKeyPrefix = npcType >= NPCID.Count ? potentialModNPC.GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{npcTypeName}";
 
-            // All Town NPCs liking the Princess is not handled through NPCPreferenceTrait (and is instead hard-coded), as such we add a fake preference trait that will be translated numerically 
+            // All Town NPCs liking the Princess is not handled through NPCPreferenceTrait (and is instead hard-coded), as such we add a fake preference trait that will be translated numerically below
             List<NPCPreferenceTrait> npcPreferences = profile.ShopModifiers.OfType<NPCPreferenceTrait>().ToList();
             if (npcType != NPCID.Princess) {
                 npcPreferences.Add(new NPCPreferenceTrait { Level = AffectionLevel.Like, NpcId = NPCID.Princess });
@@ -127,6 +127,9 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
             }
 
             profile.ShopModifiers.RemoveAll(trait => trait is BiomePreferenceListTrait);
+
+            // Add to all NPCs (for the time being) the crowded-ness feature
+            profile.ShopModifiers.Add(new ProximityTrait());
         }
 
         _defaultFlavorTexts = Language.FindAll(Lang.CreateDialogFilter("TownNPCMood.")).ToDictionary(text => text.Key);

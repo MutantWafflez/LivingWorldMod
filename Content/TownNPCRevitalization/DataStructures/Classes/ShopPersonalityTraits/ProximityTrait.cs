@@ -1,7 +1,9 @@
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Utilities;
 using Terraria.GameContent;
 using Terraria.GameContent.Personalities;
+using Terraria.Localization;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.ShopPersonalityTraits;
 
@@ -14,6 +16,17 @@ public class ProximityTrait : IShopPersonalityTrait {
         shopHelperInstance.GetNearbyResidentNPCs(info.npc, out int npcsWithinHouse, out int npcsWithinVillage);
 
         TownNPCMoodModule moodModule = info.npc.GetGlobalNPC<TownGlobalNPC>().MoodModule;
-        if (npcsWithinHouse > 3) { }
+        string flavorTextKeyPrefix = info.npc.ModNPC is not null ? info.npc.ModNPC.GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{NPCID.Search.GetName(info.npc.type)}";
+        switch (npcsWithinHouse) {
+            case > 3 and > 6 :
+                moodModule.AddModifier("TownNPCMoodDescription.VeryCrowded".Localized(), Language.GetText($"{flavorTextKeyPrefix}.HateCrowded"), -30, 0);
+                break;
+            case > 3:
+                moodModule.AddModifier("TownNPCMoodDescription.Crowded".Localized(), Language.GetText($"{flavorTextKeyPrefix}.DislikeCrowded"), -15, 0);
+                break;
+            case <= 2 when npcsWithinVillage < 4:
+                moodModule.AddModifier("TownNPCMoodDescription.NotCrowded".Localized(), Language.GetText($"{flavorTextKeyPrefix}.LoveSpace"), 15, 0);
+                break;
+        }
     }
 }
