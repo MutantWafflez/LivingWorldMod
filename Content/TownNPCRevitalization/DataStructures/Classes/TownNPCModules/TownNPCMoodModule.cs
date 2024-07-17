@@ -20,8 +20,6 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
 
     private static readonly Regex TownNPCNameRegex = LoadNPCNameRegex();
 
-    private static Dictionary<string, LocalizedText> _defaultFlavorTexts;
-
     private readonly List<MoodModifierInstance> _currentStaticMoodModifiers;
     private readonly List<MoodModifierInstance> _currentDynamicMoodModifiers;
 
@@ -53,7 +51,6 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
     public TownNPCMoodModule(NPC npc) : base(npc) {
         _currentStaticMoodModifiers = [];
         _currentDynamicMoodModifiers = [];
-        _defaultFlavorTexts = [];
     }
 
     public static void Load() {
@@ -74,7 +71,7 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
 
             // All Town NPCs liking the Princess is not handled through NPCPreferenceTrait (and is instead hard-coded), as such we add a fake preference trait that will be translated numerically below
             List<NPCPreferenceTrait> npcPreferences = profile.ShopModifiers.OfType<NPCPreferenceTrait>().ToList();
-            if (npcType != NPCID.Princess) {
+            if (npcType is not NPCID.Princess) {
                 npcPreferences.Add(new NPCPreferenceTrait { Level = AffectionLevel.Like, NpcId = NPCID.Princess });
             }
 
@@ -129,10 +126,9 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
             profile.ShopModifiers.RemoveAll(trait => trait is BiomePreferenceListTrait);
 
             // Add to all NPCs (for the time being) the crowded-ness feature
-            profile.ShopModifiers.Add(new ProximityTrait());
+            profile.ShopModifiers.Add(new CrowdingTrait());
+            profile.ShopModifiers.Add(npcType is NPCID.Princess ? new LonelyTrait() : new SpaciousTrait());
         }
-
-        _defaultFlavorTexts = Language.FindAll(Lang.CreateDialogFilter("TownNPCMood.")).ToDictionary(text => text.Key);
     }
 
     [GeneratedRegex(@"(.+\.(?<Name>.+)\.TownNPCMood|TownNPCMood_(?<Name>.+))")]

@@ -18,6 +18,22 @@ public sealed class HappinessPatches : LoadablePatch {
     private const float MinCostModifier = 0.67f;
     private const float MaxCostModifier = 1.5f;
 
+    /// <summary>
+    ///     The first out value of <see cref="ShopHelper.GetNearbyResidentNPCs" />.
+    /// </summary>
+    public static int NPCCountWithinHouse {
+        get;
+        private set;
+    }
+
+    /// <summary>
+    ///     The second out value of <see cref="ShopHelper.GetNearbyResidentNPCs" />.
+    /// </summary>
+    public static int NPCCountWithinVillage {
+        get;
+        private set;
+    }
+
     private static void AddToMoodModule(ILContext il) {
         currentContext = il;
 
@@ -35,6 +51,9 @@ public sealed class HappinessPatches : LoadablePatch {
                 globalNPC.MoodModule.ResetStaticModifiers();
 
                 List<NPC> npcNeighbors = shopHelper.GetNearbyResidentNPCs(npc, out int npcsWithinHouse, out int npcsWithinVillage);
+                NPCCountWithinHouse = npcsWithinHouse;
+                NPCCountWithinVillage = npcsWithinVillage;
+
                 bool[] npcNeighborsByType = new bool[NPCLoader.NPCCount];
                 foreach (NPC npcNeighbor in npcNeighbors) {
                     npcNeighborsByType[npcNeighbor.type] = true;
