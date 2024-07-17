@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Hjson;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.ShopPersonalityTraits;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
@@ -14,11 +13,9 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.To
 /// <summary>
 ///     Class that handles the new "mood" feature that replaces Town NPC happiness.
 /// </summary>
-public sealed partial class TownNPCMoodModule : TownNPCModule {
+public sealed class TownNPCMoodModule : TownNPCModule {
     public const float MaxMoodValue = 100f;
     public const float MinMoodValue = 0f;
-
-    private static readonly Regex TownNPCNameRegex = LoadNPCNameRegex();
 
     private readonly List<MoodModifierInstance> _currentStaticMoodModifiers;
     private readonly List<MoodModifierInstance> _currentDynamicMoodModifiers;
@@ -156,9 +153,6 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
     /// </summary>
     public static string GetFlavorTextKeyPrefix(int npcType) => npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{NPCID.Search.GetName(npcType)}";
 
-    [GeneratedRegex(@"(.+\.(?<Name>.+)\.TownNPCMood|TownNPCMood_(?<Name>.+))")]
-    private static partial Regex LoadNPCNameRegex();
-
     public override void Update() {
         for (int i = 0; i < _currentDynamicMoodModifiers.Count; i++) {
             MoodModifierInstance instance = _currentDynamicMoodModifiers[i];
@@ -169,10 +163,6 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
     }
 
     public void AddModifier(SubstitutableLocalizedText descriptionText, SubstitutableLocalizedText flavorText, int moodOffset, int duration) {
-        // if (flavorText.text.Key == flavorText.text.Value && _defaultFlavorTexts.TryGetValue(modifierKey, out LocalizedText defaultFlavorText)) {
-        //     flavorText = defaultFlavorText;
-        // }
-
         MoodModifierInstance modifierInstance = new (descriptionText, flavorText, moodOffset, duration);
         if (duration <= 0) {
             _currentStaticMoodModifiers.Add(modifierInstance);
@@ -181,13 +171,6 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
 
         _currentDynamicMoodModifiers.Add(modifierInstance);
     }
-
-    // public void ConvertReportTextToStaticModifier(string townNPCLocalizationKey, string moodModifierKey, object flavorTextSubstituteObject = null) {
-    //     if (TownNPCNameRegex.Match(townNPCLocalizationKey) is { } match && match != Match.Empty) {
-    //         // We split moodModifierKey for scenarios such as LovesNPC_Princess, where we want the mood modifier to be "LovesNPC" as a catch-all
-    //         AddModifier(moodModifierKey.Split('_')[0], Language.GetText($"{townNPCLocalizationKey}.{moodModifierKey}"), 0,  flavorTextSubstituteObject);
-    //     }
-    // }
 
     public void ResetStaticModifiers() {
         _currentStaticMoodModifiers.Clear();
