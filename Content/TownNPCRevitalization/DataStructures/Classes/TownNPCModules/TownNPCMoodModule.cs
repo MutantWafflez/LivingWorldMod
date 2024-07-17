@@ -6,6 +6,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.ShopPe
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
+using Terraria.GameContent.Personalities;
 using Terraria.Localization;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
@@ -56,8 +57,7 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
     }
 
     public static void Load() {
-        JsonObject jsonMoodValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
-
+        // JsonObject jsonMoodValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
         JsonObject jsonEventPreferenceValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCEventPreferences.json").Qo();
         foreach ((string npcName, JsonValue eventData) in jsonEventPreferenceValues) {
             int npcType = NPCID.Search.GetId(npcName);
@@ -65,6 +65,61 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
             foreach ((string eventName, JsonValue moodOffset) in eventData.Qo()) {
                 Main.ShopHelper._database.Register(npcType, new EventPreferenceTrait(moodOffset, eventName));
             }
+        }
+
+        foreach ((int npcType, PersonalityProfile profile) in Main.ShopHelper._database._personalityProfiles) {
+            ModNPC potentialModNPC = NPCLoader.GetNPC(npcType);
+            string npcTypeName = npcType >= NPCID.Count ? potentialModNPC.Name : NPCID.Search.GetName(npcType);
+            string moodKeyPrefix = npcType >= NPCID.Count ? potentialModNPC.GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{npcType}";
+
+            foreach (NPCPreferenceTrait trait in profile.ShopModifiers.OfType<NPCPreferenceTrait>().ToList()) {
+                profile.ShopModifiers.Add(
+                    new NumericNPCPreferenceTrait(
+                        trait.Level switch {
+                            AffectionLevel.Love => 20,
+                            AffectionLevel.Like => 10,
+                            AffectionLevel.Dislike => -10,
+                            AffectionLevel.Hate => -20,
+                            _ => 0
+                        },
+                        trait.NpcId
+                    )
+                );
+
+                LocalizedText currentText = LanguageManager.Instance.GetText($"{moodKeyPrefix}.{trait.Level}NPC");
+                string otherNPCTypeName = trait.NpcId >= NPCID.Count ? NPCLoader.GetNPC(trait.NpcId).Name : NPCID.Search.GetName(trait.NpcId);
+
+                string newKey = $"TownNPCMood.{npcTypeName}.NPC_{otherNPCTypeName}".PrependModKey();
+                LanguageManager.Instance._moddedKeys.Add(newKey);
+                LanguageManager.Instance._localizedTexts[newKey] = currentText;
+            }
+
+            profile.ShopModifiers.RemoveAll(trait => trait is NPCPreferenceTrait);
+
+            foreach (BiomePreferenceListTrait trait in profile.ShopModifiers.OfType<BiomePreferenceListTrait>().ToList()) {
+                foreach (BiomePreferenceListTrait.BiomePreference preference in trait.Preferences) {
+                    profile.ShopModifiers.Add(
+                        new NumericBiomePreferenceTrait(
+                            preference.Affection switch {
+                                AffectionLevel.Love => 30,
+                                AffectionLevel.Like => 15,
+                                AffectionLevel.Dislike => -15,
+                                AffectionLevel.Hate => -30,
+                                _ => 0
+                            },
+                            preference.Biome
+                        )
+                    );
+
+                    LocalizedText currentText = LanguageManager.Instance.GetText($"{moodKeyPrefix}.{preference.Affection}Biome");
+
+                    string newKey = $"TownNPCMood.{npcTypeName}.Biome_{preference.Biome.NameKey}".PrependModKey();
+                    LanguageManager.Instance._moddedKeys.Add(newKey);
+                    LanguageManager.Instance._localizedTexts[newKey] = currentText;
+                }
+            }
+
+            profile.ShopModifiers.RemoveAll(trait => trait is BiomePreferenceListTrait);
         }
 
         _defaultFlavorTexts = Language.FindAll(Lang.CreateDialogFilter("TownNPCMood.")).ToDictionary(text => text.Key);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Globals.Systems.BaseSystems;
 using Microsoft.Xna.Framework;
@@ -6,17 +7,18 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria.GameContent;
 
-namespace LivingWorldMod.Globals.Systems;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 
 /// <summary>
-///     Mod system that handles miscellaneous loading tasks that otherwise
-///     don't deserve their own mod system.
+///     Mod system that handles more "precise" loading tasks for the Town NPC revitilization, beyond just Load() and SetStaticDefaults().
 /// </summary>
-public class LoadingTaskSystem : BaseModSystem<LoadingTaskSystem> {
+public class TownNPCRevitalizationLoadSystem : BaseModSystem<TownNPCRevitalizationLoadSystem> {
     public override void PostSetupContent() {
         if (Main.netMode != NetmodeID.Server) {
             Main.QueueMainThreadAction(GenerateTalkBlinkTextures);
         }
+
+        TownNPCMoodModule.Load();
     }
 
     private void GenerateTalkBlinkTextures() {

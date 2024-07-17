@@ -35,7 +35,11 @@
         <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper.AddHappinessReportText"/>
         <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._database"/>
 
+        <!-- Personality Database Publicizing -->
+        <Publicize Include="tModLoader:Terraria.GameContent.Personalities.PersonalityDatabase._personalityProfiles"/>
+
         <!-- Language/Localization Publicizing -->
         <Publicize Include="tModLoader:Terraria.Localization.LanguageManager._localizedTexts"/>
+        <Publicize Include="tModLoader:Terraria.Localization.LanguageManager._moddedKeys"/>
     </ItemGroup>
 </Project>
