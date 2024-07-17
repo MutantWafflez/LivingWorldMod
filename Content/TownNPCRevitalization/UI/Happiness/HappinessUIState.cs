@@ -35,7 +35,7 @@ public class HappinessUIState : UIState {
             };
             tooltipElement.Append(backPanel);
 
-            moodDescriptionText = new UIBetterText(instance.descriptionText.text) { Height = StyleDimension.Fill, VAlign = 0.5f };
+            moodDescriptionText = new UIBetterText(instance.descriptionText.SubstitutedText) { Height = StyleDimension.Fill, VAlign = 0.5f };
             backPanel.Append(moodDescriptionText);
 
             moodOffsetText = new UIBetterText(instance.moodOffset.ToString("#.##")) {
