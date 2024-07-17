@@ -47,6 +47,7 @@ public sealed class HappinessPatches : LoadablePatch {
                     }
                 }
 
+                // TODO: Is this necessary?
                 new AllPersonalitiesModifier().ModifyShopPrice(info, shopHelper);
                 shopHelper._currentPriceAdjustment = MathHelper.Lerp(MinCostModifier, MaxCostModifier, 1f - globalNPC.MoodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue);
             }

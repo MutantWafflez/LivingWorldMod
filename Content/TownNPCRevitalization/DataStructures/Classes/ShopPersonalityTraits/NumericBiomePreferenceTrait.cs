@@ -6,6 +6,10 @@ using Terraria.GameContent.Personalities;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.ShopPersonalityTraits;
 
+/// <summary>
+///     Version of <see cref="BiomePreferenceListTrait" /> that is single-instanced per biome as well as numeric - i.e. uses the Town NPC Revitalization mood offset instead of
+///     <see cref="AffectionLevel" /> objects.
+/// </summary>
 public class NumericBiomePreferenceTrait(int moodOffset, IShoppingBiome biome) : IShopPersonalityTrait {
     public override string ToString() => $"Biome: {biome.NameKey}, Offset: {moodOffset}";
 

@@ -6,6 +6,9 @@ using Terraria.GameContent.Personalities;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.ShopPersonalityTraits;
 
+/// <summary>
+///     Numeric version of <see cref="NPCPreferenceTrait" /> that uses raw numbers instead of <see cref="AffectionLevel" /> values.
+/// </summary>
 public class NumericNPCPreferenceTrait(int moodOffset, int npcType) : IShopPersonalityTrait {
     public override string ToString() => $"NPC: {LWMUtils.GetNPCTypeNameOrIDName(npcType)}, Offset: {moodOffset}";
 
