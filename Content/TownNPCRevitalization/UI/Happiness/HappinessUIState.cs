@@ -2,6 +2,7 @@
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -26,7 +27,7 @@ public class HappinessUIState : UIState {
             Height = StyleDimension.FromPixels(40f);
             Width = StyleDimension.Fill;
 
-            tooltipElement = new UITooltipElement(instance.flavorText, instance.flavorTextSubstitutes) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+            tooltipElement = new UITooltipElement(instance.flavorText) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
             Append(tooltipElement);
 
             backPanel = new UIPanel(Main.Assets.Request<Texture2D>("Images/UI/PanelBackground"), ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder")) {
@@ -34,11 +35,11 @@ public class HappinessUIState : UIState {
             };
             tooltipElement.Append(backPanel);
 
-            moodDescriptionText = new UIBetterText(instance.modifierType.ModifierDesc) { Height = StyleDimension.Fill, VAlign = 0.5f };
+            moodDescriptionText = new UIBetterText(instance.descriptionText.text) { Height = StyleDimension.Fill, VAlign = 0.5f };
             backPanel.Append(moodDescriptionText);
 
-            moodOffsetText = new UIBetterText(instance.modifierType.MoodOffset.ToString("#.##")) {
-                Height = StyleDimension.Fill, HAlign = 1f, VAlign = 0.5f, TextColor = instance.modifierType.MoodOffset < 0f ? Color.Red : Color.Lime
+            moodOffsetText = new UIBetterText(instance.moodOffset.ToString("#.##")) {
+                Height = StyleDimension.Fill, HAlign = 1f, VAlign = 0.5f, TextColor = instance.moodOffset < 0f ? Color.Red : Color.Lime
             };
             backPanel.Append(moodOffsetText);
         }
@@ -90,7 +91,9 @@ public class HappinessUIState : UIState {
         };
         backPanel.SetPadding(12f);
 
-        happinessBarZone = new UITooltipElement("UI.Fraction".Localized(), new { Numerator = 0, Denominator = 0 }) { Width = StyleDimension.Fill, Height = StyleDimension.FromPixels(50f) };
+        happinessBarZone = new UITooltipElement(new SubstitutableLocalizedText("UI.Fraction".Localized(), new { Numerator = 0, Denominator = 0 })) {
+            Width = StyleDimension.Fill, Height = StyleDimension.FromPixels(50f)
+        };
         backPanel.Append(happinessBarZone);
 
         happinessBarBackPanel = new UISquarePanel(new Color(22, 29, 107), new Color(46, 46, 159)) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
