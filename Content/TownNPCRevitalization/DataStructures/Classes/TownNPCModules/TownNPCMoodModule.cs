@@ -105,7 +105,7 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
 
             profile.ShopModifiers.RemoveAll(trait => trait is NPCPreferenceTrait);
 
-            foreach (BiomePreferenceListTrait.BiomePreference preference in profile.ShopModifiers.OfType<BiomePreferenceListTrait>().ToList().SelectMany(trait => trait.Preferences)) {
+            foreach (BiomePreferenceListTrait.BiomePreference preference in profile.ShopModifiers.OfType<BiomePreferenceListTrait>().SelectMany(trait => trait.Preferences).ToList()) {
                 profile.ShopModifiers.Add(
                     new NumericBiomePreferenceTrait(
                         preference.Affection switch {

@@ -12,4 +12,6 @@ public readonly struct SubstitutableLocalizedText(LocalizedText text, object sub
     public string SubstitutedText => substitutionObject is null ? text.Value : text.FormatWith(substitutionObject);
 
     public static implicit operator SubstitutableLocalizedText(LocalizedText text) => new (text);
+
+    public override string ToString() => SubstitutedText;
 }

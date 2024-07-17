@@ -162,9 +162,6 @@ public class TownGlobalNPC : GlobalNPC {
             throw new Exception("Multiple TownNPCAIState instances with the same ReservedStateInteger");
         }
 
-        // Must be loaded due to tML refreshing the happiness database in-between Load and SetStaticDefaults.
-        TownNPCMoodModule.Load();
-
         _stateDict = states.ToDictionary(state => state.ReservedStateInteger);
         //_allActivities = states.OfType<TownNPCActivity>().ToList();
     }
