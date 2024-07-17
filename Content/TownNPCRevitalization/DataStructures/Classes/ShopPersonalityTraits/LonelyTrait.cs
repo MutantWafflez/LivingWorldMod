@@ -15,10 +15,8 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.Sh
 public class LonelyTrait : IShopPersonalityTrait {
     public void ModifyShopPrice(HelperInfo info, ShopHelper shopHelperInstance) {
         TownNPCMoodModule moodModule = info.npc.GetGlobalNPC<TownGlobalNPC>().MoodModule;
-        string flavorTextKeyPrefix = info.npc.ModNPC is not null ? info.npc.ModNPC.GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{NPCID.Search.GetName(info.npc.type)}";
-
         if (HappinessPatches.NPCCountWithinHouse < 2 && HappinessPatches.NPCCountWithinVillage < 2) {
-            moodModule.AddModifier("TownNPCMoodDescription.Lonely".Localized(), Language.GetText($"{flavorTextKeyPrefix}.HateLonely"), -20, 0);
+            moodModule.AddModifier("TownNPCMoodDescription.Lonely".Localized(), Language.GetText($"{TownNPCMoodModule.GetFlavorTextKeyPrefix(info.npc)}.HateLonely"), -20, 0);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.Sh
 public class CrowdingTrait : IShopPersonalityTrait {
     public void ModifyShopPrice(HelperInfo info, ShopHelper shopHelperInstance) {
         TownNPCMoodModule moodModule = info.npc.GetGlobalNPC<TownGlobalNPC>().MoodModule;
-        string flavorTextKeyPrefix = info.npc.ModNPC is not null ? info.npc.ModNPC.GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{NPCID.Search.GetName(info.npc.type)}";
+        string flavorTextKeyPrefix = TownNPCMoodModule.GetFlavorTextKeyPrefix(info.npc);
 
         switch (HappinessPatches.NPCCountWithinHouse) {
             case > 3 and > 6 :

@@ -15,7 +15,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.Sh
 public class SpaciousTrait : IShopPersonalityTrait {
     public void ModifyShopPrice(HelperInfo info, ShopHelper shopHelperInstance) {
         TownNPCMoodModule moodModule = info.npc.GetGlobalNPC<TownGlobalNPC>().MoodModule;
-        string flavorTextKeyPrefix = info.npc.ModNPC is not null ? info.npc.ModNPC.GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{NPCID.Search.GetName(info.npc.type)}";
+        string flavorTextKeyPrefix = TownNPCMoodModule.GetFlavorTextKeyPrefix(info.npc);
 
         if (HappinessPatches.NPCCountWithinHouse <= 2 && HappinessPatches.NPCCountWithinVillage < 4) {
             moodModule.AddModifier("TownNPCMoodDescription.NotCrowded".Localized(), Language.GetText($"{flavorTextKeyPrefix}.LoveSpace"), 15, 0);

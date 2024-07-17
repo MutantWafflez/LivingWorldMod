@@ -125,11 +125,15 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
 
             profile.ShopModifiers.RemoveAll(trait => trait is BiomePreferenceListTrait);
 
-            // Add to all NPCs (for the time being) the crowded-ness feature
-            profile.ShopModifiers.Add(new CrowdingTrait());
+            profile.ShopModifiers.AddRange([new CrowdingTrait(), new HomelessTrait()]);
             profile.ShopModifiers.Add(npcType is NPCID.Princess ? new LonelyTrait() : new SpaciousTrait());
         }
     }
+
+    /// <summary>
+    ///     Returns the flavor text localization key prefix for the given NPC, accounting for if the NPC is modded or not.
+    /// </summary>
+    public static string GetFlavorTextKeyPrefix(NPC npc) => npc.ModNPC is not null ? npc.ModNPC.GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{NPCID.Search.GetName(npc.type)}";
 
     [GeneratedRegex(@"(.+\.(?<Name>.+)\.TownNPCMood|TownNPCMood_(?<Name>.+))")]
     private static partial Regex LoadNPCNameRegex();
