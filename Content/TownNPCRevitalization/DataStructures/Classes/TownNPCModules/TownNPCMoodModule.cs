@@ -69,10 +69,16 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
 
         foreach ((int npcType, PersonalityProfile profile) in Main.ShopHelper._database._personalityProfiles) {
             ModNPC potentialModNPC = NPCLoader.GetNPC(npcType);
-            string npcTypeName = LWMUtils.GetTypeNameOrIDName(npcType);
+            string npcTypeName = LWMUtils.GetNPCTypeNameOrIDName(npcType);
             string moodKeyPrefix = npcType >= NPCID.Count ? potentialModNPC.GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{npcTypeName}";
 
-            foreach (NPCPreferenceTrait trait in profile.ShopModifiers.OfType<NPCPreferenceTrait>().ToList()) {
+            // All Town NPCs liking the Princess is not handled through NPCPreferenceTrait (and is instead hard-coded), as such we add a fake preference trait that will be translated numerically 
+            List<NPCPreferenceTrait> npcPreferences = profile.ShopModifiers.OfType<NPCPreferenceTrait>().ToList();
+            if (npcType != NPCID.Princess) {
+                npcPreferences.Add(new NPCPreferenceTrait { Level = AffectionLevel.Like, NpcId = NPCID.Princess });
+            }
+
+            foreach (NPCPreferenceTrait trait in npcPreferences) {
                 profile.ShopModifiers.Add(
                     new NumericNPCPreferenceTrait(
                         trait.Level switch {
@@ -86,12 +92,15 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
                     )
                 );
 
-                LocalizedText currentText = LanguageManager.Instance.GetText($"{moodKeyPrefix}.{trait.Level}NPC");
-                string otherNPCTypeName = LWMUtils.GetTypeNameOrIDName(trait.NpcId);
+                string currentFlavorTextKey = $"{moodKeyPrefix}.{trait.Level}NPC";
+                string otherNPCTypeName = LWMUtils.GetNPCTypeNameOrIDName(trait.NpcId);
+                if (!LanguageManager.Instance._localizedTexts.TryGetValue($"{currentFlavorTextKey}_{otherNPCTypeName}", out LocalizedText currentFlavorText)) {
+                    currentFlavorText = LanguageManager.Instance.GetText(currentFlavorTextKey);
+                }
 
                 string newKey = $"TownNPCMood.{npcTypeName}.NPC_{otherNPCTypeName}".PrependModKey();
                 LanguageManager.Instance._moddedKeys.Add(newKey);
-                LanguageManager.Instance._localizedTexts[newKey] = currentText;
+                LanguageManager.Instance._localizedTexts[newKey] = currentFlavorText;
             }
 
             profile.ShopModifiers.RemoveAll(trait => trait is NPCPreferenceTrait);

@@ -123,5 +123,5 @@ public static partial class LWMUtils {
     /// <summary>
     ///     Gets and returns either the type name (if a modded NPC) or <see cref="NPCID" /> name (if a vanilla NPC), based on the passed in npc type.
     /// </summary>
-    public static string GetTypeNameOrIDName(int npcType) => npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).Name : NPCID.Search.GetName(npcType);
+    public static string GetNPCTypeNameOrIDName(int npcType) => npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).Name : NPCID.Search.GetName(npcType);
 }

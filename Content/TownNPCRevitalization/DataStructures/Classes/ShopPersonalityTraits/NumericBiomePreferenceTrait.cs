@@ -7,6 +7,8 @@ using Terraria.GameContent.Personalities;
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.ShopPersonalityTraits;
 
 public class NumericBiomePreferenceTrait(int moodOffset, IShoppingBiome biome) : IShopPersonalityTrait {
+    public override string ToString() => $"Biome: {biome.NameKey}, Offset: {moodOffset}";
+
     public void ModifyShopPrice(HelperInfo info, ShopHelper shopHelperInstance) {
         if (!biome.IsInBiome(info.player))  {
             return;
@@ -15,7 +17,7 @@ public class NumericBiomePreferenceTrait(int moodOffset, IShoppingBiome biome) :
         info.npc.GetGlobalNPC<TownGlobalNPC>()
             .MoodModule.AddModifier(
                 new SubstitutableLocalizedText("TownNPCMoodDescription.InBiome".Localized(), new { Biome = ShopHelper.BiomeNameByKey(biome.NameKey) }),
-                $"TownNPCMood.{LWMUtils.GetTypeNameOrIDName(info.npc.type)}.Biome_{biome.NameKey}".Localized(),
+                $"TownNPCMood.{LWMUtils.GetNPCTypeNameOrIDName(info.npc.type)}.Biome_{biome.NameKey}".Localized(),
                 moodOffset,
                 0
             );
