@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Hjson;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.ShopPersonalityTraits;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
+using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
 using Terraria.Localization;
 
@@ -81,12 +82,12 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
         }
     }
 
-    public void AddModifier(string modifierKey, LocalizedText flavorText, int duration, object flavorTextSubstitutes = null) {
-        if (flavorText.Key == flavorText.Value && _defaultFlavorTexts.TryGetValue(modifierKey, out LocalizedText defaultFlavorText)) {
-            flavorText = defaultFlavorText;
-        }
+    public void AddModifier(SubstitutableLocalizedText descriptionText, SubstitutableLocalizedText flavorText, int moodOffset, int duration) {
+        // if (flavorText.text.Key == flavorText.text.Value && _defaultFlavorTexts.TryGetValue(modifierKey, out LocalizedText defaultFlavorText)) {
+        //     flavorText = defaultFlavorText;
+        // }
 
-        MoodModifierInstance modifierInstance =  new MoodModifierInstance(moodModifier, flavorText, 0, flavorTextSubstitutes);
+        MoodModifierInstance modifierInstance = new (descriptionText, flavorText, moodOffset, duration);
         if (duration <= 0) {
             _currentStaticMoodModifiers.Add(modifierInstance);
             return;
@@ -95,12 +96,12 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
         _currentDynamicMoodModifiers.Add(modifierInstance);
     }
 
-    public void ConvertReportTextToStaticModifier(string townNPCLocalizationKey, string moodModifierKey, object flavorTextSubstituteObject = null) {
-        if (TownNPCNameRegex.Match(townNPCLocalizationKey) is { } match && match != Match.Empty) {
-            // We split moodModifierKey for scenarios such as LovesNPC_Princess, where we want the mood modifier to be "LovesNPC" as a catch-all
-            AddModifier(moodModifierKey.Split('_')[0], Language.GetText($"{townNPCLocalizationKey}.{moodModifierKey}"), 0,  flavorTextSubstituteObject);
-        }
-    }
+    // public void ConvertReportTextToStaticModifier(string townNPCLocalizationKey, string moodModifierKey, object flavorTextSubstituteObject = null) {
+    //     if (TownNPCNameRegex.Match(townNPCLocalizationKey) is { } match && match != Match.Empty) {
+    //         // We split moodModifierKey for scenarios such as LovesNPC_Princess, where we want the mood modifier to be "LovesNPC" as a catch-all
+    //         AddModifier(moodModifierKey.Split('_')[0], Language.GetText($"{townNPCLocalizationKey}.{moodModifierKey}"), 0,  flavorTextSubstituteObject);
+    //     }
+    // }
 
     public void ResetStaticModifiers() {
         _currentStaticMoodModifiers.Clear();

@@ -19,9 +19,12 @@ public class EventPreferenceTrait(int moodOffset, string eventName) : IShopPerso
     };
 
     public void ModifyShopPrice(HelperInfo info, ShopHelper shopHelperInstance) {
-        if (ActiveEventFunctions[eventName](info)) {
-            info.npc.GetGlobalNPC<TownGlobalNPC>()
-                .MoodModule.ConvertReportTextToStaticModifier($"TownNPCMoodFlavorText.{info.npc.TypeName}".PrependModKey(), $"Event_{eventName}");
+        if (!ActiveEventFunctions[eventName](info)) {
+            return;
         }
+
+        info.npc.GetGlobalNPC<TownGlobalNPC>()
+            .MoodModule
+            .AddModifier($"TownNPCMoodDescription.Event_{eventName}".Localized(), $"TownNPCMoodFlavorText.{info.npc.TypeName}.Event_{eventName}".Localized(), moodOffset, 0);
     }
 }

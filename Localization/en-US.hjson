@@ -398,27 +398,7 @@ Mods: {
 		}
 
 		TownNPCMoodDescription: {
-			Injured: Injured
-			SleptWell: Well Rested
-			Content: Content
-			NoHome: Homeless
-			FarFromHome: Far From Housing
-			DislikeCrowded: Slightly Crowded
-			HateCrowded: Very Crowded
-			LoveSpace: Few Neighbors
-			LikeBiome: Likes Biome
-			LoveBiome: Loves Biome
-			DislikeBiome: Dislikes Biome
-			HateBiome: Hates Biome
-			LikeNPC: Likes Neighbor
-			LoveNPC: Loves Neighbor
-			DislikeNPC: Dislikes Neighbor
-			HateNPC: Hates Neighbor
-			HateLonely: Lonely
-			LikeEvent: Likes Event
-			LoveEvent: Loves Event
-			DislikeEvent: Dislikes Event
-			HateEvent: Hates Event
+	        Event_BloodMoon: Blood Moon	
 		}
 
 		TownNPCMoodFlavorText: {
