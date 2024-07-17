@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Hjson;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.ShopPersonalityTraits;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Utilities;
 using Terraria.GameContent.Personalities;
@@ -60,11 +59,6 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
     public static void Load() {
         JsonObject jsonMoodValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
 
-        _moodModifiers = [];
-        foreach ((string moodModifierKey, float moodOffset) in jsonMoodValues) {
-            _moodModifiers[moodModifierKey] = new MoodModifier($"TownNPCMoodDescription.{moodModifierKey}".Localized(), moodOffset);
-        }
-
         JsonObject jsonEventPreferenceValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCEventPreferences.json").Qo();
         foreach ((string npcName, JsonValue eventData) in jsonEventPreferenceValues) {
             int npcType = NPCID.Search.GetId(npcName);
@@ -89,34 +83,24 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
         }
     }
 
-    public void AddStaticModifier(string modifierKey, LocalizedText flavorText, object flavorTextSubstitutes = null) {
-        if (!_moodModifiers.TryGetValue(modifierKey, out MoodModifier moodModifier)) {
-            return;
-        }
-
+    public void AddModifier(string modifierKey, LocalizedText flavorText, int duration, object flavorTextSubstitutes = null) {
         if (flavorText.Key == flavorText.Value && _defaultFlavorTexts.TryGetValue(modifierKey, out LocalizedText defaultFlavorText)) {
             flavorText = defaultFlavorText;
         }
 
-        _currentStaticMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, 0, flavorTextSubstitutes));
-    }
-
-    public void AddDynamicModifier(string modifierKey, int duration, LocalizedText flavorText, object flavorTextSubstitutes = null) {
-        if (!_moodModifiers.TryGetValue(modifierKey, out MoodModifier moodModifier)) {
+        MoodModifierInstance modifierInstance =  new MoodModifierInstance(moodModifier, flavorText, 0, flavorTextSubstitutes);
+        if (duration <= 0) {
+            _currentStaticMoodModifiers.Add(modifierInstance);
             return;
         }
 
-        if (flavorText.Key == flavorText.Value && _defaultFlavorTexts.TryGetValue(modifierKey, out LocalizedText defaultFlavorText)) {
-            flavorText = defaultFlavorText;
-        }
-
-        _currentDynamicMoodModifiers.Add(new MoodModifierInstance(moodModifier, flavorText, duration, flavorTextSubstitutes));
+        _currentDynamicMoodModifiers.Add(modifierInstance);
     }
 
     public void ConvertReportTextToStaticModifier(string townNPCLocalizationKey, string moodModifierKey, object flavorTextSubstituteObject = null) {
         if (TownNPCNameRegex.Match(townNPCLocalizationKey) is { } match && match != Match.Empty) {
             // We split moodModifierKey for scenarios such as LovesNPC_Princess, where we want the mood modifier to be "LovesNPC" as a catch-all
-            AddStaticModifier(moodModifierKey.Split('_')[0], Language.GetText($"{townNPCLocalizationKey}.{moodModifierKey}"), flavorTextSubstituteObject);
+            AddModifier(moodModifierKey.Split('_')[0], Language.GetText($"{townNPCLocalizationKey}.{moodModifierKey}"), 0,  flavorTextSubstituteObject);
         }
     }
 
