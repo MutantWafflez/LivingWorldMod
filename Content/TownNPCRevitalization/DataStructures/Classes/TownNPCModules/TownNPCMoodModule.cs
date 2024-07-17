@@ -64,6 +64,8 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
             }
         }
 
+        // Princess does not use the profile system, using a hardcoded system instead. Thus, we need to instantiate her profile ourselves since that hardcoded system has been removed 
+        PersonalityProfile princessProfile = new ();
         NPCPreferenceTrait princessPreferenceTrait = new()  { Level = AffectionLevel.Like, NpcId = NPCID.Princess };
         List<BiomePreferenceListTrait.BiomePreference> evilBiomePreferences = new List<IShoppingBiome>([new CorruptionBiome(), new CrimsonBiome(), new DungeonBiome()])
             .Select(biome => new BiomePreferenceListTrait.BiomePreference(AffectionLevel.Hate, biome))
@@ -75,9 +77,7 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
 
             // All Town NPCs liking the Princess is not handled through NPCPreferenceTrait (and is instead hard-coded), as such we add a fake preference trait that will be translated numerically below
             List<NPCPreferenceTrait> npcPreferences = profile.ShopModifiers.OfType<NPCPreferenceTrait>().ToList();
-            if (npcType is not NPCID.Princess) {
-                npcPreferences.Add(princessPreferenceTrait);
-            }
+            npcPreferences.Add(princessPreferenceTrait);
 
             foreach (NPCPreferenceTrait trait in npcPreferences) {
                 profile.ShopModifiers.Add(
@@ -124,7 +124,7 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
                     )
                 );
 
-                LocalizedText currentText = LanguageManager.Instance.GetText($"{moodKeyPrefix}.{preference.Affection}Biome");
+                LocalizedText currentText = Language.GetText($"{moodKeyPrefix}.{preference.Affection}Biome");
 
                 string newKey = $"TownNPCMood.{npcTypeName}.Biome_{preference.Biome.NameKey}".PrependModKey();
                 LanguageManager.Instance._moddedKeys.Add(newKey);
@@ -132,16 +132,29 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
             }
 
             profile.ShopModifiers.RemoveAll(trait => trait is BiomePreferenceListTrait);
+            profile.ShopModifiers.AddRange([new CrowdingTrait(), new HomelessTrait(), new HomeProximityTrait(), new SpaciousTrait()]);
 
-            profile.ShopModifiers.AddRange([new CrowdingTrait(), new HomelessTrait(), new HomeProximityTrait()]);
-            profile.ShopModifiers.Add(npcType is NPCID.Princess ? new LonelyTrait() : new SpaciousTrait());
+            string princessLoveFlavorTextKey = npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).GetLocalizationKey("TownNPCMood.Princess_LovesNPC") : $"TownNPCMood_Princess.LoveNPC_{npcTypeName}";
+            string newPrincessKey = $"TownNPCMood.Princess.NPC_{npcTypeName}".PrependModKey();
+            LanguageManager.Instance._moddedKeys.Add(newPrincessKey);
+            LanguageManager.Instance._localizedTexts[newPrincessKey] = Language.GetText(princessLoveFlavorTextKey);
+
+            princessProfile.ShopModifiers.Add(new NumericNPCPreferenceTrait(20, npcType));
         }
+
+        princessProfile.ShopModifiers.AddRange([new HomelessTrait(), new HomeProximityTrait(), new LonelyTrait()]);
+        Main.ShopHelper._database._personalityProfiles[NPCID.Princess] = princessProfile;
     }
 
     /// <summary>
-    ///     Returns the flavor text localization key prefix for the given NPC, accounting for if the NPC is modded or not.
+    ///     Returns the flavor text localization key prefix for the given npc, accounting for if the npc is modded or not.
     /// </summary>
     public static string GetFlavorTextKeyPrefix(NPC npc) => npc.ModNPC is not null ? npc.ModNPC.GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{NPCID.Search.GetName(npc.type)}";
+
+    /// <summary>
+    ///     Returns the flavor text localization key prefix for the given npc type, accounting for if the npc is modded or not.
+    /// </summary>
+    public static string GetFlavorTextKeyPrefix(int npcType) => npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{NPCID.Search.GetName(npcType)}";
 
     [GeneratedRegex(@"(.+\.(?<Name>.+)\.TownNPCMood|TownNPCMood_(?<Name>.+))")]
     private static partial Regex LoadNPCNameRegex();
