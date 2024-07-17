@@ -133,7 +133,7 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
 
             profile.ShopModifiers.RemoveAll(trait => trait is BiomePreferenceListTrait);
 
-            profile.ShopModifiers.AddRange([new CrowdingTrait(), new HomelessTrait()]);
+            profile.ShopModifiers.AddRange([new CrowdingTrait(), new HomelessTrait(), new HomeProximityTrait()]);
             profile.ShopModifiers.Add(npcType is NPCID.Princess ? new LonelyTrait() : new SpaciousTrait());
         }
     }
