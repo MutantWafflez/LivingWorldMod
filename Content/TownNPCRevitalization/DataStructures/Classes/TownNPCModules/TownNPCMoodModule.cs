@@ -21,7 +21,6 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
 
     private static readonly Regex TownNPCNameRegex = LoadNPCNameRegex();
 
-    private static Dictionary<string, MoodModifier> _moodModifiers;
     private static Dictionary<string, LocalizedText> _defaultFlavorTexts;
 
     private readonly List<MoodModifierInstance> _currentStaticMoodModifiers;
@@ -32,7 +31,7 @@ public sealed partial class TownNPCMoodModule : TownNPCModule {
     public IReadOnlyList<MoodModifierInstance> CurrentStaticMoodModifiers => _currentStaticMoodModifiers;
 
     public float CurrentMood => Utils.Clamp(
-        BaseMoodValue + _currentDynamicMoodModifiers.Concat(_currentStaticMoodModifiers).Sum(modifier => modifier.modifierType.MoodOffset),
+        BaseMoodValue + _currentDynamicMoodModifiers.Concat(_currentStaticMoodModifiers).Sum(modifier => modifier.moodOffset),
         MinMoodValue,
         MaxMoodValue
     );

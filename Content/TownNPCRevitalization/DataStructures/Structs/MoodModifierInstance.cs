@@ -1,11 +1,10 @@
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
-using Terraria.Localization;
+using LivingWorldMod.DataStructures.Structs;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 
-public struct MoodModifierInstance(MoodModifier modifierType, LocalizedText flavorText, int duration, object flavorTextSubstitutes = null) {
-    public readonly MoodModifier modifierType = modifierType;
-    public readonly LocalizedText flavorText = flavorText;
-    public readonly object flavorTextSubstitutes = flavorTextSubstitutes;
+public struct MoodModifierInstance(SubstitutableLocalizedText descriptionText, SubstitutableLocalizedText flavorText, int moodOffset, int duration) {
+    public readonly SubstitutableLocalizedText descriptionText = descriptionText;
+    public readonly SubstitutableLocalizedText flavorText = flavorText;
+    public readonly int moodOffset = moodOffset;
     public int duration = duration;
 }
