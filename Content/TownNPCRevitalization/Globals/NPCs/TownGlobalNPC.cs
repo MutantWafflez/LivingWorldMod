@@ -162,7 +162,7 @@ public class TownGlobalNPC : GlobalNPC {
             throw new Exception("Multiple TownNPCAIState instances with the same ReservedStateInteger");
         }
 
-            _stateDict = states.ToDictionary(state => state.ReservedStateInteger);
+        _stateDict = states.ToDictionary(state => state.ReservedStateInteger);
         //_allActivities = states.OfType<TownNPCActivity>().ToList();
     }
 
