@@ -55,33 +55,33 @@ public sealed class HappinessPatches : LoadablePatch {
         );
     }
 
-    private static void HijackReportText(ILContext il) {
-        currentContext = il;
-
-        ILCursor c = new(il);
-
-        // c.GotoLastInstruction();
-        // c.GotoPrev(i => i.MatchCall(typeof(Language), nameof(Language.GetTextValueWith)));
-
-        int townNPCNameKeyLocal = -1;
-        c.GotoNext(i => i.MatchStloc(out townNPCNameKeyLocal));
-
-        c.GotoLastInstruction();
-        c.Emit(OpCodes.Ldarg_0);
-        c.Emit(OpCodes.Ldloc, townNPCNameKeyLocal);
-        c.Emit(OpCodes.Ldarg_1);
-        c.Emit(OpCodes.Ldarg_2);
-        c.EmitDelegate<Action<ShopHelper, string, string, object>>(
-            (shopHelper, townNPCLocalizationKey, moodModifierKey, flavorTextSubstituteObject) => {
-                if (shopHelper._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
-                    globalNPC.MoodModule.ConvertReportTextToStaticModifier(townNPCLocalizationKey, moodModifierKey, flavorTextSubstituteObject);
-                }
-            }
-        );
-    }
+    // private static void HijackReportText(ILContext il) {
+    //     currentContext = il;
+    //
+    //     ILCursor c = new(il);
+    //
+    //     // c.GotoLastInstruction();
+    //     // c.GotoPrev(i => i.MatchCall(typeof(Language), nameof(Language.GetTextValueWith)));
+    //
+    //     int townNPCNameKeyLocal = -1;
+    //     c.GotoNext(i => i.MatchStloc(out townNPCNameKeyLocal));
+    //
+    //     c.GotoLastInstruction();
+    //     c.Emit(OpCodes.Ldarg_0);
+    //     c.Emit(OpCodes.Ldloc, townNPCNameKeyLocal);
+    //     c.Emit(OpCodes.Ldarg_1);
+    //     c.Emit(OpCodes.Ldarg_2);
+    //     c.EmitDelegate<Action<ShopHelper, string, string, object>>(
+    //         (shopHelper, townNPCLocalizationKey, moodModifierKey, flavorTextSubstituteObject) => {
+    //             if (shopHelper._currentNPCBeingTalkedTo.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
+    //                 globalNPC.MoodModule.ConvertReportTextToStaticModifier(townNPCLocalizationKey, moodModifierKey, flavorTextSubstituteObject);
+    //             }
+    //         }
+    //     );
+    // }
 
     public override void LoadPatches() {
         IL_ShopHelper.ProcessMood += AddToMoodModule;
-        IL_ShopHelper.AddHappinessReportText += HijackReportText;
+        // IL_ShopHelper.AddHappinessReportText += HijackReportText;
     }
 }
