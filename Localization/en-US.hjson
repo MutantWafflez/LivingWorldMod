@@ -399,6 +399,7 @@ Mods: {
 
 		TownNPCMoodDescription: {
 			Event_BloodMoon: Blood Moon
+			Event_Party: Party
 			InBiome: In {Biome}
 			NeighborNPC: Lives near {NPCTypeName}
 			Crowded: Crowded
