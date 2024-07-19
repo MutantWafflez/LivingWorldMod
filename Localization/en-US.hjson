@@ -404,7 +404,7 @@ Mods: {
 			NeighborNPC: Lives near {NPCTypeName}
 			Crowded: Crowded
 			VeryCrowded: Very Crowded
-			NotCrowded: Privacy 
+			NotCrowded: Privacy
 			Lonely: Lonely
 			Homeless: Homeless
 			FarFromHome: Far from home

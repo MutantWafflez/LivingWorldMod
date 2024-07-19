@@ -399,11 +399,12 @@ Mods: {
 
 		TownNPCMoodDescription: {
 			// Event_BloodMoon: Blood Moon
+			// Event_Party: Party
 			// InBiome: In {Biome}
 			// NeighborNPC: Lives near {NPCTypeName}
 			// Crowded: Crowded
 			// VeryCrowded: Very Crowded
-			// NotCrowded: Spacious Housing
+			// NotCrowded: Privacy
 			// Lonely: Lonely
 			// Homeless: Homeless
 			// FarFromHome: Far from home
