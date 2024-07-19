@@ -15,7 +15,7 @@ public class EventPreferenceTrait(int moodOffset, string eventName) : IShopPerso
     private delegate bool ActiveEvent(HelperInfo helperInfo);
 
     private static readonly Dictionary<string, ActiveEvent> ActiveEventFunctions = new() {
-        { "Party", helperInfo => BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty && BirthdayParty.CelebratingNPCs.Contains(helperInfo.npc.type) }, { "BloodMoon", _ => Main.bloodMoon }
+        { "Party", _ => BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty }, { "BloodMoon", _ => Main.bloodMoon }
     };
 
     public void ModifyShopPrice(HelperInfo info, ShopHelper shopHelperInstance) {
