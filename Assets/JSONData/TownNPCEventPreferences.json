@@ -1,20 +1,86 @@
 {
+  "DyeTrader": {
+    "Party": 10
+  },
+  "TaxCollector": {
+    "Party": 10
+  },
   "Nurse": {
-    "BloodMoon": -40
+    "BloodMoon": -40,
+    "Party": 10
   },
   "BestiaryGirl": {
-    "BloodMoon": -40
+    "BloodMoon": -40,
+    "Party": 10
   },
   "Stylist": {
-    "BloodMoon": -40
+    "BloodMoon": -40,
+    "Party": 10
   },
   "Dryad": {
-    "BloodMoon": -40
+    "BloodMoon": -40,
+    "Party": 10
   },
   "Mechanic": {
-    "BloodMoon": -40
+    "BloodMoon": -40,
+    "Party": 10
   },
   "Steampunker": {
-    "BloodMoon": -40
+    "BloodMoon": -40,
+    "Party": 10
+  },
+  "Demolitionist": {
+    "Party": 10
+  },
+  "DD2Bartender": {
+    "Party": 10
+  },
+  "Golfer": {
+    "Party": 10
+  },
+  "PartyGirl": {
+    "Party": 10
+  },
+  "Merchant": {
+    "Party": 10
+  },
+  "Angler": {
+    "Party": 10
+  },
+  "GoblinTinkerer": {
+    "Party": 10
+  },
+  "SantaClaus": {
+    "Party": 10
+  },
+  "ArmsDealer": {
+    "Party": 10
+  },
+  "Painter": {
+    "Party": 10
+  },
+  "Guide": {
+    "Party": 10
+  },
+  "WitchDoctor": {
+    "Party": 10
+  },
+  "Pirate": {
+    "Party": 10
+  },
+  "Cyborg": {
+    "Party": 10
+  },
+  "Clothier": {
+    "Party": 10
+  },
+  "Wizard": {
+    "Party": 10
+  },
+  "Truffle": {
+    "Party": 10
+  },
+  "Princess": {
+    "Party": 10
   }
 }
