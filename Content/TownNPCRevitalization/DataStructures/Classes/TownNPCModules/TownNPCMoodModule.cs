@@ -50,16 +50,9 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     public TownNPCMoodModule(NPC npc) : base(npc) {
         _currentStaticMoodModifiers = [];
         _currentDynamicMoodModifiers = [];
-        _autoloadedFlavorTexts = [];
     }
 
-    public static LocalizedText GetAutoloadedFlavorTextOrDefault(string key) {
-        if (!_autoloadedFlavorTexts.TryGetValue(key, out LocalizedText text)) {
-            text = new LocalizedText(key, key);
-        }
-
-        return text;
-    }
+    public static LocalizedText GetAutoloadedFlavorTextOrDefault(string key) => !_autoloadedFlavorTexts.TryGetValue(key, out LocalizedText text) ? new LocalizedText(key, key) : text;
 
     public static void Load() {
         // JsonObject jsonMoodValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
@@ -72,6 +65,7 @@ public sealed class TownNPCMoodModule : TownNPCModule {
             }
         }
 
+        _autoloadedFlavorTexts = [];
         // Princess does not use the profile system, using a hardcoded system instead. Thus, we need to instantiate her profile ourselves since that hardcoded system has been removed 
         PersonalityProfile princessProfile = new ();
         NPCPreferenceTrait princessPreferenceTrait = new()  { Level = AffectionLevel.Like, NpcId = NPCID.Princess };
