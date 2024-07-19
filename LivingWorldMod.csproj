@@ -40,6 +40,6 @@
 
         <!-- Language/Localization Publicizing -->
         <Publicize Include="tModLoader:Terraria.Localization.LanguageManager._localizedTexts"/>
-        <Publicize Include="tModLoader:Terraria.Localization.LanguageManager._moddedKeys"/>
+        <Publicize Include="tModLoader:Terraria.Localization.LocalizedText..ctor"/>
     </ItemGroup>
 </Project>

@@ -1,3 +1,4 @@
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
@@ -21,7 +22,7 @@ public class NumericBiomePreferenceTrait(int moodOffset, IShoppingBiome biome) :
         info.npc.GetGlobalNPC<TownGlobalNPC>()
             .MoodModule.AddModifier(
                 new SubstitutableLocalizedText("TownNPCMoodDescription.InBiome".Localized(), new { Biome = ShopHelper.BiomeNameByKey(biome.NameKey) }),
-                $"TownNPCMood.{LWMUtils.GetNPCTypeNameOrIDName(info.npc.type)}.Biome_{biome.NameKey}".Localized(),
+                TownNPCMoodModule.GetAutoloadedFlavorTextOrDefault($"{LWMUtils.GetNPCTypeNameOrIDName(info.npc.type)}.Biome_{biome.NameKey}"),
                 moodOffset,
                 0
             );

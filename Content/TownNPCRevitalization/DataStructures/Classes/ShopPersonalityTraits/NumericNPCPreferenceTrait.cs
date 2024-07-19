@@ -1,3 +1,4 @@
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
@@ -24,7 +25,7 @@ public class NumericNPCPreferenceTrait(int moodOffset, int npcType) : IShopPerso
                     new { NPCTypeName = LWMUtils.GetFirstNPC(npc => npc.type == npcType)?.TypeName ?? "Error"  }
                 ),
                 new SubstitutableLocalizedText(
-                    $"TownNPCMood.{LWMUtils.GetNPCTypeNameOrIDName(info.npc.type)}.NPC_{LWMUtils.GetNPCTypeNameOrIDName(npcType)}".Localized(),
+                    TownNPCMoodModule.GetAutoloadedFlavorTextOrDefault($"{LWMUtils.GetNPCTypeNameOrIDName(info.npc.type)}.NPC_{LWMUtils.GetNPCTypeNameOrIDName(npcType)}"),
                     new { NPCName = NPC.GetFirstNPCNameOrNull(npcType) }
                 ),
                 moodOffset,

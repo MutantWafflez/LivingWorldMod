@@ -17,6 +17,8 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     public const float MaxMoodValue = 100f;
     public const float MinMoodValue = 0f;
 
+    private static Dictionary<string, LocalizedText> _autoloadedFlavorTexts;
+
     private readonly List<MoodModifierInstance> _currentStaticMoodModifiers;
     private readonly List<MoodModifierInstance> _currentDynamicMoodModifiers;
 
@@ -48,6 +50,15 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     public TownNPCMoodModule(NPC npc) : base(npc) {
         _currentStaticMoodModifiers = [];
         _currentDynamicMoodModifiers = [];
+        _autoloadedFlavorTexts = [];
+    }
+
+    public static LocalizedText GetAutoloadedFlavorTextOrDefault(string key) {
+        if (!_autoloadedFlavorTexts.TryGetValue(key, out LocalizedText text)) {
+            text = new LocalizedText(key, key);
+        }
+
+        return text;
     }
 
     public static void Load() {
@@ -96,9 +107,8 @@ public sealed class TownNPCMoodModule : TownNPCModule {
                     currentFlavorText = LanguageManager.Instance.GetText(currentFlavorTextKey);
                 }
 
-                string newKey = $"TownNPCMood.{npcTypeName}.NPC_{otherNPCTypeName}".PrependModKey();
-                LanguageManager.Instance._moddedKeys.Add(newKey);
-                LanguageManager.Instance._localizedTexts[newKey] = currentFlavorText;
+                string newKey = $"{npcTypeName}.NPC_{otherNPCTypeName}";
+                _autoloadedFlavorTexts[newKey] = currentFlavorText;
             }
 
             profile.ShopModifiers.RemoveAll(trait => trait is NPCPreferenceTrait);
@@ -123,18 +133,19 @@ public sealed class TownNPCMoodModule : TownNPCModule {
 
                 LocalizedText currentText = Language.GetText($"{moodKeyPrefix}.{preference.Affection}Biome");
 
-                string newKey = $"TownNPCMood.{npcTypeName}.Biome_{preference.Biome.NameKey}".PrependModKey();
-                LanguageManager.Instance._moddedKeys.Add(newKey);
-                LanguageManager.Instance._localizedTexts[newKey] = currentText;
+                string newKey = $"{npcTypeName}.Biome_{preference.Biome.NameKey}";
+                _autoloadedFlavorTexts[newKey] = new LocalizedText(
+                    newKey,
+                    currentText.FormatWith(new { BiomeName = Language.GetText($"TownNPCMoodBiomes.{preference.Biome.NameKey}") })
+                );
             }
 
             profile.ShopModifiers.RemoveAll(trait => trait is BiomePreferenceListTrait);
             profile.ShopModifiers.AddRange([new CrowdingTrait(), new HomelessTrait(), new HomeProximityTrait(), new SpaciousTrait()]);
 
             string princessLoveFlavorTextKey = npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).GetLocalizationKey("TownNPCMood.Princess_LovesNPC") : $"TownNPCMood_Princess.LoveNPC_{npcTypeName}";
-            string newPrincessKey = $"TownNPCMood.Princess.NPC_{npcTypeName}".PrependModKey();
-            LanguageManager.Instance._moddedKeys.Add(newPrincessKey);
-            LanguageManager.Instance._localizedTexts[newPrincessKey] = Language.GetText(princessLoveFlavorTextKey);
+            string newPrincessKey = $"Princess.NPC_{npcTypeName}";
+            _autoloadedFlavorTexts[newPrincessKey] = Language.GetText(princessLoveFlavorTextKey);
 
             princessProfile.ShopModifiers.Add(new NumericNPCPreferenceTrait(20, npcType));
         }
