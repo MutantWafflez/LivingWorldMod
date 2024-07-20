@@ -11,8 +11,10 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.Sh
 ///     Similar to biome/NPC preferences for Town NPCs happiness, except for "events" which are denoted active by some
 ///     arbitrary function returning a bool.
 /// </summary>
-public class EventPreferenceTrait(int moodOffset, string eventName) : IShopPersonalityTrait {
+public class EventPreferencesTrait(EventPreferencesTrait.EventPreference[] preferences) : IShopPersonalityTrait {
     private delegate bool ActiveEvent(HelperInfo helperInfo);
+
+    public record struct EventPreference(string EventName, int MoodOffset);
 
     private static readonly Dictionary<string, ActiveEvent> ActiveEventFunctions = new() {
         { "Party", _ => BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty },
@@ -25,12 +27,19 @@ public class EventPreferenceTrait(int moodOffset, string eventName) : IShopPerso
     };
 
     public void ModifyShopPrice(HelperInfo info, ShopHelper shopHelperInstance) {
-        if (!ActiveEventFunctions[eventName](info)) {
-            return;
-        }
+        foreach ((string eventName, int moodOffset) in preferences) {
+            if (!ActiveEventFunctions[eventName](info)) {
+                continue;
+            }
 
-        info.npc.GetGlobalNPC<TownGlobalNPC>()
-            .MoodModule
-            .AddModifier($"TownNPCMoodDescription.Event_{eventName}".Localized(), $"TownNPCMoodFlavorText.{info.npc.TypeName}.Event_{eventName}".Localized(), moodOffset, 0);
+            info.npc.GetGlobalNPC<TownGlobalNPC>()
+                .MoodModule
+                .AddModifier(
+                    $"TownNPCMoodDescription.Event_{eventName}".Localized(),
+                    $"TownNPCMoodFlavorText.{LWMUtils.GetNPCTypeNameOrIDName(info.npc.type)}.Event_{eventName}".Localized(),
+                    moodOffset,
+                    0
+                );
+        }
     }
 }

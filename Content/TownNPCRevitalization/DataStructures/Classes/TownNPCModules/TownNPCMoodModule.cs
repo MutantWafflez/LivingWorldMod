@@ -141,9 +141,7 @@ public sealed class TownNPCMoodModule : TownNPCModule {
         foreach ((string npcName, JsonValue eventData) in jsonEventPreferenceValues) {
             int npcType = NPCID.Search.GetId(npcName);
 
-            foreach ((string eventName, JsonValue moodOffset) in eventData.Qo()) {
-                Main.ShopHelper._database.Register(npcType, new EventPreferenceTrait(moodOffset, eventName));
-            }
+            Main.ShopHelper._database.Register(npcType, new EventPreferencesTrait(eventData.Qo().Select(pair => new EventPreferencesTrait.EventPreference(pair.Key, pair.Value)).ToArray()));
         }
     }
 
