@@ -3,6 +3,7 @@ using System.Linq;
 using Hjson;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.ShopPersonalityTraits;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
 using Terraria.GameContent.Personalities;
@@ -156,6 +157,10 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     public static string GetFlavorTextKeyPrefix(int npcType) => npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{NPCID.Search.GetName(npcType)}";
 
     public override void Update() {
+        if (Main.LocalPlayer.talkNPC == npc.whoAmI && Main.npcShop == 0)  {
+            HappinessPatches.ProcessMoodOverride(Main.ShopHelper, Main.LocalPlayer, npc);
+        }
+
         for (int i = 0; i < _currentDynamicMoodModifiers.Count; i++) {
             MoodModifierInstance instance = _currentDynamicMoodModifiers[i];
             if (--instance.duration <= 0) {

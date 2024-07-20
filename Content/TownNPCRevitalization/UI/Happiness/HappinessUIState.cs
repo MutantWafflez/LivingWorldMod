@@ -168,4 +168,8 @@ public class HappinessUIState : UIState {
 
         RecalculateChildren();
     }
+
+    public void ClearState() {
+        NPCBeingTalkedTo = null;
+    }
 }
