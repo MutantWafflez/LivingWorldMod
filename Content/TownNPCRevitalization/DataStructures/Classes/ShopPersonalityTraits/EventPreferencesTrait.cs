@@ -12,11 +12,11 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.Sh
 ///     arbitrary function returning a bool.
 /// </summary>
 public class EventPreferencesTrait(EventPreferencesTrait.EventPreference[] preferences) : IShopPersonalityTrait {
-    private delegate bool ActiveEvent(HelperInfo helperInfo);
+    public delegate bool EventPredicate(HelperInfo helperInfo);
 
     public record struct EventPreference(string EventName, int MoodOffset);
 
-    private static readonly Dictionary<string, ActiveEvent> ActiveEventFunctions = new() {
+    public static readonly Dictionary<string, EventPredicate> EventPredicates = new() {
         { "Party", _ => BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty },
         { "BloodMoon", _ => Main.bloodMoon },
         { "Rain", _ => Main.raining && !Main.IsItStorming },
@@ -28,7 +28,7 @@ public class EventPreferencesTrait(EventPreferencesTrait.EventPreference[] prefe
 
     public void ModifyShopPrice(HelperInfo info, ShopHelper shopHelperInstance) {
         foreach ((string eventName, int moodOffset) in preferences) {
-            if (!ActiveEventFunctions[eventName](info)) {
+            if (!EventPredicates[eventName](info)) {
                 continue;
             }
 
