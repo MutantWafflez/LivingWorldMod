@@ -55,16 +55,6 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     public static LocalizedText GetAutoloadedFlavorTextOrDefault(string key) => !_autoloadedFlavorTexts.TryGetValue(key, out LocalizedText text) ? new LocalizedText(key, key) : text;
 
     public static void Load() {
-        // JsonObject jsonMoodValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCMoodValues.json").Qo();
-        JsonObject jsonEventPreferenceValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCEventPreferences.json").Qo();
-        foreach ((string npcName, JsonValue eventData) in jsonEventPreferenceValues) {
-            int npcType = NPCID.Search.GetId(npcName);
-
-            foreach ((string eventName, JsonValue moodOffset) in eventData.Qo()) {
-                Main.ShopHelper._database.Register(npcType, new EventPreferenceTrait(moodOffset, eventName));
-            }
-        }
-
         _autoloadedFlavorTexts = [];
         // Princess does not use the profile system, using a hardcoded system instead. Thus, we need to instantiate her profile ourselves since that hardcoded system has been removed 
         PersonalityProfile princessProfile = new ();
@@ -146,6 +136,15 @@ public sealed class TownNPCMoodModule : TownNPCModule {
 
         princessProfile.ShopModifiers.AddRange([new HomelessTrait(), new HomeProximityTrait(), new LonelyTrait()]);
         Main.ShopHelper._database._personalityProfiles[NPCID.Princess] = princessProfile;
+
+        JsonObject jsonEventPreferenceValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCEventPreferences.json").Qo();
+        foreach ((string npcName, JsonValue eventData) in jsonEventPreferenceValues) {
+            int npcType = NPCID.Search.GetId(npcName);
+
+            foreach ((string eventName, JsonValue moodOffset) in eventData.Qo()) {
+                Main.ShopHelper._database.Register(npcType, new EventPreferenceTrait(moodOffset, eventName));
+            }
+        }
     }
 
     /// <summary>
