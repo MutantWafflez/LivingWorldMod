@@ -86,7 +86,7 @@ public class HappinessUIState : UIState {
             BorderColor = Color.White,
             HAlign = 0.5f,
             VAlign = 0.5f,
-            Width = StyleDimension.FromPixels(300f),
+            Width = StyleDimension.FromPixels(350f),
             Height = StyleDimension.FromPixels(300f)
         };
         backPanel.SetPadding(12f);
@@ -140,7 +140,7 @@ public class HappinessUIState : UIState {
         modifierScrollbar = new UIBetterScrollbar { Left = StyleDimension.FromPixelsAndPercent(-20f, 1f), Height = StyleDimension.Fill };
         modifierListBackPanel.Append(modifierScrollbar);
 
-        modifierList = new UIList { Width = StyleDimension.FromPixels(220f), Height = StyleDimension.Fill };
+        modifierList = new UIList { Width = StyleDimension.FromPixels(270f), Height = StyleDimension.Fill };
         modifierList.SetScrollbar(modifierScrollbar);
         modifierListBackPanel.Append(modifierList);
 
