@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
+﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Structs;
@@ -157,7 +156,7 @@ public class HappinessUIState : UIState {
         happinessBar.Width.Percent = Utils.Clamp(moodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue, 0f, 1f);
 
         modifierList.Clear();
-        foreach (MoodModifierInstance instance in moodModule.CurrentStaticMoodModifiers.Concat(moodModule.CurrentDynamicMoodModifiers)) {
+        foreach (MoodModifierInstance instance in moodModule.CurrentMoodModifiers) {
             modifierList.Add(new UIMoodModifier(instance));
         }
     }

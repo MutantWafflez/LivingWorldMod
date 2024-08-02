@@ -19,7 +19,7 @@ public class SpaciousTrait : IPersonalityTrait {
         string flavorTextKeyPrefix = TownNPCMoodModule.GetFlavorTextKeyPrefix(info.NPC);
 
         if (info.NearbyHouseNPCCount <= 2 && info.NearbyVillageNPCCount < 4) {
-            moodModule.AddModifier("TownNPCMoodDescription.NotCrowded".Localized(), Language.GetText($"{flavorTextKeyPrefix}.LoveSpace"), 15, 0);
+            moodModule.AddModifier("TownNPCMoodDescription.NotCrowded".Localized(), Language.GetText($"{flavorTextKeyPrefix}.LoveSpace"), 15, 1);
         }
     }
 }

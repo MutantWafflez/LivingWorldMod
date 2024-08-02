@@ -21,20 +21,17 @@ public sealed class TownNPCMoodModule : TownNPCModule {
 
     private static Dictionary<string, LocalizedText> _autoloadedFlavorTexts;
 
-    private readonly List<MoodModifierInstance> _currentStaticMoodModifiers;
-    private readonly List<MoodModifierInstance> _currentDynamicMoodModifiers;
+    private readonly List<MoodModifierInstance> _currentMoodModifiers;
 
     public static Dictionary<int, List<IPersonalityTrait>> PersonalityDatabase {
         get;
         private set;
     }
 
-    public IReadOnlyList<MoodModifierInstance> CurrentDynamicMoodModifiers => _currentDynamicMoodModifiers;
-
-    public IReadOnlyList<MoodModifierInstance> CurrentStaticMoodModifiers => _currentStaticMoodModifiers;
+    public IReadOnlyList<MoodModifierInstance> CurrentMoodModifiers => _currentMoodModifiers;
 
     public float CurrentMood => Utils.Clamp(
-        BaseMoodValue + _currentDynamicMoodModifiers.Concat(_currentStaticMoodModifiers).Sum(modifier => modifier.moodOffset),
+        BaseMoodValue + CurrentMoodModifiers.Sum(instance => instance.moodOffset),
         MinMoodValue,
         MaxMoodValue
     );
@@ -55,8 +52,7 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     }
 
     public TownNPCMoodModule(NPC npc) : base(npc) {
-        _currentStaticMoodModifiers = [];
-        _currentDynamicMoodModifiers = [];
+        _currentMoodModifiers = [];
     }
 
     public static LocalizedText GetAutoloadedFlavorTextOrDefault(string key) => !_autoloadedFlavorTexts.TryGetValue(key, out LocalizedText text) ? new LocalizedText(key, key) : text;
@@ -164,25 +160,18 @@ public sealed class TownNPCMoodModule : TownNPCModule {
             HappinessPatches.ProcessMoodOverride(Main.ShopHelper, Main.LocalPlayer, npc);
         }
 
-        for (int i = 0; i < _currentDynamicMoodModifiers.Count; i++) {
-            MoodModifierInstance instance = _currentDynamicMoodModifiers[i];
-            if (--instance.duration <= 0) {
-                _currentDynamicMoodModifiers.RemoveAt(i--);
+        for (int i = 0; i < _currentMoodModifiers.Count; i++) {
+            MoodModifierInstance instance = _currentMoodModifiers[i];
+            if (instance.duration-- <= 0) {
+                _currentMoodModifiers.RemoveAt(i--);
+            }
+            else {
+                _currentMoodModifiers[i] = instance;
             }
         }
     }
 
     public void AddModifier(SubstitutableLocalizedText descriptionText, SubstitutableLocalizedText flavorText, int moodOffset, int duration) {
-        MoodModifierInstance modifierInstance = new (descriptionText, flavorText, moodOffset, duration);
-        if (duration <= 0) {
-            _currentStaticMoodModifiers.Add(modifierInstance);
-            return;
-        }
-
-        _currentDynamicMoodModifiers.Add(modifierInstance);
-    }
-
-    public void ResetStaticModifiers() {
-        _currentStaticMoodModifiers.Clear();
+        _currentMoodModifiers.Add(new MoodModifierInstance (descriptionText, flavorText, moodOffset, duration));
     }
 }

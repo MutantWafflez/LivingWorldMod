@@ -31,7 +31,7 @@ public class NumericNPCPreferenceTrait(int moodOffset, int npcType) : IPersonali
                     new { NPCName = NPC.GetFirstNPCNameOrNull(npcType) }
                 ),
                 moodOffset,
-                0
+                1
             );
     }
 }

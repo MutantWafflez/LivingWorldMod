@@ -23,7 +23,6 @@ public sealed class HappinessPatches : LoadablePatch {
 
         // Happiness bar will disappear if the string is empty for certain NPCs
         shopHelper._currentHappiness = "A non-empty string";
-        globalNPC.MoodModule.ResetStaticModifiers();
 
         List<NPC> npcNeighbors = shopHelper.GetNearbyResidentNPCs(npc, out int npcsWithinHouse, out int npcsWithinVillage);
         bool[] npcNeighborsByType = new bool[NPCLoader.NPCCount];

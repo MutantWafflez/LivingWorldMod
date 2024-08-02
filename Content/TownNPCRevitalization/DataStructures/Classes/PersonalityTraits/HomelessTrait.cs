@@ -18,6 +18,6 @@ public class HomelessTrait : IPersonalityTrait {
         }
 
         info.NPC.GetGlobalNPC<TownGlobalNPC>()
-            .MoodModule.AddModifier("TownNPCMoodDescription.Homeless".Localized(), Language.GetText($"{TownNPCMoodModule.GetFlavorTextKeyPrefix(info.NPC)}.NoHome"), -100, 0);
+            .MoodModule.AddModifier("TownNPCMoodDescription.Homeless".Localized(), Language.GetText($"{TownNPCMoodModule.GetFlavorTextKeyPrefix(info.NPC)}.NoHome"), -100, 1);
     }
 }

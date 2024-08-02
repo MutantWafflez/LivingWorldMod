@@ -39,7 +39,7 @@ public class EventPreferencesTrait(EventPreferencesTrait.EventPreference[] prefe
                     $"TownNPCMoodDescription.Event_{eventName}".Localized(),
                     $"TownNPCMoodFlavorText.{LWMUtils.GetNPCTypeNameOrIDName(info.NPC.type)}.Event_{eventName}".Localized(),
                     moodOffset,
-                    0
+                    1
                 );
         }
     }

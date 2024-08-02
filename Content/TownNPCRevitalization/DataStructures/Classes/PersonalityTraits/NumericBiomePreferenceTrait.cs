@@ -26,7 +26,7 @@ public class NumericBiomePreferenceTrait(int moodOffset, IShoppingBiome biome) :
                 new SubstitutableLocalizedText("TownNPCMoodDescription.InBiome".Localized(), new { Biome = ShopHelper.BiomeNameByKey(biome.NameKey) }),
                 TownNPCMoodModule.GetAutoloadedFlavorTextOrDefault($"{LWMUtils.GetNPCTypeNameOrIDName(info.NPC.type)}.Biome_{biome.NameKey}"),
                 moodOffset,
-                0
+                1
             );
     }
 }

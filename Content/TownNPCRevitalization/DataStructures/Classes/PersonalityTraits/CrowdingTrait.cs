@@ -18,10 +18,10 @@ public class CrowdingTrait : IPersonalityTrait {
 
         switch (info.NearbyHouseNPCCount) {
             case > 3 and > 6 :
-                moodModule.AddModifier("TownNPCMoodDescription.VeryCrowded".Localized(), Language.GetText($"{flavorTextKeyPrefix}.HateCrowded"), -30, 0);
+                moodModule.AddModifier("TownNPCMoodDescription.VeryCrowded".Localized(), Language.GetText($"{flavorTextKeyPrefix}.HateCrowded"), -30, 1);
                 break;
             case > 3:
-                moodModule.AddModifier("TownNPCMoodDescription.Crowded".Localized(), Language.GetText($"{flavorTextKeyPrefix}.DislikeCrowded"), -15, 0);
+                moodModule.AddModifier("TownNPCMoodDescription.Crowded".Localized(), Language.GetText($"{flavorTextKeyPrefix}.DislikeCrowded"), -15, 1);
                 break;
         }
     }
