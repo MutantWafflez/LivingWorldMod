@@ -5,6 +5,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Utilities;
 using Terraria.GameContent;
 using Terraria.GameContent.Events;
+using DesertBiome = Terraria.GameContent.Personalities.DesertBiome;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.PersonalityTraits;
 
@@ -24,7 +25,8 @@ public class EventPreferencesTrait(EventPreferencesTrait.EventPreference[] prefe
         { "Eclipse", _ => Main.eclipse },
         { "Storm", _ => Main.IsItStorming },
         { "GoblinArmy", _ => Main.invasionType == InvasionID.GoblinArmy },
-        { "Pirates", _ => Main.invasionType == InvasionID.PirateInvasion }
+        { "Pirates", _ => Main.invasionType == InvasionID.PirateInvasion },
+        { "Sandstorm", info => Sandstorm.Happening && ModContent.GetInstance<DesertBiome>().IsInBiome(info.Player) }
     };
 
     public void ApplyTrait(PersonalityHelperInfo info, ShopHelper shopHelperInstance) {
