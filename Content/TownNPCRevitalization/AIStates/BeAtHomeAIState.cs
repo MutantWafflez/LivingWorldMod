@@ -25,11 +25,11 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
         if (pathfinderModule.BottomLeftTileOfNPC != restPos) {
             pathfinderModule.RequestPathfind(restPos);
         }
-        else if (TownNPCHousingModule.ShouldSleep) {
+        else if (TownNPCSleepModule.ShouldSleep) {
             Tile restTile = Main.tile[restPos];
             npc.BottomLeft = restPos.ToWorldCoordinates(0f, 16f);
             if (TileID.Sets.CanBeSleptIn[restTile.TileType]) {
-                npc.friendlyRegen += 20;
+                npc.friendlyRegen += 10;
 
                 PlayerSleepingHelper.GetSleepingTargetInfo(restPos.X, restPos.Y, out int targetDirection, out _, out _);
                 npc.direction = targetDirection;
@@ -38,11 +38,10 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                 globalNPC.SpriteModule.RequestBlink();
 
                 npc.ai[1] = 1f;
-                // TODO: Add mood boost for good rest
-                npc.ai[2] += 2f;
+                globalNPC.SleepModule.sleepValue += 1.25f;
             }
             else if (TileID.Sets.CanBeSatOnForNPCs[restTile.TileType]) {
-                npc.friendlyRegen += 15;
+                npc.friendlyRegen += 5;
 
                 npc.SitDown(restPos, out int direction, out _);
                 npc.direction = direction;
@@ -50,7 +49,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                 globalNPC.SpriteModule.RequestBlink();
 
                 npc.ai[1] = 1f;
-                npc.ai[2] += 1f;
+                globalNPC.SleepModule.sleepValue += 0.75f;
             }
 
             pathfinderModule.CancelPathfind();

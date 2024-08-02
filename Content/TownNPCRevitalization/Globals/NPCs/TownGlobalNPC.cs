@@ -92,6 +92,14 @@ public class TownGlobalNPC : GlobalNPC {
         private set;
     }
 
+    /// <summary>
+    ///     Instance of the module that handles the Town NPC sleeping.
+    /// </summary>
+    public TownNPCSleepModule SleepModule {
+        get;
+        private set;
+    }
+
     public static void RefreshToState<T>(NPC npc) where T : TownNPCAIState => RefreshToState(npc, TownNPCAIState.GetStateInteger<T>());
 
     public static bool IsValidStandingPosition(NPC npc, Point tilePos) {
@@ -184,6 +192,7 @@ public class TownGlobalNPC : GlobalNPC {
 
         instance.HousingModule = new TownNPCHousingModule(target);
         instance.CollisionModule = new TownNPCCollisionModule(target);
+        instance.SleepModule = new TownNPCSleepModule(target);
         instance._lastActivities = new ForgetfulArray<TownNPCActivity>(LastActivityMemoryLimit);
 
         return instance;
@@ -218,6 +227,7 @@ public class TownGlobalNPC : GlobalNPC {
             RefreshToState<DefaultAIState>(npc);
         }
 
+        SleepModule.Update();
         MoodModule.Update();
         PathfinderModule.Update();
     }

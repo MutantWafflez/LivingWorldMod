@@ -5,19 +5,16 @@ using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
-using Terraria.GameContent.Events;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
 public class TownNPCHousingModule (NPC npc) : TownNPCModule(npc) {
-    public static bool ShouldGoHome => ShouldSleep || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
-
-    public static bool ShouldSleep => !(Main.dayTime || LanternNight.LanternsUp || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon);
+    public static bool ShouldGoHome => TownNPCSleepModule.ShouldSleep || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
 
     public Rectangle? RoomBoundingBox {
         get;
         private set;
-    } = null;
+    }
 
     public Point RestPos {
         get;
