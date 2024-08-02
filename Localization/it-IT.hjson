@@ -328,6 +328,13 @@ Mods: {
 		UI: {
 			// NPCHappiness.PriceModifier: Price Modifier
 			// Fraction: "{Numerator}/{Denominator}"
+			/* DurationMoodFlavorText:
+				'''
+				\"{FlavorText}\"
+
+				Duration: {Time}
+				''' */
+			// MoodFlavorText: '''"{FlavorText}"'''
 
 			VillagerShop: {
 				Buying: Buying:
