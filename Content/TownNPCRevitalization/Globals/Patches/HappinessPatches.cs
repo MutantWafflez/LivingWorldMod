@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Classes;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria.GameContent;
-using Terraria.GameContent.Personalities;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 
@@ -17,22 +18,6 @@ public sealed class HappinessPatches : LoadablePatch {
     private const float MinCostModifier = 0.67f;
     private const float MaxCostModifier = 1.5f;
 
-    /// <summary>
-    ///     The first out value of <see cref="ShopHelper.GetNearbyResidentNPCs" />.
-    /// </summary>
-    public static int NPCCountWithinHouse {
-        get;
-        private set;
-    }
-
-    /// <summary>
-    ///     The second out value of <see cref="ShopHelper.GetNearbyResidentNPCs" />.
-    /// </summary>
-    public static int NPCCountWithinVillage {
-        get;
-        private set;
-    }
-
     public static void ProcessMoodOverride(ShopHelper shopHelper, Player player, NPC npc) {
         TownGlobalNPC globalNPC = npc.GetGlobalNPC<TownGlobalNPC>();
 
@@ -41,18 +26,15 @@ public sealed class HappinessPatches : LoadablePatch {
         globalNPC.MoodModule.ResetStaticModifiers();
 
         List<NPC> npcNeighbors = shopHelper.GetNearbyResidentNPCs(npc, out int npcsWithinHouse, out int npcsWithinVillage);
-        NPCCountWithinHouse = npcsWithinHouse;
-        NPCCountWithinVillage = npcsWithinVillage;
-
         bool[] npcNeighborsByType = new bool[NPCLoader.NPCCount];
         foreach (NPC npcNeighbor in npcNeighbors) {
             npcNeighborsByType[npcNeighbor.type] = true;
         }
 
-        HelperInfo info = new() { player = player, npc = npc, NearbyNPCs = npcNeighbors, nearbyNPCsByType = npcNeighborsByType };
-        if (shopHelper._database.TryGetProfileByNPCID(npc.type, out PersonalityProfile profile)) {
-            foreach (IShopPersonalityTrait shopModifier in profile.ShopModifiers) {
-                shopModifier.ModifyShopPrice(info, shopHelper);
+        PersonalityHelperInfo info = new(player, npc, npcNeighbors, npcNeighborsByType, npcsWithinHouse, npcsWithinVillage);
+        if (TownNPCMoodModule.PersonalityDatabase.TryGetValue(npc.type, out List<IPersonalityTrait> personalityTraits)) {
+            foreach (IPersonalityTrait shopModifier in personalityTraits) {
+                shopModifier.ApplyTrait(info, shopHelper);
             }
         }
 

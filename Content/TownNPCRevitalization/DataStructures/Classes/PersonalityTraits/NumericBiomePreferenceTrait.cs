@@ -1,28 +1,30 @@
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
 using Terraria.GameContent;
 using Terraria.GameContent.Personalities;
 
-namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.ShopPersonalityTraits;
+namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.PersonalityTraits;
 
 /// <summary>
 ///     Version of <see cref="BiomePreferenceListTrait" /> that is single-instanced per biome as well as numeric - i.e. uses the Town NPC Revitalization mood offset instead of
 ///     <see cref="AffectionLevel" /> objects.
 /// </summary>
-public class NumericBiomePreferenceTrait(int moodOffset, IShoppingBiome biome) : IShopPersonalityTrait {
+public class NumericBiomePreferenceTrait(int moodOffset, IShoppingBiome biome) : IPersonalityTrait {
     public override string ToString() => $"Biome: {biome.NameKey}, Offset: {moodOffset}";
 
-    public void ModifyShopPrice(HelperInfo info, ShopHelper shopHelperInstance) {
-        if (!biome.IsInBiome(info.player))  {
+    public void ApplyTrait(PersonalityHelperInfo info, ShopHelper shopHelperInstance) {
+        if (!biome.IsInBiome(info.Player))  {
             return;
         }
 
-        info.npc.GetGlobalNPC<TownGlobalNPC>()
+        info.NPC.GetGlobalNPC<TownGlobalNPC>()
             .MoodModule.AddModifier(
                 new SubstitutableLocalizedText("TownNPCMoodDescription.InBiome".Localized(), new { Biome = ShopHelper.BiomeNameByKey(biome.NameKey) }),
-                TownNPCMoodModule.GetAutoloadedFlavorTextOrDefault($"{LWMUtils.GetNPCTypeNameOrIDName(info.npc.type)}.Biome_{biome.NameKey}"),
+                TownNPCMoodModule.GetAutoloadedFlavorTextOrDefault($"{LWMUtils.GetNPCTypeNameOrIDName(info.NPC.type)}.Biome_{biome.NameKey}"),
                 moodOffset,
                 0
             );

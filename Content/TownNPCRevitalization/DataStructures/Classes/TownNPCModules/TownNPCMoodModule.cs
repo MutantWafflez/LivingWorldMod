@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Hjson;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.ShopPersonalityTraits;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.PersonalityTraits;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 using LivingWorldMod.DataStructures.Structs;
@@ -22,6 +23,11 @@ public sealed class TownNPCMoodModule : TownNPCModule {
 
     private readonly List<MoodModifierInstance> _currentStaticMoodModifiers;
     private readonly List<MoodModifierInstance> _currentDynamicMoodModifiers;
+
+    public static Dictionary<int, List<IPersonalityTrait>> PersonalityDatabase {
+        get;
+        private set;
+    }
 
     public IReadOnlyList<MoodModifierInstance> CurrentDynamicMoodModifiers => _currentDynamicMoodModifiers;
 
@@ -57,23 +63,23 @@ public sealed class TownNPCMoodModule : TownNPCModule {
 
     public static void Load() {
         _autoloadedFlavorTexts = [];
+        PersonalityDatabase = new Dictionary<int, List<IPersonalityTrait>>();
+
         // Princess does not use the profile system, using a hardcoded system instead. Thus, we need to instantiate her profile ourselves since that hardcoded system has been removed 
-        PersonalityProfile princessProfile = new ();
+        List<IPersonalityTrait> princessProfile = [];
         NPCPreferenceTrait princessPreferenceTrait = new()  { Level = AffectionLevel.Like, NpcId = NPCID.Princess };
         List<BiomePreferenceListTrait.BiomePreference> evilBiomePreferences = new List<IShoppingBiome>([new CorruptionBiome(), new CrimsonBiome(), new DungeonBiome()])
             .Select(biome => new BiomePreferenceListTrait.BiomePreference(AffectionLevel.Hate, biome))
             .ToList();
-        foreach ((int npcType, PersonalityProfile profile) in Main.ShopHelper._database._personalityProfiles) {
+        foreach ((int npcType, PersonalityProfile oldProfile) in Main.ShopHelper._database._personalityProfiles) {
             ModNPC potentialModNPC = NPCLoader.GetNPC(npcType);
             string npcTypeName = LWMUtils.GetNPCTypeNameOrIDName(npcType);
             string moodKeyPrefix = npcType >= NPCID.Count ? potentialModNPC.GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{npcTypeName}";
+            List<IPersonalityTrait> newPersonalityTraits = PersonalityDatabase[npcType] = [];
 
-            // All Town NPCs liking the Princess is not handled through NPCPreferenceTrait (and is instead hard-coded), as such we add a fake preference trait that will be translated numerically below
-            List<NPCPreferenceTrait> npcPreferences = profile.ShopModifiers.OfType<NPCPreferenceTrait>().ToList();
-            npcPreferences.Add(princessPreferenceTrait);
-
-            foreach (NPCPreferenceTrait trait in npcPreferences) {
-                profile.ShopModifiers.Add(
+            // All Town NPCs liking the Princess is not handled through NPCPreferenceTrait (and is instead hard-coded), as such we add a fake preference trait that will be translated numerically 
+            foreach (NPCPreferenceTrait trait in oldProfile.ShopModifiers.OfType<NPCPreferenceTrait>().Append(princessPreferenceTrait).ToList()) {
+                newPersonalityTraits.Add(
                     new NumericNPCPreferenceTrait(
                         trait.Level switch {
                             AffectionLevel.Love => 20,
@@ -96,14 +102,12 @@ public sealed class TownNPCMoodModule : TownNPCModule {
                 _autoloadedFlavorTexts[newKey] = currentFlavorText;
             }
 
-            profile.ShopModifiers.RemoveAll(trait => trait is NPCPreferenceTrait);
-
             // Evil biomes are also not handles through a BiomePreference similar to the NPC situation with the princess, thus we add some fake preferences traits for them to auto translate
-            foreach (BiomePreferenceListTrait.BiomePreference preference in profile.ShopModifiers.OfType<BiomePreferenceListTrait>()
+            foreach (BiomePreferenceListTrait.BiomePreference preference in oldProfile.ShopModifiers.OfType<BiomePreferenceListTrait>()
                 .SelectMany(trait => trait.Preferences)
                 .Concat(evilBiomePreferences)
                 .ToList()) {
-                profile.ShopModifiers.Add(
+                newPersonalityTraits.Add(
                     new NumericBiomePreferenceTrait(
                         preference.Affection switch {
                             AffectionLevel.Love => 30,
@@ -125,24 +129,23 @@ public sealed class TownNPCMoodModule : TownNPCModule {
                 );
             }
 
-            profile.ShopModifiers.RemoveAll(trait => trait is BiomePreferenceListTrait);
-            profile.ShopModifiers.AddRange([new CrowdingTrait(), new HomelessTrait(), new HomeProximityTrait(), new SpaciousTrait()]);
+            newPersonalityTraits.AddRange([new CrowdingTrait(), new HomelessTrait(), new HomeProximityTrait(), new SpaciousTrait()]);
 
             string princessLoveFlavorTextKey = npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).GetLocalizationKey("TownNPCMood.Princess_LovesNPC") : $"TownNPCMood_Princess.LoveNPC_{npcTypeName}";
             string newPrincessKey = $"Princess.NPC_{npcTypeName}";
             _autoloadedFlavorTexts[newPrincessKey] = Language.GetText(princessLoveFlavorTextKey);
 
-            princessProfile.ShopModifiers.Add(new NumericNPCPreferenceTrait(20, npcType));
+            princessProfile.Add(new NumericNPCPreferenceTrait(20, npcType));
         }
 
-        princessProfile.ShopModifiers.AddRange([new HomelessTrait(), new HomeProximityTrait(), new LonelyTrait()]);
-        Main.ShopHelper._database._personalityProfiles[NPCID.Princess] = princessProfile;
+        princessProfile.AddRange([new HomelessTrait(), new HomeProximityTrait(), new LonelyTrait()]);
+        PersonalityDatabase[NPCID.Princess] = princessProfile;
 
         JsonObject jsonEventPreferenceValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCEventPreferences.json").Qo();
         foreach ((string npcName, JsonValue eventData) in jsonEventPreferenceValues) {
             int npcType = NPCID.Search.GetId(npcName);
 
-            Main.ShopHelper._database.Register(npcType, new EventPreferencesTrait(eventData.Qo().Select(pair => new EventPreferencesTrait.EventPreference(pair.Key, pair.Value)).ToArray()));
+            PersonalityDatabase[npcType].Add(new EventPreferencesTrait(eventData.Qo().Select(pair => new EventPreferencesTrait.EventPreference(pair.Key, pair.Value)).ToArray()));
         }
     }
 
