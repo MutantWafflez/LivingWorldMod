@@ -415,6 +415,10 @@ Mods: {
 			// Lonely: Lonely
 			// Homeless: Homeless
 			// FarFromHome: Far from home
+			// VeryWellRested: Very well rested
+			// WellRested: Well rested
+			// Tired: Tired
+			// SleepDeprived: Sleep deprived
 		}
 
 		TownNPCMoodFlavorText: {
