@@ -10,7 +10,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 
 public sealed class BeAtHomeAIState : TownNPCAIState {
     public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
-        if (!TownNPCHousingModule.ShouldGoHome) {
+        if (!globalNPC.HousingModule.ShouldGoHome) {
             TownGlobalNPC.RefreshToState<DefaultAIState>(npc);
             return;
         }
@@ -25,7 +25,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
         if (pathfinderModule.BottomLeftTileOfNPC != restPos) {
             pathfinderModule.RequestPathfind(restPos);
         }
-        else if (TownNPCSleepModule.ShouldSleep) {
+        else if (globalNPC.SleepModule.ShouldSleep) {
             Tile restTile = Main.tile[restPos];
             npc.BottomLeft = restPos.ToWorldCoordinates(0f, 16f);
             if (TileID.Sets.CanBeSleptIn[restTile.TileType]) {

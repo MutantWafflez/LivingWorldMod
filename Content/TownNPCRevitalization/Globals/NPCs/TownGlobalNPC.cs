@@ -146,6 +146,7 @@ public class TownGlobalNPC : GlobalNPC {
 
     public override void Load() {
         TownNPCCombatModule.Load();
+        TownNPCSleepModule.Load();
     }
 
     public override void Unload() {

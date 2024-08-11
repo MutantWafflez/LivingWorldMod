@@ -9,7 +9,7 @@ using Terraria.GameContent;
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
 public class TownNPCHousingModule (NPC npc) : TownNPCModule(npc) {
-    public static bool ShouldGoHome => TownNPCSleepModule.ShouldSleep || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
+    public bool ShouldGoHome => GlobalNPC.SleepModule.ShouldSleep || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
 
     public Rectangle? RoomBoundingBox {
         get;
