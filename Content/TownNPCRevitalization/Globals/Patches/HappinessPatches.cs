@@ -19,7 +19,9 @@ public sealed class HappinessPatches : LoadablePatch {
     private const float MaxCostModifier = 1.5f;
 
     public static void ProcessMoodOverride(ShopHelper shopHelper, Player player, NPC npc) {
-        TownGlobalNPC globalNPC = npc.GetGlobalNPC<TownGlobalNPC>();
+        if (!npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
+            return;
+        }
 
         // Happiness bar will disappear if the string is empty for certain NPCs
         shopHelper._currentHappiness = "A non-empty string";
