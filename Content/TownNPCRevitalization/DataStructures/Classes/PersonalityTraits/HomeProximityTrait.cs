@@ -17,7 +17,7 @@ public class HomeProximityTrait : IPersonalityTrait {
         NPC npc = info.NPC;
         if (Vector2.Distance(new Vector2 (npc.homeTileX, npc.homeTileY), npc.Center.ToTileCoordinates().ToVector2()) > 120f) {
             npc.GetGlobalNPC<TownGlobalNPC>()
-                .MoodModule.AddModifier("TownNPCMoodDescription.FarFromHome".Localized(), Language.GetText($"{TownNPCMoodModule.GetFlavorTextKeyPrefix(npc)}.FarFromHome"), -20, 1);
+                .MoodModule.AddModifier("TownNPCMoodDescription.FarFromHome".Localized(), Language.GetText($"{TownNPCMoodModule.GetFlavorTextKeyPrefix(npc)}.FarFromHome"), -20);
         }
     }
 }

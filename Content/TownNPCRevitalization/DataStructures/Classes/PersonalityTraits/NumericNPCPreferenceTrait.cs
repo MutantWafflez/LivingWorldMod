@@ -30,8 +30,7 @@ public class NumericNPCPreferenceTrait(int moodOffset, int npcType) : IPersonali
                     TownNPCMoodModule.GetAutoloadedFlavorTextOrDefault($"{LWMUtils.GetNPCTypeNameOrIDName(info.NPC.type)}.NPC_{LWMUtils.GetNPCTypeNameOrIDName(npcType)}"),
                     new { NPCName = NPC.GetFirstNPCNameOrNull(npcType) }
                 ),
-                moodOffset,
-                1
+                moodOffset
             );
     }
 }

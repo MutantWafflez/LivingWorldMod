@@ -17,7 +17,7 @@ public class LonelyTrait : IPersonalityTrait {
     public void ApplyTrait(PersonalityHelperInfo info, ShopHelper shopHelperInstance) {
         TownNPCMoodModule moodModule = info.NPC.GetGlobalNPC<TownGlobalNPC>().MoodModule;
         if (info.NearbyHouseNPCCount < 2 && info.NearbyVillageNPCCount < 2) {
-            moodModule.AddModifier("TownNPCMoodDescription.Lonely".Localized(), Language.GetText($"{TownNPCMoodModule.GetFlavorTextKeyPrefix(info.NPC)}.HateLonely"), -20, 1);
+            moodModule.AddModifier("TownNPCMoodDescription.Lonely".Localized(), Language.GetText($"{TownNPCMoodModule.GetFlavorTextKeyPrefix(info.NPC)}.HateLonely"), -20);
         }
     }
 }

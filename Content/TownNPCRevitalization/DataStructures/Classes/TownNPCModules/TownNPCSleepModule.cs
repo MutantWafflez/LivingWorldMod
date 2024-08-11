@@ -29,13 +29,13 @@ public sealed class TownNPCSleepModule (NPC npc) : TownNPCModule(npc) {
     /// <summary>
     ///     Current amount of sleep "points" that the NPC has stored. Gives various mood boosts/losses based on how many points the NPC has at any given point in time.
     /// </summary>
-    public BoundedNumber<float> sleepValue = new (0, 0, LWMUtils.InGameMoonlight);
+    // TODO: Save/Load this data
+    public BoundedNumber<float> sleepValue = new (LWMUtils.InGameMoonlight, 0, LWMUtils.InGameMoonlight);
 
     public bool ShouldSleep {
         get {
-            bool shouldStaticallyNotSleep = !(Main.dayTime || LanternNight.LanternsUp || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon);
-            SleepProfile npcSleepProfile;
-            if (!_sleepProfiles.TryGetValue(npc.type, out npcSleepProfile)) {
+            bool eventOccuringThatBlocksSleep = LanternNight.LanternsUp || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
+            if (!_sleepProfiles.TryGetValue(npc.type, out SleepProfile npcSleepProfile)) {
                 npcSleepProfile = new SleepProfile(new InGameTime(19, 30, 0), new InGameTime(4, 30, 0));
             }
 
@@ -43,7 +43,7 @@ public sealed class TownNPCSleepModule (NPC npc) : TownNPCModule(npc) {
             bool curTimeGreaterThanStartTime = currentTime >= npcSleepProfile.StartTime;
             bool curTimeLessThanEndTime = currentTime <= npcSleepProfile.EndTime;
 
-            return !shouldStaticallyNotSleep
+            return !eventOccuringThatBlocksSleep
                 && (npcSleepProfile.EndTime < npcSleepProfile.StartTime ? curTimeGreaterThanStartTime || curTimeLessThanEndTime : curTimeGreaterThanStartTime && curTimeLessThanEndTime);
         }
     }
@@ -57,5 +57,27 @@ public sealed class TownNPCSleepModule (NPC npc) : TownNPCModule(npc) {
         if (!ShouldSleep) {
             sleepValue -= 1f;
         }
+
+        string sleepQualityKey = "SleepDeprived";
+        int moodOffset = -20;
+        if (sleepValue >= BestSleepThreshold) {
+            sleepQualityKey = "VeryWellRested";
+            moodOffset = 12;
+        }
+        else if (sleepValue >= DecentSleepThreshold) {
+            sleepQualityKey = "WellRested";
+            moodOffset = 8;
+        }
+        else if (sleepValue >= BadSleepThreshold) {
+            sleepQualityKey = "Tired";
+            moodOffset = -8;
+        }
+
+        GlobalNPC.MoodModule.AddModifier(
+            new SubstitutableLocalizedText($"TownNPCMoodDescription.{sleepQualityKey}".Localized()),
+            new SubstitutableLocalizedText($"TownNPCMoodFlavorText.{LWMUtils.GetNPCTypeNameOrIDName(npc.type)}.{sleepQualityKey}".Localized()),
+            moodOffset,
+            1
+        );
     }
 }
