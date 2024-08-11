@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.DataStructures.Records;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
@@ -6,9 +7,7 @@ using Terraria.GameContent.Events;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
-public sealed class TownNPCSleepModule (NPC npc) : TownNPCModule(npc) {
-    private readonly record struct SleepProfile(InGameTime StartTime, InGameTime EndTime);
-
+public sealed  class TownNPCSleepModule (NPC npc) : TownNPCModule(npc) {
     /// <summary>
     ///     Minimum ticks required for highest mood boost from sleeping. Equivalent to a 8 hours of in-game time.
     /// </summary>
@@ -24,6 +23,8 @@ public sealed class TownNPCSleepModule (NPC npc) : TownNPCModule(npc) {
     /// </summary>
     public const int BadSleepThreshold = LWMUtils.InGameHour * 3;
 
+    public static readonly SleepProfile DefaultSleepProfile =  new (new InGameTime(19, 30, 0), new InGameTime(4, 30, 0));
+
     private static Dictionary<int, SleepProfile> _sleepProfiles;
 
     /// <summary>
@@ -35,9 +36,7 @@ public sealed class TownNPCSleepModule (NPC npc) : TownNPCModule(npc) {
     public bool ShouldSleep {
         get {
             bool eventOccuringThatBlocksSleep = LanternNight.LanternsUp || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
-            if (!_sleepProfiles.TryGetValue(npc.type, out SleepProfile npcSleepProfile)) {
-                npcSleepProfile = new SleepProfile(new InGameTime(19, 30, 0), new InGameTime(4, 30, 0));
-            }
+            SleepProfile npcSleepProfile = _sleepProfiles.GetValueOrDefault(npc.type, DefaultSleepProfile);
 
             InGameTime currentTime = InGameTime.CurrentTime;
             bool curTimeGreaterThanStartTime = currentTime >= npcSleepProfile.StartTime;
@@ -76,8 +75,7 @@ public sealed class TownNPCSleepModule (NPC npc) : TownNPCModule(npc) {
         GlobalNPC.MoodModule.AddModifier(
             new SubstitutableLocalizedText($"TownNPCMoodDescription.{sleepQualityKey}".Localized()),
             new SubstitutableLocalizedText($"TownNPCMoodFlavorText.{LWMUtils.GetNPCTypeNameOrIDName(npc.type)}.{sleepQualityKey}".Localized()),
-            moodOffset,
-            1
+            moodOffset
         );
     }
 }
