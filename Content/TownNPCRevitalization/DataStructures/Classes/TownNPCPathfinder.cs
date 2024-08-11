@@ -62,9 +62,9 @@ public class TownNPCPathfinder {
         Impassable = 2,
 
         /// <summary>
-        ///     For tiles/spaces that are classified as platforms, and only have collision from the top.
+        ///     For tiles/spaces that are classified as having a solid top, where-in they only have collision on the upper-most part of the tile. This includes platforms.
         /// </summary>
-        Platform = 4,
+        SolidTop = 4,
 
         /// <summary>
         ///     For tiles that can be stepped up if the pathfinder is coming from the right, and moving
@@ -166,37 +166,44 @@ public class TownNPCPathfinder {
                 bool hasTile = tile.HasTile;
                 bool isActuated = tile.IsActuated;
                 bool isSolid = Main.tileSolid[tile.TileType];
+                bool hasSolidTop = Main.tileSolidTop[tile.TileType];
+                bool isTopTile = Main.tileFrameImportant[tile.TileType] && tile.TileFrameY == 0;
                 bool isPlatform = TileID.Sets.Platforms[tile.TileType];
                 bool isClosedDoor = TileLoader.OpenDoorID(tile) > 0;
 
+                if (hasTile && !isActuated && !isClosedDoor) {
+                    if (isSolid) {
+                        if (!isPlatform) {
+                            TileFlags additionalFlags = TileID.Sets.IgnoredByNpcStepUp[tile.TileType] ? TileFlags.Empty : TileFlags.CanStepWhenComingFromLeft | TileFlags.CanStepWhenComingFromRight;
+                            if (tile.IsHalfBlock) {
+                                additionalFlags |= TileFlags.HalfTile;
+                            }
 
-                if (hasTile && !isActuated && isSolid && !isClosedDoor) {
-                    if (!isPlatform) {
-                        TileFlags additionalFlags = TileID.Sets.IgnoredByNpcStepUp[tile.TileType] ? TileFlags.Empty : TileFlags.CanStepWhenComingFromLeft | TileFlags.CanStepWhenComingFromRight;
-                        if (tile.IsHalfBlock) {
-                            additionalFlags |= TileFlags.HalfTile;
+                            grid[i, j] = new TileData(0, TileFlags.Solid | additionalFlags);
                         }
+                        else {
+                            /*
+                            SlopeDownLeft = ◣
+                            SlopeDownRight = ◢
+                            SlopeUpLeft = ◤
+                            SlopeUpRight = ◥
+                             */
+                            TileFlags slopeFlag = tile.Slope switch {
+                                SlopeType.SlopeDownLeft => TileFlags.CanStepWhenComingFromRight,
+                                SlopeType.SlopeDownRight => TileFlags.CanStepWhenComingFromLeft,
+                                _ => TileFlags.Empty
+                            };
 
-                        grid[i, j] = new TileData(0, TileFlags.Solid | additionalFlags);
+                            grid[i, j] = new TileData(0, TileFlags.SolidTop | slopeFlag);
+                        }
                     }
-                    else {
-                        /*
-                        SlopeDownLeft = ◣
-                        SlopeDownRight = ◢
-                        SlopeUpLeft = ◤
-                        SlopeUpRight = ◥
-                         */
-                        TileFlags slopeFlag = tile.Slope switch {
-                            SlopeType.SlopeDownLeft => TileFlags.CanStepWhenComingFromRight,
-                            SlopeType.SlopeDownRight => TileFlags.CanStepWhenComingFromLeft,
-                            _ => TileFlags.Empty
-                        };
-
-                        grid[i, j] = new TileData(0, TileFlags.Platform | slopeFlag);
+                    else if (hasSolidTop && isTopTile) {
+                        grid[i, j] = new TileData(0, TileFlags.SolidTop);
                     }
 
                     continue;
                 }
+
 
                 bool hasLava = tile is { LiquidAmount: > 0, LiquidType: LiquidID.Lava };
                 bool hasShimmer = tile is { LiquidAmount: >= 200, LiquidType: LiquidID.Shimmer };
@@ -282,7 +289,7 @@ public class TownNPCPathfinder {
 
             // Additional cost to dissuade jumping off of or falling through platforms
             // Has the overall effect of making NPC movement more "natural" by preferring to use stairs
-            ushort startingPlatformCost = (ushort)(PointOnPlatform(curNodePos, _rectSizeX) ? AdditionalCostForStairs : 0);
+            ushort startingPlatformCost = (ushort)(PointOnSolidTopTile(curNodePos, _rectSizeX) ? AdditionalCostForStairs : 0);
 
             // Falls
             for (sbyte i = -1; i < 2; i++) {
@@ -301,7 +308,7 @@ public class TownNPCPathfinder {
                     }
 
                     // Add additional weight if the end location is a platform, for more dissuading
-                    ushort finalPlatformCost = (ushort)(startingPlatformCost + (PointOnPlatform(nextNodePos, _rectSizeX) ? AdditionalCostForStairs : 0));
+                    ushort finalPlatformCost = (ushort)(startingPlatformCost + (PointOnSolidTopTile(nextNodePos, _rectSizeX) ? AdditionalCostForStairs : 0));
                     DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(Math.Abs(i) + finalPlatformCost + (nextNodePos.y - curNodePos.y) * 2));
                     break;
                 }
@@ -321,7 +328,7 @@ public class TownNPCPathfinder {
                     }
 
                     // Add additional weight if the end location is a platform, for more dissuading
-                    ushort finalPlatformCost = (ushort)(startingPlatformCost + (PointOnPlatform(nextNodePos, _rectSizeX) ? AdditionalCostForStairs : 0));
+                    ushort finalPlatformCost = (ushort)(startingPlatformCost + (PointOnSolidTopTile(nextNodePos, _rectSizeX) ? AdditionalCostForStairs : 0));
                     DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(Math.Abs(j) + finalPlatformCost + i * 2));
                 }
             }
@@ -440,15 +447,15 @@ public class TownNPCPathfinder {
     }
 
     private bool PointOnStandableTile(UPoint16 bottomLeft, ushort rectWidth) =>
-        FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth).Any(flags => flags.HasFlag(TileFlags.Solid) || flags.HasFlag(TileFlags.Platform));
+        FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth).Any(flags => flags.HasFlag(TileFlags.Solid) || flags.HasFlag(TileFlags.SolidTop));
 
-    private bool PointOnPlatform(UPoint16 bottomLeft, ushort rectWidth, bool stairCheck = false) => FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth)
-        .Any(flags => flags.HasFlag(TileFlags.Platform) && (!stairCheck || (!flags.HasFlag(TileFlags.CanStepWhenComingFromLeft) && !flags.HasFlag(TileFlags.CanStepWhenComingFromRight))));
+    private bool PointOnSolidTopTile(UPoint16 bottomLeft, ushort rectWidth, bool stairCheck = false) => FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth)
+        .Any(flags => flags.HasFlag(TileFlags.SolidTop) && (!stairCheck || (!flags.HasFlag(TileFlags.CanStepWhenComingFromLeft) && !flags.HasFlag(TileFlags.CanStepWhenComingFromRight))));
 
     private bool IsStandingOnHalfTile(UPoint16 bottomLeft, ushort rectWidth) => FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth).Any(flags => flags.HasFlag(TileFlags.HalfTile));
 
     private bool CanStep(UPoint16 wantedStepPos, ushort rectWidth, bool fromLeft) => FlagsOfTilesRectangleIsOn(wantedStepPos, rectWidth)
         .Any(flags => flags.HasFlag(fromLeft ? TileFlags.CanStepWhenComingFromLeft : TileFlags.CanStepWhenComingFromRight));
 
-    private bool CanStepDown(UPoint16 startNodePos, ushort rectWidth, bool fromLeft) => !PointOnPlatform(startNodePos, rectWidth, true) && CanStep(startNodePos, rectWidth, !fromLeft);
+    private bool CanStepDown(UPoint16 startNodePos, ushort rectWidth, bool fromLeft) => !PointOnSolidTopTile(startNodePos, rectWidth, true) && CanStep(startNodePos, rectWidth, !fromLeft);
 }
