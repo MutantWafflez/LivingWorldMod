@@ -28,29 +28,28 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC, Texture
     private int _chatCooldown;
 
     /// <summary>
-    ///     Whether this NPC is currently being talked to by a
-    ///     player.
+    ///     Whether this NPC is currently being talked to by a player.
     /// </summary>
-    public bool IsChattingToPlayer {
+    public bool IsChattingWithPlayerDirectly {
         get;
         private set;
     }
 
     /// <summary>
-    ///     Whether this NPC is currently chatting to another NPC.
+    ///     Whether this NPC is currently chatting to another entity in the background, i.e with the chat bubbles.
     /// </summary>
-    public bool IsChattingToNPC => _currentSentence is not null;
+    public bool IsChattingToEntityInBackground => _currentSentence is not null;
 
     /// <summary>
     ///     Whether this NPC is currently talking to any entity at all.
     /// </summary>
-    public bool IsSpeaking => IsChattingToPlayer || IsChattingToNPC;
+    public bool IsSpeaking => IsChattingWithPlayerDirectly || IsChattingToEntityInBackground;
 
     private static string GenerateRandomNPCName => Language.SelectRandom(Lang.CreateDialogFilter("NPCName.")).Value;
 
     public override void Update() {
         // Adapted vanilla code
-        IsChattingToPlayer = false;
+        IsChattingWithPlayerDirectly = false;
         for (int i = 0; i < Main.maxPlayers; i++) {
             Player player = Main.player[i];
 
@@ -58,7 +57,7 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC, Texture
                 continue;
             }
 
-            IsChattingToPlayer = true;
+            IsChattingWithPlayerDirectly = true;
 
             npc.direction = player.position.X + player.width / 2f < npc.position.X + npc.width / 2f ? -1 : 1;
             globalNPC.PathfinderModule.PausePathfind();
@@ -81,7 +80,7 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC, Texture
 
             _currentSentence = null;
             _chatBubbleDuration = 0;
-            _chatCooldown = Main.rand.Next((int)(LWMUtils.RealLifeSecond * 3d), (int)(LWMUtils.RealLifeSecond * 5d));
+            _chatCooldown = Main.rand.Next(LWMUtils.RealLifeSecond * 3, LWMUtils.RealLifeSecond * 5);
         }
 
         if (--_chatCooldown <= 0) {
@@ -126,7 +125,7 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC, Texture
     }
 
     public void DoChatDrawing(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-        if (!IsChattingToNPC) {
+        if (!IsChattingToEntityInBackground) {
             return;
         }
 
