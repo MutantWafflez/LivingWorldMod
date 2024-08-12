@@ -21,6 +21,7 @@ public sealed  class TownNPCSleepModule (NPC npc, TownGlobalNPC globalNPC) : Tow
 
     public bool ShouldSleep {
         get {
+            // TODO: Add events that occur during the day
             bool eventOccuringThatBlocksSleep = LanternNight.LanternsUp || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
             SleepProfile npcSleepProfile = GetSleepProfileOrDefault(npc.type);
 
@@ -37,7 +38,9 @@ public sealed  class TownNPCSleepModule (NPC npc, TownGlobalNPC globalNPC) : Tow
 
     public static void Load() {
         // TODO: Load specific sleep profiles
-        _sleepProfiles = [];
+        _sleepProfiles = new Dictionary<int, SleepProfile> {
+            { NPCID.ArmsDealer, new SleepProfile(new TimeOnly(22, 45, 0), new TimeOnly(6, 45, 0)) }, { NPCID.Princess, new SleepProfile(new TimeOnly(6, 30, 0), new TimeOnly(12, 30, 0)) }
+        };
     }
 
     public override void Update() {
