@@ -8,8 +8,8 @@ using Terraria.GameContent;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
-public class TownNPCHousingModule (NPC npc) : TownNPCModule(npc) {
-    public bool ShouldGoHome => GlobalNPC.SleepModule.ShouldSleep || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
+public class TownNPCHousingModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCModule(npc, globalNPC) {
+    public bool ShouldGoHome => globalNPC.SleepModule.ShouldSleep || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
 
     public Rectangle? RoomBoundingBox {
         get;
@@ -119,9 +119,9 @@ public class TownNPCHousingModule (NPC npc) : TownNPCModule(npc) {
             return;
         }
 
-        TownNPCPathfinderModule pathfinderModule = GlobalNPC.PathfinderModule;
+        TownNPCPathfinderModule pathfinderModule = globalNPC.PathfinderModule;
         int beAtHomeStateInt = TownNPCAIState.GetStateInteger<BeAtHomeAIState>();
-        if (npc.ai[0] != TownNPCAIState.GetStateInteger<WalkToRandomPosState>() && !GlobalNPC.CombatModule.IsAttacking && npc.ai[0] != beAtHomeStateInt) {
+        if (npc.ai[0] != TownNPCAIState.GetStateInteger<WalkToRandomPosState>() && !globalNPC.CombatModule.IsAttacking && npc.ai[0] != beAtHomeStateInt) {
             TownGlobalNPC.RefreshToState(npc, beAtHomeStateInt);
             pathfinderModule.CancelPathfind();
         }

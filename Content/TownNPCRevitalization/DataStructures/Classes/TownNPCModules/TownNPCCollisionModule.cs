@@ -1,4 +1,5 @@
 ﻿using System;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 using Microsoft.Xna.Framework;
 
@@ -7,7 +8,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.To
 /// <summary>
 ///     Town NPC module that handles the special collision of Town NPCs introduced by this mod.
 /// </summary>
-public class TownNPCCollisionModule(NPC npc) : TownNPCModule(npc) {
+public class TownNPCCollisionModule(NPC npc, TownGlobalNPC globalNPC) : TownNPCModule(npc, globalNPC) {
     public bool fallThroughPlatforms;
     public bool fallThroughStairs;
     public bool walkThroughStairs;

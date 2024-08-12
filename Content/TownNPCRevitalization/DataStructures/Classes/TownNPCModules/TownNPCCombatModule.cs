@@ -3,6 +3,7 @@ using Hjson;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -13,7 +14,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.To
 ///     Module for the Town NPC revitalization that handles combat for
 ///     a given Town NPC.
 /// </summary>
-public sealed class TownNPCCombatModule (NPC npc) : TownNPCModule(npc) {
+public sealed class TownNPCCombatModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCModule(npc, globalNPC) {
     public static IReadOnlyDictionary<int, TownNPCProjAttackData> projAttackData;
     public static IReadOnlyDictionary<int, TownNPCMeleeAttackData> meleeAttackData;
 
@@ -208,7 +209,7 @@ public sealed class TownNPCCombatModule (NPC npc) : TownNPCModule(npc) {
             _ => 0f
         };
 
-        GlobalNPC.PathfinderModule.CancelPathfind();
+        globalNPC.PathfinderModule.CancelPathfind();
         npc.localAI[3] = 0f;
         npc.direction = npc.position.X < AttackLocation.Value.position.X ? 1 : -1;
         npc.netUpdate = true;

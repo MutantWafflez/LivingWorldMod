@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
 using Terraria.GameContent.Events;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
-public sealed  class TownNPCSleepModule (NPC npc) : TownNPCModule(npc) {
+public sealed  class TownNPCSleepModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCModule(npc, globalNPC) {
     /// <summary>
     ///     Minimum ticks required for highest mood boost from sleeping. Equivalent to a 8 hours of in-game time.
     /// </summary>
@@ -74,7 +75,7 @@ public sealed  class TownNPCSleepModule (NPC npc) : TownNPCModule(npc) {
             moodOffset = -8;
         }
 
-        GlobalNPC.MoodModule.AddModifier(
+        globalNPC.MoodModule.AddModifier(
             new SubstitutableLocalizedText($"TownNPCMoodDescription.{sleepQualityKey}".Localized()),
             new SubstitutableLocalizedText($"TownNPCMoodFlavorText.{LWMUtils.GetNPCTypeNameOrIDName(npc.type)}.{sleepQualityKey}".Localized()),
             moodOffset

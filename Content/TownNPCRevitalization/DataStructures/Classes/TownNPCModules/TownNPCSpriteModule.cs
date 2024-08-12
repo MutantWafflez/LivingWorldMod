@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,7 +11,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.To
 /// <summary>
 ///     Module for Town NPCs that deal with drawing related tasks.
 /// </summary>
-public sealed class TownNPCSpriteModule (NPC npc, Texture2D blinkTexture) : TownNPCModule(npc) {
+public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC, Texture2D blinkTexture) : TownNPCModule(npc, globalNPC) {
     private const int GivingAnimationDuration = (int)(LWMUtils.RealLifeSecond * 1.5f);
     private const int EyelidClosedDuration = 15;
 

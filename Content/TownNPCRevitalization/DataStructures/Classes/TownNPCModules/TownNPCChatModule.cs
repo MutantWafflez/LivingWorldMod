@@ -12,7 +12,7 @@ using Terraria.UI.Chat;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
-public sealed class TownNPCChatModule (NPC npc, Texture2D talkTexture) : TownNPCModule(npc) {
+public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC, Texture2D talkTexture) : TownNPCModule(npc, globalNPC) {
     private const int DefaultChatBubbleDuration = (int)(LWMUtils.RealLifeSecond * 5d);
 
     /// <summary>
@@ -61,7 +61,7 @@ public sealed class TownNPCChatModule (NPC npc, Texture2D talkTexture) : TownNPC
             IsChattingToPlayer = true;
 
             npc.direction = player.position.X + player.width / 2f < npc.position.X + npc.width / 2f ? -1 : 1;
-            GlobalNPC.PathfinderModule.PausePathfind();
+            globalNPC.PathfinderModule.PausePathfind();
         }
         // End of adapted code
 
@@ -72,7 +72,7 @@ public sealed class TownNPCChatModule (NPC npc, Texture2D talkTexture) : TownNPC
         if (_currentSentence is not null) {
             // Every other 8 ticks while talking, add the draw call
             if (--_chatBubbleDuration % 16 <= 8) {
-                GlobalNPC.SpriteModule.RequestOverlay(talkTexture);
+                globalNPC.SpriteModule.RequestOverlay(talkTexture);
             }
 
             if (_chatBubbleDuration > 0) {

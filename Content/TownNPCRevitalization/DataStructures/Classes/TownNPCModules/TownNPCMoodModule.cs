@@ -4,6 +4,7 @@ using Hjson;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.PersonalityTraits;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
@@ -15,13 +16,13 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.To
 /// <summary>
 ///     Class that handles the new "mood" feature that replaces Town NPC happiness.
 /// </summary>
-public sealed class TownNPCMoodModule : TownNPCModule {
+public sealed class TownNPCMoodModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCModule(npc, globalNPC) {
     public const float MaxMoodValue = 100f;
     public const float MinMoodValue = 0f;
 
     private static Dictionary<string, LocalizedText> _autoloadedFlavorTexts;
 
-    private readonly List<MoodModifierInstance> _currentMoodModifiers;
+    private readonly List<MoodModifierInstance> _currentMoodModifiers = [];
 
     public static Dictionary<int, List<IPersonalityTrait>> PersonalityDatabase {
         get;
@@ -49,10 +50,6 @@ public sealed class TownNPCMoodModule : TownNPCModule {
 
             return baseValue;
         }
-    }
-
-    public TownNPCMoodModule(NPC npc) : base(npc) {
-        _currentMoodModifiers = [];
     }
 
     public static LocalizedText GetAutoloadedFlavorTextOrDefault(string key) => !_autoloadedFlavorTexts.TryGetValue(key, out LocalizedText text) ? new LocalizedText(key, key) : text;

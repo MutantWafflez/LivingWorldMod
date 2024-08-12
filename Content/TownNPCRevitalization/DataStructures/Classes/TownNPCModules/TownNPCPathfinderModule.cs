@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Configs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Globals.Configs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -16,7 +17,7 @@ using NodeMovementType = LivingWorldMod.Content.TownNPCRevitalization.DataStruct
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
-public sealed class TownNPCPathfinderModule (NPC npc) : TownNPCModule(npc) {
+public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCModule(npc, globalNPC) {
     private sealed class PathfinderResult(Point topLeftOfGrid, Point endPoint, PathNode lastConsumedNode, List<PathNode> path) {
         public readonly Point topLeftOfGrid = topLeftOfGrid;
         public readonly Point endPoint = endPoint;
@@ -122,7 +123,7 @@ public sealed class TownNPCPathfinderModule (NPC npc) : TownNPCModule(npc) {
 
         bool leftHasBreachedNode = npc.direction == 1 ? npc.Left.X >= nextNodeCenter.X : npc.Left.X <= nextNodeCenter.X;
 
-        TownNPCCollisionModule collisionModule = GlobalNPC.CollisionModule;
+        TownNPCCollisionModule collisionModule = globalNPC.CollisionModule;
         if (leftHasBreachedNode && nodeRectangle.Intersects(npcNodeCollisionRectangle) && (lastConsumedNode.MovementType is not NodeMovementType.Jump || npc.velocity.Y == 0f)) {
             lastConsumedNode = nextNode;
             path.RemoveAt(path.Count - 1);

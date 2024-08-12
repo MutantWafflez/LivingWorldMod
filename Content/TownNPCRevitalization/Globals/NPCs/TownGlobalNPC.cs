@@ -180,22 +180,22 @@ public class TownGlobalNPC : GlobalNPC {
     public override GlobalNPC NewInstance(NPC target) {
         TownGlobalNPC instance = (TownGlobalNPC)base.NewInstance(target)!;
 
-        instance.PathfinderModule = new TownNPCPathfinderModule(target);
-        instance.MoodModule = new TownNPCMoodModule(target);
-        instance.CombatModule = new TownNPCCombatModule(target);
+        instance.PathfinderModule = new TownNPCPathfinderModule(target, instance);
+        instance.MoodModule = new TownNPCMoodModule(target, instance);
+        instance.CombatModule = new TownNPCCombatModule(target, instance);
 
         if (talkBlinkOverlays is null || Main.netMode == NetmodeID.Server || !talkBlinkOverlays.ContainsKey(target.type)) {
-            instance.ChatModule = new TownNPCChatModule(target, null);
-            instance.SpriteModule = new TownNPCSpriteModule(target, null);
+            instance.ChatModule = new TownNPCChatModule(target, instance, null);
+            instance.SpriteModule = new TownNPCSpriteModule(target, instance, null);
         }
         else {
-            instance.ChatModule = new TownNPCChatModule(target, talkBlinkOverlays[target.type].Item1);
-            instance.SpriteModule = new TownNPCSpriteModule(target, talkBlinkOverlays[target.type].Item2);
+            instance.ChatModule = new TownNPCChatModule(target, instance, talkBlinkOverlays[target.type].Item1);
+            instance.SpriteModule = new TownNPCSpriteModule(target, instance, talkBlinkOverlays[target.type].Item2);
         }
 
-        instance.HousingModule = new TownNPCHousingModule(target);
-        instance.CollisionModule = new TownNPCCollisionModule(target);
-        instance.SleepModule = new TownNPCSleepModule(target);
+        instance.HousingModule = new TownNPCHousingModule(target, instance);
+        instance.CollisionModule = new TownNPCCollisionModule(target, instance);
+        instance.SleepModule = new TownNPCSleepModule(target, instance);
         instance._lastActivities = new ForgetfulArray<TownNPCActivity>(LastActivityMemoryLimit);
 
         return instance;
