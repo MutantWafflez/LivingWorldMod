@@ -13,7 +13,7 @@ using Terraria.UI.Chat;
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
 public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC, Texture2D talkTexture) : TownNPCModule(npc, globalNPC) {
-    private const int DefaultChatBubbleDuration = (int)(LWMUtils.RealLifeSecond * 5d);
+    private const int DefaultChatBubbleDuration = LWMUtils.RealLifeSecond * 5;
 
     /// <summary>
     ///     The denominator of the fractional chance that a NPC who otherwise can chat will
