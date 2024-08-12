@@ -5,9 +5,11 @@ using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.UI.Bestiary;
 using LivingWorldMod.DataStructures.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria.GameContent.Bestiary;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
@@ -236,6 +238,18 @@ public class TownGlobalNPC : GlobalNPC {
     public override void PostAI(NPC npc) {
         // To make vanilla still draw extras properly
         npc.aiStyle = NPCAIStyleID.Passive;
+    }
+
+    public override void SetBestiary(NPC npc, BestiaryDatabase database, BestiaryEntry bestiaryEntry) {
+        int flavorTextIndex = bestiaryEntry.Info.FindIndex(entry => entry is FlavorTextBestiaryInfoElement);
+
+        TownNPCPreferredSleepTimeSpanElement sleepElement = new (npc.type);
+        if (flavorTextIndex >= 0) {
+            bestiaryEntry.Info.Insert(flavorTextIndex + 1, sleepElement);
+            return;
+        }
+
+        bestiaryEntry.Info.Add(sleepElement);
     }
 
     public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) {

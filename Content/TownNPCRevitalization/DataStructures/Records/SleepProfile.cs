@@ -1,5 +1,5 @@
-using LivingWorldMod.DataStructures.Records;
+using System;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 
-public readonly record struct SleepProfile(InGameTime StartTime, InGameTime EndTime);
+public readonly record struct SleepProfile(TimeOnly StartTime, TimeOnly EndTime);

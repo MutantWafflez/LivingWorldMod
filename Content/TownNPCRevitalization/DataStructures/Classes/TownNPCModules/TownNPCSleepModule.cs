@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
-using LivingWorldMod.DataStructures.Records;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
 using Terraria.GameContent.Events;
@@ -23,7 +23,7 @@ public sealed  class TownNPCSleepModule (NPC npc) : TownNPCModule(npc) {
     /// </summary>
     public const int BadSleepThreshold = LWMUtils.InGameHour * 3;
 
-    public static readonly SleepProfile DefaultSleepProfile =  new (new InGameTime(19, 30, 0), new InGameTime(4, 30, 0));
+    public static readonly SleepProfile DefaultSleepProfile =  new (new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
 
     private static Dictionary<int, SleepProfile> _sleepProfiles;
 
@@ -36,9 +36,9 @@ public sealed  class TownNPCSleepModule (NPC npc) : TownNPCModule(npc) {
     public bool ShouldSleep {
         get {
             bool eventOccuringThatBlocksSleep = LanternNight.LanternsUp || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
-            SleepProfile npcSleepProfile = _sleepProfiles.GetValueOrDefault(npc.type, DefaultSleepProfile);
+            SleepProfile npcSleepProfile = GetSleepProfileOrDefault(npc.type);
 
-            InGameTime currentTime = InGameTime.CurrentTime;
+            TimeOnly currentTime = LWMUtils.CurrentInGameTime;
             bool curTimeGreaterThanStartTime = currentTime >= npcSleepProfile.StartTime;
             bool curTimeLessThanEndTime = currentTime <= npcSleepProfile.EndTime;
 
@@ -46,6 +46,8 @@ public sealed  class TownNPCSleepModule (NPC npc) : TownNPCModule(npc) {
                 && (npcSleepProfile.EndTime < npcSleepProfile.StartTime ? curTimeGreaterThanStartTime || curTimeLessThanEndTime : curTimeGreaterThanStartTime && curTimeLessThanEndTime);
         }
     }
+
+    public static SleepProfile GetSleepProfileOrDefault(int npcType) => _sleepProfiles.GetValueOrDefault(npcType, DefaultSleepProfile);
 
     public static void Load() {
         // TODO: Load specific sleep profiles
