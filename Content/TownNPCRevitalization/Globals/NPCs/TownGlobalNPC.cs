@@ -241,15 +241,7 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     public override void SetBestiary(NPC npc, BestiaryDatabase database, BestiaryEntry bestiaryEntry) {
-        int flavorTextIndex = bestiaryEntry.Info.FindIndex(entry => entry is FlavorTextBestiaryInfoElement);
-
-        TownNPCPreferredSleepTimeSpanElement sleepElement = new (npc.type);
-        if (flavorTextIndex >= 0) {
-            bestiaryEntry.Info.Insert(flavorTextIndex + 1, sleepElement);
-            return;
-        }
-
-        bestiaryEntry.Info.Add(sleepElement);
+        bestiaryEntry.Info.Add(new TownNPCPreferredSleepTimeSpanElement(npc.type));
     }
 
     public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) {

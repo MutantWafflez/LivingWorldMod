@@ -41,5 +41,8 @@
         <!-- Language/Localization Publicizing -->
         <Publicize Include="tModLoader:Terraria.Localization.LanguageManager._localizedTexts"/>
         <Publicize Include="tModLoader:Terraria.Localization.LocalizedText..ctor"/>
+
+        <!-- Bestiary Publicizing -->
+        <Publicize Include="tModLoader:Terraria.GameContent.UI.Elements.UIBestiaryEntryInfoPage+BestiaryInfoCategory"/>
     </ItemGroup>
 </Project>
