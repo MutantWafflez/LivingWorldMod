@@ -347,7 +347,7 @@ public class TownGlobalNPC : GlobalNPC {
 
         if (Main.projectile.IndexInRange(wrenchWhoAmI)) {
             Projectile projectile = Main.projectile[wrenchWhoAmI];
-            if (projectile.active && projectile.type == 582 && projectile.ai[1] == npc.whoAmI) {
+            if (projectile.active && projectile.type == ProjectileID.MechanicWrench && projectile.ai[1] == npc.whoAmI) {
                 wrenchFound = true;
             }
         }
