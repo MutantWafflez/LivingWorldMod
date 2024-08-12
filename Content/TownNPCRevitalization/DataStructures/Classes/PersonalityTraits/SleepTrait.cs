@@ -7,6 +7,9 @@ using Terraria.GameContent;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.PersonalityTraits;
 
+/// <summary>
+///     Personality trait that grants mood shifts based on the current state of the NPC's sleep.
+/// </summary>
 /// <param name="badSleepThreshold">Minimum ticks required for the second lowest mood loss from sleep. Defaults to 3 hours of in-game time.</param>
 /// <param name="decentSleepThreshold">Minimum ticks required for the second highest mood boost from sleep. Defaults to 6 hours of in-game time.</param>
 /// <param name="bestSleepThreshold">Minimum ticks required for highest mood boost from sleeping. Defaults to 8 hours of in-game time.</param>
