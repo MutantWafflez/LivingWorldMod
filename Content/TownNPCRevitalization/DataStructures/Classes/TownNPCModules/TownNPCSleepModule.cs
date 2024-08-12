@@ -9,21 +9,6 @@ using Terraria.GameContent.Events;
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
 public sealed  class TownNPCSleepModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCModule(npc, globalNPC) {
-    /// <summary>
-    ///     Minimum ticks required for highest mood boost from sleeping. Equivalent to a 8 hours of in-game time.
-    /// </summary>
-    public const int BestSleepThreshold = LWMUtils.InGameHour * 8;
-
-    /// <summary>
-    ///     Minimum ticks required for the second highest mood boost from sleep. Equivalent to 6 hours of in-game time.
-    /// </summary>
-    public const int DecentSleepThreshold = LWMUtils.InGameHour * 6;
-
-    /// <summary>
-    ///     Minimum ticks required for the second lowest mood loss from sleep. Equivalent to 3 hours of in-game time.
-    /// </summary>
-    public const int BadSleepThreshold = LWMUtils.InGameHour * 3;
-
     public static readonly SleepProfile DefaultSleepProfile =  new (new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
 
     private static Dictionary<int, SleepProfile> _sleepProfiles;
@@ -59,26 +44,5 @@ public sealed  class TownNPCSleepModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         if (!ShouldSleep) {
             sleepValue -= 1f;
         }
-
-        string sleepQualityKey = "SleepDeprived";
-        int moodOffset = -20;
-        if (sleepValue >= BestSleepThreshold) {
-            sleepQualityKey = "VeryWellRested";
-            moodOffset = 12;
-        }
-        else if (sleepValue >= DecentSleepThreshold) {
-            sleepQualityKey = "WellRested";
-            moodOffset = 8;
-        }
-        else if (sleepValue >= BadSleepThreshold) {
-            sleepQualityKey = "Tired";
-            moodOffset = -8;
-        }
-
-        globalNPC.MoodModule.AddModifier(
-            new SubstitutableLocalizedText($"TownNPCMoodDescription.{sleepQualityKey}".Localized()),
-            new SubstitutableLocalizedText($"TownNPCMoodFlavorText.{LWMUtils.GetNPCTypeNameOrIDName(npc.type)}.{sleepQualityKey}".Localized()),
-            moodOffset
-        );
     }
 }

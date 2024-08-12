@@ -122,7 +122,7 @@ public sealed class TownNPCMoodModule (NPC npc, TownGlobalNPC globalNPC) : TownN
                 );
             }
 
-            newPersonalityTraits.AddRange([new CrowdingTrait(), new HomelessTrait(), new HomeProximityTrait(), new SpaciousTrait()]);
+            newPersonalityTraits.AddRange([new CrowdingTrait(), new HomelessTrait(), new HomeProximityTrait(), new SpaciousTrait(), new SleepTrait()]);
 
             string princessLoveFlavorTextKey = npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).GetLocalizationKey("TownNPCMood.Princess_LovesNPC") : $"TownNPCMood_Princess.LoveNPC_{npcTypeName}";
             string newPrincessKey = $"Princess.NPC_{npcTypeName}";
@@ -131,7 +131,7 @@ public sealed class TownNPCMoodModule (NPC npc, TownGlobalNPC globalNPC) : TownN
             princessProfile.Add(new NumericNPCPreferenceTrait(20, npcType));
         }
 
-        princessProfile.AddRange([new HomelessTrait(), new HomeProximityTrait(), new LonelyTrait()]);
+        princessProfile.AddRange([new HomelessTrait(), new HomeProximityTrait(), new LonelyTrait(), new SleepTrait()]);
         PersonalityDatabase[NPCID.Princess] = princessProfile;
 
         JsonObject jsonEventPreferenceValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCEventPreferences.json").Qo();
