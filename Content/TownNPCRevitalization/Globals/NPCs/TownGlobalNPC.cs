@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.UI.Bestiary;
@@ -23,8 +24,6 @@ public class TownGlobalNPC : GlobalNPC {
     ///     purpose of preventing activity repetition.
     /// </summary>
     private const int LastActivityMemoryLimit = 5;
-
-    public static IReadOnlyDictionary<int, (Texture2D, Texture2D)> talkBlinkOverlays;
 
     private static IReadOnlyDictionary<int, TownNPCAIState> _stateDict;
     private static IReadOnlyList<TownNPCActivity> _allActivities;
@@ -152,18 +151,15 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     public override void Unload() {
-        if (talkBlinkOverlays is null) {
-            return;
-        }
-
-        Main.QueueMainThreadAction(
-            () => {
-                foreach ((Texture2D talkTexture, Texture2D blinkTexture) in talkBlinkOverlays.Values) {
-                    talkTexture.Dispose();
-                    blinkTexture.Dispose();
+        if (TownNPCSpriteModule.overlayProfiles is not null) {
+            Main.QueueMainThreadAction(
+                () => {
+                    foreach (TownNPCSpriteOverlayProfile profile in TownNPCSpriteModule.overlayProfiles.Values) {
+                        profile.Dispose();
+                    }
                 }
-            }
-        );
+            );
+        }
     }
 
     public override void SetStaticDefaults() {
@@ -183,16 +179,8 @@ public class TownGlobalNPC : GlobalNPC {
         instance.PathfinderModule = new TownNPCPathfinderModule(target, instance);
         instance.MoodModule = new TownNPCMoodModule(target, instance);
         instance.CombatModule = new TownNPCCombatModule(target, instance);
-
-        if (talkBlinkOverlays is null || Main.netMode == NetmodeID.Server || !talkBlinkOverlays.ContainsKey(target.type)) {
-            instance.ChatModule = new TownNPCChatModule(target, instance, null);
-            instance.SpriteModule = new TownNPCSpriteModule(target, instance, null);
-        }
-        else {
-            instance.ChatModule = new TownNPCChatModule(target, instance, talkBlinkOverlays[target.type].Item1);
-            instance.SpriteModule = new TownNPCSpriteModule(target, instance, talkBlinkOverlays[target.type].Item2);
-        }
-
+        instance.ChatModule = new TownNPCChatModule(target, instance);
+        instance.SpriteModule = new TownNPCSpriteModule(target, instance);
         instance.HousingModule = new TownNPCHousingModule(target, instance);
         instance.CollisionModule = new TownNPCCollisionModule(target, instance);
         instance.SleepModule = new TownNPCSleepModule(target, instance);

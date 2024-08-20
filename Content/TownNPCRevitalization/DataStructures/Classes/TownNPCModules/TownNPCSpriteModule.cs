@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -11,23 +12,35 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.To
 /// <summary>
 ///     Module for Town NPCs that deal with drawing related tasks.
 /// </summary>
-public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC, Texture2D blinkTexture) : TownNPCModule(npc, globalNPC) {
+public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCModule(npc, globalNPC) {
     private const int GivingAnimationDuration = (int)(LWMUtils.RealLifeSecond * 1.5f);
     private const int EyelidClosedDuration = 15;
+    private const int TalkDuration = 8;
 
-    private readonly HashSet<Texture2D> _drawSet = [];
+    private const int TalkTextureIndex = 0;
+    private const int EyelidTextureIndex = 1;
+
+    public static IReadOnlyDictionary<int, TownNPCSpriteOverlayProfile> overlayProfiles;
+
+    private readonly HashSet<int> _drawSet = [];
 
     private int _blinkTimer;
+    private int _mouthOpenTimer;
 
     private int _givingTimer;
     private int _givingItemType;
 
-    public bool IsBlinking {
+    public bool AreEyesClosed {
         get;
         private set;
     }
 
     public bool IsGiving {
+        get;
+        private set;
+    }
+
+    public bool IsTalking {
         get;
         private set;
     }
@@ -40,23 +53,20 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC, Textu
         }
     }
 
-    public void RequestOverlay(Texture2D request) {
-        if (request is null || Main.netMode == NetmodeID.Server) {
-            return;
-        }
-
-        _drawSet.Add(request);
-    }
-
-    public void RequestGiving(int givingItemType = -1) {
+    public void GiveItem(int givingItemType = -1) {
         IsGiving = true;
         _givingTimer = GivingAnimationDuration;
         _givingItemType = givingItemType;
     }
 
-    public void RequestBlink(int duration = EyelidClosedDuration) {
-        IsBlinking = true;
+    public void CloseEyes(int duration = EyelidClosedDuration) {
+        AreEyesClosed = true;
         _blinkTimer = duration;
+    }
+
+    public void DoTalk(int duration = TalkDuration) {
+        IsTalking = true;
+        _mouthOpenTimer = duration;
     }
 
     public void DrawNPCOverlays(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
@@ -72,10 +82,11 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC, Textu
         );
 
         drawColor = npc.GetNPCColorTintedByBuffs(drawColor);
-        foreach (Texture2D texture in _drawSet) {
+        foreach (int textureIndex in _drawSet) {
+            TownNPCSpriteOverlay currentOverlay = overlayProfiles[npc.type].GetCurrentSpriteOverlay(npc, textureIndex);
             spriteBatch.Draw(
-                texture,
-                drawPos,
+                currentOverlay.Texture,
+                drawPos + currentOverlay.PositionInFrame.ToWorldCoordinates(Vector2.Zero),
                 null,
                 npc.color == default(Color) ? npc.GetAlpha(drawColor) : npc.GetColor(drawColor),
                 npc.rotation,
@@ -112,20 +123,27 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC, Textu
     }
 
     private void UpdateHead() {
-        if (!IsBlinking) {
-            if (--_blinkTimer > 0) {
-                return;
+        if (!AreEyesClosed) {
+            if (--_blinkTimer <= 0) {
+                CloseEyes();
             }
-
-            RequestBlink();
         }
         else if (--_blinkTimer <= 0) {
-            IsBlinking = false;
+            AreEyesClosed = false;
             _blinkTimer = Main.rand.Next(180, 360);
         }
 
-        if (IsBlinking) {
-            RequestOverlay(blinkTexture);
+        if (IsTalking && --_mouthOpenTimer <= 0) {
+            IsTalking = false;
+            _mouthOpenTimer = 0;
+        }
+
+        if (AreEyesClosed) {
+            _drawSet.Add(EyelidTextureIndex);
+        }
+
+        if (IsTalking) {
+            _drawSet.Add(TalkTextureIndex);
         }
     }
 }

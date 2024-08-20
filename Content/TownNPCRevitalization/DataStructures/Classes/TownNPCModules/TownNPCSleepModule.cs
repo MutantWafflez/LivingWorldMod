@@ -21,8 +21,7 @@ public sealed  class TownNPCSleepModule (NPC npc, TownGlobalNPC globalNPC) : Tow
 
     public bool ShouldSleep {
         get {
-            // TODO: Add events that occur during the day
-            bool eventOccuringThatBlocksSleep = LanternNight.LanternsUp || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
+            bool eventOccuringThatBlocksSleep = LanternNight.LanternsUp || Main.slimeRain || Main.invasionType > InvasionID.None || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
             SleepProfile npcSleepProfile = GetSleepProfileOrDefault(npc.type);
 
             TimeOnly currentTime = LWMUtils.CurrentInGameTime;

@@ -35,7 +35,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                 npc.direction = targetDirection;
                 npc.rotation = MathHelper.PiOver2 * -targetDirection;
                 Main.sleepingManager.AddNPC(npc.whoAmI, restPos);
-                globalNPC.SpriteModule.RequestBlink();
+                globalNPC.SpriteModule.CloseEyes();
 
                 npc.ai[1] = 1f;
                 globalNPC.SleepModule.sleepValue += 1.25f;
@@ -46,7 +46,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                 npc.SitDown(restPos, out int direction, out _);
                 npc.direction = direction;
                 Main.sittingManager.AddNPC(npc.whoAmI, restPos);
-                globalNPC.SpriteModule.RequestBlink();
+                globalNPC.SpriteModule.CloseEyes();
 
                 npc.ai[1] = 1f;
                 globalNPC.SleepModule.sleepValue += 0.75f;
