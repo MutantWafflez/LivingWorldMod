@@ -1,4 +1,5 @@
 ﻿using System;
+using LivingWorldMod.DataStructures.Structs;
 using Terraria.Utilities;
 
 namespace LivingWorldMod.Utilities;
@@ -31,5 +32,23 @@ public static partial class LWMUtils {
         if (condition) {
             list.Add(obj, weight);
         }
+    }
+
+    /// <summary>
+    ///     Returns the value in the passed in array, treating the array as if it was an array of some n-dimensional array. The dimension of the array is determined by the amount of
+    ///     <see cref="ArrayDimensionData" />
+    ///     parameters that are passed in. For example, passing in 3 dimension parameters will treat the array as if it was 3 dimensional.
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="dimensionDatas"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static T GetValueAsArrayOfVariableDimension<T>(this T[] array, params ArrayDimensionData[] dimensionDatas) {
+        int endPosition = 0;
+        for (int i = 0; i < dimensionDatas.Length - 1; i++) {
+            endPosition += dimensionDatas[i].dimensionPosition * dimensionDatas[i + 1].dimensionSize;
+        }
+
+        return array[endPosition + dimensionDatas[^1].dimensionPosition];
     }
 }

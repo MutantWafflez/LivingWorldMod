@@ -86,7 +86,7 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
             TownNPCSpriteOverlay currentOverlay = overlayProfiles[npc.type].GetCurrentSpriteOverlay(npc, textureIndex);
             spriteBatch.Draw(
                 currentOverlay.Texture,
-                drawPos + currentOverlay.PositionInFrame.ToWorldCoordinates(Vector2.Zero),
+                drawPos + currentOverlay.PositionInFrame.ToVector2(),
                 null,
                 npc.color == default(Color) ? npc.GetAlpha(drawColor) : npc.GetColor(drawColor),
                 npc.rotation,
