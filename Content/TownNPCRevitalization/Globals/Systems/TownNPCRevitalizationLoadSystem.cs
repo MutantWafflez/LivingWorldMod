@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Globals.Systems.BaseSystems;
@@ -18,7 +15,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 ///     Mod system that handles more "precise" loading tasks for the Town NPC revitalization, beyond just Load() and SetStaticDefaults().
 /// </summary>
 public class TownNPCRevitalizationLoadSystem : BaseModSystem<TownNPCRevitalizationLoadSystem> {
-    private static TownNPCSpriteOverlay GenerateOverlayFromDifferenceBetweenFrames(
+    private static Texture2D GenerateOverlayFromDifferenceBetweenFrames(
         Color[] rawTextureData,
         int textureWidth,
         int textureHeight,
@@ -26,17 +23,15 @@ public class TownNPCRevitalizationLoadSystem : BaseModSystem<TownNPCRevitalizati
         Rectangle frameTwo,
         string overlayName
     ) {
-        Color[,] colorDifference = new Color[frameOne.Height, frameOne.Width];
-        Point topLeftOfDifference = new (-1, -1);
-        Point bottomRightOfDifference = topLeftOfDifference;
-
+        Color[] colorDifference = new Color[frameOne.Width * frameTwo.Height];
+        bool isDifference = false;
         for (int i = 0; i < frameOne.Height; i++) {
             for (int j = 0; j < frameOne.Width; j++) {
-                Color firstFramePixelColor = rawTextureData.GetValueAsArrayOfVariableDimension(
+                Color firstFramePixelColor = rawTextureData.GetValueAsNDimensionalArray(
                     new ArrayDimensionData(frameOne.Y + i, textureHeight),
                     new ArrayDimensionData(frameOne.X + j, textureWidth)
                 );
-                Color secondFramePixelColor = rawTextureData.GetValueAsArrayOfVariableDimension(
+                Color secondFramePixelColor = rawTextureData.GetValueAsNDimensionalArray(
                     new ArrayDimensionData(frameTwo.Y + i, textureHeight),
                     new ArrayDimensionData(frameTwo.X + j, textureWidth)
                 );
@@ -44,41 +39,23 @@ public class TownNPCRevitalizationLoadSystem : BaseModSystem<TownNPCRevitalizati
                     continue;
                 }
 
-                Point currentPoint = new (j, i);
-                if (topLeftOfDifference.X == -1) {
-                    topLeftOfDifference = currentPoint;
-                }
-
-                colorDifference[i, j] = secondFramePixelColor;
-
-                bottomRightOfDifference.X = Math.Max(bottomRightOfDifference.X, j);
-                bottomRightOfDifference.Y = Math.Max(bottomRightOfDifference.Y, i);
+                isDifference = true;
+                colorDifference[i * frameOne.Width + j] = secondFramePixelColor;
             }
         }
 
-        if (topLeftOfDifference == bottomRightOfDifference) {
-            return new TownNPCSpriteOverlay(new Texture2D(Main.graphics.GraphicsDevice, 1, 1), Point.Zero);
+        if (!isDifference) {
+            return new Texture2D(Main.graphics.GraphicsDevice, 1, 1);
         }
 
-        int overlayWidth = bottomRightOfDifference.X - topLeftOfDifference.X + 1;
-        int overlayHeight = bottomRightOfDifference.Y - topLeftOfDifference.Y + 1;
-        int totalOverlayArea = overlayWidth * overlayHeight;
-        Color[] overlayRawData = new Color[totalOverlayArea];
-
-        for (int i = 0; i < overlayHeight; i++) {
-            for (int j = 0; j < overlayWidth; j++) {
-                overlayRawData[i * overlayWidth + j] = colorDifference[topLeftOfDifference.Y + i, topLeftOfDifference.X + j];
-            }
-        }
-
-        Texture2D overlayTexture = new (Main.graphics.GraphicsDevice, overlayWidth, overlayHeight);
-        overlayTexture.SetData(overlayRawData);
+        Texture2D overlayTexture = new (Main.graphics.GraphicsDevice, frameOne.Width, frameOne.Height);
+        overlayTexture.SetData(colorDifference);
         overlayTexture.Name = overlayName;
 
-        return new TownNPCSpriteOverlay(overlayTexture, topLeftOfDifference);
+        return overlayTexture;
     }
 
-    private static TownNPCSpriteOverlay[] GenerateTownNPCSpriteOverlays(string npcAssetName, Texture2D npcTexture, int npcType) {
+    private static Texture2D[] GenerateTownNPCSpriteOverlays(string npcAssetName, Texture2D npcTexture, int npcType) {
         int npcFrameCount = Main.npcFrameCount[npcType];
         int totalPixelArea = npcTexture.Width * npcTexture.Height;
         int nonAttackFrameCount = npcFrameCount - NPCID.Sets.AttackFrameCount[npcType];
@@ -142,7 +119,7 @@ public class TownNPCRevitalizationLoadSystem : BaseModSystem<TownNPCRevitalizati
     }
 
     private void GenerateTownNPCSpriteProfiles() {
-        Dictionary<int, TownNPCSpriteOverlayProfile> overlayProfiles = [];
+        Dictionary<int, Texture2D[]> overlayTextures = [];
         TownGlobalNPC townSingletonNPC = ModContent.GetInstance<TownGlobalNPC>();
         NPC npc = new();
         for (int i = 0; i < NPCLoader.NPCCount; i++) {
@@ -153,22 +130,22 @@ public class TownNPCRevitalizationLoadSystem : BaseModSystem<TownNPCRevitalizati
 
             string modName = i >= NPCID.Count ? NPCLoader.GetNPC(i).Mod.Name : "Terraria";
             Asset<Texture2D> npcAsset;
-            if (!TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile)) {
-                npcAsset = TextureAssets.Npc[i];
-                overlayProfiles[i] = new TownNPCSpriteOverlayProfile(GenerateTownNPCSpriteOverlays(npcAsset.Name, npcAsset.ForceLoadAsset(modName), i));
-                continue;
-            }
+            // if (!TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile)) {
+            npcAsset = TextureAssets.Npc[i];
+            overlayTextures[i] = GenerateTownNPCSpriteOverlays(npcAsset.Name, npcAsset.ForceLoadAsset(modName), i);
+            // continue;
+            // }
 
-            int npcVariationCount = profile is Profiles.StackedNPCProfile stackedNPCProfile ? stackedNPCProfile._profiles.Length : 1;
-            List<TownNPCSpriteOverlay[]> spriteOverlays = [];
-            for (int j = 0; j < npcVariationCount; npc.townNpcVariationIndex = ++j) {
-                npcAsset = profile.GetTextureNPCShouldUse(npc);
-                spriteOverlays.Add(GenerateTownNPCSpriteOverlays(npcAsset.Name, npcAsset.ForceLoadAsset(modName), i));
-            }
-
-            overlayProfiles[i] = new TownNPCSpriteOverlayProfile(spriteOverlays.ToArray());
+            // int npcVariationCount = profile is Profiles.StackedNPCProfile stackedNPCProfile ? stackedNPCProfile._profiles.Length : 1;
+            // List<Texture2D> spriteOverlays = [];
+            // for (int j = 0; j < npcVariationCount; npc.townNpcVariationIndex = ++j) {
+            //     npcAsset = profile.GetTextureNPCShouldUse(npc);
+            //     spriteOverlays.Add(GenerateTownNPCSpriteOverlays(npcAsset.Name, npcAsset.ForceLoadAsset(modName), i));
+            // }
+            //
+            // overlayTextures[i] = spriteOverlays.ToArray();
         }
 
-        TownNPCSpriteModule.overlayProfiles = overlayProfiles;
+        TownNPCSpriteModule.overlayTextures = overlayTextures;
     }
 }

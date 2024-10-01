@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -20,7 +19,8 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
     private const int TalkTextureIndex = 0;
     private const int EyelidTextureIndex = 1;
 
-    public static IReadOnlyDictionary<int, TownNPCSpriteOverlayProfile> overlayProfiles;
+    // TODO: Make full profile
+    public static IReadOnlyDictionary<int, Texture2D[]> overlayTextures;
 
     private readonly HashSet<int> _drawSet = [];
 
@@ -83,10 +83,10 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
 
         drawColor = npc.GetNPCColorTintedByBuffs(drawColor);
         foreach (int textureIndex in _drawSet) {
-            TownNPCSpriteOverlay currentOverlay = overlayProfiles[npc.type].GetCurrentSpriteOverlay(npc, textureIndex);
+            Texture2D currentOverlay = overlayTextures[npc.type][textureIndex];
             spriteBatch.Draw(
-                currentOverlay.Texture,
-                drawPos + currentOverlay.PositionInFrame.ToVector2(),
+                currentOverlay,
+                drawPos,
                 null,
                 npc.color == default(Color) ? npc.GetAlpha(drawColor) : npc.GetColor(drawColor),
                 npc.rotation,

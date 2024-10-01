@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.UI.Bestiary;
@@ -151,11 +150,13 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     public override void Unload() {
-        if (TownNPCSpriteModule.overlayProfiles is not null) {
+        if (TownNPCSpriteModule.overlayTextures is not null) {
             Main.QueueMainThreadAction(
                 () => {
-                    foreach (TownNPCSpriteOverlayProfile profile in TownNPCSpriteModule.overlayProfiles.Values) {
-                        profile.Dispose();
+                    foreach (Texture2D[] overlays in TownNPCSpriteModule.overlayTextures.Values) {
+                        foreach (Texture2D overlay in overlays) {
+                            overlay.Dispose();
+                        }
                     }
                 }
             );

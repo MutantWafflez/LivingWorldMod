@@ -43,7 +43,7 @@ public static partial class LWMUtils {
     /// <param name="dimensionDatas"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static T GetValueAsArrayOfVariableDimension<T>(this T[] array, params ArrayDimensionData[] dimensionDatas) {
+    public static T GetValueAsNDimensionalArray<T>(this T[] array, params ArrayDimensionData[] dimensionDatas) {
         int endPosition = 0;
         for (int i = 0; i < dimensionDatas.Length - 1; i++) {
             endPosition += dimensionDatas[i].dimensionPosition * dimensionDatas[i + 1].dimensionSize;
