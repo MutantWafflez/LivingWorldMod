@@ -19,8 +19,7 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
     private const int TalkTextureIndex = 0;
     private const int EyelidTextureIndex = 1;
 
-    // TODO: Make full profile
-    public static IReadOnlyDictionary<int, Texture2D[]> overlayTextures;
+    public static IReadOnlyDictionary<int, TownNPCSpriteProfile> overlayProfiles;
 
     private readonly HashSet<int> _drawSet = [];
 
@@ -82,8 +81,8 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         );
 
         drawColor = npc.GetNPCColorTintedByBuffs(drawColor);
-        foreach (int textureIndex in _drawSet) {
-            Texture2D currentOverlay = overlayTextures[npc.type][textureIndex];
+        foreach (int overlayIndex in _drawSet) {
+            Texture2D currentOverlay = overlayProfiles[npc.type].GetCurrentSpriteOverlay(npc, overlayIndex);
             spriteBatch.Draw(
                 currentOverlay,
                 drawPos,
