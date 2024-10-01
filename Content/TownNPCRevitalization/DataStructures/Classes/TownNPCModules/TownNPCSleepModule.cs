@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Hjson;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Structs;
@@ -25,21 +26,20 @@ public sealed  class TownNPCSleepModule (NPC npc, TownGlobalNPC globalNPC) : Tow
             SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(npc.type);
 
             TimeOnly currentTime = LWMUtils.CurrentInGameTime;
-            bool curTimeGreaterThanStartTime = currentTime >= npcSleepSchedule.StartTime;
-            bool curTimeLessThanEndTime = currentTime <= npcSleepSchedule.EndTime;
-
-            return !eventOccuringThatBlocksSleep
-                && (npcSleepSchedule.EndTime < npcSleepSchedule.StartTime ? curTimeGreaterThanStartTime || curTimeLessThanEndTime : curTimeGreaterThanStartTime && curTimeLessThanEndTime);
+            return !eventOccuringThatBlocksSleep && currentTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime);
         }
     }
 
     public static SleepSchedule GetSleepProfileOrDefault(int npcType) => _sleepSchedules.GetValueOrDefault(npcType, DefaultSleepSchedule);
 
     public static void Load() {
-        // TODO: Load specific sleep profiles
-        _sleepSchedules = new Dictionary<int, SleepSchedule> {
-            { NPCID.ArmsDealer, new SleepSchedule(new TimeOnly(22, 45, 0), new TimeOnly(6, 45, 0)) }, { NPCID.Princess, new SleepSchedule(new TimeOnly(6, 30, 0), new TimeOnly(12, 30, 0)) }
-        };
+        _sleepSchedules = new Dictionary<int, SleepSchedule>();
+        JsonObject sleepSchedulesJSON = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCSleepSchedules.json").Qo();
+        foreach ((string npcName, JsonValue sleepSchedule) in sleepSchedulesJSON) {
+            int npcType = NPCID.Search.GetId(npcName);
+
+            _sleepSchedules[npcType] = new SleepSchedule(TimeOnly.Parse(sleepSchedule["Start"]), TimeOnly.Parse(sleepSchedule["End"]));
+        }
     }
 
     public override void Update() {
