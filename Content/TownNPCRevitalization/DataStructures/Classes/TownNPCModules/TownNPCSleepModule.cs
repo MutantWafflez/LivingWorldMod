@@ -9,9 +9,9 @@ using Terraria.GameContent.Events;
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
 public sealed  class TownNPCSleepModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCModule(npc, globalNPC) {
-    public static readonly SleepProfile DefaultSleepProfile =  new (new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
+    public static readonly SleepSchedule DefaultSleepSchedule =  new (new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
 
-    private static Dictionary<int, SleepProfile> _sleepProfiles;
+    private static Dictionary<int, SleepSchedule> _sleepSchedules;
 
     /// <summary>
     ///     Current amount of sleep "points" that the NPC has stored. Gives various mood boosts/losses based on how many points the NPC has at any given point in time.
@@ -22,23 +22,23 @@ public sealed  class TownNPCSleepModule (NPC npc, TownGlobalNPC globalNPC) : Tow
     public bool ShouldSleep {
         get {
             bool eventOccuringThatBlocksSleep = LanternNight.LanternsUp || Main.slimeRain || Main.invasionType > InvasionID.None || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
-            SleepProfile npcSleepProfile = GetSleepProfileOrDefault(npc.type);
+            SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(npc.type);
 
             TimeOnly currentTime = LWMUtils.CurrentInGameTime;
-            bool curTimeGreaterThanStartTime = currentTime >= npcSleepProfile.StartTime;
-            bool curTimeLessThanEndTime = currentTime <= npcSleepProfile.EndTime;
+            bool curTimeGreaterThanStartTime = currentTime >= npcSleepSchedule.StartTime;
+            bool curTimeLessThanEndTime = currentTime <= npcSleepSchedule.EndTime;
 
             return !eventOccuringThatBlocksSleep
-                && (npcSleepProfile.EndTime < npcSleepProfile.StartTime ? curTimeGreaterThanStartTime || curTimeLessThanEndTime : curTimeGreaterThanStartTime && curTimeLessThanEndTime);
+                && (npcSleepSchedule.EndTime < npcSleepSchedule.StartTime ? curTimeGreaterThanStartTime || curTimeLessThanEndTime : curTimeGreaterThanStartTime && curTimeLessThanEndTime);
         }
     }
 
-    public static SleepProfile GetSleepProfileOrDefault(int npcType) => _sleepProfiles.GetValueOrDefault(npcType, DefaultSleepProfile);
+    public static SleepSchedule GetSleepProfileOrDefault(int npcType) => _sleepSchedules.GetValueOrDefault(npcType, DefaultSleepSchedule);
 
     public static void Load() {
         // TODO: Load specific sleep profiles
-        _sleepProfiles = new Dictionary<int, SleepProfile> {
-            { NPCID.ArmsDealer, new SleepProfile(new TimeOnly(22, 45, 0), new TimeOnly(6, 45, 0)) }, { NPCID.Princess, new SleepProfile(new TimeOnly(6, 30, 0), new TimeOnly(12, 30, 0)) }
+        _sleepSchedules = new Dictionary<int, SleepSchedule> {
+            { NPCID.ArmsDealer, new SleepSchedule(new TimeOnly(22, 45, 0), new TimeOnly(6, 45, 0)) }, { NPCID.Princess, new SleepSchedule(new TimeOnly(6, 30, 0), new TimeOnly(12, 30, 0)) }
         };
     }
 

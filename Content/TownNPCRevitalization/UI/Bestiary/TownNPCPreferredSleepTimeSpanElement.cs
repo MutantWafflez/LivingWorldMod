@@ -33,9 +33,9 @@ public class TownNPCPreferredSleepTimeSpanElement (int npcType) : IBestiaryInfoE
         backPanel.SetPadding(0f);
         elementZone.Append(backPanel);
 
-        SleepProfile sleepProfile = TownNPCSleepModule.GetSleepProfileOrDefault(npcType);
+        SleepSchedule sleepSchedule = TownNPCSleepModule.GetSleepProfileOrDefault(npcType);
         CultureInfo currentInGameCulture = Language.ActiveCulture.CultureInfo;
-        UIText sleepIntervalElement = new ($"{sleepProfile.StartTime.ToString("t", currentInGameCulture)} - {sleepProfile.EndTime.ToString("t", currentInGameCulture)}", 0.85f) {
+        UIText sleepIntervalElement = new ($"{sleepSchedule.StartTime.ToString("t", currentInGameCulture)} - {sleepSchedule.EndTime.ToString("t", currentInGameCulture)}", 0.85f) {
             HAlign = 1f, VAlign = 0.5f, Left = StyleDimension.FromPixels(-5f)
         };
         backPanel.Append(sleepIntervalElement);
