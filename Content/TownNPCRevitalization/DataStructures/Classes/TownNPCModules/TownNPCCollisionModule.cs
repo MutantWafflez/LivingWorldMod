@@ -12,13 +12,25 @@ public class TownNPCCollisionModule(NPC npc, TownGlobalNPC globalNPC) : TownNPCM
     public bool fallThroughPlatforms;
     public bool fallThroughStairs;
     public bool walkThroughStairs;
+    public bool ignoreLiquidVelocityModifications;
 
     /// <summary>
     ///     This method is called in <seealso cref="TownNPCCollisionPatches" />.
     /// </summary>
     public override void Update() {
         npc.Collision_WalkDownSlopes();
-        npc.Collision_WaterCollision(npc.Collision_LavaCollision());
+        bool lavaCollision = npc.Collision_LavaCollision();
+
+        // The water collision function has a potential velocity side effect, so to ensure that ignore flag is honored, we must wrap the function call
+        if (ignoreLiquidVelocityModifications) {
+            Vector2 dryVelocity = npc.velocity;
+            npc.Collision_WaterCollision(lavaCollision);
+            npc.velocity = dryVelocity;
+        }
+        else {
+            npc.Collision_WaterCollision(lavaCollision);
+        }
+
         if (!npc.wet) {
             npc.lavaWet = npc.honeyWet = npc.shimmerWet = false;
         }
@@ -33,7 +45,7 @@ public class TownNPCCollisionModule(NPC npc, TownGlobalNPC globalNPC) : TownNPCM
         Vector2 oldVelocity = npc.velocity;
         npc.velocity = Collision.TileCollision(cPosition, npc.velocity, cWidth, cHeight, fallThroughPlatforms);
         float liquidVelocityModifier = 1f;
-        if (npc.wet) {
+        if (npc.wet && !ignoreLiquidVelocityModifications) {
             if (npc.shimmerWet) {
                 liquidVelocityModifier = npc.shimmerMovementSpeed;
             }

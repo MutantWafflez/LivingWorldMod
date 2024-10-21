@@ -113,6 +113,7 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
             _notMakingProgressCounter = 0;
         }
 
+        npc.GravityIgnoresLiquid = lastConsumedNode.MovementType == NodeMovementType.Jump || nextNode.MovementType == NodeMovementType.Jump;
         _prevDistanceToNextNode = curDistanceToNextNode;
 
         Vector2 nextNodeCenter = (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates();
@@ -137,6 +138,7 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
             nextNodeCenter = (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates();
 
             if (lastConsumedNode.MovementType is NodeMovementType.Jump) {
+                collisionModule.ignoreLiquidVelocityModifications = true;
                 collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = false;
                 npc.BottomLeft = nextNodeBottom;
 
@@ -167,26 +169,25 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
                 npc.velocity.X = npc.direction;
                 Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
 
-                collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = collisionModule.walkThroughStairs = false;
+                collisionModule.ignoreLiquidVelocityModifications = collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = collisionModule.walkThroughStairs = false;
                 CheckForDoors();
                 break;
             case NodeMovementType.StepDown:
                 npc.velocity.X = npc.direction;
 
-                collisionModule.fallThroughStairs = collisionModule.walkThroughStairs = collisionModule.fallThroughPlatforms = false;
+                collisionModule.ignoreLiquidVelocityModifications = collisionModule.fallThroughStairs = collisionModule.walkThroughStairs = collisionModule.fallThroughPlatforms = false;
                 CheckForDoors();
                 break;
-            case NodeMovementType.PureHorizontal: {
+            default:
+            case NodeMovementType.PureHorizontal:
                 npc.velocity.X = npc.direction;
                 CheckForDoors();
 
-                collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = false;
+                collisionModule.ignoreLiquidVelocityModifications = collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = false;
                 collisionModule.walkThroughStairs = true;
                 break;
-            }
-            //Fall movements
-            case NodeMovementType.Fall: {
-                collisionModule.walkThroughStairs = false;
+            case NodeMovementType.Fall:
+                collisionModule.ignoreLiquidVelocityModifications = collisionModule.walkThroughStairs = false;
                 if (npc.velocity.Y == 0f) {
                     npc.velocity.X = npc.direction;
                 }
@@ -202,9 +203,8 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
 
                 collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = true;
                 break;
-            }
             case NodeMovementType.Jump:
-                if (npc.velocity.Y == 0)  {
+                if (npc.velocity.Y == 0f) {
                     npc.velocity.X = npc.direction;
                 }
 
