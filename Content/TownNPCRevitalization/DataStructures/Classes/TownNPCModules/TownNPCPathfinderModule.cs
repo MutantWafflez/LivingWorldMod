@@ -324,12 +324,6 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
             NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 4, headTilePos.X, headTilePos.Y);
             npc.netUpdate = true;
         }
-        /*else {
-            // TODO: Fix scenario where NPC can't open door
-
-            npc.direction *= -1;
-            npc.netUpdate = true;
-        }*/
     }
 
     private PathfinderResult GetPathfinderResult(Point endPoint) {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
+using Terraria.DataStructures;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 
@@ -161,7 +162,8 @@ public class TownNPCPathfinder {
 
         for (int i = 0; i < _gridSizeX; i++) {
             for (int j = 0; j < _gridSizeY; j++) {
-                Tile tile = Main.tile[(_topLeftOfGrid + new UPoint16(i, j)).Point16];
+                Point16 tilePos = (_topLeftOfGrid + new UPoint16(i, j)).Point16;
+                Tile tile = Main.tile[tilePos];
 
                 bool hasTile = tile.HasTile;
                 bool isActuated = tile.IsActuated;
@@ -204,6 +206,13 @@ public class TownNPCPathfinder {
                     continue;
                 }
 
+                if (isClosedDoor
+                    && TileLoader.OpenDoorID(Main.tile[tilePos + new Point16(-1, 0)]) > 0
+                    && TileLoader.OpenDoorID(Main.tile[tilePos + new Point16(1, 0)]) > 0
+                ) {
+                    grid[i, j] = new TileData(0, TileFlags.Impassable);
+                    continue;
+                }
 
                 bool hasLava = tile is { LiquidAmount: > 0, LiquidType: LiquidID.Lava };
                 bool hasShimmer = tile is { LiquidAmount: >= 200, LiquidType: LiquidID.Shimmer };
@@ -237,7 +246,7 @@ public class TownNPCPathfinder {
     }
 
     private void DoPathfindingLoop() {
-        // TODO: Benchmark, optimize
+        // TODO: Performance seems to be good, but needs more data from various machines to know for sure (check on release?)
         while (_openQueue.Count > 0 && !_pathfindingStopped) {
             UPoint16 curNodePos = _openQueue.Dequeue();
 
