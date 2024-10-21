@@ -348,7 +348,13 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
             _cachedPathfinder
             ?? new TownNPCPathfinder(new UPoint16(topLeftOfGrid.X, topLeftOfGrid.Y), (ushort)PathfinderSize, (ushort)Math.Ceiling(npc.width / 16f), (ushort)Math.Ceiling(npc.height / 16f));
 
-        List<PathNode> path = pathFinder.FindPath(new UPoint16(BottomLeftTileOfNPC - topLeftOfGrid), new UPoint16(endPoint - topLeftOfGrid));
+        Point adjustedBottomLeftOfNPC = BottomLeftTileOfNPC;
+        Tile bottomLeftTileOfNPC = Main.tile[adjustedBottomLeftOfNPC];
+        if (bottomLeftTileOfNPC.HasTile && (bottomLeftTileOfNPC.IsHalfBlock || bottomLeftTileOfNPC.Slope > SlopeType.Solid)) {
+            adjustedBottomLeftOfNPC.Y--;
+        }
+
+        List<PathNode> path = pathFinder.FindPath(new UPoint16(adjustedBottomLeftOfNPC - topLeftOfGrid), new UPoint16(endPoint - topLeftOfGrid));
 
         if (path is null) {
             return null;
