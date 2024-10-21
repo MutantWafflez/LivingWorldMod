@@ -489,7 +489,7 @@ Mods: {
 				Event_Rain: My turban has moisture sensitive dye in it! I mustn't go outside...
 				VeryWellRested: The colors of the world seem so vibrant and alive! I feel great!
 				WellRested: I feel rich and ready for a wonderful day!
-				Tired: My mind's color is slowly draining a drab gray... 
+				Tired: My mind's color is slowly draining a drab gray...
 				SleepDeprived: I can see them... the colors of the sky, begging for me to rest...
 			}
 
@@ -547,7 +547,7 @@ Mods: {
 				VeryWellRested: I feel great and ready for some haggling!
 				WellRested: I feel good and ready for some business!
 				Tired: My brain feels like its got the rest quality of a silver coin. Not the best.
-				SleepDeprived: That's it! I'll pay anything! I just want to SLEEP! 
+				SleepDeprived: That's it! I'll pay anything! I just want to SLEEP!
 			}
 
 			Angler: {
@@ -666,11 +666,11 @@ Mods: {
 			}
 
 			Princess: {
-			    Event_Party: Ah! Just like the royal ball back home!
-			    VeryWellRested: I slept like royalty last night! Well, hehe, I am royalty!
-			    WellRested: I feel ready for an amazing day!
-			    Tired: This princess may be a little weary around the eyes, but I still feel ready for today!
-			    SleepDeprived: May I rest soon, whether it be on the royal beds or on the slack of the street.
+				Event_Party: Ah! Just like the royal ball back home!
+				VeryWellRested: I slept like royalty last night! Well, hehe, I am royalty!
+				WellRested: I feel ready for an amazing day!
+				Tired: This princess may be a little weary around the eyes, but I still feel ready for today!
+				SleepDeprived: May I rest soon, whether it be on the royal beds or on the slack of the street.
 			}
 		}
 
