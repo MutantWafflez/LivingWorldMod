@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.DebugModules;
 using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.DataStructures.Classes.DebugModules;
 using Microsoft.Xna.Framework.Input;
@@ -19,7 +20,7 @@ public class DebugToolSystem : ModSystem {
     public override bool IsLoadingEnabled(Mod mod) => LWM.IsDebug;
 
     public override void Load() {
-        _allModules = [new StructureModule(), new SkipWallModule(), new SkipTileModule()];
+        _allModules = [new StructureModule(), new SkipWallModule(), new SkipTileModule(), new TownNPCPathfinderDebugModule()];
     }
 
     public override void PostUpdateEverything() {
