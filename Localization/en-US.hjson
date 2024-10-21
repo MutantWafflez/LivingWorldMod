@@ -439,8 +439,8 @@ Mods: {
 				Event_Storm: EEK! THUNDER!
 				VeryWellRested: I. Feel. GREAT! YAS!
 				WellRested: I like, slept super well last night!
-				Tired: I'm, like, so tired...
-				SleepDeprived: Gr... Need. Sleep...
+				Tired: I'm, like, kinda tired.
+				SleepDeprived: Need. Sleep.
 			}
 
 			Stylist: {
@@ -448,8 +448,8 @@ Mods: {
 				Event_Party: Parties are always a great way to relax after a long day of work.
 				VeryWellRested: I slept like a princess last night!
 				WellRested: I feel about right. Decent sleep.
-				Tired: I hope I don't accidentally cut off someones hair by accident...
-				SleepDeprived: I am... so... tired...
+				Tired: I hope I don't accidentally cut off someones hair by accident.
+				SleepDeprived: I am so tired...
 			}
 
 			Dryad: {
@@ -457,9 +457,9 @@ Mods: {
 				Event_Party: Parties aren't of nature, but even I'll admit they're fun!
 				Event_Rain: The rain is a gift, the beauty of water peacefully falling from the heavens.
 				VeryWellRested: Mother has blessed me with gorgeous sleep last night! I feel wonderful.
-				WellRested: Once again, I rise for another morning.
+				WellRested: Nothing like a healthy amount of rest. I feel pretty good!
 				Tired: Mmm... I need to lay down...
-				SleepDeprived: I crave the lay in the soil and hibernate for eons...
+				SleepDeprived: I crave to lay in the soil and hibernate for eons...
 			}
 
 			Mechanic: {
@@ -480,7 +480,7 @@ Mods: {
 				VeryWellRested: I'm like a steam engine topped off with some bloody steam! I feel divine!
 				WellRested: Oi! I feel pretty good!
 				Tired: Blimey, I need some proper rest.
-				SleepDeprived: Brass, unlike me, doesn't need... rest...
+				SleepDeprived: Brass, unlike my weak self, doesn't need... rest...
 			}
 
 			DyeTrader: {
@@ -506,7 +506,7 @@ Mods: {
 				Event_Party: Hah! These surface parties are pretty fun, but nothing beats the dwarven ones back home!
 				Event_BloodMoon: Perfect! More fodder for my explosives!
 				VeryWellRested: The bed was rock-solid last night! I feel great!
-				WellRested: I feel pretty good, like a nice-hardy explosive!
+				WellRested: I feel pretty good, like a nice, hardy explosive!
 				Tired: I hope I don't lose a limb, my aim feels a bit off...
 				SleepDeprived: I'm about to blow a fuse if I don't sleep right now!
 			}
@@ -525,7 +525,7 @@ Mods: {
 				Event_BloodMoon: Can't play golf when all those monsters are outside!
 				Event_Rain: These are hardly suitable conditions for golfing...
 				VeryWellRested: I feel sharper than a blade of well-trimmed fairway grass!
-				WellRested: A perfect amount of a rest for a good game of golf!
+				WellRested: A sufficient amount of a rest for a good game of golf!
 				Tired: I don't feel my sharpest. My golf game requires my A game!
 				SleepDeprived: The grass looks so comfy... just a quick nap...
 			}
@@ -554,10 +554,10 @@ Mods: {
 				Event_Party: Hehe, I was able to sneak away some of the ale...
 				Event_BloodMoon: They say there are some super rare fish during these moons, but I'm not going out there! NO!
 				Event_Rain: Yes! Gotta start fishing! NOW!
-				VeryWellRested: I feel AWESOME! No fish is going to get of my line today!
+				VeryWellRested: I feel AWESOME! No fish is going to get off my line today!
 				WellRested: I feel ready and ready to boss someone around to get me some fish!
 				Tired: I need to get someone to grab me something nice to sleep on...
-				SleepDeprived: The fishies are sleeping really good right now... I want to join them...
+				SleepDeprived: The fishies are sleeping really good right now. I want to join them...
 			}
 
 			GoblinTinkerer: {
@@ -573,7 +573,7 @@ Mods: {
 				Event_Party: Ho ho ho! Even I get out and hit some parties outside of Christmas!
 				Event_BloodMoon: Well these folks certainly aren't very jolly...
 				VeryWellRested: HO HO HO! I feel like a jolly bowl of jelly!
-				WellRested: A feel ready for a jolly day to give out some holiday cheer!
+				WellRested: I feel ready for a jolly day to give out some holiday cheer!
 				Tired: Oh, even the big man himself needs to some proper sleep!
 				SleepDeprived: I'm putting whoever isn't letting me sleep on the PERMANENT naughty list...
 			}
@@ -591,7 +591,7 @@ Mods: {
 				Event_Party: Ah, every moment worthy of a painting...
 				Event_BloodMoon: Color, in moderation! Please! This is TOO MUCH red!
 				Event_Rain: Nature is so beautiful, even when it's all gray...
-				VeryWellRested: The world feels so colorful and amazing! I need to start painting this right now!
+				VeryWellRested: The world feels so colorful and amazing! I need to start painting right now!
 				WellRested: My mind feels ready and full of ideas for some good painting!
 				Tired: I think I need a break to rest.
 				SleepDeprived: My eyes yearn to close for the beautiful color of black to greet me for my sleep.
@@ -603,7 +603,7 @@ Mods: {
 				Event_Rain: I've seen rain much in my travels, but it's beautiful each time.
 				VeryWellRested: I feel fired up and ready for my day!
 				WellRested: I am feeling pretty good!
-				Tired: A good guide deserves their rest, lest they lead someone on the wrong path...
+				Tired: A good guide deserves their rest, lest they lead someone on the wrong path.
 				SleepDeprived: Please, someone guide me to the nearest floor to sleep on...
 			}
 
@@ -662,7 +662,7 @@ Mods: {
 				VeryWellRested: I feel so in-tune with the world around me, like I'm back in the earth!
 				WellRested: I feel pretty good! I think I can hit the shroom shuffle!
 				Tired: This fungus could really go for a good nap...
-				SleepDeprived: I don't care if someone is going to eat me! I'll sleep on the floor if I have to!
+				SleepDeprived: I don't care if someone is going to eat me! I'll sleep on the dirt if I have to!
 			}
 
 			Princess: {
