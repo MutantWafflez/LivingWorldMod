@@ -137,7 +137,7 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
             nextNode = path.Last();
             nextNodeCenter = (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates();
 
-            // TODO: Figure out solution for 5+ block jumps from the left not clearing
+            // TODO: Figure out solution for 5+ block jumps from the left not clearing (sometimes??? can't reproduce)
             if (lastConsumedNode.MovementType is NodeMovementType.Jump) {
                 collisionModule.ignoreLiquidVelocityModifications = true;
                 collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = false;
@@ -205,7 +205,7 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
                 collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = true;
                 break;
             case NodeMovementType.Jump:
-                if (npc.velocity.Y == 0f) {
+                if (npc.velocity.Y >= 0f) {
                     npc.velocity.X = npc.direction;
                 }
 
