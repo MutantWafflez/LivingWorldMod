@@ -18,6 +18,7 @@ public class TownNPCPathfinderDebugModule : DebugModule {
                 if (_selectedNPC == npc)  {
                     _selectedNPC = null;
                     Main.NewText($"Deselected NPC: {npc}");
+                    break;
                 }
 
                 _selectedNPC = npc;
