@@ -38,7 +38,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                 globalNPC.SpriteModule.CloseEyes();
 
                 npc.ai[1] = 1f;
-                globalNPC.SleepModule.sleepValue += 1.25f;
+                globalNPC.SleepModule.sleepValue += 1.1f;
             }
             else if (TileID.Sets.CanBeSatOnForNPCs[restTile.TileType]) {
                 npc.friendlyRegen += 5;
