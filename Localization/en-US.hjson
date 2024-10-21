@@ -424,125 +424,148 @@ Mods: {
 
 		TownNPCMoodFlavorText: {
 			Nurse: {
-			    Event_BloodMoon: I'm THIS close to marching up to that moon and destroying it myself!
-			    Event_Party: I seriously hope I don't have to treat anyone for alcohol poisoning after this.
+				Event_BloodMoon: I'm THIS close to marching up to that moon and destroying it myself!
+				Event_Party: I seriously hope I don't have to treat anyone for alcohol poisoning after this.
 			}
+
 			Zoologist: {
-		        Event_BloodMoon: GRR! This moon make me ANGRY!!!
-		        Event_Party: Yass!!! I LOVE parties!!!
-		        Event_Rain: The rain is TOTALLY awesome! There's, like, so many fun things you can do!
-		        Event_Storm: EEK! THUNDER!
+				Event_BloodMoon: GRR! This moon make me ANGRY!!!
+				Event_Party: Yass!!! I LOVE parties!!!
+				Event_Rain: The rain is TOTALLY awesome! There's, like, so many fun things you can do!
+				Event_Storm: EEK! THUNDER!
 			}
+
 			Stylist: {
-		        Event_BloodMoon: I'm about to use these scissors for MUCH more than cutting hair!
-		        Event_Party: Parties are always a great way to relax after a long day of work.	
+				Event_BloodMoon: I'm about to use these scissors for MUCH more than cutting hair!
+				Event_Party: Parties are always a great way to relax after a long day of work.
 			}
+
 			Dryad: {
-			    Event_BloodMoon: The land is bathed in blood and death. Mother has forsaken us!
-			    Event_Party: Parties aren't of nature, but even I'll admit they're fun!
-			    Event_Rain: The rain is a gift, the beauty of water peacefully falling from the heavens.
+				Event_BloodMoon: The land is bathed in blood and death. Mother has forsaken us!
+				Event_Party: Parties aren't of nature, but even I'll admit they're fun!
+				Event_Rain: The rain is a gift, the beauty of water peacefully falling from the heavens.
 			}
+
 			Mechanic: {
-		        Event_BloodMoon: UGH! I'm going to find whoever is in charge of that moon and hit them upside with a wrench!
-		        Event_Party: I love parties! I have so many gizmos to use for party tricks!
-		        Event_Rain: Ugh, the rain always makes it so hard to get anything done. It always fries my stuff!
-		        Event_Storm: I better not see any lightning hit my stuff, or so help me!	
+				Event_BloodMoon: UGH! I'm going to find whoever is in charge of that moon and hit them upside with a wrench!
+				Event_Party: I love parties! I have so many gizmos to use for party tricks!
+				Event_Rain: Ugh, the rain always makes it so hard to get anything done. It always fries my stuff!
+				Event_Storm: I better not see any lightning hit my stuff, or so help me!
 			}
+
 			Steampunker: {
-			    Event_BloodMoon: Bloody hell, this is!
-			    Event_Party: Can't wait to chat with the chaps! Love these parties.
-			    Event_Rain: I may love me some free water for steam, but not when it gets all over my gear!
+				Event_BloodMoon: Bloody hell, this is!
+				Event_Party: Can't wait to chat with the chaps! Love these parties.
+				Event_Rain: I may love me some free water for steam, but not when it gets all over my gear!
 			}
+
 			DyeTrader: {
-			    Event_Party: I quite love these parties! So many beautiful colors for our beautiful guests!
-			    Event_BloodMoon: Oh dear, I'm afraid all this red simply won't do...
-			    Event_Rain: My turban has moisture sensitive dye in it! I mustn't go outside...
+				Event_Party: I quite love these parties! So many beautiful colors for our beautiful guests!
+				Event_BloodMoon: Oh dear, I'm afraid all this red simply won't do...
+				Event_Rain: My turban has moisture sensitive dye in it! I mustn't go outside...
 			}
+
 			TaxCollector: {
-			    Event_Party: Bah, even I have to admit this is pretty fun...
-			    Event_BloodMoon: Please! These monsters can't take my coin!
+				Event_Party: Bah, even I have to admit this is pretty fun...
+				Event_BloodMoon: Please! These monsters can't take my coin!
 			}
-		    Demolitionist: {
-		        Event_Party: Hah! These surface parties are pretty fun, but nothing beats the dwarven ones back home!
-		        Event_BloodMoon: Perfect! More fodder for my explosives! 
-		    }
-		    DD2Bartender: {
-		        Event_Party: I expect some good business! People always try to find some excuse for a good mug of ale.
-		        Event_BloodMoon: The monsters out there remind me of some the nastiest drunkards I've served in my time. Disgusting.
-		    }
-		    Golfer: {
-		        Event_Party: Do you think these party people would be up for some golf?
-		        Event_BloodMoon: Can't play golf when all those monsters are outside!
-		        Event_Rain: These are hardly suitable conditions for golfing...
-		    }
-		    PartyGirl: {
-		        Event_Party: YESSS!!! I was BORN to party!
-		        Event_BloodMoon: I can't party with those monsters! That's not fair!
-		        Event_Rain: Can't have a party in the rain! What do I do now???
-		        Event_Storm: Now we DEFINITELY can't have a party! Aw man... 
-		    }
-		    Merchant: {
-		        Event_Party: My shop stays open, even during the celebration! Win-win in my book!
-		        Event_BloodMoon: Those monsters are driving away my customers!!!
-		    }
-		    Angler: {
-		        Event_Party: Hehe, I was able to sneak away some of the ale...
-		        Event_BloodMoon: They say there are some super rare fish during these moons, but I'm not going out there! NO!
-		        Event_Rain: Yes! Gotta start fishing! NOW!
-		    }
-		    GoblinTinkerer: {
-		        Event_Party: I didn't get invited to many parties back home, but I'm glad I'm invited here!
-		        Event_BloodMoon: Please don't tell me there are any goblins out there...
-		    }
-		    SantaClaus: {
-		        Event_Party: Ho ho ho! Even I get out and hit some parties outside of Christmas!
-		        Event_BloodMoon: Well these folks certainly aren't very jolly...
-		    }
-		    ArmsDealer: {
-		        Event_Party: Hah! Let's PARTY!
-		        Event_BloodMoon: Heh, free target practice!
-		    }
-		    Painter: {
-		        Event_Party: Ah, every moment worthy of a painting...
-		        Event_BloodMoon: Color, in moderation! Please! This is TOO MUCH red!
-		        Event_Rain: Nature is so beautiful, even when it's all gray...
-		    }
-		    Guide: {
-		        Event_Party: Parties are always a great way to unwind.
-		        Event_BloodMoon: Please don't let any of those monsters out there have any lava...
-		        Event_Rain: I've seen rain much in my travels, but it's beautiful each time. 
-		    }
-		    WitchDoctor: {
-		        Event_Party: Though our parties differ greatly, I must say I enjoy your kind's parties more.
-		        Event_BloodMoon: Nature is not well, the magic emanating from that moon is not of peace.
-		        Event_Rain: The rain is a gift of the spirits to hydrate the earth. They deserve thanks.
-		    }
-		    Pirate: {
-		        Event_Party: Ar! These landlubbers know how to party!
-		        Event_BloodMoon: Those monsters out there got some free booty! More for me!
-		        Event_Rain: Many days and nights on the seas in the rain. Reminds me of some beautiful times.
-		    }
-		    Cyborg: [
-		        Event_Party: This party beats solitaire!
-		        Event_BloodMoon: Sensors are picking up large, likely hostile life-forms!
-		        Event_Rain: BEEP! BEEP! RUST WARNING! BEEP! BEEP!
-		    }
-		    Clothier: {
-		        Event_Party: Parties are a perfect excuse to make some new costumes!
-		        Event_BloodMoon: Reminds me of the nights, trapped in front of that decrepit dungeon...
-		        Event_Rain: Fabric and water do NOT mix. 
-		    }
-		    Wizard: {
-		        Event_Party: I think this party could use some MAGIC!
-		        Event_BloodMoon: ABIIT MALA LUNA RUBEI!
-		    }
-		    Truffle: {
-		        Event_Party: Parties are alright, but some of the attendees are staring at me rather... hungrily.
-		        Event_BloodMoon: These monsters better not be keen on eating any mushrooms!
-		    }
-		    Princess: [
-		        Event_Party: Ah! Just like the royal ball back home... 
-		    }
+
+			Demolitionist: {
+				Event_Party: Hah! These surface parties are pretty fun, but nothing beats the dwarven ones back home!
+				Event_BloodMoon: Perfect! More fodder for my explosives!
+			}
+
+			DD2Bartender: {
+				Event_Party: I expect some good business! People always try to find some excuse for a good mug of ale.
+				Event_BloodMoon: The monsters out there remind me of some the nastiest drunkards I've served in my time. Disgusting.
+			}
+
+			Golfer: {
+				Event_Party: Do you think these party people would be up for some golf?
+				Event_BloodMoon: Can't play golf when all those monsters are outside!
+				Event_Rain: These are hardly suitable conditions for golfing...
+			}
+
+			PartyGirl: {
+				Event_Party: YESSS!!! I was BORN to party!
+				Event_BloodMoon: I can't party with those monsters! That's not fair!
+				Event_Rain: Can't have a party in the rain! What do I do now???
+				Event_Storm: Now we DEFINITELY can't have a party! Aw man...
+			}
+
+			Merchant: {
+				Event_Party: My shop stays open, even during the celebration! Win-win in my book!
+				Event_BloodMoon: Those monsters are driving away my customers!!!
+			}
+
+			Angler: {
+				Event_Party: Hehe, I was able to sneak away some of the ale...
+				Event_BloodMoon: They say there are some super rare fish during these moons, but I'm not going out there! NO!
+				Event_Rain: Yes! Gotta start fishing! NOW!
+			}
+
+			GoblinTinkerer: {
+				Event_Party: I didn't get invited to many parties back home, but I'm glad I'm invited here!
+				Event_BloodMoon: Please don't tell me there are any goblins out there...
+			}
+
+			SantaClaus: {
+				Event_Party: Ho ho ho! Even I get out and hit some parties outside of Christmas!
+				Event_BloodMoon: Well these folks certainly aren't very jolly...
+			}
+
+			ArmsDealer: {
+				Event_Party: Hah! Let's PARTY!
+				Event_BloodMoon: Heh, free target practice!
+			}
+
+			Painter: {
+				Event_Party: Ah, every moment worthy of a painting...
+				Event_BloodMoon: Color, in moderation! Please! This is TOO MUCH red!
+				Event_Rain: Nature is so beautiful, even when it's all gray...
+			}
+
+			Guide: {
+				Event_Party: Parties are always a great way to unwind.
+				Event_BloodMoon: Please don't let any of those monsters out there have any lava...
+				Event_Rain: I've seen rain much in my travels, but it's beautiful each time.
+			}
+
+			WitchDoctor: {
+				Event_Party: Though our parties differ greatly, I must say I enjoy your kind's parties more.
+				Event_BloodMoon: Nature is not well, the magic emanating from that moon is not of peace.
+				Event_Rain: The rain is a gift of the spirits to hydrate the earth. They deserve thanks.
+			}
+
+			Pirate: {
+				Event_Party: Ar! These landlubbers know how to party!
+				Event_BloodMoon: Those monsters out there got some free booty! More for me!
+				Event_Rain: Many days and nights on the seas in the rain. Reminds me of some beautiful times.
+			}
+
+			Cyborg: {
+				Event_Party: This party beats solitaire!
+				Event_BloodMoon: Sensors are picking up large, likely hostile life-forms!
+				Event_Rain: BEEP! BEEP! RUST WARNING! BEEP! BEEP!
+			}
+
+			Clothier: {
+				Event_Party: Parties are a perfect excuse to make some new costumes!
+				Event_BloodMoon: Reminds me of the nights, trapped in front of that decrepit dungeon...
+				Event_Rain: Fabric and water do NOT mix.
+			}
+
+			Wizard: {
+				Event_Party: I think this party could use some MAGIC!
+				Event_BloodMoon: ABIIT MALA LUNA RUBEI!
+			}
+
+			Truffle: {
+				Event_Party: Parties are alright, but some of the attendees are staring at me rather... hungrily.
+				Event_BloodMoon: These monsters better not be keen on eating any mushrooms!
+			}
+
+			Princess.Event_Party: Ah! Just like the royal ball back home...
 		}
 
 		InterTownNPCChat: {
