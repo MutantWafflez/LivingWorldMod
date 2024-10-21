@@ -23,8 +23,7 @@ public sealed  class TownNPCSleepModule (NPC npc, TownGlobalNPC globalNPC) : Tow
             bool eventOccuringThatBlocksSleep = LanternNight.LanternsUp || Main.slimeRain || Main.invasionType > InvasionID.None || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
             SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(npc.type);
 
-            TimeOnly currentTime = LWMUtils.CurrentInGameTime;
-            return !eventOccuringThatBlocksSleep && currentTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime);
+            return !eventOccuringThatBlocksSleep && LWMUtils.CurrentInGameTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime);
         }
     }
 
@@ -32,7 +31,7 @@ public sealed  class TownNPCSleepModule (NPC npc, TownGlobalNPC globalNPC) : Tow
 
     public override void Update() {
         if (!ShouldSleep) {
-            sleepValue -= 1f;
+            sleepValue -= 0.75f;
         }
     }
 }
