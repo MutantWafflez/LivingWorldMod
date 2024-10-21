@@ -137,6 +137,7 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
             nextNode = path.Last();
             nextNodeCenter = (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates();
 
+            // TODO: Figure out solution for 5+ block jumps from the left not clearing
             if (lastConsumedNode.MovementType is NodeMovementType.Jump) {
                 collisionModule.ignoreLiquidVelocityModifications = true;
                 collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = false;
@@ -393,6 +394,7 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
     private void EndPathfinding() {
         _prevDistanceToNextNode = float.MaxValue;
         _pathRestartCount = _notMakingProgressCounter = 0;
+        npc.GravityIgnoresLiquid = false;
 
         npc.velocity.X = 0f;
         _currentPathfinderResult = null;
