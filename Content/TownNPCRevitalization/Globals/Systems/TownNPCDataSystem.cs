@@ -24,10 +24,10 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 ///     ModSystem that holds all of the static data needed for the Town NPC Revitalization to function.
 /// </summary>
 public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
-    public static Dictionary<int, SleepSchedule> townNPCSleepSchedules;
+    public static Dictionary<int, SleepSchedule> sleepSchedules;
 
-    public static Dictionary<int, TownNPCProjAttackData> townNPCProjectileAttackData;
-    public static Dictionary<int, TownNPCMeleeAttackData> townNPCMeleeAttackData;
+    public static Dictionary<int, TownNPCProjAttackData> projectileAttackDatas;
+    public static Dictionary<int, TownNPCMeleeAttackData> meleeAttackDatas;
 
     public static IReadOnlyDictionary<int, TownNPCSpriteProfile> spriteOverlayProfiles;
 
@@ -101,12 +101,12 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
 
     public override void Load() {
         // TODO: Combine JSON into one file(?)
-        townNPCSleepSchedules = new Dictionary<int, SleepSchedule>();
+        sleepSchedules = new Dictionary<int, SleepSchedule>();
         JsonObject sleepSchedulesJSON = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCSleepSchedules.json").Qo();
         foreach ((string npcName, JsonValue sleepSchedule) in sleepSchedulesJSON) {
             int npcType = NPCID.Search.GetId(npcName);
 
-            townNPCSleepSchedules[npcType] = new SleepSchedule(TimeOnly.Parse(sleepSchedule["Start"]), TimeOnly.Parse(sleepSchedule["End"]));
+            sleepSchedules[npcType] = new SleepSchedule(TimeOnly.Parse(sleepSchedule["Start"]), TimeOnly.Parse(sleepSchedule["End"]));
         }
 
         JsonObject jsonAttackData = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCAttackData.json").Qo();
@@ -133,7 +133,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
             );
         }
 
-        townNPCProjectileAttackData = projDict;
+        projectileAttackDatas = projDict;
 
         Dictionary<int, TownNPCMeleeAttackData> meleeDict = [];
         foreach ((string npcName, JsonValue jsonValue) in meleeJSONAttackData) {
@@ -150,7 +150,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
             );
         }
 
-        townNPCMeleeAttackData = meleeDict;
+        meleeAttackDatas = meleeDict;
     }
 
     public override void PostSetupContent() {

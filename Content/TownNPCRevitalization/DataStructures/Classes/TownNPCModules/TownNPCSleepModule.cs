@@ -28,7 +28,7 @@ public sealed  class TownNPCSleepModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         }
     }
 
-    public static SleepSchedule GetSleepProfileOrDefault(int npcType) => TownNPCDataSystem.townNPCSleepSchedules.GetValueOrDefault(npcType, DefaultSleepSchedule);
+    public static SleepSchedule GetSleepProfileOrDefault(int npcType) => TownNPCDataSystem.sleepSchedules.GetValueOrDefault(npcType, DefaultSleepSchedule);
 
     public override void Update() {
         if (!ShouldSleep) {
