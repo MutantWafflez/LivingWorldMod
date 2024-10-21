@@ -90,8 +90,9 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC) : TownN
             return;
         }
 
+        int beAtHomeState = TownNPCAIState.GetStateInteger<BeAtHomeAIState>();
         if (IsSpeaking
-            || ((int)npc.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && npc.ai[1] == 1f)
+            || ((int)npc.ai[0] == beAtHomeState && npc.ai[1] == 1f)
             || !Main.rand.NextBool(ChitChatChanceDenominator)
             || LWMUtils.GetFirstNPC(
                 otherNPC =>
@@ -101,6 +102,7 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC) : TownN
                     && npc.Center.Distance(otherNPC.Center) <= 100f
                     && Collision.CanHit(npc.Center, 0, 0, otherNPC.Center, 0, 0)
             ) is not { } chatRecipient
+            || (chatRecipient.ai[0] == beAtHomeState && chatRecipient.ai[1] == 1f)
         ) {
             return;
         }
