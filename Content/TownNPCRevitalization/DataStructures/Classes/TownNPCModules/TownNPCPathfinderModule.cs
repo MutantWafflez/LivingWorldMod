@@ -144,7 +144,7 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
                 npc.velocity *= 0f;
 
                 float npcGravity = npc.gravity;
-                float jumpHeight = npc.BottomLeft.Y - (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates(8f, 0f).Y;
+                float jumpHeight = npc.Bottom.Y - (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates(0f).Y;
                 float yDisplacement = jumpHeight - npc.height;
 
                 // Horizontal Velocity = X Displacement / (sqrt(-2 * h / g) + sqrt(2(Y Displacement - h) / g))
@@ -203,6 +203,12 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
                 collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = true;
                 break;
             }
+            case NodeMovementType.Jump:
+                if (npc.velocity.Y == 0)  {
+                    npc.velocity.X = npc.direction;
+                }
+
+                break;
         }
     }
 
