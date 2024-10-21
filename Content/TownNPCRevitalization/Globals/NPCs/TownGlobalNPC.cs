@@ -185,6 +185,14 @@ public class TownGlobalNPC : GlobalNPC {
         return instance;
     }
 
+    public override void SaveData(NPC npc, TagCompound tag) {
+        OnSave?.Invoke(tag);
+    }
+
+    public override void LoadData(NPC npc, TagCompound tag) {
+        OnLoad?.Invoke(tag);
+    }
+
     public override bool PreAI(NPC npc) {
         npc.aiStyle = -1;
         return true;
@@ -236,6 +244,7 @@ public class TownGlobalNPC : GlobalNPC {
         PathfinderModule.ReceiveNetworkData(bitReader, binaryReader);
     }
 
+    // TODO: Modify sprite module to handle all sprite related requests instead of manual state overrides
     public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
         if (_stateDict.TryGetValue((int)npc.ai[0], out TownNPCAIState state)) {
             state.PreDrawNPC(this, npc, spriteBatch, screenPos, drawColor);
@@ -338,4 +347,14 @@ public class TownGlobalNPC : GlobalNPC {
 
         npc.localAI[0] = wrenchFound.ToInt();
     }
+
+    /// <summary>
+    ///     Event that is triggered in the <see cref="GlobalNPC.SaveData" /> method for saving data to the NPC.
+    /// </summary>
+    public event Action<TagCompound> OnSave;
+
+    /// <summary>
+    ///     Event that is triggered in the <see cref="GlobalNPC.LoadData" /> method for loading data from file for the NPC.
+    /// </summary>
+    public event Action<TagCompound> OnLoad;
 }
