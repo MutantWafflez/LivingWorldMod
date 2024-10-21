@@ -2,6 +2,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNP
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
@@ -11,7 +12,7 @@ public class ThrowAttackAIState : TownNPCAIState {
 
     public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         TownNPCCombatModule combatModule = globalNPC.CombatModule;
-        TownNPCCombatModule.projAttackData.TryGetValue(npc.type, out TownNPCProjAttackData attackData);
+        TownNPCDataSystem.townNPCProjectileAttackData.TryGetValue(npc.type, out TownNPCProjAttackData attackData);
 
         switch (npc.type) {
             case NPCID.BestiaryGirl:

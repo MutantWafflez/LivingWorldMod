@@ -3,6 +3,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNP
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.DataStructures.Classes;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
@@ -33,7 +34,7 @@ public sealed class HappinessPatches : LoadablePatch {
         }
 
         PersonalityHelperInfo info = new(player, npc, npcNeighbors, npcNeighborsByType, npcsWithinHouse, npcsWithinVillage);
-        if (TownNPCMoodModule.PersonalityDatabase.TryGetValue(npc.type, out List<IPersonalityTrait> personalityTraits)) {
+        if (TownNPCDataSystem.PersonalityDatabase.TryGetValue(npc.type, out List<IPersonalityTrait> personalityTraits)) {
             foreach (IPersonalityTrait shopModifier in personalityTraits) {
                 shopModifier.ApplyTrait(info, shopHelper);
             }

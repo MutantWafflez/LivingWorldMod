@@ -6,6 +6,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.UI.Bestiary;
 using LivingWorldMod.DataStructures.Classes;
 using Microsoft.Xna.Framework;
@@ -145,16 +146,11 @@ public class TownGlobalNPC : GlobalNPC {
         && entity.type != NPCID.OldMan
         && entity.type != NPCID.TravellingMerchant;
 
-    public override void Load() {
-        TownNPCCombatModule.Load();
-        TownNPCSleepModule.Load();
-    }
-
     public override void Unload() {
-        if (TownNPCSpriteModule.overlayProfiles is not null) {
+        if (TownNPCDataSystem.spriteOverlayProfiles is not null) {
             Main.QueueMainThreadAction(
                 () => {
-                    foreach (TownNPCSpriteProfile spriteProfile in TownNPCSpriteModule.overlayProfiles.Values) {
+                    foreach (TownNPCSpriteProfile spriteProfile in TownNPCDataSystem.spriteOverlayProfiles.Values) {
                         spriteProfile.Dispose();
                     }
                 }

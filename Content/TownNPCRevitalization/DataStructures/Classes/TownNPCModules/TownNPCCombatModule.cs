@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Hjson;
-using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
+﻿using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Structs;
@@ -15,9 +12,6 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.To
 ///     a given Town NPC.
 /// </summary>
 public sealed class TownNPCCombatModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCModule(npc, globalNPC) {
-    public static IReadOnlyDictionary<int, TownNPCProjAttackData> projAttackData;
-    public static IReadOnlyDictionary<int, TownNPCMeleeAttackData> meleeAttackData;
-
     public bool IsAttacking => npc.ai[0] >= TownNPCAIState.GetStateInteger<ThrowAttackAIState>() && npc.ai[0] <= TownNPCAIState.GetStateInteger<MeleeAttackAIState>();
 
     public float CurrentDamageMultiplier {
@@ -28,51 +22,6 @@ public sealed class TownNPCCombatModule (NPC npc, TownGlobalNPC globalNPC) : Tow
     public PreciseRectangle? AttackLocation {
         get;
         private set;
-    }
-
-    public static void Load() {
-        JsonObject jsonAttackData = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCAttackData.json").Qo();
-
-        JsonObject projJSONAttackData = jsonAttackData["ProjNPCs"].Qo();
-        JsonObject meleeJSONAttackData = jsonAttackData["MeleeNPCs"].Qo();
-
-        Dictionary<int, TownNPCProjAttackData> projDict = [];
-        foreach ((string npcName, JsonValue jsonValue) in projJSONAttackData) {
-            JsonObject jsonObject = jsonValue.Qo();
-            int npcType = NPCID.Search.GetId(npcName);
-
-            projDict[npcType] = new TownNPCProjAttackData(
-                jsonObject.Qi("projType"),
-                jsonObject.Qi("projDamage"),
-                (float)jsonObject.Qd("knockBack"),
-                (float)jsonObject.Qd("speedMult"),
-                jsonObject.Qi("attackDelay"),
-                jsonObject.Qi("attackCooldown"),
-                jsonObject.Qi("maxValue"),
-                jsonObject.Qi("gravityCorrection"),
-                NPCID.Sets.DangerDetectRange[npcType],
-                (float)jsonObject.Qd("randomOffset")
-            );
-        }
-
-        projAttackData = projDict;
-
-        Dictionary<int, TownNPCMeleeAttackData> meleeDict = [];
-        foreach ((string npcName, JsonValue jsonValue) in meleeJSONAttackData) {
-            JsonObject jsonObject = jsonValue.Qo();
-            int npcType = NPCID.Search.GetId(npcName);
-
-            meleeDict[npcType] = new TownNPCMeleeAttackData(
-                jsonObject.Qi("attackCooldown"),
-                jsonObject.Qi("maxValue"),
-                jsonObject.Qi("damage"),
-                (float)jsonObject.Qd("knockBack"),
-                jsonObject.Qi("itemWidth"),
-                jsonObject.Qi("itemHeight")
-            );
-        }
-
-        meleeAttackData = meleeDict;
     }
 
     public override void Update() {
