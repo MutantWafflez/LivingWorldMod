@@ -52,7 +52,7 @@
     "Rain": -8
   },
   "PartyGirl": {
-    "Party": 10,
+    "Party": 20,
     "BloodMoon": -10,
     "Rain": -8,
     "Storm": -10
@@ -113,7 +113,7 @@
     "BloodMoon": -10
   },
   "Truffle": {
-    "Party": 10,
+    "Party": 4,
     "BloodMoon": -10
   },
   "Princess": {
