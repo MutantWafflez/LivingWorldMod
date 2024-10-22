@@ -249,6 +249,7 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+        // TODO: Re-write chat bubble drawing
         ChatModule.DoChatDrawing(spriteBatch, screenPos, drawColor);
 
         if (!LWM.IsDebug) {
