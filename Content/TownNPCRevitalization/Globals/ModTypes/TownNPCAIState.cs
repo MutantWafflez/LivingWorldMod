@@ -64,16 +64,6 @@ public abstract class TownNPCAIState : ModType {
 
     /// <summary>
     ///     Called every draw frame that the given Town NPC is doing the given activity
-    ///     (see <see cref="DoActivity" />). Use this to draw things BEHIND the NPC.
-    /// </summary>
-    /// <remarks>
-    ///     The <see cref="TownGlobalNPC" /> parameter is added for your convenience, so you don't have to manually call
-    ///     <see cref="NPC.GetGlobalNPC" />.
-    /// </remarks>
-    public virtual void PreDrawNPC(TownGlobalNPC globalNPC, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { }
-
-    /// <summary>
-    ///     Called every draw frame that the given Town NPC is doing the given activity
     ///     (see <see cref="DoActivity" />). Use this to draw things IN FRONT OF the NPC.
     /// </summary>
     /// <remarks>

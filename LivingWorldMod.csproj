@@ -18,6 +18,9 @@
 
         <Publicize Include="tModLoader:Terraria.GameContent.Events.BirthdayParty.CanNPCParty"/>
 
+        <!-- Main Publicizing -->
+        <Publicize Include="tModLoader:Terraria.Main.DrawNPCExtras"/>
+
         <!-- NPC Publicizing -->
         <!-- AI Publicizing -->
         <Publicize Include="tModLoader:Terraria.NPC.AI_007_TownEntities_Shimmer_TeleportToLandingSpot"/>

@@ -1,9 +1,7 @@
-﻿using System;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
+﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
@@ -25,34 +23,39 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
         if (pathfinderModule.BottomLeftTileOfNPC != restPos) {
             pathfinderModule.RequestPathfind(restPos);
         }
-        else if (globalNPC.SleepModule.ShouldSleep) {
-            Tile restTile = Main.tile[restPos];
-            npc.BottomLeft = restPos.ToWorldCoordinates(0f, 16f);
-            if (TileID.Sets.CanBeSleptIn[restTile.TileType]) {
-                npc.friendlyRegen += 10;
+        else {
+            TownNPCSleepModule sleepModule = globalNPC.SleepModule;
+            if (sleepModule.ShouldSleep) {
+                Tile restTile = Main.tile[restPos];
+                npc.BottomLeft = restPos.ToWorldCoordinates(0f, 16f);
+                if (TileID.Sets.CanBeSleptIn[restTile.TileType]) {
+                    npc.friendlyRegen += 10;
 
-                PlayerSleepingHelper.GetSleepingTargetInfo(restPos.X, restPos.Y, out int targetDirection, out _, out _);
-                npc.direction = targetDirection;
-                npc.rotation = MathHelper.PiOver2 * -targetDirection;
-                Main.sleepingManager.AddNPC(npc.whoAmI, restPos);
-                globalNPC.SpriteModule.CloseEyes();
+                    PlayerSleepingHelper.GetSleepingTargetInfo(restPos.X, restPos.Y, out int targetDirection, out _, out _);
+                    npc.direction = targetDirection;
+                    npc.rotation = MathHelper.PiOver2 * -targetDirection;
+                    Main.sleepingManager.AddNPC(npc.whoAmI, restPos);
+                    globalNPC.SpriteModule.CloseEyes();
 
-                npc.ai[1] = 1f;
-                globalNPC.SleepModule.awakeTicks -= 1.875f;
+                    npc.ai[1] = 1f;
+                    sleepModule.awakeTicks -= 1.875f;
+                    globalNPC.SpriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData);
+                }
+                else if (TileID.Sets.CanBeSatOnForNPCs[restTile.TileType]) {
+                    npc.friendlyRegen += 5;
+
+                    npc.SitDown(restPos, out int direction, out _);
+                    npc.direction = direction;
+                    Main.sittingManager.AddNPC(npc.whoAmI, restPos);
+                    globalNPC.SpriteModule.CloseEyes();
+
+                    npc.ai[1] = 1f;
+                    sleepModule.awakeTicks -= 1.6f;
+                    globalNPC.SpriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData);
+                }
+
+                pathfinderModule.CancelPathfind();
             }
-            else if (TileID.Sets.CanBeSatOnForNPCs[restTile.TileType]) {
-                npc.friendlyRegen += 5;
-
-                npc.SitDown(restPos, out int direction, out _);
-                npc.direction = direction;
-                Main.sittingManager.AddNPC(npc.whoAmI, restPos);
-                globalNPC.SpriteModule.CloseEyes();
-
-                npc.ai[1] = 1f;
-                globalNPC.SleepModule.awakeTicks -= 1.6f;
-            }
-
-            pathfinderModule.CancelPathfind();
         }
     }
 
@@ -62,19 +65,5 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
         if (npc.ai[1] == 1f && TileID.Sets.CanBeSatOnForNPCs[restTile.TileType]) {
             npc.frame.Y = frameHeight * (Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type] - 3);
         }
-    }
-
-    public override void PostDrawNPC(TownGlobalNPC globalNPC, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-        if (npc.ai[1] != 1f) {
-            return;
-        }
-
-        Main.instance.LoadItem(ItemID.SleepingIcon);
-        Texture2D sleepingIconTexture = TextureAssets.Item[ItemID.SleepingIcon].Value;
-        spriteBatch.Draw(
-            sleepingIconTexture,
-            npc.Top - screenPos + new Vector2(sleepingIconTexture.Width / -2f, -16 + MathF.Sin(Main.GlobalTimeWrappedHourly)),
-            drawColor * 0.67f
-        );
     }
 }

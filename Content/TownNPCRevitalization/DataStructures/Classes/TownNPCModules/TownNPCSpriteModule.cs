@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
@@ -20,7 +22,8 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
     private const int TalkTextureIndex = 0;
     private const int EyelidTextureIndex = 1;
 
-    private readonly HashSet<int> _drawSet = [];
+    private readonly HashSet<int> _overlayDrawSet = [];
+    private readonly List<TownNPCDrawData> _drawRequests = [];
 
     private int _blinkTimer;
     private int _mouthOpenTimer;
@@ -44,11 +47,23 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
     }
 
     public override void Update() {
-        _drawSet.Clear();
-
-        if (Main.netMode != NetmodeID.Server) {
-            UpdateHead();
+        if (Main.netMode == NetmodeID.Server) {
+            return;
         }
+
+        _overlayDrawSet.Clear();
+
+        for (int i = 0; i < _drawRequests.Count; i++) {
+            TownNPCDrawData drawRequest = _drawRequests[i];
+            if (drawRequest.drawDuration-- <= 0) {
+                _drawRequests.RemoveAt(i--);
+            }
+            else {
+                _drawRequests[i] = drawRequest;
+            }
+        }
+
+        UpdateHead();
     }
 
     public void GiveItem(int givingItemType = -1) {
@@ -67,32 +82,51 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         _mouthOpenTimer = duration;
     }
 
-    public void DrawNPCOverlays(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-        Asset<Texture2D> npcAsset = TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile) ? profile.GetTextureNPCShouldUse(npc) : TextureAssets.Npc[npc.type];
+    /// <summary>
+    ///     Adds a draw request for drawing over the Town NPC. Note that the position given in the request will be drawn relative to the draw position of the NPC.
+    /// </summary>
+    public void RequestDraw(in TownNPCDrawData request) {
+        _drawRequests.Add(request);
+    }
 
+    public void DrawNPC(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+        Asset<Texture2D> npcAsset = TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile) ? profile.GetTextureNPCShouldUse(npc) : TextureAssets.Npc[npc.type];
         int frameWidth = npcAsset.Width();
         int frameHeight = npcAsset.Height() / Main.npcFrameCount[npc.type];
-
         Vector2 halfSize = new(frameWidth / 2, frameHeight / 2);
+
+        float npcAddHeight = Main.NPCAddHeight(npc);
         Vector2 drawPos = new(
             npc.position.X - screenPos.X + npc.width / 2 - frameWidth * npc.scale / 2f + halfSize.X * npc.scale,
-            npc.position.Y - screenPos.Y + npc.height - frameHeight * npc.scale + 4f + halfSize.Y * npc.scale + Main.NPCAddHeight(npc) /*+ num35*/ + npc.gfxOffY
+            npc.position.Y - screenPos.Y + npc.height - frameHeight * npc.scale + 4f + halfSize.Y * npc.scale + npcAddHeight /*+ num35*/ + npc.gfxOffY
         );
 
         drawColor = npc.GetNPCColorTintedByBuffs(drawColor);
-        foreach (int overlayIndex in _drawSet) {
+        Color shiftedDrawColor = npc.color == default(Color) ? npc.GetAlpha(drawColor) : npc.GetColor(drawColor);
+        SpriteEffects spriteEffects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+        DrawData defaultDrawData = new (
+            null,
+            drawPos,
+            null,
+            shiftedDrawColor,
+            npc.rotation,
+            halfSize,
+            npc.scale,
+            spriteEffects
+        );
+
+        Main.instance.DrawNPCExtras(npc, true, npcAddHeight, 0f, shiftedDrawColor, halfSize, spriteEffects, screenPos);
+        (defaultDrawData with { texture = npcAsset.Value, sourceRect = npc.frame }).Draw(spriteBatch);
+        Main.instance.DrawNPCExtras(npc, false, npcAddHeight, 0f, shiftedDrawColor, halfSize, spriteEffects, screenPos);
+
+        foreach (int overlayIndex in _overlayDrawSet) {
             Texture2D currentOverlay = TownNPCDataSystem.spriteOverlayProfiles[npc.type].GetCurrentSpriteOverlay(npc, overlayIndex);
-            spriteBatch.Draw(
-                currentOverlay,
-                drawPos,
-                null,
-                npc.color == default(Color) ? npc.GetAlpha(drawColor) : npc.GetColor(drawColor),
-                npc.rotation,
-                halfSize,
-                npc.scale,
-                npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
-                0
-            );
+            (defaultDrawData with { texture = currentOverlay }).Draw(spriteBatch);
+        }
+
+        foreach (TownNPCDrawData drawRequest in _drawRequests) {
+            ref readonly DrawData drawData = ref drawRequest.drawData;
+            (drawData with { position = drawData.position + defaultDrawData.position }).Draw(spriteBatch);
         }
     }
 
@@ -137,11 +171,11 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         }
 
         if (AreEyesClosed) {
-            _drawSet.Add(EyelidTextureIndex);
+            _overlayDrawSet.Add(EyelidTextureIndex);
         }
 
         if (IsTalking) {
-            _drawSet.Add(TalkTextureIndex);
+            _overlayDrawSet.Add(TalkTextureIndex);
         }
     }
 }

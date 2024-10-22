@@ -70,8 +70,7 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     /// <summary>
-    ///     Instance of the module that handles any miscellaneous drawing
-    ///     tasks.
+    ///     Instance of the module that handles all sprite-related tasks.
     /// </summary>
     public TownNPCSpriteModule SpriteModule {
         get;
@@ -246,11 +245,8 @@ public class TownGlobalNPC : GlobalNPC {
 
     // TODO: Modify sprite module to handle all sprite related requests instead of manual state overrides
     public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-        if (_stateDict.TryGetValue((int)npc.ai[0], out TownNPCAIState state)) {
-            state.PreDrawNPC(this, npc, spriteBatch, screenPos, drawColor);
-        }
-
-        return true;
+        SpriteModule.DrawNPC(spriteBatch, screenPos, drawColor);
+        return false;
     }
 
     public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
@@ -258,7 +254,6 @@ public class TownGlobalNPC : GlobalNPC {
             state.PostDrawNPC(this, npc, spriteBatch, screenPos, drawColor);
         }
 
-        SpriteModule.DrawNPCOverlays(spriteBatch, screenPos, drawColor);
         ChatModule.DoChatDrawing(spriteBatch, screenPos, drawColor);
 
         if (!LWM.IsDebug) {
