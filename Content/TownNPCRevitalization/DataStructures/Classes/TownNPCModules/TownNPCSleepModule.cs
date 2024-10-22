@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
@@ -27,7 +26,7 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
     /// </summary>
     public BoundedNumber<float> awakeTicks = new(DefaultAwakeValue, 0, MaxAwakeValue);
 
-    public static TownNPCDrawData GetSleepSpriteDrawData {
+    public static DrawData GetSleepSpriteDrawData {
         get {
             Main.instance.LoadItem(ItemID.SleepingIcon);
             Texture2D sleepingIconTexture = TextureAssets.Item[ItemID.SleepingIcon].Value;
@@ -62,8 +61,11 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
             awakeTicks += 1f;
         }
 
-        if (awakeTicks >= MaxAwakeValue) {
-            // TODO: Add passed out state
+        if (awakeTicks < MaxAwakeValue) {
+            return;
         }
+
+        globalNPC.PathfinderModule.CancelPathfind();
+        TownGlobalNPC.RefreshToState<PassedOutAIState>(npc);
     }
 }
