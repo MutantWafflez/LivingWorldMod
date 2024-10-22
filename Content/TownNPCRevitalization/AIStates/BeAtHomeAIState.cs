@@ -38,7 +38,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                 globalNPC.SpriteModule.CloseEyes();
 
                 npc.ai[1] = 1f;
-                globalNPC.SleepModule.sleepValue += 1.1f;
+                globalNPC.SleepModule.awakeTicks -= 1.875f;
             }
             else if (TileID.Sets.CanBeSatOnForNPCs[restTile.TileType]) {
                 npc.friendlyRegen += 5;
@@ -49,7 +49,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                 globalNPC.SpriteModule.CloseEyes();
 
                 npc.ai[1] = 1f;
-                globalNPC.SleepModule.sleepValue += 0.75f;
+                globalNPC.SleepModule.awakeTicks -= 1.6f;
             }
 
             pathfinderModule.CancelPathfind();

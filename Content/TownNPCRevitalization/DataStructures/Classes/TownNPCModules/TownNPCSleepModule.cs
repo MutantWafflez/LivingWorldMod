@@ -12,15 +12,15 @@ using Terraria.GameContent.Events;
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
 public sealed  class TownNPCSleepModule  : TownNPCModule {
-    private const int MaxSleepValue = LWMUtils.InGameHour * 12;
-    private const float DefaultSleepValue = MaxSleepValue * 0.8f;
+    private const int MaxAwakeValue = LWMUtils.InGameHour * 24;
+    private const float DefaultAwakeValue = MaxAwakeValue * 0.2f;
 
     private static readonly SleepSchedule DefaultSleepSchedule = new(new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
 
     /// <summary>
-    ///     Current amount of sleep "points" that the NPC has stored. Gives various mood boosts/losses based on how many points the NPC has at any given point in time.
+    ///     The amount of ticks that this NPC has been awake. The higher the value, the more severe effects on mood will occur. This value is decreased rapidly by a Town NPC sleeping.
     /// </summary>
-    public BoundedNumber<float> sleepValue = new(DefaultSleepValue, 0, MaxSleepValue);
+    public BoundedNumber<float> awakeTicks = new(DefaultAwakeValue, 0, MaxAwakeValue);
 
     public bool ShouldSleep {
         get {
@@ -34,11 +34,11 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
     private bool IsAsleep => npc.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && npc.ai[1] == 1f;
 
     public TownNPCSleepModule(NPC npc, TownGlobalNPC globalNPC) : base(npc, globalNPC) {
-        globalNPC.OnSave += tag => tag[nameof(sleepValue)] = sleepValue.Value;
-        globalNPC.OnLoad += tag => sleepValue = new BoundedNumber<float>(
-            tag.TryGet(nameof(sleepValue), out float savedSleepValue) ? savedSleepValue : DefaultSleepValue,
+        globalNPC.OnSave += tag => tag[nameof(awakeTicks)] = awakeTicks.Value;
+        globalNPC.OnLoad += tag => awakeTicks = new BoundedNumber<float>(
+            tag.TryGet(nameof(awakeTicks), out float savedSleepValue) ? savedSleepValue : DefaultAwakeValue,
             0,
-            MaxSleepValue
+            MaxAwakeValue
         );
     }
 
@@ -46,7 +46,7 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
 
     public override void Update() {
         if (!IsAsleep) {
-            sleepValue -= 0.5f;
+            awakeTicks += 1f;
         }
     }
 }

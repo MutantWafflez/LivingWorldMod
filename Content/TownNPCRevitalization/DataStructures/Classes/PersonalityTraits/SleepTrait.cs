@@ -10,25 +10,25 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.Pe
 /// <summary>
 ///     Personality trait that grants mood shifts based on the current state of the NPC's sleep.
 /// </summary>
-/// <param name="badSleepThreshold">Minimum ticks required for the second lowest mood loss from sleep. Defaults to 3 hours of in-game time.</param>
-/// <param name="decentSleepThreshold">Minimum ticks required for the second highest mood boost from sleep. Defaults to 6 hours of in-game time.</param>
-/// <param name="bestSleepThreshold">Minimum ticks required for highest mood boost from sleeping. Defaults to 8 hours of in-game time.</param>
-public class SleepTrait(int badSleepThreshold = LWMUtils.InGameHour * 3, int decentSleepThreshold = LWMUtils.InGameHour * 6, int bestSleepThreshold = LWMUtils.InGameHour * 8) : IPersonalityTrait {
+/// <param name="tiredLimit">Max amount of awake ticks to gain the "tired" mood loss. Defaults to 17 of in-game time.</param>
+/// <param name="wellRestedLimit">Max amount of awake ticks to gain the "well rested" mood bonus. Defaults to 13 hours of in-game time.</param>
+/// <param name="bestRestLimit">Max amount of awake ticks to gain the "very well rested" mood bonus. Defaults to 5 hours of in-game time.</param>
+public class SleepTrait(int tiredLimit = LWMUtils.InGameHour * 17, int wellRestedLimit = LWMUtils.InGameHour * 13, int bestRestLimit = LWMUtils.InGameHour * 5) : IPersonalityTrait {
     public void ApplyTrait(PersonalityHelperInfo info, ShopHelper shopHelperInstance) {
         TownGlobalNPC globalNPC = info.NPC.GetGlobalNPC<TownGlobalNPC>();
-        float sleepValue = globalNPC.SleepModule.sleepValue;
+        float awakeValue = globalNPC.SleepModule.awakeTicks;
 
         string sleepQualityKey = "SleepDeprived";
         int moodOffset = -20;
-        if (sleepValue >= bestSleepThreshold) {
+        if (awakeValue <= bestRestLimit) {
             sleepQualityKey = "VeryWellRested";
             moodOffset = 12;
         }
-        else if (sleepValue >= decentSleepThreshold) {
+        else if (awakeValue <= wellRestedLimit) {
             sleepQualityKey = "WellRested";
             moodOffset = 8;
         }
-        else if (sleepValue >= badSleepThreshold) {
+        else if (awakeValue <= tiredLimit) {
             sleepQualityKey = "Tired";
             moodOffset = -8;
         }
