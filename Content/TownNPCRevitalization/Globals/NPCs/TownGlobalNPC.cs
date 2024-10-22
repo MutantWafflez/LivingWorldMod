@@ -243,7 +243,6 @@ public class TownGlobalNPC : GlobalNPC {
         PathfinderModule.ReceiveNetworkData(bitReader, binaryReader);
     }
 
-    // TODO: Modify sprite module to handle all sprite related requests instead of manual state overrides
     public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
         SpriteModule.DrawNPC(spriteBatch, screenPos, drawColor);
         return false;
