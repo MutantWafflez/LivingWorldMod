@@ -48,5 +48,9 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
         if (!IsAsleep) {
             awakeTicks += 1f;
         }
+
+        if (awakeTicks >= MaxAwakeValue) {
+            // TODO: Add passed out state
+        }
     }
 }
