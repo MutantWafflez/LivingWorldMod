@@ -28,6 +28,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
             if (sleepModule.ShouldSleep) {
                 Tile restTile = Main.tile[restPos];
                 npc.BottomLeft = restPos.ToWorldCoordinates(0f, 16f);
+                TownNPCSpriteModule spriteModule = globalNPC.SpriteModule;
                 if (TileID.Sets.CanBeSleptIn[restTile.TileType]) {
                     npc.friendlyRegen += 10;
 
@@ -35,11 +36,11 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                     npc.direction = targetDirection;
                     npc.rotation = MathHelper.PiOver2 * -targetDirection;
                     Main.sleepingManager.AddNPC(npc.whoAmI, restPos);
-                    globalNPC.SpriteModule.CloseEyes();
+                    spriteModule.CloseEyes();
 
                     npc.ai[1] = 1f;
                     sleepModule.awakeTicks -= 1.875f;
-                    globalNPC.SpriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData);
+                    spriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData);
                 }
                 else if (TileID.Sets.CanBeSatOnForNPCs[restTile.TileType]) {
                     npc.friendlyRegen += 5;
@@ -47,23 +48,16 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                     npc.SitDown(restPos, out int direction, out _);
                     npc.direction = direction;
                     Main.sittingManager.AddNPC(npc.whoAmI, restPos);
-                    globalNPC.SpriteModule.CloseEyes();
+                    spriteModule.CloseEyes();
 
                     npc.ai[1] = 1f;
                     sleepModule.awakeTicks -= 1.6f;
-                    globalNPC.SpriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData);
+                    spriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData);
+                    spriteModule.RequestFrameOverride((uint)(Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type] - 3));
                 }
 
                 pathfinderModule.CancelPathfind();
             }
-        }
-    }
-
-    public override void FrameNPC(TownGlobalNPC globalNPC, NPC npc, int frameHeight) {
-        Tile restTile = Main.tile[globalNPC.HousingModule.RestPos];
-        // Set NPC to sitting frame
-        if (npc.ai[1] == 1f && TileID.Sets.CanBeSatOnForNPCs[restTile.TileType]) {
-            npc.frame.Y = frameHeight * (Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type] - 3);
         }
     }
 }

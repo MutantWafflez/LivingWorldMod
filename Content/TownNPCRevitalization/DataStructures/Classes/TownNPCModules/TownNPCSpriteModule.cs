@@ -31,6 +31,8 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
     private int _givingTimer;
     private int _givingItemType;
 
+    private int _frameYOverride;
+
     public bool AreEyesClosed {
         get;
         private set;
@@ -51,6 +53,7 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
             return;
         }
 
+        _frameYOverride = -1;
         _overlayDrawSet.Clear();
 
         for (int i = 0; i < _drawRequests.Count; i++) {
@@ -63,7 +66,7 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
             }
         }
 
-        UpdateHead();
+        UpdateFlavorAnimations();
     }
 
     public void GiveItem(int givingItemType = -1) {
@@ -80,6 +83,15 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
     public void DoTalk(int duration = TalkDuration) {
         IsTalking = true;
         _mouthOpenTimer = duration;
+    }
+
+    /// <summary>
+    /// Requests a Y Frame override for the NPC. The request is only accepted if there is no override already occuring.
+    /// </summary>
+    public void RequestFrameOverride(uint newFrameY) {
+        if (_frameYOverride == -1) {
+            _frameYOverride = (int)newFrameY;
+        }
     }
 
     /// <summary>
@@ -131,30 +143,12 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
     }
 
     public void FrameNPC(int frameHeight) {
-        if (!IsGiving) {
-            return;
+        if (_frameYOverride >= 0) {
+            npc.frame.Y = frameHeight * _frameYOverride;
         }
-
-        if (--_givingTimer <= 0) {
-            IsGiving = false;
-            _givingTimer = 0;
-            _givingItemType = -1;
-            return;
-        }
-
-        int nonAttackFrameCount = Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type];
-
-        const int animationHalf = GivingAnimationDuration / 2;
-        int frame = (_givingTimer < animationHalf ? _givingTimer : animationHalf - _givingTimer % animationHalf) switch {
-            >= 10 and < 16 => nonAttackFrameCount - 5,
-            >= 16 => nonAttackFrameCount - 4,
-            _ => 0
-        };
-
-        npc.frame.Y = frameHeight * frame;
     }
 
-    private void UpdateHead() {
+    private void UpdateFlavorAnimations() {
         if (!AreEyesClosed) {
             if (--_blinkTimer <= 0) {
                 CloseEyes();
@@ -177,5 +171,27 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         if (IsTalking) {
             _overlayDrawSet.Add(TalkTextureIndex);
         }
+
+        if (!IsGiving) {
+            return;
+        }
+
+        int nonAttackFrameCount = Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type];
+        const int animationHalf = GivingAnimationDuration / 2;
+        RequestFrameOverride(
+            (uint)((_givingTimer < animationHalf ? _givingTimer : animationHalf - _givingTimer % animationHalf) switch {
+                >= 10 and < 16 => nonAttackFrameCount - 5,
+                >= 16 => nonAttackFrameCount - 4,
+                _ => 0
+            })
+        );
+
+        if (--_givingTimer > 0) {
+            return;
+        }
+
+        IsGiving = false;
+        _givingTimer = 0;
+        _givingItemType = -1;
     }
 }

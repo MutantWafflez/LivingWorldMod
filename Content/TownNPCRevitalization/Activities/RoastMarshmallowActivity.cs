@@ -6,8 +6,6 @@ using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.GameContent;
 using Terraria.WorldBuilding;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Activities;
@@ -20,15 +18,15 @@ public class RoastMarshmallowActivity : TownNPCActivity {
     private Point _standingLocation;
     private bool _isAtStandingLocation;
 
-    public override void FrameNPC(TownGlobalNPC globalNPC, NPC npc, int frameHeight) {
+    /*public override void FrameNPC(TownGlobalNPC globalNPC, NPC npc, int frameHeight) {
         if (!_isAtStandingLocation) {
             return;
         }
 
         npc.frame.Y = frameHeight * 17;
-    }
+    }*/
 
-    public override void PostDrawNPC(TownGlobalNPC globalNPC, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+    /*public override void PostDrawNPC(TownGlobalNPC globalNPC, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
         if (!_isAtStandingLocation) {
             return;
         }
@@ -39,7 +37,7 @@ public class RoastMarshmallowActivity : TownNPCActivity {
             npc.Center - screenPos + new Vector2(10f, -8f),
             drawColor
         );
-    }
+    }*/
 
     public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
         if ((npc.BottomLeft + new Vector2(0, -2)).ToTileCoordinates() == _standingLocation) {

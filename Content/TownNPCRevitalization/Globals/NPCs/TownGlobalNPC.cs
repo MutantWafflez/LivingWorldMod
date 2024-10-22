@@ -250,10 +250,6 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-        if (_stateDict.TryGetValue((int)npc.ai[0], out TownNPCAIState state)) {
-            state.PostDrawNPC(this, npc, spriteBatch, screenPos, drawColor);
-        }
-
         ChatModule.DoChatDrawing(spriteBatch, screenPos, drawColor);
 
         if (!LWM.IsDebug) {
@@ -266,9 +262,6 @@ public class TownGlobalNPC : GlobalNPC {
 
     public override void FindFrame(NPC npc, int frameHeight) {
         SpriteModule.FrameNPC(frameHeight);
-        if (_stateDict.TryGetValue((int)npc.ai[0], out TownNPCAIState state)) {
-            state.FrameNPC(this, npc, frameHeight);
-        }
     }
 
     private void SetMiscNPCFields(NPC npc) {

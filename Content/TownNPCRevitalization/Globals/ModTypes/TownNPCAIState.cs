@@ -1,6 +1,4 @@
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 
@@ -50,27 +48,6 @@ public abstract class TownNPCAIState : ModType {
         where T : TownNPCAIState => ModContent.GetInstance<T>().ReservedStateInteger;
 
     protected static int ReserveStateInteger() => NextReservedStateInteger--;
-
-    /// <summary>
-    ///     Called every draw frame that the given Town NPC is doing the given activity
-    ///     (see <see cref="DoActivity" />). Use this to frame the NPC to a specific animation
-    ///     frame for this activity.
-    /// </summary>
-    /// <remarks>
-    ///     The <see cref="TownGlobalNPC" /> parameter is added for your convenience, so you don't have to manually call
-    ///     <see cref="NPC.GetGlobalNPC" />.
-    /// </remarks>
-    public virtual void FrameNPC(TownGlobalNPC globalNPC, NPC npc, int frameHeight) { }
-
-    /// <summary>
-    ///     Called every draw frame that the given Town NPC is doing the given activity
-    ///     (see <see cref="DoActivity" />). Use this to draw things IN FRONT OF the NPC.
-    /// </summary>
-    /// <remarks>
-    ///     The <see cref="TownGlobalNPC" /> parameter is added for your convenience, so you don't have to manually call
-    ///     <see cref="NPC.GetGlobalNPC" />.
-    /// </remarks>
-    public virtual void PostDrawNPC(TownGlobalNPC globalNPC, NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { }
 
     public sealed override void SetupContent() => SetStaticDefaults();
 

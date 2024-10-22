@@ -33,7 +33,7 @@ public class ReleaseLanternActivity : TownNPCActivity {
 
     public override bool CanDoActivity(TownGlobalNPC globalNPC, NPC npc) => LanternNight.LanternsUp;
 
-    public override void FrameNPC(TownGlobalNPC globalNPC, NPC npc, int frameHeight) {
+    /*public override void FrameNPC(TownGlobalNPC globalNPC, NPC npc, int frameHeight) {
         int nonAttackFrameCount = Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type];
         switch (npc.ai[2]) {
             case < 15:
@@ -44,5 +44,5 @@ public class ReleaseLanternActivity : TownNPCActivity {
                 npc.frame.Y = frameHeight * (nonAttackFrameCount - 4);
                 break;
         }
-    }
+    }*/
 }
