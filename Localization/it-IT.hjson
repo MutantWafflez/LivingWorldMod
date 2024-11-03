@@ -408,6 +408,8 @@ Mods: {
 		TownNPCMoodDescription: {
 			// Event_BloodMoon: Blood Moon
 			// Event_Party: Party
+			// Event_Rain: Rain
+			// Event_Storm: Storm
 			// InBiome: In {Biome}
 			// NeighborNPC: Lives near {NPCTypeName}
 			// Crowded: Crowded
