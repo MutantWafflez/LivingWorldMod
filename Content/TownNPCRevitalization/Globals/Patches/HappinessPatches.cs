@@ -20,7 +20,9 @@ public sealed class HappinessPatches : LoadablePatch {
     private const float MaxCostModifier = 1.5f;
 
     public static void ProcessMoodOverride(ShopHelper shopHelper, Player player, NPC npc) {
-        if (!npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
+        if (NPCID.Sets.NoTownNPCHappiness[npc.type] || !npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
+            shopHelper._currentHappiness = "";
+            shopHelper._currentPriceAdjustment = 1f;
             return;
         }
 
