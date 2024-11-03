@@ -21,6 +21,8 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
 
     private static readonly SleepSchedule DefaultSleepSchedule = new(new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
 
+    private static readonly bool GenuinePartyIsOccurring = BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty;
+
     /// <summary>
     ///     The amount of ticks that this NPC has been awake. The higher the value, the more severe effects on mood will occur. This value is decreased rapidly by a Town NPC sleeping.
     /// </summary>
@@ -37,7 +39,7 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
     public bool ShouldSleep {
         get {
             bool eventOccuringThatBlocksSleep = LanternNight.LanternsUp
-                || (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty)
+                || GenuinePartyIsOccurring
                 || Main.slimeRain
                 || Main.invasionType > InvasionID.None
                 || Main.bloodMoon
