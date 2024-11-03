@@ -85,13 +85,7 @@ public sealed class TownNPCCombatModule (NPC npc, TownGlobalNPC globalNPC) : Tow
 
         npc.localAI[1] = 0;
 
-        if (!enemyNearby
-            || !isCapableOfViolence
-            || IsAttacking
-            || AttackLocation is null
-            || npc.velocity.Y != 0f
-            || NPCID.Sets.AttackAverageChance[npc.type] <= 0
-            || !Main.rand.NextBool(NPCID.Sets.AttackAverageChance[npc.type] * 2)) {
+        if (IsAttacking || npc.velocity.Y != 0f) {
             return;
         }
 
@@ -101,7 +95,7 @@ public sealed class TownNPCCombatModule (NPC npc, TownGlobalNPC globalNPC) : Tow
                 NPC otherNPC = Main.npc[i];
                 if (otherNPC.active
                     && otherNPC.townNPC
-                    && otherNPC.life != otherNPC.lifeMax
+                    && otherNPC.life < otherNPC.lifeMax
                     && (otherTownNPCIndex == -1 || otherNPC.lifeMax - otherNPC.life > Main.npc[otherTownNPCIndex].lifeMax - Main.npc[otherTownNPCIndex].life)
                     && Collision.CanHitLine(npc.position, npc.width, npc.height, otherNPC.position, otherNPC.width, otherNPC.height)
                     && npc.Distance(otherNPC.Center) < 500f) {
@@ -116,10 +110,20 @@ public sealed class TownNPCCombatModule (NPC npc, TownGlobalNPC globalNPC) : Tow
                 npc.ai[1] = 34f;
                 npc.ai[2] = otherTownNPCIndex;
 
-                npc.direction = npc.position.X < Main.npc[otherTownNPCIndex].position.X ? 1 : -1;
+                globalNPC.PathfinderModule.CancelPathfind();
 
+                npc.direction = npc.position.X < Main.npc[otherTownNPCIndex].position.X ? 1 : -1;
                 npc.netUpdate = true;
+                return;
             }
+        }
+
+        if (!enemyNearby
+            || !isCapableOfViolence
+            || AttackLocation is null
+            || NPCID.Sets.AttackAverageChance[npc.type] <= 0
+            || !Main.rand.NextBool(NPCID.Sets.AttackAverageChance[npc.type] * 2)) {
+            return;
         }
 
         AttemptTriggerAttack();
