@@ -39,6 +39,7 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
     public bool ShouldSleep {
         get {
             bool eventOccuringThatBlocksSleep = LanternNight.LanternsUp
+                // TODO: Allow sleeping once tired enough, even if party is occurring
                 || GenuinePartyIsOccurring
                 || Main.slimeRain
                 || Main.invasionType > InvasionID.None
