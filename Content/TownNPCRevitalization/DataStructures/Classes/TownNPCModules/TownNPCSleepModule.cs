@@ -36,7 +36,13 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
 
     public bool ShouldSleep {
         get {
-            bool eventOccuringThatBlocksSleep = LanternNight.LanternsUp || Main.slimeRain || Main.invasionType > InvasionID.None || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
+            bool eventOccuringThatBlocksSleep = LanternNight.LanternsUp
+                || (BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty)
+                || Main.slimeRain
+                || Main.invasionType > InvasionID.None
+                || Main.bloodMoon
+                || Main.snowMoon
+                || Main.pumpkinMoon;
             SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(npc.type);
 
             return !eventOccuringThatBlocksSleep && LWMUtils.CurrentInGameTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime);
