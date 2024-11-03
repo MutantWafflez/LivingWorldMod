@@ -38,17 +38,18 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
 
     public bool ShouldSleep {
         get {
-            bool eventOccuringThatBlocksSleep = LanternNight.LanternsUp
+            bool sleepBeingBlocked = LanternNight.LanternsUp
                 // TODO: Allow sleeping once tired enough, even if party is occurring
                 || GenuinePartyIsOccurring
                 || Main.slimeRain
                 || Main.invasionType > InvasionID.None
                 || Main.bloodMoon
                 || Main.snowMoon
-                || Main.pumpkinMoon;
+                || Main.pumpkinMoon
+                || globalNPC.ChatModule.IsChattingWithPlayerDirectly;
             SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(npc.type);
 
-            return !eventOccuringThatBlocksSleep && LWMUtils.CurrentInGameTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime);
+            return !sleepBeingBlocked && LWMUtils.CurrentInGameTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime);
         }
     }
 
