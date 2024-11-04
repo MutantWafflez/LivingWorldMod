@@ -20,7 +20,7 @@ public class DebugToolSystem : ModSystem {
     public override bool IsLoadingEnabled(Mod mod) => LWM.IsDebug;
 
     public override void Load() {
-        _allModules = [new StructureModule(), new SkipWallModule(), new SkipTileModule(), new TownNPCPathfinderDebugModule()];
+        _allModules = [new StructureModule(), new SkipWallModule(), new SkipTileModule(), new TownNPCDebugModule()];
     }
 
     public override void PostUpdateEverything() {

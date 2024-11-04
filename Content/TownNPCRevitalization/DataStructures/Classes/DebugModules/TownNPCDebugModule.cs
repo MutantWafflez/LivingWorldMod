@@ -1,3 +1,4 @@
+using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Classes;
@@ -6,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.DebugModules;
 
-public class TownNPCPathfinderDebugModule : DebugModule {
+public class TownNPCDebugModule : DebugModule {
     private NPC _selectedNPC;
 
     public override void ModuleUpdate() {
@@ -45,5 +46,16 @@ public class TownNPCPathfinderDebugModule : DebugModule {
         }
     }
 
-    public override void KeysPressed(Keys[] pressedKeys) { }
+    public override void KeysPressed(Keys[] pressedKeys) {
+        if (_selectedNPC is null || !_selectedNPC.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
+            return;
+        }
+
+        if (pressedKeys.Contains(Keys.NumPad1)) {
+            Main.NewText("Forcing NPC to Pass out");
+
+            globalNPC.PathfinderModule.CancelPathfind();
+            TownGlobalNPC.RefreshToState<PassedOutAIState>(_selectedNPC);
+        }
+    }
 }
