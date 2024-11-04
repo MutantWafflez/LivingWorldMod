@@ -1,4 +1,9 @@
-﻿using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Utilities;
@@ -16,7 +21,7 @@ public class TownNPCHousingModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCMo
         private set;
     }
 
-    public Point RestPos {
+    public HomeRestingInfo RestInfo {
         get;
         private set;
     }
@@ -50,66 +55,81 @@ public class TownNPCHousingModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCMo
     }
 
     // Adapted vanilla code
-    public void FindRestingSpot(out int floorX, out int floorY) {
-        floorX = npc.homeTileX;
-        floorY = npc.homeTileY;
-        if (floorX == -1 || floorY == -1 || RoomBoundingBox is not { } boundingBox) {
-            return;
+    public HomeRestingInfo GetRestingInfo() {
+        Point floorPos = new (npc.homeTileX, npc.homeTileY);
+        if (npc.homeTileX == -1 || npc.homeTileY == -1 || RoomBoundingBox is not { } boundingBox) {
+            return new HomeRestingInfo(floorPos, floorPos, NPCRestType.None);
         }
 
-        while (!WorldGen.SolidOrSlopedTile(floorX, floorY) && floorY < Main.maxTilesY - 20) {
-            floorY++;
+        while (!WorldGen.SolidOrSlopedTile(floorPos.X, floorPos.Y) && floorPos.Y < Main.maxTilesY - 20) {
+            floorPos.Y++;
         }
 
-        Point finalRestPos = new(-1, -1);
-        bool foundBed = false;
+        List<HomeRestingInfo> possibleRestInfos = [];
+        // bool foundSuitableBed = false;
         for (int i = boundingBox.X; i <= boundingBox.X + boundingBox.Width; i++) {
             for (int j = boundingBox.Y; j <= boundingBox.Y + boundingBox.Height; j++) {
                 Tile tile = Main.tile[i, j];
                 bool isSittingTile = TileID.Sets.CanBeSatOnForNPCs[tile.TileType];
                 bool isSleepingTile = TileID.Sets.CanBeSleptIn[tile.TileType];
-                if (!tile.HasUnactuatedTile || (!isSleepingTile && !isSittingTile)) {
+                if (!tile.HasUnactuatedTile) {
                     continue;
                 }
 
-                if (isSittingTile && foundBed) {
+                // if (isSittingTile && foundSuitableBed) {
+                //     continue;
+                // }
+                //
+                // if (isSleepingTile) {
+                //     foundSuitableBed = true;
+                // }
+                //
+                // finalRestPos.X = i;
+                // finalRestPos.Y = j;
+
+                Point restPos;
+                NPCRestType restType;
+                if (isSittingTile) {
+                    restPos = LWMUtils.GetCornerOfMultiTile(tile, i, j, LWMUtils.CornerType.BottomLeft);
+                    restType = NPCRestType.Chair;
+                }
+                else if (isSleepingTile) {
+                    PlayerSleepingHelper.GetSleepingTargetInfo(i, j, out int targetDirection, out _, out _);
+                    //restPos = LWMUtils.GetCornerOfMultiTile(tile, i, j, targetDirection == -1 ? LWMUtils.CornerType.BottomRight : LWMUtils.CornerType.BottomLeft); // + new Point(targetDirection, 0);
+                    restPos = LWMUtils.GetCornerOfMultiTile(tile, i, j, LWMUtils.CornerType.BottomLeft);
+                    restType = NPCRestType.Bed;
+                }
+                else {
                     continue;
                 }
 
-                if (isSleepingTile) {
-                    foundBed = true;
+                Point pathfindPos = restPos;
+                Point npcTileWidthOffset = new (-(int)Math.Ceiling(npc.width / 16f) + 1, 0);
+                bool canStandOnRestPos = TownGlobalNPC.IsValidStandingPosition(npc, restPos);
+                if (isSittingTile && !canStandOnRestPos && TownGlobalNPC.IsValidStandingPosition(npc, restPos + npcTileWidthOffset) ) {
+                    pathfindPos.X += npcTileWidthOffset.X;
+                }
+                else if (isSleepingTile && !canStandOnRestPos) {
+                    continue;
                 }
 
-                finalRestPos.X = i;
-                finalRestPos.Y = j;
+                if (possibleRestInfos.Any(info => info.ActualRestTilePos == restPos)) {
+                    continue;
+                }
+
+                HomeRestingInfo info = new (pathfindPos, restPos, restType);
+                possibleRestInfos.Add(info);
+                j = restPos.Y;
             }
         }
 
-        if (finalRestPos is { X: -1, Y: -1 }) {
-            return;
-        }
-
-        Tile restTile = Main.tile[finalRestPos.X, finalRestPos.Y];
-        if (TileID.Sets.CanBeSleptIn[restTile.TileType]) {
-            PlayerSleepingHelper.GetSleepingTargetInfo(finalRestPos.X, finalRestPos.Y, out int targetDirection, out _, out _);
-            finalRestPos = LWMUtils.GetCornerOfMultiTile(restTile, finalRestPos.X, finalRestPos.Y, targetDirection == -1 ? LWMUtils.CornerType.BottomRight : LWMUtils.CornerType.BottomLeft);
-            finalRestPos.X += targetDirection;
-        }
-        else {
-            finalRestPos = LWMUtils.GetCornerOfMultiTile(restTile, finalRestPos.X, finalRestPos.Y, LWMUtils.CornerType.BottomLeft);
-        }
-
-        finalRestPos.Y++;
-
-        floorX = finalRestPos.X;
-        floorY = finalRestPos.Y;
+        return possibleRestInfos.Count == 0 ? new HomeRestingInfo(floorPos, floorPos, NPCRestType.None) : possibleRestInfos.OrderByDescending(info => info.RestType).First();
     }
 
     private void HomelessTeleportCheck() {
         //Adapted vanilla code
         Point bottomOfNPC = (npc.Bottom + new Vector2(0, 1f)).ToTileCoordinates();
-        FindRestingSpot(out int floorX, out int floorY);
-        RestPos = new Point(floorX, floorY - 1);
+        RestInfo = GetRestingInfo();
 
         if (!WorldGen.InWorld(bottomOfNPC.X, bottomOfNPC.Y) || (Main.netMode == NetmodeID.MultiplayerClient && !Main.sectionManager.TileLoaded(bottomOfNPC.X, bottomOfNPC.Y))) {
             return;
@@ -159,13 +179,13 @@ public class TownNPCHousingModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCMo
 
         bool validHouse = false;
         for (int i = -1; i < 2; i++) {
-            int tileXByOffset = floorX + i;
-            if (Collision.SolidTiles(tileXByOffset - 1, tileXByOffset + 1, floorY - 3, floorY - 1)) {
+            int tileXByOffset = RestInfo.PathfindEndPos.X + i;
+            if (Collision.SolidTiles(tileXByOffset - 1, tileXByOffset + 1, RestInfo.PathfindEndPos.Y - 2, RestInfo.PathfindEndPos.Y)) {
                 continue;
             }
 
             npc.velocity = Vector2.Zero;
-            npc.BottomLeft = new Vector2(floorX, floorY).ToWorldCoordinates(Vector2.Zero);
+            npc.BottomLeft = RestInfo.PathfindEndPos.ToWorldCoordinates(8f, 0f);
             pathfinderModule.CancelPathfind();
             npc.netUpdate = validHouse = true;
             break;

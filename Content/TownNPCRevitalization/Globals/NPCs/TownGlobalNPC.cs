@@ -105,7 +105,8 @@ public class TownGlobalNPC : GlobalNPC {
 
     public static bool IsValidStandingPosition(NPC npc, Point tilePos) {
         bool foundTileToStandOn = false;
-        for (int i = 0; i < (int)Math.Ceiling(npc.width / 16f); i++) {
+        int npcTileWidth = (int)Math.Ceiling(npc.width / 16f);
+        for (int i = 0; i < npcTileWidth; i++) {
             Tile floorTile = Main.tile[tilePos + new Point(i, 1)];
             if (!floorTile.HasUnactuatedTile || floorTile.IsHalfBlock || (!Main.tileSolidTop[floorTile.TileType] && !Main.tileSolid[floorTile.TileType])) {
                 continue;
@@ -121,10 +122,12 @@ public class TownGlobalNPC : GlobalNPC {
 
         int npcTileHeight = (int)Math.Ceiling(npc.height / 16f);
         for (int i = 0; i < npcTileHeight; i++) {
-            tilePos.Y--;
-            Tile upTile = Main.tile[tilePos];
-            if (upTile.HasUnactuatedTile && Main.tileSolid[upTile.TileType]) {
-                return false;
+            for (int j = 0; j < npcTileWidth; j++) {
+                Tile upTile = Main.tile[tilePos.X + j, tilePos.Y - i];
+
+                if (upTile.HasUnactuatedTile && Main.tileSolid[upTile.TileType]) {
+                    return false;
+                }
             }
         }
 

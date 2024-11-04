@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Utilities;
@@ -14,15 +15,15 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
             return;
         }
 
+        (Point pathfindPos, Point restTilePos, NPCRestType npcRestType) = globalNPC.HousingModule.RestInfo;
         TownNPCPathfinderModule pathfinderModule = globalNPC.PathfinderModule;
-        Point restPos = globalNPC.HousingModule.RestPos;
-        if (!TownGlobalNPC.IsValidStandingPosition(npc, restPos)) {
+        if (!TownGlobalNPC.IsValidStandingPosition(npc, pathfindPos)) {
             return;
         }
 
         npc.ai[1] = 0f;
-        if (pathfinderModule.BottomLeftTileOfNPC != restPos) {
-            pathfinderModule.RequestPathfind(restPos);
+        if (pathfinderModule.BottomLeftTileOfNPC != pathfindPos) {
+            pathfinderModule.RequestPathfind(pathfindPos);
         }
         else {
             TownNPCSleepModule sleepModule = globalNPC.SleepModule;
@@ -30,46 +31,47 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                 return;
             }
 
-            npc.BottomLeft = restPos.ToWorldCoordinates(0f, 16f);
+            npc.BottomLeft = pathfindPos.ToWorldCoordinates(8f, 16f);
 
-            Tile restTile = Main.tile[restPos];
             TownNPCSpriteModule spriteModule = globalNPC.SpriteModule;
             TownNPCChatModule chatModule = globalNPC.ChatModule;
-            if (TileID.Sets.CanBeSleptIn[restTile.TileType]) {
-                npc.friendlyRegen += 10;
+            switch (npcRestType) {
+                case NPCRestType.Bed:
+                    npc.friendlyRegen += 10;
 
-                PlayerSleepingHelper.GetSleepingTargetInfo(restPos.X, restPos.Y, out int targetDirection, out _, out _);
-                npc.direction = targetDirection;
-                npc.rotation = MathHelper.PiOver2 * -targetDirection;
-                npc.ai[1] = 1f;
-                Main.sleepingManager.AddNPC(npc.whoAmI, restPos);
+                    PlayerSleepingHelper.GetSleepingTargetInfo(restTilePos.X, restTilePos.Y, out int targetDirection, out _, out Vector2 visualOffset);
+                    npc.direction = targetDirection;
+                    npc.rotation = MathHelper.PiOver2 * -targetDirection;
+                    npc.ai[1] = 1f;
+                    Main.sleepingManager.AddNPC(npc.whoAmI, restTilePos);
 
-                sleepModule.isAsleep = true;
-                sleepModule.awakeTicks -= 1.875f;
+                    sleepModule.isAsleep = true;
+                    sleepModule.awakeTicks -= 1.875f;
 
-                spriteModule.CloseEyes();
-                spriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData);
+                    spriteModule.CloseEyes();
+                    spriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData);
 
-                chatModule.DisableChatting(LWMUtils.RealLifeSecond);
-                chatModule.DisableChatReception(LWMUtils.RealLifeSecond);
-            }
-            else if (TileID.Sets.CanBeSatOnForNPCs[restTile.TileType]) {
-                npc.friendlyRegen += 5;
+                    chatModule.DisableChatting(LWMUtils.RealLifeSecond);
+                    chatModule.DisableChatReception(LWMUtils.RealLifeSecond);
+                    break;
+                case NPCRestType.Chair:
+                    npc.friendlyRegen += 5;
 
-                npc.SitDown(restPos, out int direction, out _);
-                npc.direction = direction;
-                npc.ai[1] = 1f;
-                Main.sittingManager.AddNPC(npc.whoAmI, restPos);
+                    npc.SitDown(restTilePos, out int direction, out Vector2 newBottom);
+                    npc.direction = direction;
+                    npc.ai[1] = 1f;
+                    Main.sittingManager.AddNPC(npc.whoAmI, restTilePos);
 
-                sleepModule.isAsleep = true;
-                sleepModule.awakeTicks -= 1.6f;
+                    sleepModule.isAsleep = true;
+                    sleepModule.awakeTicks -= 1.6f;
 
-                spriteModule.CloseEyes();
-                spriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData);
-                spriteModule.RequestFrameOverride((uint)(Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type] - 3));
+                    spriteModule.CloseEyes();
+                    spriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData);
+                    spriteModule.RequestFrameOverride((uint)(Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type] - 3));
 
-                chatModule.DisableChatting(LWMUtils.RealLifeSecond);
-                chatModule.DisableChatReception(LWMUtils.RealLifeSecond);
+                    chatModule.DisableChatting(LWMUtils.RealLifeSecond);
+                    chatModule.DisableChatReception(LWMUtils.RealLifeSecond);
+                    break;
             }
 
             pathfinderModule.CancelPathfind();
