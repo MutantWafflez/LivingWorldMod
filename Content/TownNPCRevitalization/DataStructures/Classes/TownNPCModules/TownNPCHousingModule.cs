@@ -9,7 +9,6 @@ using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.GameContent;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 
@@ -66,7 +65,6 @@ public class TownNPCHousingModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCMo
         }
 
         List<HomeRestingInfo> possibleRestInfos = [];
-        // bool foundSuitableBed = false;
         for (int i = boundingBox.X; i <= boundingBox.X + boundingBox.Width; i++) {
             for (int j = boundingBox.Y; j <= boundingBox.Y + boundingBox.Height; j++) {
                 Tile tile = Main.tile[i, j];
@@ -76,32 +74,18 @@ public class TownNPCHousingModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCMo
                     continue;
                 }
 
-                // if (isSittingTile && foundSuitableBed) {
-                //     continue;
-                // }
-                //
-                // if (isSleepingTile) {
-                //     foundSuitableBed = true;
-                // }
-                //
-                // finalRestPos.X = i;
-                // finalRestPos.Y = j;
-
-                Point restPos;
                 NPCRestType restType;
                 if (isSittingTile) {
-                    restPos = LWMUtils.GetCornerOfMultiTile(tile, i, j, LWMUtils.CornerType.BottomLeft);
                     restType = NPCRestType.Chair;
                 }
                 else if (isSleepingTile) {
-                    PlayerSleepingHelper.GetSleepingTargetInfo(i, j, out int targetDirection, out _, out _);
-                    //restPos = LWMUtils.GetCornerOfMultiTile(tile, i, j, targetDirection == -1 ? LWMUtils.CornerType.BottomRight : LWMUtils.CornerType.BottomLeft); // + new Point(targetDirection, 0);
-                    restPos = LWMUtils.GetCornerOfMultiTile(tile, i, j, LWMUtils.CornerType.BottomLeft);
                     restType = NPCRestType.Bed;
                 }
                 else {
                     continue;
                 }
+
+                Point restPos = LWMUtils.GetCornerOfMultiTile(tile, i, j, LWMUtils.CornerType.BottomLeft);
 
                 Point pathfindPos = restPos;
                 Point npcTileWidthOffset = new (-(int)Math.Ceiling(npc.width / 16f) + 1, 0);
@@ -185,7 +169,7 @@ public class TownNPCHousingModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCMo
             }
 
             npc.velocity = Vector2.Zero;
-            npc.BottomLeft = RestInfo.PathfindEndPos.ToWorldCoordinates(8f, 0f);
+            npc.BottomLeft = RestInfo.PathfindEndPos.ToWorldCoordinates(8f, 16f);
             pathfinderModule.CancelPathfind();
             npc.netUpdate = validHouse = true;
             break;

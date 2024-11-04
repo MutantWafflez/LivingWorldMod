@@ -33,6 +33,8 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
 
     private int _frameYOverride;
 
+    private Vector2 _drawOffset;
+
     public bool AreEyesClosed {
         get;
         private set;
@@ -53,6 +55,7 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
             return;
         }
 
+        _drawOffset = Vector2.Zero;
         _frameYOverride = -1;
         _overlayDrawSet.Clear();
 
@@ -86,7 +89,7 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
     }
 
     /// <summary>
-    /// Requests a Y Frame override for the NPC. The request is only accepted if there is no override already occuring.
+    ///     Requests a Y Frame override for the NPC. The request is only accepted if there is no override already occuring.
     /// </summary>
     public void RequestFrameOverride(uint newFrameY) {
         if (_frameYOverride == -1) {
@@ -101,6 +104,13 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         _drawRequests.Add(request);
     }
 
+    /// <summary>
+    ///     Offsets the base draw position of the NPC, and any subsequent layers/overlays.
+    /// </summary>
+    public void OffsetDrawPosition(Vector2 drawOffset) {
+        _drawOffset = drawOffset;
+    }
+
     public void DrawNPC(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
         Asset<Texture2D> npcAsset = TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile) ? profile.GetTextureNPCShouldUse(npc) : TextureAssets.Npc[npc.type];
         int frameWidth = npcAsset.Width();
@@ -108,9 +118,9 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         Vector2 halfSize = new(frameWidth / 2, frameHeight / 2);
 
         float npcAddHeight = Main.NPCAddHeight(npc);
-        Vector2 drawPos = new(
-            npc.position.X - screenPos.X + npc.width / 2 - frameWidth * npc.scale / 2f + halfSize.X * npc.scale,
-            npc.position.Y - screenPos.Y + npc.height - frameHeight * npc.scale + 4f + halfSize.Y * npc.scale + npcAddHeight /*+ num35*/ + npc.gfxOffY
+        Vector2 drawPos = new (
+            npc.position.X - screenPos.X + npc.width / 2 - frameWidth * npc.scale / 2f + halfSize.X * npc.scale + _drawOffset.X,
+            npc.position.Y - screenPos.Y + npc.height - frameHeight * npc.scale + 4f + halfSize.Y * npc.scale + npcAddHeight /*+ num35*/ + npc.gfxOffY + _drawOffset.Y
         );
 
         drawColor = npc.GetNPCColorTintedByBuffs(drawColor);
