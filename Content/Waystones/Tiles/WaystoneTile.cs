@@ -8,6 +8,7 @@ using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
@@ -109,6 +110,7 @@ public class WaystoneTile : BasePylon {
             return false;
         }
 
+        SoundEngine.PlaySound(SoundID.MenuTick);
         WaystoneSystem.Instance.AddNewActivationEntity(topLeft.ToWorldCoordinates(16, 16), entity.WaystoneColor);
         switch (Main.netMode) {
             case NetmodeID.MultiplayerClient:
