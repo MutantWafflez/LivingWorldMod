@@ -14,11 +14,11 @@ public class PassedOutAIState : TownNPCAIState {
         TownNPCSleepModule sleepModule = globalNPC.SleepModule;
         npc.direction = 1;
         npc.rotation = MathHelper.PiOver2;
-        npc.gfxOffY = npc.width;
 
         TownNPCSpriteModule spriteModule = globalNPC.SpriteModule;
         spriteModule.CloseEyes();
         spriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData with { color = Color.Red * 0.8f });
+        spriteModule.OffsetDrawPosition(new Vector2(0, npc.width));
 
         TownNPCChatModule chatModule = globalNPC.ChatModule;
         chatModule.DisableChatting(LWMUtils.RealLifeSecond);
