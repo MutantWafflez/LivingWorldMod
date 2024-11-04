@@ -1,6 +1,7 @@
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
@@ -18,6 +19,12 @@ public class PassedOutAIState : TownNPCAIState {
         TownNPCSpriteModule spriteModule = globalNPC.SpriteModule;
         spriteModule.CloseEyes();
         spriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData with { color = Color.Red * 0.8f });
+
+        TownNPCChatModule chatModule = globalNPC.ChatModule;
+        chatModule.DisableChatting(LWMUtils.RealLifeSecond);
+        chatModule.DisableChatReception(LWMUtils.RealLifeSecond);
+
+        sleepModule.isAsleep = true;
         if ((sleepModule.awakeTicks -= 2f) <= 0) {
             TownGlobalNPC.RefreshToState<DefaultAIState>(npc);
         }

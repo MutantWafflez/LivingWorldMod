@@ -1,6 +1,4 @@
-﻿using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+﻿using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -26,6 +24,7 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC) : TownN
     private string _currentSentence;
     private int _chatBubbleDuration;
     private int _chatCooldown;
+    private int _chatReceptionCooldown;
 
     /// <summary>
     ///     Whether this NPC is currently being talked to by a player.
@@ -68,6 +67,10 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC) : TownN
             return;
         }
 
+        if (--_chatReceptionCooldown <= 0) {
+            _chatReceptionCooldown = 0;
+        }
+
         if (_currentSentence is not null) {
             // Every other 8 ticks while talking, add the draw call
             if (--_chatBubbleDuration % 16 == 0) {
@@ -90,18 +93,18 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC) : TownN
             return;
         }
 
+        TownGlobalNPC otherGlobalNPC = null;
         if (IsSpeaking
-            || globalNPC.SleepModule.IsAsleep
             || !Main.rand.NextBool(ChitChatChanceDenominator)
             || LWMUtils.GetFirstNPC(
                 otherNPC =>
                     npc != otherNPC
-                    && otherNPC.TryGetGlobalNPC(out TownGlobalNPC otherGlobalNPC)
+                    && otherNPC.TryGetGlobalNPC(out otherGlobalNPC)
                     && !otherGlobalNPC.ChatModule.IsSpeaking
                     && npc.Center.Distance(otherNPC.Center) <= 100f
                     && Collision.CanHit(npc.Center, 0, 0, otherNPC.Center, 0, 0)
             ) is not { } chatRecipient
-            || chatRecipient.GetGlobalNPC<TownGlobalNPC>().SleepModule.IsAsleep
+            || otherGlobalNPC.ChatModule._chatReceptionCooldown > 0
         ) {
             return;
         }
@@ -121,8 +124,26 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC) : TownN
 
         _currentSentence = chatTemplate.FormatWith(chatSubstitutions);
         _chatBubbleDuration = DefaultChatBubbleDuration;
+        otherGlobalNPC.ChatModule._chatReceptionCooldown = _chatBubbleDuration + LWMUtils.RealLifeSecond;
 
         chatHistory.Add(_currentSentence);
+    }
+
+    /// <summary>
+    ///     Disables this NPC from chatting with other NPCs for the specified duration, in ticks.
+    /// </summary>
+    /// <remarks>
+    ///     This only prevents new chats from occuring, and won't cancel chats that have already started.
+    /// </remarks>
+    public void DisableChatting(int duration) {
+        _chatCooldown = duration;
+    }
+
+    /// <summary>
+    ///     Disables the ability for other NPCs to chat with this NPC for the specified duration, in ticks.
+    /// </summary>
+    public void DisableChatReception(int duration) {
+        _chatReceptionCooldown = duration;
     }
 
     public void DoChatDrawing(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {

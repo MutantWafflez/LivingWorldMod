@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.DataStructures.Structs;
@@ -27,6 +26,8 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
     ///     The amount of ticks that this NPC has been awake. The higher the value, the more severe effects on mood will occur. This value is decreased rapidly by a Town NPC sleeping.
     /// </summary>
     public BoundedNumber<float> awakeTicks = new(DefaultAwakeValue, 0, MaxAwakeValue);
+
+    public bool isAsleep;
 
     public static DrawData GetSleepSpriteDrawData {
         get {
@@ -53,8 +54,6 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
         }
     }
 
-    public bool IsAsleep => (npc.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && npc.ai[1] == 1f) || npc.ai[0] == TownNPCAIState.GetStateInteger<PassedOutAIState>();
-
     public TownNPCSleepModule(NPC npc, TownGlobalNPC globalNPC) : base(npc, globalNPC) {
         globalNPC.OnSave += tag => tag[nameof(awakeTicks)] = awakeTicks.Value;
         globalNPC.OnLoad += tag => awakeTicks = new BoundedNumber<float>(
@@ -67,10 +66,11 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
     public static SleepSchedule GetSleepProfileOrDefault(int npcType) => TownNPCDataSystem.sleepSchedules.GetValueOrDefault(npcType, DefaultSleepSchedule);
 
     public override void Update() {
-        if (!IsAsleep) {
+        if (!isAsleep) {
             awakeTicks += 1f;
         }
 
+        isAsleep = false;
         if (awakeTicks < MaxAwakeValue) {
             return;
         }
