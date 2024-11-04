@@ -53,7 +53,7 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
         }
     }
 
-    private bool IsAsleep => (npc.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && npc.ai[1] == 1f) || npc.ai[0] == TownNPCAIState.GetStateInteger<PassedOutAIState>();
+    public bool IsAsleep => (npc.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && npc.ai[1] == 1f) || npc.ai[0] == TownNPCAIState.GetStateInteger<PassedOutAIState>();
 
     public TownNPCSleepModule(NPC npc, TownGlobalNPC globalNPC) : base(npc, globalNPC) {
         globalNPC.OnSave += tag => tag[nameof(awakeTicks)] = awakeTicks.Value;
