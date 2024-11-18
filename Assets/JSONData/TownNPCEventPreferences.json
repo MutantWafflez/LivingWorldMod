@@ -15,7 +15,7 @@
   "BestiaryGirl": {
     "BloodMoon": -40,
     "Party": 10,
-    "Rain": 10,
+    "Rain": -8,
     "Storm": -20
   },
   "Stylist": {
@@ -81,7 +81,7 @@
   "Painter": {
     "Party": 10,
     "BloodMoon": -10,
-    "Rain": 8
+    "Rain": -8
   },
   "Guide": {
     "Party": 10,

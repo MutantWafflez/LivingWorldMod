@@ -444,7 +444,7 @@ Mods: {
 			BestiaryGirl: {
 				// Event_BloodMoon: GRR! This moon make me ANGRY!!!
 				// Event_Party: Yass!!! I LOVE parties!!!
-				// Event_Rain: The rain is TOTALLY awesome! There's, like, so many fun things you can do!
+				// Event_Rain: Nooo! The rain is SO irritating!
 				// Event_Storm: EEK! THUNDER!
 				// VeryWellRested: I. Feel. GREAT! YAS!
 				// WellRested: I like, slept super well last night!
@@ -599,7 +599,7 @@ Mods: {
 			Painter: {
 				// Event_Party: Ah, every moment worthy of a painting...
 				// Event_BloodMoon: Color, in moderation! Please! This is TOO MUCH red!
-				// Event_Rain: Nature is so beautiful, even when it's all gray...
+				// Event_Rain: Ugh, the rain always makes the world so gray! Needs MUCH more color.
 				// VeryWellRested: The world feels so colorful and amazing! I need to start painting right now!
 				// WellRested: My mind feels ready and full of ideas for some good painting!
 				// Tired: I think I need a break to rest.
