@@ -4,7 +4,7 @@ using Terraria.UI;
 
 namespace LivingWorldMod.Globals.UIElements;
 
-public class UITooltipElement(SubstitutableLocalizedText text) : UIElement {
+public class UITooltipElement(DynamicLocalizedText text) : UIElement {
     private static readonly Item DummyItem = new(ItemID.None, 0) {
         // Can be any item - just can't be 0 (otherwise the tooltip won't draw)
         type = ItemID.IronPickaxe
@@ -25,13 +25,13 @@ public class UITooltipElement(SubstitutableLocalizedText text) : UIElement {
         Main.mouseText = true;
     }
 
-    public void SetText(SubstitutableLocalizedText newText) {
+    public void SetText(DynamicLocalizedText newText) {
         text = newText;
         _formattedTooltipText = newText.SubstitutedText;
     }
 
     public void ReformatText(object formatSubstitutesObject = null) {
-        text = new SubstitutableLocalizedText(text.text, formatSubstitutesObject);
+        text = new DynamicLocalizedText(text.text, formatSubstitutesObject);
         _formattedTooltipText = text.SubstitutedText;
     }
 }

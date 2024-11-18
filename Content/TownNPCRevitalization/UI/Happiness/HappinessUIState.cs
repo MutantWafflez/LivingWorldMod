@@ -28,12 +28,12 @@ public class HappinessUIState : UIState {
             Height = StyleDimension.FromPixels(40f);
             Width = StyleDimension.Fill;
 
-            SubstitutableLocalizedText templatedFlavorText = instance.duration >= 60
-                ? new SubstitutableLocalizedText (
+            DynamicLocalizedText templatedFlavorText = instance.duration >= 60
+                ? new DynamicLocalizedText (
                     "UI.DurationMoodFlavorText".Localized(),
                     new { FlavorText = instance.flavorText.ToString(), Time = Lang.LocalizedDuration(new TimeSpan(0, 0, instance.duration / LWMUtils.RealLifeSecond), true, true) }
                 )
-                : new SubstitutableLocalizedText("UI.MoodFlavorText".Localized(), new { FlavorText = instance.flavorText.ToString() });
+                : new DynamicLocalizedText("UI.MoodFlavorText".Localized(), new { FlavorText = instance.flavorText.ToString() });
             tooltipElement = new UITooltipElement(templatedFlavorText) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
             Append(tooltipElement);
 
@@ -122,7 +122,7 @@ public class HappinessUIState : UIState {
         priceModifierTextNumber = new UIBetterText("", 0.75f, true) { VAlign = 0.5f, Left = StyleDimension.FromPixelsAndPercent(-8f, 1f) };
         npcInfoAndPriceZone.Append(priceModifierTextNumber);
 
-        happinessBarZone = new UITooltipElement(new SubstitutableLocalizedText("UI.Fraction".Localized(), new { Numerator = 0, Denominator = 0 })) {
+        happinessBarZone = new UITooltipElement(new DynamicLocalizedText("UI.Fraction".Localized(), new { Numerator = 0, Denominator = 0 })) {
             Width = StyleDimension.Fill, Height = StyleDimension.FromPixels(50f), Top = StyleDimension.FromPixels(40f)
         };
         moodBackPanel.Append(happinessBarZone);

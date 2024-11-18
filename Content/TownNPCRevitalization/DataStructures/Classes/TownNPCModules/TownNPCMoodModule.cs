@@ -65,7 +65,7 @@ public sealed class TownNPCMoodModule (NPC npc, TownGlobalNPC globalNPC) : TownN
         }
     }
 
-    public void AddModifier(SubstitutableLocalizedText descriptionText, SubstitutableLocalizedText flavorText, int moodOffset, int duration = 1) {
+    public void AddModifier(DynamicLocalizedText descriptionText, DynamicLocalizedText flavorText, int moodOffset, int duration = 1) {
         _currentMoodModifiers.Add(new MoodModifierInstance (descriptionText, flavorText, moodOffset, duration));
     }
 }

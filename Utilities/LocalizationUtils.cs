@@ -15,4 +15,9 @@ public static partial class LWMUtils {
     ///     instead of <see cref="LocalizedText" /> objects directly.
     /// </summary>
     public static string PrependModKey(this string suffix) => $"Mods.{nameof(LivingWorldMod)}.{suffix}";
+
+    /// <summary>
+    ///     Returns whether this localized text actually has a proper localization entry.
+    /// </summary>
+    public static bool HasValidLocalizationValue(this LocalizedText text) => text.Key == text.Value;
 }

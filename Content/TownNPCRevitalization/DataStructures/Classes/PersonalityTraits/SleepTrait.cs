@@ -33,9 +33,11 @@ public class SleepTrait(int tiredLimit = LWMUtils.InGameHour * 17, int wellReste
             moodOffset = -8;
         }
 
+        string npcTypeName = LWMUtils.GetNPCTypeNameOrIDName(info.NPC.type);
+        string flavorTextKey = $"TownNPCMoodFlavorText.{npcTypeName}.{sleepQualityKey}";
         globalNPC.MoodModule.AddModifier(
-            new SubstitutableLocalizedText($"TownNPCMoodDescription.{sleepQualityKey}".Localized()),
-            new SubstitutableLocalizedText($"TownNPCMoodFlavorText.{LWMUtils.GetNPCTypeNameOrIDName(info.NPC.type)}.{sleepQualityKey}".Localized()),
+            new DynamicLocalizedText($"TownNPCMoodDescription.{sleepQualityKey}".Localized()),
+            new DynamicLocalizedText(flavorTextKey.Localized(), fallbackText: flavorTextKey.Replace(npcTypeName, "Default").Localized()),
             moodOffset
         );
     }
