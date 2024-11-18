@@ -429,16 +429,16 @@ Mods: {
 				VeryWellRested: I am very well rested.
 				WellRested: I am well rested.
 				Tired: I am tired.
-				SleepDeprived: I am really, really, tired.	
-			}	
-		
+				SleepDeprived: I am really, really, tired.
+			}
+
 			Nurse: {
 				Event_BloodMoon: I'm THIS close to marching up to that moon and destroying it myself!
 				Event_Party: I seriously hope I don't have to treat anyone for alcohol poisoning after this.
 				VeryWellRested: Sleep is important for a healthy body and mind.
 				WellRested: I'm pretty lucky to get this much sleep.
 				Tired: Another day, another tired Nurse.
-				SleepDeprived: Just like med school...
+				SleepDeprived: Just like nursing school...
 			}
 
 			BestiaryGirl: {
