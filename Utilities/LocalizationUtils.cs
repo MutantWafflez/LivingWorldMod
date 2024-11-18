@@ -19,5 +19,5 @@ public static partial class LWMUtils {
     /// <summary>
     ///     Returns whether this localized text actually has a proper localization entry.
     /// </summary>
-    public static bool HasValidLocalizationValue(this LocalizedText text) => text.Key == text.Value;
+    public static bool HasValidLocalizationValue(this LocalizedText text) => text.Key != text.Value;
 }
