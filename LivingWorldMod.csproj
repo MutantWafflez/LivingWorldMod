@@ -19,6 +19,14 @@
         <!--> Mod Loader Publicizing -->
         <Publicize Include="tModLoader:Terraria.ModLoader.ModLoader.isLoading"/>
 
+        <!-- Map Publicizing -->
+        <Publicize Include="tModLoader:Terraria.ModLoader.MapEntry"/>
+        <Publicize Include="tModLoader:Terraria.ModLoader.MapEntry..ctor"/>
+        <Publicize Include="tModLoader:Terraria.ModLoader.MapLoader"/>
+        <Publicize Include="tModLoader:Terraria.ModLoader.MapLoader.initialized"/>
+        <Publicize Include="tModLoader:Terraria.ModLoader.MapLoader.tileEntries"/>
+        <Publicize Include="tModLoader:Terraria.ModLoader.MapLoader.wallEntries"/>
+
         <!--> Event Publicizing -->
         <Publicize Include="tModLoader:Terraria.GameContent.Events.BirthdayParty.CanNPCParty"/>
 

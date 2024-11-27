@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria.Localization;
+﻿using LivingWorldMod.Utilities;
+using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Globals.BaseTypes.Walls;
 
@@ -26,18 +26,6 @@ public abstract class BaseWall : ModWall {
         + $"/{Name}";
 
     public override void SetStaticDefaults() {
-        if (WallColorOnMap is null) {
-            return;
-        }
-
-        LocalizedText name = this.GetLocalization("MapEntry");
-        //AKA check if the localization for this wall exists, and only add it if it does
-        //Translations will return the key if you try to get the translation value for a translation that doesn't exist.
-        if (name.Value == name.Key) {
-            AddMapEntry(WallColorOnMap!.Value);
-        }
-        else {
-            AddMapEntry(WallColorOnMap!.Value, name);
-        }
+        LWMUtils.TryAddMapEntry(this, Type, WallColorOnMap);
     }
 }

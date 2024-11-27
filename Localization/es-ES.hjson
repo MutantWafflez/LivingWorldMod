@@ -303,21 +303,16 @@ Mods: {
 		Tiles: {
 			//Furniture Tiles
 			GravityTapestryTile.MapEntry: Tapestry
+			// StormTapestryTile.MapEntry: "{$Mods.LivingWorldMod.Tiles.GravityTapestryTile.MapEntry}"
+			// WorldTapestryTile.MapEntry: "{$Mods.LivingWorldMod.Tiles.GravityTapestryTile.MapEntry}"
+			SunTapestryTile.MapEntry: "{$Mods.LivingWorldMod.MabObject.GravityTapestryTile}"
 			SkywareAnvilTile.MapEntry: "{$Mods.LivingWorldMod.ItemName.SkywareAnvilItem}"
 			SkywareLoomTile.MapEntry: "{$Mods.LivingWorldMod.ItemName.SkywareLoomItem}"
-			SunTapestryTile.MapEntry: "{$Mods.LivingWorldMod.MabObject.GravityTapestryTile}"
 			//Interactable Tiles
 			VillageShrineTile.MapEntry: Village Shrine
 			WaystoneTile.MapEntry: Waystone
 			//Torch Tiles
 			StarTorchTile.MapEntry: "{$ItemName.Torch}"
-			SkywareBlockTile.MapEntry: Mods.LivingWorldMod.Tiles.SkywareBlockTile.MapEntry
-			StarshardCloudTile.MapEntry: Mods.LivingWorldMod.Tiles.StarshardCloudTile.MapEntry
-			StarshineBlockTile.MapEntry: Mods.LivingWorldMod.Tiles.StarshineBlockTile.MapEntry
-			SunslabBlockTile.MapEntry: Mods.LivingWorldMod.Tiles.SunslabBlockTile.MapEntry
-			NimbusJarTile.MapEntry: Mods.LivingWorldMod.Tiles.NimbusJarTile.MapEntry
-			// StormTapestryTile.MapEntry: Mods.LivingWorldMod.Tiles.StormTapestryTile.MapEntry
-			// WorldTapestryTile.MapEntry: Mods.LivingWorldMod.Tiles.WorldTapestryTile.MapEntry
 		}
 
 		VillagerType.Harpy: Harpy
@@ -357,13 +352,6 @@ Mods: {
 				EnableVillageRadius: Show Village Radius Display
 				ForceShrineButtonText: Force Synchronize Housing
 			}
-		}
-
-		Walls: {
-			SandstoneSlabWall.MapEntry: Mods.LivingWorldMod.Walls.SandstoneSlabWall.MapEntry
-			SkywareWall.MapEntry: Mods.LivingWorldMod.Walls.SkywareWall.MapEntry
-			SkywareFenceWall.MapEntry: Mods.LivingWorldMod.Walls.SkywareFenceWall.MapEntry
-			PyramidBrickWall.MapEntry: Mods.LivingWorldMod.Walls.PyramidBrickWall.MapEntry
 		}
 
 		Configs: {

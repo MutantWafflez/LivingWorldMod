@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent.Drawing;
+using Terraria.Localization;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Utilities;
@@ -100,5 +102,59 @@ public static partial class LWMUtils {
                 }
             }
         }
+    }
+
+    /// <summary>
+    ///     A more "auto-magic" version of <see cref="AddMapEntry" />, where assumptions are automatically made about what kind of map entry is intended to be added, and where.
+    ///     <para></para>
+    ///     If the <see cref="instance" /> parameter is a <see cref="ModTile" /> instance, it will be assumed that <see cref="MapLoader.tileEntries" /> is going to be added to. The same applies for
+    ///     <see cref="ModWall" /> and <see cref="MapLoader.wallEntries" />. This method will fail and do nothing if the <see cref="instance" /> parameter is neither tile nor wall.
+    ///     <para></para>
+    ///     The "hover text" functionality on the map will only be added if an existing localization key exists, following the format that <see cref="ILocalizedModTypeExtensions.GetLocalizationKey" /> uses,
+    ///     with the suffix of "MapEntry". For example: Mods.LivingWorldMod.Tiles.ExampleTile.MapEntry. If the given key does not exist, no hover text will be added.
+    ///     <para></para>
+    ///     If the provided <see cref="color" /> parameter is null, this function will fail.
+    /// </summary>
+    /// <returns>Whether a map entry was successfully added.</returns>
+    public static bool TryAddMapEntry(ILocalizedModType instance, ushort type, Color? color) {
+        if (MapLoader.initialized || color is not { } mapColor) {
+            return false;
+        }
+
+        IDictionary<ushort, IList<MapEntry>> entryDict;
+        switch (instance) {
+            case ModTile:
+                entryDict = MapLoader.tileEntries;
+                break;
+            case ModWall:
+                entryDict = MapLoader.wallEntries;
+                break;
+            default:
+                return false;
+        }
+
+        string mapEntryKey = instance.GetLocalizationKey("MapEntry");
+        //AKA check if the localization for this tile exists, and only add it if it does
+        //Translations will return the key if you try to get the translation value for a translation that doesn't exist.
+        AddMapEntry(entryDict, type,  mapColor, mapEntryKey == Language.GetTextValue(mapEntryKey) ? null : Language.GetText(mapEntryKey));
+        return true;
+    }
+
+    /// <summary>
+    ///     Method that allow for adding a map entry to a dictionary of <see cref="MapEntry" /> lists. Applicable for <see cref="MapLoader.tileEntries" /> and <see cref="MapLoader.wallEntries" /> for
+    ///     adding map entries for tiles and walls, respectively.
+    /// </summary>
+    /// <remarks>
+    ///     I created this because <see cref="ModTile.AddMapEntry" /> and <see cref="ModWall.AddMapEntry" /> could easily be coalesced into the same method, where the passed in dictionary is the only thing
+    ///     that changes between them. Also exists because of all the red tape in terms of access levels (everything is either internal or private).
+    /// </remarks>
+    public static void AddMapEntry(IDictionary<ushort, IList<MapEntry>> entryDict, ushort type, Color color, LocalizedText hoverText = null) {
+        MapEntry mapEntry = new(color, hoverText);
+        if (!entryDict.TryGetValue(type, out IList<MapEntry> list)) {
+            list = new List<MapEntry>();
+            entryDict[type] = list;
+        }
+
+        list.Add(mapEntry);
     }
 }
