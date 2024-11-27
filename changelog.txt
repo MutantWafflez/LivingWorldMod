@@ -1,3 +1,16 @@
-INDEV RELEASE v0.3.1.1 [Town NPC Un-vitalization] (March 3rd, 2024)
+INDEV RELEASE v0.4.0.0 [Town NPC Re-Re-Vitalization] (???, 2024)
+Balance:
+* Update various statistics of items that Harpy Villagers sell:
+	-> Pink Pearl Max Stock = 1 (down from 3), Weight = 0.25 (down from 0.5, making them rarer)
+	-> Black Pearl Max Stock = 2 (down from 3)
+	-> Starshard Cloud, Starshine Block, Skyware Block Max Stock = 150 (up from 75)
+	-> Skyware Loom, Skyware Anvil Max Stock = 2 (down from 3)
+	-> Skyware Chair Max Stock = 10 (up from 3)
+	-> Skyware Table Max Stock = 5 (up from 3)
+	-> Shiny Red Balloon Price = 10g (up from 5g)
+	-> Star Fury Price = 12g 75s (up from 5g)
+	-> Worm Max Stock = 8 (down from 10), Price = 10s (up from 2s)
+	-> Enchanted Nightcrawler Max Stock = 3 (down from 5), Price = 1g (up from 50s)
+	-> Gold Worm Max Stock = 2 (up from 1), Weight When Loved = 0.2 (up from 0.15, making them more common)
 Fixes:
-* Fixed problematic rollback code that broke AI of various NPCs (namely Old One's Army Portals)
+* Optimized Harpy Villager shop code, greatly reducing performance hits when large amounts of Harpy Villagers restock their shops at the dawn of a new day

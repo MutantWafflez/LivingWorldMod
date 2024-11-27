@@ -31,21 +31,21 @@ public class HarpyVillager : Villager {
             pool.Add(new ShopItem(ModContent.ItemType<SunTapestryItem>(), 3));
             pool.Add(new ShopItem(ModContent.ItemType<WorldTapestryItem>(), 3));
             pool.Add(new ShopItem(ModContent.ItemType<StormTapestryItem>(), 3));
-            pool.Add(new ShopItem(ModContent.ItemType<StarshardCloudItem>(), 75));
-            pool.Add(new ShopItem(ModContent.ItemType<StarshineBlockItem>(), 75));
-            pool.Add(new ShopItem(ModContent.ItemType<SkywareBlockItem>(), 75));
-            pool.Add(new ShopItem(ModContent.ItemType<SkywareLoomItem>(), 3));
-            pool.Add(new ShopItem(ModContent.ItemType<SkywareAnvilItem>(), 3));
-            pool.Add(new ShopItem(ItemID.SkywareChair, 3));
-            pool.Add(new ShopItem(ItemID.SkywareTable, 3));
+            pool.Add(new ShopItem(ModContent.ItemType<StarshardCloudItem>(), 100));
+            pool.Add(new ShopItem(ModContent.ItemType<StarshineBlockItem>(), 150));
+            pool.Add(new ShopItem(ModContent.ItemType<SkywareBlockItem>(), 150));
+            pool.Add(new ShopItem(ModContent.ItemType<SkywareLoomItem>(), 2));
+            pool.Add(new ShopItem(ModContent.ItemType<SkywareAnvilItem>(), 2));
+            pool.Add(new ShopItem(ItemID.SkywareChair, 10));
+            pool.Add(new ShopItem(ItemID.SkywareTable, 5));
             pool.Add(new ShopItem(ItemID.SkyMill, 1));
 
             double likeConditionWeight = relationship >= VillagerRelationship.Like ? 1f : 0f;
             pool.Add(new ShopItem(ModContent.ItemType<NimbusJarItem>(), 2), likeConditionWeight);
 
             //Weapons & Accessories
-            pool.Add(new ShopItem(ItemID.ShinyRedBalloon, 1, Item.buyPrice(gold: 5)), likeConditionWeight);
-            pool.Add(new ShopItem(ItemID.Starfury, 1, Item.buyPrice(gold: 5)), likeConditionWeight);
+            pool.Add(new ShopItem(ItemID.ShinyRedBalloon, 1, Item.buyPrice(gold: 10)), likeConditionWeight);
+            pool.Add(new ShopItem(ItemID.Starfury, 1, Item.buyPrice(gold: 12, silver: 75)), likeConditionWeight);
 
             //Vanity/Pets
             pool.Add(new ShopItem(ModContent.ItemType<NimbusInABottle>(), 2), likeConditionWeight);
@@ -56,9 +56,9 @@ public class HarpyVillager : Villager {
             pool.Add(new ShopItem(ItemID.PinkPearl, 1, Item.buyPrice(gold: 15)), relationship == VillagerRelationship.Love ? 0.25 : 0);
 
             //Worms
-            pool.Add(new ShopItem(ItemID.Worm, 10, Item.buyPrice(silver: 2)));
-            pool.Add(new ShopItem(ItemID.EnchantedNightcrawler, 5, Item.buyPrice(silver: 50)), 0.67);
-            pool.Add(new ShopItem(ItemID.GoldWorm, 1, Item.buyPrice(gold: 15)), relationship < VillagerRelationship.Like ? 0.1 : 0.15);
+            pool.Add(new ShopItem(ItemID.Worm, 8, Item.buyPrice(silver: 10)));
+            pool.Add(new ShopItem(ItemID.EnchantedNightcrawler, 3, Item.buyPrice(gold: 1)), 0.67);
+            pool.Add(new ShopItem(ItemID.GoldWorm, 2, Item.buyPrice(gold: 15)), relationship >= VillagerRelationship.Love ? 0.2 : 0.15);
 
             return pool;
         }
