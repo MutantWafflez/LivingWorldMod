@@ -291,7 +291,7 @@ public abstract class Villager : ModNPC {
     /// <summary>
     ///     Randomizes all features of this villager.
     /// </summary>
-    public void RandomizeFeatures() {
+    private void RandomizeFeatures() {
         for (int i = 0; i < DrawIndices.Length; i++) {
             DrawIndices[i] = Main.rand.Next(drawObject.GetLayerVariations(i));
         }
