@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using LivingWorldMod.Content.Waystones.DataStructures.Classes;
-using LivingWorldMod.Globals.Systems.BaseSystems;
+using LivingWorldMod.Globals.BaseTypes.Systems;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.Waystones.Globals.Systems;

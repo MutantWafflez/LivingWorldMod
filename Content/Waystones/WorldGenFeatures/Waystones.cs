@@ -106,7 +106,7 @@ public class Waystones : WorldGenFeature {
 
                 //Place tile entities
                 if (waystoneEntity.ManualPlace(i, j, WaystoneType.Mushroom, LWM.IsDebug) && LWM.IsDebug) {
-                    ModContent.GetInstance<LWM>().Logger.Info($"Placed Waystone at {i}, {j}");
+                    LWM.Instance.Logger.Info($"Placed Waystone at {i}, {j}");
                 }
 
                 //Assuming we get here, break and move out of loop
@@ -188,7 +188,7 @@ public class Waystones : WorldGenFeature {
 
                 //Place tile entities
                 if (waystoneEntity.ManualPlace(i, j, determinedWaystoneType, LWM.IsDebug) && LWM.IsDebug) {
-                    ModContent.GetInstance<LWM>().Logger.Info($"Placed Waystone at {i}, {j}");
+                    LWM.Instance.Logger.Info($"Placed Waystone at {i}, {j}");
                 }
 
                 ContinueLoop: ;

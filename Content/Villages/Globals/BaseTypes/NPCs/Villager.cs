@@ -177,7 +177,7 @@ public abstract class Villager : ModNPC {
     public override void OnChatButtonClicked(bool firstButton, ref string shopName) {
         //Shop Screen
         if (firstButton) {
-            ModContent.GetInstance<ShopUISystem>().OpenShopUI(this);
+            ShopUISystem.Instance.OpenShopUI(this);
         }
         //Reputation Screen
     }

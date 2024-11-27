@@ -1,9 +1,9 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.UI.Happiness;
-using LivingWorldMod.Globals.Systems.BaseSystems;
+using LivingWorldMod.Globals.BaseTypes.Systems;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 
-public class HappinessUISystem : UISystem<HappinessUIState> {
+public class HappinessUISystem : UISystem<HappinessUISystem, HappinessUIState> {
     public override string InternalInterfaceName => "Town NPC Happiness";
 
     public override void PostUpdateEverything() {

@@ -20,7 +20,7 @@ public class NPCChatGUIPatches : LoadablePatch {
         c.EmitDelegate(
             () => {
                 Main.npcChatText = "";
-                ModContent.GetInstance<HappinessUISystem>().OpenHappinessState(Main.LocalPlayer.TalkNPC);
+                HappinessUISystem.Instance.OpenHappinessState(Main.LocalPlayer.TalkNPC);
             }
         );
     }

@@ -50,7 +50,7 @@ public class WaystonePacketHandler : PacketHandler {
 
                 break;
             default:
-                ModContent.GetInstance<LWM>().Logger.Warn($"Invalid WaystonePacketHandler Packet Type of {packetType}");
+                LWM.Instance.Logger.Warn($"Invalid WaystonePacketHandler Packet Type of {packetType}");
                 break;
         }
     }

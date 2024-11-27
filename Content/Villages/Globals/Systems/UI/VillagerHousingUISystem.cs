@@ -1,5 +1,5 @@
 ﻿using LivingWorldMod.Content.Villages.UI.VillagerHousing;
-using LivingWorldMod.Globals.Systems.BaseSystems;
+using LivingWorldMod.Globals.BaseTypes.Systems;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.Villages.Globals.Systems.UI;
@@ -7,7 +7,7 @@ namespace LivingWorldMod.Content.Villages.Globals.Systems.UI;
 /// <summary>
 ///     System that handles the initialization and opening/closing of the Villager Housing UI.
 /// </summary>
-public class VillagerHousingUISystem : UISystem<VillagerHousingUIState> {
+public class VillagerHousingUISystem : UISystem<VillagerHousingUISystem, VillagerHousingUIState> {
     public override string VanillaInterfaceLocation => "Vanilla: Inventory";
 
     public override string InternalInterfaceName => "Villager Housing";

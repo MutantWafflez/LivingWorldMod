@@ -36,7 +36,7 @@ public abstract class LoadablePatch : ILoadable {
             throw;
         }
         catch (Exception ex) {
-            throw new ILPatchFailureException(ModContent.GetInstance<LWM>(), currentContext, ex);
+            throw new ILPatchFailureException(LWM.Instance, currentContext, ex);
         }
     }
 

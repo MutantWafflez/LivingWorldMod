@@ -65,7 +65,7 @@ public class ShrinePacketHandler : PacketHandler {
                             ModContent.GetInstance<VillageShrineUISystem>().OpenOrRegenShrineState(entityPos);
                         }
                         else {
-                            ModContent.GetInstance<LWM>().Logger.Error($"Failed AddRespawnItem received, but got invalid/no entity at position: {entityPos}");
+                            LWM.Instance.Logger.Error($"Failed AddRespawnItem received, but got invalid/no entity at position: {entityPos}");
                         }
                     }
                 }
@@ -97,7 +97,7 @@ public class ShrinePacketHandler : PacketHandler {
                     Point16 entityPos = reader.ReadVector2().ToPoint16();
 
                     if (!reader.ReadBoolean()) {
-                        ModContent.GetInstance<LWM>().Logger.Warn($"Client attempted TakeRespawnItem when Server had no respawn items left at position: {entityPos}");
+                        LWM.Instance.Logger.Warn($"Client attempted TakeRespawnItem when Server had no respawn items left at position: {entityPos}");
                     }
                     else {
                         if (TileEntity.ByPosition.TryGetValue(entityPos, out TileEntity entity) && entity is VillageShrineEntity shrineEntity) {
@@ -106,7 +106,7 @@ public class ShrinePacketHandler : PacketHandler {
                             ModContent.GetInstance<VillageShrineUISystem>().OpenOrRegenShrineState(entityPos);
                         }
                         else {
-                            ModContent.GetInstance<LWM>().Logger.Error($"Successful TakeRespawnItem received, but got invalid/no entity at position: {entityPos}");
+                            LWM.Instance.Logger.Error($"Successful TakeRespawnItem received, but got invalid/no entity at position: {entityPos}");
                         }
                     }
                 }
@@ -120,13 +120,13 @@ public class ShrinePacketHandler : PacketHandler {
                         shrineEntity.ForceRecalculateAndSync();
                     }
                     else {
-                        ModContent.GetInstance<LWM>().Logger.Error($"TriggerForceSync received, but got invalid/no entity at position: {entityPos}");
+                        LWM.Instance.Logger.Error($"TriggerForceSync received, but got invalid/no entity at position: {entityPos}");
                     }
                 }
 
                 break;
             default:
-                ModContent.GetInstance<LWM>().Logger.Warn($"Invalid ShrinePacketHandler Packet Type of {packetType}");
+                LWM.Instance.Logger.Warn($"Invalid ShrinePacketHandler Packet Type of {packetType}");
                 break;
         }
     }

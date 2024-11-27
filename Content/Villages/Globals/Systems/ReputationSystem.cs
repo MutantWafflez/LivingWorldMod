@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Hjson;
 using LivingWorldMod.Content.Villages.DataStructures.Enums;
 using LivingWorldMod.Content.Villages.DataStructures.Structs;
-using LivingWorldMod.Globals.Systems.BaseSystems;
+using LivingWorldMod.Globals.BaseTypes.Systems;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader.IO;

@@ -84,7 +84,7 @@ public class HarpyVillage : WorldGenFeature {
         }
         //If no valid placement is found, forcefully place and purge structures in the way.
         else {
-            ModContent.GetInstance<LWM>().Logger.Info("No suitable placement found naturally. Forcing Placement.");
+            LWM.Instance.Logger.Info("No suitable placement found naturally. Forcing Placement.");
 
             //Set origin point manually
             originPoint = new Point(midWorld, startingYLevel + originVerticalDisplacement);

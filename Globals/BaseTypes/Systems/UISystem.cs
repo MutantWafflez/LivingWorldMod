@@ -1,24 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
+using Terraria.Localization;
 using Terraria.UI;
 
-namespace LivingWorldMod.Globals.Systems.BaseSystems;
+namespace LivingWorldMod.Globals.BaseTypes.Systems;
 
 /// <summary>
 ///     Unique type of ModSystem that can be extended for automatic setting
 ///     up and handling of the given UIState T.
 /// </summary>
-/// <remarks>
-///     Does not extend <seealso cref="BaseModSystem{T}" /> like all other ModSystems in this mod,
-///     since double layered generics cause some confusing shenanigans, namely the Instance property
-///     somehow returning null.
-/// </remarks>
 [Autoload(Side = ModSide.Client)]
-public abstract class UISystem<T> : ModSystem
-    where T : UIState, new() {
+public abstract partial class UISystem<TSystem, TState> : BaseModSystem<TSystem> where TState : UIState, new() where TSystem : BaseModSystem<TSystem> {
     public UserInterface correspondingInterface;
 
-    public T correspondingUIState;
+    public TState correspondingUIState;
 
     protected GameTime lastGameTime;
 
@@ -32,7 +28,7 @@ public abstract class UISystem<T> : ModSystem
     ///     The internal name of this Interface when inserting into the Interface
     ///     Layers. Defaults to the name of the passed in UIState.
     /// </summary>
-    public virtual string InternalInterfaceName => typeof(T).Name;
+    public virtual string InternalInterfaceName => SpaceBetweenCapitalsRegex().Replace(typeof(TState).Name, " $1").Trim();
 
     /// <summary>
     ///     What kind of scale type this interface will be using. Defaults to InterfaceScaleType.UI.
@@ -41,7 +37,7 @@ public abstract class UISystem<T> : ModSystem
 
     public override void SetStaticDefaults() {
         correspondingInterface = new UserInterface();
-        correspondingUIState = new T();
+        correspondingUIState = new TState();
 
         correspondingUIState.Activate();
     }
@@ -72,4 +68,7 @@ public abstract class UISystem<T> : ModSystem
             correspondingInterface.Update(lastGameTime);
         }
     }
+
+    [GeneratedRegex("([A-Z])")]
+    private static partial Regex SpaceBetweenCapitalsRegex();
 }

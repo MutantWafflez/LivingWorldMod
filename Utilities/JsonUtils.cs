@@ -10,7 +10,7 @@ public static partial class LWMUtils {
     ///     LWM, so the file path does not need to include "LivingWorldMod".
     /// </summary>
     public static JsonValue GetJSONFromFile(string filePath) {
-        Stream jsonStream = ModContent.GetInstance<LWM>().GetFileStream(filePath);
+        Stream jsonStream = LWM.Instance.GetFileStream(filePath);
         JsonValue jsonData = JsonValue.Load(jsonStream);
         jsonStream.Close();
 

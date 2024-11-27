@@ -9,7 +9,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Structs;
-using LivingWorldMod.Globals.Systems.BaseSystems;
+using LivingWorldMod.Globals.BaseTypes.Systems;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -99,68 +99,6 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         ];
     }
 
-    public override void Load() {
-        // TODO: Combine JSON into one file(?)
-        sleepSchedules = new Dictionary<int, SleepSchedule>();
-        JsonObject sleepSchedulesJSON = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCSleepSchedules.json").Qo();
-        foreach ((string npcName, JsonValue sleepSchedule) in sleepSchedulesJSON) {
-            int npcType = NPCID.Search.GetId(npcName);
-
-            sleepSchedules[npcType] = new SleepSchedule(TimeOnly.Parse(sleepSchedule["Start"]), TimeOnly.Parse(sleepSchedule["End"]));
-        }
-
-        JsonObject jsonAttackData = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCAttackData.json").Qo();
-
-        JsonObject projJSONAttackData = jsonAttackData["ProjNPCs"].Qo();
-        JsonObject meleeJSONAttackData = jsonAttackData["MeleeNPCs"].Qo();
-
-        Dictionary<int, TownNPCProjAttackData> projDict = [];
-        foreach ((string npcName, JsonValue jsonValue) in projJSONAttackData) {
-            JsonObject jsonObject = jsonValue.Qo();
-            int npcType = NPCID.Search.GetId(npcName);
-
-            projDict[npcType] = new TownNPCProjAttackData(
-                jsonObject.Qi("projType"),
-                jsonObject.Qi("projDamage"),
-                (float)jsonObject.Qd("knockBack"),
-                (float)jsonObject.Qd("speedMult"),
-                jsonObject.Qi("attackDelay"),
-                jsonObject.Qi("attackCooldown"),
-                jsonObject.Qi("maxValue"),
-                jsonObject.Qi("gravityCorrection"),
-                NPCID.Sets.DangerDetectRange[npcType],
-                (float)jsonObject.Qd("randomOffset")
-            );
-        }
-
-        projectileAttackDatas = projDict;
-
-        Dictionary<int, TownNPCMeleeAttackData> meleeDict = [];
-        foreach ((string npcName, JsonValue jsonValue) in meleeJSONAttackData) {
-            JsonObject jsonObject = jsonValue.Qo();
-            int npcType = NPCID.Search.GetId(npcName);
-
-            meleeDict[npcType] = new TownNPCMeleeAttackData(
-                jsonObject.Qi("attackCooldown"),
-                jsonObject.Qi("maxValue"),
-                jsonObject.Qi("damage"),
-                (float)jsonObject.Qd("knockBack"),
-                jsonObject.Qi("itemWidth"),
-                jsonObject.Qi("itemHeight")
-            );
-        }
-
-        meleeAttackDatas = meleeDict;
-    }
-
-    public override void PostSetupContent() {
-        if (Main.netMode != NetmodeID.Server) {
-            Main.QueueMainThreadAction(GenerateTownNPCSpriteProfiles);
-        }
-
-        LoadPersonalities();
-    }
-
     private static void LoadPersonalities() {
         _autoloadedFlavorTexts = [];
         PersonalityDatabase = new Dictionary<int, List<IPersonalityTrait>>();
@@ -247,6 +185,68 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
 
             PersonalityDatabase[npcType].Add(new EventPreferencesTrait(eventData.Qo().Select(pair => new EventPreferencesTrait.EventPreference(pair.Key, pair.Value)).ToArray()));
         }
+    }
+
+    public override void Load() {
+        // TODO: Combine JSON into one file(?)
+        sleepSchedules = new Dictionary<int, SleepSchedule>();
+        JsonObject sleepSchedulesJSON = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCSleepSchedules.json").Qo();
+        foreach ((string npcName, JsonValue sleepSchedule) in sleepSchedulesJSON) {
+            int npcType = NPCID.Search.GetId(npcName);
+
+            sleepSchedules[npcType] = new SleepSchedule(TimeOnly.Parse(sleepSchedule["Start"]), TimeOnly.Parse(sleepSchedule["End"]));
+        }
+
+        JsonObject jsonAttackData = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCAttackData.json").Qo();
+
+        JsonObject projJSONAttackData = jsonAttackData["ProjNPCs"].Qo();
+        JsonObject meleeJSONAttackData = jsonAttackData["MeleeNPCs"].Qo();
+
+        Dictionary<int, TownNPCProjAttackData> projDict = [];
+        foreach ((string npcName, JsonValue jsonValue) in projJSONAttackData) {
+            JsonObject jsonObject = jsonValue.Qo();
+            int npcType = NPCID.Search.GetId(npcName);
+
+            projDict[npcType] = new TownNPCProjAttackData(
+                jsonObject.Qi("projType"),
+                jsonObject.Qi("projDamage"),
+                (float)jsonObject.Qd("knockBack"),
+                (float)jsonObject.Qd("speedMult"),
+                jsonObject.Qi("attackDelay"),
+                jsonObject.Qi("attackCooldown"),
+                jsonObject.Qi("maxValue"),
+                jsonObject.Qi("gravityCorrection"),
+                NPCID.Sets.DangerDetectRange[npcType],
+                (float)jsonObject.Qd("randomOffset")
+            );
+        }
+
+        projectileAttackDatas = projDict;
+
+        Dictionary<int, TownNPCMeleeAttackData> meleeDict = [];
+        foreach ((string npcName, JsonValue jsonValue) in meleeJSONAttackData) {
+            JsonObject jsonObject = jsonValue.Qo();
+            int npcType = NPCID.Search.GetId(npcName);
+
+            meleeDict[npcType] = new TownNPCMeleeAttackData(
+                jsonObject.Qi("attackCooldown"),
+                jsonObject.Qi("maxValue"),
+                jsonObject.Qi("damage"),
+                (float)jsonObject.Qd("knockBack"),
+                jsonObject.Qi("itemWidth"),
+                jsonObject.Qi("itemHeight")
+            );
+        }
+
+        meleeAttackDatas = meleeDict;
+    }
+
+    public override void PostSetupContent() {
+        if (Main.netMode != NetmodeID.Server) {
+            Main.QueueMainThreadAction(GenerateTownNPCSpriteProfiles);
+        }
+
+        LoadPersonalities();
     }
 
     private void GenerateTownNPCSpriteProfiles() {

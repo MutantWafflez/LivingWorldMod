@@ -20,7 +20,7 @@ public static partial class LWMUtils {
             return;
         }
 
-        throw new ILPatchFailureException(ModContent.GetInstance<LWM>(), cursor.Context, new InstructionNotFoundException());
+        throw new ILPatchFailureException(LWM.Instance, cursor.Context, new InstructionNotFoundException());
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ public static partial class LWMUtils {
             return;
         }
 
-        throw new ILPatchFailureException(ModContent.GetInstance<LWM>(), cursor.Context, new InstructionNotFoundException());
+        throw new ILPatchFailureException(LWM.Instance, cursor.Context, new InstructionNotFoundException());
     }
 
     /// <summary>
@@ -44,7 +44,7 @@ public static partial class LWMUtils {
             return;
         }
 
-        throw new ILPatchFailureException(ModContent.GetInstance<LWM>(), cursor.Context, new InstructionNotFoundException());
+        throw new ILPatchFailureException(LWM.Instance, cursor.Context, new InstructionNotFoundException());
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ public static partial class LWMUtils {
             return;
         }
 
-        throw new ILPatchFailureException(ModContent.GetInstance<LWM>(), cursor.Context, new InstructionNotFoundException());
+        throw new ILPatchFailureException(LWM.Instance, cursor.Context, new InstructionNotFoundException());
     }
 
     /// <summary>

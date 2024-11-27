@@ -1,4 +1,4 @@
-﻿using LivingWorldMod.Globals.Systems.BaseSystems;
+﻿using LivingWorldMod.Globals.BaseTypes.Systems;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Globals.Systems;

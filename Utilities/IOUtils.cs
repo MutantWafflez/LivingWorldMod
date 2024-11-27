@@ -30,7 +30,7 @@ public static partial class LWMUtils {
     /// <param name="path"> The path in the LivingWorldMod folder to go to. </param>
     /// <returns> </returns>
     public static StructureData GetStructureFromFile(string path) {
-        LWM modInstance = ModContent.GetInstance<LWM>();
+        LWM modInstance = LWM.Instance;
 
         Stream fileStream = modInstance.GetFileStream(path);
 

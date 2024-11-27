@@ -160,7 +160,7 @@ public class VillageShrineTile : BasePylon {
             case VillagerType.Harpy:
                 return Main.BestiaryTracker.Chats.GetWasChatWith($"{nameof(LivingWorldMod)}/HarpyVillager");
             default:
-                ModContent.GetInstance<LWM>().Logger.Error($"Villager Type of {type} is not valid for shrine visibility.");
+                LWM.Instance.Logger.Error($"Villager Type of {type} is not valid for shrine visibility.");
                 return false;
         }
     }

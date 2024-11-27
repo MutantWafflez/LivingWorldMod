@@ -16,6 +16,14 @@ public class LivingWorldMod : Mod {
     public const bool EnableILPatches = true;
 
     /// <summary>
+    ///     Single-ton instance of the Mod class.
+    /// </summary>
+    public static LWM Instance {
+        get;
+        private set;
+    }
+
+    /// <summary>
     ///     Whether or not the mod is in Debug, which is determined by if you are building from some
     ///     IDE as Debug.
     /// </summary>
@@ -40,6 +48,10 @@ public class LivingWorldMod : Mod {
     ///     Directory of the Music files for LivingWorldMod.
     /// </summary>
     public static string MusicPath => "Assets/Audio/Music/";
+
+    public LivingWorldMod() {
+        Instance = this;
+    }
 
     public override void HandlePacket(BinaryReader reader, int whoAmI) {
         byte handlerType = reader.ReadByte();

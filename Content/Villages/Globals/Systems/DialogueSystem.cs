@@ -4,7 +4,7 @@ using System.Linq;
 using Hjson;
 using LivingWorldMod.Content.Villages.DataStructures.Enums;
 using LivingWorldMod.Content.Villages.DataStructures.Structs;
-using LivingWorldMod.Globals.Systems.BaseSystems;
+using LivingWorldMod.Globals.BaseTypes.Systems;
 using LivingWorldMod.Utilities;
 using Terraria.GameContent.Events;
 using Terraria.Localization;

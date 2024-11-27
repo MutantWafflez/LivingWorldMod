@@ -179,7 +179,7 @@ public class UICoinDisplay : UIElement {
                 break;
 
             default:
-                ModContent.GetInstance<LWM>().Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
+                LWM.Instance.Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
                 break;
         }
     }
@@ -229,7 +229,7 @@ public class UICoinDisplay : UIElement {
                 break;
 
             default:
-                ModContent.GetInstance<LWM>().Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
+                LWM.Instance.Logger.Error($"Invalid CoinDrawStyle found: {coinDrawStyle}");
 
                 break;
         }

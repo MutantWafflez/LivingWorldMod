@@ -79,7 +79,7 @@ public class UIShopItem : UIImage {
     }
 
     public override void LeftClick(UIMouseEvent evt) {
-        ShopUIState shopState = ModContent.GetInstance<ShopUISystem>().correspondingUIState;
+        ShopUIState shopState = ShopUISystem.Instance.correspondingUIState;
 
         shopState.SetSelectedItem(!isSelected && pertainedInventoryItem.RemainingStock > 0 ? this : null);
     }

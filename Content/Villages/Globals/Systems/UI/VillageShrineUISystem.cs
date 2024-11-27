@@ -1,6 +1,6 @@
 ﻿using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 using LivingWorldMod.Content.Villages.UI.VillageShrine;
-using LivingWorldMod.Globals.Systems.BaseSystems;
+using LivingWorldMod.Globals.BaseTypes.Systems;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
@@ -9,7 +9,7 @@ using Terraria.UI;
 
 namespace LivingWorldMod.Content.Villages.Globals.Systems.UI;
 
-public class VillageShrineUISystem : UISystem<VillageShrineUIState> {
+public class VillageShrineUISystem : UISystem<VillageShrineUISystem, VillageShrineUIState> {
     public override string VanillaInterfaceLocation => "Vanilla: Inventory";
 
     public override string InternalInterfaceName => "Village Shrine Panel";

@@ -1,6 +1,6 @@
 ﻿using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.Villages.UI.VillagerShop;
-using LivingWorldMod.Globals.Systems.BaseSystems;
+using LivingWorldMod.Globals.BaseTypes.Systems;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria.Audio;
@@ -10,7 +10,7 @@ namespace LivingWorldMod.Content.Villages.Globals.Systems.UI;
 /// <summary>
 ///     System that handles the initialization and opening/closing of the Shop UI for Villagers.
 /// </summary>
-public class ShopUISystem : UISystem<ShopUIState> {
+public class ShopUISystem : UISystem<ShopUISystem, ShopUIState> {
     public static Asset<Effect> hoverFlashShader;
     public static Asset<Effect> grayScaleShader;
 
