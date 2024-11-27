@@ -25,7 +25,7 @@ public class EffervescentNugget : BaseItem {
         Item.CloneDefaults(ItemID.ChickenNugget);
 
         Item.buffType = ModContent.BuffType<SugarSuperfluity>();
-        Item.buffTime = 60 * 60; // 1 minute
+        Item.buffTime = LWMUtils.RealLifeMinute;
         Item.rare = ItemRarityID.LightPurple;
 
         Main.RegisterItemAnimation(Type, new DrawAnimationVertical(int.MaxValue, 3));

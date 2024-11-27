@@ -28,7 +28,7 @@ public class HappinessUIState : UIState {
             Height = StyleDimension.FromPixels(40f);
             Width = StyleDimension.Fill;
 
-            DynamicLocalizedText templatedFlavorText = instance.duration >= 60
+            DynamicLocalizedText templatedFlavorText = instance.duration >= LWMUtils.RealLifeSecond
                 ? new DynamicLocalizedText (
                     "UI.DurationMoodFlavorText".Localized(),
                     new { FlavorText = instance.flavorText.ToString(), Time = Lang.LocalizedDuration(new TimeSpan(0, 0, instance.duration / LWMUtils.RealLifeSecond), true, true) }

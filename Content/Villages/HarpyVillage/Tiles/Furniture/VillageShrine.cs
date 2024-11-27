@@ -221,7 +221,7 @@ public class VillageShrineEntity : TEModdedPylon {
 
         //Sync from server to clients every 10 seconds
         if (--_syncTimer <= 0) {
-            _syncTimer = 60 * 10;
+            _syncTimer = LWMUtils.RealLifeSecond * 10;
 
             CurrentHousedVillagersCount = LWMUtils.NPCCountHousedInZone(tileVillageZone, villagerNPCType);
             if (_houseLocations is null || !LWMUtils.LocationsValidForHousing(_houseLocations, villagerNPCType)) {

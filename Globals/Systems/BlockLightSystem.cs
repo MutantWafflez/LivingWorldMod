@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Globals.BaseTypes.Systems;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Globals.Systems;
@@ -28,7 +29,7 @@ public class BlockLightSystem : BaseModSystem<BlockLightSystem> {
 
     public override void Load() {
         starCloudColor = targetStarCloudColor = Color.Yellow;
-        starCloudTimer = 5 * 60;
+        starCloudTimer = LWMUtils.RealLifeSecond * 5;
 
         starTorchColor = new Color(0.97f, 0.84f, 0.41f);
     }
@@ -50,7 +51,7 @@ public class BlockLightSystem : BaseModSystem<BlockLightSystem> {
                 _ => targetStarCloudColor
             };
             //Timer set to 5 seconds
-            starCloudTimer = 5 * 60;
+            starCloudTimer = LWMUtils.RealLifeSecond * 5;
         }
     }
 }

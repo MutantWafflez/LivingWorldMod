@@ -166,7 +166,7 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         }
         else if (--_blinkTimer <= 0) {
             AreEyesClosed = false;
-            _blinkTimer = Main.rand.Next(180, 360);
+            _blinkTimer = Main.rand.Next(LWMUtils.RealLifeSecond * 3, LWMUtils.RealLifeSecond * 6);
         }
 
         if (IsTalking && --_mouthOpenTimer <= 0) {

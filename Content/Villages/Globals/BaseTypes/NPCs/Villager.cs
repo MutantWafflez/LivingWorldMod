@@ -254,19 +254,21 @@ public abstract class Villager : ModNPC {
             return;
         }
 
-        if (_homelessCounter >= 60 * 60 * 2) {
-            Color leavingColor = new(255, 25, 25);
-            string leavingText = $"Event.VillagerLeft.{VillagerType}".Localized().FormatWith(NPC.GivenOrTypeName);
+        if (_homelessCounter < LWMUtils.RealLifeMinute * 2) {
+            return;
+        }
 
-            NPC.active = false;
-            if (Main.netMode == NetmodeID.Server) {
-                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(leavingText), leavingColor);
-                NetMessage.SendData(MessageID.SyncNPC, number: NPC.whoAmI);
-            }
-            else {
-                Main.NewText(leavingText, leavingColor);
-                SoundEngine.PlaySound(SoundID.NPCDeath6, NPC.Center);
-            }
+        Color leavingColor = new(255, 25, 25);
+        string leavingText = $"Event.VillagerLeft.{VillagerType}".Localized().FormatWith(NPC.GivenOrTypeName);
+
+        NPC.active = false;
+        if (Main.netMode == NetmodeID.Server) {
+            ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(leavingText), leavingColor);
+            NetMessage.SendData(MessageID.SyncNPC, number: NPC.whoAmI);
+        }
+        else {
+            Main.NewText(leavingText, leavingColor);
+            SoundEngine.PlaySound(SoundID.NPCDeath6, NPC.Center);
         }
     }
 
