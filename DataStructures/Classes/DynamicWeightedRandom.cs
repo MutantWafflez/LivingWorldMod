@@ -364,7 +364,7 @@ public class DynamicWeightedRandom<TKey> : ICollection<TKey> where TKey : ICompa
         VerifyHaveItemsToChooseFrom();
 
         Node currentNode = _root;
-        double randomNumber = _random.NextDouble(TotalWeight);
+        double randomNumber = Math.BitIncrement(_random.NextDouble(TotalWeight)); // Range from (0, TotalWeight]
         while (true) {
             if (currentNode.left.subtreeWeight >= randomNumber) {
                 currentNode = currentNode.left;
