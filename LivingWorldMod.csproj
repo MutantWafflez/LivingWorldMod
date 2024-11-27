@@ -16,14 +16,18 @@
     <ItemGroup>
         <PackageReference Include="Krafs.Publicizer" Version="2.2.1" PrivateAssets="all"/>
 
+        <!--> Mod Loader Publicizing -->
+        <Publicize Include="tModLoader:Terraria.ModLoader.ModLoader.isLoading"/>
+
+        <!--> Event Publicizing -->
         <Publicize Include="tModLoader:Terraria.GameContent.Events.BirthdayParty.CanNPCParty"/>
 
         <!-- Main Publicizing -->
         <Publicize Include="tModLoader:Terraria.Main.DrawNPCExtras"/>
 
         <!-- NPC Publicizing -->
-        <!-- AI Publicizing -->
         <Publicize Include="tModLoader:Terraria.NPC.AI_007_TownEntities_Shimmer_TeleportToLandingSpot"/>
+
         <!-- Collision Publicizing -->
         <Publicize Include="tModLoader:Terraria.NPC.Collision_WalkDownSlopes"/>
         <Publicize Include="tModLoader:Terraria.NPC.Collision_LavaCollision"/>

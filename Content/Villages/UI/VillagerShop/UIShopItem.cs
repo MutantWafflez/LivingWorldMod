@@ -1,5 +1,5 @@
-﻿using LivingWorldMod.Content.Villages.DataStructures.Classes;
-using LivingWorldMod.Content.Villages.DataStructures.Enums;
+﻿using LivingWorldMod.Content.Villages.DataStructures.Enums;
+using LivingWorldMod.Content.Villages.DataStructures.Records;
 using LivingWorldMod.Content.Villages.Globals.Systems.UI;
 using LivingWorldMod.Globals.UIElements;
 using Microsoft.Xna.Framework;
@@ -40,8 +40,8 @@ public class UIShopItem : UIImage {
     ) {
         this.pertainedInventoryItem = pertainedInventoryItem;
         displayedItem = new Item();
-        displayedItem.SetDefaults(pertainedInventoryItem.itemType);
-        displayedItem.stack = pertainedInventoryItem.remainingStock;
+        displayedItem.SetDefaults(pertainedInventoryItem.ItemType);
+        displayedItem.stack = pertainedInventoryItem.RemainingStock;
         this.displayedCost = displayedCost;
         this.villagerType = villagerType;
     }
@@ -81,13 +81,13 @@ public class UIShopItem : UIImage {
     public override void LeftClick(UIMouseEvent evt) {
         ShopUIState shopState = ModContent.GetInstance<ShopUISystem>().correspondingUIState;
 
-        shopState.SetSelectedItem(!isSelected && pertainedInventoryItem.remainingStock > 0 ? this : null);
+        shopState.SetSelectedItem(!isSelected && pertainedInventoryItem.RemainingStock > 0 ? this : null);
     }
 
     protected override void DrawSelf(SpriteBatch spriteBatch) {
         RasterizerState defaultRasterizerState = new() { CullMode = CullMode.None, ScissorTestEnable = true };
 
-        if (pertainedInventoryItem.remainingStock <= 0) {
+        if (pertainedInventoryItem.RemainingStock <= 0) {
             Effect shader = ShopUISystem.grayScaleShader.Value;
 
             spriteBatch.End();

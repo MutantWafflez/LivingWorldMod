@@ -2,8 +2,8 @@
 using System.IO;
 using System.Linq;
 using Hjson;
-using LivingWorldMod.Content.Villages.DataStructures.Classes;
 using LivingWorldMod.Content.Villages.DataStructures.Enums;
+using LivingWorldMod.Content.Villages.DataStructures.Records;
 using LivingWorldMod.Content.Villages.Globals.Systems;
 using LivingWorldMod.Content.Villages.Globals.Systems.UI;
 using LivingWorldMod.DataStructures.Classes;
@@ -82,7 +82,11 @@ public abstract class Villager : ModNPC {
     public override ModNPC NewInstance(NPC entity) {
         Villager instance = (Villager)base.NewInstance(entity);
 
-        instance.RestockShop();
+        if (ModLoader.isLoading) {
+            return instance;
+        }
+
+        instance.RegenerateShop();
         instance.RandomizeFeatures();
 
         return instance;
@@ -270,7 +274,7 @@ public abstract class Villager : ModNPC {
     /// <summary>
     ///     Restocks the shop of this villager, drawing from the SpawnPool property.
     /// </summary>
-    public void RestockShop() {
+    public void RegenerateShop() {
         shopInventory = [];
 
         int shopLength = Main.rand.Next(6, 8);

@@ -29,11 +29,13 @@ public class ShopUISystem : UISystem<ShopUIState> {
     }
 
     public override void PostUpdateTime() {
-        if (Main.time >= 32400.0 && !Main.dayTime && (!Main.gameMenu || Main.netMode == NetmodeID.Server)) {
-            foreach (NPC npc in Main.npc) {
-                if (npc.active && npc.ModNPC is Villager villager) {
-                    villager.RestockShop();
-                }
+        if (!(Main.time >= 32400.0) || Main.dayTime || (Main.gameMenu && Main.netMode != NetmodeID.Server)) {
+            return;
+        }
+
+        foreach (NPC npc in Main.ActiveNPCs) {
+            if (npc.ModNPC is Villager villager) {
+                villager.RegenerateShop();
             }
         }
     }

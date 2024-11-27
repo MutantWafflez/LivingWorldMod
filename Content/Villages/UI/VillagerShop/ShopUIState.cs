@@ -1,6 +1,6 @@
 ﻿using System;
-using LivingWorldMod.Content.Villages.DataStructures.Classes;
 using LivingWorldMod.Content.Villages.DataStructures.Enums;
+using LivingWorldMod.Content.Villages.DataStructures.Records;
 using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.Villages.Globals.Systems;
 using LivingWorldMod.Content.Villages.HarpyVillage.NPCs;
@@ -193,18 +193,18 @@ public class ShopUIState : UIState {
 
             _buyDelay *= _buySpeed;
 
-            if (shopItem.remainingStock > 0) {
+            if (shopItem.RemainingStock > 0) {
                 if (player.CanAfford((int)_selectedItem.displayedCost) && player.CanAcceptItemIntoInventory(_selectedItem.displayedItem) && _buyDelay <= 0f) {
                     _buyDelay = _maxBuyDelay;
 
-                    shopItem.remainingStock--;
+                    shopItem.RemainingStock--;
 
                     player.BuyItem((int)_selectedItem.displayedCost);
                     player.QuickSpawnItem(new EntitySource_DropAsItem(player), _selectedItem.displayedItem);
 
                     _selectedItem.displayedItem.stack--;
                     _selectedItem.itemNameText.SetText(_selectedItem.displayedItem.HoverName);
-                    buyItemStock.SetText(shopItem.remainingStock.ToString());
+                    buyItemStock.SetText(shopItem.RemainingStock.ToString());
 
                     savingsDisplay.moneyToDisplay = player.CalculateTotalSavings();
 
@@ -276,7 +276,7 @@ public class ShopUIState : UIState {
             _selectedItem.isSelected = true;
 
             buyItemIcon.SetItem(_selectedItem.displayedItem);
-            buyItemStock.SetText(_selectedItem.pertainedInventoryItem.remainingStock.ToString());
+            buyItemStock.SetText(_selectedItem.pertainedInventoryItem.RemainingStock.ToString());
 
             buyItemHeader.isVisible = true;
             buyItemIcon.isVisible = true;
