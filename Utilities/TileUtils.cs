@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Terraria.GameContent.Drawing;
 using Terraria.Localization;
 using Terraria.ObjectData;
+using MapEntryDict = System.Collections.Generic.IDictionary<ushort, System.Collections.Generic.IList<Terraria.ModLoader.MapEntry>>;
 
 namespace LivingWorldMod.Utilities;
 
@@ -121,7 +122,7 @@ public static partial class LWMUtils {
             return false;
         }
 
-        IDictionary<ushort, IList<MapEntry>> entryDict;
+        MapEntryDict entryDict;
         switch (instance) {
             case ModTile:
                 entryDict = MapLoader.tileEntries;
@@ -148,7 +149,7 @@ public static partial class LWMUtils {
     ///     I created this because <see cref="ModTile.AddMapEntry" /> and <see cref="ModWall.AddMapEntry" /> could easily be coalesced into the same method, where the passed in dictionary is the only thing
     ///     that changes between them. Also exists because of all the red tape in terms of access levels (everything is either internal or private).
     /// </remarks>
-    public static void AddMapEntry(IDictionary<ushort, IList<MapEntry>> entryDict, ushort type, Color color, LocalizedText hoverText = null) {
+    public static void AddMapEntry(MapEntryDict entryDict, ushort type, Color color, LocalizedText hoverText = null) {
         MapEntry mapEntry = new(color, hoverText);
         if (!entryDict.TryGetValue(type, out IList<MapEntry> list)) {
             list = new List<MapEntry>();
