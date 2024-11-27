@@ -15,7 +15,6 @@ using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
-using Terraria.Utilities;
 
 namespace LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 
@@ -60,7 +59,7 @@ public abstract class Villager : ModNPC {
     ///     A list of ALL POSSIBLE shop items that villagers of this given type can ever sell. This
     ///     list is checked upon every restock.
     /// </summary>
-    public abstract WeightedRandom<ShopItem> ShopPool {
+    public abstract DynamicWeightedRandom<ShopItem> ShopPool {
         get;
     }
 
@@ -277,15 +276,11 @@ public abstract class Villager : ModNPC {
     public void RegenerateShop() {
         shopInventory = [];
 
-        int shopLength = Main.rand.Next(6, 8);
-
-        do {
-            ShopItem returnedItem = ShopPool;
-
-            if (shopInventory.All(item => item != returnedItem)) {
-                shopInventory.Add(returnedItem);
-            }
-        } while (shopInventory.Count < shopLength);
+        int shopLength = Main.rand.Next(5, 8);
+        DynamicWeightedRandom<ShopItem> currentShop = ShopPool;
+        for (int i = 0; i < shopLength && currentShop.Count > 0; i++) {
+            shopInventory.Add(currentShop.NextWithRemoval());
+        }
     }
 
     /// <summary>

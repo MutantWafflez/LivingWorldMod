@@ -7,9 +7,7 @@ using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Blocks;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture.Tapestries;
 using LivingWorldMod.DataStructures.Classes;
-using LivingWorldMod.Utilities;
 using Terraria.GameContent.Bestiary;
-using Terraria.Utilities;
 
 namespace LivingWorldMod.Content.Villages.HarpyVillage.NPCs;
 
@@ -23,9 +21,9 @@ public class HarpyVillager : Villager {
 
     public override VillagerType VillagerType => VillagerType.Harpy;
 
-    public override WeightedRandom<ShopItem> ShopPool {
+    public override DynamicWeightedRandom<ShopItem> ShopPool {
         get {
-            WeightedRandom<ShopItem> pool = new();
+            DynamicWeightedRandom<ShopItem> pool = new(Main.rand);
             VillagerRelationship relationship = RelationshipStatus;
 
             //Furniture & Blocks
@@ -41,26 +39,26 @@ public class HarpyVillager : Villager {
             pool.Add(new ShopItem(ItemID.SkywareChair, 3));
             pool.Add(new ShopItem(ItemID.SkywareTable, 3));
             pool.Add(new ShopItem(ItemID.SkyMill, 1));
-            
-            bool likeCondition = relationship >= VillagerRelationship.Like;
-            pool.AddConditionally(new ShopItem(ModContent.ItemType<NimbusJarItem>(), 2), likeCondition);
+
+            double likeConditionWeight = relationship >= VillagerRelationship.Like ? 1f : 0f;
+            pool.Add(new ShopItem(ModContent.ItemType<NimbusJarItem>(), 2), likeConditionWeight);
 
             //Weapons & Accessories
-            pool.AddConditionally(new ShopItem(ItemID.ShinyRedBalloon, 1, Item.buyPrice(gold: 5)), likeCondition);
-            pool.AddConditionally(new ShopItem(ItemID.Starfury, 1, Item.buyPrice(gold: 5)), likeCondition);
+            pool.Add(new ShopItem(ItemID.ShinyRedBalloon, 1, Item.buyPrice(gold: 5)), likeConditionWeight);
+            pool.Add(new ShopItem(ItemID.Starfury, 1, Item.buyPrice(gold: 5)), likeConditionWeight);
 
             //Vanity/Pets
-            pool.AddConditionally(new ShopItem(ModContent.ItemType<NimbusInABottle>(), 2), likeCondition);
+            pool.Add(new ShopItem(ModContent.ItemType<NimbusInABottle>(), 2), likeConditionWeight);
 
             //Materials
-            pool.AddConditionally(new ShopItem(ItemID.WhitePearl, 3, Item.buyPrice(gold: 1)), likeCondition);
-            pool.AddConditionally(new ShopItem(ItemID.BlackPearl, 3, Item.buyPrice(gold: 5)), likeCondition, 0.5f);
-            pool.AddConditionally(new ShopItem(ItemID.PinkPearl, 3, Item.buyPrice(gold: 15)), relationship == VillagerRelationship.Love, 0.5f);
+            pool.Add(new ShopItem(ItemID.WhitePearl, 3, Item.buyPrice(gold: 1)), likeConditionWeight);
+            pool.Add(new ShopItem(ItemID.BlackPearl, 2, Item.buyPrice(gold: 5)), relationship >= VillagerRelationship.Like ? 0.5 : 0);
+            pool.Add(new ShopItem(ItemID.PinkPearl, 1, Item.buyPrice(gold: 15)), relationship == VillagerRelationship.Love ? 0.25 : 0);
 
             //Worms
             pool.Add(new ShopItem(ItemID.Worm, 10, Item.buyPrice(silver: 2)));
-            pool.Add(new ShopItem(ItemID.EnchantedNightcrawler, 5, Item.buyPrice(silver: 50)), 0.67f);
-            pool.Add(new ShopItem(ItemID.GoldWorm, 1, Item.buyPrice(gold: 15)), relationship < VillagerRelationship.Like ? 0.1f : 0.15f);
+            pool.Add(new ShopItem(ItemID.EnchantedNightcrawler, 5, Item.buyPrice(silver: 50)), 0.67);
+            pool.Add(new ShopItem(ItemID.GoldWorm, 1, Item.buyPrice(gold: 15)), relationship < VillagerRelationship.Like ? 0.1 : 0.15);
 
             return pool;
         }
@@ -82,7 +80,7 @@ public class HarpyVillager : Villager {
 
     public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) {
         bestiaryEntry.Info.AddRange(
-            new IBestiaryInfoElement[] { BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Sky, new FlavorTextBestiaryInfoElement("Mods.LivingWorldMod.Bestiary.HarpyVillager") }
+            [ BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Sky, new FlavorTextBestiaryInfoElement("Mods.LivingWorldMod.Bestiary.HarpyVillager") ]
         );
     }
 }

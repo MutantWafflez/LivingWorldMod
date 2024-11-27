@@ -7,7 +7,7 @@ namespace LivingWorldMod.Content.Villages.DataStructures.Records;
 ///     Class that does what it says on the tin. Has fields for an instance of a shop item for
 ///     Villagers to sell as its primary use.
 /// </summary>
-public record struct ShopItem (int ItemType, int RemainingStock, long ItemPrice = -1) : TagSerializable {
+public record struct ShopItem (int ItemType, int RemainingStock, long ItemPrice = -1) : TagSerializable, IComparable<ShopItem> {
     public static readonly Func<TagCompound, ShopItem> DESERIALIZER = Deserialize;
 
     public long ItemPrice {
@@ -43,4 +43,6 @@ public record struct ShopItem (int ItemType, int RemainingStock, long ItemPrice 
         tag["ItemType"] = ItemType;
         return tag;
     }
+
+    public int CompareTo(ShopItem other) => ItemType.CompareTo(other.ItemType);
 }
