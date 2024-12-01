@@ -22,6 +22,7 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
     private const int TalkTextureIndex = 0;
     private const int EyelidTextureIndex = 1;
 
+    // TODO: Not a huge fan of the 3 different lists, could maybe consolidate into one list
     private readonly List<TownNPCDrawData> _underDrawRequests = [];
     private readonly List<TownNPCDrawData> _drawRequests = [];
     private readonly List<Texture2D> _overlayRequests = [];
