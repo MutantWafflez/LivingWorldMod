@@ -125,7 +125,7 @@ public class TownNPCHousingModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCMo
 
         TownNPCPathfinderModule pathfinderModule = globalNPC.PathfinderModule;
         int beAtHomeStateInt = TownNPCAIState.GetStateInteger<BeAtHomeAIState>();
-        if (npc.ai[0] != TownNPCAIState.GetStateInteger<WalkToRandomPosState>() && !globalNPC.CombatModule.IsAttacking && npc.ai[0] != beAtHomeStateInt) {
+        if ( /*npc.ai[0] != TownNPCAIState.GetStateInteger<WalkToRandomPosState>() &&*/ !globalNPC.CombatModule.IsAttacking && npc.ai[0] != beAtHomeStateInt) {
             TownGlobalNPC.RefreshToState(npc, beAtHomeStateInt);
             pathfinderModule.CancelPathfind();
         }
