@@ -93,10 +93,22 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         Rectangle blinkingFrameRectangle = npcTexture.Frame(verticalFrames: npcFrameCount, frameY: nonAttackFrameCount - 1);
 
         string textureNamePrefix = $"{npcAssetName[(npcAssetName.LastIndexOf("\\") + 1)..]}";
-        return [
-            GenerateOverlayFromDifferenceBetweenFrames(rawTextureData, npcTexture.Width, npcTexture.Height, defaultFrameRectangle, talkingFrameRectangle, $"{textureNamePrefix}_Talking"),
-            GenerateOverlayFromDifferenceBetweenFrames(rawTextureData, npcTexture.Width, npcTexture.Height, defaultFrameRectangle, blinkingFrameRectangle, $"{textureNamePrefix}_Blinking")
-        ];
+        (Rectangle, string)[] frameNameDifferenceArray = [(talkingFrameRectangle, "Talking"), (blinkingFrameRectangle, "Blinking")];
+        List<Texture2D> returnList = [];
+        foreach ((Rectangle secondFrame, string resultingOverlaySuffix) in frameNameDifferenceArray) {
+            returnList.Add(
+                GenerateOverlayFromDifferenceBetweenFrames(
+                    rawTextureData,
+                    npcTexture.Width,
+                    npcTexture.Height,
+                    defaultFrameRectangle,
+                    secondFrame,
+                    $"{textureNamePrefix}_{resultingOverlaySuffix}"
+                )
+            );
+        }
+
+        return returnList.ToArray();
     }
 
     private static void LoadPersonalities() {
