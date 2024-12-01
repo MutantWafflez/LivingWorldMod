@@ -21,7 +21,7 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
     private const float DefaultAwakeValue = MaxAwakeValue * 0.2f;
 
     private static readonly SleepSchedule DefaultSleepSchedule = new(new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
-    private static readonly Gradient<Color> SleepIconColorGradient = new (Color.Lerp, (0f, Color.Red), (0.5f, Color.Orange), (1f, Color.White));
+    private static readonly Gradient<Color> SleepIconColorGradient = new (Color.Lerp, (0f, Color.Red), (0.5f, Color.DarkOrange), (1f, Color.White));
     private static readonly bool GenuinePartyIsOccurring = BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty;
 
     /// <summary>
@@ -49,7 +49,7 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
     public float SleepQualityModifier {
         get {
             bool[] currentEvents = [Main.slimeRain, Main.invasionType > InvasionID.None, Main.bloodMoon, Main.snowMoon, Main.pumpkinMoon];
-            return currentEvents.Where(eventIsOccuring => eventIsOccuring).Aggregate(1f, (current, _) => current * 0.9f);
+            return currentEvents.Where(eventIsOccuring => eventIsOccuring).Aggregate(1f, (current, _) => current * 0.8f);
         }
     }
 

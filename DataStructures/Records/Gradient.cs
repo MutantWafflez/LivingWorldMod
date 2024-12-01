@@ -18,6 +18,8 @@ public readonly record struct Gradient<T>(Func<T, T, float, T> InterpolationFunc
             rightIndex++;
         }
 
-        return InterpolationFunction(GradientPoints[leftIndex].Item2, GradientPoints[rightIndex].Item2, timeValue);
+        (float leftTime, T leftValue) = GradientPoints[leftIndex];
+        (float rightTime, T rightValue) = GradientPoints[rightIndex];
+        return InterpolationFunction(leftValue, rightValue, (timeValue - leftTime) / (rightTime - leftTime));
     }
 }
