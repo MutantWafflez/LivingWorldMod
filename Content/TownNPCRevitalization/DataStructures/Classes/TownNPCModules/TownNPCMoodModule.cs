@@ -24,20 +24,7 @@ public sealed class TownNPCMoodModule (NPC npc, TownGlobalNPC globalNPC) : TownN
         MaxMoodValue
     );
 
-    private static int BaseMoodValue {
-        get {
-            int baseValue = 50;
-            if (Main.expertMode) {
-                baseValue -= 5;
-            }
-
-            if (Main.masterMode) {
-                baseValue -= 5;
-            }
-
-            return baseValue;
-        }
-    }
+    private static int BaseMoodValue => 50;
 
     /// <summary>
     ///     Returns the flavor text localization key prefix for the given npc, accounting for if the npc is modded or not.
