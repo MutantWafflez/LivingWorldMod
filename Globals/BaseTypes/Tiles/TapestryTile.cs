@@ -1,8 +1,8 @@
 ﻿using LivingWorldMod.Globals.Sets;
-using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
 using Terraria.ObjectData;
 
 namespace LivingWorldMod.Globals.BaseTypes.Tiles;
@@ -31,7 +31,7 @@ public class TapestryTile (ModItem parentItem, Color? mapColor) : BaseTile {
         Main.tileLavaDeath[Type] = true;
         Main.tileFrameImportant[Type] = true;
 
-        TileSets.NeedsAdvancedWindSway[Type] = true;
+        TileID.Sets.MultiTileSway[Type] = true;
 
         TileObjectData.newTile.CopyFrom(TileObjectData.Style1x2Top);
         TileObjectData.newTile.Width = 3;
@@ -42,9 +42,8 @@ public class TapestryTile (ModItem parentItem, Color? mapColor) : BaseTile {
     }
 
     public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) {
-        Tile tile = Main.tile[i, j];
-        if (tile is { TileFrameX: 0, TileFrameY: 0 }) {
-            LWMUtils.AddSpecialPoint.DynamicInvoke(i, j, 5 /* MultiTileVine */);
+        if (TileObjectData.IsTopLeft(i, j)) {
+            Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.MultiTileVine);
         }
 
         return false;

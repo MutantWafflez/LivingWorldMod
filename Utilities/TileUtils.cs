@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Microsoft.Xna.Framework;
-using Terraria.GameContent.Drawing;
 using Terraria.Localization;
 using Terraria.ObjectData;
 using MapEntryDict = System.Collections.Generic.IDictionary<ushort, System.Collections.Generic.IList<Terraria.ModLoader.MapEntry>>;
@@ -19,12 +17,6 @@ public static partial class LWMUtils {
         BottomLeft,
         BottomRight
     }
-
-    /// <summary>
-    ///     Allows for calling of the private method "AddSpecialPoint(int, int, int)" in <see cref="TileDrawing" />.
-    /// </summary>
-    public static readonly Delegate AddSpecialPoint = AddSpecialPoint =
-        typeof(TileDrawing).GetMethod("AddSpecialPoint", BindingFlags.Instance | BindingFlags.NonPublic)!.CreateDelegate<Action<int, int, int>>(Main.instance.TilesRenderer);
 
     /// <summary>
     ///     Checks and returns whether or not the given tile type at the given position can merge
