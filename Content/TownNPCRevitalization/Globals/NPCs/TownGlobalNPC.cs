@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.UI.Bestiary;
 using LivingWorldMod.DataStructures.Classes;
 using Microsoft.Xna.Framework;
@@ -147,18 +145,6 @@ public class TownGlobalNPC : GlobalNPC {
         && !NPCID.Sets.IsTownSlime[entity.type]
         && entity.type != NPCID.OldMan
         && entity.type != NPCID.TravellingMerchant;
-
-    public override void Unload() {
-        if (TownNPCDataSystem.spriteOverlayProfiles is not null) {
-            Main.QueueMainThreadAction(
-                () => {
-                    foreach (TownNPCSpriteProfile spriteProfile in TownNPCDataSystem.spriteOverlayProfiles.Values) {
-                        spriteProfile.Dispose();
-                    }
-                }
-            );
-        }
-    }
 
     public override void SetStaticDefaults() {
         List<TownNPCAIState> states = ModContent.GetContent<TownNPCAIState>().ToList();

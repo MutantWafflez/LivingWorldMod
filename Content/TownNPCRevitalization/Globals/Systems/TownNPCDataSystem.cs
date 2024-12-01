@@ -187,6 +187,18 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         }
     }
 
+    public override void Unload() {
+        if (spriteOverlayProfiles is not null) {
+            Main.QueueMainThreadAction(
+                () => {
+                    foreach (TownNPCSpriteProfile spriteProfile in spriteOverlayProfiles.Values) {
+                        spriteProfile.Dispose();
+                    }
+                }
+            );
+        }
+    }
+
     public override void Load() {
         // TODO: Combine JSON into one file(?)
         sleepSchedules = new Dictionary<int, SleepSchedule>();
