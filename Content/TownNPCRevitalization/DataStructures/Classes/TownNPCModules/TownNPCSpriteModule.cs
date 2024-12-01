@@ -22,7 +22,9 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
     private const int TalkTextureIndex = 0;
     private const int EyelidTextureIndex = 1;
 
+    private readonly List<TownNPCDrawData> _underDrawRequests = [];
     private readonly List<TownNPCDrawData> _drawRequests = [];
+    private readonly List<Texture2D> _overlayRequests = [];
 
     private int _blinkTimer;
     private int _mouthOpenTimer;
@@ -56,6 +58,17 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
 
         _drawOffset = Vector2.Zero;
         _frameYOverride = -1;
+        _overlayRequests.Clear();
+
+        for (int i = 0; i < _underDrawRequests.Count; i++) {
+            TownNPCDrawData drawRequest = _underDrawRequests[i];
+            if (drawRequest.drawDuration-- <= 0) {
+                _underDrawRequests.RemoveAt(i--);
+            }
+            else {
+                _underDrawRequests[i] = drawRequest;
+            }
+        }
 
         for (int i = 0; i < _drawRequests.Count; i++) {
             TownNPCDrawData drawRequest = _drawRequests[i];
@@ -99,10 +112,24 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
     }
 
     /// <summary>
-    ///     Adds a draw request for drawing over the Town NPC. Note that the position given in the request will be drawn relative to the draw position of the NPC.
+    ///     Adds a draw request for drawing over the Town NPC. Note that the position given in the request will be drawn relative to the draw position of the NPC. If you wish to draw UNDER the NPC,
+    ///     or "first", then make sure <see cref="underRequest" /> is true.
     /// </summary>
-    public void RequestDraw(in TownNPCDrawData request) {
-        _drawRequests.Add(request);
+    public void RequestDraw(in TownNPCDrawData request, bool underRequest = false) {
+        if (!underRequest) {
+            _drawRequests.Add(request);
+            return;
+        }
+
+        _underDrawRequests.Add(request);
+    }
+
+    /// <summary>
+    ///     Adds a draw request for drawing an "overlay", which is simply a draw request that is bound by all the drawing specifications of normal drawing. So, for example, the provided texture will
+    ///     be affected by the NPC's current draw color, rotation, scale, etc.
+    /// </summary>
+    public void RequestOverlay(Texture2D overlayTexture) {
+        _overlayRequests.Add(overlayTexture);
     }
 
     /// <summary>
@@ -138,9 +165,18 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
             spriteEffects
         );
 
+        foreach (TownNPCDrawData drawRequest in _underDrawRequests) {
+            ref readonly DrawData drawData = ref drawRequest.drawData;
+            (drawData with { position = drawData.position + defaultDrawData.position }).Draw(spriteBatch);
+        }
+
         Main.instance.DrawNPCExtras(npc, true, npcAddHeight, 0f, shiftedDrawColor, halfSize, spriteEffects, screenPos);
         (defaultDrawData with { texture = npcAsset.Value, sourceRect = npc.frame }).Draw(spriteBatch);
         Main.instance.DrawNPCExtras(npc, false, npcAddHeight, 0f, shiftedDrawColor, halfSize, spriteEffects, screenPos);
+
+        foreach (Texture2D overlayTexture in _overlayRequests) {
+            (defaultDrawData with { texture = overlayTexture }).Draw(spriteBatch);
+        }
 
         foreach (TownNPCDrawData drawRequest in _drawRequests) {
             ref readonly DrawData drawData = ref drawRequest.drawData;
@@ -154,11 +190,7 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         }
     }
 
-    private DrawData GetOverlayDrawData(int overlayIndex) => new (
-        TownNPCDataSystem.spriteOverlayProfiles[npc.type].GetCurrentSpriteOverlay(npc, overlayIndex),
-        Vector2.Zero,
-        Color.White
-    );
+    private Texture2D GetOverlayTexture(int overlayIndex) => TownNPCDataSystem.spriteOverlayProfiles[npc.type].GetCurrentSpriteOverlay(npc, overlayIndex);
 
     private void UpdateFlavorAnimations() {
         if (!AreEyesClosed) {
@@ -177,11 +209,11 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         }
 
         if (AreEyesClosed) {
-            RequestDraw(GetOverlayDrawData(EyelidTextureIndex));
+            RequestOverlay(GetOverlayTexture(EyelidTextureIndex));
         }
 
         if (IsTalking) {
-            RequestDraw(GetOverlayDrawData(TalkTextureIndex));
+            RequestOverlay(GetOverlayTexture(TalkTextureIndex));
         }
 
         if (!IsGiving) {
@@ -208,6 +240,7 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
     }
 
     private void DrawMechanicWrench() {
+        // Adapted vanilla code
         if (npc.localAI[0] != 0f) {
             return;
         }
@@ -226,13 +259,10 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         Main.instance.LoadProjectile(ProjectileID.MechanicWrench);
         Texture2D value = TextureAssets.Projectile[ProjectileID.MechanicWrench].Value;
         if (npc.townNpcVariationIndex == 1) {
-            value = TextureAssets.Extra[263].Value;
+            value = TextureAssets.Extra[ExtrasID.ShimmeredMechanicWrench].Value;
         }
 
-        Vector2 offset = Vector2.Zero;
-        offset -= new Vector2(value.Width, value.Height / Main.npcFrameCount[npc.type]) * npc.scale / 2f;
-        offset += new Vector2(0f, y);
-        offset += new Vector2(-npc.spriteDirection * 2, -2f);
-        RequestDraw(new DrawData(value, offset, Color.White));
+        Vector2 offset = -(new Vector2(value.Width, value.Height / Main.npcFrameCount[npc.type]) * npc.scale / 2f) + new Vector2(2f, -12f + y);
+        RequestDraw(new DrawData(value, offset, Color.White), true);
     }
 }
