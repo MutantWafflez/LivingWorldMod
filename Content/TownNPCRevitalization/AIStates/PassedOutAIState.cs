@@ -17,7 +17,7 @@ public class PassedOutAIState : TownNPCAIState {
 
         TownNPCSpriteModule spriteModule = globalNPC.SpriteModule;
         spriteModule.CloseEyes();
-        spriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData with { color = Color.Red * 0.8f });
+        spriteModule.RequestDraw(sleepModule.GetSleepSpriteDrawData with { color = Color.Red * 0.8f });
         spriteModule.OffsetDrawPosition(new Vector2(0, npc.width));
 
         TownNPCChatModule chatModule = globalNPC.ChatModule;

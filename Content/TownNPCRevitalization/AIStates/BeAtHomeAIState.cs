@@ -50,7 +50,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                     sleepModule.awakeTicks -= 1.875f * currentSleepQualityModifier;
 
                     spriteModule.CloseEyes();
-                    spriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData);
+                    spriteModule.RequestDraw(sleepModule.GetSleepSpriteDrawData);
                     spriteModule.OffsetDrawPosition(targetDirection == 1 ? new Vector2(npc.width / 2f, visualOffset.Y) : new Vector2(npc.width, visualOffset.Y));
 
                     chatModule.DisableChatting(LWMUtils.RealLifeSecond);
@@ -68,7 +68,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                     sleepModule.awakeTicks -= 1.6f * currentSleepQualityModifier;
 
                     spriteModule.CloseEyes();
-                    spriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData);
+                    spriteModule.RequestDraw(sleepModule.GetSleepSpriteDrawData);
                     spriteModule.RequestFrameOverride((uint)(Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type] - 3));
                     spriteModule.OffsetDrawPosition(newBottom - npc.Bottom);
 

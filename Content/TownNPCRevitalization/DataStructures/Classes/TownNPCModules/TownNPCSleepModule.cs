@@ -5,6 +5,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
+using LivingWorldMod.DataStructures.Records;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -20,7 +21,7 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
     private const float DefaultAwakeValue = MaxAwakeValue * 0.2f;
 
     private static readonly SleepSchedule DefaultSleepSchedule = new(new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
-
+    private static readonly Gradient<Color> SleepIconColorGradient = new (Color.Lerp, (0f, Color.Red), (0.5f, Color.Orange), (1f, Color.White));
     private static readonly bool GenuinePartyIsOccurring = BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty;
 
     /// <summary>
@@ -30,16 +31,20 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
 
     public bool isAsleep;
 
-    public static DrawData GetSleepSpriteDrawData {
+    public DrawData GetSleepSpriteDrawData {
         get {
             Main.instance.LoadItem(ItemID.SleepingIcon);
             Texture2D sleepingIconTexture = TextureAssets.Item[ItemID.SleepingIcon].Value;
-            return new DrawData(sleepingIconTexture, new Vector2(sleepingIconTexture.Width / -2f, -32f + MathF.Sin(Main.GlobalTimeWrappedHourly)), Color.White * 0.67f);
+            return new DrawData(
+                sleepingIconTexture,
+                new Vector2(sleepingIconTexture.Width / -2f, -32f + MathF.Sin(Main.GlobalTimeWrappedHourly)),
+                SleepIconColorGradient.GetValue(SleepQualityModifier) * 0.67f
+            );
         }
     }
 
     /// <summary>
-    /// The current sleep "quality" modifier, which determines how "well" an NPC should be sleeping. Lower values represent worse quality of sleep.
+    ///     The current sleep "quality" modifier, which determines how "well" an NPC should be sleeping. Lower values represent worse quality of sleep.
     /// </summary>
     public float SleepQualityModifier {
         get {
