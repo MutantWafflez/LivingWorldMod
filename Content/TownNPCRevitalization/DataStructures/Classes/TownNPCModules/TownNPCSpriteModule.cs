@@ -22,7 +22,6 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
     private const int TalkTextureIndex = 0;
     private const int EyelidTextureIndex = 1;
 
-    private readonly HashSet<int> _overlayDrawSet = [];
     private readonly List<TownNPCDrawData> _drawRequests = [];
 
     private int _blinkTimer;
@@ -57,7 +56,6 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
 
         _drawOffset = Vector2.Zero;
         _frameYOverride = -1;
-        _overlayDrawSet.Clear();
 
         for (int i = 0; i < _drawRequests.Count; i++) {
             TownNPCDrawData drawRequest = _drawRequests[i];
@@ -70,6 +68,9 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         }
 
         UpdateFlavorAnimations();
+        if (npc.type == NPCID.Mechanic) {
+            DrawMechanicWrench();
+        }
     }
 
     public void GiveItem(int givingItemType = -1) {
@@ -141,11 +142,6 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         (defaultDrawData with { texture = npcAsset.Value, sourceRect = npc.frame }).Draw(spriteBatch);
         Main.instance.DrawNPCExtras(npc, false, npcAddHeight, 0f, shiftedDrawColor, halfSize, spriteEffects, screenPos);
 
-        foreach (int overlayIndex in _overlayDrawSet) {
-            Texture2D currentOverlay = TownNPCDataSystem.spriteOverlayProfiles[npc.type].GetCurrentSpriteOverlay(npc, overlayIndex);
-            (defaultDrawData with { texture = currentOverlay }).Draw(spriteBatch);
-        }
-
         foreach (TownNPCDrawData drawRequest in _drawRequests) {
             ref readonly DrawData drawData = ref drawRequest.drawData;
             (drawData with { position = drawData.position + defaultDrawData.position }).Draw(spriteBatch);
@@ -157,6 +153,12 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
             npc.frame.Y = frameHeight * _frameYOverride;
         }
     }
+
+    private DrawData GetOverlayDrawData(int overlayIndex) => new (
+        TownNPCDataSystem.spriteOverlayProfiles[npc.type].GetCurrentSpriteOverlay(npc, overlayIndex),
+        Vector2.Zero,
+        Color.White
+    );
 
     private void UpdateFlavorAnimations() {
         if (!AreEyesClosed) {
@@ -175,11 +177,11 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         }
 
         if (AreEyesClosed) {
-            _overlayDrawSet.Add(EyelidTextureIndex);
+            RequestDraw(GetOverlayDrawData(EyelidTextureIndex));
         }
 
         if (IsTalking) {
-            _overlayDrawSet.Add(TalkTextureIndex);
+            RequestDraw(GetOverlayDrawData(TalkTextureIndex));
         }
 
         if (!IsGiving) {
@@ -203,5 +205,34 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         IsGiving = false;
         _givingTimer = 0;
         _givingItemType = -1;
+    }
+
+    private void DrawMechanicWrench() {
+        if (npc.localAI[0] != 0f) {
+            return;
+        }
+
+        int offsetIndex = 0;
+        if (npc.frame.Y > 56) {
+            offsetIndex += 4;
+        }
+
+        offsetIndex += npc.frame.Y / 56;
+        if (offsetIndex >= Main.OffsetsPlayerHeadgear.Length) {
+            offsetIndex = 0;
+        }
+
+        float y = Main.OffsetsPlayerHeadgear[offsetIndex].Y;
+        Main.instance.LoadProjectile(ProjectileID.MechanicWrench);
+        Texture2D value = TextureAssets.Projectile[ProjectileID.MechanicWrench].Value;
+        if (npc.townNpcVariationIndex == 1) {
+            value = TextureAssets.Extra[263].Value;
+        }
+
+        Vector2 offset = Vector2.Zero;
+        offset -= new Vector2(value.Width, value.Height / Main.npcFrameCount[npc.type]) * npc.scale / 2f;
+        offset += new Vector2(0f, y);
+        offset += new Vector2(-npc.spriteDirection * 2, -2f);
+        RequestDraw(new DrawData(value, offset, Color.White));
     }
 }
