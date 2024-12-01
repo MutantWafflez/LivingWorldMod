@@ -46,7 +46,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                     Main.sleepingManager.AddNPC(npc.whoAmI, restTilePos);
 
                     sleepModule.isAsleep = true;
-                    sleepModule.awakeTicks -= 1.875f;
+                    sleepModule.awakeTicks -= 1.875f * (float)Main.dayRate;
 
                     spriteModule.CloseEyes();
                     spriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData);
@@ -64,7 +64,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                     Main.sittingManager.AddNPC(npc.whoAmI, restTilePos);
 
                     sleepModule.isAsleep = true;
-                    sleepModule.awakeTicks -= 1.6f;
+                    sleepModule.awakeTicks -= 1.6f * (float)Main.dayRate;
 
                     spriteModule.CloseEyes();
                     spriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData);
