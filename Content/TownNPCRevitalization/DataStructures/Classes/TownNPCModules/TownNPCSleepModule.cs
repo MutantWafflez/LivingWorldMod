@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
@@ -37,16 +38,21 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
         }
     }
 
+    /// <summary>
+    /// The current sleep "quality" modifier, which determines how "well" an NPC should be sleeping. Lower values represent worse quality of sleep.
+    /// </summary>
+    public float SleepQualityModifier {
+        get {
+            bool[] currentEvents = [Main.slimeRain, Main.invasionType > InvasionID.None, Main.bloodMoon, Main.snowMoon, Main.pumpkinMoon];
+            return currentEvents.Where(eventIsOccuring => eventIsOccuring).Aggregate(1f, (current, _) => current * 0.9f);
+        }
+    }
+
     public bool ShouldSleep {
         get {
             bool sleepBeingBlocked = LanternNight.LanternsUp
                 // TODO: Allow sleeping once tired enough, even if party is occurring
                 || GenuinePartyIsOccurring
-                || Main.slimeRain
-                || Main.invasionType > InvasionID.None
-                || Main.bloodMoon
-                || Main.snowMoon
-                || Main.pumpkinMoon
                 || globalNPC.ChatModule.IsChattingWithPlayerDirectly;
             SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(npc.type);
 

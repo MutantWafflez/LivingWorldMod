@@ -35,6 +35,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
 
             TownNPCSpriteModule spriteModule = globalNPC.SpriteModule;
             TownNPCChatModule chatModule = globalNPC.ChatModule;
+            float currentSleepQualityModifier = (float)Main.dayRate * sleepModule.SleepQualityModifier;
             switch (npcRestType) {
                 case NPCRestType.Bed:
                     npc.friendlyRegen += 10;
@@ -46,7 +47,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                     Main.sleepingManager.AddNPC(npc.whoAmI, restTilePos);
 
                     sleepModule.isAsleep = true;
-                    sleepModule.awakeTicks -= 1.875f * (float)Main.dayRate;
+                    sleepModule.awakeTicks -= 1.875f * currentSleepQualityModifier;
 
                     spriteModule.CloseEyes();
                     spriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData);
@@ -64,7 +65,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                     Main.sittingManager.AddNPC(npc.whoAmI, restTilePos);
 
                     sleepModule.isAsleep = true;
-                    sleepModule.awakeTicks -= 1.6f * (float)Main.dayRate;
+                    sleepModule.awakeTicks -= 1.6f * currentSleepQualityModifier;
 
                     spriteModule.CloseEyes();
                     spriteModule.RequestDraw(TownNPCSleepModule.GetSleepSpriteDrawData);
