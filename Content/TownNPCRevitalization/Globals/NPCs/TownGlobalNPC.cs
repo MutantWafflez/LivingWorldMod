@@ -263,9 +263,6 @@ public class TownGlobalNPC : GlobalNPC {
 
         if (npc.type == NPCID.SantaClaus && Main.netMode != NetmodeID.MultiplayerClient && !Main.xMas) {
             npc.StrikeInstantKill();
-            if (Main.netMode == NetmodeID.Server) {
-                NetMessage.SendData(MessageID.DamageNPC, -1, -1, null, npc.whoAmI, 9999f);
-            }
         }
 
         switch (npc.type) {
@@ -274,6 +271,7 @@ public class TownGlobalNPC : GlobalNPC {
                 break;
             case NPCID.TaxCollector:
                 NPC.savedTaxCollector = true;
+                NPC.taxCollector = true;
                 break;
             case NPCID.GoblinTinkerer:
                 NPC.savedGoblin = true;
@@ -293,10 +291,6 @@ public class TownGlobalNPC : GlobalNPC {
             case NPCID.DD2Bartender:
                 NPC.savedBartender = true;
                 break;
-        }
-
-        if (npc.type == NPCID.TaxCollector) {
-            NPC.taxCollector = true;
         }
 
         npc.directionY = -1;
