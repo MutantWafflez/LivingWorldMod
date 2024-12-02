@@ -1,5 +1,4 @@
-﻿using LivingWorldMod.Globals.Sets;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
@@ -13,7 +12,9 @@ namespace LivingWorldMod.Globals.BaseTypes.Tiles;
 /// </summary>
 [Autoload(false)]
 public class TapestryTile (ModItem parentItem, Color? mapColor) : BaseTile {
-    public override string Texture => parentItem.Texture;
+    public override string Texture {
+        get;
+    } = parentItem.Texture.Replace("Item", "Tile");
 
     public override string Name {
         get;
