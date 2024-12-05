@@ -20,6 +20,8 @@ namespace LivingWorldMod.Content.Villages.UI.VillagerShop;
 /// <summary>
 ///     UIState that handles the entire UI portion of the shop system for all villager types.
 /// </summary>
+
+// Future Mutant: This is wack. All of it is wack. I don't like it. As a matter of fact, I hate it. Needs a complete re-write, eventually. 
 public class ShopUIState : UIState {
     public Villager currentVillager;
 
@@ -193,18 +195,18 @@ public class ShopUIState : UIState {
 
             _buyDelay *= _buySpeed;
 
-            if (shopItem.RemainingStock > 0) {
+            if (shopItem.remainingStock > 0) {
                 if (player.CanAfford((int)_selectedItem.displayedCost) && player.CanAcceptItemIntoInventory(_selectedItem.displayedItem) && _buyDelay <= 0f) {
                     _buyDelay = _maxBuyDelay;
 
-                    shopItem.RemainingStock--;
+                    shopItem.remainingStock--;
 
                     player.BuyItem((int)_selectedItem.displayedCost);
                     player.QuickSpawnItem(new EntitySource_DropAsItem(player), _selectedItem.displayedItem);
 
                     _selectedItem.displayedItem.stack--;
                     _selectedItem.itemNameText.SetText(_selectedItem.displayedItem.HoverName);
-                    buyItemStock.SetText(shopItem.RemainingStock.ToString());
+                    buyItemStock.SetText(shopItem.remainingStock.ToString());
 
                     savingsDisplay.moneyToDisplay = player.CalculateTotalSavings();
 
@@ -276,7 +278,7 @@ public class ShopUIState : UIState {
             _selectedItem.isSelected = true;
 
             buyItemIcon.SetItem(_selectedItem.displayedItem);
-            buyItemStock.SetText(_selectedItem.pertainedInventoryItem.RemainingStock.ToString());
+            buyItemStock.SetText(_selectedItem.pertainedInventoryItem.remainingStock.ToString());
 
             buyItemHeader.isVisible = true;
             buyItemIcon.isVisible = true;
