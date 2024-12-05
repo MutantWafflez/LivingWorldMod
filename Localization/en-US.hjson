@@ -342,6 +342,8 @@ Mods: {
 			VillagerHousing: {
 				ButtonHoverText: Villager Housing
 				VillagerTypeLocked: "{0} Villagers cannot be re-housed until you are liked by them!"
+				VillagerHousedOutsideOfVillageError: Villagers cannot be housed outside of their Village Shrine's range!
+				NonVillagerHousedInsideOfVillageError: Non-villagers cannot be housed within a Village Shrine's range!
 			}
 
 			Shrine: {

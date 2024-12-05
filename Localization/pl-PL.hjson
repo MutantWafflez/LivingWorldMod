@@ -342,6 +342,8 @@ Mods: {
 			VillagerHousing: {
 				ButtonHoverText: Mieszkanie dla wieśniaków
 				VillagerTypeLocked: "{0} Wieśniacy nie mogą zostać przekwaterowani, dopóki nie będą cię lubić!"
+				// VillagerHousedOutsideOfVillageError: Villagers cannot be housed outside of their Village Shrine's range!
+				// NonVillagerHousedInsideOfVillageError: Non-villagers cannot be housed within a Village Shrine's range!
 			}
 
 			Shrine: {

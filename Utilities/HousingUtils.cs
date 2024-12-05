@@ -19,6 +19,15 @@ public static partial class LWMUtils {
     }
 
     /// <summary>
+    ///     The current localization error key related to villager housing, if there is one. Used to provide context to the player that their house is either in a village (when trying to house
+    ///     a non-villager NPC) or NOT in a village (when trying to house a villager NPC). Is null when no such error has occurred.
+    /// </summary>
+    public static string VillagerHousingErrorKey {
+        get;
+        set;
+    }
+
+    /// <summary>
     ///     Gets &amp; returns the positions of all houses that are valid housing within the passed in zone with the passed in
     ///     NPC type. Make sure the passed in zone is in tile coordinates.
     /// </summary>
@@ -46,7 +55,8 @@ public static partial class LWMUtils {
                 Point16 bestPoint = new(WorldGen.bestX, WorldGen.bestY);
                 if (WorldGen.hiScore <= 0
                     || foundHouses.Contains(bestPoint)
-                    || !zone.ContainsRectangle(new Rectangle(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1, WorldGen.roomY2 - WorldGen.roomY1))) {
+                    || !zone.ContainsPoint(new Vector2(WorldGen.bestX, WorldGen.bestY).ToWorldCoordinates())
+                ) {
                     continue;
                 }
 

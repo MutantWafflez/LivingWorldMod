@@ -14,6 +14,7 @@ using MonoMod.Cil;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameInput;
+using Terraria.Localization;
 
 namespace LivingWorldMod.Globals.Patches;
 
@@ -33,6 +34,8 @@ public class NPCHousingPatches : LoadablePatch {
         IL_WorldGen.ScoreRoom_IsThisRoomOccupiedBySomeone += RoomOccupancyCheck;
 
         IL_WorldGen.ScoreRoom += IgnoreRoomOccupancy;
+
+        IL_WorldGen.MoveTownNPC += SpecialMoveNPCErrorMessageEdit;
     }
 
     private void TestForVillageHouse(ILContext il) {
@@ -53,15 +56,28 @@ public class NPCHousingPatches : LoadablePatch {
         c.Emit(OpCodes.Ldarg_0);
         c.EmitDelegate<Func<int, bool>>(
             npcType => {
-                Rectangle roomInQuestion = new(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1, WorldGen.roomY2 - WorldGen.roomY1);
+                LWMUtils.VillagerHousingErrorKey = null;
 
                 ModNPC modNPC = ModContent.GetModNPC(npcType);
                 List<VillageShrineEntity> shrines = LWMUtils.GetAllEntityOfType<VillageShrineEntity>().ToList();
 
                 //HOWEVER, if the Town NPC can spawn here, we need to do additional checks to make sure it's not a non-villager spawning in a villager home
                 //Additionally, we can't have villagers in a non-village home, which is the second check.
-                bool anyVillageContainsHome = shrines.Any(shrine => shrine.villageZone.ToTileCoordinates().ContainsRectangle(roomInQuestion));
-                return (modNPC is Villager && !anyVillageContainsHome) || (modNPC is not Villager && anyVillageContainsHome);
+                bool anyVillageContainsHome = shrines.Any(shrine => shrine.villageZone.ToTileCoordinates().ContainsPoint(new Vector2(WorldGen.bestX, WorldGen.bestY)));
+                bool isVillagerAndNotInVillage = modNPC is Villager && !anyVillageContainsHome;
+                bool isNotVillagerAndInVillage = modNPC is not Villager && anyVillageContainsHome;
+
+                if (isVillagerAndNotInVillage) {
+                    LWMUtils.VillagerHousingErrorKey = "UI.VillagerHousing.VillagerHousedOutsideOfVillageError".PrependModKey();
+                    return true;
+                }
+
+                if (isNotVillagerAndInVillage) {
+                    LWMUtils.VillagerHousingErrorKey = "UI.VillagerHousing.NonVillagerHousedInsideOfVillageError".PrependModKey();
+                    return true;
+                }
+
+                return false;
             }
         );
         c.Emit(OpCodes.Brfalse_S, doVanillaChecksIfFalseLabel);
@@ -276,5 +292,33 @@ public class NPCHousingPatches : LoadablePatch {
 
         //Emit our check to see if our IgnoreOccupancy in HousingUtils.cs is true, and if so, automatically return false, ignoring occupancy
         c.EmitDelegate<Func<bool, bool>>(isOccupied => !LWMUtils.IgnoreHouseOccupancy && isOccupied);
+    }
+
+    private void SpecialMoveNPCErrorMessageEdit(ILContext il) {
+        currentContext = il;
+
+        ILCursor c = new(il);
+
+        c.ErrorOnFailedGotoNext(i => i.MatchLdstr(" "));
+        c.ErrorOnFailedGotoPrev(i => i.MatchLdsfld<Lang>(nameof(Lang.inter)));
+        c.EmitDelegate(
+            () => {
+                if (LWMUtils.VillagerHousingErrorKey is not { } errorKey) {
+                    return true;
+                }
+
+                // TODO: Add constants for various Vanilla color values
+                Main.NewText(Language.GetText(errorKey), new Color(255, 240, 20));
+                return false;
+            }
+        );
+
+        // If the above delegate ^ return true, jump over our early return, and run vanilla code as usual
+        c.Emit(OpCodes.Brtrue_S, c.DefineLabel());
+        Instruction branchInstr = c.Prev;
+
+        c.Emit(OpCodes.Ldc_I4_0);
+        c.Emit(OpCodes.Ret);
+        branchInstr.Operand = c.MarkLabel();
     }
 }

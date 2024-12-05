@@ -342,6 +342,8 @@ Mods: {
 			VillagerHousing: {
 				ButtonHoverText: Alloggio interspecie
 				VillagerTypeLocked: L'abitante arpia {0} non si trasferirà finché non sei di suo gradimento!
+				// VillagerHousedOutsideOfVillageError: Villagers cannot be housed outside of their Village Shrine's range!
+				// NonVillagerHousedInsideOfVillageError: Non-villagers cannot be housed within a Village Shrine's range!
 			}
 
 			Shrine: {
