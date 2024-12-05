@@ -22,7 +22,6 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
 
     private static readonly SleepSchedule DefaultSleepSchedule = new(new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
     private static readonly Gradient<Color> SleepIconColorGradient = new (Color.Lerp, (0f, Color.Red), (0.5f, Color.DarkOrange), (1f, Color.White));
-    private static readonly bool GenuinePartyIsOccurring = BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty;
 
     /// <summary>
     ///     The amount of ticks that this NPC has been awake. The higher the value, the more severe effects on mood will occur. This value is decreased rapidly by a Town NPC sleeping.
@@ -64,6 +63,8 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
             return !sleepBeingBlocked && LWMUtils.CurrentInGameTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime);
         }
     }
+
+    private static bool GenuinePartyIsOccurring => BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty;
 
     public TownNPCSleepModule(NPC npc, TownGlobalNPC globalNPC) : base(npc, globalNPC) {
         globalNPC.OnSave += tag => tag[nameof(awakeTicks)] = awakeTicks.Value;
