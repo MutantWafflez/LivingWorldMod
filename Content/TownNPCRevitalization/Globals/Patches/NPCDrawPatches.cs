@@ -12,6 +12,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 /// <summary>
 ///     Patches related to drawing NPCs.
 /// </summary>
+[Autoload(false)]
 public sealed class NPCDrawPatches : LoadablePatch {
     public override void LoadPatches() {
         IL_Main.DrawNPCExtras += DrawNPCExtrasConsumptionEdit;
