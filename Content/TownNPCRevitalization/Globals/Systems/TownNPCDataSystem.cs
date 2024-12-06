@@ -23,7 +23,6 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 /// <summary>
 ///     ModSystem that holds all of the static data needed for the Town NPC Revitalization to function.
 /// </summary>
-[Autoload(false)]
 public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
     public static Dictionary<int, SleepSchedule> sleepSchedules;
 

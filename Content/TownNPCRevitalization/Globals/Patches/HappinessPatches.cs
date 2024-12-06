@@ -16,7 +16,6 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 /// <summary>
 ///     Patches that deal with Town NPC happiness.
 /// </summary>
-[Autoload(false)]
 public sealed class HappinessPatches : LoadablePatch {
     private const float MinCostModifier = 0.67f;
     private const float MaxCostModifier = 1.5f;

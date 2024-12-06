@@ -3,7 +3,6 @@ using LivingWorldMod.Globals.BaseTypes.Systems;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 
-[Autoload(false)]
 public class HappinessUISystem : UISystem<HappinessUISystem, HappinessUIState> {
     public override string InternalInterfaceName => "Town NPC Happiness";
 
