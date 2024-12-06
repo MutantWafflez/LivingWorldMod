@@ -37,18 +37,18 @@ public sealed class TownNPCMoodModule (NPC npc, TownGlobalNPC globalNPC) : TownN
     public static string GetFlavorTextKeyPrefix(int npcType) => npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{NPCID.Search.GetName(npcType)}";
 
     public override void Update() {
-        if (Main.LocalPlayer.talkNPC == npc.whoAmI && Main.npcShop == 0)  {
-            HappinessPatches.ProcessMoodOverride(Main.ShopHelper, Main.LocalPlayer, npc);
-        }
-
         for (int i = 0; i < _currentMoodModifiers.Count; i++) {
             MoodModifierInstance instance = _currentMoodModifiers[i];
-            if (instance.duration-- <= 0) {
+            if (--instance.duration <= 0) {
                 _currentMoodModifiers.RemoveAt(i--);
             }
             else {
                 _currentMoodModifiers[i] = instance;
             }
+        }
+
+        if (Main.LocalPlayer.talkNPC == npc.whoAmI && Main.npcShop == 0)  {
+            HappinessPatches.ProcessMoodOverride(Main.ShopHelper, Main.LocalPlayer, npc);
         }
     }
 

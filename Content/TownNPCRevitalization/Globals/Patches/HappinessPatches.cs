@@ -5,6 +5,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.DataStructures.Classes;
+using LivingWorldMod.DataStructures.Records;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -18,6 +19,8 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 public sealed class HappinessPatches : LoadablePatch {
     private const float MinCostModifier = 0.67f;
     private const float MaxCostModifier = 1.5f;
+
+    private static readonly Gradient<float> ShopCostModifierGradient = new (MathHelper.Lerp, (0f, MaxCostModifier), (0.5f, 1f), (1f, MinCostModifier));
 
     public static void ProcessMoodOverride(ShopHelper shopHelper, Player player, NPC npc) {
         if (NPCID.Sets.NoTownNPCHappiness[npc.type] || !npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
@@ -42,7 +45,7 @@ public sealed class HappinessPatches : LoadablePatch {
             }
         }
 
-        shopHelper._currentPriceAdjustment = MathHelper.Lerp(MinCostModifier, MaxCostModifier, 1f - globalNPC.MoodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue);
+        shopHelper._currentPriceAdjustment = ShopCostModifierGradient.GetValue(globalNPC.MoodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue);
     }
 
     private static void ProcessMoodOverridePatch(ILContext il) {

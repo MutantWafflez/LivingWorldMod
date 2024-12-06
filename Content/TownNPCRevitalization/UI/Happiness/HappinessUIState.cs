@@ -173,7 +173,7 @@ public class HappinessUIState : UIState {
         TownGlobalNPC globalNPC = NPCBeingTalkedTo.GetGlobalNPC<TownGlobalNPC>();
         TownNPCMoodModule moodModule = globalNPC.MoodModule;
 
-        priceModifierTextNumber.SetText(Main.ShopHelper._currentPriceAdjustment.ToString("P1"));
+        priceModifierTextNumber.SetText(Main.ShopHelper._currentPriceAdjustment.ToString("0.#%"));
         priceModifierTextNumber.Left.Set(-40f - priceModifierTextNumber.GetDimensions().Width, 1f);
 
         happinessBarZone.ReformatText(new { Numerator = moodModule.CurrentMood, Denominator = TownNPCMoodModule.MaxMoodValue });
