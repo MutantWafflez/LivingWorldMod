@@ -110,7 +110,7 @@ public class HappinessUIState : UIState {
         npcHeadIcon = new UIImage(TextureAssets.MagicPixel) { VAlign = 0.5f };
         npcInfoAndPriceZone.Append(npcHeadIcon);
 
-        npcName = new UIBetterText("NPC Name", 0.75f, true) { Left = StyleDimension.FromPixels(36f), VAlign = 0.5f };
+        npcName = new UIBetterText("NPC Name", 0.75f, true) { Left = StyleDimension.FromPixels(36f), VAlign = 0.5f, horizontalTextConstraint = 150f };
         npcInfoAndPriceZone.Append(npcName);
 
         moneyBagIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/MoneyBag")) { HAlign = 1f, Width = StyleDimension.FromPixels(32), Height = StyleDimension.FromPixels(32) };
