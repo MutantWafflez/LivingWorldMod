@@ -68,7 +68,7 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         // Method Gaslighting
         // See NPCDrawPatches.cs: TL;DR is the method is patched so that all sprite-batch calls are re-routed back to here (the sprite module) and we control the drawing
         for (int i = 0; i < 2; i++) {
-            Main.instance.DrawNPCExtras(npc, i == 0, npcAddHeight, 0, Color.White, halfSize, spriteEffects, Main.screenPosition);
+            Main.instance.DrawNPCExtras(npc, i == 0, npcAddHeight, 0, Color.White, halfSize, spriteEffects, Vector2.Zero);
         }
 
         // This is the request to actually draw the NPC itself
@@ -123,8 +123,8 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
     public void DrawNPC(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
         (Asset<Texture2D> _, int frameWidth, int frameHeight, Vector2 halfSize, float npcAddHeight, SpriteEffects spriteEffects) = GetDrawParameters();
         Vector2 drawPos = new (
-            npc.position.X - screenPos.X + npc.width / 2 - frameWidth * npc.scale / 2f + halfSize.X * npc.scale + _drawOffset.X,
-            npc.position.Y - screenPos.Y + npc.height - frameHeight * npc.scale + 4f + halfSize.Y * npc.scale + npcAddHeight /*+ num35*/ + npc.gfxOffY + _drawOffset.Y
+            npc.position.X + npc.width / 2 - frameWidth * npc.scale / 2f + halfSize.X * npc.scale + _drawOffset.X,
+            npc.position.Y + npc.height - frameHeight * npc.scale + 4f + halfSize.Y * npc.scale + npcAddHeight /*+ num35*/ + npc.gfxOffY + _drawOffset.Y
         );
 
         drawColor = npc.GetNPCColorTintedByBuffs(drawColor);
@@ -141,7 +141,7 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         );
 
         foreach (TownNPCDrawRequest request in _drawRequests) {
-            request.UnionWithDrawData(defaultDrawData).Draw(spriteBatch);
+            request.UnionWithDrawData(defaultDrawData, screenPos).Draw(spriteBatch);
         }
     }
 
@@ -235,6 +235,6 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         }
 
         Vector2 offset = -(new Vector2(wrenchTexture.Width, wrenchTexture.Height / Main.npcFrameCount[npc.type]) * npc.scale / 2f) + new Vector2(2f, -12f + y);
-        RequestDraw(new TownNPCDrawRequest(wrenchTexture, offset, DrawLayer: -1));
+        RequestDraw(new TownNPCDrawRequest(wrenchTexture, offset, Origin: Vector2.Zero, DrawLayer: -1));
     }
 }

@@ -37,7 +37,9 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
                 sleepingIconTexture,
                 new Vector2(sleepingIconTexture.Width / -2f, -32f + MathF.Sin(Main.GlobalTimeWrappedHourly)),
                 Color: SleepIconColorGradient.GetValue(SleepQualityModifier) * 0.67f,
-                Rotation: 0f
+                Rotation: 0f,
+                Origin: Vector2.Zero,
+                SpriteEffect: SpriteEffects.None
             );
         }
     }

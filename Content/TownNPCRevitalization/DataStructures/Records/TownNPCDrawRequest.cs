@@ -38,9 +38,9 @@ public readonly record struct TownNPCDrawRequest(
     /// <summary>
     ///     "Unionizes" this DrawRequest with a <see cref="DrawData" />, where every DrawRequest field is overriden if it is null.
     /// </summary>
-    public DrawData UnionWithDrawData(DrawData data) => new (
+    public DrawData UnionWithDrawData(DrawData data, Vector2 screenPos) => new (
         Texture,
-        UsesAbsolutePosition ? Position : data.position + Position,
+        (UsesAbsolutePosition ? Position : data.position + Position) - screenPos,
         SourceRectangle,
         Color ?? data.color,
         Rotation ?? data.rotation,
