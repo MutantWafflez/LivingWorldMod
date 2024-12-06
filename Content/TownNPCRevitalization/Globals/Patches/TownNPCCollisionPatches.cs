@@ -9,6 +9,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 /// <summary>
 ///     Patches that deal with special collision with Town NPCs.
 /// </summary>
+[Autoload(false)]
 public class TownNPCCollisionPatches : LoadablePatch {
     public override void LoadPatches() {
         IL_NPC.UpdateCollision += NPCUpdateCollisionUpdate;

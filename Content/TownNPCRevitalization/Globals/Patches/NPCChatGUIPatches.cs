@@ -4,6 +4,7 @@ using MonoMod.Cil;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 
+[Autoload(false)]
 public class NPCChatGUIPatches : LoadablePatch {
     public override void LoadPatches() {
         IL_Main.GUIChatDrawInner += HappinessUIPatch;
