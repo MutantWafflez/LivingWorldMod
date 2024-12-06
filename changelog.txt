@@ -19,3 +19,4 @@ Fixes:
 * Optimized Harpy Villager shop code, greatly reducing performance hits when large amounts of Harpy Villagers restock their shops at the dawn of a new day
 * Fixed some tiles not appearing properly on the map, or with invalid text when hovered over with the mouse
 * Fixed "Tapestry" tiles not drawing the correct texture
+* Fixed World Generation error that would occur due to tML's December update
