@@ -1,4 +1,4 @@
-INDEV RELEASE v0.4.0.0 [Town NPC Re-Re-Vitalization] (???, 2024)
+INDEV RELEASE v0.3.2.0 [A Balanced Fix] (December 5th, 2024)
 Changes:
 * Added a small confirmation tick sound when right-clicking a Waystone tile to activate it
 * Added new error messages for housing attempts for more clarity with villagers (instead of "This house does not meet requirements...")
