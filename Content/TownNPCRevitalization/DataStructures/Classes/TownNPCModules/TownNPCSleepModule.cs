@@ -10,7 +10,6 @@ using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Events;
 
@@ -30,14 +29,15 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
 
     public bool isAsleep;
 
-    public DrawData GetSleepSpriteDrawData {
+    public TownNPCDrawRequest GetSleepSpriteDrawData {
         get {
             Main.instance.LoadItem(ItemID.SleepingIcon);
             Texture2D sleepingIconTexture = TextureAssets.Item[ItemID.SleepingIcon].Value;
-            return new DrawData(
+            return new TownNPCDrawRequest(
                 sleepingIconTexture,
                 new Vector2(sleepingIconTexture.Width / -2f, -32f + MathF.Sin(Main.GlobalTimeWrappedHourly)),
-                SleepIconColorGradient.GetValue(SleepQualityModifier) * 0.67f
+                Color: SleepIconColorGradient.GetValue(SleepQualityModifier) * 0.67f,
+                Rotation: 0f
             );
         }
     }

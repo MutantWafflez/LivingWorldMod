@@ -1,18 +1,18 @@
 using System;
 using System.Reflection;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using Terraria.DataStructures;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 
 /// <summary>
 ///     Patches related to drawing NPCs.
 /// </summary>
-[Autoload(false)]
 public sealed class NPCDrawPatches : LoadablePatch {
     public override void LoadPatches() {
         IL_Main.DrawNPCExtras += DrawNPCExtrasConsumptionEdit;
@@ -35,12 +35,12 @@ public sealed class NPCDrawPatches : LoadablePatch {
             c.Remove();
             c.Emit(OpCodes.Ldarg_1);
             c.Emit(OpCodes.Ldarg_2);
-            c.EmitDelegate(ConsumeSpriteBatchCall);
-            c.Emit(OpCodes.Pop);
+            c.EmitDelegate(SpecialTownNPCDrawExtras);
         }
     }
 
-    private void ConsumeSpriteBatchCall(
+    private void SpecialTownNPCDrawExtras(
+        SpriteBatch spriteBatch,
         Texture2D texture,
         Vector2 position,
         Rectangle? sourceRect,
@@ -53,8 +53,11 @@ public sealed class NPCDrawPatches : LoadablePatch {
         NPC npc,
         bool beforeDraw
     ) {
-        DrawData drawData = new (texture, position - npc.position, sourceRect, Color.White);
-
-        // npc.GetGlobalNPC<TownGlobalNPC>().SpriteModule.RequestDraw(new TownNPCDrawData(drawData, beforeDraw ? -1 : 1));
+        if (!npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
+            spriteBatch.Draw(texture, position, sourceRect, color, rotation, origin, scale, effects, layerDepth);
+            return;
+        }
+        
+        globalNPC.SpriteModule.RequestDraw(new TownNPCDrawRequest(texture, position, sourceRect, Origin: origin, UsesAbsolutePosition: true, DrawLayer: beforeDraw ? -1 : 1));
     }
 }
