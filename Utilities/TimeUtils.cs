@@ -2,7 +2,7 @@ using System;
 
 namespace LivingWorldMod.Utilities;
 
-public partial class LWMUtils {
+public static partial class LWMUtils {
     /// <summary>
     ///     Calculates and returns the current time in game.
     /// </summary>
