@@ -40,9 +40,9 @@ public class HarpyVillage : WorldGenFeature {
         progress.Set(0f);
 
         //Used to define the rectangle to search and to displace the origin to the actual correct position when generating the village so it doesn't generate on the top left of the rectangle
-        int rectangleWidth = 175;
         int rectangleHeight = CurrentWorldSize != WorldSize.Small ? 175 : 123;
-        int originHorizontalDisplacement = (int)(rectangleWidth * (0.88f / 1.75f));
+        const int rectangleWidth = 175;
+        const int originHorizontalDisplacement = (int)(rectangleWidth * (0.88f / 1.75f));
         int originVerticalDisplacement = (int)(rectangleHeight * (1.34f / 1.75f));
 
         int midWorld = Main.maxTilesX / 2;
@@ -105,7 +105,7 @@ public class HarpyVillage : WorldGenFeature {
 
         float xScale = WorldGen.genRand.NextFloat(1.6f, 1.75f);
         float yScale = CurrentWorldSize != WorldSize.Small ? 0.65f : 0.45f; //Village is overall much smaller in smaller worlds
-        int radius = 35;
+        const int radius = 35;
 
         ShapeData mainIslandData = new();
 
@@ -227,7 +227,13 @@ public class HarpyVillage : WorldGenFeature {
         );
 
         //Place ground houses on main island
-        List<string> possibleHouses = ["HighRise0", "HighRise1", "HighRise2", "GroundHouse0", "GroundHouse1", "GroundHouse2", "GroundHouse3", "GroundHouse4", "GroundHouse5"];
+        List<string> possibleHouses = [];
+        for (int i = 0; i < 3; i++) {
+            possibleHouses.Add($"HighRise{i}");
+        }
+        for (int i = 0; i < 6; i++) {
+            possibleHouses.Add($"GroundHouse{i}");
+        }
 
         for (int i = 0; i < 2; i++) {
             List<Point> possiblePlacementPoints = [];
