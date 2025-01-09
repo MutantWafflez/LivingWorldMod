@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
@@ -7,7 +8,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using Terraria.GameContent;
+using Color = Microsoft.Xna.Framework.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 
@@ -27,21 +29,40 @@ public sealed class NPCDrawPatches : LoadablePatch {
             nameof(SpriteBatch.Draw),
             BindingFlags.Instance | BindingFlags.Public,
             drawParameterTypes
-        );
+        )!;
 
-        // Edit that "consumes" the SpriteBatch calls in DrawNPCExtras and re-routes them to TownNPCSpriteModule
+        // TL;DR: Edit that "consumes" the SpriteBatch calls in DrawNPCExtras and re-routes them to TownNPCSpriteModule
+        // Long version: In order to conserve compatibility for other mods editing this method, we find every instance of a SpriteBatch.Draw call and consume all the instructions preceding it, and
+        // then copying them so they can be run through our own delegate (see SpecialTownNPCDrawExtras below), capping it off with a branch instruction to preserve the old instructions so that vanilla
+        // can use them still for the applicable NPCs. This method provides the best of compatibility as well as actual functionality, instead of straight-up removing the Draw call (like before)
 
         ILCursor c = new (il);
-        while (c.TryGotoNext(i => i.MatchCallvirt(spriteBatchMethod!))) {
-            c.Remove();
+        while (c.TryGotoNext(i => i.MatchCallvirt(spriteBatchMethod))) {
+            int spriteBatchDrawCallInstrIndex = c.Index;
+            c.GotoPrev(i => i.MatchLdsfld<Main>(nameof(Main.spriteBatch)));
+
+            List<Instruction> spriteBatchInstrs = [];
+            for (int i = c.Index + 1; i < spriteBatchDrawCallInstrIndex; i++) {
+                spriteBatchInstrs.Add(c.Instrs[i]);
+            }
+
             c.Emit(OpCodes.Ldarg_1);
             c.Emit(OpCodes.Ldarg_2);
+            foreach (Instruction instr in spriteBatchInstrs) {
+                c.Emit(instr.OpCode, instr.Operand);
+            }
+
             c.EmitDelegate(SpecialTownNPCDrawExtras);
+
+            ILLabel branchLabel = c.DefineLabel();
+            c.Emit(OpCodes.Brtrue_S, branchLabel);
+            c.GotoNext(MoveType.After, i => i.MatchCallvirt(spriteBatchMethod)).MarkLabel(branchLabel);
         }
     }
 
-    private void SpecialTownNPCDrawExtras(
-        SpriteBatch spriteBatch,
+    private bool SpecialTownNPCDrawExtras(
+        NPC npc,
+        bool beforeDraw,
         Texture2D texture,
         Vector2 position,
         Rectangle? sourceRect,
@@ -50,16 +71,14 @@ public sealed class NPCDrawPatches : LoadablePatch {
         Vector2 origin,
         float scale,
         SpriteEffects effects,
-        float layerDepth,
-        NPC npc,
-        bool beforeDraw
+        float layerDepth
     ) {
         if (!npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
-            spriteBatch.Draw(texture, position, sourceRect, color, rotation, origin, scale, effects, layerDepth);
-            return;
+            return false;
         }
 
         int drawLayer = beforeDraw ? -1 : 1;
         globalNPC.SpriteModule.RequestDraw(new TownNPCDrawRequest(texture, position, sourceRect, Origin: origin, SpriteEffect: effects, UsesAbsolutePosition: true, DrawLayer: drawLayer));
+        return true;
     }
 }
