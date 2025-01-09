@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using Terraria.GameContent;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 
@@ -57,7 +58,8 @@ public sealed class NPCDrawPatches : LoadablePatch {
             spriteBatch.Draw(texture, position, sourceRect, color, rotation, origin, scale, effects, layerDepth);
             return;
         }
-        
-        globalNPC.SpriteModule.RequestDraw(new TownNPCDrawRequest(texture, position, sourceRect, Origin: origin, UsesAbsolutePosition: true, DrawLayer: beforeDraw ? -1 : 1));
+
+        int drawLayer = beforeDraw ? -1 : 1;
+        globalNPC.SpriteModule.RequestDraw(new TownNPCDrawRequest(texture, position, sourceRect, Origin: origin, SpriteEffect: effects, UsesAbsolutePosition: true, DrawLayer: drawLayer));
     }
 }
