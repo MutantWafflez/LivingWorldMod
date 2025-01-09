@@ -21,7 +21,7 @@ public sealed class NPCDrawPatches : LoadablePatch {
         IL_Main.DrawNPCExtras += DrawNPCExtrasConsumptionEdit;
     }
 
-    private void DrawNPCExtrasConsumptionEdit(ILContext il) {
+    private static void DrawNPCExtrasConsumptionEdit(ILContext il) {
         currentContext = il;
 
         Type[] drawParameterTypes = [typeof(Texture2D), typeof(Vector2), typeof(Rectangle?), typeof(Color), typeof(float), typeof(Vector2), typeof(float), typeof(SpriteEffects), typeof(float)];
@@ -60,7 +60,7 @@ public sealed class NPCDrawPatches : LoadablePatch {
         }
     }
 
-    private bool SpecialTownNPCDrawExtras(
+    private static bool SpecialTownNPCDrawExtras(
         NPC npc,
         bool beforeDraw,
         Texture2D texture,

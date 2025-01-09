@@ -9,7 +9,7 @@ public class NPCChatGUIPatches : LoadablePatch {
         IL_Main.GUIChatDrawInner += HappinessUIPatch;
     }
 
-    private void HappinessUIPatch(ILContext il) {
+    private static void HappinessUIPatch(ILContext il) {
         // Patch that opens up our Happiness UI instead of displaying the NPC text.
         currentContext = il;
 

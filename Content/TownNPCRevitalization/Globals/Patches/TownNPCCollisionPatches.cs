@@ -14,7 +14,7 @@ public class TownNPCCollisionPatches : LoadablePatch {
         IL_NPC.UpdateCollision += NPCUpdateCollisionUpdate;
     }
 
-    private void NPCUpdateCollisionUpdate(ILContext il) {
+    private static void NPCUpdateCollisionUpdate(ILContext il) {
         // Hijacks collision for Town NPCs. Gives us full control.
         currentContext = il;
 
