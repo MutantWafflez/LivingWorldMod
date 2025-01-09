@@ -227,14 +227,13 @@ public sealed class TownNPCSpriteModule (NPC npc, TownGlobalNPC globalNPC) : Tow
             offsetIndex = 0;
         }
 
-        float y = Main.OffsetsPlayerHeadgear[offsetIndex].Y;
         Main.instance.LoadProjectile(ProjectileID.MechanicWrench);
         Texture2D wrenchTexture = TextureAssets.Projectile[ProjectileID.MechanicWrench].Value;
         if (npc.townNpcVariationIndex == 1) {
             wrenchTexture = TextureAssets.Extra[ExtrasID.ShimmeredMechanicWrench].Value;
         }
 
-        Vector2 offset = -(new Vector2(wrenchTexture.Width, wrenchTexture.Height / Main.npcFrameCount[npc.type]) * npc.scale / 2f) + new Vector2(2f, -12f + y);
-        RequestDraw(new TownNPCDrawRequest(wrenchTexture, offset, Origin: Vector2.Zero, DrawLayer: -1));
+        Vector2 wrenchCenterOffset = new Vector2(wrenchTexture.Width, wrenchTexture.Height) * npc.scale / 2f;
+        RequestDraw(new TownNPCDrawRequest(wrenchTexture, new Vector2(0, Main.OffsetsPlayerHeadgear[offsetIndex].Y), Origin: wrenchCenterOffset, DrawLayer: -1));
     }
 }
