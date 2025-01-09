@@ -48,7 +48,7 @@ public sealed class TownNPCMoodModule (NPC npc, TownGlobalNPC globalNPC) : TownN
         }
 
         if (Main.LocalPlayer.talkNPC == npc.whoAmI && Main.npcShop == 0)  {
-            HappinessPatches.ProcessMoodOverride(Main.ShopHelper, Main.LocalPlayer, npc);
+            RevitalizationNPCPatches.ProcessMoodOverride(Main.ShopHelper, Main.LocalPlayer, npc);
         }
     }
 
