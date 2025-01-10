@@ -17,7 +17,7 @@ public sealed class TownNPCStateModule : TownNPCModule {
     private static IReadOnlyDictionary<int, TownNPCAIState> _stateDict;
     private static IReadOnlyList<TownNPCActivity> _allActivities;
 
-    private ForgetfulArray<TownNPCActivity> _lastActivities;
+    private ForgetfulArray<TownNPCActivity> _lastActivities = new(LastActivityMemoryLimit);
 
     public static void RefreshToState<T>(NPC npc) where T : TownNPCAIState => RefreshToState(npc, TownNPCAIState.GetStateInteger<T>());
 
@@ -25,14 +25,6 @@ public sealed class TownNPCStateModule : TownNPCModule {
         npc.ai[0] = stateValue;
         npc.ai[1] = npc.ai[2] = npc.ai[3] = 0;
         npc.netUpdate = true;
-    }
-
-    public override GlobalNPC NewInstance(NPC target) {
-        TownNPCStateModule instance = (TownNPCStateModule)base.NewInstance(target)!;
-
-        instance._lastActivities = new ForgetfulArray<TownNPCActivity>(LastActivityMemoryLimit);
-
-        return instance;
     }
 
     public override void SetStaticDefaults() {
