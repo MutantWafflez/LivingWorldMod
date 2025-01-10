@@ -54,19 +54,6 @@ public class TownGlobalNPC : GlobalNPC {
 
     public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => EntityIsValidTownNPC(entity, lateInstantiation);
 
-    // public override GlobalNPC NewInstance(NPC target) {
-    //     TownGlobalNPC instance = (TownGlobalNPC)base.NewInstance(target)!;
-    //
-    //     List<GlobalNPC> entityGlobals = [];
-    //     foreach (GlobalNPC npc in target.EntityGlobals) {
-    //         entityGlobals.Add(npc);
-    //     }
-    //
-    //     instance._prioritizedModules = entityGlobals.OfType<TownNPCModule>().OrderBy(module => module.UpdatePriority).ToList();
-    //
-    //     return instance;
-    // }
-
     public override void SetDefaults(NPC entity) {
         List<GlobalNPC> entityGlobals = [];
         foreach (GlobalNPC npc in entity.EntityGlobals) {
