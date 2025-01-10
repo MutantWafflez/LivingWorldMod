@@ -1,18 +1,17 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 
-namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 
 /// <summary>
 ///     Module for the Town NPC revitalization that handles combat for
 ///     a given Town NPC.
 /// </summary>
-public sealed class TownNPCCombatModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCModule(npc, globalNPC) {
-    public bool IsAttacking => npc.ai[0] >= TownNPCAIState.GetStateInteger<ThrowAttackAIState>() && npc.ai[0] <= TownNPCAIState.GetStateInteger<MeleeAttackAIState>();
+public sealed class TownNPCCombatModule : TownNPCModule {
+    public override int UpdatePriority => -1;
 
     public float CurrentDamageMultiplier {
         get;
@@ -24,8 +23,10 @@ public sealed class TownNPCCombatModule (NPC npc, TownGlobalNPC globalNPC) : Tow
         private set;
     }
 
-    public override void Update() {
-        SetCombatStats();
+    public static bool IsAttacking(NPC npc) => npc.ai[0] >= TownNPCAIState.GetStateInteger<ThrowAttackAIState>() && npc.ai[0] <= TownNPCAIState.GetStateInteger<MeleeAttackAIState>();
+
+    public override void UpdateModule(NPC npc) {
+        SetCombatStats(npc);
         if (Main.netMode == NetmodeID.MultiplayerClient) {
             return;
         }
@@ -85,7 +86,7 @@ public sealed class TownNPCCombatModule (NPC npc, TownGlobalNPC globalNPC) : Tow
 
         npc.localAI[1] = 0;
 
-        if (IsAttacking || npc.velocity.Y != 0f) {
+        if (IsAttacking(npc) || npc.velocity.Y != 0f) {
             return;
         }
 
@@ -110,7 +111,7 @@ public sealed class TownNPCCombatModule (NPC npc, TownGlobalNPC globalNPC) : Tow
                 npc.ai[1] = 34f;
                 npc.ai[2] = otherTownNPCIndex;
 
-                globalNPC.PathfinderModule.CancelPathfind();
+                npc.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind(npc);
 
                 npc.direction = npc.position.X < Main.npc[otherTownNPCIndex].position.X ? 1 : -1;
                 npc.netUpdate = true;
@@ -126,19 +127,19 @@ public sealed class TownNPCCombatModule (NPC npc, TownGlobalNPC globalNPC) : Tow
             return;
         }
 
-        AttemptTriggerAttack();
+        AttemptTriggerAttack(npc);
     }
 
-    public void RequestAttackToLocation(PreciseRectangle attackLocation) {
-        if (IsAttacking) {
+    public void RequestAttackToLocation(NPC npc, PreciseRectangle attackLocation) {
+        if (IsAttacking(npc)) {
             return;
         }
 
         AttackLocation = attackLocation;
-        AttemptTriggerAttack();
+        AttemptTriggerAttack(npc);
     }
 
-    private void AttemptTriggerAttack() {
+    private void AttemptTriggerAttack(NPC npc) {
         bool canHitAttackLocation = Collision.CanHit(npc.Center, 0, 0, AttackLocation!.Value.Center, 0, 0);
 
         //Hard-coded vanilla check. Not much I can do about it :(
@@ -162,13 +163,13 @@ public sealed class TownNPCCombatModule (NPC npc, TownGlobalNPC globalNPC) : Tow
             _ => 0f
         };
 
-        globalNPC.PathfinderModule.CancelPathfind();
+        npc.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind(npc);
         npc.localAI[3] = 0f;
         npc.direction = npc.position.X < AttackLocation.Value.position.X ? 1 : -1;
         npc.netUpdate = true;
     }
 
-    private void SetCombatStats() {
+    private void SetCombatStats(NPC npc) {
         float damageMultiplier = 1f;
 
         // Vanilla easter egg added in 1.4.4

@@ -1,5 +1,5 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.Globals.Configs;
 using LivingWorldMod.Utilities;
 
@@ -13,9 +13,9 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 public class DefaultAIState : TownNPCAIState {
     public override int ReservedStateInteger => 0;
 
-    public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
+    public override void DoState( NPC npc) {
         if (npc.breath == 0) {
-            TownGlobalNPC.RefreshToState<WalkToRandomPosState>(npc);
+            TownNPCStateModule.RefreshToState<WalkToRandomPosState>(npc);
             return;
         }
 
@@ -24,7 +24,7 @@ public class DefaultAIState : TownNPCAIState {
         }
 
         if ((LWM.IsDebug && ModContent.GetInstance<DebugConfig>().guaranteedWanderOffCooldown) || Main.rand.NextBool(4, 10)) {
-            TownGlobalNPC.RefreshToState<WalkToRandomPosState>(npc);
+            TownNPCStateModule.RefreshToState<WalkToRandomPosState>(npc);
             return;
         }
 

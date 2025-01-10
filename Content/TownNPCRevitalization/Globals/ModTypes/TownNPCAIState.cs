@@ -1,5 +1,3 @@
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
-
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 
 /// <summary>
@@ -59,5 +57,5 @@ public abstract class TownNPCAIState : ModType {
     /// <summary>
     ///     Called every tick that the given Town NPC is in this state.
     /// </summary>
-    public abstract void DoState(TownGlobalNPC globalNPC, NPC npc);
+    public abstract void DoState( NPC npc);
 }

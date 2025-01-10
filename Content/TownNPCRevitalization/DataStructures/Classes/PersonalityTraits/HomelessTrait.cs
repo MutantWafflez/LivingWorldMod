@@ -1,7 +1,6 @@
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.Utilities;
 using Terraria.GameContent;
 using Terraria.Localization;
@@ -17,7 +16,6 @@ public class HomelessTrait : IPersonalityTrait {
             return;
         }
 
-        info.NPC.GetGlobalNPC<TownGlobalNPC>()
-            .MoodModule.AddModifier("TownNPCMoodDescription.Homeless".Localized(), Language.GetText($"{TownNPCMoodModule.GetFlavorTextKeyPrefix(info.NPC)}.NoHome"), -100);
+        info.NPC.GetGlobalNPC<TownNPCMoodModule>().AddModifier("TownNPCMoodDescription.Homeless".Localized(), Language.GetText($"{TownNPCMoodModule.GetFlavorTextKeyPrefix(info.NPC)}.NoHome"), -100);
     }
 }

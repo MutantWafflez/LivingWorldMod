@@ -1,7 +1,6 @@
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.Utilities;
 using Terraria.GameContent;
 using Terraria.Localization;
@@ -13,7 +12,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.Pe
 /// </summary>
 public class CrowdingTrait : IPersonalityTrait {
     public void ApplyTrait(PersonalityHelperInfo info, ShopHelper shopHelperInstance) {
-        TownNPCMoodModule moodModule = info.NPC.GetGlobalNPC<TownGlobalNPC>().MoodModule;
+        TownNPCMoodModule moodModule = info.NPC.GetGlobalNPC<TownNPCMoodModule>();
         string flavorTextKeyPrefix = TownNPCMoodModule.GetFlavorTextKeyPrefix(info.NPC);
 
         switch (info.NearbyHouseNPCCount) {

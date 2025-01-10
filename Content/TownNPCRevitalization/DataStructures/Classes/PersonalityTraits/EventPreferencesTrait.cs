@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.Utilities;
 using Terraria.GameContent;
 using Terraria.GameContent.Events;
@@ -35,8 +35,7 @@ public class EventPreferencesTrait(EventPreferencesTrait.EventPreference[] prefe
                 continue;
             }
 
-            info.NPC.GetGlobalNPC<TownGlobalNPC>()
-                .MoodModule
+            info.NPC.GetGlobalNPC<TownNPCMoodModule>()
                 .AddModifier(
                     $"TownNPCMoodDescription.Event_{eventName}".Localized(),
                     $"TownNPCMoodFlavorText.{LWMUtils.GetNPCTypeNameOrIDName(info.NPC.type)}.Event_{eventName}".Localized(),

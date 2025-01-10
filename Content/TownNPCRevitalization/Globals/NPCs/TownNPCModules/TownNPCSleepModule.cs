@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
+using LivingWorldMod.Content.TownNPCRevitalization.UI.Bestiary;
 using LivingWorldMod.DataStructures.Records;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
+using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.Events;
+using Terraria.ModLoader.IO;
 
-namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 
 public sealed  class TownNPCSleepModule  : TownNPCModule {
     private const int MaxAwakeValue = LWMUtils.InGameHour * 24;
@@ -28,6 +30,8 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
     public BoundedNumber<float> awakeTicks = new(DefaultAwakeValue, 0, MaxAwakeValue);
 
     public bool isAsleep;
+
+    public override int UpdatePriority => 1;
 
     public TownNPCDrawRequest GetSleepSpriteDrawData {
         get {
@@ -54,32 +58,27 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
         }
     }
 
-    public bool ShouldSleep {
-        get {
-            bool sleepBeingBlocked = LanternNight.LanternsUp
-                // TODO: Allow sleeping once tired enough, even if party is occurring
-                || GenuinePartyIsOccurring
-                || globalNPC.ChatModule.IsChattingWithPlayerDirectly;
-            SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(npc.type);
-
-            return !sleepBeingBlocked && LWMUtils.CurrentInGameTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime);
-        }
-    }
-
     private static bool GenuinePartyIsOccurring => BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty;
 
-    public TownNPCSleepModule(NPC npc, TownGlobalNPC globalNPC) : base(npc, globalNPC) {
-        globalNPC.OnSave += tag => tag[nameof(awakeTicks)] = awakeTicks.Value;
-        globalNPC.OnLoad += tag => awakeTicks = new BoundedNumber<float>(
+    public static SleepSchedule GetSleepProfileOrDefault(int npcType) => TownNPCDataSystem.sleepSchedules.GetValueOrDefault(npcType, DefaultSleepSchedule);
+
+    public override void SetBestiary(NPC npc, BestiaryDatabase database, BestiaryEntry bestiaryEntry) {
+        bestiaryEntry.Info.Add(new TownNPCPreferredSleepTimeSpanElement(npc.type));
+    }
+
+    public override void SaveData(NPC npc, TagCompound tag) {
+        tag[nameof(awakeTicks)] = awakeTicks.Value;
+    }
+
+    public override void LoadData(NPC npc, TagCompound tag) {
+        awakeTicks = new BoundedNumber<float>(
             tag.TryGet(nameof(awakeTicks), out float savedSleepValue) ? savedSleepValue : DefaultAwakeValue,
             0,
             MaxAwakeValue
         );
     }
 
-    public static SleepSchedule GetSleepProfileOrDefault(int npcType) => TownNPCDataSystem.sleepSchedules.GetValueOrDefault(npcType, DefaultSleepSchedule);
-
-    public override void Update() {
+    public override void UpdateModule(NPC npc) {
         if (!isAsleep) {
             awakeTicks += 1f;
         }
@@ -89,7 +88,17 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
             return;
         }
 
-        globalNPC.PathfinderModule.CancelPathfind();
-        TownGlobalNPC.RefreshToState<PassedOutAIState>(npc);
+        npc.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind(npc);
+        TownNPCStateModule.RefreshToState<PassedOutAIState>(npc);
+    }
+
+    public bool ShouldSleep(NPC npc) {
+        bool sleepBeingBlocked = LanternNight.LanternsUp
+            // TODO: Allow sleeping once tired enough, even if party is occurring
+            || GenuinePartyIsOccurring
+            || npc.GetGlobalNPC<TownNPCChatModule>().IsChattingWithPlayerDirectly;
+        SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(npc.type);
+
+        return !sleepBeingBlocked && LWMUtils.CurrentInGameTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime);
     }
 }

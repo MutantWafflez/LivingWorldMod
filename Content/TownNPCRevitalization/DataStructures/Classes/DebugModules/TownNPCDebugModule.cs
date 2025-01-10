@@ -1,6 +1,7 @@
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.DataStructures.Classes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -36,11 +37,11 @@ public class TownNPCDebugModule : DebugModule {
         Dust.QuickBox(_selectedNPC.TopLeft, _selectedNPC.BottomRight, 2, Main.DiscoColor, null);
         if (Main.mouseRight && Main.mouseRightRelease) {
             Point pathfindLocation = Main.MouseWorld.ToTileCoordinates();
-            TownGlobalNPC.RefreshToState<WalkToRandomPosState>(_selectedNPC);
+            TownNPCStateModule.RefreshToState<WalkToRandomPosState>(_selectedNPC);
             _selectedNPC.ai[2] = 1f;
 
-            globalNPC.PathfinderModule.CancelPathfind();
-            globalNPC.PathfinderModule.RequestPathfind(pathfindLocation);
+            _selectedNPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind(_selectedNPC);
+            _selectedNPC.GetGlobalNPC<TownNPCPathfinderModule>().RequestPathfind(_selectedNPC, pathfindLocation);
 
             Main.NewText($"Pathfinding to {pathfindLocation}");
         }
@@ -54,8 +55,8 @@ public class TownNPCDebugModule : DebugModule {
         if (pressedKeys.Contains(Keys.NumPad1)) {
             Main.NewText("Forcing NPC to Pass out");
 
-            globalNPC.PathfinderModule.CancelPathfind();
-            TownGlobalNPC.RefreshToState<PassedOutAIState>(_selectedNPC);
+            _selectedNPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind(_selectedNPC);
+            TownNPCStateModule.RefreshToState<PassedOutAIState>(_selectedNPC);
         }
     }
 }

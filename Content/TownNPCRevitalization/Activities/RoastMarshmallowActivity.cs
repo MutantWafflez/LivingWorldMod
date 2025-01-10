@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria.WorldBuilding;
@@ -39,19 +39,19 @@ public class RoastMarshmallowActivity : TownNPCActivity {
         );
     }*/
 
-    public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
+    public override void DoState( NPC npc) {
         if ((npc.BottomLeft + new Vector2(0, -2)).ToTileCoordinates() == _standingLocation) {
             _isAtStandingLocation = true;
             npc.direction = 1;
             return;
         }
 
-        globalNPC.PathfinderModule.RequestPathfind(_standingLocation);
+        npc.GetGlobalNPC<TownNPCPathfinderModule>().RequestPathfind(npc, _standingLocation);
         _isAtStandingLocation = false;
     }
 
     public override bool CanDoActivity(TownGlobalNPC globalNPC, NPC npc) {
-        Point origin = globalNPC.PathfinderModule.TopLeftOfPathfinderZone;
+        Point origin = npc.GetGlobalNPC<TownNPCPathfinderModule>().TopLeftOfPathfinderZone(npc);
         List<Point> campfires = [];
         for (int i = origin.X; i < origin.X + TownNPCPathfinderModule.PathfinderSize; i++) {
             for (int j = origin.Y; j < origin.Y + TownNPCPathfinderModule.PathfinderSize; j++) {
@@ -91,6 +91,6 @@ public class RoastMarshmallowActivity : TownNPCActivity {
         }
 
         _standingLocation = campfires.MinBy(point => npc.Distance(point.ToWorldCoordinates(0f, 0f))) + new Point(-2, 0);
-        return globalNPC.PathfinderModule.HasPath(_standingLocation);
+        return npc.GetGlobalNPC<TownNPCPathfinderModule>().HasPath(npc, _standingLocation);
     }
 }

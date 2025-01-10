@@ -1,7 +1,6 @@
 ﻿using System;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria.Utilities;
@@ -11,8 +10,8 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 public class WalkToRandomPosState : TownNPCAIState {
     public override int ReservedStateInteger => 1;
 
-    public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
-        TownNPCPathfinderModule pathfinderModule = globalNPC.PathfinderModule;
+    public override void DoState( NPC npc) {
+        TownNPCPathfinderModule pathfinderModule = npc.GetGlobalNPC<TownNPCPathfinderModule>();
         if (npc.ai[2] == 0f) {
             int maxTileThreshold = TownNPCPathfinderModule.PathfinderSize / 4;
             int minTileThreshold = Math.ILogB(TownNPCPathfinderModule.PathfinderSize);
@@ -23,10 +22,10 @@ public class WalkToRandomPosState : TownNPCAIState {
                 Point displacement = new Vector2(0, -Main.rand.Next(minTileThreshold, maxTileThreshold)).RotatedBy(MathHelper.ToRadians(i)).ToPoint();
                 if (LWMUtils.DropUntilCondition(
                         ValidWanderPoint,
-                        pathfinderModule.BottomLeftTileOfNPC + displacement,
+                        pathfinderModule.BottomLeftTileOfNPC(npc) + displacement,
                         maxTileThreshold + 1
                     ) is not { } point
-                    || !pathfinderModule.HasPath(point + new Point(0, -1))
+                    || !pathfinderModule.HasPath(npc, point + new Point(0, -1))
                 ) {
                     continue;
                 }
@@ -37,17 +36,17 @@ public class WalkToRandomPosState : TownNPCAIState {
             }
 
             if (wanderPoints.elements.Count == 0) {
-                TownGlobalNPC.RefreshToState<DefaultAIState>(npc);
+                TownNPCStateModule.RefreshToState<DefaultAIState>(npc);
                 npc.ai[1] = Main.rand.Next(LWMUtils.RealLifeSecond * 2, LWMUtils.RealLifeSecond * 5);
                 return;
             }
 
-            pathfinderModule.RequestPathfind(wanderPoints);
+            pathfinderModule.RequestPathfind(npc, wanderPoints);
             npc.ai[2] = 1f;
             npc.netUpdate = true;
         }
         else if (npc.ai[2] == 1f && !pathfinderModule.IsPathfinding) {
-            TownGlobalNPC.RefreshToState<DefaultAIState>(npc);
+            TownNPCStateModule.RefreshToState<DefaultAIState>(npc);
             npc.ai[1] = LWMUtils.RealLifeSecond * 3;
         }
 

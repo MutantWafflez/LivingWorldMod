@@ -1,7 +1,6 @@
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.Utilities;
 using Terraria.GameContent;
 using Terraria.GameContent.Personalities;
@@ -15,7 +14,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.Pe
 /// </summary>
 public class LonelyTrait : IPersonalityTrait {
     public void ApplyTrait(PersonalityHelperInfo info, ShopHelper shopHelperInstance) {
-        TownNPCMoodModule moodModule = info.NPC.GetGlobalNPC<TownGlobalNPC>().MoodModule;
+        TownNPCMoodModule moodModule = info.NPC.GetGlobalNPC<TownNPCMoodModule>();
         if (info.NearbyHouseNPCCount < 2 && info.NearbyVillageNPCCount < 2) {
             moodModule.AddModifier("TownNPCMoodDescription.Lonely".Localized(), Language.GetText($"{TownNPCMoodModule.GetFlavorTextKeyPrefix(info.NPC)}.HateLonely"), -20);
         }

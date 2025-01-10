@@ -1,6 +1,6 @@
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
 using Terraria.GameContent;
@@ -15,8 +15,8 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.Pe
 /// <param name="bestRestLimit">Max amount of awake ticks to gain the "very well rested" mood bonus. Defaults to 5 hours of in-game time.</param>
 public class SleepTrait(int tiredLimit = LWMUtils.InGameHour * 17, int wellRestedLimit = LWMUtils.InGameHour * 13, int bestRestLimit = LWMUtils.InGameHour * 5) : IPersonalityTrait {
     public void ApplyTrait(PersonalityHelperInfo info, ShopHelper shopHelperInstance) {
-        TownGlobalNPC globalNPC = info.NPC.GetGlobalNPC<TownGlobalNPC>();
-        float awakeValue = globalNPC.SleepModule.awakeTicks;
+        NPC npc = info.NPC;
+        float awakeValue = npc.GetGlobalNPC<TownNPCSleepModule>().awakeTicks;
 
         string sleepQualityKey = "SleepDeprived";
         int moodOffset = -20;
@@ -35,10 +35,11 @@ public class SleepTrait(int tiredLimit = LWMUtils.InGameHour * 17, int wellReste
 
         string npcTypeName = LWMUtils.GetNPCTypeNameOrIDName(info.NPC.type);
         string flavorTextKey = $"TownNPCMoodFlavorText.{npcTypeName}.{sleepQualityKey}";
-        globalNPC.MoodModule.AddModifier(
-            new DynamicLocalizedText($"TownNPCMoodDescription.{sleepQualityKey}".Localized()),
-            new DynamicLocalizedText(flavorTextKey.Localized(), fallbackText: flavorTextKey.Replace(npcTypeName, "Default").Localized()),
-            moodOffset
-        );
+        npc.GetGlobalNPC<TownNPCMoodModule>()
+            .AddModifier(
+                new DynamicLocalizedText($"TownNPCMoodDescription.{sleepQualityKey}".Localized()),
+                new DynamicLocalizedText(flavorTextKey.Localized(), fallbackText: flavorTextKey.Replace(npcTypeName, "Default").Localized()),
+                moodOffset
+            );
     }
 }

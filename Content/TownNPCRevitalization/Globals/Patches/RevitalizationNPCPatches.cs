@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 using LivingWorldMod.DataStructures.Classes;
@@ -49,7 +49,7 @@ public class RevitalizationNPCPatches : LoadablePatch {
             }
         }
 
-        shopHelper._currentPriceAdjustment = ShopCostModifierGradient.GetValue(globalNPC.MoodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue);
+        shopHelper._currentPriceAdjustment = ShopCostModifierGradient.GetValue(npc.GetGlobalNPC<TownNPCMoodModule>().CurrentMood / TownNPCMoodModule.MaxMoodValue);
     }
 
     private static void DrawNPCExtrasConsumptionPatch(ILContext il) {
@@ -109,7 +109,8 @@ public class RevitalizationNPCPatches : LoadablePatch {
         }
 
         int drawLayer = beforeDraw ? -1 : 1;
-        globalNPC.SpriteModule.RequestDraw(new TownNPCDrawRequest(texture, position, sourceRect, Origin: origin, SpriteEffect: effects, UsesAbsolutePosition: true, DrawLayer: drawLayer));
+        npc.GetGlobalNPC<TownNPCSpriteModule>()
+            .RequestDraw(new TownNPCDrawRequest(texture, position, sourceRect, Origin: origin, SpriteEffect: effects, UsesAbsolutePosition: true, DrawLayer: drawLayer));
         return true;
     }
 
@@ -153,7 +154,7 @@ public class RevitalizationNPCPatches : LoadablePatch {
                     return false;
                 }
 
-                globalNPC.CollisionModule.Update();
+                npc.GetGlobalNPC<TownNPCCollisionModule>().UpdateCollision(npc);
                 return true;
             }
         );

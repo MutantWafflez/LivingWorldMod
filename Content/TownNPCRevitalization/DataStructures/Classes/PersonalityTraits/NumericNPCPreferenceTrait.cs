@@ -1,6 +1,6 @@
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
@@ -20,8 +20,8 @@ public class NumericNPCPreferenceTrait(int moodOffset, int npcType) : IPersonali
             return;
         }
 
-        info.NPC.GetGlobalNPC<TownGlobalNPC>()
-            .MoodModule.AddModifier(
+        info.NPC.GetGlobalNPC<TownNPCMoodModule>()
+            .AddModifier(
                 new DynamicLocalizedText(
                     "TownNPCMoodDescription.NeighborNPC".Localized(),
                     new { NPCTypeName = LWMUtils.GetFirstNPC(npc => npc.type == npcType)?.TypeName ?? "Error"  }

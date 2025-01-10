@@ -1,7 +1,6 @@
 ﻿using System;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
@@ -170,8 +169,7 @@ public class HappinessUIState : UIState {
 
     public override void Update(GameTime gameTime) {
         base.Update(gameTime);
-        TownGlobalNPC globalNPC = NPCBeingTalkedTo.GetGlobalNPC<TownGlobalNPC>();
-        TownNPCMoodModule moodModule = globalNPC.MoodModule;
+        TownNPCMoodModule moodModule = NPCBeingTalkedTo.GetGlobalNPC<TownNPCMoodModule>();
 
         priceModifierTextNumber.SetText(Main.ShopHelper._currentPriceAdjustment.ToString("0.#%"));
         priceModifierTextNumber.Left.Set(-40f - priceModifierTextNumber.GetDimensions().Width, 1f);

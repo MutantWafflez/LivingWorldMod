@@ -7,7 +7,7 @@ using Terraria.GameContent.Events;
 namespace LivingWorldMod.Content.TownNPCRevitalization.Activities;
 
 public class ReleaseLanternActivity : TownNPCActivity {
-    public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
+    public override void DoState( NPC npc) {
         switch (npc.ai[1]) {
             case 0f when ++npc.ai[2] > 45: {
                 npc.ai[1] = 1f;

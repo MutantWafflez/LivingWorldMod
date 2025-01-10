@@ -1,8 +1,7 @@
 using System;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using Microsoft.Xna.Framework;
 
@@ -11,8 +10,8 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 public class MeleeAttackAIState : TownNPCAIState {
     public override int ReservedStateInteger => 15;
 
-    public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
-        TownNPCCombatModule combatModule = globalNPC.CombatModule;
+    public override void DoState( NPC npc) {
+        TownNPCCombatModule combatModule = npc.GetGlobalNPC<TownNPCCombatModule>();
         TownNPCDataSystem.meleeAttackDatas.TryGetValue(npc.type, out TownNPCMeleeAttackData attackData);
 
         // More vanilla hard-code

@@ -1,6 +1,5 @@
 using System;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
@@ -8,7 +7,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 public class NurseHealAIState : TownNPCAIState {
     public override int ReservedStateInteger => 13;
 
-    public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
+    public override void DoState( NPC npc) {
         npc.ai[1] -= 1f;
         npc.localAI[3] += 1f;
         if (npc.localAI[3] == 1f && Main.netMode != NetmodeID.MultiplayerClient) {

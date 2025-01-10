@@ -13,14 +13,15 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Activities;
 public class SantaGiftingActivity : TownNPCActivity {
     private NPC _receivingNPC;
 
-    public override void DoState(TownGlobalNPC globalNPC, NPC npc) { }
+    public override void DoState( NPC npc) { }
 
     public override bool CanDoActivity(TownGlobalNPC globalNPC, NPC npc) {
         if (npc.type != NPCID.SantaClaus) {
             return false;
         }
 
-        List<NPC> allTownNPCs = []; /*LWMUtils.GetAllNPCs(otherNPC => otherNPC.TryGetGlobalNPC(out TownGlobalNPC _) && globalNPC.PathfinderModule.EntityWithinPathfinderZone(otherNPC));*/
+        List<NPC>
+            allTownNPCs = []; /*LWMUtils.GetAllNPCs(otherNPC => otherNPC.TryGetGlobalNPC(out TownGlobalNPC _) && npc.GetGlobalNPC<TownNPCPathfinderModule>().EntityWithinPathfinderZone(otherNPC));*/
         if (allTownNPCs.Count == 0) {
             return false;
         }

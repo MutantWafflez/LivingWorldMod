@@ -1,105 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
-using LivingWorldMod.Content.TownNPCRevitalization.UI.Bestiary;
-using LivingWorldMod.DataStructures.Classes;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.GameContent.Bestiary;
-using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 
 /// <summary>
-///     Global NPC that handles exclusively the AI overhaul for Town NPCs.
+///     Global NPC that acts as the foundation of the Town NPC Revitalization. Has minimal code on its own, but is infinitely expandable using <see cref="TownNPCModule" /> instances.
 /// </summary>
 public class TownGlobalNPC : GlobalNPC {
-    /// <summary>
-    ///     How many activities are remembered by this NPC for the
-    ///     purpose of preventing activity repetition.
-    /// </summary>
-    private const int LastActivityMemoryLimit = 5;
-
-    private static IReadOnlyDictionary<int, TownNPCAIState> _stateDict;
-    private static IReadOnlyList<TownNPCActivity> _allActivities;
-
-    private ForgetfulArray<TownNPCActivity> _lastActivities;
+    private IReadOnlyList<TownNPCModule> _prioritizedModules;
 
     public override bool InstancePerEntity => true;
-
-    /// <summary>
-    ///     Instance of the module that handles all path-finding
-    ///     for this specific Town NPC.
-    /// </summary>
-    public TownNPCPathfinderModule PathfinderModule {
-        get;
-        private set;
-    }
-
-    /// <summary>
-    ///     Instance of the module that handles the mood for this
-    ///     specific Town NPC.
-    /// </summary>
-    public TownNPCMoodModule MoodModule {
-        get;
-        private set;
-    }
-
-    /// <summary>
-    ///     Instance of the module that handles attacks & general
-    ///     combat for this specific Town NPC.
-    /// </summary>
-    public TownNPCCombatModule CombatModule {
-        get;
-        private set;
-    }
-
-    /// <summary>
-    ///     Instance of the module that handles NPCs being chatted to
-    ///     by players or talking to other NPCs.
-    /// </summary>
-    public TownNPCChatModule ChatModule {
-        get;
-        private set;
-    }
-
-    /// <summary>
-    ///     Instance of the module that handles all sprite-related tasks.
-    /// </summary>
-    public TownNPCSpriteModule SpriteModule {
-        get;
-        private set;
-    }
-
-    /// <summary>
-    ///     Instance of the module that handles housing tasks and bounding.
-    /// </summary>
-    public TownNPCHousingModule HousingModule {
-        get;
-        private set;
-    }
-
-    /// <summary>
-    ///     Instance of the module that handles special collision logic.
-    /// </summary>
-    public TownNPCCollisionModule CollisionModule {
-        get;
-        private set;
-    }
-
-    /// <summary>
-    ///     Instance of the module that handles the Town NPC sleeping.
-    /// </summary>
-    public TownNPCSleepModule SleepModule {
-        get;
-        private set;
-    }
-
-    public static void RefreshToState<T>(NPC npc) where T : TownNPCAIState => RefreshToState(npc, TownNPCAIState.GetStateInteger<T>());
 
     public static bool IsValidStandingPosition(NPC npc, Point tilePos) {
         bool foundTileToStandOn = false;
@@ -132,13 +44,7 @@ public class TownGlobalNPC : GlobalNPC {
         return true;
     }
 
-    public static void RefreshToState(NPC npc, int stateValue) {
-        npc.ai[0] = stateValue;
-        npc.ai[1] = npc.ai[2] = npc.ai[3] = 0;
-        npc.netUpdate = true;
-    }
-
-    public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => lateInstantiation
+    public static bool EntityIsValidTownNPC(NPC entity, bool lateInstantiation) => lateInstantiation
         && entity.aiStyle == NPCAIStyleID.Passive
         && entity.townNPC
         && !NPCID.Sets.IsTownPet[entity.type]
@@ -146,39 +52,28 @@ public class TownGlobalNPC : GlobalNPC {
         && entity.type != NPCID.OldMan
         && entity.type != NPCID.TravellingMerchant;
 
-    public override void SetStaticDefaults() {
-        List<TownNPCAIState> states = ModContent.GetContent<TownNPCAIState>().ToList();
+    public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => EntityIsValidTownNPC(entity, lateInstantiation);
 
-        if (states.Count != states.DistinctBy(state => state.ReservedStateInteger).Count()) {
-            throw new Exception("Multiple TownNPCAIState instances with the same ReservedStateInteger");
+    // public override GlobalNPC NewInstance(NPC target) {
+    //     TownGlobalNPC instance = (TownGlobalNPC)base.NewInstance(target)!;
+    //
+    //     List<GlobalNPC> entityGlobals = [];
+    //     foreach (GlobalNPC npc in target.EntityGlobals) {
+    //         entityGlobals.Add(npc);
+    //     }
+    //
+    //     instance._prioritizedModules = entityGlobals.OfType<TownNPCModule>().OrderBy(module => module.UpdatePriority).ToList();
+    //
+    //     return instance;
+    // }
+
+    public override void SetDefaults(NPC entity) {
+        List<GlobalNPC> entityGlobals = [];
+        foreach (GlobalNPC npc in entity.EntityGlobals) {
+            entityGlobals.Add(npc);
         }
 
-        _stateDict = states.ToDictionary(state => state.ReservedStateInteger);
-        //_allActivities = states.OfType<TownNPCActivity>().ToList();
-    }
-
-    public override GlobalNPC NewInstance(NPC target) {
-        TownGlobalNPC instance = (TownGlobalNPC)base.NewInstance(target)!;
-
-        instance.PathfinderModule = new TownNPCPathfinderModule(target, instance);
-        instance.MoodModule = new TownNPCMoodModule(target, instance);
-        instance.CombatModule = new TownNPCCombatModule(target, instance);
-        instance.ChatModule = new TownNPCChatModule(target, instance);
-        instance.SpriteModule = new TownNPCSpriteModule(target, instance);
-        instance.HousingModule = new TownNPCHousingModule(target, instance);
-        instance.CollisionModule = new TownNPCCollisionModule(target, instance);
-        instance.SleepModule = new TownNPCSleepModule(target, instance);
-        instance._lastActivities = new ForgetfulArray<TownNPCActivity>(LastActivityMemoryLimit);
-
-        return instance;
-    }
-
-    public override void SaveData(NPC npc, TagCompound tag) {
-        OnSave?.Invoke(tag);
-    }
-
-    public override void LoadData(NPC npc, TagCompound tag) {
-        OnLoad?.Invoke(tag);
+        _prioritizedModules = entityGlobals.OfType<TownNPCModule>().OrderBy(module => module.UpdatePriority).ToList();
     }
 
     public override bool PreAI(NPC npc) {
@@ -189,30 +84,9 @@ public class TownGlobalNPC : GlobalNPC {
     public override void AI(NPC npc) {
         SetMiscNPCFields(npc);
 
-        SpriteModule.Update();
-        ChatModule.Update();
-        CombatModule.Update();
-        HousingModule.Update();
-
-        if (_stateDict.TryGetValue((int)npc.ai[0], out TownNPCAIState state)) {
-            state.DoState(this, npc);
-
-            /*
-            // New activities can only be selected when the npc is in the default state
-            if (state is DefaultAIState && Main.rand.Next(_allActivities.SkipWhile(_lastActivities.Contains).ToList()) is { } activity && activity.CanDoActivity(this, npc)) {
-                _lastActivities.Add(activity);
-                activity.InitializeActivity(npc);
-
-                return;
-            }*/
+        foreach (TownNPCModule module in _prioritizedModules) {
+            module.UpdateModule(npc);
         }
-        else {
-            RefreshToState<DefaultAIState>(npc);
-        }
-
-        SleepModule.Update();
-        MoodModule.Update();
-        PathfinderModule.Update();
     }
 
     public override void PostAI(NPC npc) {
@@ -220,45 +94,12 @@ public class TownGlobalNPC : GlobalNPC {
         npc.aiStyle = NPCAIStyleID.Passive;
     }
 
-    public override void SetBestiary(NPC npc, BestiaryDatabase database, BestiaryEntry bestiaryEntry) {
-        bestiaryEntry.Info.Add(new TownNPCPreferredSleepTimeSpanElement(npc.type));
-    }
-
-    public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) {
-        PathfinderModule.SendNetworkData(bitWriter, binaryWriter);
-    }
-
-    public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader) {
-        PathfinderModule.ReceiveNetworkData(bitReader, binaryReader);
-    }
-
-    public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-        SpriteModule.DrawNPC(spriteBatch, screenPos, drawColor);
-        return false;
-    }
-
-    public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-        // TODO: Re-write chat bubble drawing
-        ChatModule.DoChatDrawing(spriteBatch, screenPos, drawColor);
-
-        if (!LWM.IsDebug) {
-            return;
-        }
-
-        PathfinderModule.DebugDrawPath(spriteBatch, screenPos);
-        HousingModule.DebugDraw(spriteBatch);
-    }
-
-    public override void FindFrame(NPC npc, int frameHeight) {
-        SpriteModule.FrameNPC(frameHeight);
-    }
-
     private void SetMiscNPCFields(NPC npc) {
         npc.dontTakeDamage = false;
         npc.rotation = 0f;
         NPC.ShimmeredTownNPCs[npc.type] = npc.IsShimmerVariant;
         if (npc.HasBuff(BuffID.Shimmer)) {
-            PathfinderModule.CancelPathfind();
+            // PathfinderModule.CancelPathfind();
         }
 
         if (npc.type == NPCID.SantaClaus && Main.netMode != NetmodeID.MultiplayerClient && !Main.xMas) {
@@ -298,9 +139,9 @@ public class TownGlobalNPC : GlobalNPC {
             npc.direction = 1;
         }
 
-        if (npc.velocity.Y == 0f && !PathfinderModule.IsPathfinding) {
-            npc.velocity *= 0.75f;
-        }
+        // if (npc.velocity.Y == 0f && !PathfinderModule.IsPathfinding) {
+        // npc.velocity *= 0.75f;
+        // }
 
         if (npc.type != NPCID.Mechanic) {
             return;
@@ -318,14 +159,4 @@ public class TownGlobalNPC : GlobalNPC {
 
         npc.localAI[0] = wrenchFound.ToInt();
     }
-
-    /// <summary>
-    ///     Event that is triggered in the <see cref="GlobalNPC.SaveData" /> method for saving data to the NPC.
-    /// </summary>
-    public event Action<TagCompound> OnSave;
-
-    /// <summary>
-    ///     Event that is triggered in the <see cref="GlobalNPC.LoadData" /> method for loading data from file for the NPC.
-    /// </summary>
-    public event Action<TagCompound> OnLoad;
 }

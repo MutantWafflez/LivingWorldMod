@@ -1,6 +1,5 @@
 using System;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent.Drawing;
 
@@ -9,7 +8,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 public class ShimmerTransformAIState : TownNPCAIState {
     public override int ReservedStateInteger => 25;
 
-    public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
+    public override void DoState( NPC npc) {
         // Adapted vanilla code
         npc.dontTakeDamage = true;
         if (npc.ai[1] == 0f) {

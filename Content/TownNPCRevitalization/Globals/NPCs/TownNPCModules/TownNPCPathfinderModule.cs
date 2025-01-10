@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Configs;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Globals.Configs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -15,9 +15,9 @@ using Terraria.ModLoader.IO;
 using PathNode = LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCPathfinder.PathNode;
 using NodeMovementType = LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCPathfinder.NodeMovementType;
 
-namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 
-public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCModule(npc, globalNPC) {
+public sealed class TownNPCPathfinderModule : TownNPCModule {
     private sealed class PathfinderResult(Point topLeftOfGrid, Point endPoint, PathNode lastConsumedNode, List<PathNode> path) {
         public readonly Point topLeftOfGrid = topLeftOfGrid;
         public readonly Point endPoint = endPoint;
@@ -41,11 +41,9 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
 
     public static int PathfinderSize => ModContent.GetInstance<TownNPCConfig>().pathfinderSize;
 
+    public override int UpdatePriority => 3;
+
     public bool IsPathfinding => _currentPathfinderResult is not null;
-
-    public Point BottomLeftTileOfNPC => (npc.BottomLeft + new Vector2(0f, -2f)).ToTileCoordinates();
-
-    public Point TopLeftOfPathfinderZone => BottomLeftTileOfNPC - new Point(PathfinderSize / 2, PathfinderSize / 2);
 
     private static void PrunePath(IList<PathNode> path) {
         if (LWM.IsDebug && ModContent.GetInstance<DebugConfig>().disablePathPruning) {
@@ -68,7 +66,7 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
         }
     }
 
-    public override void Update() {
+    public override void UpdateModule(NPC npc) {
         _cachedResults.Clear();
         _cachedPathfinder = null;
 
@@ -91,20 +89,20 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
 
         if (_wasPaused) {
             _wasPaused = false;
-            GenerateAndUseNewPath(_currentPathfinderResult.endPoint);
+            GenerateAndUseNewPath(npc, _currentPathfinderResult.endPoint);
             return;
         }
 
         // If the NPC does not make meaningful progress to the next node, regenerate the path
-        float curDistanceToNextNode = GetDistanceToNode(nextNode);
+        float curDistanceToNextNode = GetDistanceToNode(npc, nextNode);
         if (curDistanceToNextNode >= _prevDistanceToNextNode) {
             if (++_notMakingProgressCounter >= LWMUtils.RealLifeSecond / 2) {
                 if (_pathRestartCount++ > MaxPathRecyclesBeforeFailure) {
-                    EndPathfinding();
+                    EndPathfinding(npc);
                     return;
                 }
 
-                GenerateAndUseNewPath(_currentPathfinderResult.endPoint);
+                GenerateAndUseNewPath(npc, _currentPathfinderResult.endPoint);
 
                 return;
             }
@@ -124,13 +122,13 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
 
         bool leftHasBreachedNode = npc.direction == 1 ? npc.Left.X >= nextNodeCenter.X : npc.Left.X <= nextNodeCenter.X;
 
-        TownNPCCollisionModule collisionModule = globalNPC.CollisionModule;
+        TownNPCCollisionModule collisionModule = npc.GetGlobalNPC<TownNPCCollisionModule>();
         if (leftHasBreachedNode && nodeRectangle.Intersects(npcNodeCollisionRectangle) && (lastConsumedNode.MovementType is not NodeMovementType.Jump || npc.velocity.Y == 0f)) {
             lastConsumedNode = nextNode;
             path.RemoveAt(path.Count - 1);
 
             if (path.Count == 0) {
-                EndPathfinding();
+                EndPathfinding(npc);
                 return;
             }
 
@@ -171,18 +169,18 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
                 Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
 
                 collisionModule.ignoreLiquidVelocityModifications = collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = collisionModule.walkThroughStairs = false;
-                CheckForDoors();
+                CheckForDoors(npc);
                 break;
             case NodeMovementType.StepDown:
                 npc.velocity.X = npc.direction;
 
                 collisionModule.ignoreLiquidVelocityModifications = collisionModule.fallThroughStairs = collisionModule.walkThroughStairs = collisionModule.fallThroughPlatforms = false;
-                CheckForDoors();
+                CheckForDoors(npc);
                 break;
             default:
             case NodeMovementType.PureHorizontal:
                 npc.velocity.X = npc.direction;
-                CheckForDoors();
+                CheckForDoors(npc);
 
                 collisionModule.ignoreLiquidVelocityModifications = collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = false;
                 collisionModule.walkThroughStairs = true;
@@ -213,23 +211,8 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
         }
     }
 
-    public bool RequestPathfind(Point location) {
-        if (IsPathfinding) {
-            return false;
-        }
-
-        GenerateAndUseNewPath(location);
-        return true;
-    }
-
-    public bool HasPath(Point location) => GetPathfinderResult(location) is not null;
-
-    public void PausePathfind() => _isPaused = true;
-
-    public void CancelPathfind() => EndPathfinding();
-
-    public void DebugDrawPath(SpriteBatch spriteBatch, Vector2 screenPos) {
-        if (!IsPathfinding) {
+    public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+        if (!IsPathfinding || !LWM.IsDebug) {
             return;
         }
 
@@ -250,23 +233,43 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
         }
     }
 
-    public void SendNetworkData(BitWriter bitWriter, BinaryWriter binaryWriter) {
+    public Point BottomLeftTileOfNPC(NPC npc) => (npc.BottomLeft + new Vector2(0f, -2f)).ToTileCoordinates();
+
+    public Point TopLeftOfPathfinderZone(NPC npc) => BottomLeftTileOfNPC(npc) - new Point(PathfinderSize / 2, PathfinderSize / 2);
+
+    public bool RequestPathfind(NPC npc, Point location) {
+        if (IsPathfinding) {
+            return false;
+        }
+
+        GenerateAndUseNewPath(npc, location);
+        return true;
+    }
+
+    public bool HasPath(NPC npc, Point location) => GetPathfinderResult(npc, location) is not null;
+
+    public void PausePathfind() => _isPaused = true;
+
+    public void CancelPathfind(NPC npc) => EndPathfinding(npc);
+
+    public void SendNetworkData(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) {
         Point16 endPoint = new(_currentPathfinderResult?.endPoint ?? new Point(-1, -1));
         binaryWriter.Write(endPoint.X);
         binaryWriter.Write(endPoint.Y);
     }
 
-    public void ReceiveNetworkData(BitReader bitReader, BinaryReader binaryReader) {
+    public void ReceiveNetworkData(NPC npc, BitReader bitReader, BinaryReader binaryReader) {
         Point endPoint = new(binaryReader.ReadInt16(), binaryReader.ReadInt16());
-        EndPathfinding();
+        EndPathfinding(npc);
         if (endPoint is { X: -1, Y: -1 }) {
             return;
         }
 
-        GenerateAndUseNewPath(endPoint);
+        GenerateAndUseNewPath(npc, endPoint);
     }
 
-    private void CheckForDoors() {
+    private void CheckForDoors(NPC npc) {
+        // TODO: Rewrite door checking
         // Direct vanilla code (sorta disgusting)
         if (npc.closeDoor && ((npc.position.X + npc.width / 2f) / 16f > npc.doorX + 2 || (npc.position.X + npc.width / 2f) / 16f < npc.doorX - 2)) {
             Tile doorPos = Framing.GetTileSafely(npc.doorX, npc.doorY);
@@ -333,13 +336,13 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
         }
     }
 
-    private PathfinderResult GetPathfinderResult(Point endPoint) {
+    private PathfinderResult GetPathfinderResult(NPC npc, Point endPoint) {
         if (_cachedResults.FirstOrDefault(result => result.endPoint == endPoint) is { } cachedResult) {
             _currentPathfinderResult = cachedResult;
             return _currentPathfinderResult;
         }
 
-        Point topLeftOfGrid = TopLeftOfPathfinderZone;
+        Point topLeftOfGrid = TopLeftOfPathfinderZone(npc);
 
         const int worldFluff = 10;
         topLeftOfGrid.X = Utils.Clamp(topLeftOfGrid.X, worldFluff, Main.maxTilesX - PathfinderSize - worldFluff - 1);
@@ -349,7 +352,7 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
             _cachedPathfinder
             ?? new TownNPCPathfinder(new UPoint16(topLeftOfGrid.X, topLeftOfGrid.Y), (ushort)PathfinderSize, (ushort)Math.Ceiling(npc.width / 16f), (ushort)Math.Ceiling(npc.height / 16f));
 
-        Point adjustedBottomLeftOfNPC = BottomLeftTileOfNPC;
+        Point adjustedBottomLeftOfNPC = BottomLeftTileOfNPC(npc);
         Tile bottomLeftTileOfNPC = Main.tile[adjustedBottomLeftOfNPC];
         if (bottomLeftTileOfNPC.HasTile && (bottomLeftTileOfNPC.IsHalfBlock || bottomLeftTileOfNPC.Slope > SlopeType.Solid)) {
             adjustedBottomLeftOfNPC.Y--;
@@ -367,31 +370,32 @@ public sealed class TownNPCPathfinderModule (NPC npc, TownGlobalNPC globalNPC) :
         return result;
     }
 
-    private void GenerateAndUseNewPath(Point endPoint) {
+    private void GenerateAndUseNewPath(NPC npc, Point endPoint) {
         if (_cachedResults.FirstOrDefault(result => result.endPoint == endPoint) is { } cachedResult) {
             _currentPathfinderResult = cachedResult;
             return;
         }
 
-        _currentPathfinderResult = GetPathfinderResult(endPoint);
+        _currentPathfinderResult = GetPathfinderResult(npc, endPoint);
 
         if (_currentPathfinderResult is null) {
-            EndPathfinding();
+            EndPathfinding(npc);
         }
         else {
             List<PathNode> path = _currentPathfinderResult.path;
             PrunePath(path);
 
-            _prevDistanceToNextNode = GetDistanceToNode(path.Last());
+            _prevDistanceToNextNode = GetDistanceToNode(npc, path.Last());
             _notMakingProgressCounter = 0;
             npc.direction = npc.Center.X > (path.Last().NodePos.x + _currentPathfinderResult.topLeftOfGrid.X) * 16 + 8 ? -1 : 1;
             npc.velocity.X = npc.direction;
         }
     }
 
-    private float GetDistanceToNode(PathNode nextNode) => npc.BottomLeft.Distance((_currentPathfinderResult.topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates());
+    private float GetDistanceToNode(NPC npc, PathNode nextNode) =>
+        npc.BottomLeft.Distance((_currentPathfinderResult.topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates());
 
-    private void EndPathfinding() {
+    private void EndPathfinding(NPC npc) {
         _prevDistanceToNextNode = float.MaxValue;
         _pathRestartCount = _notMakingProgressCounter = 0;
         npc.GravityIgnoresLiquid = false;

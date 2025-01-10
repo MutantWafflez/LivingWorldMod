@@ -1,7 +1,6 @@
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent;
@@ -16,8 +15,7 @@ public class HomeProximityTrait : IPersonalityTrait {
     public void ApplyTrait(PersonalityHelperInfo info, ShopHelper shopHelperInstance) {
         NPC npc = info.NPC;
         if (Vector2.Distance(new Vector2 (npc.homeTileX, npc.homeTileY), npc.Center.ToTileCoordinates().ToVector2()) > 120f) {
-            npc.GetGlobalNPC<TownGlobalNPC>()
-                .MoodModule.AddModifier("TownNPCMoodDescription.FarFromHome".Localized(), Language.GetText($"{TownNPCMoodModule.GetFlavorTextKeyPrefix(npc)}.FarFromHome"), -20);
+            npc.GetGlobalNPC<TownNPCMoodModule>().AddModifier("TownNPCMoodDescription.FarFromHome".Localized(), Language.GetText($"{TownNPCMoodModule.GetFlavorTextKeyPrefix(npc)}.FarFromHome"), -20);
         }
     }
 }

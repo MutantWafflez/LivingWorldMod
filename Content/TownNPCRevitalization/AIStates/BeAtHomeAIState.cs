@@ -1,7 +1,7 @@
-﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
+﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent;
@@ -9,32 +9,32 @@ using Terraria.GameContent;
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 
 public sealed class BeAtHomeAIState : TownNPCAIState {
-    public override void DoState(TownGlobalNPC globalNPC, NPC npc) {
-        if (!globalNPC.HousingModule.ShouldGoHome) {
-            TownGlobalNPC.RefreshToState<DefaultAIState>(npc);
+    public override void DoState(NPC npc) {
+        if (!npc.GetGlobalNPC<TownNPCHousingModule>().ShouldGoHome(npc)) {
+            TownNPCStateModule.RefreshToState<DefaultAIState>(npc);
             return;
         }
 
-        (Point pathfindPos, Point restTilePos, NPCRestType npcRestType) = globalNPC.HousingModule.RestInfo;
-        TownNPCPathfinderModule pathfinderModule = globalNPC.PathfinderModule;
+        (Point pathfindPos, Point restTilePos, NPCRestType npcRestType) = npc.GetGlobalNPC<TownNPCHousingModule>().RestInfo;
+        TownNPCPathfinderModule pathfinderModule = npc.GetGlobalNPC<TownNPCPathfinderModule>();
         if (!TownGlobalNPC.IsValidStandingPosition(npc, pathfindPos)) {
             return;
         }
 
         npc.ai[1] = 0f;
-        if (pathfinderModule.BottomLeftTileOfNPC != pathfindPos) {
-            pathfinderModule.RequestPathfind(pathfindPos);
+        if (pathfinderModule.BottomLeftTileOfNPC(npc) != pathfindPos) {
+            pathfinderModule.RequestPathfind(npc, pathfindPos);
         }
         else {
-            TownNPCSleepModule sleepModule = globalNPC.SleepModule;
-            if (!sleepModule.ShouldSleep) {
+            TownNPCSleepModule sleepModule = npc.GetGlobalNPC<TownNPCSleepModule>();
+            if (!sleepModule.ShouldSleep(npc)) {
                 return;
             }
 
             npc.BottomLeft = pathfindPos.ToWorldCoordinates(8f, 16f);
 
-            TownNPCSpriteModule spriteModule = globalNPC.SpriteModule;
-            TownNPCChatModule chatModule = globalNPC.ChatModule;
+            TownNPCSpriteModule spriteModule = npc.GetGlobalNPC<TownNPCSpriteModule>();
+            TownNPCChatModule chatModule = npc.GetGlobalNPC<TownNPCChatModule>();
             float currentSleepQualityModifier = (float)Main.dayRate * sleepModule.SleepQualityModifier;
             switch (npcRestType) {
                 case NPCRestType.Bed:
@@ -77,7 +77,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                     break;
             }
 
-            pathfinderModule.CancelPathfind();
+            pathfinderModule.CancelPathfind(npc);
         }
     }
 }

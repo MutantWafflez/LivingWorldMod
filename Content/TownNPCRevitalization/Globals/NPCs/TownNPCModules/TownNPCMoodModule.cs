@@ -1,20 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 using LivingWorldMod.DataStructures.Structs;
 
-namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 
 /// <summary>
 ///     Class that handles the new "mood" feature that replaces Town NPC happiness.
 /// </summary>
-public sealed class TownNPCMoodModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCModule(npc, globalNPC) {
+public sealed class TownNPCMoodModule : TownNPCModule {
     public const float MaxMoodValue = 100f;
     public const float MinMoodValue = 0f;
 
     private readonly List<MoodModifierInstance> _currentMoodModifiers = [];
+
+    public override int UpdatePriority => 2;
 
     public IReadOnlyList<MoodModifierInstance> CurrentMoodModifiers => _currentMoodModifiers;
 
@@ -36,7 +37,7 @@ public sealed class TownNPCMoodModule (NPC npc, TownGlobalNPC globalNPC) : TownN
     /// </summary>
     public static string GetFlavorTextKeyPrefix(int npcType) => npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{NPCID.Search.GetName(npcType)}";
 
-    public override void Update() {
+    public override void UpdateModule(NPC npc) {
         for (int i = 0; i < _currentMoodModifiers.Count; i++) {
             MoodModifierInstance instance = _currentMoodModifiers[i];
             if (--instance.duration <= 0) {

@@ -1,5 +1,4 @@
-﻿using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
-using LivingWorldMod.DataStructures.Classes;
+﻿using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,9 +7,12 @@ using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.UI.Chat;
 
-namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 
-public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC) : TownNPCModule(npc, globalNPC) {
+/// <summary>
+///     Module that handles various aspects of the social-ness of Town NPCs. Involves code for the player talking to this NPC, and for the flavor animations of "talking" to other Town NPCs.
+/// </summary>
+public sealed class TownNPCChatModule : TownNPCModule {
     private const int DefaultChatBubbleDuration = LWMUtils.RealLifeSecond * 5;
 
     /// <summary>
@@ -25,6 +27,8 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC) : TownN
     private int _chatBubbleDuration;
     private int _chatCooldown;
     private int _chatReceptionCooldown;
+
+    public override int UpdatePriority => -1;
 
     /// <summary>
     ///     Whether this NPC is currently being talked to by a player.
@@ -46,7 +50,7 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC) : TownN
 
     private static string GenerateRandomNPCName => Language.SelectRandom(Lang.CreateDialogFilter("NPCName.")).Value;
 
-    public override void Update() {
+    public override void UpdateModule(NPC npc) {
         // Adapted vanilla code
         IsChattingWithPlayerDirectly = false;
         for (int i = 0; i < Main.maxPlayers; i++) {
@@ -59,7 +63,7 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC) : TownN
             IsChattingWithPlayerDirectly = true;
 
             npc.direction = player.position.X + player.width / 2f < npc.position.X + npc.width / 2f ? -1 : 1;
-            globalNPC.PathfinderModule.PausePathfind();
+            npc.GetGlobalNPC<TownNPCPathfinderModule>().PausePathfind();
         }
         // End of adapted code
 
@@ -74,7 +78,7 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC) : TownN
         if (_currentSentence is not null) {
             // Every other 8 ticks while talking, add the draw call
             if (--_chatBubbleDuration % 16 == 0) {
-                globalNPC.SpriteModule.DoTalk();
+                npc.GetGlobalNPC<TownNPCSpriteModule>().DoTalk();
             }
 
             if (_chatBubbleDuration > 0) {
@@ -93,18 +97,18 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC) : TownN
             return;
         }
 
-        TownGlobalNPC otherGlobalNPC = null;
+        TownNPCChatModule otherChatModule = null;
         if (IsSpeaking
             || !Main.rand.NextBool(ChitChatChanceDenominator)
             || LWMUtils.GetFirstNPC(
                 otherNPC =>
                     npc != otherNPC
-                    && otherNPC.TryGetGlobalNPC(out otherGlobalNPC)
-                    && !otherGlobalNPC.ChatModule.IsSpeaking
+                    && otherNPC.TryGetGlobalNPC(out otherChatModule)
+                    && !otherChatModule.IsSpeaking
                     && npc.Center.Distance(otherNPC.Center) <= 100f
                     && Collision.CanHit(npc.Center, 0, 0, otherNPC.Center, 0, 0)
             ) is not { } chatRecipient
-            || otherGlobalNPC.ChatModule._chatReceptionCooldown > 0
+            || chatRecipient.GetGlobalNPC<TownNPCChatModule>()._chatReceptionCooldown > 0
         ) {
             return;
         }
@@ -124,29 +128,13 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC) : TownN
 
         _currentSentence = chatTemplate.FormatWith(chatSubstitutions);
         _chatBubbleDuration = DefaultChatBubbleDuration;
-        otherGlobalNPC.ChatModule._chatReceptionCooldown = _chatBubbleDuration + LWMUtils.RealLifeSecond;
+        otherChatModule._chatReceptionCooldown = _chatBubbleDuration + LWMUtils.RealLifeSecond;
 
         chatHistory.Add(_currentSentence);
     }
 
-    /// <summary>
-    ///     Disables this NPC from chatting with other NPCs for the specified duration, in ticks.
-    /// </summary>
-    /// <remarks>
-    ///     This only prevents new chats from occuring, and won't cancel chats that have already started.
-    /// </remarks>
-    public void DisableChatting(int duration) {
-        _chatCooldown = duration;
-    }
-
-    /// <summary>
-    ///     Disables the ability for other NPCs to chat with this NPC for the specified duration, in ticks.
-    /// </summary>
-    public void DisableChatReception(int duration) {
-        _chatReceptionCooldown = duration;
-    }
-
-    public void DoChatDrawing(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+    // TODO: Re-write chat bubble drawing
+    public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
         if (!IsChattingToEntityInBackground) {
             return;
         }
@@ -232,5 +220,22 @@ public sealed class TownNPCChatModule (NPC npc, TownGlobalNPC globalNPC) : TownN
             maxWidth,
             1.05f
         );
+    }
+
+    /// <summary>
+    ///     Disables this NPC from chatting with other NPCs for the specified duration, in ticks.
+    /// </summary>
+    /// <remarks>
+    ///     This only prevents new chats from occuring, and won't cancel chats that have already started.
+    /// </remarks>
+    public void DisableChatting(int duration) {
+        _chatCooldown = duration;
+    }
+
+    /// <summary>
+    ///     Disables the ability for other NPCs to chat with this NPC for the specified duration, in ticks.
+    /// </summary>
+    public void DisableChatReception(int duration) {
+        _chatReceptionCooldown = duration;
     }
 }

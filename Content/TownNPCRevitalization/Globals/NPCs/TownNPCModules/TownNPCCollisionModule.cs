@@ -1,23 +1,22 @@
 ﻿using System;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 using Microsoft.Xna.Framework;
 
-namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 
 /// <summary>
 ///     Town NPC module that handles the special collision of Town NPCs introduced by this mod.
 /// </summary>
-public class TownNPCCollisionModule(NPC npc, TownGlobalNPC globalNPC) : TownNPCModule(npc, globalNPC) {
+public class TownNPCCollisionModule : TownNPCModule {
     public bool fallThroughPlatforms;
     public bool fallThroughStairs;
     public bool walkThroughStairs;
     public bool ignoreLiquidVelocityModifications;
 
     /// <summary>
-    ///     This method is called in <seealso cref="TownNPCCollisionPatches" />.
+    ///     This method is called in <seealso cref="RevitalizationNPCPatches" />.
     /// </summary>
-    public override void Update() {
+    public void UpdateCollision(NPC npc) {
         npc.Collision_WalkDownSlopes();
         bool lavaCollision = npc.Collision_LavaCollision();
 
@@ -60,13 +59,13 @@ public class TownNPCCollisionModule(NPC npc, TownGlobalNPC globalNPC) : TownNPCM
             }
         }
 
-        ApplyNPCVelocity(oldVelocity, liquidVelocityModifier);
+        ApplyNPCVelocity(npc, oldVelocity, liquidVelocityModifier);
 
-        AttemptSlopeCollision();
+        AttemptSlopeCollision(npc);
         Collision.StepConveyorBelt(npc, 1f);
     }
 
-    private void ApplyNPCVelocity(Vector2 oldVelocity, float velocityModifier) {
+    private void ApplyNPCVelocity(NPC npc, Vector2 oldVelocity, float velocityModifier) {
         if (Collision.up) {
             npc.velocity.Y = 0.01f;
         }
@@ -87,7 +86,7 @@ public class TownNPCCollisionModule(NPC npc, TownGlobalNPC globalNPC) : TownNPCM
         npc.position += modifiedVelocity;
     }
 
-    private void AttemptSlopeCollision() {
+    private void AttemptSlopeCollision(NPC npc) {
         npc.stairFall = fallThroughStairs;
         npc.GetTileCollisionParameters(out Vector2 cPosition, out int cWidth, out int cHeight);
         Vector2 endPosOffset = npc.position - cPosition;

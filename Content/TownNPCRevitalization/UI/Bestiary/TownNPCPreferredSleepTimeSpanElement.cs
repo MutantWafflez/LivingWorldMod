@@ -1,6 +1,6 @@
 using System.Globalization;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.DataStructures.Interfaces;
 using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
