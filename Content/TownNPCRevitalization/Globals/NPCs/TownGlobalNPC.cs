@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
@@ -72,7 +73,7 @@ public class TownGlobalNPC : GlobalNPC {
         SetMiscNPCFields(npc);
 
         foreach (TownNPCModule module in _prioritizedModules) {
-            module.UpdateModule(npc);
+            module.UpdateModule();
         }
     }
 
@@ -85,8 +86,10 @@ public class TownGlobalNPC : GlobalNPC {
         npc.dontTakeDamage = false;
         npc.rotation = 0f;
         NPC.ShimmeredTownNPCs[npc.type] = npc.IsShimmerVariant;
+
+        TownNPCPathfinderModule pathfinderModule = npc.GetGlobalNPC<TownNPCPathfinderModule>();
         if (npc.HasBuff(BuffID.Shimmer)) {
-            // PathfinderModule.CancelPathfind();
+            pathfinderModule.CancelPathfind();
         }
 
         if (npc.type == NPCID.SantaClaus && Main.netMode != NetmodeID.MultiplayerClient && !Main.xMas) {
@@ -126,9 +129,9 @@ public class TownGlobalNPC : GlobalNPC {
             npc.direction = 1;
         }
 
-        // if (npc.velocity.Y == 0f && !PathfinderModule.IsPathfinding) {
-        // npc.velocity *= 0.75f;
-        // }
+        if (npc.velocity.Y == 0f && pathfinderModule.IsPathfinding) {
+            npc.velocity *= 0.75f;
+        }
 
         if (npc.type != NPCID.Mechanic) {
             return;

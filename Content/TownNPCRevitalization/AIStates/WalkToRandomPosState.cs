@@ -22,10 +22,10 @@ public class WalkToRandomPosState : TownNPCAIState {
                 Point displacement = new Vector2(0, -Main.rand.Next(minTileThreshold, maxTileThreshold)).RotatedBy(MathHelper.ToRadians(i)).ToPoint();
                 if (LWMUtils.DropUntilCondition(
                         ValidWanderPoint,
-                        pathfinderModule.BottomLeftTileOfNPC(npc) + displacement,
+                        pathfinderModule.BottomLeftTileOfNPC + displacement,
                         maxTileThreshold + 1
                     ) is not { } point
-                    || !pathfinderModule.HasPath(npc, point + new Point(0, -1))
+                    || !pathfinderModule.HasPath(point + new Point(0, -1))
                 ) {
                     continue;
                 }
@@ -41,7 +41,7 @@ public class WalkToRandomPosState : TownNPCAIState {
                 return;
             }
 
-            pathfinderModule.RequestPathfind(npc, wanderPoints);
+            pathfinderModule.RequestPathfind(wanderPoints);
             npc.ai[2] = 1f;
             npc.netUpdate = true;
         }

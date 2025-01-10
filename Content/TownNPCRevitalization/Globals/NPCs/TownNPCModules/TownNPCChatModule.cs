@@ -50,20 +50,20 @@ public sealed class TownNPCChatModule : TownNPCModule {
 
     private static string GenerateRandomNPCName => Language.SelectRandom(Lang.CreateDialogFilter("NPCName.")).Value;
 
-    public override void UpdateModule(NPC npc) {
+    public override void UpdateModule() {
         // Adapted vanilla code
         IsChattingWithPlayerDirectly = false;
         for (int i = 0; i < Main.maxPlayers; i++) {
             Player player = Main.player[i];
 
-            if (!player.active || player.talkNPC != npc.whoAmI) {
+            if (!player.active || player.talkNPC != NPC.whoAmI) {
                 continue;
             }
 
             IsChattingWithPlayerDirectly = true;
 
-            npc.direction = player.position.X + player.width / 2f < npc.position.X + npc.width / 2f ? -1 : 1;
-            npc.GetGlobalNPC<TownNPCPathfinderModule>().PausePathfind();
+            NPC.direction = player.position.X + player.width / 2f < NPC.position.X + NPC.width / 2f ? -1 : 1;
+            NPC.GetGlobalNPC<TownNPCPathfinderModule>().PausePathfind();
         }
         // End of adapted code
 
@@ -78,7 +78,7 @@ public sealed class TownNPCChatModule : TownNPCModule {
         if (_currentSentence is not null) {
             // Every other 8 ticks while talking, add the draw call
             if (--_chatBubbleDuration % 16 == 0) {
-                npc.GetGlobalNPC<TownNPCSpriteModule>().DoTalk();
+                NPC.GetGlobalNPC<TownNPCSpriteModule>().DoTalk();
             }
 
             if (_chatBubbleDuration > 0) {
@@ -102,11 +102,11 @@ public sealed class TownNPCChatModule : TownNPCModule {
             || !Main.rand.NextBool(ChitChatChanceDenominator)
             || LWMUtils.GetFirstNPC(
                 otherNPC =>
-                    npc != otherNPC
+                    NPC != otherNPC
                     && otherNPC.TryGetGlobalNPC(out otherChatModule)
                     && !otherChatModule.IsSpeaking
-                    && npc.Center.Distance(otherNPC.Center) <= 100f
-                    && Collision.CanHit(npc.Center, 0, 0, otherNPC.Center, 0, 0)
+                    && NPC.Center.Distance(otherNPC.Center) <= 100f
+                    && Collision.CanHit(NPC.Center, 0, 0, otherNPC.Center, 0, 0)
             ) is not { } chatRecipient
             || chatRecipient.GetGlobalNPC<TownNPCChatModule>()._chatReceptionCooldown > 0
         ) {
@@ -115,7 +115,7 @@ public sealed class TownNPCChatModule : TownNPCModule {
 
         LocalizedText chatTemplate = Language.SelectRandom(Lang.CreateDialogFilter("Mods.LivingWorldMod.InterTownNPCChat."));
         var chatSubstitutions = new {
-            SpeakingNPC = npc.GivenOrTypeName,
+            SpeakingNPC = NPC.GivenOrTypeName,
             RandomNPCName = GenerateRandomNPCName,
             RandomNPCNameTwo = GenerateRandomNPCName,
             ChatRecipient = chatRecipient.GivenOrTypeName,
@@ -134,7 +134,7 @@ public sealed class TownNPCChatModule : TownNPCModule {
     }
 
     // TODO: Re-write chat bubble drawing
-    public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+    public override void PostDraw(NPC _, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
         if (!IsChattingToEntityInBackground) {
             return;
         }
@@ -145,7 +145,7 @@ public sealed class TownNPCChatModule : TownNPCModule {
         float fadeAlpha = MathHelper.Clamp(_chatBubbleDuration / (float)LWMUtils.RealLifeSecond, 0f, 1f);
 
         Vector2 textSize = ChatManager.GetStringSize(font, _currentSentence, textScale, maxWidth);
-        Vector2 textDrawPos = npc.Top - screenPos + new Vector2(-textSize.X / 2f, -textSize.Y);
+        Vector2 textDrawPos = NPC.Top - screenPos + new Vector2(-textSize.X / 2f, -textSize.Y);
 
         // Manual panel drawing, since we have to deal with variable text sizes. Not perfect, but it's better than nothing
         const int panelPadding = 6;
@@ -203,7 +203,7 @@ public sealed class TownNPCChatModule : TownNPCModule {
 
         spriteBatch.Draw(
             chatBottomTexture,
-            new Vector2(npc.Center.X - screenPos.X - chatBottomTexture.Width / 2f, bottomBorderRect.Y),
+            new Vector2(NPC.Center.X - screenPos.X - chatBottomTexture.Width / 2f, bottomBorderRect.Y),
             null,
             Color.White * fadeAlpha
         );

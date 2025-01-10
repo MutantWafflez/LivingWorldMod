@@ -24,19 +24,21 @@ public class TownNPCHousingModule : TownNPCModule {
         private set;
     }
 
-    public override void UpdateModule(NPC npc) {
-        if (npc.homeTileX == -1 && npc.homeTileY == -1 && npc.velocity.Y == 0f && !npc.shimmering) {
-            npc.UpdateHomeTileState(npc.homeless, (int)npc.Center.X / 16, (int)(npc.position.Y + npc.height + 4f) / 16);
+    public bool ShouldGoHome => NPC.GetGlobalNPC<TownNPCSleepModule>().ShouldSleep || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
+
+    public override void UpdateModule() {
+        if (NPC.homeTileX == -1 && NPC.homeTileY == -1 && NPC.velocity.Y == 0f && !NPC.shimmering) {
+            NPC.UpdateHomeTileState(NPC.homeless, (int)NPC.Center.X / 16, (int)(NPC.position.Y + NPC.height + 4f) / 16);
         }
 
-        HomelessTeleportCheck(npc);
+        HomelessTeleportCheck();
 
-        if (npc.homeless) {
+        if (NPC.homeless) {
             RoomBoundingBox = null;
             return;
         }
 
-        if (!WorldGen.StartRoomCheck(npc.homeTileX, npc.homeTileY - 1)) {
+        if (!WorldGen.StartRoomCheck(NPC.homeTileX, NPC.homeTileY - 1)) {
             return;
         }
 
@@ -52,12 +54,10 @@ public class TownNPCHousingModule : TownNPCModule {
         Utils.DrawRect(spriteBatch, worldBoundingBox, Main.DiscoColor);
     }
 
-    public bool ShouldGoHome(NPC npc) => npc.GetGlobalNPC<TownNPCSleepModule>().ShouldSleep(npc) || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
-
     // Adapted vanilla code
-    public HomeRestingInfo GetRestingInfo(NPC npc) {
-        Point floorPos = new (npc.homeTileX, npc.homeTileY);
-        if (npc.homeTileX == -1 || npc.homeTileY == -1 || RoomBoundingBox is not { } boundingBox) {
+    public HomeRestingInfo GetRestingInfo() {
+        Point floorPos = new (NPC.homeTileX, NPC.homeTileY);
+        if (NPC.homeTileX == -1 || NPC.homeTileY == -1 || RoomBoundingBox is not { } boundingBox) {
             return new HomeRestingInfo(floorPos, floorPos, NPCRestType.None);
         }
 
@@ -89,9 +89,9 @@ public class TownNPCHousingModule : TownNPCModule {
                 Point restPos = LWMUtils.GetCornerOfMultiTile(tile, i, j, LWMUtils.CornerType.BottomLeft);
 
                 Point pathfindPos = restPos;
-                Point npcTileWidthOffset = new (-(int)Math.Ceiling(npc.width / 16f) + 1, 0);
-                bool canStandOnRestPos = TownGlobalNPC.IsValidStandingPosition(npc, restPos);
-                if (isSittingTile && !canStandOnRestPos && TownGlobalNPC.IsValidStandingPosition(npc, restPos + npcTileWidthOffset) ) {
+                Point npcTileWidthOffset = new (-(int)Math.Ceiling(NPC.width / 16f) + 1, 0);
+                bool canStandOnRestPos = TownGlobalNPC.IsValidStandingPosition(NPC, restPos);
+                if (isSittingTile && !canStandOnRestPos && TownGlobalNPC.IsValidStandingPosition(NPC, restPos + npcTileWidthOffset) ) {
                     pathfindPos.X += npcTileWidthOffset.X;
                 }
                 else if (isSleepingTile && !canStandOnRestPos) {
@@ -111,38 +111,38 @@ public class TownNPCHousingModule : TownNPCModule {
         return possibleRestInfos.Count == 0 ? new HomeRestingInfo(floorPos, floorPos, NPCRestType.None) : possibleRestInfos.OrderByDescending(info => info.RestType).First();
     }
 
-    private void HomelessTeleportCheck(NPC npc) {
+    private void HomelessTeleportCheck() {
         //Adapted vanilla code
-        Point bottomOfNPC = (npc.Bottom + new Vector2(0, 1f)).ToTileCoordinates();
-        RestInfo = GetRestingInfo(npc);
+        Point bottomOfNPC = (NPC.Bottom + new Vector2(0, 1f)).ToTileCoordinates();
+        RestInfo = GetRestingInfo();
 
         if (!WorldGen.InWorld(bottomOfNPC.X, bottomOfNPC.Y) || (Main.netMode == NetmodeID.MultiplayerClient && !Main.sectionManager.TileLoaded(bottomOfNPC.X, bottomOfNPC.Y))) {
             return;
         }
 
-        if (Main.netMode == NetmodeID.MultiplayerClient || !ShouldGoHome(npc)) {
+        if (Main.netMode == NetmodeID.MultiplayerClient || !ShouldGoHome) {
             return;
         }
 
-        TownNPCPathfinderModule pathfinderModule = npc.GetGlobalNPC<TownNPCPathfinderModule>();
+        TownNPCPathfinderModule pathfinderModule = NPC.GetGlobalNPC<TownNPCPathfinderModule>();
         int beAtHomeStateInt = TownNPCAIState.GetStateInteger<BeAtHomeAIState>();
-        if ( /*npc.ai[0] != TownNPCAIState.GetStateInteger<WalkToRandomPosState>() &&*/ !TownNPCCombatModule.IsAttacking(npc) && npc.ai[0] != beAtHomeStateInt) {
-            TownNPCStateModule.RefreshToState(npc, beAtHomeStateInt);
-            pathfinderModule.CancelPathfind(npc);
+        if ( /*npc.ai[0] != TownNPCAIState.GetStateInteger<WalkToRandomPosState>() &&*/ !NPC.GetGlobalNPC<TownNPCCombatModule>().IsAttacking && NPC.ai[0] != beAtHomeStateInt) {
+            TownNPCStateModule.RefreshToState(NPC, beAtHomeStateInt);
+            pathfinderModule.CancelPathfind();
         }
 
         bool nearbyPlayers = false;
         for (int i = 0; i < 2; i++) {
             Rectangle playerZoneCheck = i == 1
                 ? new Rectangle(
-                    (int)(npc.Center.X - NPC.sWidth / 2f - NPC.safeRangeX),
-                    (int)(npc.Center.Y + npc.height / 2f - NPC.sHeight / 2f - NPC.safeRangeY),
+                    (int)(NPC.Center.X - NPC.sWidth / 2f - NPC.safeRangeX),
+                    (int)(NPC.Center.Y + NPC.height / 2f - NPC.sHeight / 2f - NPC.safeRangeY),
                     NPC.sWidth + NPC.safeRangeX * 2,
                     NPC.sHeight + NPC.safeRangeY * 2
                 )
                 : new Rectangle(
-                    npc.homeTileX * 16 + 8 - NPC.sWidth / 2 - NPC.safeRangeX,
-                    npc.homeTileY * 16 + 8 - NPC.sHeight / 2 - NPC.safeRangeY,
+                    NPC.homeTileX * 16 + 8 - NPC.sWidth / 2 - NPC.safeRangeX,
+                    NPC.homeTileY * 16 + 8 - NPC.sHeight / 2 - NPC.safeRangeY,
                     NPC.sWidth + NPC.safeRangeX * 2,
                     NPC.sHeight + NPC.safeRangeY * 2
                 );
@@ -169,10 +169,10 @@ public class TownNPCHousingModule : TownNPCModule {
                 continue;
             }
 
-            npc.velocity = Vector2.Zero;
-            npc.BottomLeft = RestInfo.PathfindEndPos.ToWorldCoordinates(8f, 16f);
-            pathfinderModule.CancelPathfind(npc);
-            npc.netUpdate = validHouse = true;
+            NPC.velocity = Vector2.Zero;
+            NPC.BottomLeft = RestInfo.PathfindEndPos.ToWorldCoordinates(8f, 16f);
+            pathfinderModule.CancelPathfind();
+            NPC.netUpdate = validHouse = true;
             break;
         }
 
@@ -180,7 +180,7 @@ public class TownNPCHousingModule : TownNPCModule {
             return;
         }
 
-        npc.homeless = true;
-        WorldGen.QuickFindHome(npc.whoAmI);
+        NPC.homeless = true;
+        WorldGen.QuickFindHome(NPC.whoAmI);
     }
 }

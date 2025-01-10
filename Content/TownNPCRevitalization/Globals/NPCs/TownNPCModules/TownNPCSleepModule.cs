@@ -58,6 +58,18 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
         }
     }
 
+    public bool ShouldSleep {
+        get {
+            bool sleepBeingBlocked = LanternNight.LanternsUp
+                // TODO: Allow sleeping once tired enough, even if party is occurring
+                || GenuinePartyIsOccurring
+                || NPC.GetGlobalNPC<TownNPCChatModule>().IsChattingWithPlayerDirectly;
+            SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(NPC.type);
+
+            return !sleepBeingBlocked && LWMUtils.CurrentInGameTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime);
+        }
+    }
+
     private static bool GenuinePartyIsOccurring => BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty;
 
     public static SleepSchedule GetSleepProfileOrDefault(int npcType) => TownNPCDataSystem.sleepSchedules.GetValueOrDefault(npcType, DefaultSleepSchedule);
@@ -78,7 +90,7 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
         );
     }
 
-    public override void UpdateModule(NPC npc) {
+    public override void UpdateModule() {
         if (!isAsleep) {
             awakeTicks += 1f;
         }
@@ -88,17 +100,7 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
             return;
         }
 
-        npc.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind(npc);
-        TownNPCStateModule.RefreshToState<PassedOutAIState>(npc);
-    }
-
-    public bool ShouldSleep(NPC npc) {
-        bool sleepBeingBlocked = LanternNight.LanternsUp
-            // TODO: Allow sleeping once tired enough, even if party is occurring
-            || GenuinePartyIsOccurring
-            || npc.GetGlobalNPC<TownNPCChatModule>().IsChattingWithPlayerDirectly;
-        SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(npc.type);
-
-        return !sleepBeingBlocked && LWMUtils.CurrentInGameTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime);
+        NPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind();
+        TownNPCStateModule.RefreshToState<PassedOutAIState>(NPC);
     }
 }

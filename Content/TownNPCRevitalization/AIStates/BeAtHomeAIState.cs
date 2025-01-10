@@ -10,7 +10,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 
 public sealed class BeAtHomeAIState : TownNPCAIState {
     public override void DoState(NPC npc) {
-        if (!npc.GetGlobalNPC<TownNPCHousingModule>().ShouldGoHome(npc)) {
+        if (!npc.GetGlobalNPC<TownNPCHousingModule>().ShouldGoHome) {
             TownNPCStateModule.RefreshToState<DefaultAIState>(npc);
             return;
         }
@@ -22,12 +22,12 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
         }
 
         npc.ai[1] = 0f;
-        if (pathfinderModule.BottomLeftTileOfNPC(npc) != pathfindPos) {
-            pathfinderModule.RequestPathfind(npc, pathfindPos);
+        if (pathfinderModule.BottomLeftTileOfNPC != pathfindPos) {
+            pathfinderModule.RequestPathfind(pathfindPos);
         }
         else {
             TownNPCSleepModule sleepModule = npc.GetGlobalNPC<TownNPCSleepModule>();
-            if (!sleepModule.ShouldSleep(npc)) {
+            if (!sleepModule.ShouldSleep) {
                 return;
             }
 
@@ -77,7 +77,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                     break;
             }
 
-            pathfinderModule.CancelPathfind(npc);
+            pathfinderModule.CancelPathfind();
         }
     }
 }

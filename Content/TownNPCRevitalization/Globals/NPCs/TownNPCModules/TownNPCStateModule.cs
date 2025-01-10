@@ -38,9 +38,9 @@ public sealed class TownNPCStateModule : TownNPCModule {
         //_allActivities = states.OfType<TownNPCActivity>().ToList();
     }
 
-    public override void UpdateModule(NPC npc) {
-        if (_stateDict.TryGetValue((int)npc.ai[0], out TownNPCAIState state)) {
-            state.DoState(npc);
+    public override void UpdateModule() {
+        if (_stateDict.TryGetValue((int)NPC.ai[0], out TownNPCAIState state)) {
+            state.DoState(NPC);
 
             /*
             // New activities can only be selected when the npc is in the default state
@@ -52,7 +52,7 @@ public sealed class TownNPCStateModule : TownNPCModule {
             }*/
         }
         else {
-            RefreshToState<DefaultAIState>(npc);
+            RefreshToState<DefaultAIState>(NPC);
         }
     }
 }

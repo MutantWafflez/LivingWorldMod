@@ -55,7 +55,20 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
 
     public override int UpdatePriority => -2;
 
-    public override void UpdateModule(NPC npc) {
+    private TownNPCDrawParameters DrawParameters {
+        get {
+            Asset<Texture2D> npcAsset = TownNPCProfiles.Instance.GetProfile(NPC, out ITownNPCProfile profile) ? profile.GetTextureNPCShouldUse(NPC) : TextureAssets.Npc[NPC.type];
+            int frameWidth = npcAsset.Width();
+            int frameHeight = npcAsset.Height() / Main.npcFrameCount[NPC.type];
+            Vector2 halfSize = new(frameWidth / 2, frameHeight / 2);
+            float npcAddHeight = Main.NPCAddHeight(NPC);
+            SpriteEffects spriteEffects = NPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+            return new TownNPCDrawParameters(npcAsset, frameWidth, frameHeight, halfSize, npcAddHeight, spriteEffects);
+        }
+    }
+
+    public override void UpdateModule() {
         if (Main.netMode == NetmodeID.Server) {
             return;
         }
@@ -64,25 +77,25 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         _frameYOverride = -1;
         _drawRequests.Clear();
 
-        (Asset<Texture2D> npcAsset, int _, int _, Vector2 halfSize, float npcAddHeight, SpriteEffects spriteEffects) = GetDrawParameters(npc);
+        (Asset<Texture2D> npcAsset, int _, int _, Vector2 halfSize, float npcAddHeight, SpriteEffects spriteEffects) = DrawParameters;
 
         // Method Gaslighting
         // See NPCDrawPatches.cs: TL;DR is the method is patched so that all sprite-batch calls are re-routed back to here (the sprite module) and we control the drawing
         for (int i = 0; i < 2; i++) {
-            Main.instance.DrawNPCExtras(npc, i == 0, npcAddHeight, 0, Color.White, halfSize, spriteEffects, Vector2.Zero);
+            Main.instance.DrawNPCExtras(NPC, i == 0, npcAddHeight, 0, Color.White, halfSize, spriteEffects, Vector2.Zero);
         }
 
         // This is the request to actually draw the NPC itself
-        RequestDraw(new TownNPCDrawRequest(npcAsset.Value, Vector2.Zero, npc.frame));
+        RequestDraw(new TownNPCDrawRequest(npcAsset.Value, Vector2.Zero, NPC.frame));
 
-        UpdateFlavorAnimations(npc);
-        if (npc.type == NPCID.Mechanic) {
-            DrawMechanicWrench(npc);
+        UpdateFlavorAnimations();
+        if (NPC.type == NPCID.Mechanic) {
+            DrawMechanicWrench();
         }
     }
 
     public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-        (Asset<Texture2D> _, int frameWidth, int frameHeight, Vector2 halfSize, float npcAddHeight, SpriteEffects spriteEffects) = GetDrawParameters(npc);
+        (Asset<Texture2D> _, int frameWidth, int frameHeight, Vector2 halfSize, float npcAddHeight, SpriteEffects spriteEffects) = DrawParameters;
         Vector2 drawPos = new (
             npc.position.X + npc.width / 2 - frameWidth * npc.scale / 2f + halfSize.X * npc.scale + _drawOffset.X,
             npc.position.Y + npc.height - frameHeight * npc.scale + 4f + halfSize.Y * npc.scale + npcAddHeight /*+ num35*/ + npc.gfxOffY + _drawOffset.Y
@@ -154,20 +167,9 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         _drawOffset = drawOffset;
     }
 
-    private TownNPCDrawParameters GetDrawParameters(NPC npc) {
-        Asset<Texture2D> npcAsset = TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile) ? profile.GetTextureNPCShouldUse(npc) : TextureAssets.Npc[npc.type];
-        int frameWidth = npcAsset.Width();
-        int frameHeight = npcAsset.Height() / Main.npcFrameCount[npc.type];
-        Vector2 halfSize = new(frameWidth / 2, frameHeight / 2);
-        float npcAddHeight = Main.NPCAddHeight(npc);
-        SpriteEffects spriteEffects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+    private Texture2D GetOverlayTexture(int overlayIndex) => TownNPCDataSystem.spriteOverlayProfiles[NPC.type].GetCurrentSpriteOverlay(NPC, overlayIndex);
 
-        return new TownNPCDrawParameters(npcAsset, frameWidth, frameHeight, halfSize, npcAddHeight, spriteEffects);
-    }
-
-    private Texture2D GetOverlayTexture(NPC npc, int overlayIndex) => TownNPCDataSystem.spriteOverlayProfiles[npc.type].GetCurrentSpriteOverlay(npc, overlayIndex);
-
-    private void UpdateFlavorAnimations(NPC npc) {
+    private void UpdateFlavorAnimations() {
         if (!AreEyesClosed) {
             if (--_blinkTimer <= 0) {
                 CloseEyes();
@@ -184,18 +186,18 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         }
 
         if (AreEyesClosed) {
-            RequestDraw(new TownNPCDrawRequest(GetOverlayTexture(npc, EyelidTextureIndex)));
+            RequestDraw(new TownNPCDrawRequest(GetOverlayTexture(EyelidTextureIndex)));
         }
 
         if (IsTalking) {
-            RequestDraw(new TownNPCDrawRequest(GetOverlayTexture(npc, TalkTextureIndex)));
+            RequestDraw(new TownNPCDrawRequest(GetOverlayTexture(TalkTextureIndex)));
         }
 
         if (!IsGiving) {
             return;
         }
 
-        int nonAttackFrameCount = Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type];
+        int nonAttackFrameCount = Main.npcFrameCount[NPC.type] - NPCID.Sets.AttackFrameCount[NPC.type];
         const int animationHalf = GivingAnimationDuration / 2;
         RequestFrameOverride(
             (uint)((_givingTimer < animationHalf ? _givingTimer : animationHalf - _givingTimer % animationHalf) switch {
@@ -214,29 +216,29 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         _givingItemType = -1;
     }
 
-    private void DrawMechanicWrench(NPC npc) {
+    private void DrawMechanicWrench() {
         // Adapted vanilla code
-        if (npc.localAI[0] != 0f) {
+        if (NPC.localAI[0] != 0f) {
             return;
         }
 
         int offsetIndex = 0;
-        if (npc.frame.Y > 56) {
+        if (NPC.frame.Y > 56) {
             offsetIndex += 4;
         }
 
-        offsetIndex += npc.frame.Y / 56;
+        offsetIndex += NPC.frame.Y / 56;
         if (offsetIndex >= Main.OffsetsPlayerHeadgear.Length) {
             offsetIndex = 0;
         }
 
         Main.instance.LoadProjectile(ProjectileID.MechanicWrench);
         Texture2D wrenchTexture = TextureAssets.Projectile[ProjectileID.MechanicWrench].Value;
-        if (npc.townNpcVariationIndex == 1) {
+        if (NPC.townNpcVariationIndex == 1) {
             wrenchTexture = TextureAssets.Extra[ExtrasID.ShimmeredMechanicWrench].Value;
         }
 
-        Vector2 wrenchCenterOffset = new Vector2(wrenchTexture.Width, wrenchTexture.Height) * npc.scale / 2f;
+        Vector2 wrenchCenterOffset = new Vector2(wrenchTexture.Width, wrenchTexture.Height) * NPC.scale / 2f;
         RequestDraw(new TownNPCDrawRequest(wrenchTexture, new Vector2(0, Main.OffsetsPlayerHeadgear[offsetIndex].Y), Origin: wrenchCenterOffset, DrawLayer: -1));
     }
 }

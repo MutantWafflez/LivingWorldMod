@@ -16,94 +16,94 @@ public class TownNPCCollisionModule : TownNPCModule {
     /// <summary>
     ///     This method is called in <seealso cref="RevitalizationNPCPatches" />.
     /// </summary>
-    public void UpdateCollision(NPC npc) {
-        npc.Collision_WalkDownSlopes();
-        bool lavaCollision = npc.Collision_LavaCollision();
+    public void UpdateCollision() {
+        NPC.Collision_WalkDownSlopes();
+        bool lavaCollision = NPC.Collision_LavaCollision();
 
         // The water collision function has a potential velocity side effect, so to ensure that ignore flag is honored, we must wrap the function call
         if (ignoreLiquidVelocityModifications) {
-            Vector2 dryVelocity = npc.velocity;
-            npc.Collision_WaterCollision(lavaCollision);
-            npc.velocity = dryVelocity;
+            Vector2 dryVelocity = NPC.velocity;
+            NPC.Collision_WaterCollision(lavaCollision);
+            NPC.velocity = dryVelocity;
         }
         else {
-            npc.Collision_WaterCollision(lavaCollision);
+            NPC.Collision_WaterCollision(lavaCollision);
         }
 
-        if (!npc.wet) {
-            npc.lavaWet = npc.honeyWet = npc.shimmerWet = false;
+        if (!NPC.wet) {
+            NPC.lavaWet = NPC.honeyWet = NPC.shimmerWet = false;
         }
 
-        if (npc.wetCount > 0) {
-            npc.wetCount--;
+        if (NPC.wetCount > 0) {
+            NPC.wetCount--;
         }
 
-        npc.oldVelocity = npc.velocity;
-        npc.collideX = npc.collideY = false;
-        npc.GetTileCollisionParameters(out Vector2 cPosition, out int cWidth, out int cHeight);
-        Vector2 oldVelocity = npc.velocity;
-        npc.velocity = Collision.TileCollision(cPosition, npc.velocity, cWidth, cHeight, fallThroughPlatforms);
+        NPC.oldVelocity = NPC.velocity;
+        NPC.collideX = NPC.collideY = false;
+        NPC.GetTileCollisionParameters(out Vector2 cPosition, out int cWidth, out int cHeight);
+        Vector2 oldVelocity = NPC.velocity;
+        NPC.velocity = Collision.TileCollision(cPosition, NPC.velocity, cWidth, cHeight, fallThroughPlatforms);
         float liquidVelocityModifier = 1f;
-        if (npc.wet && !ignoreLiquidVelocityModifications) {
-            if (npc.shimmerWet) {
-                liquidVelocityModifier = npc.shimmerMovementSpeed;
+        if (NPC.wet && !ignoreLiquidVelocityModifications) {
+            if (NPC.shimmerWet) {
+                liquidVelocityModifier = NPC.shimmerMovementSpeed;
             }
-            else if (npc.honeyWet) {
-                liquidVelocityModifier = npc.honeyMovementSpeed;
+            else if (NPC.honeyWet) {
+                liquidVelocityModifier = NPC.honeyMovementSpeed;
             }
-            else if (npc.lavaWet) {
-                liquidVelocityModifier = npc.lavaMovementSpeed;
+            else if (NPC.lavaWet) {
+                liquidVelocityModifier = NPC.lavaMovementSpeed;
             }
             else {
-                liquidVelocityModifier = npc.waterMovementSpeed;
+                liquidVelocityModifier = NPC.waterMovementSpeed;
             }
         }
 
-        ApplyNPCVelocity(npc, oldVelocity, liquidVelocityModifier);
+        ApplyNPCVelocity(oldVelocity, liquidVelocityModifier);
 
-        AttemptSlopeCollision(npc);
-        Collision.StepConveyorBelt(npc, 1f);
+        AttemptSlopeCollision();
+        Collision.StepConveyorBelt(NPC, 1f);
     }
 
-    private void ApplyNPCVelocity(NPC npc, Vector2 oldVelocity, float velocityModifier) {
+    private void ApplyNPCVelocity(Vector2 oldVelocity, float velocityModifier) {
         if (Collision.up) {
-            npc.velocity.Y = 0.01f;
+            NPC.velocity.Y = 0.01f;
         }
 
-        Vector2 modifiedVelocity = npc.velocity * velocityModifier;
-        if (npc.velocity.X != oldVelocity.X) {
-            modifiedVelocity.X = npc.velocity.X;
-            npc.collideX = true;
+        Vector2 modifiedVelocity = NPC.velocity * velocityModifier;
+        if (NPC.velocity.X != oldVelocity.X) {
+            modifiedVelocity.X = NPC.velocity.X;
+            NPC.collideX = true;
         }
 
-        if (npc.velocity.Y != oldVelocity.Y) {
-            modifiedVelocity.Y = npc.velocity.Y;
-            npc.collideY = true;
+        if (NPC.velocity.Y != oldVelocity.Y) {
+            modifiedVelocity.Y = NPC.velocity.Y;
+            NPC.collideY = true;
         }
 
-        npc.oldPosition = npc.position;
-        npc.oldDirection = npc.direction;
-        npc.position += modifiedVelocity;
+        NPC.oldPosition = NPC.position;
+        NPC.oldDirection = NPC.direction;
+        NPC.position += modifiedVelocity;
     }
 
-    private void AttemptSlopeCollision(NPC npc) {
-        npc.stairFall = fallThroughStairs;
-        npc.GetTileCollisionParameters(out Vector2 cPosition, out int cWidth, out int cHeight);
-        Vector2 endPosOffset = npc.position - cPosition;
-        Vector4 newPosAndVelocity = Collision.SlopeCollision(cPosition, npc.velocity, cWidth, cHeight, npc.gravity, fallThroughStairs);
+    private void AttemptSlopeCollision() {
+        NPC.stairFall = fallThroughStairs;
+        NPC.GetTileCollisionParameters(out Vector2 cPosition, out int cWidth, out int cHeight);
+        Vector2 endPosOffset = NPC.position - cPosition;
+        Vector4 newPosAndVelocity = Collision.SlopeCollision(cPosition, NPC.velocity, cWidth, cHeight, NPC.gravity, fallThroughStairs);
         Vector2 newPos = newPosAndVelocity.XY(), newVelocity = newPosAndVelocity.ZW();
 
-        if (npc.velocity.Y <= 0 && Collision.stair && walkThroughStairs) {
-            newPos = npc.position;
+        if (NPC.velocity.Y <= 0 && Collision.stair && walkThroughStairs) {
+            newPos = NPC.position;
             newVelocity.Y = 0f;
         }
-        else if (Collision.stair && Math.Abs(newPos.Y - npc.position.Y) > 8f) {
-            npc.gfxOffY -= newPos.Y - npc.position.Y;
-            npc.stepSpeed = 2f;
+        else if (Collision.stair && Math.Abs(newPos.Y - NPC.position.Y) > 8f) {
+            NPC.gfxOffY -= newPos.Y - NPC.position.Y;
+            NPC.stepSpeed = 2f;
         }
 
-        npc.position = newPos;
-        npc.velocity = newVelocity;
-        npc.position += endPosOffset;
+        NPC.position = newPos;
+        NPC.velocity = newVelocity;
+        NPC.position += endPosOffset;
     }
 }

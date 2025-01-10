@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
@@ -27,7 +26,7 @@ public class RevitalizationNPCPatches : LoadablePatch {
     private static readonly Gradient<float> ShopCostModifierGradient = new (MathHelper.Lerp, (0f, MaxCostModifier), (0.5f, 1f), (1f, MinCostModifier));
 
     public static void ProcessMoodOverride(ShopHelper shopHelper, Player player, NPC npc) {
-        if (NPCID.Sets.NoTownNPCHappiness[npc.type] || !npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
+        if (NPCID.Sets.NoTownNPCHappiness[npc.type] || !npc.TryGetGlobalNPC(out TownNPCMoodModule moodModule)) {
             shopHelper._currentHappiness = "";
             shopHelper._currentPriceAdjustment = 1f;
             return;
@@ -49,7 +48,7 @@ public class RevitalizationNPCPatches : LoadablePatch {
             }
         }
 
-        shopHelper._currentPriceAdjustment = ShopCostModifierGradient.GetValue(npc.GetGlobalNPC<TownNPCMoodModule>().CurrentMood / TownNPCMoodModule.MaxMoodValue);
+        shopHelper._currentPriceAdjustment = ShopCostModifierGradient.GetValue(moodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue);
     }
 
     private static void DrawNPCExtrasConsumptionPatch(ILContext il) {
@@ -104,13 +103,12 @@ public class RevitalizationNPCPatches : LoadablePatch {
         SpriteEffects effects,
         float layerDepth
     ) {
-        if (!npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
+        if (!npc.TryGetGlobalNPC(out TownNPCSpriteModule spriteModule)) {
             return false;
         }
 
         int drawLayer = beforeDraw ? -1 : 1;
-        npc.GetGlobalNPC<TownNPCSpriteModule>()
-            .RequestDraw(new TownNPCDrawRequest(texture, position, sourceRect, Origin: origin, SpriteEffect: effects, UsesAbsolutePosition: true, DrawLayer: drawLayer));
+        spriteModule.RequestDraw(new TownNPCDrawRequest(texture, position, sourceRect, Origin: origin, SpriteEffect: effects, UsesAbsolutePosition: true, DrawLayer: drawLayer));
         return true;
     }
 
@@ -150,11 +148,11 @@ public class RevitalizationNPCPatches : LoadablePatch {
         c.Emit(OpCodes.Ldarg_0);
         c.EmitDelegate<Func<NPC, bool>>(
             npc => {
-                if (!npc.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
+                if (!npc.TryGetGlobalNPC(out TownNPCCollisionModule collisionModule)) {
                     return false;
                 }
 
-                npc.GetGlobalNPC<TownNPCCollisionModule>().UpdateCollision(npc);
+                collisionModule.UpdateCollision();
                 return true;
             }
         );

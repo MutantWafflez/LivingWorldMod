@@ -46,12 +46,12 @@ public class RoastMarshmallowActivity : TownNPCActivity {
             return;
         }
 
-        npc.GetGlobalNPC<TownNPCPathfinderModule>().RequestPathfind(npc, _standingLocation);
+        npc.GetGlobalNPC<TownNPCPathfinderModule>().RequestPathfind(_standingLocation);
         _isAtStandingLocation = false;
     }
 
     public override bool CanDoActivity(TownGlobalNPC globalNPC, NPC npc) {
-        Point origin = npc.GetGlobalNPC<TownNPCPathfinderModule>().TopLeftOfPathfinderZone(npc);
+        Point origin = npc.GetGlobalNPC<TownNPCPathfinderModule>().TopLeftOfPathfinderZone;
         List<Point> campfires = [];
         for (int i = origin.X; i < origin.X + TownNPCPathfinderModule.PathfinderSize; i++) {
             for (int j = origin.Y; j < origin.Y + TownNPCPathfinderModule.PathfinderSize; j++) {
@@ -91,6 +91,6 @@ public class RoastMarshmallowActivity : TownNPCActivity {
         }
 
         _standingLocation = campfires.MinBy(point => npc.Distance(point.ToWorldCoordinates(0f, 0f))) + new Point(-2, 0);
-        return npc.GetGlobalNPC<TownNPCPathfinderModule>().HasPath(npc, _standingLocation);
+        return npc.GetGlobalNPC<TownNPCPathfinderModule>().HasPath(_standingLocation);
     }
 }

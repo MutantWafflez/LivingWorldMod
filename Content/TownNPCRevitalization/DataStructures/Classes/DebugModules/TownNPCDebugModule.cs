@@ -40,8 +40,8 @@ public class TownNPCDebugModule : DebugModule {
             TownNPCStateModule.RefreshToState<WalkToRandomPosState>(_selectedNPC);
             _selectedNPC.ai[2] = 1f;
 
-            _selectedNPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind(_selectedNPC);
-            _selectedNPC.GetGlobalNPC<TownNPCPathfinderModule>().RequestPathfind(_selectedNPC, pathfindLocation);
+            _selectedNPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind();
+            _selectedNPC.GetGlobalNPC<TownNPCPathfinderModule>().RequestPathfind(pathfindLocation);
 
             Main.NewText($"Pathfinding to {pathfindLocation}");
         }
@@ -55,7 +55,7 @@ public class TownNPCDebugModule : DebugModule {
         if (pressedKeys.Contains(Keys.NumPad1)) {
             Main.NewText("Forcing NPC to Pass out");
 
-            _selectedNPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind(_selectedNPC);
+            _selectedNPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind();
             TownNPCStateModule.RefreshToState<PassedOutAIState>(_selectedNPC);
         }
     }

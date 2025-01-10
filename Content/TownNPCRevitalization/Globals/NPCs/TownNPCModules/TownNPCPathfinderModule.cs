@@ -45,6 +45,10 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     public bool IsPathfinding => _currentPathfinderResult is not null;
 
+    public Point BottomLeftTileOfNPC => (NPC.BottomLeft + new Vector2(0f, -2f)).ToTileCoordinates();
+
+    public Point TopLeftOfPathfinderZone => BottomLeftTileOfNPC - new Point(PathfinderSize / 2, PathfinderSize / 2);
+
     private static void PrunePath(IList<PathNode> path) {
         if (LWM.IsDebug && ModContent.GetInstance<DebugConfig>().disablePathPruning) {
             return;
@@ -66,7 +70,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         }
     }
 
-    public override void UpdateModule(NPC npc) {
+    public override void UpdateModule() {
         _cachedResults.Clear();
         _cachedPathfinder = null;
 
@@ -83,26 +87,26 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         if (_isPaused) {
             _isPaused = false;
             _wasPaused = true;
-            npc.velocity.X = 0f;
+            NPC.velocity.X = 0f;
             return;
         }
 
         if (_wasPaused) {
             _wasPaused = false;
-            GenerateAndUseNewPath(npc, _currentPathfinderResult.endPoint);
+            GenerateAndUseNewPath(_currentPathfinderResult.endPoint);
             return;
         }
 
         // If the NPC does not make meaningful progress to the next node, regenerate the path
-        float curDistanceToNextNode = GetDistanceToNode(npc, nextNode);
+        float curDistanceToNextNode = GetDistanceToNode(nextNode);
         if (curDistanceToNextNode >= _prevDistanceToNextNode) {
             if (++_notMakingProgressCounter >= LWMUtils.RealLifeSecond / 2) {
                 if (_pathRestartCount++ > MaxPathRecyclesBeforeFailure) {
-                    EndPathfinding(npc);
+                    EndPathfinding();
                     return;
                 }
 
-                GenerateAndUseNewPath(npc, _currentPathfinderResult.endPoint);
+                GenerateAndUseNewPath(_currentPathfinderResult.endPoint);
 
                 return;
             }
@@ -111,24 +115,24 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             _notMakingProgressCounter = 0;
         }
 
-        npc.GravityIgnoresLiquid = lastConsumedNode.MovementType == NodeMovementType.Jump || nextNode.MovementType == NodeMovementType.Jump;
+        NPC.GravityIgnoresLiquid = lastConsumedNode.MovementType == NodeMovementType.Jump || nextNode.MovementType == NodeMovementType.Jump;
         _prevDistanceToNextNode = curDistanceToNextNode;
 
         Vector2 nextNodeCenter = (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates();
         Vector2 nextNodeBottom = nextNodeCenter + new Vector2(0f, 8f);
 
         Rectangle nodeRectangle = new((int)(nextNodeCenter.X - 8f), (int)(nextNodeCenter.Y - 8f), 16, 16);
-        Rectangle npcNodeCollisionRectangle = new((int)npc.BottomLeft.X, (int)npc.BottomLeft.Y - 16, 16, 16);
+        Rectangle npcNodeCollisionRectangle = new((int)NPC.BottomLeft.X, (int)NPC.BottomLeft.Y - 16, 16, 16);
 
-        bool leftHasBreachedNode = npc.direction == 1 ? npc.Left.X >= nextNodeCenter.X : npc.Left.X <= nextNodeCenter.X;
+        bool leftHasBreachedNode = NPC.direction == 1 ? NPC.Left.X >= nextNodeCenter.X : NPC.Left.X <= nextNodeCenter.X;
 
-        TownNPCCollisionModule collisionModule = npc.GetGlobalNPC<TownNPCCollisionModule>();
-        if (leftHasBreachedNode && nodeRectangle.Intersects(npcNodeCollisionRectangle) && (lastConsumedNode.MovementType is not NodeMovementType.Jump || npc.velocity.Y == 0f)) {
+        TownNPCCollisionModule collisionModule = NPC.GetGlobalNPC<TownNPCCollisionModule>();
+        if (leftHasBreachedNode && nodeRectangle.Intersects(npcNodeCollisionRectangle) && (lastConsumedNode.MovementType is not NodeMovementType.Jump || NPC.velocity.Y == 0f)) {
             lastConsumedNode = nextNode;
             path.RemoveAt(path.Count - 1);
 
             if (path.Count == 0) {
-                EndPathfinding(npc);
+                EndPathfinding();
                 return;
             }
 
@@ -139,79 +143,79 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             if (lastConsumedNode.MovementType is NodeMovementType.Jump) {
                 collisionModule.ignoreLiquidVelocityModifications = true;
                 collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = false;
-                npc.BottomLeft = nextNodeBottom;
+                NPC.BottomLeft = nextNodeBottom;
 
                 //Reset velocity & calculate jump vector required to reach jump destination
-                npc.velocity *= 0f;
+                NPC.velocity *= 0f;
 
-                float npcGravity = npc.gravity;
-                float jumpHeight = npc.Bottom.Y - (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates(0f).Y;
-                float yDisplacement = jumpHeight - npc.height;
+                float npcGravity = NPC.gravity;
+                float jumpHeight = NPC.Bottom.Y - (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates(0f).Y;
+                float yDisplacement = jumpHeight - NPC.height;
 
                 // Horizontal Velocity = X Displacement / (sqrt(-2 * h / g) + sqrt(2(Y Displacement - h) / g))
                 // npc ^ formula assumes gravity is negative; it is not because positive Y is down in Terraria. Thus, removed some of the negatives
-                npc.velocity.X = (float)((nextNodeCenter.X - npc.Left.X) / (Math.Sqrt(2 * jumpHeight / npcGravity) + Math.Sqrt(2 * (jumpHeight - yDisplacement) / npcGravity)));
+                NPC.velocity.X = (float)((nextNodeCenter.X - NPC.Left.X) / (Math.Sqrt(2 * jumpHeight / npcGravity) + Math.Sqrt(2 * (jumpHeight - yDisplacement) / npcGravity)));
 
                 // Vertical velocity = sqrt(-2gh)
                 // Entire formula negated since, again, positive Y is down
-                npc.velocity.Y = (float)-Math.Sqrt(2 * npcGravity * jumpHeight);
+                NPC.velocity.Y = (float)-Math.Sqrt(2 * npcGravity * jumpHeight);
             }
 
             leftHasBreachedNode = false;
-            npc.direction = npc.Left.X > nextNodeCenter.X ? -1 : 1;
+            NPC.direction = NPC.Left.X > nextNodeCenter.X ? -1 : 1;
             collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = collisionModule.walkThroughStairs = false;
         }
 
         switch (lastConsumedNode.MovementType) {
             //Step movements or horizontal movements
             case NodeMovementType.StepUp:
-                npc.velocity.X = npc.direction;
-                Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
+                NPC.velocity.X = NPC.direction;
+                Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 
                 collisionModule.ignoreLiquidVelocityModifications = collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = collisionModule.walkThroughStairs = false;
-                CheckForDoors(npc);
+                CheckForDoors();
                 break;
             case NodeMovementType.StepDown:
-                npc.velocity.X = npc.direction;
+                NPC.velocity.X = NPC.direction;
 
                 collisionModule.ignoreLiquidVelocityModifications = collisionModule.fallThroughStairs = collisionModule.walkThroughStairs = collisionModule.fallThroughPlatforms = false;
-                CheckForDoors(npc);
+                CheckForDoors();
                 break;
             default:
             case NodeMovementType.PureHorizontal:
-                npc.velocity.X = npc.direction;
-                CheckForDoors(npc);
+                NPC.velocity.X = NPC.direction;
+                CheckForDoors();
 
                 collisionModule.ignoreLiquidVelocityModifications = collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = false;
                 collisionModule.walkThroughStairs = true;
                 break;
             case NodeMovementType.Fall:
                 collisionModule.ignoreLiquidVelocityModifications = collisionModule.walkThroughStairs = false;
-                if (npc.velocity.Y == 0f) {
-                    npc.velocity.X = npc.direction;
+                if (NPC.velocity.Y == 0f) {
+                    NPC.velocity.X = NPC.direction;
                 }
 
                 if (!leftHasBreachedNode) {
                     return;
                 }
 
-                npc.velocity.X = 0f;
-                if (npc.velocity.Y != 0f) {
+                NPC.velocity.X = 0f;
+                if (NPC.velocity.Y != 0f) {
                     return;
                 }
 
                 collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = true;
                 break;
             case NodeMovementType.Jump:
-                if (npc.velocity.Y >= 0f) {
-                    npc.velocity.X = npc.direction;
+                if (NPC.velocity.Y >= 0f) {
+                    NPC.velocity.X = NPC.direction;
                 }
 
                 break;
         }
     }
 
-    public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+    public override void PostDraw(NPC _, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
         if (!IsPathfinding || !LWM.IsDebug) {
             return;
         }
@@ -233,116 +237,112 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         }
     }
 
-    public Point BottomLeftTileOfNPC(NPC npc) => (npc.BottomLeft + new Vector2(0f, -2f)).ToTileCoordinates();
-
-    public Point TopLeftOfPathfinderZone(NPC npc) => BottomLeftTileOfNPC(npc) - new Point(PathfinderSize / 2, PathfinderSize / 2);
-
-    public bool RequestPathfind(NPC npc, Point location) {
-        if (IsPathfinding) {
-            return false;
-        }
-
-        GenerateAndUseNewPath(npc, location);
-        return true;
-    }
-
-    public bool HasPath(NPC npc, Point location) => GetPathfinderResult(npc, location) is not null;
-
-    public void PausePathfind() => _isPaused = true;
-
-    public void CancelPathfind(NPC npc) => EndPathfinding(npc);
-
-    public void SendNetworkData(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) {
+    public override void SendExtraAI(NPC _, BitWriter bitWriter, BinaryWriter binaryWriter) {
         Point16 endPoint = new(_currentPathfinderResult?.endPoint ?? new Point(-1, -1));
         binaryWriter.Write(endPoint.X);
         binaryWriter.Write(endPoint.Y);
     }
 
-    public void ReceiveNetworkData(NPC npc, BitReader bitReader, BinaryReader binaryReader) {
+    public override void ReceiveExtraAI(NPC _, BitReader bitReader, BinaryReader binaryReader) {
         Point endPoint = new(binaryReader.ReadInt16(), binaryReader.ReadInt16());
-        EndPathfinding(npc);
+        EndPathfinding();
         if (endPoint is { X: -1, Y: -1 }) {
             return;
         }
 
-        GenerateAndUseNewPath(npc, endPoint);
+        GenerateAndUseNewPath(endPoint);
     }
 
-    private void CheckForDoors(NPC npc) {
+    public bool RequestPathfind(Point location) {
+        if (IsPathfinding) {
+            return false;
+        }
+
+        GenerateAndUseNewPath(location);
+        return true;
+    }
+
+    public bool HasPath(Point location) => GetPathfinderResult(location) is not null;
+
+    public void PausePathfind() => _isPaused = true;
+
+    public void CancelPathfind() => EndPathfinding();
+
+    private void CheckForDoors() {
         // TODO: Rewrite door checking
         // Direct vanilla code (sorta disgusting)
-        if (npc.closeDoor && ((npc.position.X + npc.width / 2f) / 16f > npc.doorX + 2 || (npc.position.X + npc.width / 2f) / 16f < npc.doorX - 2)) {
-            Tile doorPos = Framing.GetTileSafely(npc.doorX, npc.doorY);
+        if (NPC.closeDoor && ((NPC.position.X + NPC.width / 2f) / 16f > NPC.doorX + 2 || (NPC.position.X + NPC.width / 2f) / 16f < NPC.doorX - 2)) {
+            Tile doorPos = Framing.GetTileSafely(NPC.doorX, NPC.doorY);
 
             if (TileLoader.CloseDoorID(doorPos) >= 0) {
-                if (WorldGen.CloseDoor(npc.doorX, npc.doorY)) {
-                    npc.closeDoor = false;
-                    NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 1, npc.doorX, npc.doorY, npc.direction);
+                if (WorldGen.CloseDoor(NPC.doorX, NPC.doorY)) {
+                    NPC.closeDoor = false;
+                    NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 1, NPC.doorX, NPC.doorY, NPC.direction);
                 }
 
-                if ((npc.position.X + npc.width / 2f) / 16f > npc.doorX + 4
-                    || (npc.position.X + npc.width / 2f) / 16f < npc.doorX - 4
-                    || (npc.position.Y + npc.height / 2f) / 16f > npc.doorY + 4
-                    || (npc.position.Y + npc.height / 2f) / 16f < npc.doorY - 4) {
-                    npc.closeDoor = false;
+                if ((NPC.position.X + NPC.width / 2f) / 16f > NPC.doorX + 4
+                    || (NPC.position.X + NPC.width / 2f) / 16f < NPC.doorX - 4
+                    || (NPC.position.Y + NPC.height / 2f) / 16f > NPC.doorY + 4
+                    || (NPC.position.Y + NPC.height / 2f) / 16f < NPC.doorY - 4) {
+                    NPC.closeDoor = false;
                 }
             }
             else if (doorPos.TileType == TileID.TallGateOpen) {
-                if (WorldGen.ShiftTallGate(npc.doorX, npc.doorY, true)) {
-                    npc.closeDoor = false;
-                    NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 5, npc.doorX, npc.doorY);
+                if (WorldGen.ShiftTallGate(NPC.doorX, NPC.doorY, true)) {
+                    NPC.closeDoor = false;
+                    NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 5, NPC.doorX, NPC.doorY);
                 }
 
-                if ((npc.position.X + npc.width / 2f) / 16f > npc.doorX + 4
-                    || (npc.position.X + npc.width / 2f) / 16f < npc.doorX - 4
-                    || (npc.position.Y + npc.height / 2f) / 16f > npc.doorY + 4
-                    || (npc.position.Y + npc.height / 2f) / 16f < npc.doorY - 4) {
-                    npc.closeDoor = false;
+                if ((NPC.position.X + NPC.width / 2f) / 16f > NPC.doorX + 4
+                    || (NPC.position.X + NPC.width / 2f) / 16f < NPC.doorX - 4
+                    || (NPC.position.Y + NPC.height / 2f) / 16f > NPC.doorY + 4
+                    || (NPC.position.Y + NPC.height / 2f) / 16f < NPC.doorY - 4) {
+                    NPC.closeDoor = false;
                 }
             }
             else {
-                npc.closeDoor = false;
+                NPC.closeDoor = false;
             }
         }
 
         // How vanilla does it; keeping it the same lest some weird edge case happens
-        Point headTilePos = new((int)((npc.position.X + npc.width / 2f + 15 * npc.direction) / 16f), (int)((npc.position.Y + npc.height - 16f) / 16f) - 2);
+        Point headTilePos = new((int)((NPC.position.X + NPC.width / 2f + 15 * NPC.direction) / 16f), (int)((NPC.position.Y + NPC.height - 16f) / 16f) - 2);
         Tile topTile = Framing.GetTileSafely(headTilePos.X, headTilePos.Y);
 
         if (!topTile.HasUnactuatedTile || (!TileLoader.IsClosedDoor(topTile) && topTile.TileType != TileID.TallGateClosed) || Main.netMode == NetmodeID.MultiplayerClient) {
             return;
         }
 
-        if (WorldGen.OpenDoor(headTilePos.X, headTilePos.Y, npc.direction)) {
-            npc.closeDoor = true;
-            npc.doorX = headTilePos.X;
-            npc.doorY = headTilePos.Y;
-            NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 0, headTilePos.X, headTilePos.Y, npc.direction);
-            npc.netUpdate = true;
+        if (WorldGen.OpenDoor(headTilePos.X, headTilePos.Y, NPC.direction)) {
+            NPC.closeDoor = true;
+            NPC.doorX = headTilePos.X;
+            NPC.doorY = headTilePos.Y;
+            NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 0, headTilePos.X, headTilePos.Y, NPC.direction);
+            NPC.netUpdate = true;
         }
-        else if (WorldGen.OpenDoor(headTilePos.X, headTilePos.Y, -npc.direction)) {
-            npc.closeDoor = true;
-            npc.doorX = headTilePos.X;
-            npc.doorY = headTilePos.Y;
-            NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 0, headTilePos.X, headTilePos.Y, -npc.direction);
-            npc.netUpdate = true;
+        else if (WorldGen.OpenDoor(headTilePos.X, headTilePos.Y, -NPC.direction)) {
+            NPC.closeDoor = true;
+            NPC.doorX = headTilePos.X;
+            NPC.doorY = headTilePos.Y;
+            NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 0, headTilePos.X, headTilePos.Y, -NPC.direction);
+            NPC.netUpdate = true;
         }
         else if (WorldGen.ShiftTallGate(headTilePos.X, headTilePos.Y, false)) {
-            npc.closeDoor = true;
-            npc.doorX = headTilePos.X;
-            npc.doorY = headTilePos.Y;
+            NPC.closeDoor = true;
+            NPC.doorX = headTilePos.X;
+            NPC.doorY = headTilePos.Y;
             NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 4, headTilePos.X, headTilePos.Y);
-            npc.netUpdate = true;
+            NPC.netUpdate = true;
         }
     }
 
-    private PathfinderResult GetPathfinderResult(NPC npc, Point endPoint) {
+    private PathfinderResult GetPathfinderResult(Point endPoint) {
         if (_cachedResults.FirstOrDefault(result => result.endPoint == endPoint) is { } cachedResult) {
             _currentPathfinderResult = cachedResult;
             return _currentPathfinderResult;
         }
 
-        Point topLeftOfGrid = TopLeftOfPathfinderZone(npc);
+        Point topLeftOfGrid = TopLeftOfPathfinderZone;
 
         const int worldFluff = 10;
         topLeftOfGrid.X = Utils.Clamp(topLeftOfGrid.X, worldFluff, Main.maxTilesX - PathfinderSize - worldFluff - 1);
@@ -350,9 +350,9 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
         TownNPCPathfinder pathFinder =
             _cachedPathfinder
-            ?? new TownNPCPathfinder(new UPoint16(topLeftOfGrid.X, topLeftOfGrid.Y), (ushort)PathfinderSize, (ushort)Math.Ceiling(npc.width / 16f), (ushort)Math.Ceiling(npc.height / 16f));
+            ?? new TownNPCPathfinder(new UPoint16(topLeftOfGrid.X, topLeftOfGrid.Y), (ushort)PathfinderSize, (ushort)Math.Ceiling(NPC.width / 16f), (ushort)Math.Ceiling(NPC.height / 16f));
 
-        Point adjustedBottomLeftOfNPC = BottomLeftTileOfNPC(npc);
+        Point adjustedBottomLeftOfNPC = BottomLeftTileOfNPC;
         Tile bottomLeftTileOfNPC = Main.tile[adjustedBottomLeftOfNPC];
         if (bottomLeftTileOfNPC.HasTile && (bottomLeftTileOfNPC.IsHalfBlock || bottomLeftTileOfNPC.Slope > SlopeType.Solid)) {
             adjustedBottomLeftOfNPC.Y--;
@@ -370,37 +370,36 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         return result;
     }
 
-    private void GenerateAndUseNewPath(NPC npc, Point endPoint) {
+    private void GenerateAndUseNewPath(Point endPoint) {
         if (_cachedResults.FirstOrDefault(result => result.endPoint == endPoint) is { } cachedResult) {
             _currentPathfinderResult = cachedResult;
             return;
         }
 
-        _currentPathfinderResult = GetPathfinderResult(npc, endPoint);
+        _currentPathfinderResult = GetPathfinderResult(endPoint);
 
         if (_currentPathfinderResult is null) {
-            EndPathfinding(npc);
+            EndPathfinding();
         }
         else {
             List<PathNode> path = _currentPathfinderResult.path;
             PrunePath(path);
 
-            _prevDistanceToNextNode = GetDistanceToNode(npc, path.Last());
+            _prevDistanceToNextNode = GetDistanceToNode(path.Last());
             _notMakingProgressCounter = 0;
-            npc.direction = npc.Center.X > (path.Last().NodePos.x + _currentPathfinderResult.topLeftOfGrid.X) * 16 + 8 ? -1 : 1;
-            npc.velocity.X = npc.direction;
+            NPC.direction = NPC.Center.X > (path.Last().NodePos.x + _currentPathfinderResult.topLeftOfGrid.X) * 16 + 8 ? -1 : 1;
+            NPC.velocity.X = NPC.direction;
         }
     }
 
-    private float GetDistanceToNode(NPC npc, PathNode nextNode) =>
-        npc.BottomLeft.Distance((_currentPathfinderResult.topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates());
+    private float GetDistanceToNode(PathNode nextNode) => NPC.BottomLeft.Distance((_currentPathfinderResult.topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates());
 
-    private void EndPathfinding(NPC npc) {
+    private void EndPathfinding() {
         _prevDistanceToNextNode = float.MaxValue;
         _pathRestartCount = _notMakingProgressCounter = 0;
-        npc.GravityIgnoresLiquid = false;
+        NPC.GravityIgnoresLiquid = false;
 
-        npc.velocity.X = 0f;
+        NPC.velocity.X = 0f;
         _currentPathfinderResult = null;
     }
 }
