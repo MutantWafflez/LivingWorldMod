@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.DataStructures.Classes;
+﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
+using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,6 +21,13 @@ public sealed class TownNPCChatModule : TownNPCModule {
     ///     chat each tick.
     /// </summary>
     private const int ChitChatChanceDenominator = 75;
+
+    private static LocalizedTextGroup _chatTemplateGroup;
+    private static LocalizedTextGroup _npcNameGroup;
+    private static LocalizedTextGroup _nounGroup;
+    private static LocalizedTextGroup _adjectiveGroup;
+    private static LocalizedTextGroup _locationGroup;
+    private static LocalizedTextGroup _itemNameGroup;
 
     public readonly ForgetfulArray<string> chatHistory = new(50);
 
@@ -48,7 +56,14 @@ public sealed class TownNPCChatModule : TownNPCModule {
     /// </summary>
     public bool IsSpeaking => IsChattingWithPlayerDirectly || IsChattingToEntityInBackground;
 
-    private static string GenerateRandomNPCName => Language.SelectRandom(Lang.CreateDialogFilter("NPCName.")).Value;
+    public override void SetStaticDefaults() {
+        _chatTemplateGroup = new LocalizedTextGroup(Lang.CreateDialogFilter("Mods.LivingWorldMod.InterTownNPCChat."));
+        _npcNameGroup = new LocalizedTextGroup(Lang.CreateDialogFilter("NPCName."));
+        _nounGroup = new LocalizedTextGroup(Lang.CreateDialogFilter("RandomWorldName_Noun."));
+        _adjectiveGroup = new LocalizedTextGroup(Lang.CreateDialogFilter("RandomWorldName_Adjective."));
+        _locationGroup = new LocalizedTextGroup(Lang.CreateDialogFilter("RandomWorldName_Location."));
+        _itemNameGroup = new LocalizedTextGroup(Lang.CreateDialogFilter("ItemName."));
+    }
 
     public override void UpdateModule() {
         // Adapted vanilla code
@@ -113,16 +128,16 @@ public sealed class TownNPCChatModule : TownNPCModule {
             return;
         }
 
-        LocalizedText chatTemplate = Language.SelectRandom(Lang.CreateDialogFilter("Mods.LivingWorldMod.InterTownNPCChat."));
+        LocalizedText chatTemplate = _chatTemplateGroup.RandomText;
         var chatSubstitutions = new {
             SpeakingNPC = NPC.GivenOrTypeName,
-            RandomNPCName = GenerateRandomNPCName,
-            RandomNPCNameTwo = GenerateRandomNPCName,
+            RandomNPCName = _npcNameGroup.RandomText,
+            RandomNPCNameTwo = _npcNameGroup.RandomText,
             ChatRecipient = chatRecipient.GivenOrTypeName,
-            Noun = Language.SelectRandom(Lang.CreateDialogFilter("RandomWorldName_Noun.")).Value.ToLower(),
-            Adjective = Language.SelectRandom(Lang.CreateDialogFilter("RandomWorldName_Adjective.")).Value.ToLower(),
-            Location = Language.SelectRandom(Lang.CreateDialogFilter("RandomWorldName_Location.")).Value,
-            RandomItemName = Language.SelectRandom(Lang.CreateDialogFilter("ItemName.")).Value,
+            Noun = _nounGroup.RandomText.Value.ToLower(),
+            Adjective = _adjectiveGroup.RandomText.Value.ToLower(),
+            Location = _locationGroup.RandomText,
+            RandomItemName = _itemNameGroup.RandomText,
             RandomPlayer = Main.rand.Next(LWMUtils.GetAllPlayers(_ => true)).name
         };
 
