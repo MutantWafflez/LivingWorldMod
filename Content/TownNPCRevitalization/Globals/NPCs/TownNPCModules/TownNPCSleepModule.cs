@@ -21,6 +21,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModul
 public sealed  class TownNPCSleepModule  : TownNPCModule {
     private const int MaxAwakeValue = LWMUtils.InGameHour * 24;
     private const float DefaultAwakeValue = MaxAwakeValue * 0.2f;
+    private const int MaxBlockedSleepValue = LWMUtils.RealLifeSecond * 10;
 
     private static readonly SleepSchedule DefaultSleepSchedule = new(new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
     private static readonly Gradient<Color> SleepIconColorGradient = new (Color.Lerp, (0f, Color.Red), (0.5f, Color.DarkOrange), (1f, Color.White));
@@ -29,6 +30,11 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
     ///     The amount of ticks that this NPC has been awake. The higher the value, the more severe effects on mood will occur. This value is decreased rapidly by a Town NPC sleeping.
     /// </summary>
     public BoundedNumber<float> awakeTicks = new(DefaultAwakeValue, 0, MaxAwakeValue);
+
+    /// <summary>
+    ///     The amount of ticks that must pass before this NPC can fall asleep.
+    /// </summary>
+    public BoundedNumber<int> blockedSleepTimer = new(0, 0, MaxBlockedSleepValue);
 
     public bool IsAsleep => NPC.ai[0] == TownNPCAIState.GetStateInteger<PassedOutAIState>()
         || (NPC.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && NPC.ai[1] == BeAtHomeAIState.IsSleepingStateFlag);
@@ -65,6 +71,7 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
             bool sleepBeingBlocked = LanternNight.LanternsUp
                 // TODO: Allow sleeping once tired enough, even if party is occurring
                 || GenuinePartyIsOccurring
+                || blockedSleepTimer > 0
                 || NPC.GetGlobalNPC<TownNPCChatModule>().IsChattingWithPlayerDirectly;
             SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(NPC.type);
 
@@ -94,7 +101,12 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
 
     public override bool? CanChat(NPC npc) => npc.ai[0] == TownNPCAIState.GetStateInteger<PassedOutAIState>() ? false : null;
 
+    public override void HitEffect(NPC npc, NPC.HitInfo hit) {
+        blockedSleepTimer += LWMUtils.RealLifeSecond * 2;
+    }
+
     public override void UpdateModule() {
+        blockedSleepTimer -= 1;
         if (!IsAsleep) {
             awakeTicks += 1f;
         }
