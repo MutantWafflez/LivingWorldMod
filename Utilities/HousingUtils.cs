@@ -55,7 +55,7 @@ public static partial class LWMUtils {
                 Point16 bestPoint = new(WorldGen.bestX, WorldGen.bestY);
                 if (WorldGen.hiScore <= 0
                     || foundHouses.Contains(bestPoint)
-                    || !zone.ContainsPoint(new Vector2(WorldGen.bestX, WorldGen.bestY).ToWorldCoordinates())
+                    || !zone.ContainsPoint(new Vector2(WorldGen.bestX, WorldGen.bestY))
                 ) {
                     continue;
                 }
