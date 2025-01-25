@@ -409,7 +409,7 @@ public class VillageShrineEntity : TEModdedPylon {
         Main.npc[npc].homeTileY = WorldGen.bestY;
 
         Color arrivalColor = new(50, 125, 255);
-        string arrivalText = $"Event.VillagerRespawned.{shrineType}".Localized().FormatWith(Main.npc[npc].GivenOrTypeName);
+        string arrivalText = $"Event.VillagerRespawned.{shrineType}".Localized().Format(Main.npc[npc].GivenOrTypeName);
         if (Main.netMode == NetmodeID.Server) {
             ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(arrivalText), arrivalColor);
         }
