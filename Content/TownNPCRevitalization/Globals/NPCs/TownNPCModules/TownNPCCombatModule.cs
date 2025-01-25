@@ -86,7 +86,11 @@ public sealed class TownNPCCombatModule : TownNPCModule {
 
         NPC.localAI[1] = 0;
 
-        if (IsAttacking || NPC.velocity.Y != 0f) {
+        if (IsAttacking
+            || NPC.velocity.Y != 0f
+            || NPC.ai[0] == TownNPCAIState.GetStateInteger<PassedOutAIState>()
+            || (NPC.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && ModContent.GetInstance<TownNPCSleepModule>().isAsleep)
+        ) {
             return;
         }
 

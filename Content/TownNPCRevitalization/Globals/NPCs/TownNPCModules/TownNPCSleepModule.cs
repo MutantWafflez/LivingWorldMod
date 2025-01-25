@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.UI.Bestiary;
 using LivingWorldMod.DataStructures.Records;
@@ -53,7 +54,7 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
     /// </summary>
     public float SleepQualityModifier {
         get {
-            bool[] currentEvents = [Main.eclipse, Main.slimeRain, Main.invasionType > InvasionID.None, Main.bloodMoon, Main.snowMoon, Main.pumpkinMoon];
+            bool[] currentEvents = [Main.eclipse, Main.slimeRain, Main.invasionType > InvasionID.None, Main.bloodMoon, Main.snowMoon, Main.pumpkinMoon, NPC.homeless];
             return currentEvents.Where(eventIsOccuring => eventIsOccuring).Aggregate(1f, (current, _) => current * 0.8f);
         }
     }
@@ -89,6 +90,8 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
             MaxAwakeValue
         );
     }
+
+    public override bool? CanChat(NPC npc) => npc.ai[0] == TownNPCAIState.GetStateInteger<PassedOutAIState>() ? false : null;
 
     public override void UpdateModule() {
         if (!isAsleep) {
