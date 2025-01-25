@@ -57,9 +57,6 @@
         <Publicize Include="tModLoader:Terraria.Localization.LanguageManager._localizedTexts"/>
         <Publicize Include="tModLoader:Terraria.Localization.LocalizedText..ctor"/>
 
-        <!-- Bestiary Publicizing -->
-        <Publicize Include="tModLoader:Terraria.GameContent.UI.Elements.UIBestiaryEntryInfoPage+BestiaryInfoCategory"/>
-
         <!-- Town NPC Profiles Publicizing -->
         <Publicize Include="tModLoader:Terraria.GameContent.Profiles+StackedNPCProfile._profiles"/>
     </ItemGroup>

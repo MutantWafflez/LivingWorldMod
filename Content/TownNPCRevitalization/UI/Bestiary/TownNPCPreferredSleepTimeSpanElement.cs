@@ -1,7 +1,6 @@
 using System.Globalization;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
-using LivingWorldMod.DataStructures.Interfaces;
 using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -14,8 +13,8 @@ using Terraria.UI;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.UI.Bestiary;
 
-public class TownNPCPreferredSleepTimeSpanElement (int npcType) : IBestiaryInfoElement, IBestiaryCategorizedElement {
-    public UIBestiaryEntryInfoPage.BestiaryInfoCategory InfoCategory => UIBestiaryEntryInfoPage.BestiaryInfoCategory.FlavorText;
+public class TownNPCPreferredSleepTimeSpanElement (int npcType) : IBestiaryInfoElement, ICategorizedBestiaryInfoElement {
+    public UIBestiaryEntryInfoPage.BestiaryInfoCategory ElementCategory => UIBestiaryEntryInfoPage.BestiaryInfoCategory.FlavorText;
 
     public UIElement ProvideUIElement(BestiaryUICollectionInfo info) {
         // Adapted vanilla code
