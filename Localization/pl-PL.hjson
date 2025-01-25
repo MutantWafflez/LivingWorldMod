@@ -353,6 +353,8 @@ Mods: {
 				DisableVillageRadius: Ukryj wyświetlanie promienia wioski
 				EnableVillageRadius: Pokaż wyświetlanie promienia wioski
 				ForceShrineButtonText: Wymuś synchronizację obudowy
+				// PauseVillagerSpawning: Pause Villager Spawning
+				// ResumeVillagerSpawning: Resume Villager Spawning
 			}
 		}
 

@@ -353,6 +353,8 @@ Mods: {
 				DisableVillageRadius: Hide Village Radius Display
 				EnableVillageRadius: Show Village Radius Display
 				ForceShrineButtonText: Force Synchronize Housing
+				PauseVillagerSpawning: Pause Villager Spawning
+				ResumeVillagerSpawning: Resume Villager Spawning
 			}
 		}
 

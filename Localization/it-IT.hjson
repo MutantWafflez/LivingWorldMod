@@ -353,6 +353,8 @@ Mods: {
 				DisableVillageRadius: Nascondi il raggio magico del villaggio
 				EnableVillageRadius: Visualizza il raggio magico del villaggio
 				ForceShrineButtonText: Forza sincronizzazione alloggio
+				// PauseVillagerSpawning: Pause Villager Spawning
+				// ResumeVillagerSpawning: Resume Villager Spawning
 			}
 		}
 
