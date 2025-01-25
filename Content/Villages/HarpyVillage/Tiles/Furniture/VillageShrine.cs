@@ -446,7 +446,7 @@ public class HarpyShrineItem : BaseItem {
     }
 
     public override void SetDefaults() {
-        Item.maxStack = 99;
+        Item.maxStack = Item.CommonMaxStack;
         Item.useTurn = true;
         Item.autoReuse = true;
         Item.useAnimation = 15;

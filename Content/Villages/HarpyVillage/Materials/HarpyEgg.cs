@@ -16,7 +16,7 @@ public class HarpyEgg : BaseItem {
     public override void SetDefaults() {
         Item.width = 22;
         Item.height = 24;
-        Item.maxStack = 999;
+        Item.maxStack = Item.CommonMaxStack;
         Item.rare = ItemRarityID.Blue;
     }
 }
