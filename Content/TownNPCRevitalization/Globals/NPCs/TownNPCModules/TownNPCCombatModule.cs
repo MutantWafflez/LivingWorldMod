@@ -130,7 +130,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
         AttemptTriggerAttack();
     }
 
-    public void RequestAttackToLocation(NPC _, PreciseRectangle attackLocation) {
+    public void RequestAttackToLocation(PreciseRectangle attackLocation) {
         if (IsAttacking) {
             return;
         }
