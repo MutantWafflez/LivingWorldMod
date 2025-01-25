@@ -23,7 +23,6 @@ public class PassedOutAIState : TownNPCAIState {
         chatModule.DisableChatting(LWMUtils.RealLifeSecond);
         chatModule.DisableChatReception(LWMUtils.RealLifeSecond);
 
-        sleepModule.isAsleep = true;
         if ((sleepModule.awakeTicks -= 2f * (float)Main.dayRate) <= 0) {
             TownNPCStateModule.RefreshToState<DefaultAIState>(npc);
         }

@@ -9,6 +9,11 @@ using Terraria.GameContent;
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 
 public sealed class BeAtHomeAIState : TownNPCAIState {
+    /// <summary>
+    ///     NPC.ai[1] will be set to this value when the NPC is sleeping.
+    /// </summary>
+    public const float IsSleepingStateFlag = 1f;
+
     public override void DoState(NPC npc) {
         if (!npc.GetGlobalNPC<TownNPCHousingModule>().ShouldGoHome) {
             TownNPCStateModule.RefreshToState<DefaultAIState>(npc);
@@ -61,6 +66,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                     spriteModule.RequestFrameOverride((uint)(Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type] - 3));
                     spriteModule.OffsetDrawPosition(newBottom - npc.Bottom);
                     break;
+                default:
                 case NPCRestType.None:
                     npc.friendlyRegen += 2;
 
@@ -73,9 +79,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                     break;
             }
 
-            npc.ai[1] = 1f;
-            sleepModule.isAsleep = true;
-
+            npc.ai[1] = IsSleepingStateFlag;
             spriteModule.RequestDraw(sleepModule.GetSleepSpriteDrawData);
             spriteModule.CloseEyes();
 

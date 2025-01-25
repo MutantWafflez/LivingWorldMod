@@ -30,7 +30,8 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
     /// </summary>
     public BoundedNumber<float> awakeTicks = new(DefaultAwakeValue, 0, MaxAwakeValue);
 
-    public bool isAsleep;
+    public bool IsAsleep => NPC.ai[0] == TownNPCAIState.GetStateInteger<PassedOutAIState>()
+        || (NPC.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && NPC.ai[1] == BeAtHomeAIState.IsSleepingStateFlag);
 
     public override int UpdatePriority => 1;
 
@@ -94,11 +95,10 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
     public override bool? CanChat(NPC npc) => npc.ai[0] == TownNPCAIState.GetStateInteger<PassedOutAIState>() ? false : null;
 
     public override void UpdateModule() {
-        if (!isAsleep) {
+        if (!IsAsleep) {
             awakeTicks += 1f;
         }
 
-        isAsleep = false;
         if (awakeTicks < MaxAwakeValue) {
             return;
         }
