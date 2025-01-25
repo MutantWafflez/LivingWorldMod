@@ -43,39 +43,44 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                     PlayerSleepingHelper.GetSleepingTargetInfo(restTilePos.X, restTilePos.Y, out int targetDirection, out _, out Vector2 visualOffset);
                     npc.direction = targetDirection;
                     npc.rotation = MathHelper.PiOver2 * -targetDirection;
-                    npc.ai[1] = 1f;
                     Main.sleepingManager.AddNPC(npc.whoAmI, restTilePos);
 
-                    sleepModule.isAsleep = true;
                     sleepModule.awakeTicks -= 1.875f * currentSleepQualityModifier;
 
-                    spriteModule.CloseEyes();
-                    spriteModule.RequestDraw(sleepModule.GetSleepSpriteDrawData);
                     spriteModule.OffsetDrawPosition(targetDirection == 1 ? new Vector2(npc.width / 2f, visualOffset.Y) : new Vector2(npc.width, visualOffset.Y));
-
-                    chatModule.DisableChatting(LWMUtils.RealLifeSecond);
-                    chatModule.DisableChatReception(LWMUtils.RealLifeSecond);
                     break;
                 case NPCRestType.Chair:
                     npc.friendlyRegen += 5;
 
                     npc.SitDown(restTilePos, out int direction, out Vector2 newBottom);
                     npc.direction = direction;
-                    npc.ai[1] = 1f;
                     Main.sittingManager.AddNPC(npc.whoAmI, restTilePos);
 
-                    sleepModule.isAsleep = true;
                     sleepModule.awakeTicks -= 1.6f * currentSleepQualityModifier;
 
-                    spriteModule.CloseEyes();
-                    spriteModule.RequestDraw(sleepModule.GetSleepSpriteDrawData);
                     spriteModule.RequestFrameOverride((uint)(Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type] - 3));
                     spriteModule.OffsetDrawPosition(newBottom - npc.Bottom);
+                    break;
+                case NPCRestType.None:
+                    npc.friendlyRegen += 2;
 
-                    chatModule.DisableChatting(LWMUtils.RealLifeSecond);
-                    chatModule.DisableChatReception(LWMUtils.RealLifeSecond);
+                    npc.direction = -1;
+                    npc.rotation = MathHelper.PiOver2;
+
+                    sleepModule.awakeTicks -= 1.2f * currentSleepQualityModifier;
+
+                    spriteModule.OffsetDrawPosition(new Vector2(0, npc.width));
                     break;
             }
+
+            npc.ai[1] = 1f;
+            sleepModule.isAsleep = true;
+
+            spriteModule.RequestDraw(sleepModule.GetSleepSpriteDrawData);
+            spriteModule.CloseEyes();
+
+            chatModule.DisableChatting(LWMUtils.RealLifeSecond);
+            chatModule.DisableChatReception(LWMUtils.RealLifeSecond);
 
             pathfinderModule.CancelPathfind();
         }

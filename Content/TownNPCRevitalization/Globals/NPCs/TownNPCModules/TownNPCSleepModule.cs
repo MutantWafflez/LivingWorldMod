@@ -54,7 +54,7 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
     /// </summary>
     public float SleepQualityModifier {
         get {
-            bool[] currentEvents = [Main.eclipse, Main.slimeRain, Main.invasionType > InvasionID.None, Main.bloodMoon, Main.snowMoon, Main.pumpkinMoon, NPC.homeless];
+            bool[] currentEvents = [Main.eclipse, Main.slimeRain, Main.invasionType > InvasionID.None, Main.bloodMoon, Main.snowMoon, Main.pumpkinMoon];
             return currentEvents.Where(eventIsOccuring => eventIsOccuring).Aggregate(1f, (current, _) => current * 0.8f);
         }
     }
