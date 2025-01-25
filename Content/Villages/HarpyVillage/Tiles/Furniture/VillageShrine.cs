@@ -188,6 +188,8 @@ public class VillageShrineEntity : TEModdedPylon {
 
     public int respawnTimeCap;
 
+    public bool pausedRespawns;
+
     //This isn't updated on the server, and is manually updated by the client in order
     //for parity between client and server.
     public int clientTimer;
@@ -248,24 +250,26 @@ public class VillageShrineEntity : TEModdedPylon {
         }
 
         //NPC respawning
-        if (CurrentHousedVillagersCount < CurrentValidHouses && remainingRespawnItems > 0) {
-            if (_houseLocations is not null) {
-                if (_houseLocations.Any(houseLocation => TryVillagerRespawnAtPosition(houseLocation.ToPoint(), tileVillageZone, villagerNPCType))) {
+        if (pausedRespawns || CurrentHousedVillagersCount >= CurrentValidHouses || remainingRespawnItems <= 0) {
+            return;
+        }
+
+        if (_houseLocations is not null) {
+            if (_houseLocations.Any(houseLocation => TryVillagerRespawnAtPosition(houseLocation.ToPoint(), tileVillageZone, villagerNPCType))) {
+                return;
+            }
+        }
+
+        Rectangle housingRectangle = tileVillageZone.ToRectangle();
+        for (int i = 0; i < housingRectangle.Width; i += 2) {
+            for (int j = 0; j < housingRectangle.Height; j += 2) {
+                if (TryVillagerRespawnAtPosition(new Point(housingRectangle.X + i, housingRectangle.Y + j), tileVillageZone, villagerNPCType)) {
                     return;
                 }
             }
-
-            Rectangle housingRectangle = tileVillageZone.ToRectangle();
-            for (int i = 0; i < housingRectangle.Width; i += 2) {
-                for (int j = 0; j < housingRectangle.Height; j += 2) {
-                    if (TryVillagerRespawnAtPosition(new Point(housingRectangle.X + i, housingRectangle.Y + j), tileVillageZone, villagerNPCType)) {
-                        return;
-                    }
-                }
-            }
-
-            SyncDataToClients();
         }
+
+        SyncDataToClients();
     }
 
     public override void NetSend(BinaryWriter writer) {
@@ -283,6 +287,7 @@ public class VillageShrineEntity : TEModdedPylon {
         writer.Write(remainingRespawnItems);
         writer.Write(remainingRespawnTime);
         writer.Write(respawnTimeCap);
+        writer.Write(pausedRespawns);
 
         writer.Write(CurrentHousedVillagersCount);
         writer.Write(CurrentValidHouses);
@@ -302,6 +307,7 @@ public class VillageShrineEntity : TEModdedPylon {
         remainingRespawnItems = reader.ReadInt32();
         remainingRespawnTime = reader.ReadInt32();
         respawnTimeCap = reader.ReadInt32();
+        pausedRespawns = reader.ReadBoolean();
 
         CurrentHousedVillagersCount = reader.ReadInt32();
         CurrentValidHouses = reader.ReadInt32();
@@ -317,12 +323,14 @@ public class VillageShrineEntity : TEModdedPylon {
         tag["ShrineType"] = (int)shrineType;
         tag["RemainingItems"] = remainingRespawnItems;
         tag["RemainingTime"] = remainingRespawnTime;
+        tag["PausedRespawns"] = pausedRespawns;
     }
 
     public override void LoadData(TagCompound tag) {
         shrineType = (VillagerType)tag.GetInt("ShrineType");
         remainingRespawnItems = tag.GetInt("RemainingItems");
         remainingRespawnTime = tag.GetInt("RemainingTime");
+        pausedRespawns = tag.GetBool("PausedRespawns");
         respawnTimeCap = EmptyVillageRespawnTime;
 
         InstantiateVillageZone();

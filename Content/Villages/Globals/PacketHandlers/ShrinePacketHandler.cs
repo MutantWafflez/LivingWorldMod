@@ -3,6 +3,7 @@ using LivingWorldMod.Content.Villages.Globals.Systems.UI;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 using LivingWorldMod.Globals.ModTypes;
 using LivingWorldMod.Utilities;
+using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 
 namespace LivingWorldMod.Content.Villages.Globals.PacketHandlers;
@@ -28,6 +29,11 @@ public class ShrinePacketHandler : PacketHandler {
     ///     housing for said shrine.
     /// </summary>
     public const byte TriggerForceSync = 2;
+
+    /// <summary>
+    ///     Sent/Recieved when a player with a shrine UI open clicks the button to toggle villager respawning.
+    /// </summary>
+    public const byte ToggleVillagerRespawning = 3;
 
     public override void HandlePacket(BinaryReader reader, int fromWhomst) {
         byte packetType = reader.ReadByte();
@@ -121,6 +127,39 @@ public class ShrinePacketHandler : PacketHandler {
                     }
                     else {
                         LWM.Instance.Logger.Error($"TriggerForceSync received, but got invalid/no entity at position: {entityPos}");
+                    }
+                }
+
+                break;
+            case ToggleVillagerRespawning:
+                if (Main.netMode == NetmodeID.Server) {
+                    Vector2 entityPos = reader.ReadVector2();
+
+                    if (TileEntity.ByPosition.TryGetValue(entityPos.ToPoint16(), out TileEntity entity) && entity is VillageShrineEntity shrineEntity) {
+                        shrineEntity.pausedRespawns = !shrineEntity.pausedRespawns;
+
+                        // Syncing all the fields with a normal MessageID.TileEntitySharing feels a bit excessive for such a minor change, so manually setting will do. See TriggerForceSync for full
+                        // syncing instead.
+                        ModPacket returnPacket = GetPacket(ToggleVillagerRespawning);
+                        returnPacket.WriteVector2(entityPos);
+                        returnPacket.Write(shrineEntity.pausedRespawns);
+                        returnPacket.Send();
+                    }
+                    else {
+                        LWM.Instance.Logger.Error($"ToggleVillagerRespawning received, but got invalid/no entity at position: {entityPos}");
+                    }
+                }
+                else if (Main.netMode == NetmodeID.MultiplayerClient) {
+                    Vector2 entityPos = reader.ReadVector2();
+                    bool shouldBePaused = reader.ReadBoolean();
+
+                    if (TileEntity.ByPosition.TryGetValue(entityPos.ToPoint16(), out TileEntity entity) && entity is VillageShrineEntity shrineEntity) {
+                        shrineEntity.pausedRespawns = shouldBePaused;
+
+                        VillageShrineUISystem.Instance.correspondingUIState.SetVillagerPauseStatus();
+                    }
+                    else {
+                        LWM.Instance.Logger.Error($"ToggleVillagerRespawning received, but got invalid/no entity at position: {entityPos}");
                     }
                 }
 

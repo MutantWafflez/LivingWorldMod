@@ -173,7 +173,7 @@ public class VillageShrineUIState : UIState {
         forceShrineSyncButton.ProperOnClick += ClickShrineSyncButton;
         forceShrineSyncButtonZone.Append(forceShrineSyncButton);
 
-        Asset<Texture2D> pauseVillagerSpawningButtonTexture = Main.Assets.Request<Texture2D>("Images/UI/ButtonPlay", AssetRequestMode.ImmediateLoad);
+        Asset<Texture2D> pauseVillagerSpawningButtonTexture = Main.Assets.Request<Texture2D>("Images/UI/ButtonDelete", AssetRequestMode.ImmediateLoad);
         pauseVillagerSpawningButtonZone = new UITooltipElement("UI.Shrine.PauseVillagerSpawning".Localized()) {
             HAlign = 1f,
             VAlign = 1f,
@@ -183,7 +183,8 @@ public class VillageShrineUIState : UIState {
         };
         backPanel.Append(pauseVillagerSpawningButtonZone);
 
-        pauseVillagerSpawningButton = new UIBetterImageButton(pauseVillagerSpawningButtonTexture) { HAlign = 1f, VAlign = 1f };
+        pauseVillagerSpawningButton = new UIBetterImageButton(pauseVillagerSpawningButtonTexture);
+        pauseVillagerSpawningButton.ProperOnClick += ClickPauseVillagerSpawning;
         pauseVillagerSpawningButtonZone.Append(pauseVillagerSpawningButton);
     }
 
@@ -222,6 +223,11 @@ public class VillageShrineUIState : UIState {
         takenHouseCountText.SetText(currentEntity.CurrentHousedVillagersCount.ToString());
     }
 
+    public void SetVillagerPauseStatus() {
+        pauseVillagerSpawningButton.SetImage(Main.Assets.Request<Texture2D>("Images/UI/Button" + (CurrentEntity.pausedRespawns ? "Play" : "Delete")));
+        pauseVillagerSpawningButtonZone.SetText(("UI.Shrine." + (CurrentEntity.pausedRespawns ? "Resume" : "Pause") + "VillagerSpawning").Localized());
+    }
+
     /// <summary>
     ///     Regenerates this UI state with the new passed in shrine entity.
     /// </summary>
@@ -232,6 +238,22 @@ public class VillageShrineUIState : UIState {
 
         respawnItemDisplay.SetItem(LWMUtils.VillagerTypeToRespawnItemType(shrineType));
         respawnTimerHeader.SetText($"UI.Shrine.{shrineType}Countdown".Localized());
+        SetVillagerPauseStatus();
+    }
+
+    private void ClickPauseVillagerSpawning(UIMouseEvent evt, UIElement listeningElement) {
+        VillageShrineEntity currentEntity = CurrentEntity;
+        switch (Main.netMode) {
+            case NetmodeID.MultiplayerClient:
+                ModPacket packet = ModContent.GetInstance<ShrinePacketHandler>().GetPacket(ShrinePacketHandler.ToggleVillagerRespawning);
+                packet.WriteVector2(currentEntity.Position.ToVector2());
+                packet.Send();
+                break;
+            case NetmodeID.SinglePlayer:
+                currentEntity.pausedRespawns = !currentEntity.pausedRespawns;
+                SetVillagerPauseStatus();
+                break;
+        }
     }
 
     private void AddRespawnItem(UIMouseEvent evt, UIElement listeningElement) {
