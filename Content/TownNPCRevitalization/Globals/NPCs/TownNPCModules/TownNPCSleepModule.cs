@@ -34,7 +34,7 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     public BoundedNumber<float> awakeTicks = new(DefaultAwakeValue, 0, MaxAwakeValue);
 
     /// <summary>
-    ///     The amount of ticks that must pass before this NPC can fall asleep.
+    ///     The amount of ticks that must pass before this NPC is allowed to sleep, even if they really want to.
     /// </summary>
     public BoundedNumber<int> blockedSleepTimer = new(0, 0, MaxBlockedSleepValue);
 
