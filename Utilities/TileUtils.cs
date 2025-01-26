@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Terraria.DataStructures;
 using Terraria.Localization;
 using Terraria.ObjectData;
 using MapEntryDict = System.Collections.Generic.IDictionary<ushort, System.Collections.Generic.IList<Terraria.ModLoader.MapEntry>>;
@@ -56,6 +57,12 @@ public static partial class LWMUtils {
             _ => topLeft
         };
     }
+
+    /// <summary>
+    ///     Calculates the hitbox AKA bounding box of the specified tile at the provided position.
+    /// </summary>
+    public static Rectangle GetTileHitBox(Tile tile, Point16 tilePos) =>
+        TileObjectData.GetTileData(tile) is not { } tileData ? Rectangle.Empty : new Rectangle(tilePos.X, tilePos.Y, tileData.Width, tileData.Height);
 
     /// <summary>
     ///     Method that starts at a specified initial tile position, and moves down until the passed in conditional is

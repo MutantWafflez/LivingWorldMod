@@ -25,15 +25,16 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         public PathNode lastConsumedNode = lastConsumedNode;
     }
 
+    private record struct OpenedDoorData(Point16 TilePos, Rectangle DoorHitBox, bool IsGate = false);
+
     private const int MaxPathRecyclesBeforeFailure = 5;
 
     private readonly List<PathfinderResult> _cachedResults = [];
 
     /// <summary>
-    ///     Rectangles belonging to the doors that this NPC needs to close. The rectangle expands slowly beyond the actual door tile; when the NPC hitbox stops intersecting the rectangle,
-    ///     they will close the door.
+    ///     The position of doors that this NPC has opened and need to be closed.
     /// </summary>
-    private readonly List<Rectangle> doorClosingZones = [];
+    private readonly List<OpenedDoorData> _openDoors = [];
 
     private float _prevDistanceToNextNode;
     private int _notMakingProgressCounter;
@@ -275,70 +276,62 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     public void CancelPathfind() => EndPathfinding();
 
     private void CheckForDoors() {
-        // TODO: Rewrite door checking
-        // Direct vanilla code (sorta disgusting)
-        if (NPC.closeDoor && ((NPC.position.X + NPC.width / 2f) / 16f > NPC.doorX + 2 || (NPC.position.X + NPC.width / 2f) / 16f < NPC.doorX - 2)) {
-            Tile doorPos = Framing.GetTileSafely(NPC.doorX, NPC.doorY);
-
-            if (TileLoader.CloseDoorID(doorPos) >= 0) {
-                if (WorldGen.CloseDoor(NPC.doorX, NPC.doorY)) {
-                    NPC.closeDoor = false;
-                    NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 1, NPC.doorX, NPC.doorY, NPC.direction);
-                }
-
-                if ((NPC.position.X + NPC.width / 2f) / 16f > NPC.doorX + 4
-                    || (NPC.position.X + NPC.width / 2f) / 16f < NPC.doorX - 4
-                    || (NPC.position.Y + NPC.height / 2f) / 16f > NPC.doorY + 4
-                    || (NPC.position.Y + NPC.height / 2f) / 16f < NPC.doorY - 4) {
-                    NPC.closeDoor = false;
-                }
-            }
-            else if (doorPos.TileType == TileID.TallGateOpen) {
-                if (WorldGen.ShiftTallGate(NPC.doorX, NPC.doorY, true)) {
-                    NPC.closeDoor = false;
-                    NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 5, NPC.doorX, NPC.doorY);
-                }
-
-                if ((NPC.position.X + NPC.width / 2f) / 16f > NPC.doorX + 4
-                    || (NPC.position.X + NPC.width / 2f) / 16f < NPC.doorX - 4
-                    || (NPC.position.Y + NPC.height / 2f) / 16f > NPC.doorY + 4
-                    || (NPC.position.Y + NPC.height / 2f) / 16f < NPC.doorY - 4) {
-                    NPC.closeDoor = false;
-                }
-            }
-            else {
-                NPC.closeDoor = false;
-            }
-        }
-
-        // How vanilla does it; keeping it the same lest some weird edge case happens
-        Point headTilePos = new((int)((NPC.position.X + NPC.width / 2f + 15 * NPC.direction) / 16f), (int)((NPC.position.Y + NPC.height - 16f) / 16f) - 2);
-        Tile topTile = Framing.GetTileSafely(headTilePos.X, headTilePos.Y);
-
-        if (!topTile.HasUnactuatedTile || (!TileLoader.IsClosedDoor(topTile) && topTile.TileType != TileID.TallGateClosed) || Main.netMode == NetmodeID.MultiplayerClient) {
+        if (Main.netMode == NetmodeID.MultiplayerClient) {
             return;
         }
 
-        if (WorldGen.OpenDoor(headTilePos.X, headTilePos.Y, NPC.direction)) {
-            NPC.closeDoor = true;
-            NPC.doorX = headTilePos.X;
-            NPC.doorY = headTilePos.Y;
-            NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 0, headTilePos.X, headTilePos.Y, NPC.direction);
-            NPC.netUpdate = true;
+        Point16 doorCheckPos = NPC.position.ToTileCoordinates16() + new Point16(NPC.direction == -1 ? -1 : (int)Math.Ceiling(NPC.width / 16f), 0);
+
+        // Go through all doors that are currently open, and if the NPC isn't currently colliding with their hitbox, close them
+        for (int i = 0; i < _openDoors.Count; i++) {
+            OpenedDoorData openDoor = _openDoors[i];
+            if ((NPC.Hitbox with { X = NPC.Hitbox.X + 16 * NPC.direction }).Intersects(openDoor.DoorHitBox)) {
+                continue;
+            }
+
+            if (openDoor.IsGate && WorldGen.ShiftTallGate(openDoor.TilePos.X, openDoor.TilePos.Y, true)) {
+                NetMessage.SendData(MessageID.ToggleDoorState, number: 5, number2: openDoor.TilePos.X, number3: openDoor.DoorHitBox.Y);
+            }
+            else if (WorldGen.CloseDoor(openDoor.TilePos.X, openDoor.TilePos.Y)) {
+                NetMessage.SendData(MessageID.ToggleDoorState, number: 1, number2: openDoor.TilePos.X, number3: openDoor.DoorHitBox.Y, number4: NPC.direction);
+            }
+
+            _openDoors.RemoveAt(i--);
         }
-        else if (WorldGen.OpenDoor(headTilePos.X, headTilePos.Y, -NPC.direction)) {
-            NPC.closeDoor = true;
-            NPC.doorX = headTilePos.X;
-            NPC.doorY = headTilePos.Y;
-            NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 0, headTilePos.X, headTilePos.Y, -NPC.direction);
-            NPC.netUpdate = true;
+
+        Tile doorTile = Main.tile[doorCheckPos];
+        if (!doorTile.HasUnactuatedTile || (!TileLoader.IsClosedDoor(doorTile) && doorTile.TileType != TileID.TallGateClosed)) {
+            return;
         }
-        else if (WorldGen.ShiftTallGate(headTilePos.X, headTilePos.Y, false)) {
-            NPC.closeDoor = true;
-            NPC.doorX = headTilePos.X;
-            NPC.doorY = headTilePos.Y;
-            NetMessage.SendData(MessageID.ToggleDoorState, -1, -1, null, 4, headTilePos.X, headTilePos.Y);
-            NPC.netUpdate = true;
+
+        for (int i = NPC.direction; i != -NPC.direction; i = -i) {
+            if (!WorldGen.OpenDoor(doorCheckPos.X, doorCheckPos.Y, i)) {
+                continue;
+            }
+
+            AddOpenDoor(false);
+            NetMessage.SendData(MessageID.ToggleDoorState, number2: doorCheckPos.X, number3: doorCheckPos.Y, number4: i);
+            break;
+        }
+
+        if (!WorldGen.ShiftTallGate(doorCheckPos.X, doorCheckPos.Y, false)) {
+            return;
+        }
+
+        AddOpenDoor(true);
+        NetMessage.SendData(MessageID.ToggleDoorState, number: 4, number2: doorCheckPos.X, number3: doorCheckPos.Y);
+
+        return;
+
+        void AddOpenDoor(bool isGate) {
+            Rectangle doorHitBox = LWMUtils.GetTileHitBox(
+                    doorTile,
+                    LWMUtils.GetCornerOfMultiTile(doorTile, doorCheckPos.X, doorCheckPos.Y, LWMUtils.CornerType.TopLeft).ToPoint16()
+                )
+                .ToWorldCoordinates();
+
+            // Add additional "fluff" around edges of the doors so NPCs don't try to close the door while still inside it
+            _openDoors.Add(new OpenedDoorData(doorCheckPos, doorHitBox, isGate));
         }
     }
 

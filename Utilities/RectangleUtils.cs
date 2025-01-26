@@ -22,4 +22,14 @@ public static partial class LWMUtils {
             maxY - minY
         );
     }
+
+    /// <summary>
+    ///     Returns a copy of this rectangle (which should be in Tile coordinates) but in World coordinates.
+    /// </summary>
+    public static Rectangle ToWorldCoordinates(this Rectangle rectangle) => new (
+        rectangle.X * 16,
+        rectangle.Y * 16,
+        rectangle.Width * 16,
+        rectangle.Height * 16
+    );
 }
