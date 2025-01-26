@@ -173,7 +173,7 @@ public class TownNPCPathfinder {
                 bool isPlatform = TileID.Sets.Platforms[tile.TileType];
                 bool isClosedDoor = TileLoader.OpenDoorID(tile) > 0;
 
-                if (hasTile && !isActuated && !isClosedDoor && tile.TileType != TileID.Bubble) {
+                if (hasTile && !isActuated && !isClosedDoor && tile.TileType != TileID.Bubble && tile.TileType != TileID.TallGateClosed) {
                     if (isSolid) {
                         if (!isPlatform) {
                             TileFlags additionalFlags = TileID.Sets.IgnoredByNpcStepUp[tile.TileType] ? TileFlags.Empty : TileFlags.CanStepWhenComingFromLeft | TileFlags.CanStepWhenComingFromRight;
