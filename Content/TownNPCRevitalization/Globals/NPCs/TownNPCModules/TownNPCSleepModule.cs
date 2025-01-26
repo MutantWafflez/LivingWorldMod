@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.UI.Bestiary;
@@ -18,7 +20,7 @@ using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 
-public sealed  class TownNPCSleepModule  : TownNPCModule {
+public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     private const int MaxAwakeValue = LWMUtils.InGameHour * 24;
     private const float DefaultAwakeValue = MaxAwakeValue * 0.2f;
     private const int MaxBlockedSleepValue = LWMUtils.RealLifeSecond * 10;
@@ -99,6 +101,16 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
         );
     }
 
+    public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) {
+        binaryWriter.Write(awakeTicks);
+        binaryWriter.Write(blockedSleepTimer);
+    }
+
+    public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader) {
+        awakeTicks = new BoundedNumber<float>(binaryReader.ReadSingle(), awakeTicks.LowerBound, awakeTicks.UpperBound);
+        blockedSleepTimer = new BoundedNumber<int>(binaryReader.ReadInt32(), blockedSleepTimer.LowerBound, blockedSleepTimer.UpperBound);
+    }
+
     public override bool? CanChat(NPC npc) => npc.ai[0] == TownNPCAIState.GetStateInteger<PassedOutAIState>() ? false : null;
 
     public override void HitEffect(NPC npc, NPC.HitInfo hit) {
@@ -117,5 +129,9 @@ public sealed  class TownNPCSleepModule  : TownNPCModule {
 
         NPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind();
         TownNPCStateModule.RefreshToState<PassedOutAIState>(NPC);
+    }
+
+    public void OnTownNPCAttack(NPC npc) {
+        blockedSleepTimer += LWMUtils.RealLifeSecond * 8;
     }
 }

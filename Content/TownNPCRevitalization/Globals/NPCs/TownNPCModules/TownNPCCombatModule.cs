@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
@@ -163,8 +164,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
             _ => 0f
         };
 
-        // TODO: Perhaps add a custom hook for "On Attacking" instead of hardcoding?
-        NPC.GetGlobalNPC<TownNPCSleepModule>().blockedSleepTimer += LWMUtils.RealLifeSecond * 8;
+        IOnTownNPCAttack.Invoke(NPC);
         NPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind();
 
         NPC.localAI[3] = 0f;
