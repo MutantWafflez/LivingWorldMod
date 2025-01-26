@@ -49,7 +49,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     public Point TopLeftOfPathfinderZone => BottomLeftTileOfNPC - new Point(PathfinderSize / 2, PathfinderSize / 2);
 
-    private static void PrunePath(IList<PathNode> path) {
+    private static void PrunePath(List<PathNode> path) {
         if (LWM.IsDebug && ModContent.GetInstance<DebugConfig>().disablePathPruning) {
             return;
         }
