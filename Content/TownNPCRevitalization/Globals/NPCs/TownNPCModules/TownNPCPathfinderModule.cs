@@ -29,6 +29,12 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     private readonly List<PathfinderResult> _cachedResults = [];
 
+    /// <summary>
+    ///     Rectangles belonging to the doors that this NPC needs to close. The rectangle expands slowly beyond the actual door tile; when the NPC hitbox stops intersecting the rectangle,
+    ///     they will close the door.
+    /// </summary>
+    private readonly List<Rectangle> doorClosingZones = [];
+
     private float _prevDistanceToNextNode;
     private int _notMakingProgressCounter;
     private int _pathRestartCount;
