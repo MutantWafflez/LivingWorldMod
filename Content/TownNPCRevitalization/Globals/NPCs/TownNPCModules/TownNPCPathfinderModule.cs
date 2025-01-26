@@ -282,10 +282,11 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
         Point16 doorCheckPos = NPC.position.ToTileCoordinates16() + new Point16(NPC.direction == -1 ? -1 : (int)Math.Ceiling(NPC.width / 16f), 0);
 
-        // Go through all doors that are currently open, and if the NPC isn't currently colliding with their hitbox, close them
+        // Go through all doors that are currently open, and if the NPC isn't currently colliding with a door's hitbox, close it
+        // Hitboxes are slightly inflated and displaced for a more "natural" opening/closing distance
         for (int i = 0; i < _openDoors.Count; i++) {
             OpenedDoorData openDoor = _openDoors[i];
-            if ((NPC.Hitbox with { X = NPC.Hitbox.X + 16 * NPC.direction }).Intersects(openDoor.DoorHitBox)) {
+            if ((NPC.Hitbox with { X = NPC.Hitbox.X + 8 * NPC.direction }).Intersects(openDoor.DoorHitBox)) {
                 continue;
             }
 
@@ -304,7 +305,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             return;
         }
 
-        for (int i = NPC.direction; i != -NPC.direction; i = -i) {
+        for (int i = NPC.direction; i is -1 or 1; i += 2 * -NPC.direction) {
             if (!WorldGen.OpenDoor(doorCheckPos.X, doorCheckPos.Y, i)) {
                 continue;
             }
@@ -331,6 +332,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
                 .ToWorldCoordinates();
 
             // Add additional "fluff" around edges of the doors so NPCs don't try to close the door while still inside it
+            doorHitBox.Inflate(8, 0);
             _openDoors.Add(new OpenedDoorData(doorCheckPos, doorHitBox, isGate));
         }
     }
