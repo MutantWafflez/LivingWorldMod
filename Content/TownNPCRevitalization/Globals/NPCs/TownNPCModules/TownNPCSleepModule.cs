@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.PersonalityTraits;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
@@ -23,7 +25,9 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModul
 public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     private const int MaxAwakeValue = LWMUtils.InGameHour * 24;
     private const float DefaultAwakeValue = MaxAwakeValue * 0.2f;
+
     private const int MaxBlockedSleepValue = LWMUtils.RealLifeSecond * 10;
+    private const int DefaultChanceToSleepWhileTired = 1000;
 
     private static readonly SleepSchedule DefaultSleepSchedule = new(new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
     private static readonly Gradient<Color> SleepIconColorGradient = new (Color.Lerp, (0f, Color.Red), (0.5f, Color.DarkOrange), (1f, Color.White));
@@ -37,6 +41,9 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     ///     The amount of ticks that must pass before this NPC is allowed to sleep, even if they really want to.
     /// </summary>
     private BoundedNumber<int> _blockedSleepTimer = new(0, 0, MaxBlockedSleepValue);
+
+    // TODO: De-couple this? Probably? Caching it here for now instead of LINQ-ing every frame
+    private SleepTrait _npcSleepTrait;
 
     public bool IsAsleep => NPC.ai[0] == TownNPCAIState.GetStateInteger<PassedOutAIState>()
         || (NPC.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && NPC.ai[1] == BeAtHomeAIState.IsSleepingStateFlag);
@@ -72,22 +79,30 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     ///     Denotes whether there is anything event or tertiary circumstances that is preventing this NPC from sleeping. If this value is false, it means this NPC cannot sleep normally. They can still
     ///     pass out, however.
     /// </summary>
-    public bool CanSleep {
-        get {
-            bool sleepBeingBlocked = LanternNight.LanternsUp
-                // TODO: Allow sleeping once tired enough, even if party is occurring
-                || GenuinePartyIsOccurring
-                || _blockedSleepTimer > 0
-                || NPC.GetGlobalNPC<TownNPCChatModule>().IsChattingWithPlayerDirectly;
-            SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(NPC.type);
+    public bool CanSleep => _blockedSleepTimer > 0 || NPC.GetGlobalNPC<TownNPCChatModule>().IsChattingWithPlayerDirectly;
 
-            return !sleepBeingBlocked && LWMUtils.CurrentInGameTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime);
-        }
+    /// <summary>
+    ///     In contrast to <see cref="CanSleep" />, this flag denotes whether this NPC has had its random checks succeed and "wants" to sleep. See the <see cref="UpdateModule" /> code for
+    ///     more details on these checks. Note that regardless of this flag, the NPC will <b>NOT</b> sleep if <see cref="CanSleep" /> is <see langword="false" />.
+    /// </summary>
+    public bool WantsToSleep {
+        get;
+        private set;
     }
 
     private static bool GenuinePartyIsOccurring => BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty;
 
     public static SleepSchedule GetSleepProfileOrDefault(int npcType) => TownNPCDataSystem.sleepSchedules.GetValueOrDefault(npcType, DefaultSleepSchedule);
+
+    public override void SetDefaults(NPC entity) {
+        base.SetDefaults(entity);
+
+        if (ModLoader.isLoading || !TownNPCDataSystem.PersonalityDatabase.TryGetValue(entity.type, out List<IPersonalityTrait> personalityTraits)) {
+            return;
+        }
+
+        _npcSleepTrait = (SleepTrait)personalityTraits.First(trait => trait is SleepTrait);
+    }
 
     public override void SetBestiary(NPC npc, BestiaryDatabase database, BestiaryEntry bestiaryEntry) {
         bestiaryEntry.Info.Add(new TownNPCPreferredSleepTimeSpanElement(npc.type));
@@ -95,6 +110,7 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
 
     public override void SaveData(NPC npc, TagCompound tag) {
         tag[nameof(awakeTicks)] = awakeTicks.Value;
+        tag[nameof(WantsToSleep)] = WantsToSleep;
     }
 
     public override void LoadData(NPC npc, TagCompound tag) {
@@ -103,14 +119,18 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
             0,
             MaxAwakeValue
         );
+
+        WantsToSleep = tag.GetBool(nameof(WantsToSleep));
     }
 
     public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) {
+        bitWriter.WriteBit(WantsToSleep);
         binaryWriter.Write(awakeTicks);
         binaryWriter.Write(_blockedSleepTimer);
     }
 
     public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader) {
+        WantsToSleep = bitReader.ReadBit();
         awakeTicks = new BoundedNumber<float>(binaryReader.ReadSingle(), awakeTicks.LowerBound, awakeTicks.UpperBound);
         _blockedSleepTimer = new BoundedNumber<int>(binaryReader.ReadInt32(), _blockedSleepTimer.LowerBound, _blockedSleepTimer.UpperBound);
     }
@@ -127,12 +147,43 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
             awakeTicks += 1f;
         }
 
+        CheckNPCUrgeToSleep();
+
         if (awakeTicks < MaxAwakeValue) {
             return;
         }
 
         NPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind();
         TownNPCStateModule.RefreshToState<PassedOutAIState>(NPC);
+    }
+
+    private void CheckNPCUrgeToSleep() {
+        if (Main.netMode == NetmodeID.MultiplayerClient) {
+            return;
+        }
+
+        switch (WantsToSleep) {
+            case true when awakeTicks <= (MaxAwakeValue - _npcSleepTrait.WellRestedLimit) / 2f:
+                WantsToSleep = false;
+                NPC.netUpdate = true;
+                break;
+            case false when awakeTicks >= _npcSleepTrait.TiredLimit: {
+                // The denominator of the chance for this NPC to fall asleep each tick (i.e. 1/x chance)
+                int chanceToSleep = DefaultChanceToSleepWhileTired;
+                SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(NPC.type);
+
+                // If it's the NPC's bedtime, the NPC will more heavily prefer trying to sleep
+                if (LWMUtils.CurrentInGameTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime)) {
+                    chanceToSleep /= 4;
+                }
+
+                if (Main.rand.NextBool(chanceToSleep)) {
+                    WantsToSleep = NPC.netUpdate = true;
+                }
+
+                break;
+            }
+        }
     }
 
     public void OnTownNPCAttack(NPC npc) {

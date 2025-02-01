@@ -24,7 +24,7 @@ public class TownNPCHousingModule : TownNPCModule {
         private set;
     }
 
-    public bool ShouldGoHome => NPC.GetGlobalNPC<TownNPCSleepModule>().CanSleep || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
+    public bool ShouldGoHome => NPC.GetGlobalNPC<TownNPCSleepModule>().WantsToSleep || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
 
     public override void UpdateModule() {
         if (NPC.homeTileX == -1 && NPC.homeTileY == -1 && NPC.velocity.Y == 0f && !NPC.shimmering) {
