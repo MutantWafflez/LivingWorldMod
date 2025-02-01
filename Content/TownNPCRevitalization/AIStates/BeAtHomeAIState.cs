@@ -32,7 +32,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
         }
         else {
             TownNPCSleepModule sleepModule = npc.GetGlobalNPC<TownNPCSleepModule>();
-            if (!sleepModule.ShouldSleep) {
+            if (!sleepModule.CanSleep) {
                 return;
             }
 

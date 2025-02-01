@@ -36,7 +36,7 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     /// <summary>
     ///     The amount of ticks that must pass before this NPC is allowed to sleep, even if they really want to.
     /// </summary>
-    public BoundedNumber<int> blockedSleepTimer = new(0, 0, MaxBlockedSleepValue);
+    private BoundedNumber<int> _blockedSleepTimer = new(0, 0, MaxBlockedSleepValue);
 
     public bool IsAsleep => NPC.ai[0] == TownNPCAIState.GetStateInteger<PassedOutAIState>()
         || (NPC.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && NPC.ai[1] == BeAtHomeAIState.IsSleepingStateFlag);
@@ -68,12 +68,16 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
         }
     }
 
-    public bool ShouldSleep {
+    /// <summary>
+    ///     Denotes whether there is anything event or tertiary circumstances that is preventing this NPC from sleeping. If this value is false, it means this NPC cannot sleep normally. They can still
+    ///     pass out, however.
+    /// </summary>
+    public bool CanSleep {
         get {
             bool sleepBeingBlocked = LanternNight.LanternsUp
                 // TODO: Allow sleeping once tired enough, even if party is occurring
                 || GenuinePartyIsOccurring
-                || blockedSleepTimer > 0
+                || _blockedSleepTimer > 0
                 || NPC.GetGlobalNPC<TownNPCChatModule>().IsChattingWithPlayerDirectly;
             SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(NPC.type);
 
@@ -103,22 +107,22 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
 
     public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) {
         binaryWriter.Write(awakeTicks);
-        binaryWriter.Write(blockedSleepTimer);
+        binaryWriter.Write(_blockedSleepTimer);
     }
 
     public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader) {
         awakeTicks = new BoundedNumber<float>(binaryReader.ReadSingle(), awakeTicks.LowerBound, awakeTicks.UpperBound);
-        blockedSleepTimer = new BoundedNumber<int>(binaryReader.ReadInt32(), blockedSleepTimer.LowerBound, blockedSleepTimer.UpperBound);
+        _blockedSleepTimer = new BoundedNumber<int>(binaryReader.ReadInt32(), _blockedSleepTimer.LowerBound, _blockedSleepTimer.UpperBound);
     }
 
     public override bool? CanChat(NPC npc) => npc.ai[0] == TownNPCAIState.GetStateInteger<PassedOutAIState>() ? false : null;
 
     public override void HitEffect(NPC npc, NPC.HitInfo hit) {
-        blockedSleepTimer += LWMUtils.RealLifeSecond * 2;
+        _blockedSleepTimer += LWMUtils.RealLifeSecond * 2;
     }
 
     public override void UpdateModule() {
-        blockedSleepTimer -= 1;
+        _blockedSleepTimer -= 1;
         if (!IsAsleep) {
             awakeTicks += 1f;
         }
@@ -132,6 +136,6 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     }
 
     public void OnTownNPCAttack(NPC npc) {
-        blockedSleepTimer += LWMUtils.RealLifeSecond * 8;
+        _blockedSleepTimer += LWMUtils.RealLifeSecond * 8;
     }
 }
