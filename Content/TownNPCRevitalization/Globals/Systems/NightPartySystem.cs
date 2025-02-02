@@ -27,7 +27,7 @@ public sealed class NightPartySystem : BaseModSystem<NightPartySystem> {
         WorldGen.BroadcastText("Event.NightPartyStarted".Localized().ToNetworkText(), LWMUtils.DarkPinkPartyTextColor);
 
         NetMessage.SendData(MessageID.WorldData);
-        AchievementsHelper.NotifyProgressionEvent(25);
+        AchievementsHelper.NotifyProgressionEvent(AchievementHelperID.Events.ThrowAParty);
     }
 
     public override void PreUpdateTime() {
