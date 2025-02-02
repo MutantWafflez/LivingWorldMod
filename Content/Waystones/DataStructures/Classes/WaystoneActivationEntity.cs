@@ -67,7 +67,7 @@ public sealed class WaystoneActivationEntity (Vector2 position, Color activation
                 // Play finale sound and give text confirmation
                 SoundEngine.PlaySound(SoundID.Item113, position);
 
-                Main.NewText("Event.WaystoneActivation".Localized(), Color.Yellow);
+                Main.NewText("Event.WaystoneActivation".Localized(), LWMUtils.YellowErrorTextColor);
             }
             else if (_activationVFXTimer > circlePullThreshold + finaleThreshold) {
                 // Internally end sequence

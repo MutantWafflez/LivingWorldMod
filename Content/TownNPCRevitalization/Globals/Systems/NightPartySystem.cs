@@ -1,10 +1,8 @@
 ﻿using System.Linq;
 using LivingWorldMod.Globals.BaseTypes.Systems;
 using LivingWorldMod.Utilities;
-using Microsoft.Xna.Framework;
 using Terraria.GameContent.Achievements;
 using Terraria.GameContent.Events;
-using Terraria.Localization;
 using Party = Terraria.GameContent.Events.BirthdayParty;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
@@ -22,8 +20,7 @@ public sealed class NightPartySystem : BaseModSystem<NightPartySystem> {
         Party.CelebratingNPCs = LWMUtils.GetAllNPCs(Party.CanNPCParty).Select(npc => npc.whoAmI).ToList();
         NPC.freeCake = true;
 
-        Color partyColor = new(255, 0, 160);
-        WorldGen.BroadcastText("Event.NightPartyStarted".Localized().ToNetworkText(), partyColor);
+        WorldGen.BroadcastText("Event.NightPartyStarted".Localized().ToNetworkText(), LWMUtils.DarkPinkPartyTextColor);
 
         NetMessage.SendData(MessageID.WorldData);
         AchievementsHelper.NotifyProgressionEvent(25);

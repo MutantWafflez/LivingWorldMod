@@ -307,8 +307,7 @@ public class NPCHousingPatches : LoadablePatch {
                     return true;
                 }
 
-                // TODO: Add constants for various Vanilla color values
-                Main.NewText(Language.GetText(errorKey), new Color(255, 240, 20));
+                Main.NewText(Language.GetText(errorKey), LWMUtils.YellowErrorTextColor);
                 return false;
             }
         );

@@ -258,16 +258,15 @@ public abstract class Villager : ModNPC {
             return;
         }
 
-        Color leavingColor = new(255, 25, 25);
         string leavingText = $"Event.VillagerLeft.{VillagerType}".Localized().FormatWith(NPC.GivenOrTypeName);
 
         NPC.active = false;
         if (Main.netMode == NetmodeID.Server) {
-            ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(leavingText), leavingColor);
+            ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(leavingText), LWMUtils.RedTownNPCDeathTextColor);
             NetMessage.SendData(MessageID.SyncNPC, number: NPC.whoAmI);
         }
         else {
-            Main.NewText(leavingText, leavingColor);
+            Main.NewText(leavingText, LWMUtils.RedTownNPCDeathTextColor);
             SoundEngine.PlaySound(SoundID.NPCDeath6, NPC.Center);
         }
     }
