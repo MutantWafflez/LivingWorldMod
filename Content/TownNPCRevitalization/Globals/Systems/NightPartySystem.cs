@@ -55,7 +55,7 @@ public sealed class NightPartySystem : BaseModSystem<NightPartySystem> {
     }
 
     public override void SaveWorldData(TagCompound tag) {
-        tag[(nameof(_nextLanternNightShouldAlsoBeParty))] = _nextLanternNightShouldAlsoBeParty;
+        tag[nameof(_nextLanternNightShouldAlsoBeParty)] = _nextLanternNightShouldAlsoBeParty;
     }
 
     public override void LoadWorldData(TagCompound tag) {
