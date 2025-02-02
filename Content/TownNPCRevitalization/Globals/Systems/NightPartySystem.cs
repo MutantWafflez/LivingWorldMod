@@ -23,7 +23,7 @@ public sealed class NightPartySystem : BaseModSystem<NightPartySystem> {
         NPC.freeCake = true;
 
         Color partyColor = new(255, 0, 160);
-        WorldGen.BroadcastText(NetworkText.FromKey("Mods.LivingWorldMod.Event.NightPartyStarted"), partyColor);
+        WorldGen.BroadcastText("Event.NightPartyStarted".Localized().ToNetworkText(), partyColor);
 
         NetMessage.SendData(MessageID.WorldData);
         AchievementsHelper.NotifyProgressionEvent(25);

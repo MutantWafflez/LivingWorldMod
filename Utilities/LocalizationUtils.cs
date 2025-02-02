@@ -9,6 +9,11 @@ public static partial class LWMUtils {
     ///     the provided string is the key for a <see cref="LWM" /> localization file text value.
     /// </summary>
     public static LocalizedText Localized(this string key) => LWM.Instance.GetLocalization(key);
+    
+    /// <summary>
+    /// Converts this <see cref="LocalizedText"/> instance into its <see cref="NetworkText"/> equivalent.
+    /// </summary>
+    public static NetworkText ToNetworkText(this LocalizedText text) => NetworkText.FromKey(text.Key);
 
     /// <summary>
     ///     Extension for strings that will prepend "Mods.LivingWorldMod." to the string, for use with generating localization keys
