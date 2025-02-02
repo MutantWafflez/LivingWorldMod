@@ -16,5 +16,6 @@ public interface IOnTownNPCAttack {
         }
     }
 
+    /// <inheritdoc cref="IOnTownNPCAttack"/>
     void OnTownNPCAttack(NPC npc);
 }
