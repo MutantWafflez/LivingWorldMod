@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using LivingWorldMod.Globals.BaseTypes.Systems;
 using LivingWorldMod.Utilities;
 using Terraria.GameContent.Achievements;
 using Terraria.GameContent.Events;
+using Terraria.ModLoader.IO;
 using Party = Terraria.GameContent.Events.BirthdayParty;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
@@ -13,6 +15,8 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 /// </summary>
 public sealed class NightPartySystem : BaseModSystem<NightPartySystem> {
     private bool _shouldNightParty;
+
+    private bool _nextLanternNightShouldAlsoBeParty;
 
     private static void StartNightParty() {
         Party.GenuineParty = true;
@@ -36,11 +40,25 @@ public sealed class NightPartySystem : BaseModSystem<NightPartySystem> {
         }
 
         if (_shouldNightParty && !Main.dayTime && Main.time == 0) {
-            StartNightParty();
+            if (_nextLanternNightShouldAlsoBeParty) {
+                StartNightParty();
+                
+                return;
+            }
+
+            _nextLanternNightShouldAlsoBeParty = !_nextLanternNightShouldAlsoBeParty;
         }
         else if (Main.dayTime && Main.time == 0) {
             // Method doesn't do any time checks itself, it will just stop a party if one is happening
             Party.CheckNight();
         }
+    }
+
+    public override void SaveWorldData(TagCompound tag) {
+        tag[(nameof(_nextLanternNightShouldAlsoBeParty))] = _nextLanternNightShouldAlsoBeParty;
+    }
+
+    public override void LoadWorldData(TagCompound tag) {
+        _nextLanternNightShouldAlsoBeParty = tag.GetBool(nameof(_nextLanternNightShouldAlsoBeParty));
     }
 }
