@@ -322,7 +322,7 @@ Mods: {
 
 		UI: {
 			// NPCHappiness.PriceModifier: Price Modifier
-			// Bestiary.SleepIntervalTooltip: Sleep Interval
+			// Bestiary.SleepIntervalTooltip: Preferred Sleep Schedule
 			// Fraction: "{Numerator}/{Denominator}"
 			/* DurationMoodFlavorText:
 				'''
