@@ -14,6 +14,8 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
     /// </summary>
     public const float IsSleepingStateFlag = 1f;
 
+    private const float RetryPathfindToHomeCooldown = LWMUtils.RealLifeSecond * 5;
+
     public override void DoState(NPC npc) {
         if (!npc.GetGlobalNPC<TownNPCHousingModule>().ShouldGoHome) {
             TownNPCStateModule.RefreshToState<DefaultAIState>(npc);
@@ -28,9 +30,15 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
 
         npc.ai[1] = 0f;
         if (pathfinderModule.BottomLeftTileOfNPC != pathfindPos) {
+            if (--npc.ai[2] > 0) {
+                return;
+            }
+
+            npc.ai[2] = RetryPathfindToHomeCooldown;
             pathfinderModule.RequestPathfind(pathfindPos);
         }
         else {
+            npc.ai[2] = 0;
             TownNPCSleepModule sleepModule = npc.GetGlobalNPC<TownNPCSleepModule>();
             if (!sleepModule.CanSleep) {
                 return;
