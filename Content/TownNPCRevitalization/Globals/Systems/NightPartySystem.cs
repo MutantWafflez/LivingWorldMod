@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using LivingWorldMod.Globals.BaseTypes.Systems;
 using LivingWorldMod.Utilities;
 using Terraria.GameContent.Achievements;
@@ -17,6 +16,11 @@ public sealed class NightPartySystem : BaseModSystem<NightPartySystem> {
     private bool _shouldNightParty;
 
     private bool _nextLanternNightShouldAlsoBeParty;
+
+    /// <summary>
+    ///     Whether or not a night party is currently taking place.
+    /// </summary>
+    public static bool IsNightPartyOccuring => Party.PartyIsUp && Party.GenuineParty && !Main.dayTime;
 
     private static void StartNightParty() {
         Party.GenuineParty = true;
@@ -42,7 +46,7 @@ public sealed class NightPartySystem : BaseModSystem<NightPartySystem> {
         if (_shouldNightParty && !Main.dayTime && Main.time == 0) {
             if (_nextLanternNightShouldAlsoBeParty) {
                 StartNightParty();
-                
+
                 return;
             }
 

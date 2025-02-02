@@ -49,6 +49,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
             TownNPCSpriteModule spriteModule = npc.GetGlobalNPC<TownNPCSpriteModule>();
             TownNPCChatModule chatModule = npc.GetGlobalNPC<TownNPCChatModule>();
             float currentSleepQualityModifier = (float)Main.dayRate * sleepModule.SleepQualityModifier;
+            // TODO: Add hook that occurs while NPC is actively sleeping
             switch (npcRestType) {
                 case NPCRestType.Bed:
                     npc.friendlyRegen += 10;
