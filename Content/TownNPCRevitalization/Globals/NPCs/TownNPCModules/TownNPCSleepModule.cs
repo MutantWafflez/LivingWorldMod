@@ -27,7 +27,7 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     private const float DefaultAwakeValue = MaxAwakeValue * 0.2f;
 
     private const int MaxBlockedSleepValue = LWMUtils.RealLifeSecond * 10;
-    private const int DefaultChanceToSleepWhileTired = 1000;
+    private const int DefaultChanceToSleepWhileDeprived = 1000;
 
     private static readonly SleepSchedule DefaultSleepSchedule = new(new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
     private static readonly Gradient<Color> SleepIconColorGradient = new (Color.Lerp, (0f, Color.Red), (0.5f, Color.DarkOrange), (1f, Color.White));
@@ -153,6 +153,7 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
             return;
         }
 
+        // TODO: Add passed-out mood modifier
         NPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind();
         TownNPCStateModule.RefreshToState<PassedOutAIState>(NPC);
     }
@@ -166,18 +167,21 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
             return;
         }
 
+        int bestRestedLimit = MaxAwakeValue - _npcSleepTrait.BestRestLimit;
+
+        SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(NPC.type);
+        bool isBedTime = LWMUtils.CurrentInGameTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime);
         switch (WantsToSleep) {
-            case true when awakeTicks <= (MaxAwakeValue - _npcSleepTrait.WellRestedLimit) / 2f:
+            case true when (!isBedTime || awakeTicks <= bestRestedLimit / 3f) && Main.rand.NextBool(Math.Max(1, (int)awakeTicks)):
                 WantsToSleep = false;
                 NPC.netUpdate = true;
                 break;
-            case false when awakeTicks >= _npcSleepTrait.TiredLimit: {
+            case false when (isBedTime && awakeTicks >= _npcSleepTrait.WellRestedLimit) || awakeTicks >= _npcSleepTrait.TiredLimit: {
                 // The denominator of the chance for this NPC to fall asleep each tick (i.e. 1/x chance)
-                int chanceToSleep = DefaultChanceToSleepWhileTired;
-                SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(NPC.type);
+                int chanceToSleep = DefaultChanceToSleepWhileDeprived;
 
                 // If it's the NPC's bedtime, the NPC will more heavily prefer trying to sleep
-                if (LWMUtils.CurrentInGameTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime)) {
+                if (isBedTime) {
                     chanceToSleep /= 4;
                 }
 
