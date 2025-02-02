@@ -82,7 +82,7 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     public bool CanSleep => _blockedSleepTimer <= 0 && !NPC.GetGlobalNPC<TownNPCChatModule>().IsChattingWithPlayerDirectly;
 
     /// <summary>
-    ///     In contrast to <see cref="CanSleep" />, this flag denotes whether this NPC has had its random checks succeed and "wants" to sleep. See the <see cref="UpdateModule" /> code for
+    ///     In contrast to <see cref="CanSleep" />, this flag denotes whether this NPC has had its random checks succeed and "wants" to sleep. See the <see cref="CheckNPCUrgeToSleep" /> code for
     ///     more details on these checks. Note that regardless of this flag, the NPC will <b>NOT</b> sleep if <see cref="CanSleep" /> is <see langword="false" />.
     /// </summary>
     public bool WantsToSleep {

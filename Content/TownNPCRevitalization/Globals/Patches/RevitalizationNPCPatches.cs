@@ -8,6 +8,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.DataStructures.Records;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
@@ -164,10 +165,34 @@ public class RevitalizationNPCPatches : LoadablePatch {
         c.Next!.Operand = normalCollisionLabel;
     }
 
+    private static void DrawsPartyHatPatch(ILContext il) {
+        // Small edit that will block drawing an NPC's party hat during a party if they wish to sleep
+        currentContext = il;
+
+        ILCursor c = new (il);
+
+        c.Emit(OpCodes.Ldarg_0);
+        // If this delegate returns false, prevent hat drawing
+        c.EmitDelegate<Func<NPC, bool>>(
+            npc => {
+                if (!npc.TryGetGlobalNPC(out TownNPCSleepModule sleepModule)) {
+                    return true;
+                }
+
+                return !sleepModule.WantsToSleep;
+            }
+        );
+        Instruction branchInstr = c.Emit(OpCodes.Brfalse_S, c.DefineLabel()).Prev;
+
+        c.ErrorOnFailedGotoNext(i => i.MatchLdcI4(0), i => i.MatchRet());
+        branchInstr!.Operand = c.MarkLabel();
+    }
+
     public override void LoadPatches() {
         IL_Main.DrawNPCExtras += DrawNPCExtrasConsumptionPatch;
         IL_Main.GUIChatDrawInner += HappinessUIPatch;
         IL_ShopHelper.ProcessMood += ProcessMoodOverridePatch;
         IL_NPC.UpdateCollision += NPCCollisionUpdatePatch;
+        IL_NPC.UsesPartyHat += DrawsPartyHatPatch;
     }
 }
