@@ -80,7 +80,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         (Asset<Texture2D> npcAsset, int _, int _, Vector2 halfSize, float npcAddHeight, SpriteEffects spriteEffects) = DrawParameters;
 
         // Method Gaslighting
-        // See NPCDrawPatches.cs: TL;DR is the method is patched so that all sprite-batch calls are re-routed back to here (the sprite module) and we control the drawing
+        // See RevitalizationNPCPatches.cs: TL;DR is the method is patched so that all sprite-batch calls are re-routed back to here (the sprite module) and we control the drawing
         for (int i = 0; i < 2; i++) {
             Main.instance.DrawNPCExtras(NPC, i == 0, npcAddHeight, 0, Color.White, halfSize, spriteEffects, Vector2.Zero);
         }
