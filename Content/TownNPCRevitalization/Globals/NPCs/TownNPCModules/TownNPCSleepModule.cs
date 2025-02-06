@@ -143,7 +143,7 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
 
     public override void UpdateModule() {
         _blockedSleepTimer -= 1;
-        if (!IsAsleep) {
+        if (!IsAsleep && !GenuinePartyIsOccurring) {
             awakeTicks += 1f;
         }
 
@@ -176,7 +176,7 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
                 WantsToSleep = false;
                 NPC.netUpdate = true;
                 break;
-            case false when (isBedTime && awakeTicks >= _npcSleepTrait.WellRestedLimit) || awakeTicks >= _npcSleepTrait.TiredLimit: {
+            case false when (isBedTime && awakeTicks >= _npcSleepTrait.WellRestedLimit && !GenuinePartyIsOccurring) || awakeTicks >= _npcSleepTrait.TiredLimit: {
                 // The denominator of the chance for this NPC to fall asleep each tick (i.e. 1/x chance)
                 int chanceToSleep = DefaultChanceToSleepWhileDeprived;
 
