@@ -19,7 +19,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
     /// </summary>
     private record TownNPCDrawParameters(Asset<Texture2D> NPCAsset, int FrameWidth, int FrameHeight, Vector2 HalfSize, float NPCAddHeight, SpriteEffects SpriteEffects);
 
-    private const int GivingAnimationDuration = (int)(LWMUtils.RealLifeSecond * 1.5f);
+    public const int GivingAnimationDuration = (int)(LWMUtils.RealLifeSecond * 1.5f);
     private const int EyelidClosedDuration = 15;
     private const int TalkDuration = 8;
 
@@ -200,7 +200,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         int nonAttackFrameCount = Main.npcFrameCount[NPC.type] - NPCID.Sets.AttackFrameCount[NPC.type];
         const int animationHalf = GivingAnimationDuration / 2;
         RequestFrameOverride(
-            (uint)((_givingTimer < animationHalf ? _givingTimer : animationHalf - _givingTimer % animationHalf) switch {
+            (uint)((_givingTimer <= animationHalf ? _givingTimer : animationHalf - _givingTimer % (animationHalf + 1)) switch {
                 >= 10 and < 16 => nonAttackFrameCount - 5,
                 >= 16 => nonAttackFrameCount - 4,
                 _ => 0
