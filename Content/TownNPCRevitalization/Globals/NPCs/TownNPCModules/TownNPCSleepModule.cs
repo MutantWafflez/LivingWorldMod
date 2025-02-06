@@ -17,7 +17,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
-using Terraria.GameContent.Events;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
@@ -90,8 +89,6 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
         private set;
     }
 
-    private static bool GenuinePartyIsOccurring => BirthdayParty.PartyIsUp && BirthdayParty.GenuineParty;
-
     public static SleepSchedule GetSleepProfileOrDefault(int npcType) => TownNPCDataSystem.sleepSchedules.GetValueOrDefault(npcType, DefaultSleepSchedule);
 
     public override void SetDefaults(NPC entity) {
@@ -143,7 +140,7 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
 
     public override void UpdateModule() {
         _blockedSleepTimer -= 1;
-        if (!IsAsleep && !GenuinePartyIsOccurring) {
+        if (!IsAsleep && !NightPartySystem.IsNightPartyOccuring) {
             awakeTicks += 1f;
         }
 
@@ -176,7 +173,7 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
                 WantsToSleep = false;
                 NPC.netUpdate = true;
                 break;
-            case false when (isBedTime && awakeTicks >= _npcSleepTrait.WellRestedLimit && !GenuinePartyIsOccurring) || awakeTicks >= _npcSleepTrait.TiredLimit: {
+            case false when (isBedTime && awakeTicks >= _npcSleepTrait.WellRestedLimit && !NightPartySystem.IsNightPartyOccuring) || awakeTicks >= _npcSleepTrait.TiredLimit: {
                 // The denominator of the chance for this NPC to fall asleep each tick (i.e. 1/x chance)
                 int chanceToSleep = DefaultChanceToSleepWhileDeprived;
 
