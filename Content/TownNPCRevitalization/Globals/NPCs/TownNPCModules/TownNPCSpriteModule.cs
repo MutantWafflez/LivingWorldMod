@@ -15,6 +15,10 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModul
 ///     Module for Town NPCs that deal with drawing related tasks.
 /// </summary>
 public sealed class TownNPCSpriteModule : TownNPCModule {
+    /// <summary>
+    ///     Small wrapper class for <see cref="UnlockableNPCEntryIcon" /> that wraps the <see cref="UnlockableNPCEntryIcon.Update" /> method so that we can add <see cref="TownNPCSpriteModule.UpdateModule" />
+    ///     calls to the end of it, allowing for the Bestiary to actually draw NPCs with all the tweaks.
+    /// </summary>
     private sealed class UnlockableTownNPCEntryIcon(UnlockableNPCEntryIcon icon) : IEntryIcon {
         public void Update(BestiaryUICollectionInfo providedInfo, Rectangle hitbox, EntryIconDrawSettings settings) {
             icon.Update(providedInfo, hitbox, settings);
@@ -119,7 +123,6 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
 
     public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
         (Asset<Texture2D> _, int frameWidth, int frameHeight, Vector2 halfSize, float npcAddHeight, SpriteEffects spriteEffects) = DrawParameters;
-
         Vector2 drawPos = new (
             npc.position.X + npc.width / 2 - frameWidth * npc.scale / 2f + halfSize.X * npc.scale + _drawOffset.X,
             npc.position.Y + npc.height - frameHeight * npc.scale + 4f + halfSize.Y * npc.scale + npcAddHeight /*+ num35*/ + npc.gfxOffY + _drawOffset.Y
