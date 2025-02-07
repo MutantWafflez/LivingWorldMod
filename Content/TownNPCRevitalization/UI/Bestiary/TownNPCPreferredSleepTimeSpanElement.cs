@@ -17,6 +17,10 @@ public class TownNPCPreferredSleepTimeSpanElement (int npcType) : IBestiaryInfoE
     public UIBestiaryEntryInfoPage.BestiaryInfoCategory ElementCategory => UIBestiaryEntryInfoPage.BestiaryInfoCategory.FlavorText;
 
     public UIElement ProvideUIElement(BestiaryUICollectionInfo info) {
+        if (info.UnlockState <= BestiaryEntryUnlockState.NotKnownAtAll_0) {
+            return null;
+        }
+
         // Adapted vanilla code
         UITooltipElement elementZone = new("UI.Bestiary.SleepIntervalTooltip".Localized()) { Width = StyleDimension.Fill, Height = StyleDimension.FromPixels(30f) };
 
