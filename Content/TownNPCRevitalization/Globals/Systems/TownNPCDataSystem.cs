@@ -31,6 +31,8 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
 
     public static IReadOnlyDictionary<int, TownNPCOverlayProfile> spriteOverlayProfiles;
 
+    private static readonly Point DefaultOverlayTopLeft = new (-1, -1);
+
     private static Dictionary<string, LocalizedText> _autoloadedFlavorTexts;
 
     public static Dictionary<int, List<IPersonalityTrait>> PersonalityDatabase {
@@ -48,8 +50,9 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         Rectangle frameTwo,
         string overlayName
     ) {
-        Color[] colorDifference = new Color[frameOne.Width * frameTwo.Height];
-        Rectangle differenceRectangle = Rectangle.Empty;
+        // Color[] colorDifference = new Color[frameOne.Width * frameTwo.Height];
+        Point overlayTopLeft = DefaultOverlayTopLeft;
+        Point overlayBottomRight = DefaultOverlayTopLeft;
         for (int i = 0; i < frameOne.Height; i++) {
             for (int j = 0; j < frameOne.Width; j++) {
                 Color firstFramePixelColor = rawTextureData.GetValueAsNDimensionalArray(
@@ -64,21 +67,37 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
                     continue;
                 }
 
-                // TODO: Actually use difference rectangle properly
-                differenceRectangle.X = 1;
-                colorDifference[i * frameOne.Width + j] = secondFramePixelColor;
+                if (overlayTopLeft == DefaultOverlayTopLeft) {
+                    overlayTopLeft = overlayBottomRight = new Point(j, i);
+                    continue;
+                }
+
+                overlayBottomRight.X = Math.Max(overlayBottomRight.X, j);
+                overlayBottomRight.Y = Math.Max(overlayBottomRight.Y, i);
+                // colorDifference[i * frameOne.Width + j] = secondFramePixelColor;
             }
         }
 
-        if (differenceRectangle == Rectangle.Empty) {
+        if (overlayTopLeft == DefaultOverlayTopLeft) {
             return new TownNPCSpriteOverlay(new Texture2D(Main.graphics.GraphicsDevice, 1, 1), Vector2.Zero);
         }
 
-        Texture2D overlayTexture = new (Main.graphics.GraphicsDevice, frameOne.Width, frameOne.Height);
+        Rectangle differenceRectangle = LWMUtils.NewRectFromCorners(overlayTopLeft, overlayBottomRight);
+        Color[] colorDifference = new Color[differenceRectangle.Width * differenceRectangle.Height];
+        for (int i = 0; i < differenceRectangle.Height; i++) {
+            for (int j = 0; j < differenceRectangle.Width; j++) {
+                colorDifference[i * differenceRectangle.Width + j] = rawTextureData.GetValueAsNDimensionalArray(
+                    new ArrayDimensionData(overlayTopLeft.Y + frameTwo.Y + i, textureHeight),
+                    new ArrayDimensionData(overlayTopLeft.X + frameTwo.X + j, textureWidth)
+                );
+            }
+        }
+
+        Texture2D overlayTexture = new (Main.graphics.GraphicsDevice, differenceRectangle.Width, differenceRectangle.Height);
         overlayTexture.SetData(colorDifference);
         overlayTexture.Name = overlayName;
 
-        return new TownNPCSpriteOverlay(overlayTexture, Vector2.Zero);
+        return new TownNPCSpriteOverlay(overlayTexture, differenceRectangle.TopLeft());
     }
 
     private static TownNPCSpriteOverlay[] GenerateTownNPCSpriteOverlays(string npcAssetName, Texture2D npcTexture, int npcType) {

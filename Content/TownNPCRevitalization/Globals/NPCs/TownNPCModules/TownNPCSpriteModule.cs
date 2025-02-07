@@ -214,12 +214,12 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
 
         if (AreEyesClosed) {
             TownNPCSpriteOverlay overlay = GetOverlay(EyelidTextureIndex);
-            RequestDraw(new TownNPCDrawRequest(overlay.Texture));
+            RequestDraw(new TownNPCDrawRequest(overlay.Texture, overlay.DefaultDrawOffset));
         }
 
         if (IsTalking) {
             TownNPCSpriteOverlay overlay = GetOverlay(TalkTextureIndex);
-            RequestDraw(new TownNPCDrawRequest(overlay.Texture));
+            RequestDraw(new TownNPCDrawRequest(overlay.Texture, overlay.DefaultDrawOffset));
         }
 
         if (!IsGiving) {
