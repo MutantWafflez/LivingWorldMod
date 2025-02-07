@@ -1,5 +1,5 @@
 using System;
-using Microsoft.Xna.Framework.Graphics;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using Terraria.GameContent;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
@@ -8,8 +8,8 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 ///     Class that acts similarly to a class that implements <see cref="ITownNPCProfile" /> which stores data on "sprite overlays" for Town NPCs, namely for usage with the auto-generated blinking and
 ///     talking textures.
 /// </summary>
-public class TownNPCSpriteProfile(params Texture2D[][] overlays) : IDisposable {
-    public Texture2D GetCurrentSpriteOverlay(NPC npc, int overlayIndex) => overlays[npc.townNpcVariationIndex < overlays.Length ? npc.townNpcVariationIndex : 0][overlayIndex];
+public class TownNPCOverlayProfile(params TownNPCSpriteOverlay[][] overlays) : IDisposable {
+    public TownNPCSpriteOverlay GetCurrentSpriteOverlay(NPC npc, int overlayIndex) => overlays[npc.townNpcVariationIndex < overlays.Length ? npc.townNpcVariationIndex : 0][overlayIndex];
 
     public void Dispose() {
         Dispose(true);
@@ -21,9 +21,9 @@ public class TownNPCSpriteProfile(params Texture2D[][] overlays) : IDisposable {
             return;
         }
 
-        foreach (Texture2D[] overlayGroup in overlays) {
-            foreach (Texture2D overlay in overlayGroup) {
-                overlay.Dispose();
+        foreach (TownNPCSpriteOverlay[] overlayGroup in overlays) {
+            foreach (TownNPCSpriteOverlay overlay in overlayGroup) {
+                overlay.Texture.Dispose();
             }
         }
     }

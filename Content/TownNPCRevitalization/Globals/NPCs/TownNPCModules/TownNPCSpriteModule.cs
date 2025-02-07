@@ -194,7 +194,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         _drawOffset = drawOffset;
     }
 
-    private Texture2D GetOverlayTexture(int overlayIndex) => TownNPCDataSystem.spriteOverlayProfiles[NPC.type].GetCurrentSpriteOverlay(NPC, overlayIndex);
+    private TownNPCSpriteOverlay GetOverlay(int overlayIndex) => TownNPCDataSystem.spriteOverlayProfiles[NPC.type].GetCurrentSpriteOverlay(NPC, overlayIndex);
 
     private void UpdateFlavorAnimations() {
         if (!AreEyesClosed) {
@@ -213,11 +213,13 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         }
 
         if (AreEyesClosed) {
-            RequestDraw(new TownNPCDrawRequest(GetOverlayTexture(EyelidTextureIndex)));
+            TownNPCSpriteOverlay overlay = GetOverlay(EyelidTextureIndex);
+            RequestDraw(new TownNPCDrawRequest(overlay.Texture));
         }
 
         if (IsTalking) {
-            RequestDraw(new TownNPCDrawRequest(GetOverlayTexture(TalkTextureIndex)));
+            TownNPCSpriteOverlay overlay = GetOverlay(TalkTextureIndex);
+            RequestDraw(new TownNPCDrawRequest(overlay.Texture));
         }
 
         if (!IsGiving) {

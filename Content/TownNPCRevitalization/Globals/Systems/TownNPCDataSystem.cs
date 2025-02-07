@@ -29,7 +29,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
     public static Dictionary<int, TownNPCProjAttackData> projectileAttackDatas;
     public static Dictionary<int, TownNPCMeleeAttackData> meleeAttackDatas;
 
-    public static IReadOnlyDictionary<int, TownNPCSpriteProfile> spriteOverlayProfiles;
+    public static IReadOnlyDictionary<int, TownNPCOverlayProfile> spriteOverlayProfiles;
 
     private static Dictionary<string, LocalizedText> _autoloadedFlavorTexts;
 
@@ -40,7 +40,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
 
     public static LocalizedText GetAutoloadedFlavorTextOrDefault(string key) => !_autoloadedFlavorTexts.TryGetValue(key, out LocalizedText text) ? new LocalizedText(key, key) : text;
 
-    private static Texture2D GenerateOverlayFromDifferenceBetweenFrames(
+    private static TownNPCSpriteOverlay GenerateOverlayFromDifferenceBetweenFrames(
         Color[] rawTextureData,
         int textureWidth,
         int textureHeight,
@@ -49,7 +49,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         string overlayName
     ) {
         Color[] colorDifference = new Color[frameOne.Width * frameTwo.Height];
-        bool isDifference = false;
+        Rectangle differenceRectangle = Rectangle.Empty;
         for (int i = 0; i < frameOne.Height; i++) {
             for (int j = 0; j < frameOne.Width; j++) {
                 Color firstFramePixelColor = rawTextureData.GetValueAsNDimensionalArray(
@@ -64,23 +64,24 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
                     continue;
                 }
 
-                isDifference = true;
+                // TODO: Actually use difference rectangle properly
+                differenceRectangle.X = 1;
                 colorDifference[i * frameOne.Width + j] = secondFramePixelColor;
             }
         }
 
-        if (!isDifference) {
-            return new Texture2D(Main.graphics.GraphicsDevice, 1, 1);
+        if (differenceRectangle == Rectangle.Empty) {
+            return new TownNPCSpriteOverlay(new Texture2D(Main.graphics.GraphicsDevice, 1, 1), Vector2.Zero);
         }
 
         Texture2D overlayTexture = new (Main.graphics.GraphicsDevice, frameOne.Width, frameOne.Height);
         overlayTexture.SetData(colorDifference);
         overlayTexture.Name = overlayName;
 
-        return overlayTexture;
+        return new TownNPCSpriteOverlay(overlayTexture, Vector2.Zero);
     }
 
-    private static Texture2D[] GenerateTownNPCSpriteOverlays(string npcAssetName, Texture2D npcTexture, int npcType) {
+    private static TownNPCSpriteOverlay[] GenerateTownNPCSpriteOverlays(string npcAssetName, Texture2D npcTexture, int npcType) {
         int npcFrameCount = Main.npcFrameCount[npcType];
         int totalPixelArea = npcTexture.Width * npcTexture.Height;
         int nonAttackFrameCount = npcFrameCount - NPCID.Sets.AttackFrameCount[npcType];
@@ -94,7 +95,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
 
         string textureNamePrefix = $"{npcAssetName[(npcAssetName.LastIndexOf("\\") + 1)..]}";
         (Rectangle, string)[] frameNameDifferenceArray = [(talkingFrameRectangle, "Talking"), (blinkingFrameRectangle, "Blinking")];
-        List<Texture2D> returnList = [];
+        List<TownNPCSpriteOverlay> returnList = [];
         foreach ((Rectangle secondFrame, string resultingOverlaySuffix) in frameNameDifferenceArray) {
             returnList.Add(
                 GenerateOverlayFromDifferenceBetweenFrames(
@@ -156,7 +157,8 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
             foreach (BiomePreferenceListTrait.BiomePreference preference in oldProfile.ShopModifiers.OfType<BiomePreferenceListTrait>()
                 .SelectMany(trait => trait.Preferences)
                 .Concat(evilBiomePreferences)
-                .ToList()) {
+                .ToList()
+            ) {
                 newPersonalityTraits.Add(
                     new NumericBiomePreferenceTrait(
                         preference.Affection switch {
@@ -203,7 +205,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         if (spriteOverlayProfiles is not null) {
             Main.QueueMainThreadAction(
                 () => {
-                    foreach (TownNPCSpriteProfile spriteProfile in spriteOverlayProfiles.Values) {
+                    foreach (TownNPCOverlayProfile spriteProfile in spriteOverlayProfiles.Values) {
                         spriteProfile.Dispose();
                     }
                 }
@@ -274,7 +276,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
     }
 
     private void GenerateTownNPCSpriteProfiles() {
-        Dictionary<int, TownNPCSpriteProfile> overlayTextures = [];
+        Dictionary<int, TownNPCOverlayProfile> overlayTextures = [];
         TownGlobalNPC townSingletonNPC = ModContent.GetInstance<TownGlobalNPC>();
         NPC npc = new();
         for (int i = 0; i < NPCLoader.NPCCount; i++) {
@@ -287,18 +289,18 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
             Asset<Texture2D> npcAsset;
             if (!TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile)) {
                 npcAsset = TextureAssets.Npc[i];
-                overlayTextures[i] = new TownNPCSpriteProfile(GenerateTownNPCSpriteOverlays(npcAsset.Name, npcAsset.ForceLoadAsset(modName), i));
+                overlayTextures[i] = new TownNPCOverlayProfile(GenerateTownNPCSpriteOverlays(npcAsset.Name, npcAsset.ForceLoadAsset(modName), i));
                 continue;
             }
 
             int npcVariationCount = profile is Profiles.StackedNPCProfile stackedNPCProfile ? stackedNPCProfile._profiles.Length : 1;
-            List<Texture2D[]> spriteOverlays = [];
+            List<TownNPCSpriteOverlay[]> spriteOverlays = [];
             for (int j = 0; j < npcVariationCount; npc.townNpcVariationIndex = ++j) {
                 npcAsset = profile.GetTextureNPCShouldUse(npc);
                 spriteOverlays.Add(GenerateTownNPCSpriteOverlays(npcAsset.Name, npcAsset.ForceLoadAsset(modName), i));
             }
 
-            overlayTextures[i] = new TownNPCSpriteProfile(spriteOverlays.ToArray());
+            overlayTextures[i] = new TownNPCOverlayProfile(spriteOverlays.ToArray());
         }
 
         spriteOverlayProfiles = overlayTextures;
