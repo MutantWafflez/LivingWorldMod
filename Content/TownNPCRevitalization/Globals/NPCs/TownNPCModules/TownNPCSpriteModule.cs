@@ -46,8 +46,8 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
     private const int EyelidClosedDuration = 15;
     private const int TalkDuration = 8;
 
-    private const int TalkTextureIndex = 0;
-    private const int EyelidTextureIndex = 1;
+    private const int TalkOverlayIndex = 0;
+    private const int EyelidOverlayIndex = 1;
 
     /// <summary>
     ///     The value that <see cref="_frameYOverride" /> is set to when there is currently no frame override occuring for this NPC.
@@ -236,22 +236,22 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         }
 
         int currentYFrame = _frameYOverride == NoFrameYOverride ? NPC.frame.Y / frameHeight : _frameYOverride;
+        (bool, int)[] overlayPairs = [(AreEyesClosed, EyelidOverlayIndex), (IsTalking, TalkOverlayIndex)];
+        foreach ((bool isOverlayActive, int overlayIndex) in overlayPairs) {
+            if (!isOverlayActive) {
+                continue;
+            }
 
-        if (AreEyesClosed) {
-            TownNPCSpriteOverlay overlay = GetOverlay(EyelidTextureIndex);
-
-            Vector2 adjustedDrawOffset = new (NPC.spriteDirection == -1 ? overlay.DefaultDrawOffset.X : frameWidth - overlay.DefaultDrawOffset.X - overlay.Texture.Width, overlay.DefaultDrawOffset.Y);
-
-            RequestDraw(new TownNPCDrawRequest(overlay.Texture, adjustedDrawOffset));
+            AddOverlay(overlayIndex, frameWidth, currentYFrame);
         }
+    }
 
-        if (IsTalking) {
-            TownNPCSpriteOverlay overlay = GetOverlay(TalkTextureIndex);
+    private void AddOverlay(int overlayIndex, int frameWidth, int currentYFrame) {
+        TownNPCSpriteOverlay overlay = GetOverlay(overlayIndex);
+        Vector2 adjustedDrawOffset = new (NPC.spriteDirection == -1 ? overlay.DefaultDrawOffset.X : frameWidth - overlay.DefaultDrawOffset.X - overlay.Texture.Width, overlay.DefaultDrawOffset.Y);
+        adjustedDrawOffset += overlay.AdditionalFrameOffsets.TryGetValue(currentYFrame, out Vector2 frameOffset) ? frameOffset : Vector2.Zero;
 
-            Vector2 adjustedDrawOffset = new (NPC.spriteDirection == -1 ? overlay.DefaultDrawOffset.X : frameWidth - overlay.DefaultDrawOffset.X - overlay.Texture.Width, overlay.DefaultDrawOffset.Y);
-
-            RequestDraw(new TownNPCDrawRequest(overlay.Texture, adjustedDrawOffset));
-        }
+        RequestDraw(new TownNPCDrawRequest(overlay.Texture, adjustedDrawOffset));
     }
 
     private void DrawMechanicWrench() {
