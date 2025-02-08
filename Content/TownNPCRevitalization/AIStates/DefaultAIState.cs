@@ -13,7 +13,11 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 public class DefaultAIState : TownNPCAIState {
     public override int ReservedStateInteger => 0;
 
-    public override void DoState( NPC npc) {
+    public override void DoState(NPC npc) {
+        if (npc.velocity.Y == 0) {
+            npc.velocity *= 0.75f;
+        }
+
         if (npc.breath == 0) {
             TownNPCStateModule.RefreshToState<WalkToRandomPosState>(npc);
             return;
