@@ -49,6 +49,11 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
     private const int TalkTextureIndex = 0;
     private const int EyelidTextureIndex = 1;
 
+    /// <summary>
+    ///     The value that <see cref="_frameYOverride" /> is set to when there is currently no frame override occuring for this NPC.
+    /// </summary>
+    private const int NoFrameYOverride = -1;
+
     private readonly List<TownNPCDrawRequest> _drawRequests = [];
 
     private int _blinkTimer;
@@ -57,7 +62,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
     private int _givingTimer;
     private int _givingItemType;
 
-    private int _frameYOverride;
+    private int _frameYOverride = NoFrameYOverride;
 
     private Vector2 _drawOffset;
 
@@ -97,10 +102,10 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         }
 
         _drawOffset = Vector2.Zero;
-        _frameYOverride = -1;
+        _frameYOverride = NoFrameYOverride;
         _drawRequests.Clear();
 
-        (Asset<Texture2D> npcAsset, int _, int _, Vector2 halfSize, float npcAddHeight, SpriteEffects spriteEffects) = DrawParameters;
+        (Asset<Texture2D> npcAsset, int frameWidth, int frameHeight, Vector2 halfSize, float npcAddHeight, SpriteEffects spriteEffects) = DrawParameters;
 
         // Method Gaslighting
         // See RevitalizationNPCPatches.cs: TL;DR is the method is patched so that all sprite-batch calls are re-routed back to here (the sprite module) and we control the drawing
@@ -111,7 +116,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         // This is the request to actually draw the NPC itself
         RequestDraw(new TownNPCDrawRequest(npcAsset.Value, Vector2.Zero, NPC.frame));
 
-        UpdateFlavorAnimations();
+        UpdateFlavorAnimations(frameWidth, frameHeight);
         if (NPC.type == NPCID.Mechanic) {
             DrawMechanicWrench();
         }
@@ -196,7 +201,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
 
     private TownNPCSpriteOverlay GetOverlay(int overlayIndex) => TownNPCDataSystem.spriteOverlayProfiles[NPC.type].GetCurrentSpriteOverlay(NPC, overlayIndex);
 
-    private void UpdateFlavorAnimations() {
+    private void UpdateFlavorAnimations(int frameWidth, int frameHeight) {
         if (!AreEyesClosed) {
             if (--_blinkTimer <= 0) {
                 CloseEyes();
@@ -212,37 +217,41 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
             _mouthOpenTimer = 0;
         }
 
+        if (IsGiving) {
+            int nonAttackFrameCount = Main.npcFrameCount[NPC.type] - NPCID.Sets.AttackFrameCount[NPC.type];
+            const int animationHalf = GivingAnimationDuration / 2;
+            RequestFrameOverride(
+                (uint)((_givingTimer <= animationHalf ? _givingTimer : animationHalf - _givingTimer % (animationHalf + 1)) switch {
+                    >= 10 and < 16 => nonAttackFrameCount - 5,
+                    >= 16 => nonAttackFrameCount - 4,
+                    _ => 0
+                })
+            );
+
+            if (--_givingTimer <= 0) {
+                IsGiving = false;
+                _givingTimer = 0;
+                _givingItemType = -1;
+            }
+        }
+
+        int currentYFrame = _frameYOverride == NoFrameYOverride ? NPC.frame.Y / frameHeight : _frameYOverride;
+
         if (AreEyesClosed) {
             TownNPCSpriteOverlay overlay = GetOverlay(EyelidTextureIndex);
-            RequestDraw(new TownNPCDrawRequest(overlay.Texture, overlay.DefaultDrawOffset));
+
+            Vector2 adjustedDrawOffset = new (NPC.spriteDirection == -1 ? overlay.DefaultDrawOffset.X : frameWidth - overlay.DefaultDrawOffset.X - overlay.Texture.Width, overlay.DefaultDrawOffset.Y);
+
+            RequestDraw(new TownNPCDrawRequest(overlay.Texture, adjustedDrawOffset));
         }
 
         if (IsTalking) {
             TownNPCSpriteOverlay overlay = GetOverlay(TalkTextureIndex);
-            RequestDraw(new TownNPCDrawRequest(overlay.Texture, overlay.DefaultDrawOffset));
+
+            Vector2 adjustedDrawOffset = new (NPC.spriteDirection == -1 ? overlay.DefaultDrawOffset.X : frameWidth - overlay.DefaultDrawOffset.X - overlay.Texture.Width, overlay.DefaultDrawOffset.Y);
+
+            RequestDraw(new TownNPCDrawRequest(overlay.Texture, adjustedDrawOffset));
         }
-
-        if (!IsGiving) {
-            return;
-        }
-
-        int nonAttackFrameCount = Main.npcFrameCount[NPC.type] - NPCID.Sets.AttackFrameCount[NPC.type];
-        const int animationHalf = GivingAnimationDuration / 2;
-        RequestFrameOverride(
-            (uint)((_givingTimer <= animationHalf ? _givingTimer : animationHalf - _givingTimer % (animationHalf + 1)) switch {
-                >= 10 and < 16 => nonAttackFrameCount - 5,
-                >= 16 => nonAttackFrameCount - 4,
-                _ => 0
-            })
-        );
-
-        if (--_givingTimer > 0) {
-            return;
-        }
-
-        IsGiving = false;
-        _givingTimer = 0;
-        _givingItemType = -1;
     }
 
     private void DrawMechanicWrench() {
