@@ -82,7 +82,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
             return new TownNPCSpriteOverlay(new Texture2D(Main.graphics.GraphicsDevice, 1, 1), Vector2.Zero);
         }
 
-        Rectangle differenceRectangle = LWMUtils.NewRectFromCorners(overlayTopLeft, overlayBottomRight);
+        Rectangle differenceRectangle = LWMUtils.NewRectFromCorners(overlayTopLeft, overlayBottomRight + new Point(1, 1));
         Color[] colorDifference = new Color[differenceRectangle.Width * differenceRectangle.Height];
         for (int i = 0; i < differenceRectangle.Height; i++) {
             for (int j = 0; j < differenceRectangle.Width; j++) {
