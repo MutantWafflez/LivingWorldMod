@@ -43,26 +43,17 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
     public static LocalizedText GetAutoloadedFlavorTextOrDefault(string key) => !_autoloadedFlavorTexts.TryGetValue(key, out LocalizedText text) ? new LocalizedText(key, key) : text;
 
     private static TownNPCSpriteOverlay GenerateOverlayFromDifferenceBetweenFrames(
-        Color[] rawTextureData,
-        int textureWidth,
-        int textureHeight,
+        in ArrayInterpreter<Color> rawTextureData,
         Rectangle frameOne,
         Rectangle frameTwo,
         string overlayName
     ) {
-        // Color[] colorDifference = new Color[frameOne.Width * frameTwo.Height];
         Point overlayTopLeft = DefaultOverlayTopLeft;
         Point overlayBottomRight = DefaultOverlayTopLeft;
         for (int i = 0; i < frameOne.Height; i++) {
             for (int j = 0; j < frameOne.Width; j++) {
-                Color firstFramePixelColor = rawTextureData.GetValueAsNDimensionalArray(
-                    new ArrayDimensionData(frameOne.Y + i, textureHeight),
-                    new ArrayDimensionData(frameOne.X + j, textureWidth)
-                );
-                Color secondFramePixelColor = rawTextureData.GetValueAsNDimensionalArray(
-                    new ArrayDimensionData(frameTwo.Y + i, textureHeight),
-                    new ArrayDimensionData(frameTwo.X + j, textureWidth)
-                );
+                Color firstFramePixelColor = rawTextureData.GetAtPosition(frameOne.Y + i, frameOne.X + j);
+                Color secondFramePixelColor = rawTextureData.GetAtPosition(frameTwo.Y + i, frameTwo.X + j);
                 if (firstFramePixelColor == secondFramePixelColor) {
                     continue;
                 }
@@ -74,7 +65,6 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
 
                 overlayBottomRight.X = Math.Max(overlayBottomRight.X, j);
                 overlayBottomRight.Y = Math.Max(overlayBottomRight.Y, i);
-                // colorDifference[i * frameOne.Width + j] = secondFramePixelColor;
             }
         }
 
@@ -86,10 +76,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         Color[] colorDifference = new Color[differenceRectangle.Width * differenceRectangle.Height];
         for (int i = 0; i < differenceRectangle.Height; i++) {
             for (int j = 0; j < differenceRectangle.Width; j++) {
-                colorDifference[i * differenceRectangle.Width + j] = rawTextureData.GetValueAsNDimensionalArray(
-                    new ArrayDimensionData(overlayTopLeft.Y + frameTwo.Y + i, textureHeight),
-                    new ArrayDimensionData(overlayTopLeft.X + frameTwo.X + j, textureWidth)
-                );
+                colorDifference[i * differenceRectangle.Width + j] = rawTextureData.GetAtPosition(overlayTopLeft.Y + frameTwo.Y + i, overlayTopLeft.X + frameTwo.X + j);
             }
         }
 
@@ -106,6 +93,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         int nonAttackFrameCount = npcFrameCount - NPCID.Sets.AttackFrameCount[npcType];
 
         Color[] rawTextureData = new Color[totalPixelArea];
+        ArrayInterpreter<Color> rawTextureInterpreter = new (rawTextureData, npcTexture.Height, npcTexture.Width);
         npcTexture.GetData(rawTextureData);
 
         Rectangle defaultFrameRectangle = npcTexture.Frame(verticalFrames: npcFrameCount);
@@ -118,14 +106,12 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         foreach ((Rectangle secondFrame, string resultingOverlaySuffix) in frameNameDifferenceArray) {
             returnList.Add(
                 GenerateOverlayFromDifferenceBetweenFrames(
-                    rawTextureData,
-                    npcTexture.Width,
-                    npcTexture.Height,
+                    rawTextureInterpreter,
                     defaultFrameRectangle,
                     secondFrame,
                     $"{textureNamePrefix}_{resultingOverlaySuffix}"
                 ) with {
-                    AdditionalFrameOffsets = new Dictionary<int, Vector2> { { 3, new Vector2(0, -2) }, {4, new Vector2(0, -2)}, {10, new Vector2(0, -2)}, { 11, new Vector2(0, -2) } }
+                    AdditionalFrameOffsets = new Dictionary<int, Vector2> { { 3, new Vector2(0, -2) }, { 4, new Vector2(0, -2) }, { 10, new Vector2(0, -2) }, { 11, new Vector2(0, -2) } }
                 }
             );
         }
