@@ -78,5 +78,16 @@ public class TownNPCDebugModule : DebugModule {
 
             _selectedNPC.GetGlobalNPC<TownNPCSleepModule>().awakeTicks += LWMUtils.RealLifeSecond * 10;
         }
+        else if (pressedKeys.Contains(Keys.NumPad3)) {
+            Main.NewText("Reset all awake timers");
+
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (!npc.TryGetGlobalNPC(out TownNPCSleepModule sleepModule)) {
+                    continue;
+                }
+
+                sleepModule.awakeTicks = sleepModule.awakeTicks.ResetToBound(true);
+            }
+        }
     }
 }
