@@ -4,6 +4,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.DataStructures.Classes;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -66,6 +67,16 @@ public class TownNPCDebugModule : DebugModule {
                 _selectedNPC.GetGlobalNPC<TownNPCSleepModule>(),
                 [true]
             );
+        }
+        else if (pressedKeys.Contains(Keys.Subtract)) {
+            Main.NewText("Decrement awake ticks by 10 seconds (less tired)");
+
+            _selectedNPC.GetGlobalNPC<TownNPCSleepModule>().awakeTicks -= LWMUtils.RealLifeSecond * 10;
+        }
+        else if (pressedKeys.Contains(Keys.Add)) {
+            Main.NewText("Increment awake ticks by 10 seconds (more tired)");
+
+            _selectedNPC.GetGlobalNPC<TownNPCSleepModule>().awakeTicks += LWMUtils.RealLifeSecond * 10;
         }
     }
 }
