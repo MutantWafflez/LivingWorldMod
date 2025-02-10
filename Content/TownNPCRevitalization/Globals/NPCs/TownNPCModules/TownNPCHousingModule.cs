@@ -12,7 +12,6 @@ using Microsoft.Xna.Framework.Graphics;
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 
 public class TownNPCHousingModule : TownNPCModule {
-    private TownNPCSleepModule sleepModule;
     public override int UpdatePriority => -1;
 
     public Rectangle? RoomBoundingBox {
@@ -27,7 +26,7 @@ public class TownNPCHousingModule : TownNPCModule {
 
     public bool ShouldGoHome {
         get {
-            sleepModule = NPC.GetGlobalNPC<TownNPCSleepModule>();
+            TownNPCSleepModule sleepModule = NPC.GetGlobalNPC<TownNPCSleepModule>();
             return (sleepModule.WantsToSleep && sleepModule.CanSleep) || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
         }
     }
