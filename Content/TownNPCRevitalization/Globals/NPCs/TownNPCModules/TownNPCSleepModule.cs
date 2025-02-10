@@ -11,7 +11,6 @@ using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.UI.Bestiary;
 using LivingWorldMod.DataStructures.Records;
-using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

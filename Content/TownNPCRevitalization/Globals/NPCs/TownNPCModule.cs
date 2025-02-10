@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+﻿namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 
 /// <summary>
 ///     Base type that allows for the freedom of <see cref="GlobalNPC" />, but with constraints on how it is updated when the NPC is active. The AI methods (PreAI, AI, and PostAI) are sealed and
