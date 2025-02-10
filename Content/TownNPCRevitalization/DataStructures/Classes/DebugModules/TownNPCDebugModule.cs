@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Reflection;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
@@ -57,6 +58,14 @@ public class TownNPCDebugModule : DebugModule {
 
             _selectedNPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind();
             TownNPCStateModule.RefreshToState<PassedOutAIState>(_selectedNPC);
+        }
+        else if (pressedKeys.Contains(Keys.NumPad2)) {
+            Main.NewText("Forcing NPC to want to sleep");
+
+            typeof(TownNPCSleepModule).GetProperty(nameof(TownNPCSleepModule.WantsToSleep), BindingFlags.Instance | BindingFlags.Public)!.SetMethod!.Invoke(
+                _selectedNPC.GetGlobalNPC<TownNPCSleepModule>(),
+                [true]
+            );
         }
     }
 }
