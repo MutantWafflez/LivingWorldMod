@@ -115,7 +115,6 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         string textureNamePrefix = $"{npcAssetName[(npcAssetName.LastIndexOf("\\") + 1)..]}";
         (Rectangle, string)[] frameNameDifferenceArray = [(talkingFrameRectangle, "Talking"), (blinkingFrameRectangle, "Blinking")];
         List<TownNPCSpriteOverlay> returnList = [];
-        // TODO: Add frame offsets where necessary
         foreach ((Rectangle secondFrame, string resultingOverlaySuffix) in frameNameDifferenceArray) {
             returnList.Add(
                 GenerateOverlayFromDifferenceBetweenFrames(
@@ -125,7 +124,9 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
                     defaultFrameRectangle,
                     secondFrame,
                     $"{textureNamePrefix}_{resultingOverlaySuffix}"
-                )
+                ) with {
+                    AdditionalFrameOffsets = new Dictionary<int, Vector2> { { 3, new Vector2(0, -2) }, {4, new Vector2(0, -2)}, {10, new Vector2(0, -2)}, { 11, new Vector2(0, -2) } }
+                }
             );
         }
 
