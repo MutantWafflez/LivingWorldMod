@@ -109,7 +109,7 @@ public class RevitalizationNPCPatches : LoadablePatch {
         }
 
         int drawLayer = beforeDraw ? -1 : 1;
-        spriteModule.RequestDraw(new TownNPCDrawRequest(texture, position, sourceRect, Origin: origin, SpriteEffect: effects, UsesAbsolutePosition: true, DrawLayer: drawLayer));
+        spriteModule.RequestDraw(new TownNPCDrawRequest(texture, position, origin, sourceRect, SpriteEffect: effects, UsesAbsolutePosition: true, DrawLayer: drawLayer));
         return true;
     }
 

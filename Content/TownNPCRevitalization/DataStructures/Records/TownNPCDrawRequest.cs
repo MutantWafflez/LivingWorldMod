@@ -13,10 +13,10 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 ///     The position relative to the default draw position of the NPC. If <see cref="UsesAbsolutePosition" /> is <b>true</b>, then this value will be used as is, ignoring the default
 ///     draw data position.
 /// </param>
+/// <param name="Origin">The rotational center of this overlay. Used identically to a normal <see cref="SpriteBatch" /> Draw call. Is automatically added to the position offset when drawn. </param>
 /// <param name="SourceRectangle"> If null, is replaced by the default <see cref="DrawData" />. </param>
 /// <param name="Color">If null, is replaced by the default <see cref="DrawData" />.</param>
 /// <param name="Rotation">If null, is replaced by the default <see cref="DrawData" />.</param>
-/// <param name="Origin">If null, is replaced by the default <see cref="DrawData" />.</param>
 /// <param name="Scale">If null, is replaced by the default <see cref="DrawData" />.</param>
 /// <param name="SpriteEffect">If null, is replaced by the default <see cref="DrawData" />.</param>
 /// <param name="UsesAbsolutePosition"> Whether or not to treat the <see cref="Position" /> parameter "as-is." See that parameter for more info. </param>
@@ -24,27 +24,29 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 public readonly record struct TownNPCDrawRequest(
     Texture2D Texture,
     Vector2 Position,
+    Vector2 Origin,
     Rectangle? SourceRectangle = null,
     Color? Color = null,
     float? Rotation = null,
-    Vector2? Origin = null,
     Vector2? Scale = null,
     SpriteEffects? SpriteEffect = null,
     bool UsesAbsolutePosition = false,
     int DrawLayer = 0
 ) : IComparable<TownNPCDrawRequest> {
-    public TownNPCDrawRequest(Texture2D texture) : this(texture, Vector2.Zero) { }
+    public TownNPCDrawRequest(Texture2D texture) : this(texture, Vector2.Zero, Vector2.Zero) { }
+
+    public TownNPCDrawRequest(Texture2D texture, Vector2 position) : this(texture, position, Vector2.Zero) { }
 
     /// <summary>
     ///     "Unionizes" this DrawRequest with a <see cref="DrawData" />, where every DrawRequest field is overriden if it is null.
     /// </summary>
     public DrawData UnionWithDrawData(DrawData data, Vector2 screenPos) => new (
         Texture,
-        (UsesAbsolutePosition ? Position : data.position + Position) - screenPos,
+        (UsesAbsolutePosition ? Position : data.position + Position + Origin) - screenPos,
         SourceRectangle,
         Color ?? data.color,
         Rotation ?? data.rotation,
-        Origin ?? data.origin,
+        Origin,
         Scale ?? data.scale,
         SpriteEffect ?? data.effect
     );

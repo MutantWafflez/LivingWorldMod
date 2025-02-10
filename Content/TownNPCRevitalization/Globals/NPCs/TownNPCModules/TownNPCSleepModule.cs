@@ -55,7 +55,7 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
             Texture2D sleepingIconTexture = TextureAssets.Item[ItemID.SleepingIcon].Value;
             return new TownNPCDrawRequest(
                 sleepingIconTexture,
-                new Vector2(sleepingIconTexture.Width / -2f, -32f + MathF.Sin(Main.GlobalTimeWrappedHourly)),
+                new Vector2(0, -10f + MathF.Sin(Main.GlobalTimeWrappedHourly)),
                 Color: SleepIconColorGradient.GetValue(SleepQualityModifier) * 0.67f,
                 Rotation: 0f,
                 Origin: Vector2.Zero,
