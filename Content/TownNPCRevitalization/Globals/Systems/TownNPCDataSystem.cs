@@ -31,7 +31,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
 
     public static IReadOnlyDictionary<int, TownNPCOverlayProfile> spriteOverlayProfiles;
 
-    private static readonly Point DefaultOverlayTopLeft = new (-1, -1);
+    private static readonly Point DefaultOverlayCornerOne = new (int.MaxValue, int.MaxValue);
 
     private static Dictionary<string, LocalizedText> _autoloadedFlavorTexts;
 
@@ -48,8 +48,8 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         Rectangle frameTwo,
         string overlayName
     ) {
-        Point overlayTopLeft = DefaultOverlayTopLeft;
-        Point overlayBottomRight = DefaultOverlayTopLeft;
+        Point overlayCornerOne = DefaultOverlayCornerOne;
+        Point overlayCornerTwo = new (-1, -1);
         for (int i = 0; i < frameOne.Height; i++) {
             for (int j = 0; j < frameOne.Width; j++) {
                 Color firstFramePixelColor = rawTextureData.GetAtPosition(frameOne.Y + i, frameOne.X + j);
@@ -58,25 +58,23 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
                     continue;
                 }
 
-                if (overlayTopLeft == DefaultOverlayTopLeft) {
-                    overlayTopLeft = overlayBottomRight = new Point(j, i);
-                    continue;
-                }
+                overlayCornerOne.X = Math.Min(overlayCornerOne.X, j);
+                overlayCornerOne.Y = Math.Min(overlayCornerOne.Y, i);
 
-                overlayBottomRight.X = Math.Max(overlayBottomRight.X, j);
-                overlayBottomRight.Y = Math.Max(overlayBottomRight.Y, i);
+                overlayCornerTwo.X = Math.Max(overlayCornerTwo.X, j);
+                overlayCornerTwo.Y = Math.Max(overlayCornerTwo.Y, i);
             }
         }
 
-        if (overlayTopLeft == DefaultOverlayTopLeft) {
+        if (overlayCornerOne == DefaultOverlayCornerOne) {
             return new TownNPCSpriteOverlay(new Texture2D(Main.graphics.GraphicsDevice, 1, 1), Vector2.Zero);
         }
 
-        Rectangle differenceRectangle = LWMUtils.NewRectFromCorners(overlayTopLeft, overlayBottomRight + new Point(1, 1));
+        Rectangle differenceRectangle = LWMUtils.NewRectFromCorners(overlayCornerOne, overlayCornerTwo + new Point(1, 1));
         Color[] colorDifference = new Color[differenceRectangle.Width * differenceRectangle.Height];
         for (int i = 0; i < differenceRectangle.Height; i++) {
             for (int j = 0; j < differenceRectangle.Width; j++) {
-                colorDifference[i * differenceRectangle.Width + j] = rawTextureData.GetAtPosition(overlayTopLeft.Y + frameTwo.Y + i, overlayTopLeft.X + frameTwo.X + j);
+                colorDifference[i * differenceRectangle.Width + j] = rawTextureData.GetAtPosition(overlayCornerOne.Y + frameTwo.Y + i, overlayCornerOne.X + frameTwo.X + j);
             }
         }
 
@@ -97,6 +95,44 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         npcTexture.GetData(rawTextureData);
 
         Rectangle defaultFrameRectangle = npcTexture.Frame(verticalFrames: npcFrameCount);
+
+        /*
+         * A quick explanation of what (and more importantly, WHY) this triple for loop is necessary:
+         * In general, vanilla Town NPC sprites follow a few guidelines, with some being stricter than others. The frame order is always the same (minus the attacking frames, but those are the same
+         * amongst NPCs of the same attack type), and that's basically where the similarities end and the exceptions begin. Namely, the exceptions come in the form of head offset; since we extract
+         * both the eyelid texture and mouth texture, which depend on head position, we need a way to determine if the NPC's head has moved. There's a lot of ways you could do it, but I took this
+         * method as it is simple and is generally applicable to all vanilla Town NPCs. The short of it is that we go through each of the NPC's frames, and note down the Y position of the top most
+         * pixel of that frame, and take the difference between that and the very first frame's top most Y pixel. The first frame is the "default" frame, and thus its the base-line by which we can
+         * calculate if a frame causes the NPC's head to move up or down. These differences then passed to our overlay structs down below, where our Sprite Module handles ofsetting them, where
+         * applicable. Not fool-proof by any means, but it appears to do the job for vanilla Town NPC's. Modded Town NPCs definitely have the capacity to absolutely destroy this, but so be it. Not
+         * going to do computer vision image registration/recognition to optimally calculate where the eyes and mouth move for every frame.
+         */
+        Dictionary<int, Vector2> additionalFrameOffsets = new ();
+        int? defaultFrameYPos = null;
+        for (int frameNumber = 0; frameNumber < npcFrameCount; frameNumber++) {
+            for (int i = 0; i < defaultFrameRectangle.Height; i++) {
+                for (int j = 0; j < defaultFrameRectangle.Width; j++) {
+                    if (rawTextureInterpreter.GetAtPosition(defaultFrameRectangle.Height * frameNumber + i, j) == default(Color)) {
+                        continue;
+                    }
+
+                    // If this check succeeds, this means this is the first frame and we need to record the default y offset here
+                    if (defaultFrameYPos is not { } defaultYPos) {
+                        defaultFrameYPos = i;
+                        goto ContinueOutermostLoop;
+                    }
+
+                    if (defaultYPos != i) {
+                        additionalFrameOffsets[frameNumber] = new Vector2(0, i - defaultYPos);
+                    }
+
+                    goto ContinueOutermostLoop;
+                }
+            }
+
+            ContinueOutermostLoop: ;
+        }
+
         Rectangle talkingFrameRectangle = npcTexture.Frame(verticalFrames: npcFrameCount, frameY: nonAttackFrameCount - 2);
         Rectangle blinkingFrameRectangle = npcTexture.Frame(verticalFrames: npcFrameCount, frameY: nonAttackFrameCount - 1);
 
@@ -111,7 +147,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
                     secondFrame,
                     $"{textureNamePrefix}_{resultingOverlaySuffix}"
                 ) with {
-                    AdditionalFrameOffsets = new Dictionary<int, Vector2> { { 3, new Vector2(0, -2) }, { 4, new Vector2(0, -2) }, { 10, new Vector2(0, -2) }, { 11, new Vector2(0, -2) } }
+                    AdditionalFrameOffsets = additionalFrameOffsets
                 }
             );
         }
