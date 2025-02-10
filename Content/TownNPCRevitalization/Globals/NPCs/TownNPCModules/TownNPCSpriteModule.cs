@@ -86,6 +86,10 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
     private TownNPCDrawParameters DrawParameters {
         get {
             Asset<Texture2D> npcAsset = TownNPCProfiles.Instance.GetProfile(NPC, out ITownNPCProfile profile) ? profile.GetTextureNPCShouldUse(NPC) : TextureAssets.Npc[NPC.type];
+            if (!npcAsset.IsLoaded) {
+                npcAsset.ForceLoadAsset(NPC.ModNPC is { } modNPC ? modNPC.Mod.Name : "Terraria");
+            }
+
             int frameWidth = npcAsset.Width();
             int frameHeight = npcAsset.Height() / Main.npcFrameCount[NPC.type];
             Vector2 halfSize = new(frameWidth / 2, frameHeight / 2);
