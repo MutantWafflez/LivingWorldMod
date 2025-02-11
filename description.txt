@@ -8,7 +8,7 @@ Currently implemented features:
 - Harpy Village w/ unique shop system
 - Waystones (pylons that spawn in the wild)
 - Several new sky related items (furniture, pets)
-- Town NPC mood system, sleep system, and inter-NPC chats (CURRENTLY DISABLED)
+- Complete overhaul of Town NPCs (including sleeping, mood system, pathfinding, and more!)
 
 Features in development:
 - Town NPC Revitalization (Part 2)
@@ -16,10 +16,10 @@ Features in development:
 - Additional villages (Truffle, Lihzahrd, Demon, etc.)
 
 Brought to you by:
-- MutantWafflez (Current Owner & Lead Coder/Designer)
-- RiverOaken (Previous Owner, Spriter and Designer)
+- MutantWafflez (AKA Terry) (Lead Programmer/Designer)
+- RiverOaken (Lead Artist and Co-Designer)
 - Salvati (Music Contributor)
-- Kirtle (Coder)
+- Kirtle (Programmer)
 - Trivaxy (Code Contributor)
 - iFlicky (SFX & Music Contributor)
 
