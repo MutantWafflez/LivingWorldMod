@@ -50,7 +50,19 @@ public class TownNPCDebugModule : DebugModule {
     }
 
     public override void KeysPressed(Keys[] pressedKeys) {
-        if (_selectedNPC is null || !_selectedNPC.TryGetGlobalNPC(out TownGlobalNPC globalNPC)) {
+        if (pressedKeys.Contains(Keys.NumPad3)) {
+            Main.NewText("Reset all awake timers");
+
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (!npc.TryGetGlobalNPC(out TownNPCSleepModule sleepModule)) {
+                    continue;
+                }
+
+                sleepModule.awakeTicks = sleepModule.awakeTicks.ResetToBound(true);
+            }
+        }
+
+        if (_selectedNPC is null || !_selectedNPC.TryGetGlobalNPC(out TownGlobalNPC _)) {
             return;
         }
 
@@ -77,17 +89,6 @@ public class TownNPCDebugModule : DebugModule {
             Main.NewText("Increment awake ticks by 10 seconds (more tired)");
 
             _selectedNPC.GetGlobalNPC<TownNPCSleepModule>().awakeTicks += LWMUtils.RealLifeSecond * 10;
-        }
-        else if (pressedKeys.Contains(Keys.NumPad3)) {
-            Main.NewText("Reset all awake timers");
-
-            foreach (NPC npc in Main.ActiveNPCs) {
-                if (!npc.TryGetGlobalNPC(out TownNPCSleepModule sleepModule)) {
-                    continue;
-                }
-
-                sleepModule.awakeTicks = sleepModule.awakeTicks.ResetToBound(true);
-            }
         }
     }
 }
