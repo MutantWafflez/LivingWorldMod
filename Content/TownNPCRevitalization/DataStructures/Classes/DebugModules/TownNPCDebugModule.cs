@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Input;
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.DebugModules;
 
 public class TownNPCDebugModule : DebugModule {
+    private static readonly MethodInfo WantsToSleepSetMethod = typeof(TownNPCSleepModule).GetProperty(nameof(TownNPCSleepModule.WantsToSleep), BindingFlags.Instance | BindingFlags.Public)!.SetMethod!;
     private NPC _selectedNPC;
 
     public override void ModuleUpdate() {
@@ -61,6 +62,17 @@ public class TownNPCDebugModule : DebugModule {
                 sleepModule.awakeTicks = sleepModule.awakeTicks.ResetToBound(true);
             }
         }
+        else if (pressedKeys.Contains(Keys.NumPad4)) {
+            Main.NewText("Force all NPCs to want sleep");
+
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (!npc.TryGetGlobalNPC(out TownNPCSleepModule sleepModule)) {
+                    continue;
+                }
+
+                WantsToSleepSetMethod.Invoke(sleepModule, [true]);
+            }
+        }
 
         if (_selectedNPC is null || !_selectedNPC.TryGetGlobalNPC(out TownGlobalNPC _)) {
             return;
@@ -75,10 +87,8 @@ public class TownNPCDebugModule : DebugModule {
         else if (pressedKeys.Contains(Keys.NumPad2)) {
             Main.NewText("Forcing NPC to want to sleep");
 
-            typeof(TownNPCSleepModule).GetProperty(nameof(TownNPCSleepModule.WantsToSleep), BindingFlags.Instance | BindingFlags.Public)!.SetMethod!.Invoke(
-                _selectedNPC.GetGlobalNPC<TownNPCSleepModule>(),
-                [true]
-            );
+
+            WantsToSleepSetMethod.Invoke(_selectedNPC.GetGlobalNPC<TownNPCSleepModule>(), [true]);
         }
         else if (pressedKeys.Contains(Keys.Subtract)) {
             Main.NewText("Decrement awake ticks by 10 seconds (less tired)");
