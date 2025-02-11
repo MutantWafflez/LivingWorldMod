@@ -56,6 +56,10 @@ public class TownGlobalNPC : GlobalNPC {
     public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => EntityIsValidTownNPC(entity, lateInstantiation);
 
     public override void SetDefaults(NPC entity) {
+        if (ModLoader.isLoading) {
+            return;
+        }
+
         List<GlobalNPC> entityGlobals = [];
         foreach (GlobalNPC npc in entity.EntityGlobals) {
             entityGlobals.Add(npc);
