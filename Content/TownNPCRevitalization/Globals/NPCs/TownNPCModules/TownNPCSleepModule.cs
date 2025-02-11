@@ -116,7 +116,7 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
             MaxAwakeValue
         );
 
-        WantsToSleep = tag.GetBool(nameof(WantsToSleep));
+        WantsToSleep = tag.TryGet(nameof(WantsToSleep), out bool wantsToSleep) && wantsToSleep;
     }
 
     public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) {
