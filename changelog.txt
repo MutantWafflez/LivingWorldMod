@@ -1,22 +1,16 @@
-INDEV RELEASE v0.3.2.0 [A Balanced Fix] (December 5th, 2024)
+INDEV RELEASE v0.4.0.0 [The Actual Revitalization Pt. 1] (February 11th, 2025)
+Additions:
++ Revamped Town NPC Happiness into the Town NPC Mood System; a much more dynamic version of the vanilla happiness system
++ Town NPCs can now become tired and go to sleep, with variable sleep schedule preferences
++ Town NPCs now have built-in pathfinding, and will utilize it to navigate their surroundings
++ Town NPCs will now talk amongst themselves with actual sentences instead of their usual icons
++ Town NPCs can now blink & talk while walking, instead of exclusively while they are standing still
++ A new type of party called a "Night Party", that takes places the following night of every OTHER boss defeated
++ Added a new "Pause" button in the Harpy Shrine UI that prevents new villagers from spawning
 Changes:
-* Added a small confirmation tick sound when right-clicking a Waystone tile to activate it
-* Added new error messages for housing attempts for more clarity with villagers (instead of "This house does not meet requirements...")
-Balance:
-* Update various statistics of items that Harpy Villagers sell:
-	-> Pink Pearl Max Stock = 1 (down from 3), Weight = 0.25 (down from 0.5, making them rarer)
-	-> Black Pearl Max Stock = 2 (down from 3)
-	-> Starshard Cloud, Starshine Block, Skyware Block Max Stock = 150 (up from 75)
-	-> Skyware Loom, Skyware Anvil Max Stock = 2 (down from 3)
-	-> Skyware Chair Max Stock = 10 (up from 3)
-	-> Skyware Table Max Stock = 5 (up from 3)
-	-> Shiny Red Balloon Price = 10g (up from 5g)
-	-> Star Fury Price = 12g 75s (up from 5g)
-	-> Worm Max Stock = 8 (down from 10), Price = 10s (up from 2s)
-	-> Enchanted Nightcrawler Max Stock = 3 (down from 5), Price = 1g (up from 50s)
-	-> Gold Worm Max Stock = 2 (up from 1), Weight When Loved = 0.2 (up from 0.15, making them more common)
+* Harpy Egg and Harpy Villager Shrine Items now stack to 9999
+* Updated some older UIs with text on the mouse to use backgrounds behind said text
 Fixes:
-* Optimized Harpy Villager shop code, greatly reducing performance hits when large amounts of Harpy Villagers restock their shops at the dawn of a new day
-* Fixed some tiles not appearing properly on the map, or with invalid text when hovered over with the mouse
-* Fixed "Tapestry" tiles not drawing the correct texture
-* Fixed World Generation error that would occur due to tML's December update
+* Fixed conversion error in the code from v0.3.2.0 that broke the village shrine zone
+	-> This fixes the issue of Harpies endlessly spawning, or not at all
+* Fixed the chat message of a villager re-spawning not properly showing the new villager's name
