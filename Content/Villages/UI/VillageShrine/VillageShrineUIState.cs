@@ -82,11 +82,11 @@ public class VillageShrineUIState : UIState {
         Asset<Texture2D> gradientPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder");
         Asset<Texture2D> shadowedPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/ShadowedPanelBorder");
 
-        backPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) { BackgroundColor = new Color(59, 97, 203), BorderColor = Color.White };
+        backPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) { BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor, BorderColor = Color.White };
         backPanel.Width = backPanel.Height = new StyleDimension(194f, 0f);
         Append(backPanel);
 
-        itemPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) { BackgroundColor = new Color(46, 46, 159), BorderColor = new Color(22, 29, 107) };
+        itemPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) { BackgroundColor = LWMUtils.LWMCustomUISubPanelBackgroundColor, BorderColor = LWMUtils.LWMCustomUISubPanelBorderColor };
         itemPanel.Width = itemPanel.Height = new StyleDimension(48f, 0f);
         itemPanel.SetPadding(0f);
         backPanel.Append(itemPanel);

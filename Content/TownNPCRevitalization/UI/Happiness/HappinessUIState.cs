@@ -94,7 +94,7 @@ public class HappinessUIState : UIState {
         Asset<Texture2D> shadowedPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/ShadowedPanelBorder");
 
         moodBackPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
-            BackgroundColor = new Color(59, 97, 203),
+            BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor,
             BorderColor = Color.White,
             HAlign = 0.5f,
             VAlign = 0.5f,
@@ -126,7 +126,7 @@ public class HappinessUIState : UIState {
         };
         moodBackPanel.Append(happinessBarZone);
 
-        happinessBarBackPanel = new UISquarePanel(new Color(22, 29, 107), new Color(46, 46, 159)) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+        happinessBarBackPanel = new UISquarePanel(LWMUtils.LWMCustomUISubPanelBorderColor, LWMUtils.LWMCustomUISubPanelBackgroundColor) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
         happinessBarZone.Append(happinessBarBackPanel);
 
         happinessBar = new UISimpleRectangle(Color.White) { Height = StyleDimension.FromPercent(0.75f), Width = StyleDimension.FromPercent(0.5f), VAlign = 0.5f };
@@ -149,8 +149,8 @@ public class HappinessUIState : UIState {
 
 
         modifierListBackPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) {
-            BackgroundColor = new Color(46, 46, 159),
-            BorderColor = new Color(22, 29, 107),
+            BackgroundColor = LWMUtils.LWMCustomUISubPanelBackgroundColor,
+            BorderColor = LWMUtils.LWMCustomUISubPanelBorderColor,
             Width = StyleDimension.Fill,
             Height = StyleDimension.FromPixels(140f),
             VAlign = 1f

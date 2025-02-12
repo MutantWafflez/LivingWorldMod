@@ -18,4 +18,19 @@ public static partial class LWMUtils {
     ///     The color of the chat text from Vanilla when a Town NPC dies or "leaves."
     /// </summary>
     public static readonly Color RedTownNPCDeathTextColor = new(255, 25, 25);
+
+    /// <summary>
+    ///     The panel background color used with various UIs in LWM.
+    /// </summary>
+    public static readonly Color LWMCustomUIPanelBackgroundColor = new (59, 97, 203);
+
+    /// <summary>
+    ///     The background color of the sub-panels within pre-existing panels used with various UIs in LWM.
+    /// </summary>
+    public static readonly Color LWMCustomUISubPanelBackgroundColor = new (46, 46, 159);
+
+    /// <summary>
+    ///     The border color of the sub-panels within pre-existing panels used with various UIs in LWM.
+    /// </summary>
+    public static readonly Color LWMCustomUISubPanelBorderColor = new (22, 29, 107);
 }
