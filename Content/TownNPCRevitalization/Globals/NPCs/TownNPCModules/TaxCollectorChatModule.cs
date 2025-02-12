@@ -1,4 +1,5 @@
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 using LivingWorldMod.Utilities;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
@@ -15,7 +16,7 @@ public class TaxCollectorChatModule : TownNPCModule, ISetChatButtons {
         }
 
         // Open UI here
-        Main.NewText("Click!");
+        TaxesUISystem.Instance.OpenTaxesState(npc);
     }
 
     // Add second button to tax collector chat box that opens a custom new UI
