@@ -15,7 +15,7 @@ public class TaxCollectorChatModule : TownNPCModule, ISetChatButtons {
             return;
         }
 
-        // Open UI here
+        Main.npcChatText = "";
         TaxesUISystem.Instance.OpenTaxesState(npc);
     }
 
