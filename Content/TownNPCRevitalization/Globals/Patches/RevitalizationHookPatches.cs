@@ -32,6 +32,6 @@ public class RevitalizationHookPatches : LoadablePatch {
 
         c.Emit(OpCodes.Ldloca, focusTextOne);
         c.Emit(OpCodes.Ldloca, focusTextTwo);
-        c.Emit(OpCodes.Call, typeof(ISetButtonTexts).GetMethod(nameof(ISetButtonTexts.Invoke), BindingFlags.Public | BindingFlags.Static)!);
+        c.Emit(OpCodes.Call, typeof(ISetChatButtons).GetMethod(nameof(ISetChatButtons.Invoke), BindingFlags.Public | BindingFlags.Static)!);
     }
 }
