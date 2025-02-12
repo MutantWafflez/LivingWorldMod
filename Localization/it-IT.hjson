@@ -316,8 +316,8 @@ Mods: {
 		}
 
 		VillagerType.Harpy: Arpie
-		//Villagers
 		NPCs.HarpyVillager.DisplayName: Abitante arpia
+		// NPCChatButtons.TaxCollector.TaxSheet: Tax Sheet
 		Projectiles.NimbusPetProjectile.DisplayName: Nuvoletta domestica
 
 		UI: {

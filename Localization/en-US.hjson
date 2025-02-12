@@ -316,8 +316,8 @@ Mods: {
 		}
 
 		VillagerType.Harpy: Harpy
-		//Villagers
 		NPCs.HarpyVillager.DisplayName: Harpy Villager
+		NPCChatButtons.TaxCollector.TaxSheet: Tax Sheet
 		Projectiles.NimbusPetProjectile.DisplayName: Nimbus Pet
 
 		UI: {

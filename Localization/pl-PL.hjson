@@ -316,8 +316,8 @@ Mods: {
 		}
 
 		VillagerType.Harpy: Harpia
-		//Villagers
 		NPCs.HarpyVillager.DisplayName: Harpia Wieśniaczka
+		// NPCChatButtons.TaxCollector.TaxSheet: Tax Sheet
 		Projectiles.NimbusPetProjectile.DisplayName: Zwierzak Nimbus
 
 		UI: {
