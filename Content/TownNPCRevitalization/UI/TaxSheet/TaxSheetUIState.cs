@@ -15,11 +15,22 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.UI.TaxSheet;
 ///     UIState for the Tax Sheet UI added to the Tax Collector.
 /// </summary>
 public class TaxSheetUIState : UIState {
+    private const float BackPanelSideLength = 200f;
+    private const float PaddingBetweenPanels = 4f;
+    private const float SelectedNPCBackPanelWidth = 130f;
+
     private UIPanel _backPanel;
     private UIBetterText _titleText;
     private UIPanel _npcGridSubPanel;
     private UIBetterScrollbar _npcGridScrollBar;
     private UIGrid _npcGrid;
+
+    private UIPanel _selectedNPCBackPanel;
+    private UIBetterText _selectedNPCName;
+    private UIBetterText _propertyTaxText;
+    private UICoinDisplay _propertyTaxDisplay;
+    private UIBetterText _salesTaxText;
+    private UICoinDisplay _salesTaxDisplay;
 
     private UIPanel _helpIconPanel;
     private UITooltipElement _helpIconTooltipZone;
@@ -40,8 +51,8 @@ public class TaxSheetUIState : UIState {
             BorderColor = Color.White,
             HAlign = 0.5f,
             VAlign = 0.5f,
-            Width = StyleDimension.FromPixels(200f),
-            Height = StyleDimension.FromPixels(200f)
+            Width = StyleDimension.FromPixels(BackPanelSideLength),
+            Height = StyleDimension.FromPixels(BackPanelSideLength)
         };
         Append(_backPanel);
 
@@ -57,19 +68,44 @@ public class TaxSheetUIState : UIState {
         };
         _backPanel.Append(_npcGridSubPanel);
 
-        _npcGridScrollBar = new UIBetterScrollbar { Left = StyleDimension.FromPixels(4), HAlign = 1f, Width = StyleDimension.FromPixels(24f), Height = StyleDimension.Fill };
+        _npcGridScrollBar = new UIBetterScrollbar { Left = StyleDimension.FromPixels(PaddingBetweenPanels), HAlign = 1f, Width = StyleDimension.FromPixels(24f), Height = StyleDimension.Fill };
         _npcGridSubPanel.Append(_npcGridScrollBar);
 
-        _npcGrid = new UIGrid { Width = StyleDimension.FromPixelsAndPercent(-24f, 1), Height = StyleDimension.Fill, ListPadding = 4f };
+        _npcGrid = new UIGrid { Width = StyleDimension.FromPixelsAndPercent(-24f, 1), Height = StyleDimension.Fill, ListPadding = PaddingBetweenPanels };
         _npcGrid.SetScrollbar(_npcGridScrollBar);
         _npcGridSubPanel.Append(_npcGrid);
+
+        _selectedNPCBackPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
+            BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor,
+            BorderColor = Color.White,
+            VAlign = 0.5f,
+            Left = StyleDimension.FromPixels(_backPanel.GetDimensions().X + BackPanelSideLength + PaddingBetweenPanels),
+            Width = StyleDimension.FromPixels(SelectedNPCBackPanelWidth),
+            Height = StyleDimension.FromPixels(BackPanelSideLength)
+        };
+        Append(_selectedNPCBackPanel);
+
+        _selectedNPCName = new UIBetterText("Guide", 1.33f) { HAlign = 0.5f, horizontalTextConstraint = SelectedNPCBackPanelWidth - PaddingBetweenPanels * 2f };
+        _selectedNPCBackPanel.Append(_selectedNPCName);
+
+        _propertyTaxText = new UIBetterText("Property Tax", 0.75f) { HAlign = 0.5f, Top = StyleDimension.FromPixels(30f) };
+        _selectedNPCBackPanel.Append(_propertyTaxText);
+
+        _propertyTaxDisplay = new UICoinDisplay(0) { HAlign = 0.5f, Top = StyleDimension.FromPixels(40f) };
+        _selectedNPCBackPanel.Append(_propertyTaxDisplay);
+
+        _salesTaxText = new UIBetterText("Sales Tax", 0.75f) { HAlign = 0.5f, Top = StyleDimension.FromPixels(70f) };
+        _selectedNPCBackPanel.Append(_salesTaxText);
+
+        _salesTaxDisplay = new UICoinDisplay(0) { HAlign = 0.5f, Top = StyleDimension.FromPixels(80f) };
+        _selectedNPCBackPanel.Append(_salesTaxDisplay);
 
         _helpIconPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
             BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor,
             BorderColor = Color.White,
             Width = StyleDimension.FromPixels(32),
             Height = StyleDimension.FromPixels(32),
-            Left = StyleDimension.FromPixels(-_backPanel.PaddingLeft - 32f - 4f),
+            Left = StyleDimension.FromPixels(-_backPanel.PaddingLeft - 32f - PaddingBetweenPanels),
             Top = StyleDimension.FromPixels(-_backPanel.PaddingLeft + 2)
         };
         _helpIconPanel.SetPadding(0f);
@@ -84,6 +120,9 @@ public class TaxSheetUIState : UIState {
 
     public override void Update(GameTime gameTime) {
         base.Update(gameTime);
+
+        RemoveAllChildren();
+        OnInitialize();
 
         if (_backPanel.IsMouseHovering) {
             Main.LocalPlayer.mouseInterface = true;
