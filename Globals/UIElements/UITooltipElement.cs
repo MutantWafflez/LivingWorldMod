@@ -1,5 +1,6 @@
 ﻿using LivingWorldMod.DataStructures.Structs;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace LivingWorldMod.Globals.UIElements;
@@ -11,6 +12,9 @@ public class UITooltipElement(DynamicLocalizedText text) : UIElement {
     };
 
     private string _formattedTooltipText = text.SubstitutedText;
+    private DynamicLocalizedText _text = text;
+
+    public UITooltipElement (string text) : this(new LocalizedText(null, text)) { }
 
     protected override void DrawSelf(SpriteBatch spriteBatch) {
         base.DrawSelf(spriteBatch);
@@ -26,12 +30,12 @@ public class UITooltipElement(DynamicLocalizedText text) : UIElement {
     }
 
     public void SetText(DynamicLocalizedText newText) {
-        text = newText;
+        _text = newText;
         _formattedTooltipText = newText.SubstitutedText;
     }
 
     public void ReformatText(object formatSubstitutesObject = null) {
-        text = new DynamicLocalizedText(text.text, formatSubstitutesObject);
-        _formattedTooltipText = text.SubstitutedText;
+        _text = new DynamicLocalizedText(_text.text, formatSubstitutesObject);
+        _formattedTooltipText = _text.SubstitutedText;
     }
 }
