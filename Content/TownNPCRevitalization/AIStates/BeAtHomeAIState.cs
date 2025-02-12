@@ -98,7 +98,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                 spriteModule.OffsetDrawPosition(newBottom - npc.Bottom);
                 break;
             default:
-            case NPCRestType.None:
+            case NPCRestType.Floor:
                 npc.friendlyRegen += 2;
 
                 npc.direction = -1;
