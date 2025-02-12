@@ -7,8 +7,7 @@ public class HappinessUISystem : UISystem<HappinessUISystem, HappinessUIState> {
     public override string InternalInterfaceName => "Town NPC Happiness";
 
     public override void PostUpdateEverything() {
-        int talkNPC = Main.LocalPlayer.talkNPC;
-        if (correspondingInterface.CurrentState == null || (talkNPC != -1 && (Main.npc[talkNPC]?.type ?? -1) == correspondingUIState.NPCBeingTalkedTo.type)) {
+        if (correspondingInterface.CurrentState == null || (Main.LocalPlayer.TalkNPC is { } npc && npc == correspondingUIState.NPCBeingTalkedTo)) {
             return;
         }
 
