@@ -33,4 +33,9 @@ public static partial class LWMUtils {
     ///     The border color of the sub-panels within pre-existing panels used with various UIs in LWM.
     /// </summary>
     public static readonly Color LWMCustomUISubPanelBorderColor = new (22, 29, 107);
+
+    /// <summary>
+    ///     The default background color that vanilla uses for its UI Panels.
+    /// </summary>
+    public static readonly Color UIPanelBackgroundColor = new Color(63, 82, 151) * 0.7f;
 }

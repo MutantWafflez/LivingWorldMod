@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
@@ -33,6 +33,7 @@ public class TaxSheetUIState : UIState {
     private UIBetterScrollbar _npcGridScrollBar;
     private UIGrid _npcGrid;
 
+    private UIVisibilityElement _selectedNPCVisibilityElement;
     private UIPanel _selectedNPCBackPanel;
     private UIBetterText _selectedNPCName;
     private UIBetterText _propertyTaxText;
@@ -45,6 +46,8 @@ public class TaxSheetUIState : UIState {
     private UIPanel _helpIconPanel;
     private UITooltipElement _helpIconTooltipZone;
     private UIImage _helpIcon;
+
+    private int _selectedNPCType;
 
     public NPC NPCBeingTalkedTo {
         get;
@@ -88,15 +91,18 @@ public class TaxSheetUIState : UIState {
         _npcGrid.SetScrollbar(_npcGridScrollBar);
         _npcGridSubPanel.Append(_npcGrid);
 
-        _selectedNPCBackPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
-            BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor,
-            BorderColor = Color.White,
+        _selectedNPCVisibilityElement = new UIVisibilityElement {
             VAlign = 0.5f,
             Left = StyleDimension.FromPixels(_backPanel.GetDimensions().X + BackPanelSideLength + PaddingBetweenPanels),
             Width = StyleDimension.FromPixels(SelectedNPCBackPanelWidth),
             Height = StyleDimension.FromPixels(BackPanelSideLength + 110f)
         };
-        Append(_selectedNPCBackPanel);
+        Append(_selectedNPCVisibilityElement);
+
+        _selectedNPCBackPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
+            BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor, BorderColor = Color.White, Width = StyleDimension.Fill, Height = StyleDimension.Fill
+        };
+        _selectedNPCVisibilityElement.Append(_selectedNPCBackPanel);
 
         _selectedNPCName = new UIBetterText("Guide", 1.25f) { HAlign = 0.5f, horizontalTextConstraint = SelectedNPCBackPanelWidth - PaddingBetweenPanels * 2f };
         _selectedNPCBackPanel.Append(_selectedNPCName);
@@ -220,27 +226,47 @@ public class TaxSheetUIState : UIState {
 
         _npcGridScrollBar.ViewPosition = 0f;
         _npcGrid.Clear();
+        _selectedNPCVisibilityElement.SetVisibility(false);
+
         PopulateNPCGrid();
     }
 
     private void PopulateNPCGrid() {
+        HashSet<int> addedNPCTypes = [];
         foreach (NPC npc in Main.ActiveNPCs) {
             int headIndex;
-            if (!TownGlobalNPC.EntityIsValidTownNPC(npc, true) || (headIndex = TownNPCProfiles.GetHeadIndexSafe(npc)) < 0) {
+            if (addedNPCTypes.Contains(npc.type) || !TownGlobalNPC.EntityIsValidTownNPC(npc, true) || (headIndex = TownNPCProfiles.GetHeadIndexSafe(npc)) < 0) {
                 continue;
             }
 
             UITooltipElement headTooltipZone = new(npc.GivenName) { Width = StyleDimension.FromPixels(40), Height = StyleDimension.FromPixels(40) };
             headTooltipZone.Recalculate();
 
-            UIPanel npcHeadPanel = new() { Width = StyleDimension.Fill, Height = StyleDimension.Fill, IgnoresMouseInteraction = true };
+            UIPanel npcHeadPanel = new() { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
             npcHeadPanel.SetPadding(0);
             headTooltipZone.Append(npcHeadPanel);
 
-            UIImage npcHead = new (TextureAssets.NpcHead[headIndex]) { HAlign = 0.5f, VAlign = 0.5f, IgnoresMouseInteraction = true };
+            headTooltipZone.OnLeftClick += (_, _) => {
+                if (_selectedNPCType == npc.type) {
+                    _selectedNPCType = -1;
+
+                    npcHeadPanel.BackgroundColor = LWMUtils.UIPanelBackgroundColor;
+                    npcHeadPanel.BorderColor = Color.Black;
+
+                    return;
+                }
+
+                _selectedNPCType = npc.type;
+
+                npcHeadPanel.BackgroundColor = LWMUtils.YellowErrorTextColor * 0.7f;
+                npcHeadPanel.BorderColor = Color.Yellow;
+            };
+
+            UIImage npcHead = new (TextureAssets.NpcHead[headIndex]) { HAlign = 0.5f, VAlign = 0.5f };
             npcHeadPanel.Append(npcHead);
 
             _npcGrid.Add(headTooltipZone);
+            addedNPCTypes.Add(npc.type);
         }
     }
 }
