@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using LivingWorldMod.DataStructures.Records;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
@@ -31,6 +32,9 @@ public class UICoinDisplay : UIElement {
         DrawOnlyWithNonZeroValue
     }
 
+    private const float DefaultCoinPadding = 24f;
+    private const float CoinSize = 14f;
+
     private const int PlatinumCoinIndex = 3;
 
     private readonly int[] _coinValues;
@@ -42,22 +46,28 @@ public class UICoinDisplay : UIElement {
     /// </summary>
     private readonly float _displayScale;
 
-    public UICoinDisplay(long moneyToDisplay, float displayScale = 1f) : this(displayScale) {
+    /// <summary>
+    ///     How much horizontal padding there is between each of the coins.
+    /// </summary>
+    private readonly float _coinPadding;
+
+    public UICoinDisplay(long moneyToDisplay, float coinPadding = DefaultCoinPadding, float displayScale = 1f) : this(coinPadding, displayScale) {
         SetDisplay(moneyToDisplay, new CoinDrawStyle(CoinDrawCondition.Default));
     }
 
-    public UICoinDisplay(long moneyToDisplay, CoinDrawStyle drawStyle, float displayScale = 1f) : this(displayScale) {
+    public UICoinDisplay(long moneyToDisplay, CoinDrawStyle drawStyle, float coinPadding = DefaultCoinPadding, float displayScale = 1f) : this(coinPadding, displayScale) {
         SetDisplay(moneyToDisplay, drawStyle);
     }
 
-    public UICoinDisplay(long moneyToDisplay, CoinDrawStyle[] drawStyles, float displayScale = 1f) : this(displayScale) {
+    public UICoinDisplay(long moneyToDisplay, CoinDrawStyle[] drawStyles, float coinPadding = DefaultCoinPadding, float displayScale = 1f) : this(coinPadding, displayScale) {
         SetDisplay(moneyToDisplay, drawStyles);
     }
 
-    private UICoinDisplay(float displayScale) {
+    private UICoinDisplay(float coinPadding, float displayScale) {
         _coinValues = new int[Main.InventoryCoinSlotsCount];
         _coinDrawStyles = new CoinDrawStyle[Main.InventoryCoinSlotsCount];
         _drawnCoins = new bool[Main.InventoryCoinSlotsCount];
+        _coinPadding = coinPadding;
         _displayScale = displayScale;
     }
 
@@ -70,7 +80,7 @@ public class UICoinDisplay : UIElement {
                 continue;
             }
 
-            Vector2 position = new(startPos.X + 24f * _displayScale * actuallyDrawnCoins + 14f * _displayScale, startPos.Y + 14f * _displayScale);
+            Vector2 position = new(startPos.X + _coinPadding * _displayScale * actuallyDrawnCoins + CoinSize * _displayScale, startPos.Y + CoinSize * _displayScale);
 
             Main.instance.LoadItem(ItemID.PlatinumCoin - i);
             spriteBatch.Draw(
@@ -125,16 +135,16 @@ public class UICoinDisplay : UIElement {
     ///     money being displayed.
     /// </summary>
     private void CalculateDimensions() {
-        float finalWidth = 0f;
+        BoundedNumber<int> actuallyDrawCoins = new (0, 0, int.MaxValue) ;
         for (int i = 0; i < Main.InventoryCoinSlotsCount; i++) {
             if (!_drawnCoins[i]) {
                 continue;
             }
 
-            finalWidth += 24f; //Coin + padding size
+            actuallyDrawCoins += 1;
         }
 
-        Width.Set(finalWidth * _displayScale, 0f);
+        Width.Set(((actuallyDrawCoins - 1) * _coinPadding + CoinSize * actuallyDrawCoins) * _displayScale, 0f);
         //Since height is not a factor that changes between styles, we can define height here
         Height.Set(30 * _displayScale, 0f);
     }
