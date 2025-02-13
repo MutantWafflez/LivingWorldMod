@@ -27,6 +27,7 @@ public class TownNPCHousingModule : TownNPCModule {
     public bool ShouldGoHome {
         get {
             TownNPCSleepModule sleepModule = NPC.GetGlobalNPC<TownNPCSleepModule>();
+
             return (sleepModule.WantsToSleep && sleepModule.CanSleep) || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
         }
     }

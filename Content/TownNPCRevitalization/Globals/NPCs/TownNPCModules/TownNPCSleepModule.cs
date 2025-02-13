@@ -20,7 +20,7 @@ using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 
-public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
+public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     private const int MaxAwakeValue = LWMUtils.InGameHour * 24;
     private const float DefaultAwakeValue = MaxAwakeValue * 0.2f;
 
