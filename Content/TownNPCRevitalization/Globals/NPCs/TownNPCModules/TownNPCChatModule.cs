@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -13,7 +14,8 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModul
 /// <summary>
 ///     Module that handles various aspects of the social-ness of Town NPCs. Involves code for the player talking to this NPC, and for the flavor animations of "talking" to other Town NPCs.
 /// </summary>
-public sealed class TownNPCChatModule : TownNPCModule {
+[Autoload(Side = ModSide.Client)]
+public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
     private const int DefaultChatBubbleDuration = LWMUtils.RealLifeSecond * 5;
 
     /// <summary>
@@ -252,5 +254,10 @@ public sealed class TownNPCChatModule : TownNPCModule {
     /// </summary>
     public void DisableChatReception(int duration) {
         _chatReceptionCooldown = duration;
+    }
+
+    public void UpdateSleep(NPC npc, Vector2? drawOffset, uint? frameOverride, bool passedOut) {
+        DisableChatting(LWMUtils.RealLifeSecond);
+        DisableChatReception(LWMUtils.RealLifeSecond);
     }
 }

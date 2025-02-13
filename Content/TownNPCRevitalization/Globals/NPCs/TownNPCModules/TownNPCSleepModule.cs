@@ -48,7 +48,7 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
 
     public override int UpdatePriority => 1;
 
-    public TownNPCDrawRequest GetSleepSpriteDrawData {
+    public TownNPCDrawRequest SleepSpriteDrawData {
         get {
             Main.instance.LoadItem(ItemID.SleepingIcon);
             Texture2D sleepingIconTexture = TextureAssets.Item[ItemID.SleepingIcon].Value;

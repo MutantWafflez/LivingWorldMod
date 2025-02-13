@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
@@ -50,10 +51,11 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
         }
 
         npc.ai[2] = 0f;
-        TownNPCSpriteModule spriteModule = npc.GetGlobalNPC<TownNPCSpriteModule>();
+        npc.TryGetGlobalNPC(out TownNPCSpriteModule spriteModule);
         switch (npc.ai[1]) {
             case StartSleepAnimationState:
-                spriteModule.GiveItem();
+                spriteModule?.GiveItem();
+
                 npc.ai[3] = 0f;
                 npc.ai[1] = 1f;
                 return;
@@ -69,9 +71,9 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
 
         npc.BottomLeft = pathfindPos.ToWorldCoordinates(8f, 16f);
 
-        TownNPCChatModule chatModule = npc.GetGlobalNPC<TownNPCChatModule>();
         float currentSleepQualityModifier = (float)Main.dayRate * sleepModule.SleepQualityModifier;
-        // TODO: Add hook that occurs while NPC is actively sleeping
+        Vector2? drawOffset;
+        uint? frameOverride = null;
         switch (npcRestType) {
             case NPCRestType.Bed:
                 npc.friendlyRegen += 10;
@@ -83,7 +85,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
 
                 sleepModule.awakeTicks -= 1.875f * currentSleepQualityModifier;
 
-                spriteModule.OffsetDrawPosition(targetDirection == 1 ? new Vector2(npc.width / 2f, visualOffset.Y) : new Vector2(npc.width, visualOffset.Y));
+                drawOffset = targetDirection == 1 ? new Vector2(npc.width / 2f, visualOffset.Y) : new Vector2(npc.width, visualOffset.Y);
                 break;
             case NPCRestType.Chair:
                 npc.friendlyRegen += 5;
@@ -94,8 +96,8 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
 
                 sleepModule.awakeTicks -= 1.6f * currentSleepQualityModifier;
 
-                spriteModule.RequestFrameOverride((uint)(Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type] - 3));
-                spriteModule.OffsetDrawPosition(newBottom - npc.Bottom);
+                drawOffset = newBottom - npc.Bottom;
+                frameOverride = (uint)(Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type] - 3);
                 break;
             default:
             case NPCRestType.Floor:
@@ -106,16 +108,12 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
 
                 sleepModule.awakeTicks -= 1.2f * currentSleepQualityModifier;
 
-                spriteModule.OffsetDrawPosition(new Vector2(0, npc.width));
+                drawOffset = new Vector2(0, npc.width);
                 break;
         }
 
         npc.ai[1] = IsSleepingStateFlag;
-        spriteModule.RequestDraw(sleepModule.GetSleepSpriteDrawData);
-        spriteModule.CloseEyes();
-
-        chatModule.DisableChatting(LWMUtils.RealLifeSecond);
-        chatModule.DisableChatReception(LWMUtils.RealLifeSecond);
+        IUpdateSleep.Invoke(npc, drawOffset, frameOverride, false);
 
         pathfinderModule.CancelPathfind();
     }
