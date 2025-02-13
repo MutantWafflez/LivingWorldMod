@@ -208,7 +208,7 @@ public class ShopUIState : UIState {
                     _selectedItem.itemNameText.SetText(_selectedItem.displayedItem.HoverName);
                     buyItemStock.SetText(shopItem.remainingStock.ToString());
 
-                    savingsDisplay.SetDisplayedMoney(player.CalculateTotalSavings());
+                    savingsDisplay.SetNewCoinValues(player.CalculateTotalSavings());
 
                     if (currentVillager.RelationshipStatus >= VillagerRelationship.Dislike) {
                         portrait.temporaryExpression = UIPortrait.VillagerPortraitExpression.Happy;
@@ -250,7 +250,7 @@ public class ShopUIState : UIState {
 
         buyItemButton.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BuyButton", AssetRequestMode.ImmediateLoad));
 
-        savingsDisplay.SetDisplayedMoney(Main.LocalPlayer.CalculateTotalSavings());
+        savingsDisplay.SetNewCoinValues(Main.LocalPlayer.CalculateTotalSavings());
 
         PopulateShopList();
 

@@ -15,10 +15,6 @@ namespace LivingWorldMod.Content.Villages.UI.VillagerShop;
 ///     UI list. Holds data on the entire entry for the given item.
 /// </summary>
 public class UIShopItem : UIImage {
-    public UIBetterItemIcon itemImage;
-    public UIBetterText itemNameText;
-    public UICoinDisplay itemCostDisplay;
-
     /// <summary>
     ///     The ShopItem class object that this element is tied to. Is used to sync the villager's
     ///     inventory with the UI properly.
@@ -26,6 +22,9 @@ public class UIShopItem : UIImage {
     public readonly ShopItem pertainedInventoryItem;
 
     public readonly Item displayedItem;
+    public UIBetterItemIcon itemImage;
+    public UIBetterText itemNameText;
+    public UICoinDisplay itemCostDisplay;
 
     public VillagerType villagerType;
 
@@ -59,7 +58,7 @@ public class UIShopItem : UIImage {
         itemNameText.Left.Set(94f, 0f);
         Append(itemNameText);
 
-        itemCostDisplay = new UICoinDisplay(displayedCost, UICoinDisplay.CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) { VAlign = 0.5f };
+        itemCostDisplay = new UICoinDisplay(displayedCost, new UICoinDisplay.CoinDrawStyle(UICoinDisplay.CoinDrawCondition.DrawOnlyWithNonZeroValue), 1.34f) { VAlign = 0.5f };
         itemCostDisplay.Left.Set(-itemCostDisplay.Width.Pixels - 12f, 1f);
         Append(itemCostDisplay);
     }
