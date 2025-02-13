@@ -99,13 +99,13 @@ public class RevitalizationNPCPatches : LoadablePatch {
             c.Remove();
             c.Emit(OpCodes.Ldarg_1);
             c.Emit(OpCodes.Ldarg_2);
-            c.EmitDelegate(SpecialTownNPCDrawExtras);
+            c.EmitDelegate(SpritebatchRerouteMethod);
         }
 
         _drawNPCExtrasBody = null;
     }
 
-    private static void SpecialTownNPCDrawExtras(
+    private static void SpritebatchRerouteMethod(
         SpriteBatch spriteBatch,
         Texture2D texture,
         Vector2 position,
@@ -124,7 +124,7 @@ public class RevitalizationNPCPatches : LoadablePatch {
         }
 
         int drawLayer = beforeDraw ? -1 : 1;
-        spriteModule.RequestDraw(new TownNPCDrawRequest(texture, position, origin, sourceRect, SpriteEffect: effects, UsesAbsolutePosition: true, DrawLayer: drawLayer));
+        spriteModule.RequestDraw(new TownNPCDrawRequest(texture, position, origin, sourceRect, color, rotation, new Vector2(scale), effects, true,  drawLayer));
     }
 
     private static void HappinessUIPatch(ILContext il) {
