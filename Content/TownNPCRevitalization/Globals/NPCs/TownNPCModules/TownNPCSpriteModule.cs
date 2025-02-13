@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -114,7 +115,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
         // Method Gaslighting
         // See RevitalizationNPCPatches.cs: TL;DR is the method is patched so that all sprite-batch calls are re-routed back to here (the sprite module) and we control the drawing
         for (int i = 0; i < 2; i++) {
-            Main.instance.DrawNPCExtras(NPC, i == 0, npcAddHeight, 0, Color.White, halfSize, spriteEffects, Vector2.Zero);
+            RevitalizationNPCPatches.AddExtrasToNPCDrawing(false, NPC, i == 0, npcAddHeight, 0, Color.White, halfSize, spriteEffects, Vector2.Zero);
         }
 
         // This is the request to actually draw the NPC itself
