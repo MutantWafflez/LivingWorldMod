@@ -127,7 +127,7 @@ public class TaxSheetUIState : UIState {
                 new UICoinDisplay.CoinDrawStyle (UICoinDisplay.CoinDrawCondition.DoNotDraw)
             ],
             CoinDisplayPadding
-        ) { HAlign = 0.5f, Top = StyleDimension.FromPixels(75f) };
+        ) { HAlign = 0.5f, Top = StyleDimension.FromPixels(80f) };
         _selectedNPCBackPanel.Append(_propertyTaxDisplay);
 
         _salesTaxText = new UIBetterText("Sales Tax", 0.9f) { HAlign = 0.5f, Top = StyleDimension.FromPixels(140f) };
@@ -150,7 +150,7 @@ public class TaxSheetUIState : UIState {
                 new UICoinDisplay.CoinDrawStyle(UICoinDisplay.CoinDrawCondition.DoNotDraw)
             ],
             CoinDisplayPadding
-        ) { HAlign = 0.5f, Top = StyleDimension.FromPixels(185f) };
+        ) { HAlign = 0.5f, Top = StyleDimension.FromPixels(190f) };
         _selectedNPCBackPanel.Append(_salesTaxDisplay);
 
         _helpIconPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
@@ -215,6 +215,7 @@ public class TaxSheetUIState : UIState {
 
         RemoveAllChildren();
         OnInitialize();
+        _selectedNPCVisibilityElement.SetVisibility(true);
 
         if (_backPanel.IsMouseHovering) {
             Main.LocalPlayer.mouseInterface = true;

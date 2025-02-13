@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using LivingWorldMod.DataStructures.Records;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
@@ -33,7 +32,6 @@ public class UICoinDisplay : UIElement {
     }
 
     private const float DefaultCoinPadding = 24f;
-    private const float CoinSize = 14f;
 
     private const int PlatinumCoinIndex = 3;
 
@@ -80,7 +78,8 @@ public class UICoinDisplay : UIElement {
                 continue;
             }
 
-            Vector2 position = new(startPos.X + _coinPadding * _displayScale * actuallyDrawnCoins + CoinSize * _displayScale, startPos.Y + CoinSize * _displayScale);
+            Vector2 origin = TextureAssets.Item[ItemID.PlatinumCoin - i].Value.Size() / 2f * _displayScale;
+            Vector2 position = new Vector2(startPos.X + (_coinPadding + 0.5f) * _displayScale * actuallyDrawnCoins, startPos.Y + 2f * _displayScale) + origin;
 
             Main.instance.LoadItem(ItemID.PlatinumCoin - i);
             spriteBatch.Draw(
@@ -89,7 +88,7 @@ public class UICoinDisplay : UIElement {
                 null,
                 Color.White,
                 0f,
-                TextureAssets.Item[ItemID.PlatinumCoin - i].Value.Size() / 2f,
+                origin,
                 _displayScale,
                 SpriteEffects.None,
                 0f
@@ -135,18 +134,25 @@ public class UICoinDisplay : UIElement {
     ///     money being displayed.
     /// </summary>
     private void CalculateDimensions() {
-        BoundedNumber<int> actuallyDrawCoins = new (0, 0, int.MaxValue) ;
-        for (int i = 0; i < Main.InventoryCoinSlotsCount; i++) {
+        float finalWidth = -_coinPadding;
+        int? lastCoinToBeDrawn = null;
+        for (int i = Main.InventoryCoinSlotsCount - 1; i >= 0; i--) {
             if (!_drawnCoins[i]) {
                 continue;
             }
 
-            actuallyDrawCoins += 1;
+            lastCoinToBeDrawn = i;
+            finalWidth += _coinPadding;
         }
 
-        Width.Set(((actuallyDrawCoins - 1) * _coinPadding + CoinSize * actuallyDrawCoins) * _displayScale, 0f);
-        //Since height is not a factor that changes between styles, we can define height here
-        Height.Set(30 * _displayScale, 0f);
+        Height.Set(24f * _displayScale, 0f);
+
+        if (lastCoinToBeDrawn is not { } coinIndex) {
+            return;
+        }
+
+        Main.instance.LoadItem(ItemID.PlatinumCoin - coinIndex);
+        Width.Set(finalWidth + TextureAssets.Item[ItemID.PlatinumCoin - coinIndex].Value.Width * _displayScale, 0f);
     }
 
     /// <summary>
