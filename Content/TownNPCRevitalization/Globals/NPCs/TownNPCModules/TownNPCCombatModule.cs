@@ -166,7 +166,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
 
         IOnTownNPCAttack.Invoke(NPC);
         NPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind();
-
+        
         NPC.localAI[3] = 0f;
         NPC.direction = NPC.position.X < AttackLocation.Value.position.X ? 1 : -1;
         NPC.netUpdate = true;

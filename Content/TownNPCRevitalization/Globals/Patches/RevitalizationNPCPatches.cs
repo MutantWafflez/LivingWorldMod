@@ -1,6 +1,8 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
@@ -13,7 +15,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using Terraria.GameContent;
+using MethodBody = Mono.Cecil.Cil.MethodBody;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 
@@ -25,6 +29,10 @@ public class RevitalizationNPCPatches : LoadablePatch {
     private const float MaxCostModifier = 1.5f;
 
     private static readonly Gradient<float> ShopCostModifierGradient = new (MathHelper.Lerp, (0f, MaxCostModifier), (0.5f, 1f), (1f, MinCostModifier));
+
+    private static readonly MethodInfo AddExtrasToNPCDrawingInfo = typeof(RevitalizationNPCPatches).GetMethod(nameof(AddExtrasToNPCDrawing), BindingFlags.Public | BindingFlags.Static)!;
+    private static MethodBody? _drawNPCExtrasBody;
+    private ILHook? _addExtrasToNPCDrawingHook;
 
     public static void ProcessMoodOverride(ShopHelper shopHelper, Player player, NPC npc) {
         if (NPCID.Sets.NoTownNPCHappiness[npc.type] || !npc.TryGetGlobalNPC(out TownNPCMoodModule moodModule)) {
@@ -43,7 +51,7 @@ public class RevitalizationNPCPatches : LoadablePatch {
         }
 
         PersonalityHelperInfo info = new(player, npc, npcNeighbors, npcNeighborsByType, npcsWithinHouse, npcsWithinVillage);
-        if (TownNPCDataSystem.PersonalityDatabase.TryGetValue(npc.type, out List<IPersonalityTrait> personalityTraits)) {
+        if (TownNPCDataSystem.PersonalityDatabase.TryGetValue(npc.type, out List<IPersonalityTrait>? personalityTraits)) {
             foreach (IPersonalityTrait shopModifier in personalityTraits) {
                 shopModifier.ApplyTrait(info, shopHelper);
             }
@@ -52,8 +60,33 @@ public class RevitalizationNPCPatches : LoadablePatch {
         shopHelper._currentPriceAdjustment = ShopCostModifierGradient.GetValue(moodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue);
     }
 
+    /// <summary>
+    ///     A method that, at runtime, is IL edited to be an exact copy of <see cref="Main.DrawNPCExtras" />, with all Draw calls replaced with <see cref="TownNPCSpriteModule.RequestDraw" /> calls instead.
+    ///     This is done to ensure compability with any other mods calling <see cref="Main.DrawNPCExtras" /> or IL editing it.
+    /// </summary>
+    /// <remarks>
+    ///     The parameter <see cref="parameterPadding" /> is required due to the original <see cref="Main.DrawNPCExtras" /> method being non-<see langword="static" />. Ldarg.0 is never used within the method
+    ///     however, so we add the additional argument "padding" so that all the remaining ldarg.# instructions reference the proper argument. This parameter doesn't do anything, so it can be any value.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static void AddExtrasToNPCDrawing(
+        bool parameterPadding,
+        NPC npc,
+        bool beforeDraw,
+        float addHeight,
+        float addY,
+        Color npcColor,
+        Vector2 halfSize,
+        SpriteEffects npcSpriteEffect,
+        Vector2 screenPosition
+    ) { }
+
     private static void DrawNPCExtrasConsumptionPatch(ILContext il) {
         currentContext = il;
+
+        // Edit that "consumes" the SpriteBatch calls in DrawNPCExtras and re-routes them to TownNPCSpriteModule
+        ILCursor c = new (il);
+        LWMUtils.CloneMethodBodyToCursor(_drawNPCExtrasBody, c);
 
         Type[] drawParameterTypes = [typeof(Texture2D), typeof(Vector2), typeof(Rectangle?), typeof(Color), typeof(float), typeof(Vector2), typeof(float), typeof(SpriteEffects), typeof(float)];
         MethodInfo spriteBatchMethod = typeof(SpriteBatch).GetMethod(
@@ -62,38 +95,18 @@ public class RevitalizationNPCPatches : LoadablePatch {
             drawParameterTypes
         )!;
 
-        // TL;DR: Edit that "consumes" the SpriteBatch calls in DrawNPCExtras and re-routes them to TownNPCSpriteModule
-        // Long version: In order to conserve compatibility for other mods editing this method, we find every instance of a SpriteBatch.Draw call and consume all the instructions preceding it, and
-        // then copying them so they can be run through our own delegate (see SpecialTownNPCDrawExtras below), capping it off with a branch instruction to preserve the old instructions so that vanilla
-        // can use them still for the applicable NPCs. This method provides the best of compatibility as well as actual functionality, instead of straight-up removing the Draw call (like before)
-
-        ILCursor c = new (il);
         while (c.TryGotoNext(i => i.MatchCallvirt(spriteBatchMethod))) {
-            int spriteBatchDrawCallInstrIndex = c.Index;
-            c.GotoPrev(i => i.MatchLdsfld<Main>(nameof(Main.spriteBatch)));
-
-            List<Instruction> spriteBatchInstrs = [];
-            for (int i = c.Index + 1; i < spriteBatchDrawCallInstrIndex; i++) {
-                spriteBatchInstrs.Add(c.Instrs[i]);
-            }
-
+            c.Remove();
             c.Emit(OpCodes.Ldarg_1);
             c.Emit(OpCodes.Ldarg_2);
-            foreach (Instruction instr in spriteBatchInstrs) {
-                c.Emit(instr.OpCode, instr.Operand);
-            }
-
-            c.EmitDelegate(SpecialTownNPCDrawExtras);
-
-            ILLabel branchLabel = c.DefineLabel();
-            c.Emit(OpCodes.Brtrue_S, branchLabel);
-            c.GotoNext(MoveType.After, i => i.MatchCallvirt(spriteBatchMethod)).MarkLabel(branchLabel);
+            c.EmitDelegate(SpritebatchRerouteMethod);
         }
+
+        _drawNPCExtrasBody = null;
     }
 
-    private static bool SpecialTownNPCDrawExtras(
-        NPC npc,
-        bool beforeDraw,
+    private static void SpritebatchRerouteMethod(
+        SpriteBatch spriteBatch,
         Texture2D texture,
         Vector2 position,
         Rectangle? sourceRect,
@@ -102,15 +115,16 @@ public class RevitalizationNPCPatches : LoadablePatch {
         Vector2 origin,
         float scale,
         SpriteEffects effects,
-        float layerDepth
+        float layerDepth,
+        NPC npc,
+        bool beforeDraw
     ) {
         if (!npc.TryGetGlobalNPC(out TownNPCSpriteModule spriteModule)) {
-            return false;
+            return;
         }
 
         int drawLayer = beforeDraw ? -1 : 1;
-        spriteModule.RequestDraw(new TownNPCDrawRequest(texture, position, origin, sourceRect, SpriteEffect: effects, UsesAbsolutePosition: true, DrawLayer: drawLayer));
-        return true;
+        spriteModule.RequestDraw(new TownNPCDrawRequest(texture, position, origin, sourceRect, color, rotation, new Vector2(scale), effects, true,  drawLayer));
     }
 
     private static void HappinessUIPatch(ILContext il) {
@@ -185,14 +199,21 @@ public class RevitalizationNPCPatches : LoadablePatch {
         Instruction branchInstr = c.Emit(OpCodes.Brfalse_S, c.DefineLabel()).Prev;
 
         c.ErrorOnFailedGotoNext(i => i.MatchLdcI4(0), i => i.MatchRet());
-        branchInstr!.Operand = c.MarkLabel();
+        branchInstr.Operand = c.MarkLabel();
     }
 
     public override void LoadPatches() {
-        IL_Main.DrawNPCExtras += DrawNPCExtrasConsumptionPatch;
+        IL_Main.DrawNPCExtras += il => _drawNPCExtrasBody = il.Body;
+        _addExtrasToNPCDrawingHook = new ILHook(AddExtrasToNPCDrawingInfo, DrawNPCExtrasConsumptionPatch);
+
         IL_Main.GUIChatDrawInner += HappinessUIPatch;
         IL_ShopHelper.ProcessMood += ProcessMoodOverridePatch;
         IL_NPC.UpdateCollision += NPCCollisionUpdatePatch;
         IL_NPC.UsesPartyHat += DrawsPartyHatPatch;
+    }
+
+    public override void Unload() {
+        _addExtrasToNPCDrawingHook?.Dispose();
+        _addExtrasToNPCDrawingHook = null;
     }
 }

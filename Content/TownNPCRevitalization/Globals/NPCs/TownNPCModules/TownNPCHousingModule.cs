@@ -62,8 +62,8 @@ public class TownNPCHousingModule : TownNPCModule {
     // Adapted vanilla code
     public HomeRestingInfo GetRestingInfo() {
         Point floorPos = new (NPC.homeTileX, NPC.homeTileY);
-        if (NPC.homeTileX == -1 || NPC.homeTileY == -1 || RoomBoundingBox is not { } boundingBox) {
-            return new HomeRestingInfo(floorPos, floorPos, NPCRestType.None);
+        if (RoomBoundingBox is not { } boundingBox) {
+            return new HomeRestingInfo(floorPos + new Point(0, -1), floorPos, NPCRestType.Floor);
         }
 
         while (!WorldGen.SolidOrSlopedTile(floorPos.X, floorPos.Y) && floorPos.Y < Main.maxTilesY - 20) {
@@ -113,7 +113,7 @@ public class TownNPCHousingModule : TownNPCModule {
             }
         }
 
-        return possibleRestInfos.Count == 0 ? new HomeRestingInfo(floorPos, floorPos, NPCRestType.None) : possibleRestInfos.OrderByDescending(info => info.RestType).First();
+        return possibleRestInfos.Count == 0 ? new HomeRestingInfo(floorPos + new Point(0, -1), floorPos, NPCRestType.Floor) : possibleRestInfos.OrderByDescending(info => info.RestType).First();
     }
 
     private void HomelessTeleportCheck() {

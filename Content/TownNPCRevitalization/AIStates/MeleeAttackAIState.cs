@@ -81,7 +81,7 @@ public class MeleeAttackAIState : TownNPCAIState {
             bool secondCanHitCheck = combatModule.AttackLocation is { } location2 && Collision.CanHit(npc.Center, 0, 0, location2.Center, 0, 0);
 
             if (secondCanHitCheck) {
-                npc.ai[0] = 15f;
+                npc.ai[0] = ReservedStateInteger;
                 npc.ai[1] = NPCID.Sets.AttackTime[npc.type];
                 npc.ai[2] = npc.localAI[3] = 0f;
 

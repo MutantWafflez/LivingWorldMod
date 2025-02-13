@@ -16,6 +16,8 @@ public abstract class LoadablePatch : ILoadable {
     /// </remarks>
     public static ILContext currentContext;
 
+    public virtual void Unload() { }
+
     /// <summary>
     ///     Load all patches in this method.
     /// </summary>
@@ -39,6 +41,4 @@ public abstract class LoadablePatch : ILoadable {
             throw new ILPatchFailureException(LWM.Instance, currentContext, ex);
         }
     }
-
-    public void Unload() { }
 }
