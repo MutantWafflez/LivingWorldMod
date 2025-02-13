@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader.UI.Elements;
@@ -16,6 +18,72 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.UI.TaxSheet;
 ///     UIState for the Tax Sheet UI added to the Tax Collector.
 /// </summary>
 public class TaxSheetUIState : UIState {
+    private sealed class SelectableNPCHeadElement : UIElement {
+        public readonly int npcType;
+        public readonly int indexInGrid;
+
+        private readonly UITooltipElement _headTooltipZone;
+        private readonly UIPanel _npcHeadPanel;
+
+        public SelectableNPCHeadElement(string npcName, Asset<Texture2D> headAsset, int npcType, int indexInGrid) {
+            Width.Set(40f, 0);
+            Height.Set(40f, 0);
+
+            _headTooltipZone = new UITooltipElement(npcName) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+            Append(_headTooltipZone);
+
+            _npcHeadPanel = new UIPanel { Width = StyleDimension.Fill, Height = StyleDimension.Fill, IgnoresMouseInteraction = true};
+            _npcHeadPanel.SetPadding(0);
+            _headTooltipZone.Append(_npcHeadPanel);
+
+            UIImage npcHead = new(headAsset) { HAlign = 0.5f, VAlign = 0.5f, IgnoresMouseInteraction = true};
+            _npcHeadPanel.Append(npcHead);
+
+            this.npcType = npcType;
+            this.indexInGrid = indexInGrid;
+
+            _headTooltipZone.OnLeftClick += (_, _) => {
+                TaxSheetUIState state = TaxesUISystem.Instance.correspondingUIState;
+                ref int? selectedNPCGridIndex = ref state._selectedNPCGridIndex;
+
+                if (selectedNPCGridIndex == this.indexInGrid) {
+                    selectedNPCGridIndex = null;
+
+                    ChangePanelSelectionColors(false);
+                    state.RefreshSelectedNPCDisplay();
+
+                    SoundEngine.PlaySound(SoundID.MenuClose);
+                    return;
+                }
+
+
+                ChangePanelSelectionColors(true);
+                if (selectedNPCGridIndex is { } oldSelectedIndex) {
+                    ((SelectableNPCHeadElement)state._npcGrid._items[oldSelectedIndex]).ChangePanelSelectionColors(false);
+                }
+
+                selectedNPCGridIndex = indexInGrid;
+                state.RefreshSelectedNPCDisplay();
+
+
+                SoundEngine.PlaySound(SoundID.MenuOpen);
+            };
+
+            _headTooltipZone.OnMouseOver += (_, _) => SoundEngine.PlaySound(SoundID.MenuTick);
+        }
+
+        public void ChangePanelSelectionColors(bool isSelected) {
+            if (isSelected) {
+                _npcHeadPanel.BackgroundColor = LWMUtils.YellowErrorTextColor * 0.7f;
+                _npcHeadPanel.BorderColor = Color.Yellow;
+            }
+            else {
+                _npcHeadPanel.BackgroundColor = LWMUtils.UIPanelBackgroundColor;
+                _npcHeadPanel.BorderColor = Color.Black;
+            }
+        }
+    }
+
     private const float BackPanelSideLength = 200f;
     private const float HelpPanelSideLength = 32f;
     private const float PaddingBetweenPanels = 4f;
@@ -47,7 +115,7 @@ public class TaxSheetUIState : UIState {
     private UITooltipElement _helpIconTooltipZone;
     private UIImage _helpIcon;
 
-    private int _selectedNPCType;
+    private int? _selectedNPCGridIndex;
 
     /// <remarks>
     ///     This field needing to exist is symptomatic of big issues that very <i>old</i> LWM code causes. The short of it is that we activate and load our UIs during mod loading, instead of "on-demand."
@@ -61,6 +129,8 @@ public class TaxSheetUIState : UIState {
         get;
         private set;
     }
+
+    private SelectableNPCHeadElement SelectedNPCElement => _selectedNPCGridIndex is { } index ? (SelectableNPCHeadElement)_npcGrid._items[index] : null;
 
     public override void OnInitialize() {
         Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
@@ -228,11 +298,15 @@ public class TaxSheetUIState : UIState {
 
     public void SetStateToNPC(NPC npc) {
         NPCBeingTalkedTo = npc;
-        
+
         if (!_hasDoubleInitialized) {
-            RemoveAllChildren();
-            OnInitialize();
-            
+            for (int i = 0; i < 2; i++) {
+                Recalculate();
+
+                RemoveAllChildren();
+                OnInitialize();
+            }
+
             _hasDoubleInitialized = true;
         }
 
@@ -243,41 +317,26 @@ public class TaxSheetUIState : UIState {
         PopulateNPCGrid();
     }
 
+    private void RefreshSelectedNPCDisplay() {
+        if (_selectedNPCGridIndex is null) {
+            _selectedNPCVisibilityElement.SetVisibility(false);
+            return;
+        }
+
+        _selectedNPCVisibilityElement.SetVisibility(true);
+        _selectedNPCName.SetText(LWMUtils.GetNPCTypeNameOrIDName(SelectedNPCElement.npcType));
+    }
+
     private void PopulateNPCGrid() {
         HashSet<int> addedNPCTypes = [];
+        int gridIndex = 0;
         foreach (NPC npc in Main.ActiveNPCs) {
             int headIndex;
             if (addedNPCTypes.Contains(npc.type) || !TownGlobalNPC.EntityIsValidTownNPC(npc, true) || (headIndex = TownNPCProfiles.GetHeadIndexSafe(npc)) < 0) {
                 continue;
             }
 
-            UITooltipElement headTooltipZone = new(npc.GivenName) { Width = StyleDimension.FromPixels(40), Height = StyleDimension.FromPixels(40) };
-            headTooltipZone.Recalculate();
-
-            UIPanel npcHeadPanel = new() { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
-            npcHeadPanel.SetPadding(0);
-            headTooltipZone.Append(npcHeadPanel);
-
-            headTooltipZone.OnLeftClick += (_, _) => {
-                if (_selectedNPCType == npc.type) {
-                    _selectedNPCType = -1;
-
-                    npcHeadPanel.BackgroundColor = LWMUtils.UIPanelBackgroundColor;
-                    npcHeadPanel.BorderColor = Color.Black;
-
-                    return;
-                }
-
-                _selectedNPCType = npc.type;
-
-                npcHeadPanel.BackgroundColor = LWMUtils.YellowErrorTextColor * 0.7f;
-                npcHeadPanel.BorderColor = Color.Yellow;
-            };
-
-            UIImage npcHead = new (TextureAssets.NpcHead[headIndex]) { HAlign = 0.5f, VAlign = 0.5f };
-            npcHeadPanel.Append(npcHead);
-
-            _npcGrid.Add(headTooltipZone);
+            _npcGrid.Add(new SelectableNPCHeadElement(npc.GivenName, TextureAssets.NpcHead[headIndex], npc.type, gridIndex++));
             addedNPCTypes.Add(npc.type);
         }
     }
