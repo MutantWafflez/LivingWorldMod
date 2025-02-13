@@ -1,16 +1,4 @@
-INDEV RELEASE v0.4.0.0 [The Actual Revitalization Pt. 1] (February 11th, 2025)
-Additions:
-+ Revamped Town NPC Happiness into the Town NPC Mood System; a much more dynamic version of the vanilla happiness system
-+ Town NPCs can now become tired and go to sleep, with variable sleep schedule preferences
-+ Town NPCs now have built-in pathfinding, and will utilize it to navigate their surroundings
-+ Town NPCs will now talk amongst themselves with actual sentences instead of their usual icons
-+ Town NPCs can now blink & talk while walking, instead of exclusively while they are standing still
-+ A new type of party called a "Night Party", that takes places the following night of every OTHER boss defeated
-+ Added a new "Pause" button in the Harpy Shrine UI that prevents new villagers from spawning
-Changes:
-* Harpy Egg and Harpy Villager Shrine Items now stack to 9999
-* Updated some older UIs with text on the mouse to use backgrounds behind said text
+INDEV RELEASE v0.4.0.1 [Revitalization Hotfix #1] (February 12th, 2025)
 Fixes:
-* Fixed conversion error in the code from v0.3.2.0 that broke the village shrine zone
-	-> This fixes the issue of Harpies endlessly spawning, or not at all
-* Fixed the chat message of a villager re-spawning not properly showing the new villager's name
+* Tentatively fixed Town NPCs de-spawning due to a crash in their drawing code
+* Fixed some Town NPCs weapons not being oriented properly 
