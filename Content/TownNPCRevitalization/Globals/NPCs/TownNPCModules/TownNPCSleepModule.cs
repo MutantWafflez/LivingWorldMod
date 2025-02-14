@@ -23,7 +23,6 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     private const float DefaultAwakeValue = MaxAwakeValue * 0.2f;
 
     private const int MaxBlockedSleepValue = LWMUtils.RealLifeSecond * 10;
-    private const int DefaultChanceToSleepWhileDeprived = 5000;
 
     private static readonly SleepThresholds DefaultSleepThresholds = new (LWMUtils.InGameHour * 17, LWMUtils.InGameHour * 13, LWMUtils.InGameHour * 5);
     private static readonly SleepSchedule DefaultSleepSchedule = new(new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
@@ -164,14 +163,14 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
                 break;
             case false when (isBedTime && awakeTicks >= thresholds.WellRestedLimit && !NightPartySystem.IsNightPartyOccuring) || awakeTicks >= thresholds.TiredLimit: {
                 // The denominator of the chance for this NPC to fall asleep each tick (i.e. 1/x chance)
-                int chanceToSleep = DefaultChanceToSleepWhileDeprived;
+                int chanceToSleep = (MaxAwakeValue - (int)awakeTicks) / 10;
 
                 // If it's the NPC's bedtime, the NPC will more heavily prefer trying to sleep
                 if (isBedTime) {
                     chanceToSleep /= 4;
                 }
 
-                if (Main.rand.NextBool(chanceToSleep)) {
+                if (Main.rand.NextBool(Utils.Clamp(chanceToSleep, 1, MaxAwakeValue))) {
                     WantsToSleep = NPC.netUpdate = true;
                 }
 
