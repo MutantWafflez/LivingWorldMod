@@ -53,6 +53,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
         npc.ai[2] = 0f;
         switch (npc.ai[1]) {
             case StartSleepAnimationState:
+                // TODO: Fix animation on MP clients
                 npc.GetGlobalNPC<TownNPCSpriteModule>().GiveItem();
 
                 npc.ai[3] = 0f;
