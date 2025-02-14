@@ -49,6 +49,7 @@ public class TownGlobalNPC : GlobalNPC {
         && entity.aiStyle == NPCAIStyleID.Passive
         && entity.townNPC
         && !NPCID.Sets.IsTownPet[entity.type]
+        && !NPCID.Sets.CannotSitOnFurniture[entity.type]
         && !NPCID.Sets.IsTownSlime[entity.type]
         && entity.type != NPCID.OldMan
         && entity.type != NPCID.TravellingMerchant;
