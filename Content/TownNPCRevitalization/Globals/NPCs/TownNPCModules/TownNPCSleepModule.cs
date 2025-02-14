@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.PersonalityTraits;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
@@ -27,7 +25,9 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     private const int MaxBlockedSleepValue = LWMUtils.RealLifeSecond * 10;
     private const int DefaultChanceToSleepWhileDeprived = 5000;
 
+    private static readonly SleepThresholds DefaultSleepThresholds = new (LWMUtils.InGameHour * 17, LWMUtils.InGameHour * 13, LWMUtils.InGameHour * 5);
     private static readonly SleepSchedule DefaultSleepSchedule = new(new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
+
     private static readonly Gradient<Color> SleepIconColorGradient = new (Color.Lerp, (0f, Color.Red), (0.5f, Color.DarkOrange), (1f, Color.White));
 
     /// <summary>
@@ -39,9 +39,6 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     ///     The amount of ticks that must pass before this NPC is allowed to sleep, even if they really want to.
     /// </summary>
     private BoundedNumber<int> _blockedSleepTimer = new(0, 0, MaxBlockedSleepValue);
-
-    // TODO: De-couple this? Probably? Caching it here for now instead of LINQ-ing every frame
-    private SleepTrait _npcSleepTrait;
 
     public bool IsAsleep => NPC.ai[0] == TownNPCAIState.GetStateInteger<PassedOutAIState>()
         || (NPC.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && NPC.ai[1] == BeAtHomeAIState.IsSleepingStateFlag);
@@ -90,15 +87,7 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
 
     public static SleepSchedule GetSleepProfileOrDefault(int npcType) => TownNPCDataSystem.sleepSchedules.GetValueOrDefault(npcType, DefaultSleepSchedule);
 
-    public override void SetDefaults(NPC entity) {
-        base.SetDefaults(entity);
-
-        if (ModLoader.isLoading || !TownNPCDataSystem.PersonalityDatabase.TryGetValue(entity.type, out List<IPersonalityTrait> personalityTraits)) {
-            return;
-        }
-
-        _npcSleepTrait = (SleepTrait)personalityTraits.First(trait => trait is SleepTrait);
-    }
+    public static SleepThresholds GetSleepThresholdsOrDefault(int npcType) => TownNPCDataSystem.sleepThresholds.GetValueOrDefault(npcType, DefaultSleepThresholds);
 
     public override void SetBestiary(NPC npc, BestiaryDatabase database, BestiaryEntry bestiaryEntry) {
         bestiaryEntry.Info.Add(new TownNPCPreferredSleepTimeSpanElement(npc.type));
@@ -163,7 +152,8 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
             return;
         }
 
-        int bestRestedLimit = MaxAwakeValue - _npcSleepTrait.BestRestLimit;
+        SleepThresholds thresholds = GetSleepThresholdsOrDefault(NPC.type);
+        int bestRestedLimit = MaxAwakeValue - thresholds.BestRestLimit;
 
         SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(NPC.type);
         bool isBedTime = LWMUtils.CurrentInGameTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime);
@@ -172,7 +162,7 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
                 WantsToSleep = false;
                 NPC.netUpdate = true;
                 break;
-            case false when (isBedTime && awakeTicks >= _npcSleepTrait.WellRestedLimit && !NightPartySystem.IsNightPartyOccuring) || awakeTicks >= _npcSleepTrait.TiredLimit: {
+            case false when (isBedTime && awakeTicks >= thresholds.WellRestedLimit && !NightPartySystem.IsNightPartyOccuring) || awakeTicks >= thresholds.TiredLimit: {
                 // The denominator of the chance for this NPC to fall asleep each tick (i.e. 1/x chance)
                 int chanceToSleep = DefaultChanceToSleepWhileDeprived;
 
