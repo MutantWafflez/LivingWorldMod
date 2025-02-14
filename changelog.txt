@@ -1,4 +1,4 @@
-INDEV RELEASE v0.4.0.1 [Revitalization Hotfix #1] (February 12th, 2025)
+INDEV RELEASE v0.4.0.2 [Revitalization Hotfix #2] (February 13th, 2025)
 Fixes:
-* Tentatively fixed Town NPCs de-spawning due to a crash in their drawing code
-* Fixed some Town NPCs weapons not being oriented properly 
+* Fixed Town NPCs de-spawning on servers due to the NPC trying to draw on the server (servers can't draw!)
+	-> This fix also fixes the "ghost" Town NPCs in multiplayer sessions, since the crash occurs on the server but doesn't break on the client, causing a de-sync. 
