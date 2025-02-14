@@ -14,7 +14,6 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModul
 /// <summary>
 ///     Module that handles various aspects of the social-ness of Town NPCs. Involves code for the player talking to this NPC, and for the flavor animations of "talking" to other Town NPCs.
 /// </summary>
-[Autoload(Side = ModSide.Client)]
 public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
     private const int DefaultChatBubbleDuration = LWMUtils.RealLifeSecond * 5;
 
