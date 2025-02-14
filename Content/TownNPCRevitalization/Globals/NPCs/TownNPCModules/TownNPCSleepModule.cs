@@ -20,7 +20,7 @@ using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 
-public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
+public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     private const int MaxAwakeValue = LWMUtils.InGameHour * 24;
     private const float DefaultAwakeValue = MaxAwakeValue * 0.2f;
 
@@ -48,7 +48,7 @@ public sealed  class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
 
     public override int UpdatePriority => 1;
 
-    public TownNPCDrawRequest GetSleepSpriteDrawData {
+    public TownNPCDrawRequest SleepSpriteDrawData {
         get {
             Main.instance.LoadItem(ItemID.SleepingIcon);
             Texture2D sleepingIconTexture = TextureAssets.Item[ItemID.SleepingIcon].Value;

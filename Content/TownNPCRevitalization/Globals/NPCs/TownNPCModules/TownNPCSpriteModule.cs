@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Utilities;
@@ -15,7 +16,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModul
 /// <summary>
 ///     Module for Town NPCs that deal with drawing related tasks.
 /// </summary>
-public sealed class TownNPCSpriteModule : TownNPCModule {
+public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep {
     /// <summary>
     ///     Small wrapper class for <see cref="UnlockableNPCEntryIcon" /> that wraps the <see cref="UnlockableNPCEntryIcon.Update" /> method so that we can add <see cref="TownNPCSpriteModule.UpdateModule" />
     ///     calls to the end of it, allowing for the Bestiary to actually draw NPCs with all the tweaks.
@@ -102,13 +103,13 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
     }
 
     public override void UpdateModule() {
-        if (Main.netMode == NetmodeID.Server) {
-            return;
-        }
-
         _drawOffset = Vector2.Zero;
         _frameYOverride = NoFrameYOverride;
         _drawRequests.Clear();
+
+        if (Main.netMode == NetmodeID.Server) {
+            return;
+        }
 
         (Asset<Texture2D> npcAsset, int frameWidth, int frameHeight, Vector2 halfSize, float npcAddHeight, SpriteEffects spriteEffects) = DrawParameters;
 
@@ -192,8 +193,13 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
 
     /// <summary>
     ///     Adds a draw request for drawing over the Town NPC. Note that the position given in the request will be drawn relative to the draw position of the NPC.
+    ///     Only functions in SP/MP. Does nothing on the server.
     /// </summary>
     public void RequestDraw(in TownNPCDrawRequest request) {
+        if (Main.netMode == NetmodeID.Server) {
+            return;
+        }
+
         _drawRequests.Add(request);
         _drawRequests.Sort();
     }
@@ -203,6 +209,25 @@ public sealed class TownNPCSpriteModule : TownNPCModule {
     /// </summary>
     public void OffsetDrawPosition(Vector2 drawOffset) {
         _drawOffset = drawOffset;
+    }
+
+    public void UpdateSleep(NPC npc, Vector2? drawOffset, uint? frameOverride, bool passedOut) {
+        if (Main.netMode == NetmodeID.Server) {
+            return;
+        }
+
+        if (drawOffset is { } offset) {
+            OffsetDrawPosition(offset);
+        }
+
+        if (frameOverride is { } @override) {
+            RequestFrameOverride(@override);
+        }
+
+        CloseEyes();
+
+        TownNPCDrawRequest drawRequest = npc.GetGlobalNPC<TownNPCSleepModule>().SleepSpriteDrawData;
+        RequestDraw(passedOut ? drawRequest with { Color = Color.Red * 0.8f } : drawRequest);
     }
 
     private TownNPCSpriteOverlay GetOverlay(int overlayIndex) => TownNPCDataSystem.spriteOverlayProfiles[NPC.type].GetCurrentSpriteOverlay(NPC, overlayIndex);
