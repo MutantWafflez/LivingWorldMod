@@ -256,6 +256,10 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
     }
 
     public void UpdateSleep(NPC npc, Vector2? drawOffset, uint? frameOverride, bool passedOut) {
+        if (Main.netMode == NetmodeID.Server) {
+            return;
+        }
+
         DisableChatting(LWMUtils.RealLifeSecond);
         DisableChatReception(LWMUtils.RealLifeSecond);
     }

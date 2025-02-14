@@ -16,7 +16,6 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModul
 /// <summary>
 ///     Module for Town NPCs that deal with drawing related tasks.
 /// </summary>
-[Autoload(Side = ModSide.Client)]
 public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep {
     /// <summary>
     ///     Small wrapper class for <see cref="UnlockableNPCEntryIcon" /> that wraps the <see cref="UnlockableNPCEntryIcon.Update" /> method so that we can add <see cref="TownNPCSpriteModule.UpdateModule" />
@@ -108,6 +107,10 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep {
         _frameYOverride = NoFrameYOverride;
         _drawRequests.Clear();
 
+        if (Main.netMode == NetmodeID.Server) {
+            return;
+        }
+
         (Asset<Texture2D> npcAsset, int frameWidth, int frameHeight, Vector2 halfSize, float npcAddHeight, SpriteEffects spriteEffects) = DrawParameters;
 
         // Method Gaslighting
@@ -190,8 +193,13 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep {
 
     /// <summary>
     ///     Adds a draw request for drawing over the Town NPC. Note that the position given in the request will be drawn relative to the draw position of the NPC.
+    ///     Only functions in SP/MP. Does nothing on the server.
     /// </summary>
     public void RequestDraw(in TownNPCDrawRequest request) {
+        if (Main.netMode == NetmodeID.Server) {
+            return;
+        }
+
         _drawRequests.Add(request);
         _drawRequests.Sort();
     }
@@ -204,6 +212,10 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep {
     }
 
     public void UpdateSleep(NPC npc, Vector2? drawOffset, uint? frameOverride, bool passedOut) {
+        if (Main.netMode == NetmodeID.Server) {
+            return;
+        }
+
         if (drawOffset is { } offset) {
             OffsetDrawPosition(offset);
         }
