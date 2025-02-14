@@ -37,18 +37,11 @@ public class TownNPCHousingModule : TownNPCModule {
             NPC.UpdateHomeTileState(NPC.homeless, (int)NPC.Center.X / 16, (int)(NPC.position.Y + NPC.height + 4f) / 16);
         }
 
+        RoomBoundingBox = !NPC.homeless && WorldGen.StartRoomCheck(NPC.homeTileX, NPC.homeTileY - 1)
+            ? new Rectangle(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1 + 1, WorldGen.roomY2 - WorldGen.roomY1 + 1)
+            : null;
+
         HomelessTeleportCheck();
-
-        if (NPC.homeless) {
-            RoomBoundingBox = null;
-            return;
-        }
-
-        if (!WorldGen.StartRoomCheck(NPC.homeTileX, NPC.homeTileY - 1)) {
-            return;
-        }
-
-        RoomBoundingBox = new Rectangle(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1 + 1, WorldGen.roomY2 - WorldGen.roomY1 + 1);
     }
 
     public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
