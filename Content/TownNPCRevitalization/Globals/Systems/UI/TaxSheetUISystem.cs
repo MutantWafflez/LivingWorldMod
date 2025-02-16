@@ -3,7 +3,7 @@ using LivingWorldMod.Globals.BaseTypes.Systems;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 
-public class TaxesUISystem : UISystem<TaxesUISystem, TaxSheetUIState> {
+public class TaxSheetUISystem : UISystem<TaxSheetUISystem, TaxSheetUIState> {
     public override string InternalInterfaceName => "Tax Collector Taxes Sheet";
 
     public override void PostUpdateEverything() {

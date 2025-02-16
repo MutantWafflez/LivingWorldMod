@@ -16,7 +16,7 @@ public class TaxCollectorChatModule : TownNPCModule, ISetChatButtons {
         }
 
         Main.npcChatText = "";
-        TaxesUISystem.Instance.OpenTaxesState(npc);
+        TaxSheetUISystem.Instance.OpenTaxesState(npc);
     }
 
     // Add second button to tax collector chat box that opens a custom new UI

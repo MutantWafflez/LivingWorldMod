@@ -48,7 +48,7 @@ public class TaxSheetUIState : UIState {
             return;
 
             void OnHeadElementLeftClick(UIMouseEvent uiMouseEvent, UIElement uiElement) {
-                TaxSheetUIState state = TaxesUISystem.Instance.correspondingUIState;
+                TaxSheetUIState state = TaxSheetUISystem.Instance.correspondingUIState;
                 ref int? selectedNPCGridIndex = ref state._selectedNPCGridIndex;
 
                 if (selectedNPCGridIndex == this.indexInGrid) {
