@@ -1,4 +1,5 @@
-INDEV RELEASE v0.4.0.2 [Revitalization Hotfix #2] (February 13th, 2025)
+INDEV RELEASE v0.4.0.3 [Revitalization Hotfix #3] (February 13th, 2025)
+Changes:
+* Town NPCs' chance to fall asleep will increase proportionally to how tired they are, instead of a flat chance every tick
 Fixes:
-* Fixed Town NPCs de-spawning on servers due to the NPC trying to draw on the server (servers can't draw!)
-	-> This fix also fixes the "ghost" Town NPCs in multiplayer sessions, since the crash occurs on the server but doesn't break on the client, causing a de-sync. 
+* Tentatively fixed Town NPCs de-spawning/crashing due to lack of a fallback option for determining how tired they are 

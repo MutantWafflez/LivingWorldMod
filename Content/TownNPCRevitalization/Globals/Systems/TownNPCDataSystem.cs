@@ -25,6 +25,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 /// </summary>
 public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
     public static Dictionary<int, SleepSchedule> sleepSchedules;
+    public static Dictionary<int, SleepThresholds> sleepThresholds;
 
     public static Dictionary<int, TownNPCProjAttackData> projectileAttackDatas;
     public static Dictionary<int, TownNPCMeleeAttackData> meleeAttackDatas;
@@ -266,8 +267,9 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
             sleepSchedules[npcType] = new SleepSchedule(TimeOnly.Parse(sleepSchedule["Start"]), TimeOnly.Parse(sleepSchedule["End"]));
         }
 
-        JsonObject jsonAttackData = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCAttackData.json").Qo();
+        sleepThresholds = new Dictionary<int, SleepThresholds>();
 
+        JsonObject jsonAttackData = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCAttackData.json").Qo();
         JsonObject projJSONAttackData = jsonAttackData["ProjNPCs"].Qo();
         JsonObject meleeJSONAttackData = jsonAttackData["MeleeNPCs"].Qo();
 
