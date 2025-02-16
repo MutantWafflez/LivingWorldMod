@@ -81,4 +81,9 @@ public class TaxesSystem : BaseModSystem<TaxesSystem>  {
     }
 
     public NPCTaxValues GetTaxValuesOrDefault(int type) => _taxValues.GetValueOrDefault(type, DefaultTaxValues);
+
+    public void SubmitNewTaxValues(int npcType, NPCTaxValues taxValues) {
+        // TODO: Finish lol
+        _taxValues[npcType] = taxValues;
+    }
 }
