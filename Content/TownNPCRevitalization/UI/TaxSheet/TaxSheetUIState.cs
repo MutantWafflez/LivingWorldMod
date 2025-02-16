@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
@@ -216,22 +217,23 @@ public class TaxSheetUIState : UIState {
         _salesTaxText = new UIBetterText("Sales Tax", 0.9f) { HAlign = 0.5f, Top = StyleDimension.FromPixels(140f) };
         _selectedNPCBackPanel.Append(_salesTaxText);
 
-        _salesTaxDisplay = new UIBetterText("0%", 0.5f, large: true) { HAlign = 0.5f, Top = StyleDimension.FromPixels(165f) };
+        _salesTaxDisplay = new UIBetterText("0%", 0.5f, true) { HAlign = 0.5f, Top = StyleDimension.FromPixels(165f) };
         _selectedNPCBackPanel.Append(_salesTaxDisplay);
-        
+
         _salesTaxChangeButtons = new UIBetterImageButton[2];
         for (int i = 0; i < 2; i++) {
             float changeAmount = DefaultSalesTaxButtonChangeAmount * (i == 0 ? 1 : -1);
-            
+
             UIBetterImageButton button = new (changeButtonTextures[i]) { Left = StyleDimension.FromPixels(ChangeButtonXDrawPos + 80 * i), Top = StyleDimension.FromPixels(158f) };
             button.OnLeftClick += (_, _) => {
-                _salesTaxValue = Utils.Clamp(_salesTaxValue += changeAmount, 0f, 0.4f);
+                float oldTalesTax = _salesTaxValue;
+                _salesTaxValue = Utils.Clamp(_salesTaxValue += changeAmount, 0f, TaxesSystem.MaxSalesTax);
                 _salesTaxDisplay.SetText($"{(int)(_salesTaxValue * 100)}%");
 
-                SoundEngine.PlaySound(SoundID.Coins);
+                SoundEngine.PlaySound(oldTalesTax != _salesTaxValue ? SoundID.Coins : SoundID.Tink);
             };
             _selectedNPCBackPanel.Append(button);
-            
+
             _salesTaxChangeButtons[i] = button;
         }
 
@@ -269,10 +271,12 @@ public class TaxSheetUIState : UIState {
                     };
 
                     button.OnLeftClick += (_, _) => {
-                        _propertyTaxValue = Utils.Clamp(_propertyTaxValue + capturedButtonChangeValue, 0, long.MaxValue);
+                        long oldPropertyValue = _propertyTaxValue;
+
+                        _propertyTaxValue = Utils.Clamp(_propertyTaxValue + capturedButtonChangeValue, 0, TaxesSystem.MaxPropertyTax);
                         coinDisplay.SetNewCoinValues(_propertyTaxValue);
-                        
-                        SoundEngine.PlaySound(SoundID.Coins);
+
+                        SoundEngine.PlaySound(oldPropertyValue != _propertyTaxValue ? SoundID.Coins : SoundID.Tink);
                     };
 
                     buttonArray[j, i] = button;
@@ -306,7 +310,7 @@ public class TaxSheetUIState : UIState {
                 RemoveAllChildren();
                 OnInitialize();
             }
-        
+
             _hasDoubleInitialized = true;
         }
 
