@@ -64,7 +64,6 @@ public class TaxSheetUIState : UIState {
                     return;
                 }
 
-
                 ChangePanelSelectionColors(true);
                 if (selectedNPCGridIndex is { } oldSelectedIndex) {
                     ((SelectableNPCHeadElement)state._npcGrid._items[oldSelectedIndex]).ChangePanelSelectionColors(false);
@@ -94,9 +93,11 @@ public class TaxSheetUIState : UIState {
     private const float PaddingBetweenPanels = 4f;
     private const float SelectedNPCBackPanelWidth = 130f;
     private const float CoinDisplayPadding = 40f;
-    private const float TaxChangeButtonsSideLength = 30f;
-    private const float ChangeButtonXDrawPos = SelectedNPCBackPanelWidth / 2f - TaxChangeButtonsSideLength - 38f;
+    private const float ButtonsSideLength = 30f;
+    private const float ChangeButtonXDrawPos = SelectedNPCBackPanelWidth / 2f - ButtonsSideLength - 38f;
     private const float DefaultSalesTaxButtonChangeAmount = 0.01f;
+
+    private NPCTaxValues _startingTaxValues;
 
     // "Temp" because these are only used client-side for the UI, and will not be exported to the actual Tax System unless the player submits them
     private int _tempPropertyTaxValue;
@@ -117,6 +118,9 @@ public class TaxSheetUIState : UIState {
     private UIBetterText _salesTaxText;
     private UIBetterText _salesTaxDisplay;
     private UIBetterImageButton[] _salesTaxChangeButtons;
+    private UIVisibilityElement _confirmationButtonsVisibilityElement;
+    private UIBetterImageButton _denyNewTaxesButton;
+    private UIBetterImageButton _acceptNewTaxesButton;
 
     private UIPanel _helpIconPanel;
     private UITooltipElement _helpIconTooltipZone;
@@ -254,6 +258,24 @@ public class TaxSheetUIState : UIState {
             _salesTaxChangeButtons[i] = button;
         }
 
+        _confirmationButtonsVisibilityElement = new UIVisibilityElement { HAlign = 0.5f, VAlign = 1f, Width = StyleDimension.Fill, Height = StyleDimension.FromPixels(ButtonsSideLength) };
+        _selectedNPCBackPanel.Append(_confirmationButtonsVisibilityElement);
+
+        _denyNewTaxesButton = new UIBetterImageButton(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/ButtonIcons/DenyButton")) {
+            Width = StyleDimension.FromPixels(ButtonsSideLength), Height = StyleDimension.FromPixels(ButtonsSideLength)
+        };
+        _denyNewTaxesButton.OnLeftClick += (_, _) =>  {
+            RefreshTaxValueDisplays(SelectedNPCElement.npcType);
+
+            SoundEngine.PlaySound(SoundID.Tink);
+        };
+        _confirmationButtonsVisibilityElement.Append(_denyNewTaxesButton);
+
+        _acceptNewTaxesButton = new UIBetterImageButton(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/ButtonIcons/AcceptButton")) {
+            HAlign = 1f, Width = StyleDimension.FromPixels(ButtonsSideLength), Height = StyleDimension.FromPixels(ButtonsSideLength)
+        };
+        _confirmationButtonsVisibilityElement.Append(_acceptNewTaxesButton);
+
         _helpIconPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
             BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor,
             BorderColor = Color.White,
@@ -281,8 +303,8 @@ public class TaxSheetUIState : UIState {
                     int capturedButtonChangeValue = buttonChangeValue;
 
                     UIBetterImageButton button = new (changeButtonTextures[i]) {
-                        Width = StyleDimension.FromPixels(TaxChangeButtonsSideLength),
-                        Height = StyleDimension.FromPixels(TaxChangeButtonsSideLength),
+                        Width = StyleDimension.FromPixels(ButtonsSideLength),
+                        Height = StyleDimension.FromPixels(ButtonsSideLength),
                         Left = StyleDimension.FromPixels(xDrawPos),
                         Top = StyleDimension.FromPixels(drawPos.Y)
                     };
@@ -312,9 +334,13 @@ public class TaxSheetUIState : UIState {
     public override void Update(GameTime gameTime) {
         base.Update(gameTime);
 
-        if (_backPanel.IsMouseHovering) {
+        if (_backPanel.IsMouseHovering || (_selectedNPCVisibilityElement.IsMouseHovering && _selectedNPCVisibilityElement.IsVisible)) {
             Main.LocalPlayer.mouseInterface = true;
         }
+
+        _confirmationButtonsVisibilityElement.SetVisibility(
+            _selectedNPCVisibilityElement.IsVisible && (_startingTaxValues.PropertyTax != _tempPropertyTaxValue || Math.Abs(_startingTaxValues.SalesTax - _tempSalesTaxValue) > 0.00005f)
+        );
     }
 
     public void SetStateToNPC(NPC npc) {
@@ -339,6 +365,16 @@ public class TaxSheetUIState : UIState {
         PopulateNPCGrid();
     }
 
+    private void RefreshTaxValueDisplays(int npcType) {
+        NPCTaxValues selectedTaxValues = TaxesSystem.Instance.GetTaxValuesOrDefault(npcType);
+        _startingTaxValues = selectedTaxValues;
+        _tempPropertyTaxValue = selectedTaxValues.PropertyTax;
+        _tempSalesTaxValue = selectedTaxValues.SalesTax;
+        
+        _propertyTaxDisplay.SetNewCoinValues(_tempPropertyTaxValue);
+        _salesTaxDisplay.SetText($"{(int)Math.Round(_tempSalesTaxValue * 100)}%");
+    }
+
     private void RefreshSelectedNPCDisplay() {
         if (_selectedNPCGridIndex is null) {
             _selectedNPCVisibilityElement.SetVisibility(false);
@@ -346,15 +382,9 @@ public class TaxSheetUIState : UIState {
         }
 
         int selectedNPCType = SelectedNPCElement.npcType;
-        NPCTaxValues selectedTaxValues = TaxesSystem.Instance.GetTaxValuesOrDefault(selectedNPCType);
-        _tempPropertyTaxValue = selectedTaxValues.PropertyTax;
-        _tempSalesTaxValue = selectedTaxValues.SalesTax;
-
-        _propertyTaxDisplay.SetNewCoinValues(_tempPropertyTaxValue);
-        _salesTaxDisplay.SetText($"{(int)Math.Round(_tempSalesTaxValue * 100)}%");
+        RefreshTaxValueDisplays(selectedNPCType);
 
         _selectedNPCName.SetText(LWMUtils.GetNPCTypeNameOrIDName(selectedNPCType));
-
         _selectedNPCVisibilityElement.SetVisibility(true);
     }
 
