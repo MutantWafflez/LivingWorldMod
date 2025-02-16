@@ -98,7 +98,7 @@ public class TaxSheetUIState : UIState {
     private const float DefaultSalesTaxButtonChangeAmount = 0.01f;
 
     // TODO: Use actual tax system number
-    private long _propertyTaxValue;
+    private int _propertyTaxValue;
     private float _salesTaxValue;
 
     private UIPanel _backPanel;
@@ -256,12 +256,12 @@ public class TaxSheetUIState : UIState {
 
         return;
 
-        void GenerateChangeButtons(UIBetterImageButton[,] buttonArray, Vector2 drawPos, float coinPadding, long highestCoinValue, UICoinDisplay coinDisplay) {
-            long buttonChangeValue = highestCoinValue;
+        void GenerateChangeButtons(UIBetterImageButton[,] buttonArray, Vector2 drawPos, float coinPadding, int highestCoinValue, UICoinDisplay coinDisplay) {
+            int buttonChangeValue = highestCoinValue;
             for (int i = 0; i < buttonArray.GetLength(1); i++) {
                 float xDrawPos = drawPos.X;
                 for (int j = 0; j < buttonArray.GetLength(0); j++) {
-                    long capturedButtonChangeValue = buttonChangeValue;
+                    int capturedButtonChangeValue = buttonChangeValue;
 
                     UIBetterImageButton button = new (changeButtonTextures[i]) {
                         Width = StyleDimension.FromPixels(TaxChangeButtonsSideLength),
@@ -271,7 +271,7 @@ public class TaxSheetUIState : UIState {
                     };
 
                     button.OnLeftClick += (_, _) => {
-                        long oldPropertyValue = _propertyTaxValue;
+                        int oldPropertyValue = _propertyTaxValue;
 
                         _propertyTaxValue = Utils.Clamp(_propertyTaxValue + capturedButtonChangeValue, 0, TaxesSystem.MaxPropertyTax);
                         coinDisplay.SetNewCoinValues(_propertyTaxValue);
