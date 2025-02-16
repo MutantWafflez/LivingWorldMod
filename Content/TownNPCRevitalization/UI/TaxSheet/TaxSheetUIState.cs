@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
@@ -71,7 +73,6 @@ public class TaxSheetUIState : UIState {
                 selectedNPCGridIndex = indexInGrid;
                 state.RefreshSelectedNPCDisplay();
 
-
                 SoundEngine.PlaySound(SoundID.MenuOpen);
             }
         }
@@ -97,9 +98,9 @@ public class TaxSheetUIState : UIState {
     private const float ChangeButtonXDrawPos = SelectedNPCBackPanelWidth / 2f - TaxChangeButtonsSideLength - 38f;
     private const float DefaultSalesTaxButtonChangeAmount = 0.01f;
 
-    // TODO: Use actual tax system number
-    private int _propertyTaxValue;
-    private float _salesTaxValue;
+    // "Temp" because these are only used client-side for the UI, and will not be exported to the actual Tax System unless the player submits them
+    private int _tempPropertyTaxValue;
+    private float _tempSalesTaxValue;
 
     private UIPanel _backPanel;
     private UIBetterText _titleText;
@@ -134,6 +135,22 @@ public class TaxSheetUIState : UIState {
     public NPC NPCBeingTalkedTo {
         get;
         private set;
+    }
+
+    private int ButtonChangeAmountMultiplier  {
+        get {
+            // Oh no! A variable being set based on two different, but not mutually exclusive, conditions! Pack it up I'm a bad programmer 
+            int multiplier = 1;
+            if (Main.keyState.PressingShift()) {
+                multiplier = 5;
+            }
+
+            if (Main.keyState.PressingControl()) {
+                multiplier = 25;
+            }
+
+            return multiplier;
+        }
     }
 
     private SelectableNPCHeadElement SelectedNPCElement => _selectedNPCGridIndex is { } index ? (SelectableNPCHeadElement)_npcGrid._items[index] : null;
@@ -179,7 +196,7 @@ public class TaxSheetUIState : UIState {
             VAlign = 0.5f,
             Left = StyleDimension.FromPixels(_backPanel.GetDimensions().X + BackPanelSideLength + PaddingBetweenPanels),
             Width = StyleDimension.FromPixels(SelectedNPCBackPanelWidth),
-            Height = StyleDimension.FromPixels(BackPanelSideLength + 110f)
+            Height = StyleDimension.FromPixels(BackPanelSideLength + 80f)
         };
         Append(_selectedNPCVisibilityElement);
 
@@ -195,7 +212,7 @@ public class TaxSheetUIState : UIState {
         _selectedNPCBackPanel.Append(_propertyTaxText);
 
         _propertyTaxDisplay = new UICoinDisplay(
-            _propertyTaxValue,
+            _tempPropertyTaxValue,
             [
                 new UICoinDisplay.CoinDrawStyle (UICoinDisplay.CoinDrawCondition.Default),
                 new UICoinDisplay.CoinDrawStyle (UICoinDisplay.CoinDrawCondition.Default),
@@ -226,11 +243,11 @@ public class TaxSheetUIState : UIState {
 
             UIBetterImageButton button = new (changeButtonTextures[i]) { Left = StyleDimension.FromPixels(ChangeButtonXDrawPos + 80 * i), Top = StyleDimension.FromPixels(158f) };
             button.OnLeftClick += (_, _) => {
-                float oldTalesTax = _salesTaxValue;
-                _salesTaxValue = Utils.Clamp(_salesTaxValue += changeAmount, 0f, TaxesSystem.MaxSalesTax);
-                _salesTaxDisplay.SetText($"{(int)(_salesTaxValue * 100)}%");
+                float oldTalesTax = _tempSalesTaxValue;
+                _tempSalesTaxValue = Utils.Clamp(_tempSalesTaxValue + changeAmount * ButtonChangeAmountMultiplier, 0f, TaxesSystem.MaxSalesTax);
+                _salesTaxDisplay.SetText($"{(int)Math.Round(_tempSalesTaxValue * 100)}%");
 
-                SoundEngine.PlaySound(oldTalesTax != _salesTaxValue ? SoundID.Coins : SoundID.Tink);
+                SoundEngine.PlaySound(Math.Abs(oldTalesTax - _tempSalesTaxValue) > 0.000005 ? SoundID.Coins : SoundID.Tink);
             };
             _selectedNPCBackPanel.Append(button);
 
@@ -271,12 +288,12 @@ public class TaxSheetUIState : UIState {
                     };
 
                     button.OnLeftClick += (_, _) => {
-                        int oldPropertyValue = _propertyTaxValue;
+                        int oldPropertyValue = _tempPropertyTaxValue;
 
-                        _propertyTaxValue = Utils.Clamp(_propertyTaxValue + capturedButtonChangeValue, 0, TaxesSystem.MaxPropertyTax);
-                        coinDisplay.SetNewCoinValues(_propertyTaxValue);
+                        _tempPropertyTaxValue = Utils.Clamp(_tempPropertyTaxValue + capturedButtonChangeValue * ButtonChangeAmountMultiplier, 0, TaxesSystem.MaxPropertyTax);
+                        coinDisplay.SetNewCoinValues(_tempPropertyTaxValue);
 
-                        SoundEngine.PlaySound(oldPropertyValue != _propertyTaxValue ? SoundID.Coins : SoundID.Tink);
+                        SoundEngine.PlaySound(oldPropertyValue != _tempPropertyTaxValue ? SoundID.Coins : SoundID.Tink);
                     };
 
                     buttonArray[j, i] = button;
@@ -314,6 +331,7 @@ public class TaxSheetUIState : UIState {
             _hasDoubleInitialized = true;
         }
 
+        _selectedNPCGridIndex = null;
         _npcGridScrollBar.ViewPosition = 0f;
         _npcGrid.Clear();
         _selectedNPCVisibilityElement.SetVisibility(false);
@@ -327,8 +345,17 @@ public class TaxSheetUIState : UIState {
             return;
         }
 
+        int selectedNPCType = SelectedNPCElement.npcType;
+        NPCTaxValues selectedTaxValues = TaxesSystem.Instance.GetTaxValuesOrDefault(selectedNPCType);
+        _tempPropertyTaxValue = selectedTaxValues.PropertyTax;
+        _tempSalesTaxValue = selectedTaxValues.SalesTax;
+
+        _propertyTaxDisplay.SetNewCoinValues(_tempPropertyTaxValue);
+        _salesTaxDisplay.SetText($"{(int)Math.Round(_tempSalesTaxValue * 100)}%");
+
+        _selectedNPCName.SetText(LWMUtils.GetNPCTypeNameOrIDName(selectedNPCType));
+
         _selectedNPCVisibilityElement.SetVisibility(true);
-        _selectedNPCName.SetText(LWMUtils.GetNPCTypeNameOrIDName(SelectedNPCElement.npcType));
     }
 
     private void PopulateNPCGrid() {
