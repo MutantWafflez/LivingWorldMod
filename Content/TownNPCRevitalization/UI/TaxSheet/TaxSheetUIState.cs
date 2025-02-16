@@ -32,17 +32,22 @@ public class TaxSheetUIState : UIState {
             _headTooltipZone = new UITooltipElement(npcName) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
             Append(_headTooltipZone);
 
-            _npcHeadPanel = new UIPanel { Width = StyleDimension.Fill, Height = StyleDimension.Fill, IgnoresMouseInteraction = true};
+            _npcHeadPanel = new UIPanel { Width = StyleDimension.Fill, Height = StyleDimension.Fill, IgnoresMouseInteraction = true };
             _npcHeadPanel.SetPadding(0);
             _headTooltipZone.Append(_npcHeadPanel);
 
-            UIImage npcHead = new(headAsset) { HAlign = 0.5f, VAlign = 0.5f, IgnoresMouseInteraction = true};
+            UIImage npcHead = new(headAsset) { HAlign = 0.5f, VAlign = 0.5f, IgnoresMouseInteraction = true };
             _npcHeadPanel.Append(npcHead);
 
             this.npcType = npcType;
             this.indexInGrid = indexInGrid;
 
-            _headTooltipZone.OnLeftClick += (_, _) => {
+            _headTooltipZone.OnLeftClick += OnHeadElementLeftClick;
+            _headTooltipZone.OnMouseOver += (_, _) => SoundEngine.PlaySound(SoundID.MenuTick);
+
+            return;
+
+            void OnHeadElementLeftClick(UIMouseEvent uiMouseEvent, UIElement uiElement) {
                 TaxSheetUIState state = TaxesUISystem.Instance.correspondingUIState;
                 ref int? selectedNPCGridIndex = ref state._selectedNPCGridIndex;
 
@@ -67,12 +72,10 @@ public class TaxSheetUIState : UIState {
 
 
                 SoundEngine.PlaySound(SoundID.MenuOpen);
-            };
-
-            _headTooltipZone.OnMouseOver += (_, _) => SoundEngine.PlaySound(SoundID.MenuTick);
+            }
         }
 
-        public void ChangePanelSelectionColors(bool isSelected) {
+        private void ChangePanelSelectionColors(bool isSelected) {
             if (isSelected) {
                 _npcHeadPanel.BackgroundColor = LWMUtils.YellowErrorTextColor * 0.7f;
                 _npcHeadPanel.BorderColor = Color.Yellow;
@@ -188,14 +191,6 @@ public class TaxSheetUIState : UIState {
         _propertyTaxText = new UIBetterText("Property Tax", 0.9f) { HAlign = 0.5f, Top = StyleDimension.FromPixels(30f) };
         _selectedNPCBackPanel.Append(_propertyTaxText);
 
-        GenerateChangeButtons(
-            _propertyTaxChangeButtons = new UIBetterImageButton[3, 2] ,
-            new Vector2(SelectedNPCBackPanelWidth / 2f - TaxChangeButtonsSideLength - 38f, 48f),
-            CoinDisplayPadding,
-            Item.gold,
-            true
-        );
-
         _propertyTaxDisplay = new UICoinDisplay(
             _propertyTaxValue,
             [
@@ -208,16 +203,17 @@ public class TaxSheetUIState : UIState {
         ) { HAlign = 0.5f, Top = StyleDimension.FromPixels(80f) };
         _selectedNPCBackPanel.Append(_propertyTaxDisplay);
 
+        GenerateChangeButtons(
+            _propertyTaxChangeButtons = new UIBetterImageButton[3, 2] ,
+            new Vector2(SelectedNPCBackPanelWidth / 2f - TaxChangeButtonsSideLength - 38f, 48f),
+            CoinDisplayPadding,
+            Item.gold,
+            _propertyTaxDisplay,
+            true
+        );
+
         _salesTaxText = new UIBetterText("Sales Tax", 0.9f) { HAlign = 0.5f, Top = StyleDimension.FromPixels(140f) };
         _selectedNPCBackPanel.Append(_salesTaxText);
-
-        GenerateChangeButtons(
-            _salesTaxChangeButtons = new UIBetterImageButton[2, 2],
-            new Vector2(SelectedNPCBackPanelWidth / 2f - TaxChangeButtonsSideLength - 18f, 158f),
-            CoinDisplayPadding,
-            Item.silver,
-            false
-        );
 
         _salesTaxDisplay = new UICoinDisplay(
             _salesTaxValue,
@@ -230,6 +226,15 @@ public class TaxSheetUIState : UIState {
             CoinDisplayPadding
         ) { HAlign = 0.5f, Top = StyleDimension.FromPixels(190f) };
         _selectedNPCBackPanel.Append(_salesTaxDisplay);
+
+        GenerateChangeButtons(
+            _salesTaxChangeButtons = new UIBetterImageButton[2, 2],
+            new Vector2(SelectedNPCBackPanelWidth / 2f - TaxChangeButtonsSideLength - 18f, 158f),
+            CoinDisplayPadding,
+            Item.silver,
+            _salesTaxDisplay,
+            false
+        );
 
         _helpIconPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
             BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor,
@@ -250,7 +255,7 @@ public class TaxSheetUIState : UIState {
 
         return;
 
-        void GenerateChangeButtons(UIBetterImageButton[,] buttonArray, Vector2 drawPos, float coinPadding, long highestCoinValue, bool propertyTax) {
+        void GenerateChangeButtons(UIBetterImageButton[,] buttonArray, Vector2 drawPos, float coinPadding, long highestCoinValue, UICoinDisplay coinDisplay, bool propertyTax) {
             long buttonChangeValue = highestCoinValue;
             for (int i = 0; i < buttonArray.GetLength(1); i++) {
                 float xDrawPos = drawPos.X;
@@ -266,13 +271,14 @@ public class TaxSheetUIState : UIState {
 
                     // Surely a POINTER would be a great idea here! (This is a joke).
                     // No capturing ref's in lambdas. Hard-coded and scuffed, but it is what it is
-                    button.ProperOnClick += (_, _) => {
+                    button.OnLeftClick += (_, _) => {
                         ref long taxValue = ref _propertyTaxValue;
                         if (!propertyTax) {
                             taxValue = ref _salesTaxValue;
                         }
 
                         taxValue = Utils.Clamp(taxValue + capturedButtonChangeValue, 0, long.MaxValue);
+                        coinDisplay.SetNewCoinValues(taxValue);
                     };
 
                     buttonArray[j, i] = button;
