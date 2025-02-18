@@ -33,6 +33,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
     public static IReadOnlyDictionary<int, TownNPCOverlayProfile> spriteOverlayProfiles;
 
     private static readonly Point DefaultOverlayCornerOne = new (int.MaxValue, int.MaxValue);
+    private static readonly TownNPCSpriteOverlay DefaultSpriteOverlay = new(Asset<Texture2D>.DefaultValue, Vector2.Zero);
 
     private static Dictionary<string, LocalizedText> _autoloadedFlavorTexts;
 
@@ -68,7 +69,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         }
 
         if (overlayCornerOne == DefaultOverlayCornerOne) {
-            return new TownNPCSpriteOverlay(new Texture2D(Main.graphics.GraphicsDevice, 1, 1), Vector2.Zero);
+            return DefaultSpriteOverlay;
         }
 
         Rectangle differenceRectangle = LWMUtils.NewRectFromCorners(overlayCornerOne, overlayCornerTwo + new Point(1, 1));
@@ -134,8 +135,14 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
             ContinueOutermostLoop: ;
         }
 
-        Rectangle talkingFrameRectangle = npcTexture.Frame(verticalFrames: npcFrameCount, frameY: nonAttackFrameCount - 2);
-        Rectangle blinkingFrameRectangle = npcTexture.Frame(verticalFrames: npcFrameCount, frameY: nonAttackFrameCount - 1);
+        int talkingFrame = nonAttackFrameCount - 2;
+        int blinkFrame = nonAttackFrameCount - 1;
+        if (talkingFrame <= 0 || blinkFrame <= 0) {
+            return [DefaultSpriteOverlay, DefaultSpriteOverlay];
+        }
+
+        Rectangle talkingFrameRectangle = npcTexture.Frame(verticalFrames: npcFrameCount, frameY: talkingFrame);
+        Rectangle blinkingFrameRectangle = npcTexture.Frame(verticalFrames: npcFrameCount, frameY: blinkFrame);
 
         string textureNamePrefix = $"{npcAssetName[(npcAssetName.LastIndexOf("\\") + 1)..]}";
         (Rectangle, string)[] frameNameDifferenceArray = [(talkingFrameRectangle, "Talking"), (blinkingFrameRectangle, "Blinking")];

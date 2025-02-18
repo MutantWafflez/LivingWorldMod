@@ -42,7 +42,10 @@ public class RevitalizationNPCPatches : LoadablePatch {
         }
 
         // Happiness bar will disappear if the string is empty for certain NPCs
-        shopHelper._currentHappiness = "A non-empty string";
+        // TODO: Dialect compatibility
+        shopHelper._currentHappiness =
+            "Whoops! You're not supposed to see this. If you have the mod Dialect installed and enabled, make sure it's set to \"Vanilla\" for the happiness button to work."
+            + " If you're not using Dialect and/or it's not enabled. Please report this to the Living World Mod developers!";
 
         List<NPC> npcNeighbors = shopHelper.GetNearbyResidentNPCs(npc, out int npcsWithinHouse, out int npcsWithinVillage);
         bool[] npcNeighborsByType = new bool[NPCLoader.NPCCount];

@@ -187,7 +187,7 @@ public class HappinessUIState : UIState {
         NPCBeingTalkedTo = npc;
         modifierScrollbar.ViewPosition = 0f;
         npcHeadIcon.SetImage(TextureAssets.NpcHead[TownNPCProfiles.GetHeadIndexSafe(npc)]);
-        npcName.SetText(npc.GivenName);
+        npcName.SetText(npc.GivenOrTypeName);
 
         RecalculateChildren();
     }

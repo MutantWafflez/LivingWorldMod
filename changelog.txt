@@ -1,5 +1,5 @@
-INDEV RELEASE v0.4.0.3 [Revitalization Hotfix #3] (February 13th, 2025)
+INDEV RELEASE v0.4.0.4 [Revitalization Hotfix #4] (February 17th, 2025)
 Changes:
-* Town NPCs' chance to fall asleep will increase proportionally to how tired they are, instead of a flat chance every tick
+* NPCs without unique names will now have their "type name" shown in the Happiness UI instead of nothing
 Fixes:
-* Tentatively fixed Town NPCs de-spawning/crashing due to lack of a fallback option for determining how tired they are 
+* Fixed crash that occured if a Town NPC from another mod doesn't have animations
