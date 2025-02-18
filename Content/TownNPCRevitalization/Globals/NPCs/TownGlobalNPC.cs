@@ -51,8 +51,7 @@ public class TownGlobalNPC : GlobalNPC {
         && !NPCID.Sets.IsTownPet[entity.type]
         && !NPCID.Sets.CannotSitOnFurniture[entity.type]
         && !NPCID.Sets.IsTownSlime[entity.type]
-        && entity.type != NPCID.OldMan
-        && entity.type != NPCID.TravellingMerchant;
+        && !NPCID.Sets.NoTownNPCHappiness[entity.type];
 
     public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => EntityIsValidTownNPC(entity, lateInstantiation);
 
