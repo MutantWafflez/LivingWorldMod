@@ -1,5 +1,4 @@
-INDEV RELEASE v0.4.0.4 [Revitalization Hotfix #4] (February 17th, 2025)
-Changes:
-* NPCs without unique names will now have their "type name" shown in the Happiness UI instead of nothing
+INDEV RELEASE v0.4.0.5 [Revitalization Hotfix #5] (February 18th, 2025)
 Fixes:
-* Fixed crash that occured if a Town NPC from another mod doesn't have animations
+* Fixed Town NPCs teleporting home into walls in rare cases where chairs are up against walls underneath platforms
+* Fixed NPCs who are passed out occasionally waking up and then immediately falling back asleep
