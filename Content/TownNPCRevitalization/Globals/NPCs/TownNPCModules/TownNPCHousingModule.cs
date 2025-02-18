@@ -123,12 +123,13 @@ public class TownNPCHousingModule : TownNPCModule {
             return;
         }
 
+        
         TownNPCPathfinderModule pathfinderModule = NPC.GetGlobalNPC<TownNPCPathfinderModule>();
-        int beAtHomeStateInt = TownNPCAIState.GetStateInteger<BeAtHomeAIState>();
-        if ( /*npc.ai[0] != TownNPCAIState.GetStateInteger<WalkToRandomPosState>() &&*/ !NPC.GetGlobalNPC<TownNPCCombatModule>().IsAttacking && NPC.ai[0] != beAtHomeStateInt) {
-            TownNPCStateModule.RefreshToState(NPC, beAtHomeStateInt);
+        int beAtHomeStateInteger = TownNPCAIState.GetStateInteger<BeAtHomeAIState>();
+        if (NPC.ai[0] != beAtHomeStateInteger) {
+            TownNPCStateModule.RefreshToState(NPC, beAtHomeStateInteger);
             pathfinderModule.CancelPathfind();
-        }
+        } 
 
         bool nearbyPlayers = false;
         for (int i = 0; i < 2; i++) {

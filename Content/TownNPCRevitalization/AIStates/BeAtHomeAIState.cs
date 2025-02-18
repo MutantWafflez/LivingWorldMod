@@ -57,7 +57,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                 npc.GetGlobalNPC<TownNPCSpriteModule>().GiveItem();
 
                 npc.ai[3] = 0f;
-                npc.ai[1] = 1f;
+                npc.ai[1] = EndSleepAnimationState;
                 return;
             case EndSleepAnimationState:
                 if (++npc.ai[3] <= TownNPCSpriteModule.GivingAnimationDuration) {
