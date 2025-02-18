@@ -146,10 +146,11 @@ public class TownNPCHousingModule : TownNPCModule {
                     NPC.sHeight + NPC.safeRangeY * 2
                 );
 
-            for (int j = 0; j < Main.maxPlayers; j++) {
-                if (!Main.player[j].active || !new Rectangle((int)Main.player[j].position.X, (int)Main.player[j].position.Y, Main.player[j].width, Main.player[j].height).Intersects(playerZoneCheck)) {
+            foreach (Player player in Main.ActivePlayers) {
+                if (!new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height).Intersects(playerZoneCheck)) {
                     continue;
                 }
+
 
                 nearbyPlayers = true;
                 goto CheckTeleport_Attempt;
