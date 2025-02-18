@@ -73,7 +73,10 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     ///     Denotes whether there is anything event or tertiary circumstances that is preventing this NPC from sleeping. If this value is false, it means this NPC cannot sleep normally. They can still
     ///     pass out, however.
     /// </summary>
-    public bool CanSleep => _blockedSleepTimer <= 0 && !NPC.GetGlobalNPC<TownNPCChatModule>().IsChattingWithPlayerDirectly;
+    public bool CanSleep => _blockedSleepTimer <= 0
+        && !NPC.GetGlobalNPC<TownNPCChatModule>().IsChattingWithPlayerDirectly
+        && NPC.ai[0] != TownNPCAIState.GetStateInteger<PassedOutAIState>()
+        && !NPC.GetGlobalNPC<TownNPCCombatModule>().IsAttacking;
 
     /// <summary>
     ///     In contrast to <see cref="CanSleep" />, this flag denotes whether this NPC has had its random checks succeed and "wants" to sleep. See the <see cref="CheckNPCUrgeToSleep" /> code for

@@ -36,7 +36,7 @@ public class TownGlobalNPC : GlobalNPC {
             for (int j = 0; j < npcTileWidth; j++) {
                 Tile upTile = Main.tile[tilePos.X + j, tilePos.Y - i];
 
-                if (upTile.HasUnactuatedTile && Main.tileSolid[upTile.TileType]) {
+                if (upTile.HasUnactuatedTile && Main.tileSolid[upTile.TileType] && !Main.tileSolidTop[upTile.TileType]) {
                     return false;
                 }
             }

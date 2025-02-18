@@ -123,12 +123,13 @@ public class TownNPCHousingModule : TownNPCModule {
             return;
         }
 
+        
         TownNPCPathfinderModule pathfinderModule = NPC.GetGlobalNPC<TownNPCPathfinderModule>();
-        int beAtHomeStateInt = TownNPCAIState.GetStateInteger<BeAtHomeAIState>();
-        if ( /*npc.ai[0] != TownNPCAIState.GetStateInteger<WalkToRandomPosState>() &&*/ !NPC.GetGlobalNPC<TownNPCCombatModule>().IsAttacking && NPC.ai[0] != beAtHomeStateInt) {
-            TownNPCStateModule.RefreshToState(NPC, beAtHomeStateInt);
+        int beAtHomeStateInteger = TownNPCAIState.GetStateInteger<BeAtHomeAIState>();
+        if (NPC.ai[0] != beAtHomeStateInteger) {
+            TownNPCStateModule.RefreshToState(NPC, beAtHomeStateInteger);
             pathfinderModule.CancelPathfind();
-        }
+        } 
 
         bool nearbyPlayers = false;
         for (int i = 0; i < 2; i++) {
@@ -146,10 +147,11 @@ public class TownNPCHousingModule : TownNPCModule {
                     NPC.sHeight + NPC.safeRangeY * 2
                 );
 
-            for (int j = 0; j < Main.maxPlayers; j++) {
-                if (!Main.player[j].active || !new Rectangle((int)Main.player[j].position.X, (int)Main.player[j].position.Y, Main.player[j].width, Main.player[j].height).Intersects(playerZoneCheck)) {
+            foreach (Player player in Main.ActivePlayers) {
+                if (!new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height).Intersects(playerZoneCheck)) {
                     continue;
                 }
+
 
                 nearbyPlayers = true;
                 goto CheckTeleport_Attempt;
