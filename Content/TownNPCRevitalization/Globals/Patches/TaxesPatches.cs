@@ -7,9 +7,9 @@ using MonoMod.Cil;
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 
 /// <summary>
-///     Patches for specifically the Tax Overhaul.
+///     Patches for specifically the Taxes Overhaul.
 /// </summary>
-public class TaxPatches : LoadablePatch {
+public class TaxesPatches : LoadablePatch {
     public override void LoadPatches() {
         IL_Player.CollectTaxes += CollectTaxesPatch;
     }
