@@ -11,7 +11,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 public readonly record struct NPCTaxValues(int PropertyTax, float SalesTax) : TagSerializable {
     public static readonly Func<TagCompound, NPCTaxValues> DESERIALIZER = Deserialize;
 
-    private static NPCTaxValues Deserialize(TagCompound tag) => new (tag.GetInt(nameof(PropertyTax)), tag.GetInt(nameof(SalesTax)));
+    private static NPCTaxValues Deserialize(TagCompound tag) => new (tag.GetInt(nameof(PropertyTax)), tag.GetFloat(nameof(SalesTax)));
 
     public TagCompound SerializeData() => new() { { nameof(PropertyTax), PropertyTax }, { nameof(SalesTax), SalesTax } };
 }
