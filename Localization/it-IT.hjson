@@ -421,6 +421,13 @@ Mods: {
 			// WellRested: Well rested
 			// Tired: Tired
 			// SleepDeprived: Sleep deprived
+			// MidPropertyTax: Moderate Property Tax
+			// HighPropertyTax: High Property Tax
+			// ExtremePropertyTax: Extreme Property Tax
+			// SalesTax: Sales Tax
+			// MidSalesTax: Moderate Sales Tax
+			// HighSalesTax: High Sales Tax
+			// ExtremeSalesTax: Extreme Sales Tax
 		}
 
 		TownNPCMoodFlavorText: {
