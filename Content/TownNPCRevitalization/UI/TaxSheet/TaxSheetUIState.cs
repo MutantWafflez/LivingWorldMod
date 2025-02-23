@@ -94,7 +94,7 @@ public class TaxSheetUIState : UIState {
     private const float SelectedNPCBackPanelWidth = 130f;
     private const float CoinDisplayPadding = 40f;
     private const float ButtonsSideLength = 30f;
-    private const float ChangeButtonXDrawPos = SelectedNPCBackPanelWidth / 2f - ButtonsSideLength - 38f;
+    private const float ChangeButtonXDrawPos = SelectedNPCBackPanelWidth / 2f - ButtonsSideLength - 34f;
     private const float DefaultSalesTaxButtonChangeAmount = 0.01f;
 
     private NPCTaxValues _startingTaxValues;
@@ -112,12 +112,16 @@ public class TaxSheetUIState : UIState {
     private UIVisibilityElement _selectedNPCVisibilityElement;
     private UIPanel _selectedNPCBackPanel;
     private UIBetterText _selectedNPCName;
+
     private UIBetterText _propertyTaxText;
     private UICoinDisplay _propertyTaxDisplay;
     private UIBetterImageButton[,] _propertyTaxChangeButtons;
+
+    private UIVisibilityElement _salesTaxVisibilityElement;
     private UIBetterText _salesTaxText;
     private UIBetterText _salesTaxDisplay;
     private UIBetterImageButton[] _salesTaxChangeButtons;
+
     private UIVisibilityElement _confirmationButtonsVisibilityElement;
     private UIBetterImageButton _denyNewTaxesButton;
     private UIBetterImageButton _acceptNewTaxesButton;
@@ -205,7 +209,12 @@ public class TaxSheetUIState : UIState {
         Append(_selectedNPCVisibilityElement);
 
         _selectedNPCBackPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
-            BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor, BorderColor = Color.White, Width = StyleDimension.Fill, Height = StyleDimension.Fill
+            BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor,
+            BorderColor = Color.White,
+            Width = StyleDimension.Fill,
+            Height = StyleDimension.Fill,
+            PaddingLeft = 8f,
+            PaddingRight = 8f
         };
         _selectedNPCVisibilityElement.Append(_selectedNPCBackPanel);
 
@@ -235,17 +244,20 @@ public class TaxSheetUIState : UIState {
             _propertyTaxDisplay
         );
 
-        _salesTaxText = new UIBetterText("Sales Tax", 0.9f) { HAlign = 0.5f, Top = StyleDimension.FromPixels(140f) };
-        _selectedNPCBackPanel.Append(_salesTaxText);
+        _salesTaxVisibilityElement = new UIVisibilityElement { Width = StyleDimension.Fill, Height = StyleDimension.FromPixels(50f), Top = StyleDimension.FromPixels(140f) };
+        _selectedNPCBackPanel.Append(_salesTaxVisibilityElement);
+        
+        _salesTaxText = new UIBetterText("Sales Tax", 0.9f) { HAlign = 0.5f };
+        _salesTaxVisibilityElement.Append(_salesTaxText);
 
-        _salesTaxDisplay = new UIBetterText("0%", 0.5f, true) { HAlign = 0.5f, Top = StyleDimension.FromPixels(165f) };
-        _selectedNPCBackPanel.Append(_salesTaxDisplay);
+        _salesTaxDisplay = new UIBetterText("0%", 0.5f, true) { HAlign = 0.5f, Top = StyleDimension.FromPixels(25f) };
+        _salesTaxVisibilityElement.Append(_salesTaxDisplay);
 
         _salesTaxChangeButtons = new UIBetterImageButton[2];
         for (int i = 0; i < 2; i++) {
             float changeAmount = DefaultSalesTaxButtonChangeAmount * (i == 0 ? 1 : -1);
 
-            UIBetterImageButton button = new (changeButtonTextures[i]) { Left = StyleDimension.FromPixels(ChangeButtonXDrawPos + 80 * i), Top = StyleDimension.FromPixels(158f) };
+            UIBetterImageButton button = new (changeButtonTextures[i]) { HAlign = i, Top = StyleDimension.FromPixels(18f) };
             button.OnLeftClick += (_, _) => {
                 float oldTalesTax = _tempSalesTaxValue;
                 _tempSalesTaxValue = Utils.Clamp(_tempSalesTaxValue + changeAmount * ButtonChangeAmountMultiplier, 0f, TaxesSystem.MaxSalesTax);
@@ -253,7 +265,7 @@ public class TaxSheetUIState : UIState {
 
                 SoundEngine.PlaySound(Math.Abs(oldTalesTax - _tempSalesTaxValue) > 0.000005 ? SoundID.Coins : SoundID.Tink);
             };
-            _selectedNPCBackPanel.Append(button);
+            _salesTaxVisibilityElement.Append(button);
 
             _salesTaxChangeButtons[i] = button;
         }
@@ -272,7 +284,7 @@ public class TaxSheetUIState : UIState {
         _confirmationButtonsVisibilityElement.Append(_denyNewTaxesButton);
 
         _acceptNewTaxesButton = new UIBetterImageButton(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/ButtonIcons/AcceptButton")) {
-            HAlign = 1f, Width = StyleDimension.FromPixels(ButtonsSideLength), Height = StyleDimension.FromPixels(ButtonsSideLength)
+            HAlign = 1f, Width = StyleDimension.FromPixels(ButtonsSideLength), Height = StyleDimension.FromPixels(ButtonsSideLength), Left = StyleDimension.FromPixels(-2f)
         };
         _confirmationButtonsVisibilityElement.Append(_acceptNewTaxesButton);
 
@@ -370,7 +382,7 @@ public class TaxSheetUIState : UIState {
         _startingTaxValues = selectedTaxValues;
         _tempPropertyTaxValue = selectedTaxValues.PropertyTax;
         _tempSalesTaxValue = selectedTaxValues.SalesTax;
-        
+
         _propertyTaxDisplay.SetNewCoinValues(_tempPropertyTaxValue);
         _salesTaxDisplay.SetText($"{(int)Math.Round(_tempSalesTaxValue * 100)}%");
     }
@@ -386,6 +398,7 @@ public class TaxSheetUIState : UIState {
 
         _selectedNPCName.SetText(LWMUtils.GetNPCTypeNameOrIDName(selectedNPCType));
         _selectedNPCVisibilityElement.SetVisibility(true);
+        _salesTaxVisibilityElement.SetVisibility(NPCShopDatabase.TryGetNPCShop(NPCShopDatabase.GetShopName(selectedNPCType), out _));
     }
 
     private void PopulateNPCGrid() {
