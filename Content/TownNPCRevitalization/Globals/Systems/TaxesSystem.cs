@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 using LivingWorldMod.Content.TownNPCRevitalization.UI.TaxSheet;
 using LivingWorldMod.Globals.BaseTypes.Systems;
+using LivingWorldMod.Utilities;
+using Terraria.GameContent;
 using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
@@ -14,6 +17,18 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 public class TaxesSystem : BaseModSystem<TaxesSystem>  {
     public const int MaxPropertyTax = Item.gold * 2 + Item.silver * 50;
     public const float MaxSalesTax = 0.4f;
+
+    public const int TaxCap = Item.platinum;
+
+    /// <summary>
+    ///     LWM's new taxes are in-game day based, and as such, we need to change the tax rate variable to account for it.
+    /// </summary>
+    private const double LWMTaxRate = LWMUtils.InGameFullDay;
+
+    /// <summary>
+    ///     The tax rate that vanilla uses. <see cref="Player.taxRate" /> is the variable, and as of 1.4.4.9, is 3600.
+    /// </summary>
+    private const double VanillaTaxRate = 3600d;
 
     private const string ModSaveKey = "Mod";
     private const string NPCNameSaveKey = "NPCName";
@@ -31,6 +46,22 @@ public class TaxesSystem : BaseModSystem<TaxesSystem>  {
     ///     Returns whether or not the passed in tax values are valid; i.e. the values fit within their min-max range.
     /// </summary>
     public static bool AreValidTaxValues(NPCTaxValues values) => values is { SalesTax: >= 0 and <= MaxSalesTax, PropertyTax: >= 0 and <= MaxPropertyTax };
+
+    /// <summary>
+    ///     Returns whether a given NPC is valid to collect taxes from.
+    /// </summary>
+    public static bool IsNPCValidForTaxes(NPC npc, out int headIndex) {
+        headIndex = -1;
+        return TownGlobalNPC.EntityIsValidTownNPC(npc, true) && (headIndex = TownNPCProfiles.GetHeadIndexSafe(npc)) >= 0;
+    }
+
+    public override void Load() {
+        Player.taxRate = LWMTaxRate;
+    }
+
+    public override void Unload() {
+        Player.taxRate = VanillaTaxRate;
+    }
 
     public override void SaveWorldData(TagCompound tag) {
         List<TagCompound> saveList = [];

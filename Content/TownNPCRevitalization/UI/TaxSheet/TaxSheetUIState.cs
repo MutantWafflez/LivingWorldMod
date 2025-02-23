@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.PacketHandlers;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
@@ -451,8 +450,7 @@ public class TaxSheetUIState : UIState {
         HashSet<int> addedNPCTypes = [];
         int gridIndex = 0;
         foreach (NPC npc in Main.ActiveNPCs) {
-            int headIndex;
-            if (addedNPCTypes.Contains(npc.type) || !TownGlobalNPC.EntityIsValidTownNPC(npc, true) || (headIndex = TownNPCProfiles.GetHeadIndexSafe(npc)) < 0) {
+            if (addedNPCTypes.Contains(npc.type) || !TaxesSystem.IsNPCValidForTaxes(npc, out int headIndex)) {
                 continue;
             }
 
