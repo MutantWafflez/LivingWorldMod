@@ -81,4 +81,19 @@ public class TaxesSystem : BaseModSystem<TaxesSystem>  {
     }
 
     public NPCTaxValues GetTaxValuesOrDefault(int type) => _taxValues.GetValueOrDefault(type, DefaultTaxValues);
+
+    public void SubmitNewTaxValues(int npcType, NPCTaxValues newValues) {
+        // TODO: Add MP syncing
+        if (newValues == DefaultTaxValues) {
+            _taxValues.Remove(npcType);
+
+            return;
+        }
+
+        if (_taxValues.TryGetValue(npcType, out NPCTaxValues oldValues) && oldValues == newValues) {
+            return;
+        }
+
+        _taxValues[npcType] = newValues;
+    }
 }

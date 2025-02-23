@@ -76,7 +76,7 @@ public class TaxSheetUIState : UIState {
             }
         }
 
-        private void ChangePanelSelectionColors(bool isSelected) {
+        public void ChangePanelSelectionColors(bool isSelected) {
             if (isSelected) {
                 _npcHeadPanel.BackgroundColor = LWMUtils.YellowErrorTextColor * 0.7f;
                 _npcHeadPanel.BorderColor = Color.Yellow;
@@ -124,7 +124,9 @@ public class TaxSheetUIState : UIState {
 
     private UIVisibilityElement _confirmationButtonsVisibilityElement;
     private UIBetterImageButton _denyNewTaxesButton;
+    private UITooltipElement _denyNewTaxesButtonTooltip;
     private UIBetterImageButton _acceptNewTaxesButton;
+    private UITooltipElement _acceptNewTaxesButtonTooltip;
 
     private UIPanel _helpIconPanel;
     private UITooltipElement _helpIconTooltipZone;
@@ -167,10 +169,47 @@ public class TaxSheetUIState : UIState {
         Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
         Asset<Texture2D> gradientPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder");
         Asset<Texture2D> shadowedPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/ShadowedPanelBorder");
-        Asset<Texture2D>[] changeButtonTextures = [
-            ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/ButtonIcons/PlusButton"), ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/ButtonIcons/MinusButton")
-        ];
 
+        InitializeBackPanel(vanillaPanelBackground, gradientPanelBorder, shadowedPanelBorder);
+        InitializeSelectedNPCPanel(vanillaPanelBackground, gradientPanelBorder);
+        InitalizeHelpPanel(vanillaPanelBackground, gradientPanelBorder);
+    }
+
+    public override void Update(GameTime gameTime) {
+        base.Update(gameTime);
+
+        if (_backPanel.IsMouseHovering || (_selectedNPCVisibilityElement.IsMouseHovering && _selectedNPCVisibilityElement.IsVisible)) {
+            Main.LocalPlayer.mouseInterface = true;
+        }
+
+        _confirmationButtonsVisibilityElement.SetVisibility(
+            _selectedNPCVisibilityElement.IsVisible && (_startingTaxValues.PropertyTax != _tempPropertyTaxValue || Math.Abs(_startingTaxValues.SalesTax - _tempSalesTaxValue) > 0.00005f)
+        );
+    }
+
+    public void SetStateToNPC(NPC npc) {
+        NPCBeingTalkedTo = npc;
+
+        if (!_hasDoubleInitialized) {
+            for (int i = 0; i < 2; i++) {
+                Recalculate();
+
+                RemoveAllChildren();
+                OnInitialize();
+            }
+
+            _hasDoubleInitialized = true;
+        }
+
+        _selectedNPCGridIndex = null;
+        _npcGridScrollBar.ViewPosition = 0f;
+        _npcGrid.Clear();
+        _selectedNPCVisibilityElement.SetVisibility(false);
+
+        PopulateNPCGrid();
+    }
+
+    private void InitializeBackPanel(Asset<Texture2D> vanillaPanelBackground, Asset<Texture2D> gradientPanelBorder, Asset<Texture2D> shadowedPanelBorder) {
         _backPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
             BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor,
             BorderColor = Color.White,
@@ -199,6 +238,12 @@ public class TaxSheetUIState : UIState {
         _npcGrid = new UIGrid { Width = StyleDimension.FromPixelsAndPercent(-24f, 1), Height = StyleDimension.Fill, ListPadding = PaddingBetweenPanels };
         _npcGrid.SetScrollbar(_npcGridScrollBar);
         _npcGridSubPanel.Append(_npcGrid);
+    }
+
+    private void InitializeSelectedNPCPanel(Asset<Texture2D> vanillaPanelBackground, Asset<Texture2D> gradientPanelBorder) {
+        Asset<Texture2D>[] changeButtonTextures = [
+            ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/ButtonIcons/PlusButton"), ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/ButtonIcons/MinusButton")
+        ];
 
         _selectedNPCVisibilityElement = new UIVisibilityElement {
             VAlign = 0.5f,
@@ -246,7 +291,7 @@ public class TaxSheetUIState : UIState {
 
         _salesTaxVisibilityElement = new UIVisibilityElement { Width = StyleDimension.Fill, Height = StyleDimension.FromPixels(50f), Top = StyleDimension.FromPixels(140f) };
         _selectedNPCBackPanel.Append(_salesTaxVisibilityElement);
-        
+
         _salesTaxText = new UIBetterText("Sales Tax", 0.9f) { HAlign = 0.5f };
         _salesTaxVisibilityElement.Append(_salesTaxText);
 
@@ -283,27 +328,25 @@ public class TaxSheetUIState : UIState {
         };
         _confirmationButtonsVisibilityElement.Append(_denyNewTaxesButton);
 
+        _denyNewTaxesButtonTooltip = new UITooltipElement("UI.TaxSheet.DenyButton".Localized()) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+        _denyNewTaxesButton.Append(_denyNewTaxesButtonTooltip);
+
         _acceptNewTaxesButton = new UIBetterImageButton(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/ButtonIcons/AcceptButton")) {
             HAlign = 1f, Width = StyleDimension.FromPixels(ButtonsSideLength), Height = StyleDimension.FromPixels(ButtonsSideLength), Left = StyleDimension.FromPixels(-2f)
         };
+        _acceptNewTaxesButton.OnLeftClick += (_, _) => {
+            TaxesSystem.Instance.SubmitNewTaxValues(SelectedNPCElement.npcType, new NPCTaxValues(_tempPropertyTaxValue, _tempSalesTaxValue));
+
+            SelectedNPCElement.ChangePanelSelectionColors(false);
+            _selectedNPCGridIndex = null;
+            RefreshSelectedNPCDisplay();
+
+            SoundEngine.PlaySound(SoundID.Coins);
+        };
         _confirmationButtonsVisibilityElement.Append(_acceptNewTaxesButton);
 
-        _helpIconPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
-            BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor,
-            BorderColor = Color.White,
-            Width = StyleDimension.FromPixels(HelpPanelSideLength),
-            Height = StyleDimension.FromPixels(HelpPanelSideLength),
-            Left = StyleDimension.FromPixels(-_backPanel.PaddingLeft - HelpPanelSideLength - PaddingBetweenPanels),
-            Top = StyleDimension.FromPixels(-_backPanel.PaddingLeft + 2)
-        };
-        _helpIconPanel.SetPadding(0f);
-        _backPanel.Append(_helpIconPanel);
-
-        _helpIconTooltipZone = new UITooltipElement("UI.TaxSheet.Help".Localized()) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
-        _helpIconPanel.Append(_helpIconTooltipZone);
-
-        _helpIcon = new UIImage(TextureAssets.NpcHead[NPCHeadID.HousingQuery]) { VAlign = 0.5f, HAlign = 0.5f, ImageScale = 0.75f };
-        _helpIconPanel.Append(_helpIcon);
+        _acceptNewTaxesButtonTooltip = new UITooltipElement("UI.TaxSheet.AcceptButton".Localized()) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+        _acceptNewTaxesButton.Append(_acceptNewTaxesButtonTooltip);
 
         return;
 
@@ -343,38 +386,23 @@ public class TaxSheetUIState : UIState {
         }
     }
 
-    public override void Update(GameTime gameTime) {
-        base.Update(gameTime);
+    private void InitalizeHelpPanel(Asset<Texture2D> vanillaPanelBackground, Asset<Texture2D> gradientPanelBorder) {
+        _helpIconPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
+            BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor,
+            BorderColor = Color.White,
+            Width = StyleDimension.FromPixels(HelpPanelSideLength),
+            Height = StyleDimension.FromPixels(HelpPanelSideLength),
+            Left = StyleDimension.FromPixels(-_backPanel.PaddingLeft - HelpPanelSideLength - PaddingBetweenPanels),
+            Top = StyleDimension.FromPixels(-_backPanel.PaddingLeft + 2)
+        };
+        _helpIconPanel.SetPadding(0f);
+        _backPanel.Append(_helpIconPanel);
 
-        if (_backPanel.IsMouseHovering || (_selectedNPCVisibilityElement.IsMouseHovering && _selectedNPCVisibilityElement.IsVisible)) {
-            Main.LocalPlayer.mouseInterface = true;
-        }
+        _helpIconTooltipZone = new UITooltipElement("UI.TaxSheet.Help".Localized()) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+        _helpIconPanel.Append(_helpIconTooltipZone);
 
-        _confirmationButtonsVisibilityElement.SetVisibility(
-            _selectedNPCVisibilityElement.IsVisible && (_startingTaxValues.PropertyTax != _tempPropertyTaxValue || Math.Abs(_startingTaxValues.SalesTax - _tempSalesTaxValue) > 0.00005f)
-        );
-    }
-
-    public void SetStateToNPC(NPC npc) {
-        NPCBeingTalkedTo = npc;
-
-        if (!_hasDoubleInitialized) {
-            for (int i = 0; i < 2; i++) {
-                Recalculate();
-
-                RemoveAllChildren();
-                OnInitialize();
-            }
-
-            _hasDoubleInitialized = true;
-        }
-
-        _selectedNPCGridIndex = null;
-        _npcGridScrollBar.ViewPosition = 0f;
-        _npcGrid.Clear();
-        _selectedNPCVisibilityElement.SetVisibility(false);
-
-        PopulateNPCGrid();
+        _helpIcon = new UIImage(TextureAssets.NpcHead[NPCHeadID.HousingQuery]) { VAlign = 0.5f, HAlign = 0.5f, ImageScale = 0.75f };
+        _helpIconPanel.Append(_helpIcon);
     }
 
     private void RefreshTaxValueDisplays(int npcType) {
