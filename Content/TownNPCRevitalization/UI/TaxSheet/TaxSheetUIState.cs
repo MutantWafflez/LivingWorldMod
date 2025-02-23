@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.PacketHandlers;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 using LivingWorldMod.Globals.UIElements;
@@ -172,7 +173,7 @@ public class TaxSheetUIState : UIState {
 
         InitializeBackPanel(vanillaPanelBackground, gradientPanelBorder, shadowedPanelBorder);
         InitializeSelectedNPCPanel(vanillaPanelBackground, gradientPanelBorder);
-        InitalizeHelpPanel(vanillaPanelBackground, gradientPanelBorder);
+        InitializeHelpPanel(vanillaPanelBackground, gradientPanelBorder);
     }
 
     public override void Update(GameTime gameTime) {
@@ -201,6 +202,10 @@ public class TaxSheetUIState : UIState {
             _hasDoubleInitialized = true;
         }
 
+        RefreshStateWithCurrentNPC();
+    }
+
+    public void RefreshStateWithCurrentNPC() {
         _selectedNPCGridIndex = null;
         _npcGridScrollBar.ViewPosition = 0f;
         _npcGrid.Clear();
@@ -335,7 +340,20 @@ public class TaxSheetUIState : UIState {
             HAlign = 1f, Width = StyleDimension.FromPixels(ButtonsSideLength), Height = StyleDimension.FromPixels(ButtonsSideLength), Left = StyleDimension.FromPixels(-2f)
         };
         _acceptNewTaxesButton.OnLeftClick += (_, _) => {
-            TaxesSystem.Instance.SubmitNewTaxValues(SelectedNPCElement.npcType, new NPCTaxValues(_tempPropertyTaxValue, _tempSalesTaxValue));
+            int npcType = SelectedNPCElement.npcType;
+
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                ModPacket packet = ModContent.GetInstance<TaxesPacketHandler>().GetPacket();
+
+                packet.Write(npcType);
+                packet.Write(_tempPropertyTaxValue);
+                packet.Write(_tempSalesTaxValue);
+
+                packet.Send();
+            }
+            else {
+                TaxesSystem.Instance.SubmitNewTaxValues(npcType, new NPCTaxValues(_tempPropertyTaxValue, _tempSalesTaxValue));
+            }
 
             SelectedNPCElement.ChangePanelSelectionColors(false);
             _selectedNPCGridIndex = null;
@@ -386,7 +404,7 @@ public class TaxSheetUIState : UIState {
         }
     }
 
-    private void InitalizeHelpPanel(Asset<Texture2D> vanillaPanelBackground, Asset<Texture2D> gradientPanelBorder) {
+    private void InitializeHelpPanel(Asset<Texture2D> vanillaPanelBackground, Asset<Texture2D> gradientPanelBorder) {
         _helpIconPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
             BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor,
             BorderColor = Color.White,

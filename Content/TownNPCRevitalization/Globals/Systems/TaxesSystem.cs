@@ -27,6 +27,11 @@ public class TaxesSystem : BaseModSystem<TaxesSystem>  {
 
     private readonly Dictionary<int, NPCTaxValues> _taxValues = [];
 
+    /// <summary>
+    ///     Returns whether or not the passed in tax values are valid; i.e. the values fit within their min-max range.
+    /// </summary>
+    public static bool AreValidTaxValues(NPCTaxValues values) => values is { SalesTax: >= 0 and <= MaxSalesTax, PropertyTax: >= 0 and <= MaxPropertyTax };
+
     public override void SaveWorldData(TagCompound tag) {
         List<TagCompound> saveList = [];
         foreach ((int type, NPCTaxValues values) in _taxValues) {
@@ -83,7 +88,6 @@ public class TaxesSystem : BaseModSystem<TaxesSystem>  {
     public NPCTaxValues GetTaxValuesOrDefault(int type) => _taxValues.GetValueOrDefault(type, DefaultTaxValues);
 
     public void SubmitNewTaxValues(int npcType, NPCTaxValues newValues) {
-        // TODO: Add MP syncing
         if (newValues == DefaultTaxValues) {
             _taxValues.Remove(npcType);
 
