@@ -18,7 +18,7 @@ public class TaxesSystem : BaseModSystem<TaxesSystem>  {
     public const int MaxPropertyTax = Item.gold * 2 + Item.silver * 50;
     public const float MaxSalesTax = 0.4f;
 
-    public const int TaxCap = Item.platinum;
+    private const int DefaultTaxCap = Item.platinum;
 
     /// <summary>
     ///     LWM's new taxes are in-game day based, and as such, we need to change the tax rate variable to account for it.
@@ -41,6 +41,17 @@ public class TaxesSystem : BaseModSystem<TaxesSystem>  {
     private static readonly NPCTaxValues DefaultTaxValues = new (Item.copper * 50 * 24, 0f);
 
     private readonly Dictionary<int, NPCTaxValues> _taxValues = [];
+
+    public static int TaxCap {
+        get {
+            int taxCap = DefaultTaxCap;
+            if (Main.tenthAnniversaryWorld) {
+                taxCap *= 2;
+            }
+
+            return taxCap;
+        }
+    }
 
     /// <summary>
     ///     Returns whether or not the passed in tax values are valid; i.e. the values fit within their min-max range.
