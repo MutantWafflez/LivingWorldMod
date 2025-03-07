@@ -436,6 +436,13 @@ Mods: {
 				WellRested: I am well rested.
 				Tired: I am tired.
 				SleepDeprived: I am really, really, tired.
+				MidPropertyTax: My property tax is just a little too high.
+				HighPropertyTax: My property tax is too high!
+				ExtremePropertyTax: My property tax is way too extreme!
+				SalesTax: I have a sales tax on my goods!
+				MidSalesTax: I have a moderate sales tax on my goods!
+				HighSalesTax: I have too high of a sales tax on my goods!
+				ExtremeSalesTax: My sales tax is way too extreme!
 			}
 
 			Nurse: {

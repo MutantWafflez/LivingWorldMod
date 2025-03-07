@@ -232,7 +232,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
                 );
             }
 
-            newPersonalityTraits.AddRange([new CrowdingTrait(), new HomelessTrait(), new HomeProximityTrait(), new SpaciousTrait(), new SleepTrait()]);
+            newPersonalityTraits.AddRange([new CrowdingTrait(), new HomelessTrait(), new HomeProximityTrait(), new SpaciousTrait(), new SleepTrait(), new TaxesTrait()]);
 
             string princessLoveFlavorTextKey = npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).GetLocalizationKey("TownNPCMood.Princess_LovesNPC") : $"TownNPCMood_Princess.LoveNPC_{npcTypeName}";
             string newPrincessKey = $"Princess.NPC_{npcTypeName}";
