@@ -452,6 +452,9 @@ Mods: {
 				// WellRested: I'm pretty lucky to get this much sleep.
 				// Tired: Another day, another tired Nurse.
 				// SleepDeprived: Just like nursing school...
+				// MidPropertyTax: Not that I can't afford it, but does my rent really need to be upped like this?
+				// HighPropertyTax: Is the landlord really this tight for gold?
+				// ExtremePropertyTax: Seriously, why does the ONLY medical professional here have the rent of a mansion!?
 			}
 
 			BestiaryGirl: {
@@ -463,6 +466,9 @@ Mods: {
 				// WellRested: I like, slept super well last night!
 				// Tired: I'm, like, kinda tired.
 				// SleepDeprived: Need. Sleep.
+				// MidPropertyTax: Hey, like, why is my rent higher than usual?
+				// HighPropertyTax: This rent is so, totally, like a joke, right?
+				// ExtremePropertyTax: Staahp with this crazy rent! I can't live like this, bro!
 			}
 
 			Stylist: {
@@ -472,6 +478,9 @@ Mods: {
 				// WellRested: I feel about right. Decent sleep.
 				// Tired: I hope I don't accidentally cut off someones hair by accident.
 				// SleepDeprived: I am so tired...
+				// MidPropertyTax: Guess I'll need to up my hours to make this rent...
+				// HighPropertyTax: At this rate, I'll need another cosmetologist to barely break even!
+				// ExtremePropertyTax: This rent is absurd! Not even an elite salon could afford this insanity!
 			}
 
 			Dryad: {
@@ -482,6 +491,9 @@ Mods: {
 				// WellRested: Nothing like a healthy amount of rest. I feel pretty good!
 				// Tired: Mmm... I need to lay down...
 				// SleepDeprived: I crave to lay in the soil and hibernate for eons...
+				// MidPropertyTax: This is not the natural order. I do not deserve heightened rent such as this.
+				// HighPropertyTax: This rent is a grave injustice against the natural order! This isn't affordable!
+				// ExtremePropertyTax: That Tax Collector is going to have some flowers where the sun doesn't shine, soon enough!
 			}
 
 			Mechanic: {
@@ -493,6 +505,9 @@ Mods: {
 				// WellRested: A well rested mind is a productive mind!
 				// Tired: So much work left to do, and so little gas left in the tank...
 				// SleepDeprived: Must finish... but must... sleep...
+				// MidPropertyTax: I can't believe that they are asking more from me, even after all the cool stuff I've made!
+				// HighPropertyTax: Maybe I could build a machine that tricks the Tax Collector into thinking I already paid rent...
+				// ExtremePropertyTax: I can't believe this! I'd prefer living in The Dungeon at these rates!
 			}
 
 			Steampunker: {
@@ -503,6 +518,9 @@ Mods: {
 				// WellRested: Oi! I feel pretty good!
 				// Tired: Blimey, I need some proper rest.
 				// SleepDeprived: Brass, unlike my weak self, doesn't need... rest...
+				// MidPropertyTax: This flat seriously does not need the increase in rent.
+				// HighPropertyTax: Maybe I could sell some of my bits n' bobs to make up for this crazy rent...
+				// ExtremePropertyTax: I'm gonna fly out of here with my jetpack next time the Tax Collector comes around! Can't wait to see his face when I do!
 			}
 
 			DyeTrader: {
@@ -513,6 +531,9 @@ Mods: {
 				// WellRested: I feel rich and ready for a wonderful day!
 				// Tired: My mind's color is slowly draining a drab gray...
 				// SleepDeprived: I can see them... the colors of the sky, begging for me to rest...
+				// MidPropertyTax: Oh no, this rent absolutely has no reason to increase, even if it's slight.
+				// HighPropertyTax: I LOATHE these increased rates! This simply won't do...
+				// ExtremePropertyTax: How dare these ingrates increase MY rent to such ridiculous rates? ME, of all people?
 			}
 
 			TaxCollector: {
@@ -522,6 +543,9 @@ Mods: {
 				// WellRested: Hmmm... some surprisingly good rest for my age.
 				// Tired: Bah, I need a nap.
 				// SleepDeprived: Agh! I'll pay anything! Let me get some sleep!
+				// MidPropertyTax: Hambug, even if it's my job, I don't like losing my hard earned money to rent...
+				// HighPropertyTax: Not my precious coin! How much money will I lose to this blasted rent?
+				// ExtremePropertyTax: The landlord does not deserve to increase my rates so drastically! After all I've done for them!
 			}
 
 			Demolitionist: {
@@ -531,6 +555,9 @@ Mods: {
 				// WellRested: I feel pretty good, like a nice, hardy explosive!
 				// Tired: I hope I don't lose a limb, my aim feels a bit off...
 				// SleepDeprived: I'm about to blow a fuse if I don't sleep right now!
+				// MidPropertyTax: Dwarves don't do well with the idea of rent. But it could be worse.
+				// HighPropertyTax: This rent is absurd! I'd rather lose a limb then have to pay this!
+				// ExtremePropertyTax: Who's house do I need to throw a piece of dynamite into to get these rates to go down!?
 			}
 
 			DD2Bartender: {
@@ -540,6 +567,9 @@ Mods: {
 				// WellRested: I feel pretty good! Could go for a mug of ale.
 				// Tired: This tavern business is pretty tiring.
 				// SleepDeprived: Maybe a couple mugs will get me the rest I deserve!
+				// MidPropertyTax: The upped rent is a bit annoying. Luckily I can still afford it.
+				// HighPropertyTax: After getting evicted from my previous world, I would really appreciate it if my rent didn't increase in this one!
+				// ExtremePropertyTax: Maybe I should summon the Old One's Army so these crazy rent prices would go DOWN!
 			}
 
 			Golfer: {
@@ -550,6 +580,9 @@ Mods: {
 				// WellRested: A sufficient amount of a rest for a good game of golf!
 				// Tired: I don't feel my sharpest. My golf game requires my A game!
 				// SleepDeprived: The grass looks so comfy... just a quick nap...
+				// MidPropertyTax: This rent is a bit too much. At least they can't tax the golf courses! ...Right?
+				// HighPropertyTax: My rent seriously does not be that high! Can't a man golf in peace, without having to worry about their pockets?
+				// ExtremePropertyTax: That's it! This rent is crazy high! I need to smack someone with a nine iron!
 			}
 
 			PartyGirl: {
@@ -561,6 +594,9 @@ Mods: {
 				// WellRested: At this rate, I could party all day!
 				// Tired: The party might not stop, but I could lay down for a second or two...
 				// SleepDeprived: The party within me is fading away... I need sleep...
+				// MidPropertyTax: Man, this rent is such a bummer.
+				// HighPropertyTax: I won't be able to throw any more parties at this rate! I won't be able to afford it!
+				// ExtremePropertyTax: Will I ever be able to throw parties again? What's even the point of this crazy rent...?
 			}
 
 			Merchant: {
@@ -570,6 +606,9 @@ Mods: {
 				// WellRested: I feel good and ready for some business!
 				// Tired: My brain feels like its got the rest quality of a silver coin. Not the best.
 				// SleepDeprived: That's it! I'll pay anything! I just want to SLEEP!
+				// MidPropertyTax: This rent is going to mess with my profits!
+				// HighPropertyTax: Why must this rent be so high? An honest businessman like myself can't operate like this!
+				// ExtremePropertyTax: I can't stand for this terrible rent at all! Surely I could pull some strings...
 			}
 
 			Angler: {
@@ -580,6 +619,9 @@ Mods: {
 				// WellRested: I feel ready and ready to boss someone around to get me some fish!
 				// Tired: I need to get someone to grab me something nice to sleep on...
 				// SleepDeprived: The fishies are sleeping really good right now. I want to join them...
+				// MidPropertyTax: Hey! I'm just a kid, how do you expect me to pay this?
+				// HighPropertyTax: Seriously! Why increase my rent so much... I'm LITERALLY a KID! Why!?
+				// ExtremePropertyTax: That's it! This has to be against my rights! Do I need to throw someone to fish!?
 			}
 
 			GoblinTinkerer: {
@@ -589,6 +631,9 @@ Mods: {
 				// WellRested: I feel good and ready for a productive day!
 				// Tired: Mmm... one quick nap wouldn't hurt, right?
 				// SleepDeprived: Do the machines anger, knowing they can't understand the joy of unconscious rest?
+				// MidPropertyTax: I might be able to afford this upped rent with my inventions... But is it really necessary?
+				// HighPropertyTax: Economic models suggest that this rent is not a good idea for the health of the tenants OR the economy!
+				// ExtremePropertyTax: I'd rather go back to being tied up in the ground then deal with this absolutely crazy rent!
 			}
 
 			SantaClaus: {
@@ -598,6 +643,9 @@ Mods: {
 				// WellRested: I feel ready for a jolly day to give out some holiday cheer!
 				// Tired: Oh, even the big man himself needs to some proper sleep!
 				// SleepDeprived: I'm putting whoever isn't letting me sleep on the PERMANENT naughty list...
+				// MidPropertyTax: Ho ho ho! Someone is close to leaving the nice list!
+				// HighPropertyTax: I might have to go back to the North Pole at this rate!
+				// ExtremePropertyTax: No no no! That scrooge of a Tax Collector is going to the TOP of the Naughty List!
 			}
 
 			ArmsDealer: {
