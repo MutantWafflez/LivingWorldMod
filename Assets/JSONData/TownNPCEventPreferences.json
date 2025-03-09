@@ -114,7 +114,8 @@
   },
   "Truffle": {
     "Party": 4,
-    "BloodMoon": -10
+    "BloodMoon": -10,
+    "Rain": 8
   },
   "Princess": {
     "Party": 10
