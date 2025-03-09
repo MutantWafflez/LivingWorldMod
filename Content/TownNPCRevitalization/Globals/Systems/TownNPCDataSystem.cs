@@ -241,7 +241,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
             princessProfile.Add(new NumericNPCPreferenceTrait(20, npcType));
         }
 
-        princessProfile.AddRange([new HomelessTrait(), new HomeProximityTrait(), new LonelyTrait(), new SleepTrait(), new TaxesTrait()]);
+        princessProfile.AddRange([new HomelessTrait(), new HomeProximityTrait(), new LonelyTrait(), new SleepTrait()]);
         PersonalityDatabase[NPCID.Princess] = princessProfile;
 
         JsonObject jsonEventPreferenceValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCEventPreferences.json").Qo();
