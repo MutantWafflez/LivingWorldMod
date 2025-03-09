@@ -323,7 +323,19 @@ Mods: {
 		UI: {
 			TaxSheet: {
 				// Title: Tax Sheet
-				// Help: Help here!
+				/* Help:
+					'''
+					This is the Tax Sheet. Selecting an NPC that is currently alive will allow you to modify their "Property Tax" and
+					their "Sales Tax." You can press the + and - symbols to increase both of these values to a maximum of 2g 50s for
+					Property Tax, and 40% for Sales Tax. Holding Shift or Ctrl will increase the amount by x5 or x25 respectively.
+
+					Every in-game day (24 real-world minutes), the Tax Collector will "collect" the specified Property Tax from each
+					Town NPC and add it to his tax pool, which you can collect at any time. This pool is maxed at 1 platinum, ignoring
+					any happiness modifiers. When you buy an item from an NPC, the specified percentage of the Sales Tax is "collected" 
+					by the Tax Collector, and added to his pool.
+
+					Increasing one or both of the Tax values will have negative effects on a Town NPC's mood. You have been warned!
+					''' */
 				// DenyButton: Reset Changes
 				// AcceptButton: Submit Tax Changes
 			}
