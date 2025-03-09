@@ -621,7 +621,7 @@ Mods: {
 				SleepDeprived: The fishies are sleeping really good right now. I want to join them...
 				MidPropertyTax: Hey! I'm just a kid, how do you expect me to pay this?
 				HighPropertyTax: Seriously! Why increase my rent so much... I'm LITERALLY a KID! Why!?
-				ExtremePropertyTax: That's it! This has to be against my rights! Do I need to throw someone to fish!?
+				ExtremePropertyTax: That's it! This has to be against my rights! Do I need to throw someone to the fish!?
 			}
 
 			GoblinTinkerer: {
@@ -632,7 +632,7 @@ Mods: {
 				Tired: Mmm... one quick nap wouldn't hurt, right?
 				SleepDeprived: Do the machines anger, knowing they can't understand the joy of unconscious rest?
 				MidPropertyTax: I might be able to afford this upped rent with my inventions... But is it really necessary?
-				HighPropertyTax: Economic models suggest that this rent is not a good idea for the health of the tenants OR the economy!
+				HighPropertyTax: Socio-economic models suggest that this rent is not a good idea for the health of the tenants OR the economy!
 				ExtremePropertyTax: I'd rather go back to being tied up in the ground then deal with this absolutely crazy rent!
 			}
 
@@ -655,6 +655,9 @@ Mods: {
 				WellRested: I feel pretty good and ready for some gun-slinging!
 				Tired: Ugh, I could really go for a nap right now...
 				SleepDeprived: GAH! Who do I need to shoot to get some sleep right now???
+				MidPropertyTax: Rent is gonna be a little tight, huh?
+				HighPropertyTax: I don't like havin' my rent this high, bucko!
+				ExtremePropertyTax: That's it! I'm loadin' up my gun and gonna fill that Tax Collector with holes!
 			}
 
 			Painter: {
@@ -665,6 +668,9 @@ Mods: {
 				WellRested: My mind feels ready and full of ideas for some good painting!
 				Tired: I think I need a break to rest.
 				SleepDeprived: My eyes yearn to close for the beautiful color of black to greet me for my sleep.
+				MidPropertyTax: Really? Increasing the rent on an a blue-collared worker like me?
+				HighPropertyTax: I won't be able to focus on painting if I need to keep worrying about this stupid rent!
+				ExtremePropertyTax: At this rate I'd need to paint every wall in Terraria to keep up with this ridiculous rent!
 			}
 
 			Guide: {
@@ -675,6 +681,9 @@ Mods: {
 				WellRested: I am feeling pretty good!
 				Tired: A good guide deserves their rest, lest they lead someone on the wrong path.
 				SleepDeprived: Please, someone guide me to the nearest floor to sleep on...
+				MidPropertyTax: Really? Increasing the rent on an a blue-collared worker like me?
+				HighPropertyTax: I won't be able to focus on painting if I need to keep worrying about this stupid rent!
+				ExtremePropertyTax: At this rate I'd need to paint every wall in Terraria to keep up with this ridiculous rent!
 			}
 
 			WitchDoctor: {
@@ -685,6 +694,9 @@ Mods: {
 				WellRested: Those above smile upon me for a good day.
 				Tired: Which doctor needs sleep? The Witch Doctor needs sleep.
 				SleepDeprived: Please, spirits, hear me! I pray for the sweet darkness of slumber!
+				MidPropertyTax: These so called... "Taxes." I do not know of their nature, and I have decided that I do not like them.
+				HighPropertyTax: As these "Taxes" increase, my patience decreases.
+				ExtremePropertyTax: Perhaps leaving the Temple was a bad idea, after all. Perhaps it is time I leave for the Temple, once more.
 			}
 
 			Pirate: {
@@ -695,6 +707,9 @@ Mods: {
 				WellRested: This sailor feels ready like a well-loaded flintlock!
 				Tired: Arr, this captain needs to retire to his quarters...
 				SleepDeprived: Which of the these scallywags needs to walk the plank so I can get some proper sleep!?
+				MidPropertyTax: YAR! You can't tax ye Pirate! That is landlubber talk!
+				HighPropertyTax: Those scallywags are bleedin' my coffers dry!
+				ExtremePropertyTax: Blast ye! I'm getting my crew and we'll plunder that Tax Collector's stash!
 			}
 
 			Cyborg: {
@@ -705,6 +720,9 @@ Mods: {
 				WellRested: Beep! Systems are still functioning well!
 				Tired: Getting some warning notifications about some software updates... I should power down soon.
 				SleepDeprived: 01010011 01001100 01000101 01000101 01010000
+				MidPropertyTax: The latest data suggests that perhaps the increase in rent is not a good idea...
+				HighPropertyTax: There is no method or algorithm to this tax increase! You can't just keep increasing it!
+				ExtremePropertyTax: Maybe I need to make that stupid Tax Collector a cyborg too! Maybe he'll see what he's doing is a terrible idea!
 			}
 
 			Clothier: {
@@ -715,6 +733,9 @@ Mods: {
 				WellRested: Feeling pretty good, and dapper, if I dare!
 				Tired: I think it's a good time to put up the coat for today.
 				SleepDeprived: Please, I won't even put on my pajamas... I just want to sleep...
+				MidPropertyTax: This rent is not ideal... It could be worse, though...
+				HighPropertyTax: I know I still have some magic in me! Maybe I could use some of it to get these rent prices down...
+				ExtremePropertyTax: I'd rather be back in the dungeon then deal with this awful rent! At least I didn't have to pay anything while I was cursed!
 			}
 
 			Wizard: {
@@ -724,6 +745,9 @@ Mods: {
 				WellRested: I feel pretty swell!
 				Tired: Ah, what was that sleeping spell again?
 				SleepDeprived: Please, this old man needs to sleep.
+				MidPropertyTax: Hm... Did I pay my tax today? Surely not, since I'm being asked for more...
+				HighPropertyTax: Hum, I swear I paid my tax today already! Otherwise, this would be a whole lot of money!
+				ExtremePropertyTax: No! I know I paid my tax for today! This is absurd! Maybe that Tax Collector needs a fireball to the face!
 			}
 
 			Truffle: {
@@ -733,6 +757,9 @@ Mods: {
 				WellRested: I feel pretty good! I think I can hit the shroom shuffle!
 				Tired: This fungus could really go for a good nap...
 				SleepDeprived: I don't care if someone is going to eat me! I'll sleep on the dirt if I have to!
+				MidPropertyTax: Do I have to include the rest of my fungi siblings in the tax as well? I hope not...
+				HighPropertyTax: Our bodies are already brittle enough! Our kind doesn't need any mental stress from these crazy taxes, either!
+				ExtremePropertyTax: I knew something was off about this town! You and your "taxes" are absurd!
 			}
 
 			Princess: {
