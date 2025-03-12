@@ -382,16 +382,16 @@ Mods: {
 				}
 			}
 
-			TownNPCConfig: {
-				// DisplayName: Town NPC Config
+			RevitalizationConfigClient: {
+				// DisplayName: Town NPC Config (Client)
 
-				pathfinderSize: {
-					// Label: Pathfinder Search Size
+				disabledDrawOverhauls: {
+					// Label: Disabled Town NPC Drawing Overhauls
 					/* Tooltip:
 						'''
-						The side length of the square, centered on a Town NPC, that the Pathfinder for said NPC can search.
-						WARNING! Increasing this will allow the NPC to find locations further away, but will negatively impact performance!
-						Defaults to a size of 128 (128x128), which is the recommended size.
+						Adding an NPC to this list will disable their Drawing Overhaul. This means that each added NPC will no longer
+						have their "talking" and "blinking" animations play, and will be drawn like they do without this mod enabled. 
+						You should only add an NPC to this list if there is some kind of animation error occuring.
 						''' */
 				}
 			}
