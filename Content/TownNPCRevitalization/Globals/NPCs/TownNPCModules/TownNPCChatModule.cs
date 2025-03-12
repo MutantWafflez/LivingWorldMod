@@ -31,7 +31,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
     private static LocalizedTextGroup _locationGroup;
     private static LocalizedTextGroup _itemNameGroup;
 
-    public readonly ForgetfulArray<string> chatHistory = new(50);
+    // public readonly ForgetfulArray<string> chatHistory = new(50);
 
     private string _currentSentence;
     private int _chatBubbleDuration;
@@ -151,7 +151,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
         _chatBubbleDuration = DefaultChatBubbleDuration;
         otherChatModule._chatReceptionCooldown = _chatBubbleDuration + LWMUtils.RealLifeSecond;
 
-        chatHistory.Add(_currentSentence);
+        // chatHistory.Add(_currentSentence);
     }
 
     // TODO: Re-write chat bubble drawing
