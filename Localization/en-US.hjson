@@ -390,7 +390,7 @@ Mods: {
 					Tooltip:
 						'''
 						Adding an NPC to this list will disable their Drawing Overhaul. This means that each added NPC will no longer
-						have their "talking" and "blinking" animations play, and will be drawn like they do without this mod enabled. 
+						have any additional drawing take place, and will be drawn exactly like they do without this mod enabled. 
 						You should only add an NPC to this list if there is some kind of animation error occuring.
 						'''
 				}
