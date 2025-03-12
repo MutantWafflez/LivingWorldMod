@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Configs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
@@ -19,7 +18,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModul
 /// <summary>
 ///     Module for Town NPCs that deal with drawing related tasks.
 /// </summary>
-public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep {
+public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTownNPCSmallTalk {
     /// <summary>
     ///     Small wrapper class for <see cref="UnlockableNPCEntryIcon" /> that wraps the <see cref="UnlockableNPCEntryIcon.Update" /> method so that we can add <see cref="TownNPCSpriteModule.UpdateModule" />
     ///     calls to the end of it, allowing for the Bestiary to actually draw NPCs with all the tweaks.
@@ -237,6 +236,12 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep {
 
         TownNPCDrawRequest drawRequest = npc.GetGlobalNPC<TownNPCSleepModule>().SleepSpriteDrawData;
         RequestDraw(passedOut ? drawRequest with { Color = Color.Red * 0.8f } : drawRequest);
+    }
+
+    public void UpdateTownNPCSmallTalk(NPC npc, int remainingTicks) {
+        if (remainingTicks % 16 == 0) {
+            DoTalk();
+        }
     }
 
     private TownNPCSpriteOverlay GetOverlay(int overlayIndex) => TownNPCDataSystem.spriteOverlayProfiles[NPC.type].GetCurrentSpriteOverlay(NPC, overlayIndex);

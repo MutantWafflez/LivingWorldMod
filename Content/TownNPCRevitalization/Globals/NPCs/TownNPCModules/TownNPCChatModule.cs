@@ -1,7 +1,6 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Configs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
-using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -93,10 +92,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
         }
 
         if (_currentSentence is not null) {
-            // Every other 8 ticks while talking, add the draw call
-            if (--_chatBubbleDuration % 16 == 0) {
-                NPC.GetGlobalNPC<TownNPCSpriteModule>().DoTalk();
-            }
+            IUpdateTownNPCSmallTalk.Invoke(NPC, --_chatBubbleDuration);
 
             if (_chatBubbleDuration > 0) {
                 return;
