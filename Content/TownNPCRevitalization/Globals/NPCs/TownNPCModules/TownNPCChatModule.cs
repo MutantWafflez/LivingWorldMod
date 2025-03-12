@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Configs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.Utilities;
@@ -110,6 +111,10 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
             _chatCooldown = 0;
         }
         else {
+            return;
+        }
+
+        if (!ModContent.GetInstance<RevitalizationConfigClient>().enabledNPCSmallTalk) {
             return;
         }
 
