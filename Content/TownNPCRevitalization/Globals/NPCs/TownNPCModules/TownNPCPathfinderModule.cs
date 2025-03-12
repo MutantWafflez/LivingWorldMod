@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.Configs;
 using LivingWorldMod.Globals.Configs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -27,6 +26,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     private record struct OpenedDoorData(Point16 TilePos, Rectangle DoorHitBox, bool IsGate = false);
 
+    public const int PathfinderSize = 128;
     private const int MaxPathRecyclesBeforeFailure = 5;
 
     private readonly List<PathfinderResult> _cachedResults = [];
@@ -45,8 +45,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     private TownNPCPathfinder _cachedPathfinder;
     private PathfinderResult _currentPathfinderResult;
-
-    public static int PathfinderSize => ModContent.GetInstance<TownNPCConfig>().pathfinderSize;
 
     public override int UpdatePriority => 3;
 
@@ -352,7 +350,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
         TownNPCPathfinder pathFinder =
             _cachedPathfinder
-            ?? new TownNPCPathfinder(new UPoint16(topLeftOfGrid.X, topLeftOfGrid.Y), (ushort)PathfinderSize, (ushort)Math.Ceiling(NPC.width / 16f), (ushort)Math.Ceiling(NPC.height / 16f));
+            ?? new TownNPCPathfinder(new UPoint16(topLeftOfGrid.X, topLeftOfGrid.Y), PathfinderSize, (ushort)Math.Ceiling(NPC.width / 16f), (ushort)Math.Ceiling(NPC.height / 16f));
 
         Point adjustedBottomLeftOfNPC = BottomLeftTileOfNPC;
         Tile bottomLeftTileOfNPC = Main.tile[adjustedBottomLeftOfNPC];
