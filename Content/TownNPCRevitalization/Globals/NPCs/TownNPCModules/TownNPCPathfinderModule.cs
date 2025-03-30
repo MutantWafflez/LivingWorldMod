@@ -288,12 +288,11 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
                 continue;
             }
 
-            // TODO: Investigate door closing on MP clients
             if (openDoor.IsGate && WorldGen.ShiftTallGate(openDoor.TilePos.X, openDoor.TilePos.Y, true)) {
-                NetMessage.SendData(MessageID.ToggleDoorState, number: 5, number2: openDoor.TilePos.X, number3: openDoor.DoorHitBox.Y);
+                NetMessage.SendData(MessageID.ToggleDoorState, number: 5, number2: openDoor.TilePos.X, number3: openDoor.TilePos.Y);
             }
             else if (WorldGen.CloseDoor(openDoor.TilePos.X, openDoor.TilePos.Y)) {
-                NetMessage.SendData(MessageID.ToggleDoorState, number: 1, number2: openDoor.TilePos.X, number3: openDoor.DoorHitBox.Y, number4: NPC.direction);
+                NetMessage.SendData(MessageID.ToggleDoorState, number: 1, number2: openDoor.TilePos.X, number3: openDoor.TilePos.Y, number4: NPC.direction);
             }
 
             _openDoors.RemoveAt(i--);
