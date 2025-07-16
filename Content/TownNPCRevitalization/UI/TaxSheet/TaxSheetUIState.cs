@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.PacketHandlers;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
@@ -443,7 +444,11 @@ public class TaxSheetUIState : UIState {
 
         _selectedNPCName.SetText(LWMUtils.GetNPCTypeNameOrIDName(selectedNPCType));
         _selectedNPCVisibilityElement.SetVisibility(true);
-        _salesTaxVisibilityElement.SetVisibility(NPCShopDatabase.TryGetNPCShop(NPCShopDatabase.GetShopName(selectedNPCType), out _));
+
+        _salesTaxVisibilityElement.SetVisibility(
+            NPCShopDatabase.TryGetNPCShop(NPCShopDatabase.GetShopName(selectedNPCType), out AbstractNPCShop npcShop)
+            && npcShop.ActiveEntries.Any(entry => entry.Item.shopSpecialCurrency == CustomCurrencyID.None)
+        );
     }
 
     private void PopulateNPCGrid() {
