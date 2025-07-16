@@ -1,4 +1,14 @@
-INDEV RELEASE v0.4.0.5 [Revitalization Hotfix #5] (February 18th, 2025)
+INDEV RELEASE v0.4.1.0 [Cogs and Bugs] (March 30th, 2025)
+Changes:
++ Added two new client-side configuration options: Sprite Overhaul Disabling and Town NPC Small Talk Toggle
+	Notes:
+	* The Sprite Overhaul Disable list allows you to disable specific Town NPCs' special drawing. This has the effect of removing their "blinking" and "talking" animation, but will likely fix any animation errors they may have
+	* The small-talk feature betweeen Town NPCs has been a little divisive, so for the time being, I have added an option to disable it. Note that I plan to overhaul this system in Part II, so this is just a band-aid fix for now
+- Removed "Pathfinder size" config option
 Fixes:
-* Fixed Town NPCs teleporting home into walls in rare cases where chairs are up against walls underneath platforms
-* Fixed NPCs who are passed out occasionally waking up and then immediately falling back asleep
+* Fixed waystones "disabling" themselves in multiplayer and "re-enabling" themselves when you get near them 
+	Notes:
+	* This has been a long-standing bug that quite a few people have reported. Funnily enough, this is a bug that I had fixed before, but somehow managed to bring back!
+	* Hopefully this is the last of the waystone bugs, but please do let me know if you have additional issues in multiplayer (or singleplayer, for that matter)
+	* Also, sorry for taking so long fixing this one!
+* Fixed Town NPCs not closing doors after they open them in multiplayer

@@ -51,6 +51,5 @@ public static partial class LWMUtils {
     ///     Gets and returns all currently living tile entities of the specified type.
     /// </summary>
     /// <typeparam name="T"> The type of ModTileEntity you want to find all living entities of. </typeparam>
-    public static IEnumerable<T> GetAllEntityOfType<T>()
-        where T : ModTileEntity => TileEntity.ByID.Values.OfType<T>();
+    public static IEnumerable<T> GetAllEntityOfType<T>() where T : ModTileEntity => TileEntity.ByID.Values.OfType<T>();
 }

@@ -1,6 +1,6 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Configs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
-using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -30,7 +30,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
     private static LocalizedTextGroup _locationGroup;
     private static LocalizedTextGroup _itemNameGroup;
 
-    public readonly ForgetfulArray<string> chatHistory = new(50);
+    // public readonly ForgetfulArray<string> chatHistory = new(50);
 
     private string _currentSentence;
     private int _chatBubbleDuration;
@@ -92,10 +92,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
         }
 
         if (_currentSentence is not null) {
-            // Every other 8 ticks while talking, add the draw call
-            if (--_chatBubbleDuration % 16 == 0) {
-                NPC.GetGlobalNPC<TownNPCSpriteModule>().DoTalk();
-            }
+            IUpdateTownNPCSmallTalk.Invoke(NPC, --_chatBubbleDuration);
 
             if (_chatBubbleDuration > 0) {
                 return;
@@ -110,6 +107,10 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
             _chatCooldown = 0;
         }
         else {
+            return;
+        }
+
+        if (!ModContent.GetInstance<RevitalizationConfigClient>().enabledNPCSmallTalk) {
             return;
         }
 
@@ -146,7 +147,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
         _chatBubbleDuration = DefaultChatBubbleDuration;
         otherChatModule._chatReceptionCooldown = _chatBubbleDuration + LWMUtils.RealLifeSecond;
 
-        chatHistory.Add(_currentSentence);
+        // chatHistory.Add(_currentSentence);
     }
 
     // TODO: Re-write chat bubble drawing

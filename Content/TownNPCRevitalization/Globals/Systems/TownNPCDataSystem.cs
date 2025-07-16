@@ -329,11 +329,10 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
 
     private void GenerateTownNPCSpriteProfiles() {
         Dictionary<int, TownNPCOverlayProfile> overlayTextures = [];
-        TownGlobalNPC townSingletonNPC = ModContent.GetInstance<TownGlobalNPC>();
         NPC npc = new();
         for (int i = 0; i < NPCLoader.NPCCount; i++) {
             npc.SetDefaults(i);
-            if (!townSingletonNPC.AppliesToEntity(npc, true)) {
+            if (!TownGlobalNPC.EntityIsValidTownNPC(npc, true)) {
                 continue;
             }
 

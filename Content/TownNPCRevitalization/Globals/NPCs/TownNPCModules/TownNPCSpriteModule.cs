@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Configs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
@@ -10,13 +11,14 @@ using ReLogic.Content;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
+using Terraria.ModLoader.Config;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 
 /// <summary>
 ///     Module for Town NPCs that deal with drawing related tasks.
 /// </summary>
-public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep {
+public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTownNPCSmallTalk {
     /// <summary>
     ///     Small wrapper class for <see cref="UnlockableNPCEntryIcon" /> that wraps the <see cref="UnlockableNPCEntryIcon.Update" /> method so that we can add <see cref="TownNPCSpriteModule.UpdateModule" />
     ///     calls to the end of it, allowing for the Bestiary to actually draw NPCs with all the tweaks.
@@ -85,6 +87,8 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep {
 
     public override int UpdatePriority => -2;
 
+    private bool IsDrawOverhaulDisabled => ModContent.GetInstance<RevitalizationConfigClient>().disabledDrawOverhauls.Contains(new NPCDefinition(NPC.type));
+
     private TownNPCDrawParameters DrawParameters {
         get {
             Asset<Texture2D> npcAsset = TownNPCProfiles.Instance.GetProfile(NPC, out ITownNPCProfile profile) ? profile.GetTextureNPCShouldUse(NPC) : TextureAssets.Npc[NPC.type];
@@ -107,7 +111,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep {
         _frameYOverride = NoFrameYOverride;
         _drawRequests.Clear();
 
-        if (Main.netMode == NetmodeID.Server) {
+        if (Main.netMode == NetmodeID.Server || IsDrawOverhaulDisabled) {
             return;
         }
 
@@ -134,6 +138,10 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep {
     }
 
     public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+        if (IsDrawOverhaulDisabled) {
+            return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
+        }
+
         (Asset<Texture2D> _, int frameWidth, int frameHeight, Vector2 _, float npcAddHeight, SpriteEffects spriteEffects) = DrawParameters;
         Vector2 drawPos = new (
             npc.position.X + npc.width / 2 - frameWidth * npc.scale / 2f + /*halfSize.X * npc.scale*/ + _drawOffset.X,
@@ -228,6 +236,12 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep {
 
         TownNPCDrawRequest drawRequest = npc.GetGlobalNPC<TownNPCSleepModule>().SleepSpriteDrawData;
         RequestDraw(passedOut ? drawRequest with { Color = Color.Red * 0.8f } : drawRequest);
+    }
+
+    public void UpdateTownNPCSmallTalk(NPC npc, int remainingTicks) {
+        if (remainingTicks % 16 == 0) {
+            DoTalk();
+        }
     }
 
     private TownNPCSpriteOverlay GetOverlay(int overlayIndex) => TownNPCDataSystem.spriteOverlayProfiles[NPC.type].GetCurrentSpriteOverlay(NPC, overlayIndex);

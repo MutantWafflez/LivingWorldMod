@@ -401,16 +401,29 @@ Mods: {
 				}
 			}
 
-			TownNPCConfig: {
-				DisplayName: Town NPC Config
+			RevitalizationConfigClient: {
+				DisplayName: Town NPC Config (Client)
 
-				pathfinderSize: {
-					Label: Pathfinder Search Size
+				disabledDrawOverhauls: {
+					Label: Disabled Town NPC Drawing Overhauls
 					Tooltip:
 						'''
-						The side length of the square, centered on a Town NPC, that the Pathfinder for said NPC can search.
-						WARNING! Increasing this will allow the NPC to find locations further away, but will negatively impact performance!
-						Defaults to a size of 128 (128x128), which is the recommended size.
+						Adding an NPC to this list will disable their Drawing Overhaul. This means that each added NPC will no longer
+						have any additional drawing take place, and will be drawn exactly like they do without this mod enabled. 
+						You should only add an NPC to this list if there is some kind of animation error occuring.
+						'''
+				}
+
+				enabledNPCSmallTalk: {
+					Label: Town NPC Small Talk
+					Tooltip:
+						'''
+						Enables NPCs engaging in "small talk" with each other, shown with text bubbles of randomly generated sentences
+						over them.
+
+						Note: This system overrides the normal Vanilla "Chat Icon Bubbles" feature. Currently, even if this system is disabled, 
+						this will not re-enable the Vanilla "Chat Icon Bubbles" feature. This system and functionality is going to be overhauled 
+						and fixed in Part 2 of this update.
 						'''
 				}
 			}

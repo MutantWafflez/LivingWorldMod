@@ -61,8 +61,7 @@ public class WaystoneTile : BasePylon {
 
         TileObjectData.addTile(Type);
 
-        TileID.Sets.InteractibleByNPCs[Type] = TileID.Sets.PreventsSandfall[Type] = TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type]
-            = true;
+        TileID.Sets.InteractibleByNPCs[Type] = TileID.Sets.PreventsSandfall[Type] = TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
 
         AddToArray(ref TileID.Sets.CountsAsPylon);
 
