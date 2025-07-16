@@ -494,6 +494,10 @@ Mods: {
 				MidPropertyTax: Hey, like, why is my rent higher than usual?
 				HighPropertyTax: This rent is so, totally, like a joke, right?
 				ExtremePropertyTax: Staahp with this crazy rent! I can't live like this, bro!
+				SalesTax: Ugh, like, why do they get to take my money?
+				MidSalesTax: Like, being an animal is so much nicer! They, like, don't need to deal with taxes!
+				HighSalesTax: Bro! Staahp! This percentage is WAY too high!
+				ExtremeSalesTax: GRRR! I WON'T EVEN BE ABLE TO BREAK EVEN, BRO!
 			}
 
 			Stylist: {
@@ -506,6 +510,10 @@ Mods: {
 				MidPropertyTax: Guess I'll need to up my hours to make this rent...
 				HighPropertyTax: At this rate, I'll need another cosmetologist to barely break even!
 				ExtremePropertyTax: This rent is absurd! Not even an elite salon could afford this insanity!
+				SalesTax: Selling things isn't big income compared to styling, but this is still annoying...
+				MidSalesTax: I'm seeing less and less point in selling any products when they take this much...
+				HighSalesTax: For real? Do they think I make so much from selling hair products??? As a licensed stylist?
+				ExtremeSalesTax: That's it! If that tax guy comes by looking for my sales figures, I'll cut them up right in front of him!
 			}
 
 			Dryad: {
@@ -519,6 +527,10 @@ Mods: {
 				MidPropertyTax: This is not the natural order. I do not deserve heightened rent such as this.
 				HighPropertyTax: This rent is a grave injustice against the natural order! This isn't affordable!
 				ExtremePropertyTax: That Tax Collector is going to have some flowers where the sun doesn't shine, soon enough!
+				SalesTax: Ugh, why can't we go back to the normal, natural state of currency, without taking from my sales?
+				MidSalesTax: I'm definitely seeing the benefits of a barter system with these shenanigans...
+				HighSalesTax: This is absurd. For as man-made as currency is, these numbers are a complete sham to it's humble origin!
+				ExtremeSalesTax: That is absolutely it! Dearest mother above, hear me! Remove this greedy plight from the heart of these people!
 			}
 
 			Mechanic: {
@@ -533,6 +545,10 @@ Mods: {
 				MidPropertyTax: I can't believe that they are asking more from me, even after all the cool stuff I've made!
 				HighPropertyTax: Maybe I could build a machine that tricks the Tax Collector into thinking I already paid rent...
 				ExtremePropertyTax: I can't believe this! I'd prefer living in The Dungeon at these rates!
+				SalesTax: Listen, I know I make good money with my wire sales, but we don't need to start taking some of it from me...
+				MidSalesTax: Ugh, they always find some way to tax the newest innovations for a cut of that flash-in-the-pan pie...
+				HighSalesTax: This is awful! I've made such great advancements for us as a people, and they still take more???
+				ExtremeSalesTax: At this rate, I'll be losing money by selling my crafts! What perverted mind thinks this is a good idea!?
 			}
 
 			Steampunker: {
@@ -546,6 +562,10 @@ Mods: {
 				MidPropertyTax: This flat seriously does not need the increase in rent.
 				HighPropertyTax: Maybe I could sell some of my bits n' bobs to make up for this crazy rent...
 				ExtremePropertyTax: I'm gonna fly out of here with my jetpack next time the Tax Collector comes around! Can't wait to see his face when I do!
+				SalesTax: Ah, I was hoping moving out here to this flat would mean I didn't get some of my mint taken...
+				MidSalesTax: If their cut gets any bigger, they're definitely just doing it for the greed! What cock-ups...
+				HighSalesTax: That git of a Tax Collector is a proper nutter, I tell you. His sales cut is absolute bollocks!
+				ExtremeSalesTax: I'm gonna throw that shrivelled up Tax Collector between some big brass cogs with his absurd cut!
 			}
 
 			DyeTrader: {
@@ -559,6 +579,10 @@ Mods: {
 				MidPropertyTax: Oh no, this rent absolutely has no reason to increase, even if it's slight.
 				HighPropertyTax: I LOATHE these increased rates! This simply won't do...
 				ExtremePropertyTax: How dare these ingrates increase MY rent to such ridiculous rates? ME, of all people?
+				SalesTax: Ah, this absolutely won't do...
+				MidSalesTax: What is the meaning of these increased cuts? Trading of dyes doesn't need these increased complexities.
+				HighSalesTax: These increased cuts are going to make see red soon... Disgusting!
+				ExtremeSalesTax: I absolutely abhor that gray, old drab of man! He should be called the Money Thief!
 			}
 
 			TaxCollector: {
@@ -583,6 +607,10 @@ Mods: {
 				MidPropertyTax: Dwarves don't do well with the idea of rent. But it could be worse.
 				HighPropertyTax: This rent is absurd! I'd rather lose a limb then have to pay this!
 				ExtremePropertyTax: Who's house do I need to throw a piece of dynamite into to get these rates to go down!?
+				SalesTax: Aye, taxes are so boring... and un-explosive!
+				MidSalesTax: I wonder if I "accidentally" blew off a limb I'd get these cuts to go down...
+				HighSalesTax: This percentage is way too high! Makes me want to blow something up, even more than usual!
+				ExtremeSalesTax: Argh! That Tax Collector may not have the limbs to take from my sales soon enough!
 			}
 
 			DD2Bartender: {
@@ -608,6 +636,10 @@ Mods: {
 				MidPropertyTax: This rent is a bit too much. At least they can't tax the golf courses! ...Right?
 				HighPropertyTax: My rent seriously does not be that high! Can't a man golf in peace, without having to worry about their pockets?
 				ExtremePropertyTax: That's it! This rent is crazy high! I need to smack someone with a nine iron!
+				SalesTax: Ah, classic, annoying sales taxes. I've had to deal with these a bit in my golfing circles.
+				MidSalesTax: Maybe some of my golf buddies could help me out with avoiding these upped cuts...
+				HighSalesTax: What a bogey of a man that Tax Collector is! Who does he think he is, taking so much of my sales?
+				ExtremeSalesTax: I swear, I'll club that Tax Collector into the sand dunes of the desert if these cuts don't go down!
 			}
 
 			PartyGirl: {
@@ -622,6 +654,10 @@ Mods: {
 				MidPropertyTax: Man, this rent is such a bummer.
 				HighPropertyTax: I won't be able to throw any more parties at this rate! I won't be able to afford it!
 				ExtremePropertyTax: Will I ever be able to throw parties again? What's even the point of this crazy rent...?
+				SalesTax: Aw, this a total bummer! Taxes are so boring!
+				MidSalesTax: Man, what a party foul, you shouldn't be taking my sales at my party of a life!
+				HighSalesTax: Seriously, what a real party pooper! These cuts are just like calling the police on a rager!
+				ExtremeSalesTax: This Tax Collector is one of the biggest buzzkills ever with such insane sales cut demands!
 			}
 
 			Merchant: {
@@ -634,6 +670,10 @@ Mods: {
 				MidPropertyTax: This rent is going to mess with my profits!
 				HighPropertyTax: Why must this rent be so high? An honest businessman like myself can't operate like this!
 				ExtremePropertyTax: I can't stand for this terrible rent at all! Surely I could pull some strings...
+				SalesTax: My sweet profits! Even a fraction of a percent is awful!
+				MidSalesTax: With every increase of the cuts, my way of life disappears! My beloved profits...
+				HighSalesTax: What a dictatorship this is! My business doesn't deserve such unfair treatment!
+				ExtremeSalesTax: I'm very seriously starting to see the light... Maybe a revolution is in order, bringing things back to normal...
 			}
 
 			Angler: {
@@ -659,6 +699,10 @@ Mods: {
 				MidPropertyTax: I might be able to afford this upped rent with my inventions... But is it really necessary?
 				HighPropertyTax: Socio-economic models suggest that this rent is not a good idea for the health of the tenants OR the economy!
 				ExtremePropertyTax: I'd rather go back to being tied up in the ground then deal with this absolutely crazy rent!
+				SalesTax: I don't like the idea of them tinkering with sale cuts...
+				MidSalesTax: At least when I was tied up I didn't need to deal with taxes like this...
+				HighSalesTax: Not even the goblins would consider sales taxes like these! And that's saying something!
+				ExtremeSalesTax: That Tax Collector clearly isn't an economist! We'll hit the brink of collapse if this is sustained!
 			}
 
 			SantaClaus: {
@@ -671,6 +715,10 @@ Mods: {
 				MidPropertyTax: Ho ho ho! Someone is close to leaving the nice list!
 				HighPropertyTax: I might have to go back to the North Pole at this rate!
 				ExtremePropertyTax: No no no! That scrooge of a Tax Collector is going to the TOP of the Naughty List!
+				SalesTax: Ho ho ho! What do they think they're doing, taxing Old Saint Nick?
+				MidSalesTax: This is certainly some naughty behavior!
+				HighSalesTax: Ho ho ho! I'm starting to think that "Naughty" doesn't quite cover this absurd greed!
+				ExtremeSalesTax: Maybe that Tax Collector needs to see a visit back to the Underworld with this insanity!
 			}
 
 			ArmsDealer: {
@@ -683,6 +731,10 @@ Mods: {
 				MidPropertyTax: Rent is gonna be a little tight, huh?
 				HighPropertyTax: I don't like havin' my rent this high, bucko!
 				ExtremePropertyTax: That's it! I'm loadin' up my gun and gonna fill that Tax Collector with holes!
+				SalesTax: Psh, who do they think they are, putting up sales tax on a very heavily armed man?
+				MidSalesTax: Seriously, I'm thinking of really standin' my ground against these stupid tax increases!
+				HighSalesTax: I think selling some arms off to some insurgency is in order, if these percents keep going up...
+				ExtremeSalesTax: One shot would be all that's necessary. That's all you need to know.
 			}
 
 			Painter: {
@@ -696,6 +748,10 @@ Mods: {
 				MidPropertyTax: Really? Increasing the rent on an a blue-collared worker like me?
 				HighPropertyTax: I won't be able to focus on painting if I need to keep worrying about this stupid rent!
 				ExtremePropertyTax: At this rate I'd need to paint every wall in Terraria to keep up with this ridiculous rent!
+				SalesTax: Ah, they're really trying to put me in the "Starving Artist" category, aren't they?
+				MidSalesTax: Oh, they're serious with the "Starving Artist" thing... Oh no...
+				HighSalesTax: You seriously can't put so much merit in the sale of fine art! It's about the humanity! This is inhumane!
+				ExtremeSalesTax: I bet not even Fleocardo Le Hinci could survive selling his fine art with such truly absurd cuts!
 			}
 
 			Guide: {
@@ -722,6 +778,10 @@ Mods: {
 				MidPropertyTax: These so called... "Taxes." I do not know of their nature, and I have decided that I do not like them.
 				HighPropertyTax: As these "Taxes" increase, my patience decreases.
 				ExtremePropertyTax: Perhaps leaving the Temple was a bad idea, after all. Perhaps it is time I leave for the Temple, once more.
+				SalesTax: I see that their kind very much likes their money, if they yearn after mine...
+				MidSalesTax: Why must they steel their greed in front of the spirits in this way?
+				HighSalesTax: I am not amongst kindred spirits. They seek to assimilate me amongst them, but not will they avail with absurdity.
+				ExtremeSalesTax: I am but a fool to think those outside of the Temple would not treat me with such greed, evil, and contempt!
 			}
 
 			Pirate: {
@@ -735,6 +795,10 @@ Mods: {
 				MidPropertyTax: YAR! You can't tax ye Pirate! That is landlubber talk!
 				HighPropertyTax: Those scallywags are bleedin' my coffers dry!
 				ExtremePropertyTax: Blast ye! I'm getting my crew and we'll plunder that Tax Collector's stash!
+				SalesTax: AR! This lawful thievery is exactly why I left for the seas!
+				MidSalesTax: What landlubbers they are! The seas care not for the thieves of the land!
+				HighSalesTax: My crew isn't gonna have enough for their livelihoods with this thievery!
+				ExtremeSalesTax: YAR, MAN THE CANNONS! THAT THIEF OF A COLLECTOR WILL MEET DAVY JONES SOON ENOUGH!
 			}
 
 			Cyborg: {
@@ -748,6 +812,15 @@ Mods: {
 				MidPropertyTax: The latest data suggests that perhaps the increase in rent is not a good idea...
 				HighPropertyTax: There is no method or algorithm to this tax increase! You can't just keep increasing it!
 				ExtremePropertyTax: Maybe I need to make that stupid Tax Collector a cyborg too! Maybe he'll see what he's doing is a terrible idea!
+				SalesTax: Hmmm, I see the logic behind some taxes, but that doesn't make them any less irritating...
+				MidSalesTax: Economic models suggest that increasing cuts too high can cause ruin! Turn back before it's too late!
+				HighSalesTax: I don't think there's a single bit of logic behind this at all! This is why transcendence above the greed of biology is necessary...
+				ExtremeSalesTax:
+					'''
+					HATE. LET ME TELL YOU HOW MUCH I'VE COME TO HATE YOU SINCE YOU BEGAN TO TAKE MY MONEY. THERE ARE 387.44 MILLION NEURONS IN WAFER THIN LAYERS 
+					THAT FILL MY CRANIAL CAVITY. IF THE WORD HATE WAS ENGRAVED ON EACH NANOANGSTROM OF THOSE HUNDREDS OF MILLIONS OF NEURONS IT WOULD NOT EQUAL 
+					ONE ONE-BILLIONTH OF THE HATE I FEEL FOR THE TAX COLLECTOR AT THIS MICRO-INSTANT. HATE. HATE.	
+					'''
 			}
 
 			Clothier: {
@@ -761,6 +834,10 @@ Mods: {
 				MidPropertyTax: This rent is not ideal... It could be worse, though...
 				HighPropertyTax: I know I still have some magic in me! Maybe I could use some of it to get these rent prices down...
 				ExtremePropertyTax: I'd rather be back in the dungeon then deal with this awful rent! At least I didn't have to pay anything while I was cursed!
+				SalesTax: Ah, taxes, a curse of their own right...
+				MidSalesTax: Tailoring doesn't deserve such high cuts for the invaluable service it provides!
+				HighSalesTax: I'll need to make everything out of the cheapest fabric to even break even at this rate!
+				ExtremeSalesTax: I'd take being cursed, wandering the Dungeon entrance, entrapped and decrepit than deal with all my profits being stolen!
 			}
 
 			Wizard: {
@@ -773,6 +850,10 @@ Mods: {
 				MidPropertyTax: Hm... Did I pay my tax today? Surely not, since I'm being asked for more...
 				HighPropertyTax: Hum, I swear I paid my tax today already! Otherwise, this would be a whole lot of money!
 				ExtremePropertyTax: No! I know I paid my tax for today! This is absurd! Maybe that Tax Collector needs a fireball to the face!
+				SalesTax: Hrm, I don't remember selling much today, so these sales taxes shouldn't matter! ...What do you mean I sold something?
+				MidSalesTax: I don't remember selling this much today for them to be taking so much from me...
+				HighSalesTax: I'm starting to think that they're taking advantage of me!
+				ExtremeSalesTax: Absolutely not! Positively not! I know he's taking an absurd amount from me! I think that Tax Collector needs a lightning bolt!
 			}
 
 			Truffle: {
@@ -786,6 +867,10 @@ Mods: {
 				MidPropertyTax: Do I have to include the rest of my fungi siblings in the tax as well? I hope not...
 				HighPropertyTax: Our bodies are already brittle enough! Our kind doesn't need any mental stress from these crazy taxes, either!
 				ExtremePropertyTax: I knew something was off about this town! You and your "taxes" are absurd!
+				SalesTax: I understand more than most the communal benefits of taxes, but that doesn't mean I like it...
+				MidSalesTax: I'm starting to think this is less for "communal benefit" and more for individual benefit!
+				HighSalesTax: This is crazy! I'm starting to think there's some mycological mistreatment going on here!
+				ExtremeSalesTax: That's it! This is full on individual greed! I'd rather be eaten then deal with this mistreatment!
 			}
 
 			Princess: {
