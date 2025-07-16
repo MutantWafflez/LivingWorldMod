@@ -762,9 +762,9 @@ Mods: {
 				WellRested: I am feeling pretty good!
 				Tired: A good guide deserves their rest, lest they lead someone on the wrong path.
 				SleepDeprived: Please, someone guide me to the nearest floor to sleep on...
-				MidPropertyTax: Really? Increasing the rent on an a blue-collared worker like me?
-				HighPropertyTax: I won't be able to focus on painting if I need to keep worrying about this stupid rent!
-				ExtremePropertyTax: At this rate I'd need to paint every wall in Terraria to keep up with this ridiculous rent!
+				MidPropertyTax: I don't think this rent level is very advisable...
+				HighPropertyTax: I think that living deep in space would be more advisable then dealing with this crazy rent!
+				ExtremePropertyTax: I swear, I don't know how anyone could be guided to believe such extreme taxes is a good idea!
 			}
 
 			WitchDoctor: {
