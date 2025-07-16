@@ -623,6 +623,10 @@ Mods: {
 				MidPropertyTax: The upped rent is a bit annoying. Luckily I can still afford it.
 				HighPropertyTax: After getting evicted from my previous world, I would really appreciate it if my rent didn't increase in this one!
 				ExtremePropertyTax: Maybe I should summon the Old One's Army so these crazy rent prices would go DOWN!
+				SalesTax: Just a part of being a business, I suppose...
+				MidSalesTax: The ale is pretty pricey, probably why they want such a big cut.
+				HighSalesTax: Am I really going to have to up the price of the ale even MORE to make ends meet???
+				ExtremeSalesTax: Maybe a raid of my own stash of ale will make this insanity go away!
 			}
 
 			Golfer: {
