@@ -39,7 +39,7 @@ public class UIModifiedText : UIElement {
     public string Text {
         get;
         private set;
-    }
+    } = "";
 
     public float TextOriginX {
         get;
