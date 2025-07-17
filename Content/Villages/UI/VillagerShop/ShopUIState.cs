@@ -38,7 +38,7 @@ public class ShopUIState : UIState {
     public UIElement dialogueZone;
     public UIBetterText dialogueText;
 
-    public UIElement buyItemZone;
+    public UIVisibilityElement buyItemZone;
     public UIBetterText buyItemHeader;
     public UIBetterItemIcon buyItemIcon;
     public UIBetterText buyItemStockHeader;
@@ -112,34 +112,32 @@ public class ShopUIState : UIState {
         dialogueZone.Append(dialogueText);
 
         //Buy Item Zone
-        buyItemZone = new UIElement();
+        buyItemZone = new UIVisibilityElement();
         buyItemZone.Width.Set(158f, 0f);
         buyItemZone.Height.Set(136f, 0f);
         buyItemZone.Left.Set(562f, 0f);
         buyItemZone.Top.Set(90f, 0f);
         backImage.Append(buyItemZone);
 
-        buyItemHeader = new UIBetterText(Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Buying"), 1.25f) { isVisible = false, HAlign = 0.5f };
+        buyItemHeader = new UIBetterText(Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Buying"), 1.25f) {  HAlign = 0.5f };
         buyItemHeader.Top.Set(4f, 0f);
         buyItemZone.Append(buyItemHeader);
 
-        buyItemIcon = new UIBetterItemIcon(new Item(ItemID.Acorn), 32f, true) { isVisible = false, HAlign = 0.5f };
+        buyItemIcon = new UIBetterItemIcon(new Item(ItemID.Acorn), 32f, true) {  HAlign = 0.5f };
         buyItemIcon.Width.Set(32f, 0f);
         buyItemIcon.Height.Set(32f, 0f);
         buyItemIcon.Top.Set(26f, 0f);
         buyItemZone.Append(buyItemIcon);
 
-        buyItemStockHeader = new UIBetterText(Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Stock"), 1.25f) { isVisible = false, HAlign = 0.5f };
+        buyItemStockHeader = new UIBetterText(Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Stock"), 1.25f) {  HAlign = 0.5f };
         buyItemStockHeader.Top.Set(56f, 0f);
         buyItemZone.Append(buyItemStockHeader);
 
-        buyItemStock = new UIBetterText("1000", 1.25f) { isVisible = false, horizontalTextConstraint = 150, HAlign = 0.5f };
+        buyItemStock = new UIBetterText("1000", 1.25f) {  horizontalTextConstraint = 150, HAlign = 0.5f };
         buyItemStock.Top.Set(80f, 0f);
         buyItemZone.Append(buyItemStock);
 
-        buyItemButton = new UIBetterImageButton(ModContent.Request<Texture2D>(shopUIPath + "BuyButton"), Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Buy")) {
-            isVisible = false, HAlign = 0.5f
-        };
+        buyItemButton = new UIBetterImageButton(ModContent.Request<Texture2D>(shopUIPath + "BuyButton"), Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Buy")) { HAlign = 0.5f };
         buyItemButton.Top.Set(102f, 0f);
         buyItemZone.Append(buyItemButton);
 
@@ -277,22 +275,14 @@ public class ShopUIState : UIState {
             buyItemIcon.SetItem(_selectedItem.displayedItem);
             buyItemStock.SetText(_selectedItem.pertainedInventoryItem.remainingStock.ToString());
 
-            buyItemHeader.isVisible = true;
-            buyItemIcon.isVisible = true;
-            buyItemStockHeader.isVisible = true;
-            buyItemStock.isVisible = true;
-            buyItemButton.isVisible = true;
+            buyItemZone.SetVisibility(true);
 
             if (playSound) {
                 SoundEngine.PlaySound(SoundID.MenuOpen);
             }
         }
         else {
-            buyItemHeader.isVisible = false;
-            buyItemIcon.isVisible = false;
-            buyItemStockHeader.isVisible = false;
-            buyItemStock.isVisible = false;
-            buyItemButton.isVisible = false;
+            buyItemZone.SetVisibility(false);
 
             if (playSound) {
                 SoundEngine.PlaySound(SoundID.MenuClose);

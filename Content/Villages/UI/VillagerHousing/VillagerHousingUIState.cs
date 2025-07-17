@@ -16,14 +16,11 @@ namespace LivingWorldMod.Content.Villages.UI.VillagerHousing;
 /// </summary>
 public class VillagerHousingUIState : UIState {
     /// <summary>
-    ///     Whether or not the menu that shows each of the villagers is visible (open).
-    /// </summary>
-    public bool isMenuVisible;
-
-    /// <summary>
     ///     The Villager type to currently be showing to the player.
     /// </summary>
     public VillagerType typeToShow;
+
+    public UIVisibilityElement villagerHousingZone;
 
     /// <summary>
     ///     The button that closes/opens the menu showing each of the villagers.
@@ -77,43 +74,47 @@ public class VillagerHousingUIState : UIState {
         openMenuButton.SetHoverImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Hovered", AssetRequestMode.ImmediateLoad));
         openMenuButton.SetVisibility(1f, 1f);
         openMenuButton.WhileHovering += WhileHoveringButton;
-        openMenuButton.ProperOnClick += MenuButtonClicked;
+        openMenuButton.OnLeftClick += MenuButtonClicked;
         Append(openMenuButton);
 
-        enumerateRightButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Forward", AssetRequestMode.ImmediateLoad)) { isVisible = false };
-        enumerateRightButton.Left.Set(Main.screenWidth - 70f, 0f);
-        enumerateRightButton.SetVisibility(1f, 0.7f);
-        enumerateRightButton.ProperOnClick += EnumerateTypeButtonClicked;
-        Append(enumerateRightButton);
+        villagerHousingZone = new UIVisibilityElement {
+            Left = StyleDimension.FromPixelsAndPercent(-196f, 1f), Top = StyleDimension.FromPixels(180f), Width = StyleDimension.FromPixels(160f), Height = StyleDimension.FromPixels(418f)
+        };
+        Append(villagerHousingZone);
 
-        enumerateLeftButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Back", AssetRequestMode.ImmediateLoad)) { isVisible = false };
-        enumerateLeftButton.Left.Set(Main.screenWidth - 190f, 0f);
+        enumerateRightButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Forward", AssetRequestMode.ImmediateLoad));
+        enumerateRightButton.Left.Set(126f, 0f);
+        enumerateRightButton.SetVisibility(1f, 0.7f);
+        enumerateRightButton.OnLeftClick += EnumerateTypeButtonClicked;
+        villagerHousingZone.Append(enumerateRightButton);
+
+        enumerateLeftButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Back", AssetRequestMode.ImmediateLoad));
+        enumerateLeftButton.Left.Set(6f, 0f);
         enumerateLeftButton.SetVisibility(1f, 0.7f);
-        enumerateLeftButton.ProperOnClick += EnumerateTypeButtonClicked;
-        Append(enumerateLeftButton);
+        enumerateLeftButton.OnLeftClick += EnumerateTypeButtonClicked;
+        villagerHousingZone.Append(enumerateLeftButton);
 
         villagerTypeCenterElement = new UIElement();
         villagerTypeCenterElement.Width.Set(82f, 0f);
         villagerTypeCenterElement.Height.Set(28f, 0f);
-        Append(villagerTypeCenterElement);
+        villagerHousingZone.Append(villagerTypeCenterElement);
 
         villagerTypeText = new UIBetterText(Language.GetOrRegister("Mods.LivingWorldMod.VillagerType.Harpy"), 1.1f) {
-            isVisible = false, horizontalTextConstraint = villagerTypeCenterElement.Width.Pixels, HAlign = 0.5f, VAlign = 0.5f
+            horizontalTextConstraint = villagerTypeCenterElement.Width.Pixels, HAlign = 0.5f, VAlign = 0.5f
         };
-        villagerTypeCenterElement.Left.Set(Main.screenWidth - 157f, 0f);
+        villagerTypeCenterElement.Left.Set(39f, 0f);
         villagerTypeCenterElement.Append(villagerTypeText);
 
-        gridScrollbar = new UIBetterScrollbar { isVisible = false };
-        gridScrollbar.Left.Set(Main.screenWidth - 26f, 0f);
+        gridScrollbar = new UIBetterScrollbar();
+        gridScrollbar.Left.Set(170f, 0f);
         gridScrollbar.Height.Set(390f, 0f);
-        Append(gridScrollbar);
+        villagerHousingZone.Append(gridScrollbar);
 
         gridOfVillagers = new UIGrid { ListPadding = 4f };
-        gridOfVillagers.Left.Set(Main.screenWidth - 196f, 0f);
-        gridOfVillagers.Width.Set(160f, 0f);
+        gridOfVillagers.Width.Set(0f, 1f);
         gridOfVillagers.Height.Set(gridScrollbar.Height.Pixels, 0f);
         gridOfVillagers.SetScrollbar(gridScrollbar);
-        Append(gridOfVillagers);
+        villagerHousingZone.Append(gridOfVillagers);
     }
 
     protected override void DrawChildren(SpriteBatch spriteBatch) {
@@ -132,33 +133,19 @@ public class VillagerHousingUIState : UIState {
             }
         }
 
-        //Update positions
+        //Update positions/dimensions
         openMenuButton.Left.Set(Main.screenWidth - (isMiniMapEnabled ? 220f : 177f), 0f);
         openMenuButton.Top.Set((isMiniMapEnabled ? 143f : 114f) + _mapDisplacement, 0f);
 
-        enumerateLeftButton.Left.Set(Main.screenWidth - 190f, 0f);
-        enumerateLeftButton.Top.Set(180f + _mapDisplacement, 0f);
+        villagerHousingZone.Top.Set(180f + _mapDisplacement, 0f);
 
-        villagerTypeCenterElement.Left.Set(Main.screenWidth - 157f, 0f);
-        villagerTypeCenterElement.Top.Set(180f + _mapDisplacement, 0f);
-
-        enumerateRightButton.Left.Set(Main.screenWidth - 70f, 0f);
-        enumerateRightButton.Top.Set(180f + _mapDisplacement, 0f);
-
-        gridScrollbar.Left.Set(Main.screenWidth - 26f, 0f);
-        gridScrollbar.Top.Set(214f + _mapDisplacement, 0f);
         gridScrollbar.Height.Set(390f - _mapDisplacement, 0f);
-
-        gridOfVillagers.Left.Set(Main.screenWidth - 196f, 0f);
-        gridOfVillagers.Top.Set(214f + _mapDisplacement, 0f);
         gridOfVillagers.Height.Set(gridScrollbar.Height.Pixels, 0f);
 
         //Disable Menu Visibility when any other equip page buttons are pressed
-        if (isMenuVisible && Main.EquipPageSelected != -1) {
+        if (villagerHousingZone.IsVisible && Main.EquipPageSelected != -1) {
             CloseMenu();
         }
-
-        enumerateRightButton.isVisible = enumerateLeftButton.isVisible = villagerTypeText.isVisible = gridScrollbar.isVisible = isMenuVisible;
 
         base.DrawChildren(spriteBatch);
     }
@@ -167,7 +154,7 @@ public class VillagerHousingUIState : UIState {
     ///     Simple method that closes the menu. Public for the parent system to use.
     /// </summary>
     public void CloseMenu() {
-        isMenuVisible = false;
+        villagerHousingZone.SetVisibility(false);
         openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off"));
         gridOfVillagers.Clear();
     }
@@ -194,9 +181,9 @@ public class VillagerHousingUIState : UIState {
 
     private void MenuButtonClicked(UIMouseEvent evt, UIElement listeningElement) {
         //Opening/closing the housing menu
-        isMenuVisible = !isMenuVisible;
+        villagerHousingZone.SetVisibility(!villagerHousingZone.IsVisible);
 
-        if (isMenuVisible) {
+        if (villagerHousingZone.IsVisible) {
             SoundEngine.PlaySound(SoundID.MenuOpen);
             openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_On", AssetRequestMode.ImmediateLoad));
             Main.EquipPageSelected = -1;

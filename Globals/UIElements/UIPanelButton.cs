@@ -18,12 +18,6 @@ public class UIPanelButton : UIPanel {
     public float textSize;
 
     /// <summary>
-    ///     Whether or not this element is currently visible, which is to say, whether or not it
-    ///     will be drawn. Defaults to true.
-    /// </summary>
-    public bool isVisible = true;
-
-    /// <summary>
     ///     Whether or not, while the mousing is hovering over this element, the player can use an
     ///     item (mouseInterface = true). Defaults to true.
     /// </summary>
@@ -73,32 +67,11 @@ public class UIPanelButton : UIPanel {
     }
 
     public override void MouseOver(UIMouseEvent evt) {
-        if (!isVisible) {
-            return;
-        }
-
         base.MouseOver(evt);
         SoundEngine.PlaySound(SoundID.MenuTick);
     }
 
-    public override void LeftClick(UIMouseEvent evt) {
-        if (!isVisible) {
-            return;
-        }
-
-        base.LeftClick(evt);
-        ProperOnClick?.Invoke(evt, this);
-    }
-
     protected override void DrawSelf(SpriteBatch spriteBatch) {
-        if (buttonText is not null) {
-            buttonText.isVisible = isVisible;
-        }
-
-        if (!isVisible) {
-            return;
-        }
-
         bool isHovering = ContainsPoint(Main.MouseScreen);
 
         //Have to do some cheaty shenanigans in order to make the visibility work as normal
@@ -143,10 +116,4 @@ public class UIPanelButton : UIPanel {
     ///     hovering over this element.
     /// </summary>
     public event Action WhileHovering;
-
-    /// <summary>
-    ///     An "override" of the normal OnClick event that takes into account visibility of this
-    ///     button. USE THIS INSTEAD OF THE VANILLA EVENT!
-    /// </summary>
-    public event MouseEvent ProperOnClick;
 }

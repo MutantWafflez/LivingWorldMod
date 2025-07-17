@@ -11,12 +11,6 @@ namespace LivingWorldMod.Globals.UIElements;
 /// </summary>
 public class UIBetterItemIcon (Item displayedItem, float sizeLimit, bool drawFromCenter) : UIElement {
     /// <summary>
-    ///     Whether or not this element is currently visible, which is to say, whether or not it
-    ///     will be drawn. Defaults to true.
-    /// </summary>
-    public bool isVisible = true;
-
-    /// <summary>
     ///     The color to forcefully draw the item as, regardless of anything else. Null means
     ///     no overriding.
     /// </summary>
@@ -25,10 +19,6 @@ public class UIBetterItemIcon (Item displayedItem, float sizeLimit, bool drawFro
     private Item _displayedItem = displayedItem;
 
     protected override void DrawSelf(SpriteBatch spriteBatch) {
-        if (!isVisible) {
-            return;
-        }
-
         //Adapted Vanilla Code
         Main.instance.LoadItem(_displayedItem.type);
 
