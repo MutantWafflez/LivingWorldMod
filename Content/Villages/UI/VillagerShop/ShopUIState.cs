@@ -8,7 +8,6 @@ using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
@@ -63,10 +62,10 @@ public class ShopUIState : UIState {
         string shopUIPath = $"{LWM.SpritePath}Villages/UI/ShopUI/Harpy/";
 
         //Background Zone
-        backImage = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage", AssetRequestMode.ImmediateLoad)) { HAlign = 0.5f, VAlign = 0.5f };
+        backImage = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage")) { HAlign = 0.5f, VAlign = 0.5f };
         Append(backImage);
 
-        shopOverlay = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay", AssetRequestMode.ImmediateLoad)) { HAlign = 0.5f, VAlign = 0.5f, IgnoresMouseInteraction = true };
+        shopOverlay = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay")) { HAlign = 0.5f, VAlign = 0.5f, IgnoresMouseInteraction = true };
         Append(shopOverlay);
 
         //Shop Zone
@@ -138,7 +137,7 @@ public class ShopUIState : UIState {
         buyItemStock.Top.Set(80f, 0f);
         buyItemZone.Append(buyItemStock);
 
-        buyItemButton = new UIBetterImageButton(ModContent.Request<Texture2D>(shopUIPath + "BuyButton", AssetRequestMode.ImmediateLoad), Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Buy")) {
+        buyItemButton = new UIBetterImageButton(ModContent.Request<Texture2D>(shopUIPath + "BuyButton"), Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Buy")) {
             isVisible = false, HAlign = 0.5f
         };
         buyItemButton.Top.Set(102f, 0f);
@@ -238,9 +237,9 @@ public class ShopUIState : UIState {
 
         string shopUIPath = $"{LWM.SpritePath}Villages/UI/ShopUI/{currentVillager.VillagerType}/";
 
-        backImage.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage", AssetRequestMode.ImmediateLoad));
+        backImage.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage"));
 
-        shopOverlay.SetImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay", AssetRequestMode.ImmediateLoad));
+        shopOverlay.SetImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay"));
 
         portrait.ReloadPortrait(currentVillager);
 
@@ -248,7 +247,7 @@ public class ShopUIState : UIState {
 
         dialogueText.SetText(DialogueSystem.Instance.GetDialogue(currentVillager.VillagerType, currentVillager.RelationshipStatus, DialogueType.ShopInitial));
 
-        buyItemButton.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BuyButton", AssetRequestMode.ImmediateLoad));
+        buyItemButton.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BuyButton"));
 
         savingsDisplay.moneyToDisplay = Main.LocalPlayer.CalculateTotalSavings();
 
