@@ -44,17 +44,17 @@ public class UIModifiedText : UIElement {
     public float TextOriginX {
         get;
         set;
-    }
+    } = 0.5f;
 
     public float TextOriginY {
         get;
         set;
-    }
+    } = 0f;
 
     public float WrappedTextBottomPadding {
         get;
         set;
-    }
+    } = 20f;
 
     public bool IsWrapped {
         get => _isWrapped;
@@ -70,18 +70,12 @@ public class UIModifiedText : UIElement {
     } = Color.White;
 
     public UIModifiedText(string text = "", float textScale = 1f, bool large = false) {
-        TextOriginX = 0.5f;
-        TextOriginY = 0f;
         IsWrapped = false;
-        WrappedTextBottomPadding = 20f;
         InternalSetText(text, textScale, large);
     }
 
     public UIModifiedText(LocalizedText text, float textScale = 1f, bool large = false) {
-        TextOriginX = 0.5f;
-        TextOriginY = 0f;
         IsWrapped = false;
-        WrappedTextBottomPadding = 20f;
         InternalSetText(text.Value, textScale, large);
     }
 
