@@ -15,9 +15,7 @@ namespace LivingWorldMod.Content.Villages.UI.VillagerShop;
 ///     UI list. Holds data on the entire entry for the given item.
 /// </summary>
 public class UIShopItem : UIImage {
-    public UIBetterItemIcon itemImage;
-    public UIBetterText itemNameText;
-    public UICoinDisplay itemCostDisplay;
+    private const float ItemImageSize = 32f;
 
     /// <summary>
     ///     The ShopItem class object that this element is tied to. Is used to sync the villager's
@@ -26,12 +24,16 @@ public class UIShopItem : UIImage {
     public readonly ShopItem pertainedInventoryItem;
 
     public readonly Item displayedItem;
+    public readonly UIBetterText itemNameText;
 
     public VillagerType villagerType;
 
     public long displayedCost;
 
     public bool isSelected;
+
+    private readonly UIBetterItemIcon _itemImage;
+    private readonly UICoinDisplay _itemCostDisplay;
 
     private float _manualUpdateTime;
 
@@ -44,44 +46,31 @@ public class UIShopItem : UIImage {
         displayedItem.stack = pertainedInventoryItem.remainingStock;
         this.displayedCost = displayedCost;
         this.villagerType = villagerType;
-    }
 
-    public override void OnInitialize() {
-        float itemImageSize = 32f;
+        Width = StyleDimension.FromPixels(448f);
+        Height = StyleDimension.FromPixels(106f);
 
-        itemImage = new UIBetterItemIcon(displayedItem, itemImageSize, true) { VAlign = 0.5f };
-        itemImage.Left.Set(38f, 0f);
-        itemImage.Width.Set(itemImageSize, 0f);
-        itemImage.Height.Set(itemImageSize, 0f);
-        Append(itemImage);
+        _itemImage = new UIBetterItemIcon(displayedItem, ItemImageSize, true) { VAlign = 0.5f };
+        _itemImage.Left.Set(38f, 0f);
+        _itemImage.Width.Set(ItemImageSize, 0f);
+        _itemImage.Height.Set(ItemImageSize, 0f);
+        Append(_itemImage);
 
         itemNameText = new UIBetterText(displayedItem.HoverName, 1.25f) { VAlign = 0.5f, horizontalTextConstraint = 194f };
         itemNameText.Left.Set(94f, 0f);
         Append(itemNameText);
 
-        itemCostDisplay = new UICoinDisplay(displayedCost, UICoinDisplay.CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) { VAlign = 0.5f };
-        itemCostDisplay.Left.Set(-itemCostDisplay.Width.Pixels - 12f, 1f);
-        Append(itemCostDisplay);
+        _itemCostDisplay = new UICoinDisplay(displayedCost, UICoinDisplay.CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) { VAlign = 0.5f };
+        _itemCostDisplay.Left.Set(-_itemCostDisplay.Width.Pixels - 12f, 1f);
+        Append(_itemCostDisplay);
+
+        OnLeftClick += ClickedElement;
+        OnMouseOver += MousedOverElement;
+        OnMouseOut += MouseExitedElement;
     }
 
-    public override void MouseOver(UIMouseEvent evt) {
-        base.MouseOver(evt);
-
+    private static void MousedOverElement(UIMouseEvent evt, UIElement listeningElement) {
         SoundEngine.PlaySound(SoundID.MenuTick);
-    }
-
-    public override void MouseOut(UIMouseEvent evt) {
-        base.MouseOut(evt);
-
-        if (!isSelected) {
-            _manualUpdateTime = 0f;
-        }
-    }
-
-    public override void LeftClick(UIMouseEvent evt) {
-        ShopUIState shopState = ShopUISystem.Instance.correspondingUIState;
-
-        shopState.SetSelectedItem(!isSelected && pertainedInventoryItem.remainingStock > 0 ? this : null);
     }
 
     protected override void DrawSelf(SpriteBatch spriteBatch) {
@@ -123,5 +112,17 @@ public class UIShopItem : UIImage {
         else {
             base.DrawSelf(spriteBatch);
         }
+    }
+
+    private void MouseExitedElement(UIMouseEvent evt, UIElement listeningElement) {
+        if (!isSelected) {
+            _manualUpdateTime = 0f;
+        }
+    }
+
+    private void ClickedElement(UIMouseEvent evt, UIElement listeningElement) {
+        ShopUIState shopState = ShopUISystem.Instance.correspondingUIState;
+
+        shopState.SetSelectedItem(!isSelected && pertainedInventoryItem.remainingStock > 0 ? this : null);
     }
 }
