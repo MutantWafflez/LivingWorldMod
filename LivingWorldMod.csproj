@@ -63,5 +63,8 @@
         <!-- Bestiary Publicizing -->
         <Publicize Include="tModLoader:Terraria.GameContent.Bestiary.UnlockableNPCEntryIcon._npcCache"/>
 
+        <!-- UI Publicizing -->
+        <Publicize Include="tModLoader:Terraria.UI.UIElement.set_Parent"/>
+
     </ItemGroup>
 </Project>
