@@ -33,49 +33,27 @@ public class UIBetterImageButton : UIElement {
 
     private float _inactiveVisibility = 0.4f;
 
-    public UIBetterImageButton(Asset<Texture2D> buttonTexture) {
-        _buttonTexture = buttonTexture;
-        _text = null;
-        textSize = 1f;
-        Width.Set(buttonTexture.Value.Width, 0f);
-        Height.Set(buttonTexture.Value.Height, 0f);
-    }
-
-    //Remember to use ImmediateLoad request mode if you request the texture in the parameter!
-    public UIBetterImageButton(Asset<Texture2D> buttonTexture, string text = null, float textSize = 1f) {
-        _buttonTexture = buttonTexture;
-        _text = text;
-        this.textSize = textSize;
-        Width.Set(buttonTexture.Value.Width, 0f);
-        Height.Set(buttonTexture.Value.Height, 0f);
-    }
-
     public UIBetterImageButton(Asset<Texture2D> buttonTexture, LocalizedText text = null, float textSize = 1f) {
         _buttonTexture = buttonTexture;
         _text = text;
         this.textSize = textSize;
         Width.Set(buttonTexture.Value.Width, 0f);
         Height.Set(buttonTexture.Value.Height, 0f);
-    }
 
-    public override void OnInitialize() {
-        if (_text is null) {
-            return;
-        }
-
-        if (_text is LocalizedText translation) {
-            buttonText = new UIBetterText(translation, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
-        }
-        else {
-            buttonText = new UIBetterText(_text as string, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
+        switch (_text) {
+            case null:
+                return;
+            case LocalizedText translation:
+                buttonText = new UIBetterText(translation, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
+                break;
+            default:
+                buttonText = new UIBetterText(_text as string, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
+                break;
         }
 
         Append(buttonText);
-    }
 
-    public override void MouseOver(UIMouseEvent evt) {
-        base.MouseOver(evt);
-        SoundEngine.PlaySound(SoundID.MenuTick);
+        OnMouseOver += MousedOverElement;
     }
 
     protected override void DrawSelf(SpriteBatch spriteBatch) {
@@ -126,6 +104,10 @@ public class UIBetterImageButton : UIElement {
     public void SetVisibility(float whenActive, float whenInactive) {
         _activeVisibility = MathHelper.Clamp(whenActive, 0.0f, 1f);
         _inactiveVisibility = MathHelper.Clamp(whenInactive, 0.0f, 1f);
+    }
+
+    private void MousedOverElement(UIMouseEvent evt, UIElement listeningElement) {
+        SoundEngine.PlaySound(SoundID.MenuTick);
     }
 
     /// <summary>
