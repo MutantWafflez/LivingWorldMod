@@ -12,7 +12,6 @@ using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
-using Terraria.Localization;
 using Terraria.UI;
 
 namespace LivingWorldMod.Content.Villages.UI.VillagerShop;
@@ -123,7 +122,7 @@ public class ShopUIState : UIState {
         buyItemZone.Top.Set(90f, 0f);
         backImage.Append(buyItemZone);
 
-        buyItemHeader = new UIBetterText(Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Buying"), 1.25f) {  HAlign = 0.5f };
+        buyItemHeader = new UIBetterText("UI.VillagerShop.Buying".Localized(), 1.25f) {  HAlign = 0.5f };
         buyItemHeader.Top.Set(4f, 0f);
         buyItemZone.Append(buyItemHeader);
 
@@ -133,7 +132,7 @@ public class ShopUIState : UIState {
         buyItemIcon.Top.Set(26f, 0f);
         buyItemZone.Append(buyItemIcon);
 
-        buyItemStockHeader = new UIBetterText(Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Stock"), 1.25f) {  HAlign = 0.5f };
+        buyItemStockHeader = new UIBetterText("UI.VillagerShop.Stock".Localized(), 1.25f) {  HAlign = 0.5f };
         buyItemStockHeader.Top.Set(56f, 0f);
         buyItemZone.Append(buyItemStockHeader);
 
@@ -141,7 +140,7 @@ public class ShopUIState : UIState {
         buyItemStock.Top.Set(80f, 0f);
         buyItemZone.Append(buyItemStock);
 
-        buyItemButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Buy")) {
+        buyItemButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "UI.VillagerShop.Buy".Localized()) {
             BackgroundColor = new Color(59, 97, 203),
             BorderColor = Color.White,
             Width = StyleDimension.FromPixels(70f),
@@ -159,7 +158,7 @@ public class ShopUIState : UIState {
         savingsZone.Top.Set(260f, 0f);
         backImage.Append(savingsZone);
 
-        savingsText = new UIBetterText(Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Savings")) { HAlign = 0.5f };
+        savingsText = new UIBetterText("UI.VillagerShop.Savings".Localized()) { HAlign = 0.5f };
         savingsText.Top.Set(-26f, 0f);
         savingsZone.Append(savingsText);
 
