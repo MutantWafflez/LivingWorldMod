@@ -107,10 +107,12 @@ public class VillagerHousingUIState : UIState {
 
         gridScrollbar = new UIBetterScrollbar();
         gridScrollbar.Left.Set(170f, 0f);
+        gridScrollbar.Top.Set(34f, 0f);
         gridScrollbar.Height.Set(390f, 0f);
         villagerHousingZone.Append(gridScrollbar);
 
         gridOfVillagers = new UIGrid { ListPadding = 4f };
+        gridOfVillagers.Top.Set(34f, 0f);
         gridOfVillagers.Width.Set(0f, 1f);
         gridOfVillagers.Height.Set(gridScrollbar.Height.Pixels, 0f);
         gridOfVillagers.SetScrollbar(gridScrollbar);
@@ -133,14 +135,11 @@ public class VillagerHousingUIState : UIState {
             }
         }
 
-        //Update positions/dimensions
+        //Update positions
         openMenuButton.Left.Set(Main.screenWidth - (isMiniMapEnabled ? 220f : 177f), 0f);
         openMenuButton.Top.Set((isMiniMapEnabled ? 143f : 114f) + _mapDisplacement, 0f);
 
         villagerHousingZone.Top.Set(180f + _mapDisplacement, 0f);
-
-        gridScrollbar.Height.Set(390f - _mapDisplacement, 0f);
-        gridOfVillagers.Height.Set(gridScrollbar.Height.Pixels, 0f);
 
         //Disable Menu Visibility when any other equip page buttons are pressed
         if (villagerHousingZone.IsVisible && Main.EquipPageSelected != -1) {
