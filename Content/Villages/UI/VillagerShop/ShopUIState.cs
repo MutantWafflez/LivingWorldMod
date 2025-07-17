@@ -8,6 +8,7 @@ using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
@@ -43,7 +44,7 @@ public class ShopUIState : UIState {
     public UIBetterItemIcon buyItemIcon;
     public UIBetterText buyItemStockHeader;
     public UIBetterText buyItemStock;
-    public UIBetterImageButton buyItemButton;
+    public UIPanelButton buyItemButton;
 
     public UIElement savingsZone;
     public UIBetterText savingsText;
@@ -59,6 +60,9 @@ public class ShopUIState : UIState {
     private UIShopItem _selectedItem;
 
     public override void OnInitialize() {
+        Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
+        Asset<Texture2D> gradientPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder");
+
         string shopUIPath = $"{LWM.SpritePath}Villages/UI/ShopUI/Harpy/";
 
         //Background Zone
@@ -137,7 +141,13 @@ public class ShopUIState : UIState {
         buyItemStock.Top.Set(80f, 0f);
         buyItemZone.Append(buyItemStock);
 
-        buyItemButton = new UIBetterImageButton(ModContent.Request<Texture2D>(shopUIPath + "BuyButton"), Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Buy")) { HAlign = 0.5f };
+        buyItemButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: Language.GetText("Mods.LivingWorldMod.UI.VillagerShop.Buy")) {
+            BackgroundColor = new Color(59, 97, 203),
+            BorderColor = Color.White,
+            Width = StyleDimension.FromPixels(70f),
+            Height = StyleDimension.FromPixels(30f),
+            HAlign = 0.5f
+        };
         buyItemButton.Top.Set(102f, 0f);
         buyItemZone.Append(buyItemButton);
 
@@ -242,8 +252,6 @@ public class ShopUIState : UIState {
         nameText.SetText(currentVillager.NPC.GivenName, large: true);
 
         dialogueText.SetText(DialogueSystem.Instance.GetDialogue(currentVillager.VillagerType, currentVillager.RelationshipStatus, DialogueType.ShopInitial));
-
-        buyItemButton.SetImage(ModContent.Request<Texture2D>(shopUIPath + "BuyButton"));
 
         savingsDisplay.moneyToDisplay = Main.LocalPlayer.CalculateTotalSavings();
 
