@@ -171,8 +171,6 @@ public class ShopUIState : UIState {
         shopList.SetPadding(6f);
         shopList.SetScrollbar(shopScrollbar);
         shopZone.Append(shopList);
-
-        DummyPopulateShopList();
     }
 
     public override void Update(GameTime gameTime) {
@@ -322,29 +320,5 @@ public class ShopUIState : UIState {
 
             shopList.Add(element);
         }
-    }
-
-    /// <summary>
-    ///     Almost a carbon copy of PopulateShopList that purely exists for the purposes of UI
-    ///     initialization. The elements in the list are created upon mod load so when the player
-    ///     actually opens the UI, the list is properly initialized and the elements within them
-    ///     will be properly scaled in PopulateShopList(). Also used for debug purposes.
-    /// </summary>
-    private void DummyPopulateShopList() {
-        shopList.Clear();
-
-        for (int i = 0; i < Main.rand.Next(10, 51); i++) {
-            UIShopItem element = new(
-                new ShopItem(Main.rand.Next(ItemID.Count), 1000, 0),
-                Main.rand.Next(0, 10000000),
-                VillagerType.Harpy
-            );
-
-            element.Activate();
-
-            shopList.Add(element);
-        }
-
-        shopScrollbar.Activate();
     }
 }
