@@ -74,10 +74,7 @@ public class UIModifiedText : UIElement {
         InternalSetText(text, textScale, large);
     }
 
-    public UIModifiedText(LocalizedText text, float textScale = 1f, bool large = false) {
-        IsWrapped = false;
-        InternalSetText(text.Value, textScale, large);
-    }
+    public UIModifiedText(LocalizedText text, float textScale = 1f, bool large = false) : this(text.Value, textScale, large) { }
 
     public override void Recalculate() {
         InternalSetText(Text, _initialTextScale, _isLarge);
