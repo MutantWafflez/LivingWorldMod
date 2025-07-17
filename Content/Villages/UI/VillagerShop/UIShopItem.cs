@@ -51,16 +51,19 @@ public class UIShopItem : UIImage {
         Height = StyleDimension.FromPixels(106f);
 
         _itemImage = new UIBetterItemIcon(displayedItem, ItemImageSize, true) { VAlign = 0.5f };
+        _itemImage.IgnoresMouseInteraction = true;
         _itemImage.Left.Set(38f, 0f);
         _itemImage.Width.Set(ItemImageSize, 0f);
         _itemImage.Height.Set(ItemImageSize, 0f);
         Append(_itemImage);
 
         itemNameText = new UIBetterText(displayedItem.HoverName, 1.25f) { VAlign = 0.5f, horizontalTextConstraint = 194f };
+        itemNameText.IgnoresMouseInteraction = true;
         itemNameText.Left.Set(94f, 0f);
         Append(itemNameText);
 
         _itemCostDisplay = new UICoinDisplay(displayedCost, UICoinDisplay.CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) { VAlign = 0.5f };
+        _itemCostDisplay.IgnoresMouseInteraction = true;
         _itemCostDisplay.Left.Set(-_itemCostDisplay.Width.Pixels - 12f, 1f);
         Append(_itemCostDisplay);
 
