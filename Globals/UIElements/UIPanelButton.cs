@@ -29,38 +29,20 @@ public class UIPanelButton : UIPanel {
 
     private float _inactiveVisibility = 0.4f;
 
-    public UIPanelButton(Asset<Texture2D> customBackground, Asset<Texture2D> customBorder, int customCornerSize = 12, int customBarSize = 4, string text = null, float textSize = 1f)
-        : base(customBackground, customBorder, customCornerSize, customBarSize) {
-        _text = text;
-        this.textSize = textSize;
-    }
-
-    public UIPanelButton(string text = null, float textSize = 1f) {
-        _text = text;
-        this.textSize = textSize;
-    }
-
     public UIPanelButton(Asset<Texture2D> customBackground, Asset<Texture2D> customBorder, int customCornerSize = 12, int customBarSize = 4, LocalizedText text = null, float textSize = 1f)
         : base(customBackground, customBorder, customCornerSize, customBarSize) {
         _text = text;
         this.textSize = textSize;
-    }
 
-    public UIPanelButton(LocalizedText text = null, float textSize = 1f) {
-        _text = text;
-        this.textSize = textSize;
-    }
-
-    public override void OnInitialize() {
-        if (_text is null) {
-            return;
-        }
-
-        if (_text is LocalizedText translation) {
-            buttonText = new UIBetterText(translation, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
-        }
-        else {
-            buttonText = new UIBetterText(_text as string, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
+        switch (_text) {
+            case null:
+                return;
+            case LocalizedText translation:
+                buttonText = new UIBetterText(translation, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
+                break;
+            default:
+                buttonText = new UIBetterText(_text as string, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
+                break;
         }
 
         Append(buttonText);

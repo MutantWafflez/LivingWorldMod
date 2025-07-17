@@ -114,7 +114,7 @@ public class VillageShrineUIState : UIState {
         addRespawnButtonZone.Append(addRespawnButton);
 
         takeRespawnButtonZone = new UIVisibilityElement {
-            Height = StyleDimension.FromPixels(30f), Width = itemPanel.Width, Top = StyleDimension.FromPixels(addRespawnButton.Top.Pixels + addRespawnButton.Height.Pixels + 4f)
+            Height = StyleDimension.FromPixels(30f), Width = itemPanel.Width, Top = StyleDimension.FromPixels(addRespawnButtonZone.Top.Pixels + addRespawnButtonZone.Height.Pixels + 4f)
         };
         backPanel.Append(takeRespawnButtonZone);
 
@@ -126,7 +126,7 @@ public class VillageShrineUIState : UIState {
             preventItemUsageWhileHovering = true
         };
         takeRespawnButton.OnLeftClick += TakeRespawnItem;
-        takeRespawnButtonZone.Append(addRespawnButton);
+        takeRespawnButtonZone.Append(takeRespawnButton);
 
         respawnTimerZone = new UIElement();
         respawnTimerZone.Left.Set(itemPanel.Width.Pixels + 4f, 0f);
@@ -142,7 +142,7 @@ public class VillageShrineUIState : UIState {
         respawnTimerZone.Append(respawnTimer);
 
         houseIcon = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/DisplaySlots_4", AssetRequestMode.ImmediateLoad));
-        houseIcon.Top.Set(takeRespawnButton.Top.Pixels + takeRespawnButton.Height.Pixels + 2f, 0f);
+        houseIcon.Top.Set(takeRespawnButtonZone.Top.Pixels + takeRespawnButtonZone.Height.Pixels + 2f, 0f);
         backPanel.Append(houseIcon);
 
         houseCountText = new UIBetterText("0");
