@@ -13,7 +13,7 @@ namespace LivingWorldMod.Globals.UIElements;
 ///     counterpart has, for a larger range of uses.
 /// </summary>
 public class UIBetterImageButton : UIElement {
-    public UIBetterText buttonText;
+    public UIModifiedText buttonText;
 
     public float textSize;
 
@@ -44,10 +44,10 @@ public class UIBetterImageButton : UIElement {
             case null:
                 return;
             case LocalizedText translation:
-                buttonText = new UIBetterText(translation, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
+                buttonText = new UIModifiedText(translation, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
                 break;
             default:
-                buttonText = new UIBetterText(_text as string, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
+                buttonText = new UIModifiedText(_text as string, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
                 break;
         }
 

@@ -24,7 +24,7 @@ public class UIShopItem : UIImage {
     public readonly ShopItem pertainedInventoryItem;
 
     public readonly Item displayedItem;
-    public readonly UIBetterText itemNameText;
+    public readonly UIModifiedText itemNameText;
 
     public VillagerType villagerType;
 
@@ -57,7 +57,7 @@ public class UIShopItem : UIImage {
         _itemImage.Height.Set(ItemImageSize, 0f);
         Append(_itemImage);
 
-        itemNameText = new UIBetterText(displayedItem.HoverName, 1.25f) { VAlign = 0.5f, horizontalTextConstraint = 194f };
+        itemNameText = new UIModifiedText(displayedItem.HoverName, 1.25f) { VAlign = 0.5f, horizontalTextConstraint = 194f };
         itemNameText.IgnoresMouseInteraction = true;
         itemNameText.Left.Set(94f, 0f);
         Append(itemNameText);

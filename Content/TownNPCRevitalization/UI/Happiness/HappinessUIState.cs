@@ -20,8 +20,8 @@ public class HappinessUIState : UIState {
         public readonly UITooltipElement tooltipElement;
         public readonly UIPanel backPanel;
 
-        public readonly UIBetterText moodDescriptionText;
-        public readonly UIBetterText moodOffsetText;
+        public readonly UIModifiedText moodDescriptionText;
+        public readonly UIModifiedText moodOffsetText;
 
         public UIMoodModifier(MoodModifierInstance instance) {
             Height = StyleDimension.FromPixels(40f);
@@ -41,10 +41,10 @@ public class HappinessUIState : UIState {
             };
             tooltipElement.Append(backPanel);
 
-            moodDescriptionText = new UIBetterText(instance.descriptionText.SubstitutedText) { Height = StyleDimension.Fill, VAlign = 0.5f };
+            moodDescriptionText = new UIModifiedText(instance.descriptionText.SubstitutedText) { Height = StyleDimension.Fill, VAlign = 0.5f };
             backPanel.Append(moodDescriptionText);
 
-            moodOffsetText = new UIBetterText(instance.moodOffset.ToString("#.##")) {
+            moodOffsetText = new UIModifiedText(instance.moodOffset.ToString("#.##")) {
                 Height = StyleDimension.Fill, HAlign = 1f, VAlign = 0.5f, TextColor = instance.moodOffset < 0f ? Color.Red : Color.Lime
             };
             backPanel.Append(moodOffsetText);
@@ -57,9 +57,9 @@ public class HappinessUIState : UIState {
 
     public UIImage npcHeadIcon;
 
-    public UIBetterText npcName;
+    public UIModifiedText npcName;
 
-    public UIBetterText priceModifierTextNumber;
+    public UIModifiedText priceModifierTextNumber;
 
     public UIImage moneyBagIcon;
 
@@ -109,7 +109,7 @@ public class HappinessUIState : UIState {
         npcHeadIcon = new UIImage(TextureAssets.MagicPixel) { VAlign = 0.5f };
         npcInfoAndPriceZone.Append(npcHeadIcon);
 
-        npcName = new UIBetterText("NPC Name", 0.75f, true) { Left = StyleDimension.FromPixels(36f), VAlign = 0.5f, horizontalTextConstraint = 150f };
+        npcName = new UIModifiedText("NPC Name", 0.75f, true) { Left = StyleDimension.FromPixels(36f), VAlign = 0.5f, horizontalTextConstraint = 150f };
         npcInfoAndPriceZone.Append(npcName);
 
         moneyBagIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/MoneyBag")) { HAlign = 1f, Width = StyleDimension.FromPixels(32), Height = StyleDimension.FromPixels(32) };
@@ -118,7 +118,7 @@ public class HappinessUIState : UIState {
         moneyBagTooltipElement = new UITooltipElement("UI.NPCHappiness.PriceModifier".Localized()) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
         moneyBagIcon.Append(moneyBagTooltipElement);
 
-        priceModifierTextNumber = new UIBetterText("", 0.75f, true) { VAlign = 0.5f, Left = StyleDimension.FromPixelsAndPercent(-8f, 1f) };
+        priceModifierTextNumber = new UIModifiedText("", 0.75f, true) { VAlign = 0.5f, Left = StyleDimension.FromPixelsAndPercent(-8f, 1f) };
         npcInfoAndPriceZone.Append(priceModifierTextNumber);
 
         happinessBarZone = new UITooltipElement(new DynamicLocalizedText("UI.Fraction".Localized(), new { Numerator = 0, Denominator = 0 })) {

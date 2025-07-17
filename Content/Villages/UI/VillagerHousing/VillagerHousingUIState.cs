@@ -44,7 +44,7 @@ public class VillagerHousingUIState : UIState {
     /// <summary>
     ///     Text that displays what type of villager is currently selected for housing.
     /// </summary>
-    public UIBetterText villagerTypeText;
+    public UIModifiedText villagerTypeText;
 
     /// <summary>
     ///     The scroll bar for the grid of villagers.
@@ -98,7 +98,7 @@ public class VillagerHousingUIState : UIState {
         villagerTypeCenterElement.Height.Set(28f, 0f);
         villagerHousingZone.Append(villagerTypeCenterElement);
 
-        villagerTypeText = new UIBetterText("VillagerType.Harpy".Localized(), 1.1f) { horizontalTextConstraint = villagerTypeCenterElement.Width.Pixels, HAlign = 0.5f, VAlign = 0.5f };
+        villagerTypeText = new UIModifiedText("VillagerType.Harpy".Localized(), 1.1f) { horizontalTextConstraint = villagerTypeCenterElement.Width.Pixels, HAlign = 0.5f, VAlign = 0.5f };
         villagerTypeCenterElement.Left.Set(39f, 0f);
         villagerTypeCenterElement.Append(villagerTypeText);
 

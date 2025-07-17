@@ -9,11 +9,10 @@ using Terraria.UI;
 namespace LivingWorldMod.Globals.UIElements;
 
 /// <summary>
-///     Slightly better version of UIText that will properly scale based on width specified in a
+///     Modification of UIText that will properly scale based on width specified in a
 ///     different parameter rather than using InnerDimensions, and other better functionality.
-///     Mostly mimics vanilla's UIText though.
 /// </summary>
-public class UIBetterText : UIElement {
+public class UIModifiedText : UIElement {
     /// <summary>
     ///     If set to a value greater than zero, it will constrain the text to fix within the value
     ///     set, in pixels. Replaces DynamicallyScaleDownToWidth in UIText.
@@ -26,8 +25,6 @@ public class UIBetterText : UIElement {
     /// </summary>
     public float horizontalWrapConstraint;
 
-    private object _innerText = "";
-
     private float _initialTextScale = 1f;
     private float _dynamicTextScale = 1f;
     private Vector2 _initialTextSize = Vector2.Zero;
@@ -38,7 +35,11 @@ public class UIBetterText : UIElement {
 
     private string _visibleText;
     private string _lastTextReference;
-    public string Text => _innerText is LocalizedText translation ? translation.Value : _innerText.ToString();
+
+    public string Text {
+        get;
+        private set;
+    }
 
     public float TextOriginX {
         get;
@@ -68,7 +69,7 @@ public class UIBetterText : UIElement {
         set;
     } = Color.White;
 
-    public UIBetterText(string text = "", float textScale = 1f, bool large = false) {
+    public UIModifiedText(string text = "", float textScale = 1f, bool large = false) {
         TextOriginX = 0.5f;
         TextOriginY = 0f;
         IsWrapped = false;
@@ -76,12 +77,12 @@ public class UIBetterText : UIElement {
         InternalSetText(text, textScale, large);
     }
 
-    public UIBetterText(LocalizedText text, float textScale = 1f, bool large = false) {
+    public UIModifiedText(LocalizedText text, float textScale = 1f, bool large = false) {
         TextOriginX = 0.5f;
         TextOriginY = 0f;
         IsWrapped = false;
         WrappedTextBottomPadding = 20f;
-        InternalSetText(text, textScale, large);
+        InternalSetText(text.Value, textScale, large);
     }
 
     public override void Recalculate() {
@@ -91,7 +92,6 @@ public class UIBetterText : UIElement {
 
     protected override void DrawSelf(SpriteBatch spriteBatch) {
         base.DrawSelf(spriteBatch);
-        VerifyTextState();
 
         CalculatedStyle innerDimensions = GetInnerDimensions();
         Vector2 pos = innerDimensions.Position();
@@ -118,20 +118,12 @@ public class UIBetterText : UIElement {
         InternalSetText(text, scaledText == 0f ? _initialTextScale : scaledText, large ?? _isLarge);
     }
 
-    public void SetText(LocalizedText text, float scaledText = 0f, bool? large = null) {
-        InternalSetText(text, scaledText == 0f ? _initialTextScale : scaledText, large ?? _isLarge);
-    }
+    public void SetText(LocalizedText text, float scaledText = 0f, bool? large = null) => SetText(text.Value, scaledText, large);
 
-    private void VerifyTextState() {
-        if (!ReferenceEquals(_lastTextReference, Text)) {
-            InternalSetText(Text, _initialTextScale, _isLarge);
-        }
-    }
-
-    private void InternalSetText(object text, float textScale, bool large) {
+    private void InternalSetText(string text, float textScale, bool large) {
         DynamicSpriteFont dynamicSpriteFont = large ? FontAssets.DeathText.Value : FontAssets.MouseText.Value;
 
-        _innerText = text;
+        Text = text;
         _isLarge = large;
         _initialTextScale = textScale;
         _dynamicTextScale = textScale;

@@ -33,20 +33,20 @@ public class ShopUIState : UIState {
     public UIPortrait portrait;
 
     public UIElement nameZone;
-    public UIBetterText nameText;
+    public UIModifiedText nameText;
 
     public UIElement dialogueZone;
-    public UIBetterText dialogueText;
+    public UIModifiedText dialogueText;
 
     public UIVisibilityElement buyItemZone;
-    public UIBetterText buyItemHeader;
+    public UIModifiedText buyItemHeader;
     public UIBetterItemIcon buyItemIcon;
-    public UIBetterText buyItemStockHeader;
-    public UIBetterText buyItemStock;
+    public UIModifiedText buyItemStockHeader;
+    public UIModifiedText buyItemStock;
     public UIPanelButton buyItemButton;
 
     public UIElement savingsZone;
-    public UIBetterText savingsText;
+    public UIModifiedText savingsText;
     public UICoinDisplay savingsDisplay;
 
     public UIScrollbar shopScrollbar;
@@ -99,7 +99,7 @@ public class ShopUIState : UIState {
         nameZone.Top.Set(322f, 0f);
         backImage.Append(nameZone);
 
-        nameText = new UIBetterText(large: true) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = 184 };
+        nameText = new UIModifiedText(large: true) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = 184 };
         nameZone.Append(nameText);
 
         //Dialogue Zone
@@ -110,7 +110,7 @@ public class ShopUIState : UIState {
         dialogueZone.Top.Set(388f, 0f);
         backImage.Append(dialogueZone);
 
-        dialogueText = new UIBetterText { IsWrapped = true, horizontalWrapConstraint = 388f };
+        dialogueText = new UIModifiedText { IsWrapped = true, horizontalWrapConstraint = 388f };
         dialogueText.SetPadding(12f);
         dialogueZone.Append(dialogueText);
 
@@ -122,7 +122,7 @@ public class ShopUIState : UIState {
         buyItemZone.Top.Set(90f, 0f);
         backImage.Append(buyItemZone);
 
-        buyItemHeader = new UIBetterText("UI.VillagerShop.Buying".Localized(), 1.25f) {  HAlign = 0.5f };
+        buyItemHeader = new UIModifiedText("UI.VillagerShop.Buying".Localized(), 1.25f) {  HAlign = 0.5f };
         buyItemHeader.Top.Set(4f, 0f);
         buyItemZone.Append(buyItemHeader);
 
@@ -132,11 +132,11 @@ public class ShopUIState : UIState {
         buyItemIcon.Top.Set(26f, 0f);
         buyItemZone.Append(buyItemIcon);
 
-        buyItemStockHeader = new UIBetterText("UI.VillagerShop.Stock".Localized(), 1.25f) {  HAlign = 0.5f };
+        buyItemStockHeader = new UIModifiedText("UI.VillagerShop.Stock".Localized(), 1.25f) {  HAlign = 0.5f };
         buyItemStockHeader.Top.Set(56f, 0f);
         buyItemZone.Append(buyItemStockHeader);
 
-        buyItemStock = new UIBetterText("1000", 1.25f) {  horizontalTextConstraint = 150, HAlign = 0.5f };
+        buyItemStock = new UIModifiedText("1000", 1.25f) {  horizontalTextConstraint = 150, HAlign = 0.5f };
         buyItemStock.Top.Set(80f, 0f);
         buyItemZone.Append(buyItemStock);
 
@@ -158,7 +158,7 @@ public class ShopUIState : UIState {
         savingsZone.Top.Set(260f, 0f);
         backImage.Append(savingsZone);
 
-        savingsText = new UIBetterText("UI.VillagerShop.Savings".Localized()) { HAlign = 0.5f };
+        savingsText = new UIModifiedText("UI.VillagerShop.Savings".Localized()) { HAlign = 0.5f };
         savingsText.Top.Set(-26f, 0f);
         savingsZone.Append(savingsText);
 

@@ -23,7 +23,7 @@ public class VillageShrineUIState : UIState {
 
     public UIBetterItemIcon respawnItemDisplay;
 
-    public UIBetterText respawnItemCount;
+    public UIModifiedText respawnItemCount;
 
     public UIVisibilityElement addRespawnButtonZone;
     public UIPanelButton addRespawnButton;
@@ -33,17 +33,17 @@ public class VillageShrineUIState : UIState {
 
     public UIElement respawnTimerZone;
 
-    public UIBetterText respawnTimerHeader;
+    public UIModifiedText respawnTimerHeader;
 
-    public UIBetterText respawnTimer;
+    public UIModifiedText respawnTimer;
 
     public UIImage houseIcon;
 
-    public UIBetterText houseCountText;
+    public UIModifiedText houseCountText;
 
     public UIImage takenHouseIcon;
 
-    public UIBetterText takenHouseCountText;
+    public UIModifiedText takenHouseCountText;
 
     public UITooltipElement showVillageRadiusButtonZone;
 
@@ -97,7 +97,7 @@ public class VillageShrineUIState : UIState {
         respawnItemDisplay.Width = respawnItemDisplay.Height = itemPanel.Width;
         itemPanel.Append(respawnItemDisplay);
 
-        respawnItemCount = new UIBetterText("0") { horizontalTextConstraint = itemPanel.Width.Pixels, HAlign = 0.5f, VAlign = 0.85f };
+        respawnItemCount = new UIModifiedText("0") { horizontalTextConstraint = itemPanel.Width.Pixels, HAlign = 0.5f, VAlign = 0.85f };
         itemPanel.Append(respawnItemCount);
 
         addRespawnButtonZone = new UIVisibilityElement { Height = StyleDimension.FromPixels(30f), Width = itemPanel.Width, Top = StyleDimension.FromPixels(itemPanel.Height.Pixels + 4f) };
@@ -134,10 +134,10 @@ public class VillageShrineUIState : UIState {
         respawnTimerZone.Height.Set(itemPanel.Height.Pixels, 0f);
         backPanel.Append(respawnTimerZone);
 
-        respawnTimerHeader = new UIBetterText("UI.Shrine.HarpyCountdown".Localized()) { HAlign = 0.5f, horizontalTextConstraint = respawnTimerZone.Width.Pixels };
+        respawnTimerHeader = new UIModifiedText("UI.Shrine.HarpyCountdown".Localized()) { HAlign = 0.5f, horizontalTextConstraint = respawnTimerZone.Width.Pixels };
         respawnTimerZone.Append(respawnTimerHeader);
 
-        respawnTimer = new UIBetterText("00:00", 0.67f, true) { HAlign = 0.5f, horizontalTextConstraint = respawnTimerZone.Width.Pixels };
+        respawnTimer = new UIModifiedText("00:00", 0.67f, true) { HAlign = 0.5f, horizontalTextConstraint = respawnTimerZone.Width.Pixels };
         respawnTimer.Top.Set(respawnTimerHeader.Height.Pixels + 12f, 0f);
         respawnTimerZone.Append(respawnTimer);
 
@@ -145,7 +145,7 @@ public class VillageShrineUIState : UIState {
         houseIcon.Top.Set(takeRespawnButtonZone.Top.Pixels + takeRespawnButtonZone.Height.Pixels + 2f, 0f);
         backPanel.Append(houseIcon);
 
-        houseCountText = new UIBetterText("0");
+        houseCountText = new UIModifiedText("0");
         houseCountText.Top.Set(houseIcon.Top.Pixels + 4f, 0f);
         houseCountText.Left.Set(houseIcon.Width.Pixels + 4f, 0f);
         backPanel.Append(houseCountText);
@@ -155,7 +155,7 @@ public class VillageShrineUIState : UIState {
         takenHouseIcon.Left.Set(-2f, 0f);
         backPanel.Append(takenHouseIcon);
 
-        takenHouseCountText = new UIBetterText("0");
+        takenHouseCountText = new UIModifiedText("0");
         takenHouseCountText.Top.Set(takenHouseIcon.Top.Pixels + 6f, 0f);
         takenHouseCountText.Left.Set(takenHouseIcon.Width.Pixels + 2f, 0f);
         backPanel.Append(takenHouseCountText);
