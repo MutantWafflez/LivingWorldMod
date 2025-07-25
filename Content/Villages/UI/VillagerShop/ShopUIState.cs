@@ -389,6 +389,10 @@ public class ShopUIState : UIState {
     /// <param name="newSelectedItem"> The newly selected shop item. </param>
     /// <param name="playSound"> Whether or not to play the sound of opening/closing the menu. </param>
     public void SetSelectedItem(UIShopItem newSelectedItem, bool playSound = true) {
+        if (_selectedItem is not null) {
+            _selectedItem.isSelected = false;
+        }
+
         bool selectedElementOutOfStock = newSelectedItem?.ShopItem.Stock <= 0;
         if (newSelectedItem is null || _selectedItem == newSelectedItem || selectedElementOutOfStock) {
             _selectedItem = null;
@@ -400,10 +404,6 @@ public class ShopUIState : UIState {
             }
 
             return;
-        }
-
-        if (_selectedItem is not null) {
-            _selectedItem.isSelected = false;
         }
 
         newSelectedItem.isSelected = true;
