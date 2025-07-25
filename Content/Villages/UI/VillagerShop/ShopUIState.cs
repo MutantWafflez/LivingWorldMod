@@ -80,10 +80,6 @@ public class ShopUIState : UIState {
             OnMouseOut += MouseExitedElement;
         }
 
-        private static void MousedOverElement(UIMouseEvent evt, UIElement listeningElement) {
-            SoundEngine.PlaySound(SoundID.MenuTick);
-        }
-
         protected override void DrawSelf(SpriteBatch spriteBatch) {
             RasterizerState defaultRasterizerState = new() { CullMode = CullMode.None, ScissorTestEnable = true };
 
@@ -120,6 +116,14 @@ public class ShopUIState : UIState {
             else {
                 base.DrawSelf(spriteBatch);
             }
+        }
+
+        private void MousedOverElement(UIMouseEvent evt, UIElement listeningElement) {
+            if (ShopItem.Stock <= 0) {
+                return;
+            }
+
+            SoundEngine.PlaySound(SoundID.MenuTick);
         }
 
         private void MouseExitedElement(UIMouseEvent evt, UIElement listeningElement) {
