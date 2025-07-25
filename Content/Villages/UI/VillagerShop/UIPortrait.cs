@@ -25,6 +25,8 @@ public class UIPortrait : UIElement {
         Angered
     }
 
+    private const float ElementSideLength = 190f;
+
     public VillagerPortraitExpression temporaryExpression;
     public float temporaryExpressionTimer;
 
@@ -38,13 +40,11 @@ public class UIPortrait : UIElement {
 
     public UIPortrait(Villager villager) {
         _villager = villager;
-        Width.Set(190f, 0f);
-        Height.Set(190f, 0f);
+        Width.Set(ElementSideLength, 0f);
+        Height.Set(ElementSideLength, 0f);
 
         _drawObject = new LayeredDrawObject([("Base", 5), ("Outfit", 5), ("Hair", 5), ("Face", 15)], PortraitSpritePath);
-    }
 
-    public override void OnInitialize() {
         OnLeftClick += ClickedElement;
     }
 

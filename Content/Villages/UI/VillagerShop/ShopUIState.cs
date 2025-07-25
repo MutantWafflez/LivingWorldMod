@@ -143,6 +143,12 @@ public class ShopUIState : UIState {
     }
 
     private const float MaxBuyDelay = 60f;
+    private const float ShopZoneSideLength = 504f;
+    private const float PortraitZoneSideLength = 196f;
+    private const float PortraitZoneXPos = 732f;
+    private const float PortraitZoneYPos = 120f;
+    private const float ShopZoneXPos = 56f;
+    private const float ShopZoneYPos = 50f;
 
     public Villager currentVillager;
 
@@ -192,31 +198,27 @@ public class ShopUIState : UIState {
         Append(shopOverlay);
 
         //Shop Zone
-        shopZone = new UIElement();
-        shopZone.Width.Set(504f, 0f);
-        shopZone.Height.Set(504f, 0f);
-        shopZone.Left.Set(56f, 0f);
-        shopZone.Top.Set(50f, 0f);
+        shopZone = new UIElement {
+            Width = StyleDimension.FromPixels(ShopZoneSideLength), Height = StyleDimension.FromPixels(ShopZoneSideLength), Left = StyleDimension.FromPixels(ShopZoneXPos), Top = StyleDimension.FromPixels(ShopZoneYPos)
+        };
         backImage.Append(shopZone);
 
         //Portrait Zone
-        portraitZone = new UIElement();
-        portraitZone.Width.Set(196f, 0f);
-        portraitZone.Height.Set(196f, 0f);
-        portraitZone.Left.Set(732f, 0f);
-        portraitZone.Top.Set(120f, 0f);
+        portraitZone = new UIElement {
+            Width = StyleDimension.FromPixels(PortraitZoneSideLength),
+            Height = StyleDimension.FromPixels(PortraitZoneSideLength),
+            Left = StyleDimension.FromPixels(PortraitZoneXPos),
+            Top = StyleDimension.FromPixels(PortraitZoneYPos)
+        };
         backImage.Append(portraitZone);
 
-        portrait = new UIPortrait(new HarpyVillager());
-        portrait.Top.Set(4f, 0f);
+        portrait = new UIPortrait(new HarpyVillager()) { Top = StyleDimension.FromPixels(4f) };
         portraitZone.Append(portrait);
 
         //Name Zone
-        nameZone = new UIElement();
-        nameZone.Width.Set(196f, 0f);
-        nameZone.Height.Set(60f, 0f);
-        nameZone.Left.Set(734f, 0f);
-        nameZone.Top.Set(322f, 0f);
+        nameZone = new UIElement {
+            Width = StyleDimension.FromPixels(PortraitZoneSideLength), Height = StyleDimension.FromPixels(60f), Left = StyleDimension.FromPixels(734f), Top = StyleDimension.FromPixels(322f)
+        };
         backImage.Append(nameZone);
 
         nameText = new UIModifiedText(large: true) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = 184 };
