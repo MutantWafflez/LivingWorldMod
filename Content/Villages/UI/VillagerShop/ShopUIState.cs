@@ -111,9 +111,6 @@ public class ShopUIState : UIState {
                 spriteBatch.End();
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, defaultRasterizerState, shader, Main.UIScaleMatrix);
 
-                //So I am unsure as to why exactly this needed to be done, cause this is definitely the definition of a band-aid fix.
-                //In short, when using this shader, uTime isn't being updated at all, causing the shader to just stay one color instead of breathing in a sine wave fashion like intended.
-                //Thus, for the time being, until I can figure out why uTime isn't being automatically updated, I am manually setting this new Parameter
                 shader.Parameters["manualUTime"].SetValue(_manualUpdateTime);
                 base.DrawSelf(spriteBatch);
 
