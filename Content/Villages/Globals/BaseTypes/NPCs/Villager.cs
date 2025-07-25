@@ -36,7 +36,7 @@ public abstract class Villager : ModNPC {
     /// <summary>
     ///     A list of shop items that this specific villager is selling at this very moment.
     /// </summary>
-    public List<ShopItem> shopInventory;
+    public List<VillagerShopItem> shopInventory;
 
     /// <summary>
     ///     A counter for how long this Villager has been homeless for, used for automatically leaving
@@ -59,7 +59,7 @@ public abstract class Villager : ModNPC {
     ///     A list of ALL POSSIBLE shop items that villagers of this given type can ever sell. This
     ///     list is checked upon every restock.
     /// </summary>
-    public abstract DynamicWeightedRandom<ShopItem> ShopPool {
+    public abstract DynamicWeightedRandom<VillagerShopItem> ShopPool {
         get;
     }
 
@@ -157,7 +157,7 @@ public abstract class Villager : ModNPC {
             RandomizeFeatures();
         }
 
-        shopInventory = tag.Get<List<ShopItem>>("Shop");
+        shopInventory = tag.Get<List<VillagerShopItem>>("Shop");
 
         NPC.GivenName = tag.GetString("DisplayName");
         NPC.homeTileX = tag.GetInt("HomeTileX");
@@ -278,7 +278,7 @@ public abstract class Villager : ModNPC {
         shopInventory = [];
 
         int shopLength = Main.rand.Next(5, 8);
-        DynamicWeightedRandom<ShopItem> currentShop = ShopPool;
+        DynamicWeightedRandom<VillagerShopItem> currentShop = ShopPool;
         for (int i = 0; i < shopLength && currentShop.Count > 0; i++) {
             shopInventory.Add(currentShop.NextWithRemoval());
         }

@@ -3,6 +3,7 @@ using LivingWorldMod.Content.Villages.DataStructures.Enums;
 using LivingWorldMod.Content.Villages.DataStructures.Records;
 using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.Villages.Globals.Systems;
+using LivingWorldMod.Content.Villages.Globals.Systems.UI;
 using LivingWorldMod.Content.Villages.HarpyVillage.NPCs;
 using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
@@ -22,6 +23,117 @@ namespace LivingWorldMod.Content.Villages.UI.VillagerShop;
 
 // Future Mutant: This is wack. All of it is wack. I don't like it. As a matter of fact, I hate it. Needs a complete re-write, eventually. 
 public class ShopUIState : UIState {
+    /// <summary>
+    ///     UIImage class that holds different UITexts and UIElements that is the index in a given shop
+    ///     UI list. Holds data on the entire entry for the given item.
+    /// </summary>
+    public class UIShopItem : UIImage {
+        private const float ItemImageSize = 32f;
+
+        public readonly Item displayedItem;
+        public readonly UIModifiedText itemNameText;
+
+        public readonly long displayedCost;
+        public readonly int shopIndex;
+
+        public bool isSelected;
+
+        private readonly UIBetterItemIcon _itemImage;
+        private readonly UICoinDisplay _itemCostDisplay;
+
+        private readonly Villager _villager;
+
+        private float _manualUpdateTime;
+
+        public VillagerShopItem ShopItem => _villager.shopInventory[shopIndex];
+
+        public UIShopItem(Villager villager, int shopIndex, long displayedCost) : base(
+            ModContent.Request<Texture2D>($"{LWM.SpritePath}Villages/UI/ShopUI/{villager.VillagerType}/ShopItemBox")
+        ) {
+            _villager = villager;
+            this.shopIndex = shopIndex;
+
+            VillagerShopItem item = villager.shopInventory[shopIndex];
+            displayedItem = new Item();
+            displayedItem.SetDefaults(item.ItemType);
+            displayedItem.stack = item.Stock;
+            this.displayedCost = displayedCost;
+
+            Width = StyleDimension.FromPixels(448f);
+            Height = StyleDimension.FromPixels(106f);
+
+            _itemImage = new UIBetterItemIcon(displayedItem, ItemImageSize, true) { VAlign = 0.5f, IgnoresMouseInteraction = true };
+            _itemImage.Left.Set(38f, 0f);
+            _itemImage.Width.Set(ItemImageSize, 0f);
+            _itemImage.Height.Set(ItemImageSize, 0f);
+            Append(_itemImage);
+
+            itemNameText = new UIModifiedText(displayedItem.HoverName, 1.25f) { VAlign = 0.5f, horizontalTextConstraint = 194f, IgnoresMouseInteraction = true };
+            itemNameText.Left.Set(94f, 0f);
+            Append(itemNameText);
+
+            _itemCostDisplay = new UICoinDisplay(displayedCost, UICoinDisplay.CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) { VAlign = 0.5f, IgnoresMouseInteraction = true };
+            _itemCostDisplay.Left.Set(-_itemCostDisplay.Width.Pixels - 12f, 1f);
+            Append(_itemCostDisplay);
+
+            OnMouseOver += MousedOverElement;
+            OnMouseOut += MouseExitedElement;
+        }
+
+        private static void MousedOverElement(UIMouseEvent evt, UIElement listeningElement) {
+            SoundEngine.PlaySound(SoundID.MenuTick);
+        }
+
+        protected override void DrawSelf(SpriteBatch spriteBatch) {
+            RasterizerState defaultRasterizerState = new() { CullMode = CullMode.None, ScissorTestEnable = true };
+
+            if (ShopItem.Stock <= 0) {
+                Effect shader = ShopUISystem.grayScaleShader.Value;
+
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, defaultRasterizerState, shader, Main.UIScaleMatrix);
+
+                base.DrawSelf(spriteBatch);
+
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, defaultRasterizerState, null, Main.UIScaleMatrix);
+                return;
+            }
+
+            if (ContainsPoint(Main.MouseScreen) || isSelected) {
+                Effect shader = ShopUISystem.hoverFlashShader.Value;
+
+                _manualUpdateTime += 1f / 45f;
+                if (_manualUpdateTime >= MathHelper.TwoPi) {
+                    _manualUpdateTime = 0f;
+                }
+
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, defaultRasterizerState, shader, Main.UIScaleMatrix);
+
+                //So I am unsure as to why exactly this needed to be done, cause this is definitely the definition of a band-aid fix.
+                //In short, when using this shader, uTime isn't being updated at all, causing the shader to just stay one color instead of breathing in a sine wave fashion like intended.
+                //Thus, for the time being, until I can figure out why uTime isn't being automatically updated, I am manually setting this new Parameter
+                shader.Parameters["manualUTime"].SetValue(_manualUpdateTime);
+                base.DrawSelf(spriteBatch);
+
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, defaultRasterizerState, null, Main.UIScaleMatrix);
+            }
+            else {
+                base.DrawSelf(spriteBatch);
+            }
+        }
+
+        private void MouseExitedElement(UIMouseEvent evt, UIElement listeningElement) {
+            if (!isSelected) {
+                _manualUpdateTime = 0f;
+            }
+        }
+    }
+
+    private const float MaxBuyDelay = 60f;
+
     public Villager currentVillager;
 
     public UIImage backImage;
@@ -51,8 +163,6 @@ public class ShopUIState : UIState {
 
     public UIScrollbar shopScrollbar;
     public UIList shopList;
-
-    private readonly float _maxBuyDelay = 60f;
     private float _buySpeed;
     private float _buyDelay;
 
@@ -187,7 +297,7 @@ public class ShopUIState : UIState {
 
         if (_selectedItem != null && buyItemButton.ContainsPoint(Main.MouseScreen) && Main.mouseLeft) {
             Player player = Main.LocalPlayer;
-            ShopItem shopItem = _selectedItem.pertainedInventoryItem;
+            VillagerShopItem villagerShopItem = _selectedItem.ShopItem;
 
             if (--_buyDelay < 0f) {
                 _buyDelay = 0f;
@@ -199,18 +309,19 @@ public class ShopUIState : UIState {
 
             _buyDelay *= _buySpeed;
 
-            if (shopItem.remainingStock > 0) {
+            if (villagerShopItem.Stock > 0) {
                 if (player.CanAfford((int)_selectedItem.displayedCost) && player.CanAcceptItemIntoInventory(_selectedItem.displayedItem) && _buyDelay <= 0f) {
-                    _buyDelay = _maxBuyDelay;
+                    _buyDelay = MaxBuyDelay;
 
-                    shopItem.remainingStock--;
+                    villagerShopItem.Stock--;
+                    currentVillager.shopInventory[_selectedItem.shopIndex] = villagerShopItem;
 
                     player.BuyItem((int)_selectedItem.displayedCost);
                     player.QuickSpawnItem(new EntitySource_DropAsItem(player), _selectedItem.displayedItem);
 
                     _selectedItem.displayedItem.stack--;
                     _selectedItem.itemNameText.SetText(_selectedItem.displayedItem.HoverName);
-                    buyItemStock.SetText(shopItem.remainingStock.ToString());
+                    buyItemStock.SetText(villagerShopItem.Stock.ToString());
 
                     savingsDisplay.moneyToDisplay = player.CalculateTotalSavings();
 
@@ -268,33 +379,35 @@ public class ShopUIState : UIState {
     /// <param name="newSelectedItem"> The newly selected shop item. </param>
     /// <param name="playSound"> Whether or not to play the sound of opening/closing the menu. </param>
     public void SetSelectedItem(UIShopItem newSelectedItem, bool playSound = true) {
-        _selectedItem = newSelectedItem;
+        bool selectedElementOutOfStock = newSelectedItem?.ShopItem.Stock <= 0;
+        if (newSelectedItem is null || _selectedItem == newSelectedItem || selectedElementOutOfStock) {
+            _selectedItem = null;
 
-        foreach (UIElement element in shopList) {
-            if (element is UIShopItem shopItem) {
-                shopItem.isSelected = false;
-            }
-        }
-
-        if (_selectedItem != null) {
-            _selectedItem.isSelected = true;
-
-            buyItemIcon.SetItem(_selectedItem.displayedItem);
-            buyItemStock.SetText(_selectedItem.pertainedInventoryItem.remainingStock.ToString());
-
-            buyItemZone.SetVisibility(true);
-
-            if (playSound) {
-                SoundEngine.PlaySound(SoundID.MenuOpen);
-            }
-        }
-        else {
             buyItemZone.SetVisibility(false);
 
             if (playSound) {
-                SoundEngine.PlaySound(SoundID.MenuClose);
+                SoundEngine.PlaySound(!selectedElementOutOfStock ? SoundID.MenuClose : SoundID.Tink);
             }
+
+            return;
         }
+
+        if (_selectedItem is not null) {
+            _selectedItem.isSelected = false;
+        }
+
+        newSelectedItem.isSelected = true;
+
+        buyItemIcon.SetItem(newSelectedItem.displayedItem);
+        buyItemStock.SetText(currentVillager.shopInventory[newSelectedItem.shopIndex].Stock.ToString());
+
+        buyItemZone.SetVisibility(true);
+
+        if (playSound) {
+            SoundEngine.PlaySound(SoundID.MenuOpen);
+        }
+
+        _selectedItem = newSelectedItem;
     }
 
     /// <summary>
@@ -306,16 +419,21 @@ public class ShopUIState : UIState {
 
         float priceMult = LWMUtils.GetPriceMultiplierFromRep(currentVillager);
 
-        foreach (ShopItem item in currentVillager.shopInventory) {
+        for (int i = 0; i < currentVillager.shopInventory.Count; i++) {
+            VillagerShopItem item = currentVillager.shopInventory[i];
             UIShopItem element = new(
-                item,
-                (long)Math.Round(item.ItemPrice * priceMult),
-                currentVillager.VillagerType
+                currentVillager,
+                i,
+                (long)Math.Round(item.Price * priceMult)
             );
 
-            element.Activate();
+            element.OnLeftClick += ClickedOnShopItem;
 
             shopList.Add(element);
         }
+    }
+
+    private void ClickedOnShopItem(UIMouseEvent evt, UIElement listeningElement) {
+        SetSelectedItem((UIShopItem)listeningElement);
     }
 }
