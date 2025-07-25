@@ -43,7 +43,7 @@ public class ShopUIState : UIState {
 
         private readonly Villager _villager;
 
-        private float _manualUpdateTime;
+        private float _flashShaderTime;
 
         public VillagerShopItem ShopItem => _villager.shopInventory[shopIndex];
 
@@ -80,6 +80,20 @@ public class ShopUIState : UIState {
             OnMouseOut += MouseExitedElement;
         }
 
+        public override void Update(GameTime gameTime) {
+            base.Update(gameTime);
+
+            if (!isSelected && !IsMouseHovering) {
+                _flashShaderTime = 0f;
+                return;
+            }
+
+            _flashShaderTime += MathHelper.Pi / LWMUtils.RealLifeSecond;
+            if (_flashShaderTime >= MathHelper.TwoPi) {
+                _flashShaderTime = 0f;
+            }
+        }
+
         protected override void DrawSelf(SpriteBatch spriteBatch) {
             RasterizerState defaultRasterizerState = new() { CullMode = CullMode.None, ScissorTestEnable = true };
 
@@ -96,18 +110,13 @@ public class ShopUIState : UIState {
                 return;
             }
 
-            if (ContainsPoint(Main.MouseScreen) || isSelected) {
+            if (_flashShaderTime > 0f) {
                 Effect shader = ShopUISystem.hoverFlashShader.Value;
-
-                _manualUpdateTime += 1f / 45f;
-                if (_manualUpdateTime >= MathHelper.TwoPi) {
-                    _manualUpdateTime = 0f;
-                }
 
                 spriteBatch.End();
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, defaultRasterizerState, shader, Main.UIScaleMatrix);
 
-                shader.Parameters["manualUTime"].SetValue(_manualUpdateTime);
+                shader.Parameters["uTime"].SetValue(_flashShaderTime);
                 base.DrawSelf(spriteBatch);
 
                 spriteBatch.End();
@@ -128,7 +137,7 @@ public class ShopUIState : UIState {
 
         private void MouseExitedElement(UIMouseEvent evt, UIElement listeningElement) {
             if (!isSelected) {
-                _manualUpdateTime = 0f;
+                _flashShaderTime = 0f;
             }
         }
     }
