@@ -15,6 +15,8 @@ using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
+using CoinDrawStyle = LivingWorldMod.Globals.UIElements.UICoinDisplay.CoinDrawStyle;
+using CoinDrawCondition = LivingWorldMod.Globals.UIElements.UICoinDisplay.CoinDrawCondition;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.UI.TaxSheet;
 
@@ -277,10 +279,10 @@ public class TaxSheetUIState : UIState {
         _propertyTaxDisplay = new UICoinDisplay(
             _tempPropertyTaxValue,
             [
-                new UICoinDisplay.CoinDrawStyle (UICoinDisplay.CoinDrawCondition.Default),
-                new UICoinDisplay.CoinDrawStyle (UICoinDisplay.CoinDrawCondition.Default),
-                new UICoinDisplay.CoinDrawStyle (UICoinDisplay.CoinDrawCondition.Default),
-                new UICoinDisplay.CoinDrawStyle (UICoinDisplay.CoinDrawCondition.DoNotDraw)
+                new CoinDrawStyle (CoinDrawCondition.Default),
+                new CoinDrawStyle (CoinDrawCondition.Default),
+                new CoinDrawStyle (CoinDrawCondition.Default),
+                new CoinDrawStyle (CoinDrawCondition.DoNotDraw)
             ],
             CoinDisplayPadding
         ) { HAlign = 0.5f, Top = StyleDimension.FromPixels(80f) };
