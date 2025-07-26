@@ -169,6 +169,8 @@ public class ShopUIState : UIState {
     private const float DialogueZoneXPos = ShopZoneXPos + 528f;
     private const float DialogueZoneYPos = NameZoneYPos + 66f;
 
+    private const float DialogueTextWrapConstraint = DialogueZoneWidth - DefaultElementPadding * 2f;
+
     private const float BuyItemZoneWidth = 158f;
     private const float BuyItemZoneHeight = 136f;
     private const float BuyItemZoneXPos = ShopZoneXPos + 506f;
@@ -191,7 +193,7 @@ public class ShopUIState : UIState {
     private const float SavingsZoneXPos = BuyItemZoneXPos + 14f;
     private const float SavingsZoneYPos = BuyItemZoneYPos + 170f;
 
-    private const float SavingsTextYPos = 26f;
+    private const float SavingsTextYPos = -26f;
 
     private const float ShopScrollbarXOffset = -38f;
     private const float ShopScrollbarYPos = 16f;
@@ -289,7 +291,7 @@ public class ShopUIState : UIState {
         };
         backImage.Append(dialogueZone);
 
-        dialogueText = new UIModifiedText { IsWrapped = true, horizontalWrapConstraint = DialogueZoneWidth };
+        dialogueText = new UIModifiedText { IsWrapped = true, horizontalWrapConstraint = DialogueTextWrapConstraint };
         dialogueText.SetPadding(DefaultElementPadding);
         dialogueZone.Append(dialogueText);
 
