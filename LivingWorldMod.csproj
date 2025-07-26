@@ -19,6 +19,9 @@
         <!--> Mod Loader Publicizing -->
         <Publicize Include="tModLoader:Terraria.ModLoader.ModLoader.isLoading"/>
 
+        <!-- Main Publicizing -->
+        <Publicize Include="tModLoader:Terraria.Main.mH"/>
+
         <!-- Map Publicizing -->
         <Publicize Include="tModLoader:Terraria.ModLoader.MapEntry"/>
         <Publicize Include="tModLoader:Terraria.ModLoader.MapEntry..ctor"/>
