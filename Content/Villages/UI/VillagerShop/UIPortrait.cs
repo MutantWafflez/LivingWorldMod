@@ -82,19 +82,11 @@ public class UIPortrait : UIElement {
     public void ReloadPortrait(Villager newVillager) {
         _villager = newVillager;
 
-        switch (_villager.RelationshipStatus) {
-            case <= VillagerRelationship.SevereDislike:
-                _currentExpression = VillagerPortraitExpression.Angered;
-                break;
-
-            case > VillagerRelationship.SevereDislike and < VillagerRelationship.Love:
-                _currentExpression = VillagerPortraitExpression.Neutral;
-                break;
-
-            case >= VillagerRelationship.Love:
-                _currentExpression = VillagerPortraitExpression.Happy;
-                break;
-        }
+        _currentExpression = _villager.RelationshipStatus switch {
+            <= VillagerRelationship.SevereDislike => VillagerPortraitExpression.Angered,
+            < VillagerRelationship.Love => VillagerPortraitExpression.Neutral,
+            >= VillagerRelationship.Love => VillagerPortraitExpression.Happy
+        };
 
         const int paleSkinFrame = 0;
         const int tanSkinFrame = 1;
