@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices.Marshalling;
-using LivingWorldMod.Content.Villages.DataStructures.Enums;
+﻿using LivingWorldMod.Content.Villages.DataStructures.Enums;
 using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.Globals.UIElements;
@@ -33,7 +32,7 @@ public class VillagerHousingUIState : UIState {
         /// <summary>
         ///     The villager instance that this element is displaying.
         /// </summary>
-        public Villager myVillager;
+        public readonly Villager myVillager;
 
         /// <summary>
         ///     Whether or not this villager is currently selected.
@@ -132,6 +131,27 @@ public class VillagerHousingUIState : UIState {
         }
     }
 
+    private const float VillagerHousingZoneXOffset = -196f;
+    private const float DefaultVillagerHousingZoneYPos = 180f;
+    private const float VillagerHousingZoneWidth = 160f;
+    private const float VillagerHousingZoneHeight = 418f;
+
+    private const float EnumerateRightButtonXPos = 126f;
+    private const float EnumerateLeftButtonXPos = 6f;
+
+    private const float VillagerTypeZoneWidth = 82f;
+    private const float VillagerTypeZoneHeight = 28f;
+    private const float VillagerTypeTextXPos = 39f;
+
+    private const float VillagerGridYPos = 34f;
+    private const float GridScrollbarXPos = 170f;
+    private const float VillagerGridHeight = 390f;
+
+    private const float OpenMenuButtonXPosWithMinimap = -220f;
+    private const float OpenMenuButtonXPosWithoutMinimap = -177f;
+    private const float OpenMenuButtonYPosWithMinimap = 143f;
+    private const float OpenMenuButtonYPosWithoutMinimap = 114f;
+
     /// <summary>
     ///     The Villager type to currently be showing to the player.
     /// </summary>
@@ -157,7 +177,7 @@ public class VillagerHousingUIState : UIState {
     /// <summary>
     ///     Element that exists to center the villager type display text.
     /// </summary>
-    public UIElement villagerTypeCenterElement;
+    public UIElement villagerTypeZone;
 
     /// <summary>
     ///     Text that displays what type of villager is currently selected for housing.
@@ -165,19 +185,23 @@ public class VillagerHousingUIState : UIState {
     public UIModifiedText villagerTypeText;
 
     /// <summary>
-    ///     The scroll bar for the grid of villagers.
-    /// </summary>
-    public UIBetterScrollbar gridScrollbar;
-
-    /// <summary>
     ///     The grid of villagers of the specified type that are currently being displayed.
     /// </summary>
     public UIGrid gridOfVillagers;
 
     /// <summary>
+    ///     The scroll bar for the grid of villagers.
+    /// </summary>
+    public UIBetterScrollbar gridScrollbar;
+
+    /// <summary>
     ///     Path to the sprites for this UI.
     /// </summary>
     private string HousingTexturePath => $"{LWM.SpritePath}Villages/UI/VillagerHousingUI/";
+
+    private static void WhileHoveringButton() {
+        Main.instance.MouseText("UI.VillagerHousing.ButtonHoverText".Localized().Value);
+    }
 
     public override void OnInitialize() {
         typeToShow = VillagerType.Harpy;
@@ -190,59 +214,61 @@ public class VillagerHousingUIState : UIState {
         Append(openMenuButton);
 
         villagerHousingZone = new UIVisibilityElement {
-            Left = StyleDimension.FromPixelsAndPercent(-196f, 1f), Top = StyleDimension.FromPixels(180f), Width = StyleDimension.FromPixels(160f), Height = StyleDimension.FromPixels(418f)
+            Left = StyleDimension.FromPixelsAndPercent(VillagerHousingZoneXOffset, 1f),
+            Top = StyleDimension.FromPixels(DefaultVillagerHousingZoneYPos),
+            Width = StyleDimension.FromPixels(VillagerHousingZoneWidth),
+            Height = StyleDimension.FromPixels(VillagerHousingZoneHeight)
         };
         Append(villagerHousingZone);
 
-        enumerateRightButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Forward", AssetRequestMode.ImmediateLoad));
-        enumerateRightButton.Left.Set(126f, 0f);
+        enumerateRightButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Forward", AssetRequestMode.ImmediateLoad)) {
+            Left = StyleDimension.FromPixels(EnumerateRightButtonXPos)
+        };
         enumerateRightButton.SetVisibility(1f, 0.7f);
         enumerateRightButton.OnLeftClick += EnumerateTypeButtonClicked;
         villagerHousingZone.Append(enumerateRightButton);
 
-        enumerateLeftButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Back", AssetRequestMode.ImmediateLoad));
-        enumerateLeftButton.Left.Set(6f, 0f);
+        enumerateLeftButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Back", AssetRequestMode.ImmediateLoad)) {
+            Left = StyleDimension.FromPixels(EnumerateLeftButtonXPos)
+        };
         enumerateLeftButton.SetVisibility(1f, 0.7f);
         enumerateLeftButton.OnLeftClick += EnumerateTypeButtonClicked;
         villagerHousingZone.Append(enumerateLeftButton);
 
-        villagerTypeCenterElement = new UIElement();
-        villagerTypeCenterElement.Width.Set(82f, 0f);
-        villagerTypeCenterElement.Height.Set(28f, 0f);
-        villagerHousingZone.Append(villagerTypeCenterElement);
+        villagerTypeZone = new UIElement { Width = StyleDimension.FromPixels(VillagerTypeZoneWidth), Height = StyleDimension.FromPixels(VillagerTypeZoneHeight) };
+        villagerHousingZone.Append(villagerTypeZone);
 
-        villagerTypeText = new UIModifiedText("VillagerType.Harpy".Localized(), 1.1f) { horizontalTextConstraint = villagerTypeCenterElement.Width.Pixels, HAlign = 0.5f, VAlign = 0.5f };
-        villagerTypeCenterElement.Left.Set(39f, 0f);
-        villagerTypeCenterElement.Append(villagerTypeText);
+        villagerTypeText = new UIModifiedText("VillagerType.Harpy".Localized(), 1.1f) {
+            Left = StyleDimension.FromPixels(VillagerTypeTextXPos), horizontalTextConstraint = VillagerTypeZoneWidth, HAlign = 0.5f, VAlign = 0.5f
+        };
+        villagerTypeZone.Append(villagerTypeText);
 
-        gridScrollbar = new UIBetterScrollbar();
-        gridScrollbar.Left.Set(170f, 0f);
-        gridScrollbar.Top.Set(34f, 0f);
-        gridScrollbar.Height.Set(390f, 0f);
-        villagerHousingZone.Append(gridScrollbar);
-
-        gridOfVillagers = new UIGrid { ListPadding = 4f };
-        gridOfVillagers.Top.Set(34f, 0f);
-        gridOfVillagers.Width.Set(0f, 1f);
-        gridOfVillagers.Height.Set(gridScrollbar.Height.Pixels, 0f);
-        gridOfVillagers.SetScrollbar(gridScrollbar);
+        gridOfVillagers = new UIGrid {
+            Top = StyleDimension.FromPixels(VillagerGridYPos), Width = StyleDimension.FromPercent(1f), Height = StyleDimension.FromPixels(VillagerGridHeight), ListPadding = 4f
+        };
         villagerHousingZone.Append(gridOfVillagers);
+
+        gridScrollbar = new UIBetterScrollbar {
+            Left = StyleDimension.FromPixels(GridScrollbarXPos), Top = StyleDimension.FromPixels(VillagerGridYPos), Height = StyleDimension.FromPixels(VillagerGridHeight)
+        };
+        gridOfVillagers.SetScrollbar(gridScrollbar);
+        villagerHousingZone.Append(gridScrollbar);
     }
 
     public override void Update(GameTime gameTime) {
         bool isMiniMapEnabled = !Main.mapFullscreen && Main.mapStyle == 1;
 
         //Update positions
-        openMenuButton.Left.Set(Main.screenWidth - (isMiniMapEnabled ? 220f : 177f), 0f);
-        openMenuButton.Top.Set((isMiniMapEnabled ? 143f : 114f) + Main.mH, 0f);
+        openMenuButton.Left.Set(isMiniMapEnabled ? OpenMenuButtonXPosWithMinimap : OpenMenuButtonXPosWithoutMinimap, 1f);
+        openMenuButton.Top.Set((isMiniMapEnabled ? OpenMenuButtonYPosWithMinimap : OpenMenuButtonYPosWithoutMinimap) + Main.mH, 0f);
 
-        villagerHousingZone.Top.Set(180f + Main.mH, 0f);
+        villagerHousingZone.Top.Set(DefaultVillagerHousingZoneYPos + Main.mH, 0f);
 
         //Disable Menu Visibility when any other equip page buttons are pressed
         if (villagerHousingZone.IsVisible && Main.EquipPageSelected != -1) {
             CloseMenu();
         }
-        
+
         base.Update(gameTime);
     }
 
@@ -313,9 +339,5 @@ public class VillagerHousingUIState : UIState {
         }
 
         gridScrollbar.ViewPosition = 0f;
-    }
-
-    private static void WhileHoveringButton() {
-        Main.instance.MouseText("UI.VillagerHousing.ButtonHoverText".Localized().Value);
     }
 }
