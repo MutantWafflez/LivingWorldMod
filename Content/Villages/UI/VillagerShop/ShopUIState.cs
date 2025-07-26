@@ -28,7 +28,9 @@ public class ShopUIState : UIState {
     ///     UI list. Holds data on the entire entry for the given item.
     /// </summary>
     public class UIShopItem : UIImage {
-        private const float ItemImageSize = 32f;
+        private const float ShopItemWidth = 448f;
+        private const float ShopItemHeight = 106f;
+        private const float ItemImageXPos = 38f;
 
         public readonly Item displayedItem;
         public readonly UIModifiedText itemNameText;
@@ -59,21 +61,24 @@ public class ShopUIState : UIState {
             displayedItem.stack = item.Stock;
             this.displayedCost = displayedCost;
 
-            Width = StyleDimension.FromPixels(448f);
-            Height = StyleDimension.FromPixels(106f);
+            Width = StyleDimension.FromPixels(ShopItemWidth);
+            Height = StyleDimension.FromPixels(ShopItemHeight);
 
-            _itemImage = new UIBetterItemIcon(displayedItem, ItemImageSize, true) { VAlign = 0.5f, IgnoresMouseInteraction = true };
-            _itemImage.Left.Set(38f, 0f);
-            _itemImage.Width.Set(ItemImageSize, 0f);
-            _itemImage.Height.Set(ItemImageSize, 0f);
+            _itemImage = new UIBetterItemIcon(displayedItem, ItemImageSideLength, true) {
+                Left = StyleDimension.FromPixels(ItemImageXPos),
+                Width = StyleDimension.FromPixels(ItemImageSideLength),
+                Height = StyleDimension.FromPixels(ItemImageSideLength),
+                VAlign = 0.5f,
+                IgnoresMouseInteraction = true
+            };
             Append(_itemImage);
 
-            itemNameText = new UIModifiedText(displayedItem.HoverName, 1.25f) { VAlign = 0.5f, horizontalTextConstraint = 194f, IgnoresMouseInteraction = true };
-            itemNameText.Left.Set(94f, 0f);
+            itemNameText = new UIModifiedText(displayedItem.HoverName, 1.25f) { Left = StyleDimension.FromPixels(94f), VAlign = 0.5f, horizontalTextConstraint = 194f, IgnoresMouseInteraction = true };
             Append(itemNameText);
 
-            _itemCostDisplay = new UICoinDisplay(displayedCost, UICoinDisplay.CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) { VAlign = 0.5f, IgnoresMouseInteraction = true };
-            _itemCostDisplay.Left.Set(-_itemCostDisplay.Width.Pixels - 12f, 1f);
+            _itemCostDisplay = new UICoinDisplay(displayedCost, UICoinDisplay.CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) {
+                Left = StyleDimension.FromPixels(-DefaultElementPadding), HAlign = 1f, VAlign = 0.5f, IgnoresMouseInteraction = true
+            };
             Append(_itemCostDisplay);
 
             OnMouseOver += MousedOverElement;
@@ -143,12 +148,57 @@ public class ShopUIState : UIState {
     }
 
     private const float MaxBuyDelay = 60f;
+
+    private const float DefaultElementPadding = 12f;
+
     private const float ShopZoneSideLength = 504f;
+
     private const float PortraitZoneSideLength = 196f;
     private const float PortraitZoneXPos = 732f;
     private const float PortraitZoneYPos = 120f;
+
     private const float ShopZoneXPos = 56f;
     private const float ShopZoneYPos = 50f;
+
+    private const float NameZoneHeight = 60f;
+    private const float NameZoneXPos = ShopZoneXPos + 678f;
+    private const float NameZoneYPos = ShopZoneYPos + 272f;
+
+    private const float DialogueZoneWidth = 410f;
+    private const float DialogueZoneHeight = 166f;
+    private const float DialogueZoneXPos = ShopZoneXPos + 528f;
+    private const float DialogueZoneYPos = NameZoneYPos + 66f;
+
+    private const float BuyItemZoneWidth = 158f;
+    private const float BuyItemZoneHeight = 136f;
+    private const float BuyItemZoneXPos = ShopZoneXPos + 506f;
+    private const float BuyItemZoneYPos = ShopZoneYPos + 40f;
+
+    private const float ItemImageSideLength = 32f;
+
+    private const float BuyItemIconYPos = 26f;
+
+    private const float BuyItemStockHeaderYPos = BuyItemIconYPos + 30f;
+
+    private const float BuyItemStockYPos = BuyItemStockHeaderYPos + 24f;
+
+    private const float BuyItemButtonWidth = 70f;
+    private const float BuyItemButtonHeight = 30f;
+    private const float BuyItemButtonYPos = BuyItemStockYPos + 22f;
+
+    private const float SavingsZoneWidth = 126f;
+    private const float SavingsZoneHeight = 84f;
+    private const float SavingsZoneXPos = BuyItemZoneXPos + 14f;
+    private const float SavingsZoneYPos = BuyItemZoneYPos + 170f;
+
+    private const float SavingsTextYPos = 26f;
+
+    private const float ShopScrollbarXOffset = -38f;
+    private const float ShopScrollbarYPos = 16f;
+    private const float ShopScrollbarHeight = ShopZoneSideLength - 40f;
+
+    private const float ShopListWidth = ShopZoneSideLength - 34f;
+    private const float ShopListHeight = ShopZoneSideLength + 8f;
 
     public Villager currentVillager;
 
@@ -199,7 +249,10 @@ public class ShopUIState : UIState {
 
         //Shop Zone
         shopZone = new UIElement {
-            Width = StyleDimension.FromPixels(ShopZoneSideLength), Height = StyleDimension.FromPixels(ShopZoneSideLength), Left = StyleDimension.FromPixels(ShopZoneXPos), Top = StyleDimension.FromPixels(ShopZoneYPos)
+            Width = StyleDimension.FromPixels(ShopZoneSideLength),
+            Height = StyleDimension.FromPixels(ShopZoneSideLength),
+            Left = StyleDimension.FromPixels(ShopZoneXPos),
+            Top = StyleDimension.FromPixels(ShopZoneYPos)
         };
         backImage.Append(shopZone);
 
@@ -217,86 +270,84 @@ public class ShopUIState : UIState {
 
         //Name Zone
         nameZone = new UIElement {
-            Width = StyleDimension.FromPixels(PortraitZoneSideLength), Height = StyleDimension.FromPixels(60f), Left = StyleDimension.FromPixels(734f), Top = StyleDimension.FromPixels(322f)
+            Width = StyleDimension.FromPixels(PortraitZoneSideLength),
+            Height = StyleDimension.FromPixels(NameZoneHeight),
+            Left = StyleDimension.FromPixels(NameZoneXPos),
+            Top = StyleDimension.FromPixels(NameZoneYPos)
         };
         backImage.Append(nameZone);
 
-        nameText = new UIModifiedText(large: true) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = 184 };
+        nameText = new UIModifiedText(large: true) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = PortraitZoneSideLength };
         nameZone.Append(nameText);
 
         //Dialogue Zone
-        dialogueZone = new UIElement();
-        dialogueZone.Width.Set(410f, 0f);
-        dialogueZone.Height.Set(166f, 0f);
-        dialogueZone.Left.Set(584f, 0f);
-        dialogueZone.Top.Set(388f, 0f);
+        dialogueZone = new UIElement {
+            Width = StyleDimension.FromPixels(DialogueZoneWidth),
+            Height = StyleDimension.FromPixels(DialogueZoneHeight),
+            Left = StyleDimension.FromPixels(DialogueZoneXPos),
+            Top = StyleDimension.FromPixels(DialogueZoneYPos)
+        };
         backImage.Append(dialogueZone);
 
-        dialogueText = new UIModifiedText { IsWrapped = true, horizontalWrapConstraint = 388f };
-        dialogueText.SetPadding(12f);
+        dialogueText = new UIModifiedText { IsWrapped = true, horizontalWrapConstraint = DialogueZoneWidth };
+        dialogueText.SetPadding(DefaultElementPadding);
         dialogueZone.Append(dialogueText);
 
         //Buy Item Zone
-        buyItemZone = new UIVisibilityElement();
-        buyItemZone.Width.Set(158f, 0f);
-        buyItemZone.Height.Set(136f, 0f);
-        buyItemZone.Left.Set(562f, 0f);
-        buyItemZone.Top.Set(90f, 0f);
+        buyItemZone = new UIVisibilityElement {
+            Width = StyleDimension.FromPixels(BuyItemZoneWidth),
+            Height = StyleDimension.FromPixels(BuyItemZoneHeight),
+            Left = StyleDimension.FromPixels(BuyItemZoneXPos),
+            Top = StyleDimension.FromPixels(BuyItemZoneYPos)
+        };
         backImage.Append(buyItemZone);
 
-        buyItemHeader = new UIModifiedText("UI.VillagerShop.Buying".Localized(), 1.25f) {  HAlign = 0.5f };
-        buyItemHeader.Top.Set(4f, 0f);
+        buyItemHeader = new UIModifiedText("UI.VillagerShop.Buying".Localized(), 1.25f) { HAlign = 0.5f, Top = StyleDimension.FromPixels(4f) };
         buyItemZone.Append(buyItemHeader);
 
-        buyItemIcon = new UIBetterItemIcon(new Item(ItemID.Acorn), 32f, true) {  HAlign = 0.5f };
-        buyItemIcon.Width.Set(32f, 0f);
-        buyItemIcon.Height.Set(32f, 0f);
-        buyItemIcon.Top.Set(26f, 0f);
+        buyItemIcon = new UIBetterItemIcon(new Item(ItemID.Acorn), ItemImageSideLength, true) {
+            Width = StyleDimension.FromPixels(ItemImageSideLength), Height = StyleDimension.FromPixels(ItemImageSideLength), Top = StyleDimension.FromPixels(BuyItemIconYPos), HAlign = 0.5f
+        };
         buyItemZone.Append(buyItemIcon);
 
-        buyItemStockHeader = new UIModifiedText("UI.VillagerShop.Stock".Localized(), 1.25f) {  HAlign = 0.5f };
-        buyItemStockHeader.Top.Set(56f, 0f);
+        buyItemStockHeader = new UIModifiedText("UI.VillagerShop.Stock".Localized(), 1.25f) { Top = StyleDimension.FromPixels(BuyItemStockHeaderYPos), HAlign = 0.5f };
         buyItemZone.Append(buyItemStockHeader);
 
-        buyItemStock = new UIModifiedText("1000", 1.25f) {  horizontalTextConstraint = 150, HAlign = 0.5f };
-        buyItemStock.Top.Set(80f, 0f);
+        buyItemStock = new UIModifiedText("1000", 1.25f) { Top = StyleDimension.FromPixels(BuyItemStockYPos), horizontalTextConstraint = BuyItemZoneWidth, HAlign = 0.5f };
         buyItemZone.Append(buyItemStock);
 
         buyItemButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "UI.VillagerShop.Buy".Localized()) {
             BackgroundColor = new Color(59, 97, 203),
             BorderColor = Color.White,
-            Width = StyleDimension.FromPixels(70f),
-            Height = StyleDimension.FromPixels(30f),
+            Width = StyleDimension.FromPixels(BuyItemButtonWidth),
+            Height = StyleDimension.FromPixels(BuyItemButtonHeight),
+            Top = StyleDimension.FromPixels(BuyItemButtonYPos),
             HAlign = 0.5f
         };
-        buyItemButton.Top.Set(102f, 0f);
         buyItemZone.Append(buyItemButton);
 
         //Savings Zone
-        savingsZone = new UIElement();
-        savingsZone.Width.Set(126f, 0f);
-        savingsZone.Height.Set(84f, 0f);
-        savingsZone.Left.Set(576f, 0f);
-        savingsZone.Top.Set(260f, 0f);
+        savingsZone = new UIElement {
+            Width = StyleDimension.FromPixels(SavingsZoneWidth),
+            Height = StyleDimension.FromPixels(SavingsZoneHeight),
+            Left = StyleDimension.FromPixels(SavingsZoneXPos),
+            Top = StyleDimension.FromPixels(SavingsZoneYPos)
+        };
         backImage.Append(savingsZone);
 
-        savingsText = new UIModifiedText("UI.VillagerShop.Savings".Localized()) { HAlign = 0.5f };
-        savingsText.Top.Set(-26f, 0f);
+        savingsText = new UIModifiedText("UI.VillagerShop.Savings".Localized()) { Top = StyleDimension.FromPixels(SavingsTextYPos), HAlign = 0.5f };
         savingsZone.Append(savingsText);
 
         savingsDisplay = new UICoinDisplay(Main.LocalPlayer.CalculateTotalSavings()) { HAlign = 0.5f, VAlign = 0.5f };
         savingsZone.Append(savingsDisplay);
 
         //List Zone
-        shopScrollbar = new UIScrollbar();
-        shopScrollbar.Left.Set(466f, 0f);
-        shopScrollbar.Top.Set(16f, 0f);
-        shopScrollbar.Height.Set(464f, 0f);
+        shopScrollbar = new UIScrollbar {
+            Left = StyleDimension.FromPixelsAndPercent(ShopScrollbarXOffset, 1f), Top = StyleDimension.FromPixels(ShopScrollbarYPos), Height = StyleDimension.FromPixels(ShopScrollbarHeight)
+        };
         shopZone.Append(shopScrollbar);
 
-        shopList = [];
-        shopList.Width.Set(470f, 0f);
-        shopList.Height.Set(512f, 0f);
+        shopList = new UIList { Width = StyleDimension.FromPixels(ShopListWidth), Height = StyleDimension.FromPixels(ShopListHeight) };
         shopList.SetPadding(6f);
         shopList.SetScrollbar(shopScrollbar);
         shopZone.Append(shopList);
