@@ -15,6 +15,12 @@ namespace LivingWorldMod.Content.Villages.UI.VillagerHousing;
 ///     per villager that exists in the world of a given type when the player is in the housing menu.
 /// </summary>
 public class UIHousingVillagerDisplay : UIElement {
+    // Very arbitrary number, I know, but this is about the smallest we can get the
+    // width/height while keeping 3 objects in a row in the grid
+    private const float SideLength = 50.284f;
+
+    private const int LockIconSideLength = 22;
+
     /// <summary>
     ///     The villager instance that this element is displaying.
     /// </summary>
@@ -35,10 +41,8 @@ public class UIHousingVillagerDisplay : UIElement {
     public UIHousingVillagerDisplay(Villager villager) {
         myVillager = villager;
 
-        // Very arbitrary number, I know, but this is about the smallest we can get the
-        // width/height while keeping 3 objects in a row in the grid
-        Width.Set(50.284f, 0f);
-        Height.Set(50.284f, 0f);
+        Width = StyleDimension.FromPixels(SideLength);
+        Height = StyleDimension.FromPixels(SideLength);
     }
 
     public override void LeftClick(UIMouseEvent evt) {
@@ -100,21 +104,21 @@ public class UIHousingVillagerDisplay : UIElement {
             myVillager.DrawIndices
         );
 
-        //Draw lock icon if not "allowed" (player is not high enough rep)
-        if (!IsAllowed) {
-            int lockSize = 22;
-
-            spriteBatch.Draw(
-                TextureAssets.HbLock[0].Value,
-                GetDimensions().Center(),
-                new Rectangle(0, 0, lockSize, lockSize),
-                Color.White,
-                0f,
-                new Vector2(lockSize / 2f, lockSize / 2f),
-                1.25f,
-                SpriteEffects.None,
-                0f
-            );
+        if (IsAllowed) {
+            return;
         }
+
+        //Draw lock icon if not "allowed" (player is not high enough rep)
+        spriteBatch.Draw(
+            TextureAssets.HbLock[0].Value,
+            GetDimensions().Center(),
+            new Rectangle(0, 0, LockIconSideLength, LockIconSideLength),
+            Color.White,
+            0f,
+            new Vector2(LockIconSideLength / 2f, LockIconSideLength / 2f),
+            1.25f,
+            SpriteEffects.None,
+            0f
+        );
     }
 }
