@@ -93,7 +93,7 @@ public class VillageShrineTile : BasePylon {
     public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) { }
 
     public override void KillMultiTile(int i, int j, int frameX, int frameY) {
-        VillageShrineUISystem shrineUISystem = ModContent.GetInstance<VillageShrineUISystem>();
+        VillageShrineUISystem shrineUISystem = VillageShrineUISystem.Instance;
         if (shrineUISystem.UIState.EntityPosition == new Point16(i, j)) {
             shrineUISystem.CloseShrineState();
         }

@@ -68,7 +68,7 @@ public class ShrinePacketHandler : PacketHandler {
                         if (TileEntity.ByPosition.TryGetValue(entityPos, out TileEntity entity) && entity is VillageShrineEntity shrineEntity) {
                             Main.LocalPlayer.QuickSpawnItem(new EntitySource_Sync(), LWMUtils.VillagerTypeToRespawnItemType(shrineEntity.shrineType));
 
-                            ModContent.GetInstance<VillageShrineUISystem>().OpenOrRegenShrineState(entityPos);
+                            VillageShrineUISystem.Instance.OpenOrRegenShrineState(entityPos);
                         }
                         else {
                             LWM.Instance.Logger.Error($"Failed AddRespawnItem received, but got invalid/no entity at position: {entityPos}");
@@ -109,7 +109,7 @@ public class ShrinePacketHandler : PacketHandler {
                         if (TileEntity.ByPosition.TryGetValue(entityPos, out TileEntity entity) && entity is VillageShrineEntity shrineEntity) {
                             Main.LocalPlayer.QuickSpawnItem(new EntitySource_Sync(), LWMUtils.VillagerTypeToRespawnItemType(shrineEntity.shrineType));
 
-                            ModContent.GetInstance<VillageShrineUISystem>().OpenOrRegenShrineState(entityPos);
+                            VillageShrineUISystem.Instance.OpenOrRegenShrineState(entityPos);
                         }
                         else {
                             LWM.Instance.Logger.Error($"Successful TakeRespawnItem received, but got invalid/no entity at position: {entityPos}");
