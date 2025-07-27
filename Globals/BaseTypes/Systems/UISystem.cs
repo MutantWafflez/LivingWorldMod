@@ -68,8 +68,17 @@ public abstract partial class UISystem<TSystem, TState> : BaseModSystem<TSystem>
         }
     }
 
+    /// <summary>
+    ///     Initializes the <see cref="UIState" /> by calling its constructor. This is done when the player first enters any world.
+    /// </summary>
+    /// <remarks>
+    ///     If you wish to override this method, make sure to still call this base method, or at the very least initialize <see cref="UIState" />. If you don't, the UI will not work.
+    ///     <para></para>
+    ///     As for why this is necessary, the TL;DR is that in the main menu, <see cref="Main.UIScale" /> is set to a different value than what it is in-game/world. As such, any initialization
+    ///     of the UI before the world is entered that relies on dimension calculations will return incorrect values, and thus break.
+    /// </remarks>
     protected virtual void InitializeUIState(Player player) {
-        if (player.whoAmI != Main.myPlayer) {
+        if (player.whoAmI != Main.myPlayer || UIState is not null) {
             return;
         }
 

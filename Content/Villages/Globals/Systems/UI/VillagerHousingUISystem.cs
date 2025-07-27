@@ -14,16 +14,15 @@ public class VillagerHousingUISystem : UISystem<VillagerHousingUISystem, Village
 
     public override void UpdateUI(GameTime gameTime) {
         // Only enable open button when inventory is open
-        UIState.SetMenuButtonVisibility(Main.playerInventory);
+        UIState?.SetMenuButtonVisibility(Main.playerInventory);
 
         base.UpdateUI(gameTime);
     }
 
-    
-    // TODO: Fix this. TL;DR the issue is that Main.UIScale isn't properly set until Player.Hooks.OnEnterWorld is called, but waiting this long triggers errors in UpdateUI above ^
     protected override void InitializeUIState(Player player) {
         base.InitializeUIState(player);
 
+        // This is one of the few UIs that is "open" indefinitely
         OpenUIState();
     }
 }
