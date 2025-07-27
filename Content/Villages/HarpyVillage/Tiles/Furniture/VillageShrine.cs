@@ -353,11 +353,7 @@ public class VillageShrineEntity : TEModdedPylon {
     public void RightClicked() {
         VillageShrineUISystem shrineSystem = VillageShrineUISystem.Instance;
 
-        if (!shrineSystem.UIIsActive) {
-            return;
-        }
-
-        if (shrineSystem.UIState.CurrentEntity.Position != Position) {
+        if (!shrineSystem.UIIsActive || (shrineSystem.UIIsActive && shrineSystem.UIState.CurrentEntity.Position != Position)) {
             shrineSystem.OpenOrRegenShrineState(Position);
         }
         else {

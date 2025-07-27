@@ -45,8 +45,6 @@ public class VillageShrineUISystem : UISystem<VillageShrineUISystem, VillageShri
     public void OpenOrRegenShrineState(Point16 entityPos) {
         if (!UIIsActive) {
             OpenUIState();
-
-            return;
         }
 
         UIState.RegenState(entityPos);
