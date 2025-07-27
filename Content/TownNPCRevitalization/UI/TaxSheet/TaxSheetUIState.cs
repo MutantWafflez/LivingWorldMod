@@ -290,7 +290,9 @@ public class TaxSheetUIState : UIState {
         for (int i = 0; i < 2; i++) {
             float changeAmount = DefaultSalesTaxButtonChangeAmount * (i == 0 ? 1 : -1);
 
-            UIBetterImageButton button = new (changeButtonTextures[i]) { HAlign = i, Top = StyleDimension.FromPixels(18f) };
+            UIBetterImageButton button = new (changeButtonTextures[i]) {
+                Width = StyleDimension.FromPixels(ButtonsSideLength), Height = StyleDimension.FromPixels(ButtonsSideLength), HAlign = i, Top = StyleDimension.FromPixels(18f)
+            };
             button.OnLeftClick += (_, _) => {
                 float oldTalesTax = _tempSalesTaxValue;
                 _tempSalesTaxValue = Utils.Clamp(_tempSalesTaxValue + changeAmount * ButtonChangeAmountMultiplier, 0f, TaxesSystem.MaxSalesTax);
