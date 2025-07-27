@@ -16,7 +16,7 @@ public class VillagerHousingUISystem : UISystem<VillagerHousingUISystem, Village
         base.SetStaticDefaults();
 
         // One of the few UIs that need to be loaded immediately
-        UIState.Activate();
+        OpenUIState();
     }
 
     public override void UpdateUI(GameTime gameTime) {
