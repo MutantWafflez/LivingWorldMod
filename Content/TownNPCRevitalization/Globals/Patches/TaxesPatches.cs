@@ -21,13 +21,8 @@ public class TaxesPatches : LoadablePatch {
         ILCursor c = new (il);
 
         c.Emit(OpCodes.Ldarg_0);
-        c.EmitDelegate<Action<Player>>(
-            player => {
+        c.EmitDelegate<Action<Player>>(player => {
                 int taxCap = TaxesSystem.TaxCap;
-                if (Main.tenthAnniversaryWorld) {
-                    taxCap *= 2;
-                }
-
                 if (!NPC.taxCollector || player.taxMoney >= taxCap) {
                     return;
                 }
