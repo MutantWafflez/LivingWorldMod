@@ -182,11 +182,6 @@ public class TaxSheetUIState : UIState {
         );
     }
 
-    public override void Recalculate() {
-        base.Recalculate();
-        int hi = 0;
-    }
-
     public void SetStateToNPC(NPC npc) {
         NPCBeingTalkedTo = npc;
 
