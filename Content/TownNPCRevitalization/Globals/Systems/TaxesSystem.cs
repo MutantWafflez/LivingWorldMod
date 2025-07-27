@@ -19,6 +19,9 @@ public class TaxesSystem : BaseModSystem<TaxesSystem>  {
     public const float MaxSalesTax = 0.4f;
 
     private const int DefaultTaxCap = Item.platinum;
+    private const int HardmodeTaxCap = Item.platinum * 2;
+    private const int PlanteraTaxCap = Item.platinum * 3;
+    private const int MoonLordTaxCap = Item.platinum * 4;
 
     /// <summary>
     ///     LWM's new taxes are in-game day based, and as such, we need to change the tax rate variable to account for it.
@@ -45,11 +48,18 @@ public class TaxesSystem : BaseModSystem<TaxesSystem>  {
     public static int TaxCap {
         get {
             int taxCap = DefaultTaxCap;
-            if (Main.tenthAnniversaryWorld) {
-                taxCap *= 2;
+
+            if (NPC.downedMoonlord) {
+                taxCap = MoonLordTaxCap;
+            }
+            else if (NPC.downedPlantBoss) {
+                taxCap = PlanteraTaxCap;
+            }
+            else if (Main.hardMode) {
+                taxCap = HardmodeTaxCap;
             }
 
-            return taxCap;
+            return Main.tenthAnniversaryWorld ? taxCap * 2 : taxCap;
         }
     }
 
