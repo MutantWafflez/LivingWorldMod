@@ -56,7 +56,6 @@ public class TaxesPatches : LoadablePatch {
 
                 int[] directDepositAmounts = Utils.CoinsSplit((int)(player.taxMoney * (1f - TaxesSystem.DirectDepositCut)));
 
-                int currentCoinValue = Item.copper;
                 int currentCoinType = ItemID.CopperCoin;
                 NPC taxCollector = LWMUtils.GetFirstNPC(npc => npc.type == NPCID.TaxCollector);
                 foreach (int coinAmount in directDepositAmounts) {
@@ -65,7 +64,6 @@ public class TaxesPatches : LoadablePatch {
                     }
 
                     currentCoinType++;
-                    currentCoinValue *= 100;
                 }
 
                 player.taxMoney = 0;
