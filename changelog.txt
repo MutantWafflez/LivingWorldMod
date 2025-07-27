@@ -1,14 +1,21 @@
-INDEV RELEASE v0.4.1.0 [Cogs and Bugs] (March 30th, 2025)
+INDEV RELEASE v0.5.0.0 [The Town NPC Revitalization Pt. 2] (???, 202X)
+Additions:
++ Revamped the Tax Collector entirely:
+	-> Each Town NPC can have their taxes modified on an individual level, which will worsen mood depending on how high the taxes are.
+	-> Added a new type of tax, "sales tax", which is self explanatory (percent of NPC sales go to taxes, up to 40%.)
+	-> Increased per-player tax bank cap from 25g -> 1p. This further increases at certain milestones:
+		-> 2p (Hardmode)
+		-> 3p (Post-Plantera)
+		-> 4p (Post-ML)
+		-> Note: This cap is still doubled in the tenth anniversary seed, just like in Vanilla.
+	-> Tax Collector now "collects" taxes every in-game day (24 real-world minutes) instead of every in-game hour (1 real-world minute.)
+	-> Happiness now affects how much is gathered at each collection interval, instead of when the player cashes out: 
+		-> For example, if 2g of taxes were to be collected at the 24 minute collection interval and the Tax Collector has a 108% price modifier, only 1g 84s would be collected and added to the bank.
+		-> This also means that the player will always receive EXACTLY what's in the bank, instead of it varying (like in Vanilla).
+		-> This is to prevent players from cranking the Tax Collector's happiness at cash-out and generating money out of thin air.
+	-> To allow for more usage across the play-through (especially in pre-HM when money is more scarce) Tortured Souls now spawn after the Evil Boss has been defeated.
+	-> Added new "Direct Deposit" feature for taxes (enabled through the Tax Sheet menu), that instantly puts collected taxes into your inventory at each collection interval, at a 20% cut!
+		-> Canonically, this cut is the Tax Collector's paycheck. Which means, he doesn't get paid if you don't enable this! Do with this information what you will!
 Changes:
-+ Added two new client-side configuration options: Sprite Overhaul Disabling and Town NPC Small Talk Toggle
-	Notes:
-	* The Sprite Overhaul Disable list allows you to disable specific Town NPCs' special drawing. This has the effect of removing their "blinking" and "talking" animation, but will likely fix any animation errors they may have
-	* The small-talk feature betweeen Town NPCs has been a little divisive, so for the time being, I have added an option to disable it. Note that I plan to overhaul this system in Part II, so this is just a band-aid fix for now
-- Removed "Pathfinder size" config option
-Fixes:
-* Fixed waystones "disabling" themselves in multiplayer and "re-enabling" themselves when you get near them 
-	Notes:
-	* This has been a long-standing bug that quite a few people have reported. Funnily enough, this is a bug that I had fixed before, but somehow managed to bring back!
-	* Hopefully this is the last of the waystone bugs, but please do let me know if you have additional issues in multiplayer (or singleplayer, for that matter)
-	* Also, sorry for taking so long fixing this one!
-* Fixed Town NPCs not closing doors after they open them in multiplayer
+* Rewrote a lot of older UI code. This will have no technical gameplay change, but will (very minorly) increase loading times and performance for the mod.	
+* The Truffle now likes the Rain event (previously neutral)
