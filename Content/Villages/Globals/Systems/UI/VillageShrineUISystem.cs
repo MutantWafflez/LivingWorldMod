@@ -17,14 +17,16 @@ public class VillageShrineUISystem : UISystem<VillageShrineUISystem, VillageShri
     public override InterfaceScaleType ScaleType => InterfaceScaleType.Game;
 
     public override void PostUpdateEverything() {
-        if (correspondingInterface.CurrentState == correspondingUIState && correspondingUIState.ShowVillageRadius && correspondingUIState.CurrentEntity is { } entity) {
-            Dust dust = Dust.NewDustPerfect(entity.Position.ToWorldCoordinates(32f, 40f), DustID.BlueFairy);
-            dust.active = false;
-            dust.noGravity = true;
-            dust.scale = 1.25f;
-
-            LWMUtils.CreateCircle(dust.position, VillageShrineEntity.DefaultVillageRadius, dust);
+        if (!UIIsActive || !UIState.ShowVillageRadius || UIState.CurrentEntity is not { } entity) {
+            return;
         }
+
+        Dust dust = Dust.NewDustPerfect(entity.Position.ToWorldCoordinates(32f, 40f), DustID.BlueFairy);
+        dust.active = false;
+        dust.noGravity = true;
+        dust.scale = 1.25f;
+
+        LWMUtils.CreateCircle(dust.position, VillageShrineEntity.DefaultVillageRadius, dust);
     }
 
     public override void UpdateUI(GameTime gameTime) {
@@ -41,19 +43,17 @@ public class VillageShrineUISystem : UISystem<VillageShrineUISystem, VillageShri
     /// </summary>
     /// <param name="entityPos"> The position of the new entity to bind to. </param>
     public void OpenOrRegenShrineState(Point16 entityPos) {
-        if (correspondingInterface.CurrentState is null) {
-            correspondingInterface.SetState(correspondingUIState);
+        if (!UIIsActive) {
+            OpenUIState();
         }
 
-        if (correspondingInterface.CurrentState == correspondingUIState) {
-            correspondingUIState.RegenState(entityPos);
-        }
+        UIState.RegenState(entityPos);
     }
 
     /// <summary>
     ///     Simply closes the ShrineUIState by setting the corresponding interface's state to null.
     /// </summary>
     public void CloseShrineState() {
-        correspondingInterface.SetState(null);
+        CloseUIState();
     }
 }

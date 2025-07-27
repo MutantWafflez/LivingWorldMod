@@ -25,6 +25,8 @@ public class UIPortrait : UIElement {
         Angered
     }
 
+    private const float ElementSideLength = 190f;
+
     public VillagerPortraitExpression temporaryExpression;
     public float temporaryExpressionTimer;
 
@@ -38,13 +40,11 @@ public class UIPortrait : UIElement {
 
     public UIPortrait(Villager villager) {
         _villager = villager;
-        Width.Set(190f, 0f);
-        Height.Set(190f, 0f);
+        Width.Set(ElementSideLength, 0f);
+        Height.Set(ElementSideLength, 0f);
 
         _drawObject = new LayeredDrawObject([("Base", 5), ("Outfit", 5), ("Hair", 5), ("Face", 15)], PortraitSpritePath);
-    }
 
-    public override void OnInitialize() {
         OnLeftClick += ClickedElement;
     }
 
@@ -82,19 +82,11 @@ public class UIPortrait : UIElement {
     public void ReloadPortrait(Villager newVillager) {
         _villager = newVillager;
 
-        switch (_villager.RelationshipStatus) {
-            case <= VillagerRelationship.SevereDislike:
-                _currentExpression = VillagerPortraitExpression.Angered;
-                break;
-
-            case > VillagerRelationship.SevereDislike and < VillagerRelationship.Love:
-                _currentExpression = VillagerPortraitExpression.Neutral;
-                break;
-
-            case >= VillagerRelationship.Love:
-                _currentExpression = VillagerPortraitExpression.Happy;
-                break;
-        }
+        _currentExpression = _villager.RelationshipStatus switch {
+            <= VillagerRelationship.SevereDislike => VillagerPortraitExpression.Angered,
+            < VillagerRelationship.Love => VillagerPortraitExpression.Neutral,
+            >= VillagerRelationship.Love => VillagerPortraitExpression.Happy
+        };
 
         const int paleSkinFrame = 0;
         const int tanSkinFrame = 1;

@@ -20,13 +20,10 @@ float uSaturation;
 float4 uSourceRect;
 float2 uZoom;
 
-//This is here because for some reason, using uTime doesn't automatically update when used on a UIElement? Very weird
-float manualUTime;
-
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 color = tex2D(uImage0, coords);
-    float flash = 1 + ((sin(manualUTime) + 1) / 2);
+    float flash = ((sin(uTime - 3.1415927 / 2) + 1) / 2) + 1;
     color.rgb = color.rgb * flash;
     return color;
 }

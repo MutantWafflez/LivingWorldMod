@@ -10,36 +10,26 @@ namespace LivingWorldMod.Globals.UIElements;
 ///     and has hover tooltip functionality.
 /// </summary>
 public class UIBetterItemIcon (Item displayedItem, float sizeLimit, bool drawFromCenter) : UIElement {
-    public readonly int context = ItemSlot.Context.InventoryItem;
-
-    /// <summary>
-    ///     Whether or not this element is currently visible, which is to say, whether or not it
-    ///     will be drawn. Defaults to true.
-    /// </summary>
-    public bool isVisible = true;
-
     /// <summary>
     ///     The color to forcefully draw the item as, regardless of anything else. Null means
     ///     no overriding.
     /// </summary>
     public Color? overrideDrawColor = null;
 
+    private Item _displayedItem = displayedItem;
+
     protected override void DrawSelf(SpriteBatch spriteBatch) {
-        if (!isVisible) {
-            return;
-        }
-
         //Adapted Vanilla Code
-        Main.instance.LoadItem(displayedItem.type);
+        Main.instance.LoadItem(_displayedItem.type);
 
-        Texture2D itemTexture = TextureAssets.Item[displayedItem.type].Value;
-        Rectangle itemAnimFrame = Main.itemAnimations[displayedItem.type] == null ? itemTexture.Frame() : Main.itemAnimations[displayedItem.type].GetFrame(itemTexture);
+        Texture2D itemTexture = TextureAssets.Item[_displayedItem.type].Value;
+        Rectangle itemAnimFrame = Main.itemAnimations[_displayedItem.type] == null ? itemTexture.Frame() : Main.itemAnimations[_displayedItem.type].GetFrame(itemTexture);
 
         Color currentColor = Color.White;
         float itemLightScale = 1f;
         float sizeConstraint = 1f;
 
-        ItemSlot.GetItemLight(ref currentColor, ref itemLightScale, displayedItem);
+        ItemSlot.GetItemLight(ref currentColor, ref itemLightScale, _displayedItem);
         if (overrideDrawColor is { } color) {
             currentColor = color;
         }
@@ -50,7 +40,7 @@ public class UIBetterItemIcon (Item displayedItem, float sizeLimit, bool drawFro
             sizeConstraint = itemAnimFrame.Width <= itemAnimFrame.Height ? sizeLimit / itemAnimFrame.Height : sizeLimit / itemAnimFrame.Width;
         }
 
-        sizeConstraint *= displayedItem.scale;
+        sizeConstraint *= _displayedItem.scale;
 
         spriteBatch.Draw(
             itemTexture,
@@ -66,17 +56,17 @@ public class UIBetterItemIcon (Item displayedItem, float sizeLimit, bool drawFro
 
         //Non-vanilla code
         if (ContainsPoint(Main.MouseScreen)) {
-            ItemSlot.MouseHover(ref displayedItem, context);
+            ItemSlot.MouseHover(ref _displayedItem);
         }
     }
 
     public void SetItem(Item newItem) {
-        displayedItem = newItem;
+        _displayedItem = newItem;
         Recalculate();
     }
 
     public void SetItem(int newItemType) {
-        displayedItem?.SetDefaults(newItemType);
+        _displayedItem?.SetDefaults(newItemType);
         Recalculate();
     }
 }

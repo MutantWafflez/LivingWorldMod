@@ -21,44 +21,44 @@ public class HarpyVillager : Villager {
 
     public override VillagerType VillagerType => VillagerType.Harpy;
 
-    public override DynamicWeightedRandom<ShopItem> ShopPool {
+    public override DynamicWeightedRandom<VillagerShopItem> ShopPool {
         get {
-            DynamicWeightedRandom<ShopItem> pool = new(Main.rand);
+            DynamicWeightedRandom<VillagerShopItem> pool = new(Main.rand);
             VillagerRelationship relationship = RelationshipStatus;
 
             //Furniture & Blocks
-            pool.Add(new ShopItem(ModContent.ItemType<GravityTapestryItem>(), 3));
-            pool.Add(new ShopItem(ModContent.ItemType<SunTapestryItem>(), 3));
-            pool.Add(new ShopItem(ModContent.ItemType<WorldTapestryItem>(), 3));
-            pool.Add(new ShopItem(ModContent.ItemType<StormTapestryItem>(), 3));
-            pool.Add(new ShopItem(ModContent.ItemType<StarshardCloudItem>(), 100));
-            pool.Add(new ShopItem(ModContent.ItemType<StarshineBlockItem>(), 150));
-            pool.Add(new ShopItem(ModContent.ItemType<SkywareBlockItem>(), 150));
-            pool.Add(new ShopItem(ModContent.ItemType<SkywareLoomItem>(), 2));
-            pool.Add(new ShopItem(ModContent.ItemType<SkywareAnvilItem>(), 2));
-            pool.Add(new ShopItem(ItemID.SkywareChair, 10));
-            pool.Add(new ShopItem(ItemID.SkywareTable, 5));
-            pool.Add(new ShopItem(ItemID.SkyMill, 1));
+            pool.Add(new VillagerShopItem(ModContent.ItemType<GravityTapestryItem>(), 3));
+            pool.Add(new VillagerShopItem(ModContent.ItemType<SunTapestryItem>(), 3));
+            pool.Add(new VillagerShopItem(ModContent.ItemType<WorldTapestryItem>(), 3));
+            pool.Add(new VillagerShopItem(ModContent.ItemType<StormTapestryItem>(), 3));
+            pool.Add(new VillagerShopItem(ModContent.ItemType<StarshardCloudItem>(), 100));
+            pool.Add(new VillagerShopItem(ModContent.ItemType<StarshineBlockItem>(), 150));
+            pool.Add(new VillagerShopItem(ModContent.ItemType<SkywareBlockItem>(), 150));
+            pool.Add(new VillagerShopItem(ModContent.ItemType<SkywareLoomItem>(), 2));
+            pool.Add(new VillagerShopItem(ModContent.ItemType<SkywareAnvilItem>(), 2));
+            pool.Add(new VillagerShopItem(ItemID.SkywareChair, 10));
+            pool.Add(new VillagerShopItem(ItemID.SkywareTable, 5));
+            pool.Add(new VillagerShopItem(ItemID.SkyMill, 1));
 
             double likeConditionWeight = relationship >= VillagerRelationship.Like ? 1f : 0f;
-            pool.Add(new ShopItem(ModContent.ItemType<NimbusJarItem>(), 2), likeConditionWeight);
+            pool.Add(new VillagerShopItem(ModContent.ItemType<NimbusJarItem>(), 2), likeConditionWeight);
 
             //Weapons & Accessories
-            pool.Add(new ShopItem(ItemID.ShinyRedBalloon, 1, Item.buyPrice(gold: 10)), likeConditionWeight);
-            pool.Add(new ShopItem(ItemID.Starfury, 1, Item.buyPrice(gold: 12, silver: 75)), likeConditionWeight);
+            pool.Add(new VillagerShopItem(ItemID.ShinyRedBalloon, 1, Item.buyPrice(gold: 10)), likeConditionWeight);
+            pool.Add(new VillagerShopItem(ItemID.Starfury, 1, Item.buyPrice(gold: 12, silver: 75)), likeConditionWeight);
 
             //Vanity/Pets
-            pool.Add(new ShopItem(ModContent.ItemType<NimbusInABottle>(), 2), likeConditionWeight);
+            pool.Add(new VillagerShopItem(ModContent.ItemType<NimbusInABottle>(), 2), likeConditionWeight);
 
             //Materials
-            pool.Add(new ShopItem(ItemID.WhitePearl, 3, Item.buyPrice(gold: 1)), likeConditionWeight);
-            pool.Add(new ShopItem(ItemID.BlackPearl, 2, Item.buyPrice(gold: 5)), relationship >= VillagerRelationship.Like ? 0.5 : 0);
-            pool.Add(new ShopItem(ItemID.PinkPearl, 1, Item.buyPrice(gold: 15)), relationship == VillagerRelationship.Love ? 0.25 : 0);
+            pool.Add(new VillagerShopItem(ItemID.WhitePearl, 3, Item.buyPrice(gold: 1)), likeConditionWeight);
+            pool.Add(new VillagerShopItem(ItemID.BlackPearl, 2, Item.buyPrice(gold: 5)), relationship >= VillagerRelationship.Like ? 0.5 : 0);
+            pool.Add(new VillagerShopItem(ItemID.PinkPearl, 1, Item.buyPrice(gold: 15)), relationship == VillagerRelationship.Love ? 0.25 : 0);
 
             //Worms
-            pool.Add(new ShopItem(ItemID.Worm, 8, Item.buyPrice(silver: 10)));
-            pool.Add(new ShopItem(ItemID.EnchantedNightcrawler, 3, Item.buyPrice(gold: 1)), 0.67);
-            pool.Add(new ShopItem(ItemID.GoldWorm, 2, Item.buyPrice(gold: 15)), relationship >= VillagerRelationship.Love ? 0.2 : 0.15);
+            pool.Add(new VillagerShopItem(ItemID.Worm, 8, Item.buyPrice(silver: 10)));
+            pool.Add(new VillagerShopItem(ItemID.EnchantedNightcrawler, 3, Item.buyPrice(gold: 1)), 0.67);
+            pool.Add(new VillagerShopItem(ItemID.GoldWorm, 2, Item.buyPrice(gold: 15)), relationship >= VillagerRelationship.Love ? 0.2 : 0.15);
 
             return pool;
         }

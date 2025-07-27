@@ -11,11 +11,15 @@ namespace LivingWorldMod.Globals.BaseTypes.Systems;
 /// </summary>
 [Autoload(Side = ModSide.Client)]
 public abstract partial class UISystem<TSystem, TState> : BaseModSystem<TSystem> where TState : UIState, new() where TSystem : BaseModSystem<TSystem> {
-    public UserInterface correspondingInterface;
+    public TState UIState;
 
-    public TState correspondingUIState;
+    private GameTime _lastGameTime;
+    private UserInterface _userInterface;
 
-    protected GameTime lastGameTime;
+    /// <summary>
+    ///     Whether or not this current UI is "active", i.e. <see cref="UserInterface.CurrentState" /> is not null.
+    /// </summary>
+    public bool UIIsActive => _userInterface.CurrentState is not null;
 
     /// <summary>
     ///     The name of the Vanilla Interface to place this UI BEFORE.
@@ -34,11 +38,12 @@ public abstract partial class UISystem<TSystem, TState> : BaseModSystem<TSystem>
     /// </summary>
     public virtual InterfaceScaleType ScaleType => InterfaceScaleType.UI;
 
-    public override void SetStaticDefaults() {
-        correspondingInterface = new UserInterface();
-        correspondingUIState = new TState();
+    [GeneratedRegex("([A-Z])")]
+    private static partial Regex SpaceBetweenCapitalsRegex();
 
-        correspondingUIState.Activate();
+    public override void SetStaticDefaults() {
+        _userInterface = new UserInterface();
+        UIState = new TState();
     }
 
     public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
@@ -48,13 +53,7 @@ public abstract partial class UISystem<TSystem, TState> : BaseModSystem<TSystem>
                 specifiedIndex,
                 new LegacyGameInterfaceLayer(
                     "LWM: " + InternalInterfaceName,
-                    delegate {
-                        if (lastGameTime is not null && correspondingInterface.CurrentState is not null) {
-                            correspondingInterface.Draw(Main.spriteBatch, lastGameTime);
-                        }
-
-                        return true;
-                    },
+                    InterfaceDraw,
                     ScaleType
                 )
             );
@@ -62,12 +61,33 @@ public abstract partial class UISystem<TSystem, TState> : BaseModSystem<TSystem>
     }
 
     public override void UpdateUI(GameTime gameTime) {
-        lastGameTime = gameTime;
-        if (lastGameTime is not null && correspondingInterface.CurrentState == correspondingUIState) {
-            correspondingInterface.Update(lastGameTime);
+        _lastGameTime = gameTime;
+        if (_lastGameTime is not null && _userInterface.CurrentState == UIState) {
+            _userInterface.Update(_lastGameTime);
         }
     }
 
-    [GeneratedRegex("([A-Z])")]
-    private static partial Regex SpaceBetweenCapitalsRegex();
+    /// <summary>
+    ///     Automatically activates <see cref="UIState" /> and sets the <see cref="_userInterface" />'s ActiveState to <see cref="UIState" />.
+    /// </summary>
+    protected void OpenUIState() {
+        UIState.Activate();
+        _userInterface.SetState(UIState);
+    }
+
+    /// <summary>
+    ///     Automatically deactivates <see cref="UIState" /> and sets <see cref="_userInterface" />'s ActiveState to null.
+    /// </summary>
+    protected void CloseUIState() {
+        UIState.Deactivate();
+        _userInterface.SetState(null);
+    }
+
+    private bool InterfaceDraw() {
+        if (_lastGameTime is not null && UIIsActive) {
+            _userInterface.Draw(Main.spriteBatch, _lastGameTime);
+        }
+
+        return true;
+    }
 }

@@ -54,8 +54,7 @@ public class NPCHousingPatches : LoadablePatch {
 
         c.Index = 0;
         c.Emit(OpCodes.Ldarg_0);
-        c.EmitDelegate<Func<int, bool>>(
-            npcType => {
+        c.EmitDelegate<Func<int, bool>>(npcType => {
                 LWMUtils.VillagerHousingErrorKey = null;
 
                 ModNPC modNPC = ModContent.GetModNPC(npcType);
@@ -109,8 +108,7 @@ public class NPCHousingPatches : LoadablePatch {
         c.GotoPrev(i => i.MatchLdarg0());
 
         //What we return here will determine whether or not we skip past the drawing head step in the vanilla function.
-        c.EmitDelegate(
-            () => {
+        c.EmitDelegate(() => {
                 //If not a type of villager or otherwise an invalid index (or just the above if statement failing in general), then return false and have the head draw as normal.
                 if (Main.instance.mouseNPCIndex <= -1 || Main.npc[Main.instance.mouseNPCIndex].ModNPC is not Villager villager) {
                     return false;
@@ -156,7 +154,7 @@ public class NPCHousingPatches : LoadablePatch {
         c.GotoNext(i => i.MatchBeq(out showBannersIfTrue));
 
         c.Index = 0;
-        c.EmitDelegate(() => ModContent.GetInstance<VillagerHousingUISystem>().correspondingUIState.isMenuVisible);
+        c.EmitDelegate(() => VillagerHousingUISystem.Instance.UIState.VillagerHousingListOpen);
         c.Emit(OpCodes.Brtrue_S, showBannersIfTrue);
     }
 
@@ -167,8 +165,7 @@ public class NPCHousingPatches : LoadablePatch {
         // the method to work with villagers. Lose out on some code re-use, but pays off in the long term for the fragility of the edit
 
         ILCursor c = new(il);
-        c.EmitDelegate(
-            () => {
+        c.EmitDelegate(() => {
                 foreach (NPC npc in LWMUtils.GetAllNPCs(npc => npc.ModNPC is Villager && !npc.homeless && npc.homeTileX > 0 && npc.homeTileY > 0)) {
                     int bannerTileX = npc.homeTileX;
                     int bannerTileY = npc.homeTileY - 1;
@@ -301,8 +298,7 @@ public class NPCHousingPatches : LoadablePatch {
 
         c.ErrorOnFailedGotoNext(i => i.MatchLdstr(" "));
         c.ErrorOnFailedGotoPrev(i => i.MatchLdsfld<Lang>(nameof(Lang.inter)));
-        c.EmitDelegate(
-            () => {
+        c.EmitDelegate(() => {
                 if (LWMUtils.VillagerHousingErrorKey is not { } errorKey) {
                     return true;
                 }

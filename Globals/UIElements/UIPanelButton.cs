@@ -13,15 +13,9 @@ namespace LivingWorldMod.Globals.UIElements;
 ///     UIPanel extension that has functionality for being a button.
 /// </summary>
 public class UIPanelButton : UIPanel {
-    public UIBetterText buttonText;
+    public UIModifiedText buttonText;
 
     public float textSize;
-
-    /// <summary>
-    ///     Whether or not this element is currently visible, which is to say, whether or not it
-    ///     will be drawn. Defaults to true.
-    /// </summary>
-    public bool isVisible = true;
 
     /// <summary>
     ///     Whether or not, while the mousing is hovering over this element, the player can use an
@@ -35,70 +29,31 @@ public class UIPanelButton : UIPanel {
 
     private float _inactiveVisibility = 0.4f;
 
-    public UIPanelButton(Asset<Texture2D> customBackground, Asset<Texture2D> customBorder, int customCornerSize = 12, int customBarSize = 4, string text = null, float textSize = 1f)
-        : base(customBackground, customBorder, customCornerSize, customBarSize) {
-        _text = text;
-        this.textSize = textSize;
-    }
-
-    public UIPanelButton(string text = null, float textSize = 1f) {
-        _text = text;
-        this.textSize = textSize;
-    }
-
     public UIPanelButton(Asset<Texture2D> customBackground, Asset<Texture2D> customBorder, int customCornerSize = 12, int customBarSize = 4, LocalizedText text = null, float textSize = 1f)
         : base(customBackground, customBorder, customCornerSize, customBarSize) {
         _text = text;
         this.textSize = textSize;
-    }
 
-    public UIPanelButton(LocalizedText text = null, float textSize = 1f) {
-        _text = text;
-        this.textSize = textSize;
-    }
-
-    public override void OnInitialize() {
-        if (_text is null) {
-            return;
-        }
-
-        if (_text is LocalizedText translation) {
-            buttonText = new UIBetterText(translation, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
-        }
-        else {
-            buttonText = new UIBetterText(_text as string, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
+        switch (_text) {
+            case null:
+                return;
+            case LocalizedText translation:
+                buttonText = new UIModifiedText(translation, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
+                break;
+            default:
+                buttonText = new UIModifiedText(_text as string, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
+                break;
         }
 
         Append(buttonText);
     }
 
     public override void MouseOver(UIMouseEvent evt) {
-        if (!isVisible) {
-            return;
-        }
-
         base.MouseOver(evt);
         SoundEngine.PlaySound(SoundID.MenuTick);
     }
 
-    public override void LeftClick(UIMouseEvent evt) {
-        if (!isVisible) {
-            return;
-        }
-
-        base.LeftClick(evt);
-        ProperOnClick?.Invoke(evt, this);
-    }
-
     protected override void DrawSelf(SpriteBatch spriteBatch) {
-        if (buttonText is not null) {
-            buttonText.isVisible = isVisible;
-        }
-
-        if (!isVisible) {
-            return;
-        }
-
         bool isHovering = ContainsPoint(Main.MouseScreen);
 
         //Have to do some cheaty shenanigans in order to make the visibility work as normal
@@ -143,10 +98,4 @@ public class UIPanelButton : UIPanel {
     ///     hovering over this element.
     /// </summary>
     public event Action WhileHovering;
-
-    /// <summary>
-    ///     An "override" of the normal OnClick event that takes into account visibility of this
-    ///     button. USE THIS INSTEAD OF THE VANILLA EVENT!
-    /// </summary>
-    public event MouseEvent ProperOnClick;
 }

@@ -12,21 +12,17 @@ public class VillagerHousingUISystem : UISystem<VillagerHousingUISystem, Village
 
     public override string InternalInterfaceName => "Villager Housing";
 
+    public override void SetStaticDefaults() {
+        base.SetStaticDefaults();
+
+        // One of the few UIs that need to be loaded immediately
+        OpenUIState();
+    }
+
     public override void UpdateUI(GameTime gameTime) {
-        lastGameTime = gameTime;
-        //Only have the state be changed when the inventory is open, to prevent accidental clicking even if the element is invisible.
-        if (Main.playerInventory && correspondingInterface.CurrentState is null) {
-            correspondingInterface.SetState(correspondingUIState);
-        }
-        else if (!Main.playerInventory && correspondingInterface?.CurrentState is not null) {
-            //We manually set isMenuVisible false here because when the state is null, the value is not updated
-            correspondingUIState.CloseMenu();
+        // Only enable open button when inventory is open
+        UIState.SetMenuButtonVisibility(Main.playerInventory);
 
-            correspondingInterface.SetState(null);
-        }
-
-        if (correspondingInterface?.CurrentState is not null) {
-            correspondingInterface.Update(gameTime);
-        }
+        base.UpdateUI(gameTime);
     }
 }
