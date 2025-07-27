@@ -154,7 +154,7 @@ public class NPCHousingPatches : LoadablePatch {
         c.GotoNext(i => i.MatchBeq(out showBannersIfTrue));
 
         c.Index = 0;
-        c.EmitDelegate(() => ModContent.GetInstance<VillagerHousingUISystem>().UIState.villagerHousingZone.IsVisible);
+        c.EmitDelegate(() => VillagerHousingUISystem.Instance.UIState.VillagerHousingListOpen);
         c.Emit(OpCodes.Brtrue_S, showBannersIfTrue);
     }
 

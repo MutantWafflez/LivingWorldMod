@@ -21,7 +21,7 @@ public class VillagerHousingUISystem : UISystem<VillagerHousingUISystem, Village
 
     public override void UpdateUI(GameTime gameTime) {
         // Only enable open button when inventory is open
-        UIState.openMenuButtonZone.SetVisibility(Main.playerInventory);
+        UIState.SetMenuButtonVisibility(Main.playerInventory);
 
         base.UpdateUI(gameTime);
     }
