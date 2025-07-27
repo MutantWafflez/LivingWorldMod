@@ -27,21 +27,24 @@ public class VillageShrineUIState : UIState {
     private const float TakeRespawnButtonYPos = AddRespawnButtonZoneYPos + AddTakeButtonsHeight + 4f;
 
     private const float RespawnTimerZoneXPos = ItemPanelSideLength + 4f;
+
+    private const float RespawnTimerTextYPos = RespawnTimerTextHeight + 12f;
     private const float RespawnTimerZoneWidth = BackPanelSideLength - DefaultUIPanelPadding * 2 - ItemPanelSideLength - 4f;
     private const float RespawnTimerTextHeight = 14.2933331f;
-    private const float RespawnTimerTextYPos = RespawnTimerTextHeight + 12f;
+
+    private const float VanillaButtonIconSideLength = 22f;
+    private const float DisplaySlots4IconWidth = 22f;
+    private const float DisplaySlots4IconHeight = 24f;
+    private const float DisplaySlots7IconWidth = 26f;
 
     private const float HouseIconYPos = TakeRespawnButtonYPos + AddTakeButtonsHeight + 2f;
-    private const float HouseCountTextYPos = HouseIconYPos + 4f;
-    private const float DisplaySlots4IconWidth = 22f;
     private const float HouseCountTextXPos = DisplaySlots4IconWidth + 4f;
-    private const float VanillaButtonIconSideLength = 22f;
-    private const float TakenHouseIconXPos = -2f;
+    private const float HouseCountTextYPos = HouseIconYPos + 4f;
 
-    private const float DisplaySlots4IconHeight = 24f;
+    private const float TakenHouseIconXPos = -2f;
     private const float TakenHouseIconYPos = HouseIconYPos + DisplaySlots4IconHeight + 2f;
+    private const float TakenHouseCountTextXPos = TakenHouseIconXPos + DisplaySlots7IconWidth + 2f;
     private const float TakenHouseCountTextYPos = TakenHouseIconYPos + 6f;
-    private const float TakenHouseCountTextXPos = TakenHouseIconXPos + 2f;
 
     private const float ForceShrineSyncButtonZoneXPos = -VanillaButtonIconSideLength - 4;
     private const float PauseVillagerSpawningZoneYPos = -VanillaButtonIconSideLength - 4f;
@@ -195,7 +198,7 @@ public class VillageShrineUIState : UIState {
         };
         backPanel.Append(showVillageRadiusButtonZone);
 
-        showVillageRadiusButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonFavoriteInactive"));
+        showVillageRadiusButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonFavoriteInactive")) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
         showVillageRadiusButton.OnLeftClick += ClickVillagerRadiusButton;
         showVillageRadiusButtonZone.Append(showVillageRadiusButton);
 
@@ -208,11 +211,10 @@ public class VillageShrineUIState : UIState {
         };
         backPanel.Append(forceShrineSyncButtonZone);
 
-        forceShrineSyncButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonCloudActive"));
+        forceShrineSyncButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonCloudActive")) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
         forceShrineSyncButton.OnLeftClick += ClickShrineSyncButton;
         forceShrineSyncButtonZone.Append(forceShrineSyncButton);
 
-        Asset<Texture2D> pauseVillagerSpawningButtonTexture = Main.Assets.Request<Texture2D>("Images/UI/ButtonDelete", AssetRequestMode.ImmediateLoad);
         pauseVillagerSpawningButtonZone = new UITooltipElement("UI.Shrine.PauseVillagerSpawning".Localized()) {
             HAlign = 1f,
             VAlign = 1f,
@@ -222,7 +224,7 @@ public class VillageShrineUIState : UIState {
         };
         backPanel.Append(pauseVillagerSpawningButtonZone);
 
-        pauseVillagerSpawningButton = new UIBetterImageButton(pauseVillagerSpawningButtonTexture);
+        pauseVillagerSpawningButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonDelete")) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
         pauseVillagerSpawningButton.OnLeftClick += ClickPauseVillagerSpawning;
         pauseVillagerSpawningButtonZone.Append(pauseVillagerSpawningButton);
     }
