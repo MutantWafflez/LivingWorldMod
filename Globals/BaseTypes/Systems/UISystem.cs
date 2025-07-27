@@ -13,8 +13,7 @@ namespace LivingWorldMod.Globals.BaseTypes.Systems;
 public abstract partial class UISystem<TSystem, TState> : BaseModSystem<TSystem> where TState : UIState, new() where TSystem : BaseModSystem<TSystem> {
     public TState UIState;
 
-    protected GameTime lastGameTime;
-
+    private GameTime _lastGameTime;
     private UserInterface _userInterface;
 
     /// <summary>
@@ -62,9 +61,9 @@ public abstract partial class UISystem<TSystem, TState> : BaseModSystem<TSystem>
     }
 
     public override void UpdateUI(GameTime gameTime) {
-        lastGameTime = gameTime;
-        if (lastGameTime is not null && _userInterface.CurrentState == UIState) {
-            _userInterface.Update(lastGameTime);
+        _lastGameTime = gameTime;
+        if (_lastGameTime is not null && _userInterface.CurrentState == UIState) {
+            _userInterface.Update(_lastGameTime);
         }
     }
 
@@ -85,8 +84,8 @@ public abstract partial class UISystem<TSystem, TState> : BaseModSystem<TSystem>
     }
 
     private bool InterfaceDraw() {
-        if (lastGameTime is not null && _userInterface.CurrentState is not null) {
-            _userInterface.Draw(Main.spriteBatch, lastGameTime);
+        if (_lastGameTime is not null && UIIsActive) {
+            _userInterface.Draw(Main.spriteBatch, _lastGameTime);
         }
 
         return true;
