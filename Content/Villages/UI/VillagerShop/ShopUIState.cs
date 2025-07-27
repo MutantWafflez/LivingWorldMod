@@ -151,6 +151,9 @@ public class ShopUIState : UIState {
 
     private const float DefaultElementPadding = 12f;
 
+    private const float BackImageWidth = 1000f;
+    private const float BackImageHeight = 600f;
+
     private const float ShopZoneSideLength = 504f;
 
     private const float PortraitZoneSideLength = 196f;
@@ -244,10 +247,23 @@ public class ShopUIState : UIState {
         string shopUIPath = $"{LWM.SpritePath}Villages/UI/ShopUI/Harpy/";
 
         //Background Zone
-        _backImage = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage")) { HAlign = 0.5f, VAlign = 0.5f };
+        _backImage = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "BackImage")) {
+            Width = StyleDimension.FromPixels(BackImageWidth),
+            Height = StyleDimension.FromPixels(BackImageHeight),
+            HAlign = 0.5f,
+            VAlign = 0.5f,
+            AllowResizingDimensions = false
+        };
         Append(_backImage);
 
-        _shopOverlay = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay")) { HAlign = 0.5f, VAlign = 0.5f, IgnoresMouseInteraction = true };
+        _shopOverlay = new UIImage(ModContent.Request<Texture2D>(shopUIPath + "Overlay")) {
+            Width = StyleDimension.FromPixels(BackImageWidth),
+            Height = StyleDimension.FromPixels(BackImageHeight),
+            HAlign = 0.5f,
+            VAlign = 0.5f,
+            IgnoresMouseInteraction = true,
+            AllowResizingDimensions = false
+        };
         Append(_shopOverlay);
 
         //Shop Zone
