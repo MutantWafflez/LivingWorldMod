@@ -21,7 +21,7 @@ namespace LivingWorldMod.Content.Villages.UI.VillagerShop;
 ///     UIState that handles the entire UI portion of the shop system for all villager types.
 /// </summary>
 
-// Future Mutant: This is wack. All of it is wack. I don't like it. As a matter of fact, I hate it. Needs a complete re-write, eventually. 
+// Future Mutant: Cleaned up. For now?
 public class ShopUIState : UIState {
     /// <summary>
     ///     UIImage class that holds different UITexts and UIElements that is the index in a given shop
