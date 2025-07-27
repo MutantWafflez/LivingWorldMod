@@ -13,20 +13,19 @@ public class VillagerHousingUISystem : UISystem<VillagerHousingUISystem, Village
     public override string InternalInterfaceName => "Villager Housing";
 
     public override void UpdateUI(GameTime gameTime) {
-        lastGameTime = gameTime;
         //Only have the state be changed when the inventory is open, to prevent accidental clicking even if the element is invisible.
-        if (Main.playerInventory && correspondingInterface.CurrentState is null) {
-            correspondingInterface.SetState(correspondingUIState);
+        if (Main.playerInventory && !UIIsActive) {
+            OpenUIState();
         }
-        else if (!Main.playerInventory && correspondingInterface?.CurrentState is not null) {
+        else if (!Main.playerInventory && !UIIsActive) {
             //We manually set isMenuVisible false here because when the state is null, the value is not updated
-            correspondingUIState.CloseMenu();
+            UIState.CloseMenu();
 
-            correspondingInterface.SetState(null);
+            CloseUIState();
         }
 
-        if (correspondingInterface?.CurrentState is not null) {
-            correspondingInterface.Update(gameTime);
+        if (UIIsActive) {
+            base.UpdateUI(gameTime);
         }
     }
 }

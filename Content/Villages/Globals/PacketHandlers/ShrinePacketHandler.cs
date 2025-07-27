@@ -156,7 +156,7 @@ public class ShrinePacketHandler : PacketHandler {
                     if (TileEntity.ByPosition.TryGetValue(entityPos.ToPoint16(), out TileEntity entity) && entity is VillageShrineEntity shrineEntity) {
                         shrineEntity.pausedRespawns = shouldBePaused;
 
-                        VillageShrineUISystem.Instance.correspondingUIState.SetVillagerPauseStatus();
+                        VillageShrineUISystem.Instance.UIState.SetVillagerPauseStatus();
                     }
                     else {
                         LWM.Instance.Logger.Error($"ToggleVillagerRespawning received, but got invalid/no entity at position: {entityPos}");

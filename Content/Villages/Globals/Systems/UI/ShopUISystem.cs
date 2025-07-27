@@ -1,6 +1,8 @@
 ﻿using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.Villages.UI.VillagerShop;
 using LivingWorldMod.Globals.BaseTypes.Systems;
+using LivingWorldMod.Utilities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria.Audio;
@@ -29,34 +31,41 @@ public class ShopUISystem : UISystem<ShopUISystem, ShopUIState> {
     }
 
     public override void PostUpdateTime() {
-        if (!(Main.time >= 32400.0) || Main.dayTime || (Main.gameMenu && Main.netMode != NetmodeID.Server)) {
+        if (!(Main.time >= LWMUtils.InGameMoonlight) || Main.dayTime || (Main.gameMenu && Main.netMode != NetmodeID.Server)) {
             return;
         }
 
         foreach (NPC npc in Main.ActiveNPCs) {
-            if (npc.ModNPC is Villager villager) {
-                villager.RegenerateShop();
+            if (npc.ModNPC is not Villager villager) {
+                continue;
             }
+
+            villager.RegenerateShop();
         }
     }
 
-    public override void PostUpdateEverything() {
+    public override void UpdateUI(GameTime gameTime) {
+        base.UpdateUI(gameTime);
+
         //Close shop UI when the player stops talking to the villager or starts talking to a non-villager
-        int talkNPC = Main.LocalPlayer.talkNPC;
-        if (correspondingInterface.CurrentState != null && (talkNPC == -1 || (!Main.npc[talkNPC].ModNPC?.GetType().IsSubclassOf(typeof(Villager)) ?? true))) {
-            CloseShopUI();
+        if (!UIIsActive || Main.LocalPlayer.TalkNPC is { ModNPC: Villager }) {
+            return;
         }
+
+        CloseShopUI();
     }
 
     /// <summary>
     ///     Reloads and open the shop UI depending on the villager type being spoken to.
     /// </summary>
-    /// <param name="villager"> </param>
     public void OpenShopUI(Villager villager) {
         Main.npcChatText = "";
-        correspondingUIState.ReloadUI(villager);
-        correspondingUIState.SetSelectedItem(null, false);
-        correspondingInterface.SetState(correspondingUIState);
+
+        UIState.ReloadUI(villager);
+        UIState.SetSelectedItem(null, false);
+
+        OpenUIState();
+
         SoundEngine.PlaySound(SoundID.MenuOpen);
     }
 
@@ -64,8 +73,10 @@ public class ShopUISystem : UISystem<ShopUISystem, ShopUIState> {
     ///     Closes the shop UI. That is all for now.
     /// </summary>
     public void CloseShopUI() {
-        correspondingUIState.SetSelectedItem(null, false);
-        correspondingInterface.SetState(null);
+        UIState.SetSelectedItem(null, false);
+
+        CloseUIState();
+
         SoundEngine.PlaySound(SoundID.MenuClose);
     }
 }

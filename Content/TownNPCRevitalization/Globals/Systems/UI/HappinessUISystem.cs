@@ -8,16 +8,18 @@ public class HappinessUISystem : UISystem<HappinessUISystem, HappinessUIState> {
 
     public override void PostUpdateEverything() {
         int talkNPC = Main.LocalPlayer.talkNPC;
-        if (correspondingInterface.CurrentState == null || (talkNPC != -1 && (Main.npc[talkNPC]?.type ?? -1) == correspondingUIState.NPCBeingTalkedTo.type)) {
+        if (!UIIsActive || (talkNPC != -1 && (Main.npc[talkNPC]?.type ?? -1) == UIState.NPCBeingTalkedTo.type)) {
             return;
         }
 
-        correspondingInterface.SetState(null);
-        correspondingUIState.ClearState();
+        UIState.ClearState();
+
+        CloseUIState();
     }
 
     public void OpenHappinessState(NPC npc) {
-        correspondingUIState.SetStateToNPC(npc);
-        correspondingInterface.SetState(correspondingUIState);
+        UIState.SetStateToNPC(npc);
+
+        OpenUIState();
     }
 }

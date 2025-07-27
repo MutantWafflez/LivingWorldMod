@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using LivingWorldMod.Content.Villages.DataStructures.Enums;
 using LivingWorldMod.Content.Villages.Globals.Systems.UI;
-using LivingWorldMod.Content.Villages.UI.VillageShrine;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Globals.BaseTypes.Items;
 using LivingWorldMod.Globals.BaseTypes.Tiles;
@@ -95,7 +94,7 @@ public class VillageShrineTile : BasePylon {
 
     public override void KillMultiTile(int i, int j, int frameX, int frameY) {
         VillageShrineUISystem shrineUISystem = ModContent.GetInstance<VillageShrineUISystem>();
-        if (shrineUISystem.correspondingUIState.EntityPosition == new Point16(i, j)) {
+        if (shrineUISystem.UIState.EntityPosition == new Point16(i, j)) {
             shrineUISystem.CloseShrineState();
         }
 
@@ -352,16 +351,17 @@ public class VillageShrineEntity : TEModdedPylon {
     ///     Called when the tile this entity is associated with is right-clicked.
     /// </summary>
     public void RightClicked() {
-        VillageShrineUISystem shrineSystem = ModContent.GetInstance<VillageShrineUISystem>();
+        VillageShrineUISystem shrineSystem = VillageShrineUISystem.Instance;
 
-        switch (shrineSystem.correspondingInterface.CurrentState) {
-            case null:
-            case VillageShrineUIState state when state.CurrentEntity.Position != Position:
-                shrineSystem.OpenOrRegenShrineState(Position);
-                break;
-            case VillageShrineUIState:
-                shrineSystem.CloseShrineState();
-                break;
+        if (!shrineSystem.UIIsActive) {
+            return;
+        }
+
+        if (shrineSystem.UIState.CurrentEntity.Position != Position) {
+            shrineSystem.OpenOrRegenShrineState(Position);
+        }
+        else {
+            shrineSystem.CloseShrineState();
         }
     }
 
