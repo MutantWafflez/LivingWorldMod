@@ -49,47 +49,45 @@ public class VillageShrineUIState : UIState {
     private const float ForceShrineSyncButtonZoneXPos = -VanillaButtonIconSideLength - 4;
     private const float PauseVillagerSpawningZoneYPos = -VanillaButtonIconSideLength - 4f;
 
-    public UIPanel backPanel;
+    private UIPanel _backPanel;
 
-    public UIPanel itemPanel;
+    private UIPanel _itemPanel;
 
-    public UIBetterItemIcon respawnItemDisplay;
+    private UIBetterItemIcon _respawnItemDisplay;
 
-    public UIModifiedText respawnItemCount;
+    private UIModifiedText _respawnItemCount;
 
-    public UIVisibilityElement addRespawnButtonZone;
-    public UIPanelButton addRespawnButton;
+    private UIVisibilityElement _addRespawnButtonZone;
+    private UIPanelButton _addRespawnButton;
 
-    public UIVisibilityElement takeRespawnButtonZone;
-    public UIPanelButton takeRespawnButton;
+    private UIVisibilityElement _takeRespawnButtonZone;
+    private UIPanelButton _takeRespawnButton;
 
-    public UIElement respawnTimerZone;
+    private UIElement _respawnTimerZone;
 
-    public UIModifiedText respawnTimerHeader;
+    private UIModifiedText _respawnTimerHeader;
 
-    public UIModifiedText respawnTimer;
+    private UIModifiedText _respawnTimer;
 
-    public UIImage houseIcon;
+    private UIImage _houseIcon;
 
-    public UIModifiedText houseCountText;
+    private UIModifiedText _houseCountText;
 
-    public UIImage takenHouseIcon;
+    private UIImage _takenHouseIcon;
 
-    public UIModifiedText takenHouseCountText;
+    private UIModifiedText _takenHouseCountText;
 
-    public UITooltipElement showVillageRadiusButtonZone;
+    private UITooltipElement _showVillageRadiusButtonZone;
 
-    public UIBetterImageButton showVillageRadiusButton;
+    private UIBetterImageButton _showVillageRadiusButton;
 
-    public UITooltipElement forceShrineSyncButtonZone;
+    private UITooltipElement _forceShrineSyncButtonZone;
 
-    public UIBetterImageButton forceShrineSyncButton;
+    private UIBetterImageButton _forceShrineSyncButton;
 
-    public UITooltipElement pauseVillagerSpawningButtonZone;
+    private UITooltipElement _pauseVillagerSpawningButtonZone;
 
-    public UIBetterImageButton pauseVillagerSpawningButton;
-
-    private TimeSpan _timeConverter;
+    private UIBetterImageButton _pauseVillagerSpawningButton;
 
     public VillageShrineEntity CurrentEntity {
         get {
@@ -116,117 +114,117 @@ public class VillageShrineUIState : UIState {
         Asset<Texture2D> gradientPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder");
         Asset<Texture2D> shadowedPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/ShadowedPanelBorder");
 
-        backPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
+        _backPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
             Width = StyleDimension.FromPixels(BackPanelSideLength), Height = StyleDimension.FromPixels(BackPanelSideLength), BackgroundColor = new Color(59, 97, 203), BorderColor = Color.White
         };
-        Append(backPanel);
+        Append(_backPanel);
 
-        itemPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) {
+        _itemPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) {
             Width = StyleDimension.FromPixels(ItemPanelSideLength),
             Height = StyleDimension.FromPixels(ItemPanelSideLength),
             BackgroundColor = new Color(46, 46, 159),
             BorderColor = new Color(22, 29, 107)
         };
-        itemPanel.SetPadding(0f);
-        backPanel.Append(itemPanel);
+        _itemPanel.SetPadding(0f);
+        _backPanel.Append(_itemPanel);
 
-        respawnItemDisplay = new UIBetterItemIcon(new Item(), ItemPanelSideLength, true) {
+        _respawnItemDisplay = new UIBetterItemIcon(new Item(), ItemPanelSideLength, true) {
             Width = StyleDimension.FromPixels(ItemPanelSideLength), Height = StyleDimension.FromPixels(ItemPanelSideLength), overrideDrawColor = Color.White * 0.45f
         };
-        itemPanel.Append(respawnItemDisplay);
+        _itemPanel.Append(_respawnItemDisplay);
 
-        respawnItemCount = new UIModifiedText("0") { horizontalTextConstraint = ItemPanelSideLength, HAlign = 0.5f, VAlign = 0.85f };
-        itemPanel.Append(respawnItemCount);
+        _respawnItemCount = new UIModifiedText("0") { horizontalTextConstraint = ItemPanelSideLength, HAlign = 0.5f, VAlign = 0.85f };
+        _itemPanel.Append(_respawnItemCount);
 
-        addRespawnButtonZone = new UIVisibilityElement {
+        _addRespawnButtonZone = new UIVisibilityElement {
             Height = StyleDimension.FromPixels(AddTakeButtonsHeight), Width = StyleDimension.FromPixels(ItemPanelSideLength), Top = StyleDimension.FromPixels(AddRespawnButtonZoneYPos)
         };
-        backPanel.Append(addRespawnButtonZone);
+        _backPanel.Append(_addRespawnButtonZone);
 
-        addRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "UI.Shrine.AddText".Localized()) {
-            BackgroundColor = backPanel.BackgroundColor,
+        _addRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "UI.Shrine.AddText".Localized()) {
+            BackgroundColor = _backPanel.BackgroundColor,
             BorderColor = Color.White,
             Height = StyleDimension.Fill,
             Width = StyleDimension.Fill,
             preventItemUsageWhileHovering = true
         };
-        addRespawnButton.OnLeftClick += AddRespawnItem;
-        addRespawnButtonZone.Append(addRespawnButton);
+        _addRespawnButton.OnLeftClick += AddRespawnItem;
+        _addRespawnButtonZone.Append(_addRespawnButton);
 
-        takeRespawnButtonZone = new UIVisibilityElement {
+        _takeRespawnButtonZone = new UIVisibilityElement {
             Height = StyleDimension.FromPixels(AddTakeButtonsHeight), Width = StyleDimension.FromPixels(ItemPanelSideLength), Top = StyleDimension.FromPixels(TakeRespawnButtonYPos)
         };
-        backPanel.Append(takeRespawnButtonZone);
+        _backPanel.Append(_takeRespawnButtonZone);
 
-        takeRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "UI.Shrine.TakeText".Localized()) {
-            BackgroundColor = backPanel.BackgroundColor,
+        _takeRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "UI.Shrine.TakeText".Localized()) {
+            BackgroundColor = _backPanel.BackgroundColor,
             BorderColor = Color.White,
             Height = StyleDimension.Fill,
             Width = StyleDimension.Fill,
             preventItemUsageWhileHovering = true
         };
-        takeRespawnButton.OnLeftClick += TakeRespawnItem;
-        takeRespawnButtonZone.Append(takeRespawnButton);
+        _takeRespawnButton.OnLeftClick += TakeRespawnItem;
+        _takeRespawnButtonZone.Append(_takeRespawnButton);
 
-        respawnTimerZone = new UIElement {
+        _respawnTimerZone = new UIElement {
             Left = StyleDimension.FromPixels(RespawnTimerZoneXPos), Width = StyleDimension.FromPixels(RespawnTimerZoneWidth), Height = StyleDimension.FromPixels(ItemPanelSideLength)
         };
-        backPanel.Append(respawnTimerZone);
+        _backPanel.Append(_respawnTimerZone);
 
-        respawnTimerHeader = new UIModifiedText("UI.Shrine.HarpyCountdown".Localized()) { HAlign = 0.5f, horizontalTextConstraint = RespawnTimerZoneWidth };
-        respawnTimerZone.Append(respawnTimerHeader);
+        _respawnTimerHeader = new UIModifiedText("UI.Shrine.HarpyCountdown".Localized()) { HAlign = 0.5f, horizontalTextConstraint = RespawnTimerZoneWidth };
+        _respawnTimerZone.Append(_respawnTimerHeader);
 
-        respawnTimer = new UIModifiedText("00:00", 0.67f, true) { HAlign = 0.5f, horizontalTextConstraint = RespawnTimerZoneWidth, Top = StyleDimension.FromPixels(RespawnTimerTextYPos) };
-        respawnTimerZone.Append(respawnTimer);
+        _respawnTimer = new UIModifiedText("00:00", 0.67f, true) { HAlign = 0.5f, horizontalTextConstraint = RespawnTimerZoneWidth, Top = StyleDimension.FromPixels(RespawnTimerTextYPos) };
+        _respawnTimerZone.Append(_respawnTimer);
 
-        houseIcon = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/DisplaySlots_4")) { Top = StyleDimension.FromPixels(HouseIconYPos) };
-        backPanel.Append(houseIcon);
+        _houseIcon = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/DisplaySlots_4")) { Top = StyleDimension.FromPixels(HouseIconYPos) };
+        _backPanel.Append(_houseIcon);
 
-        houseCountText = new UIModifiedText("0") { Left = StyleDimension.FromPixels(HouseCountTextXPos), Top = StyleDimension.FromPixels(HouseCountTextYPos) };
-        backPanel.Append(houseCountText);
+        _houseCountText = new UIModifiedText("0") { Left = StyleDimension.FromPixels(HouseCountTextXPos), Top = StyleDimension.FromPixels(HouseCountTextYPos) };
+        _backPanel.Append(_houseCountText);
 
-        takenHouseIcon = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/DisplaySlots_7")) {
+        _takenHouseIcon = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/DisplaySlots_7")) {
             Left = StyleDimension.FromPixels(TakenHouseIconXPos), Top = StyleDimension.FromPixels(TakenHouseIconYPos)
         };
-        backPanel.Append(takenHouseIcon);
+        _backPanel.Append(_takenHouseIcon);
 
-        takenHouseCountText = new UIModifiedText("0") { Left = StyleDimension.FromPixels(TakenHouseCountTextXPos), Top = StyleDimension.FromPixels(TakenHouseCountTextYPos) };
-        backPanel.Append(takenHouseCountText);
+        _takenHouseCountText = new UIModifiedText("0") { Left = StyleDimension.FromPixels(TakenHouseCountTextXPos), Top = StyleDimension.FromPixels(TakenHouseCountTextYPos) };
+        _backPanel.Append(_takenHouseCountText);
 
-        showVillageRadiusButtonZone = new UITooltipElement("UI.Shrine.EnableVillageRadius".Localized()) {
+        _showVillageRadiusButtonZone = new UITooltipElement("UI.Shrine.EnableVillageRadius".Localized()) {
             HAlign = 1f, VAlign = 1f, Width = StyleDimension.FromPixels(VanillaButtonIconSideLength), Height = StyleDimension.FromPixels(VanillaButtonIconSideLength)
         };
-        backPanel.Append(showVillageRadiusButtonZone);
+        _backPanel.Append(_showVillageRadiusButtonZone);
 
-        showVillageRadiusButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonFavoriteInactive")) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
-        showVillageRadiusButton.OnLeftClick += ClickVillagerRadiusButton;
-        showVillageRadiusButtonZone.Append(showVillageRadiusButton);
+        _showVillageRadiusButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonFavoriteInactive")) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+        _showVillageRadiusButton.OnLeftClick += ClickVillagerRadiusButton;
+        _showVillageRadiusButtonZone.Append(_showVillageRadiusButton);
 
-        forceShrineSyncButtonZone = new UITooltipElement("UI.Shrine.ForceShrineButtonText".Localized()) {
+        _forceShrineSyncButtonZone = new UITooltipElement("UI.Shrine.ForceShrineButtonText".Localized()) {
             HAlign = 1f,
             VAlign = 1f,
             Width = StyleDimension.FromPixels(VanillaButtonIconSideLength),
             Height = StyleDimension.FromPixels(VanillaButtonIconSideLength),
             Left = StyleDimension.FromPixels(ForceShrineSyncButtonZoneXPos)
         };
-        backPanel.Append(forceShrineSyncButtonZone);
+        _backPanel.Append(_forceShrineSyncButtonZone);
 
-        forceShrineSyncButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonCloudActive")) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
-        forceShrineSyncButton.OnLeftClick += ClickShrineSyncButton;
-        forceShrineSyncButtonZone.Append(forceShrineSyncButton);
+        _forceShrineSyncButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonCloudActive")) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+        _forceShrineSyncButton.OnLeftClick += ClickShrineSyncButton;
+        _forceShrineSyncButtonZone.Append(_forceShrineSyncButton);
 
-        pauseVillagerSpawningButtonZone = new UITooltipElement("UI.Shrine.PauseVillagerSpawning".Localized()) {
+        _pauseVillagerSpawningButtonZone = new UITooltipElement("UI.Shrine.PauseVillagerSpawning".Localized()) {
             HAlign = 1f,
             VAlign = 1f,
             Width = StyleDimension.FromPixels(VanillaButtonIconSideLength),
             Height = StyleDimension.FromPixels(VanillaButtonIconSideLength),
             Top = StyleDimension.FromPixels(PauseVillagerSpawningZoneYPos)
         };
-        backPanel.Append(pauseVillagerSpawningButtonZone);
+        _backPanel.Append(_pauseVillagerSpawningButtonZone);
 
-        pauseVillagerSpawningButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonDelete")) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
-        pauseVillagerSpawningButton.OnLeftClick += ClickPauseVillagerSpawning;
-        pauseVillagerSpawningButtonZone.Append(pauseVillagerSpawningButton);
+        _pauseVillagerSpawningButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonDelete")) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+        _pauseVillagerSpawningButton.OnLeftClick += ClickPauseVillagerSpawning;
+        _pauseVillagerSpawningButtonZone.Append(_pauseVillagerSpawningButton);
     }
 
     public override void Update(GameTime gameTime) {
@@ -236,37 +234,34 @@ public class VillageShrineUIState : UIState {
             currentEntity.clientTimer++;
         }
 
-        if (currentEntity.remainingRespawnItems < currentEntity.CurrentValidHouses) {
-            _timeConverter = new TimeSpan((long)(TimeSpan.TicksPerSecond / (double)60 * (currentEntity.remainingRespawnTime - currentEntity.clientTimer)));
-
-            respawnTimer.SetText(_timeConverter.ToString(@"mm\:ss"));
-        }
-        else {
-            respawnTimer.SetText("\u221E");
-        }
+        _respawnTimer.SetText(
+            currentEntity.remainingRespawnItems < currentEntity.CurrentValidHouses
+                ? new TimeSpan((long)(TimeSpan.TicksPerSecond / (double)60 * (currentEntity.remainingRespawnTime - currentEntity.clientTimer))).ToString(@"mm\:ss")
+                : "\u221E"
+        );
 
         base.Update(gameTime);
     }
 
     protected override void DrawSelf(SpriteBatch spriteBatch) {
-        CalculatedStyle panelDimensions = backPanel.GetDimensions();
+        CalculatedStyle panelDimensions = _backPanel.GetDimensions();
         VillageShrineEntity currentEntity = CurrentEntity;
         Vector2 centerOfEntity = EntityPosition.ToWorldCoordinates(32f, 0f);
 
-        backPanel.Left.Set(centerOfEntity.X - panelDimensions.Width / 2f - Main.screenPosition.X, 0f);
-        backPanel.Top.Set(centerOfEntity.Y - panelDimensions.Height - Main.screenPosition.Y, 0f);
+        _backPanel.Left.Set(centerOfEntity.X - panelDimensions.Width / 2f - Main.screenPosition.X, 0f);
+        _backPanel.Top.Set(centerOfEntity.Y - panelDimensions.Height - Main.screenPosition.Y, 0f);
 
-        respawnItemCount.SetText(currentEntity.remainingRespawnItems.ToString());
-        addRespawnButtonZone.SetVisibility(currentEntity.remainingRespawnItems < currentEntity.CurrentValidHouses);
-        takeRespawnButtonZone.SetVisibility(currentEntity.remainingRespawnItems > 0);
+        _respawnItemCount.SetText(currentEntity.remainingRespawnItems.ToString());
+        _addRespawnButtonZone.SetVisibility(currentEntity.remainingRespawnItems < currentEntity.CurrentValidHouses);
+        _takeRespawnButtonZone.SetVisibility(currentEntity.remainingRespawnItems > 0);
 
-        houseCountText.SetText(currentEntity.CurrentValidHouses.ToString());
-        takenHouseCountText.SetText(currentEntity.CurrentHousedVillagersCount.ToString());
+        _houseCountText.SetText(currentEntity.CurrentValidHouses.ToString());
+        _takenHouseCountText.SetText(currentEntity.CurrentHousedVillagersCount.ToString());
     }
 
     public void SetVillagerPauseStatus() {
-        pauseVillagerSpawningButton.SetImage(Main.Assets.Request<Texture2D>("Images/UI/Button" + (CurrentEntity.pausedRespawns ? "Play" : "Delete")));
-        pauseVillagerSpawningButtonZone.SetText(("UI.Shrine." + (CurrentEntity.pausedRespawns ? "Resume" : "Pause") + "VillagerSpawning").Localized());
+        _pauseVillagerSpawningButton.SetImage(Main.Assets.Request<Texture2D>("Images/UI/Button" + (CurrentEntity.pausedRespawns ? "Play" : "Delete")));
+        _pauseVillagerSpawningButtonZone.SetText(("UI.Shrine." + (CurrentEntity.pausedRespawns ? "Resume" : "Pause") + "VillagerSpawning").Localized());
     }
 
     /// <summary>
@@ -277,8 +272,8 @@ public class VillageShrineUIState : UIState {
         EntityPosition = entityPos;
         VillagerType shrineType = CurrentEntity.shrineType;
 
-        respawnItemDisplay.SetItem(LWMUtils.VillagerTypeToRespawnItemType(shrineType));
-        respawnTimerHeader.SetText($"UI.Shrine.{shrineType}Countdown".Localized());
+        _respawnItemDisplay.SetItem(LWMUtils.VillagerTypeToRespawnItemType(shrineType));
+        _respawnTimerHeader.SetText($"UI.Shrine.{shrineType}Countdown".Localized());
         SetVillagerPauseStatus();
     }
 
@@ -344,8 +339,8 @@ public class VillageShrineUIState : UIState {
     private void ClickVillagerRadiusButton(UIMouseEvent evt, UIElement listeningElement) {
         ShowVillageRadius = !ShowVillageRadius;
 
-        showVillageRadiusButton.SetImage(Main.Assets.Request<Texture2D>("Images/UI/ButtonFavorite" + (ShowVillageRadius ? "Active" : "Inactive"), AssetRequestMode.ImmediateLoad));
-        showVillageRadiusButtonZone.SetText(("UI.Shrine." + (ShowVillageRadius ? "Disable" : "Enable") + "VillageRadius").Localized());
+        _showVillageRadiusButton.SetImage(Main.Assets.Request<Texture2D>("Images/UI/ButtonFavorite" + (ShowVillageRadius ? "Active" : "Inactive"), AssetRequestMode.ImmediateLoad));
+        _showVillageRadiusButtonZone.SetText(("UI.Shrine." + (ShowVillageRadius ? "Disable" : "Enable") + "VillageRadius").Localized());
     }
 
     private void ClickShrineSyncButton(UIMouseEvent evt, UIElement listeningElement) {
