@@ -61,10 +61,10 @@ public class ShopUISystem : UISystem<ShopUISystem, ShopUIState> {
     public void OpenShopUI(Villager villager) {
         Main.npcChatText = "";
 
+        OpenUIState();
+
         UIState.ReloadUI(villager);
         UIState.SetSelectedItem(null, false);
-
-        OpenUIState();
 
         SoundEngine.PlaySound(SoundID.MenuOpen);
     }
@@ -73,9 +73,9 @@ public class ShopUISystem : UISystem<ShopUISystem, ShopUIState> {
     ///     Closes the shop UI. That is all for now.
     /// </summary>
     public void CloseShopUI() {
-        UIState.SetSelectedItem(null, false);
-
         CloseUIState();
+
+        UIState.SetSelectedItem(null, false);
 
         SoundEngine.PlaySound(SoundID.MenuClose);
     }
