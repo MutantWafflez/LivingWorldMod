@@ -213,7 +213,7 @@ public class VillagerHousingUIState : UIState {
     /// <summary>
     ///     Path to the sprites for this UI.
     /// </summary>
-    private string HousingTexturePath => $"{LWM.SpritePath}Villages/UI/VillagerHousingUI/";
+    private static string HousingTexturePath => $"{LWM.SpritePath}Villages/UI/VillagerHousingUI/";
 
     private static void WhileHoveringButton() {
         Main.instance.MouseText("UI.VillagerHousing.ButtonHoverText".Localized().Value);
