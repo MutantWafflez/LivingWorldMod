@@ -17,6 +17,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 public class TaxesSystem : BaseModSystem<TaxesSystem>  {
     public const int MaxPropertyTax = Item.gold * 2 + Item.silver * 50;
     public const float MaxSalesTax = 0.4f;
+    public const float DirectDepositCut = 0.2f;
 
     private const int DefaultTaxCap = Item.platinum;
     private const int HardmodeTaxCap = Item.platinum * 2;

@@ -1,8 +1,11 @@
 using System;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Players;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.DataStructures.Classes;
+using LivingWorldMod.Utilities;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using Terraria.DataStructures;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 
@@ -10,6 +13,22 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 ///     Patches for specifically the Taxes Overhaul.
 /// </summary>
 public class TaxesPatches : LoadablePatch {
+    private static void CollectTaxesFromNPCs(Player player, int taxCap) {
+        foreach (NPC npc in Main.ActiveNPCs) {
+            if (!TaxesSystem.IsNPCValidForTaxes(npc, out _)) {
+                continue;
+            }
+
+            player.taxMoney += TaxesSystem.Instance.GetTaxValuesOrDefault(npc.type).PropertyTax;
+            if (player.taxMoney < taxCap) {
+                continue;
+            }
+
+            player.taxMoney = taxCap;
+            break;
+        }
+    }
+
     public override void LoadPatches() {
         IL_Player.CollectTaxes += CollectTaxesPatch;
     }
@@ -23,23 +42,33 @@ public class TaxesPatches : LoadablePatch {
         c.Emit(OpCodes.Ldarg_0);
         c.EmitDelegate<Action<Player>>(player => {
                 int taxCap = TaxesSystem.TaxCap;
-                if (!NPC.taxCollector || player.taxMoney >= taxCap) {
+                if (!NPC.taxCollector) {
                     return;
                 }
 
-                foreach (NPC npc in Main.ActiveNPCs) {
-                    if (!TaxesSystem.IsNPCValidForTaxes(npc, out _)) {
-                        continue;
-                    }
+                if (player.taxMoney < taxCap) {
+                    CollectTaxesFromNPCs(player, taxCap);
+                }
 
-                    player.taxMoney += TaxesSystem.Instance.GetTaxValuesOrDefault(npc.type).PropertyTax;
-                    if (player.taxMoney <= taxCap) {
-                        continue;
-                    }
-
-                    player.taxMoney = taxCap;
+                if (!player.GetModPlayer<TaxesPlayer>().directDeposit) {
                     return;
                 }
+
+                int[] directDepositAmounts = Utils.CoinsSplit((int)(player.taxMoney * (1f - TaxesSystem.DirectDepositCut)));
+
+                int currentCoinValue = Item.copper;
+                int currentCoinType = ItemID.CopperCoin;
+                NPC taxCollector = LWMUtils.GetFirstNPC(npc => npc.type == NPCID.TaxCollector);
+                foreach (int coinAmount in directDepositAmounts) {
+                    if (coinAmount > 0) {
+                        player.QuickSpawnItem(new EntitySource_Gift(taxCollector), currentCoinType, coinAmount);
+                    }
+
+                    currentCoinType++;
+                    currentCoinValue *= 100;
+                }
+
+                player.taxMoney = 0;
             }
         );
         c.Emit(OpCodes.Ret);
