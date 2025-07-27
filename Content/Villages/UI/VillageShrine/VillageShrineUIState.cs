@@ -17,6 +17,35 @@ namespace LivingWorldMod.Content.Villages.UI.VillageShrine;
 ///     UIState that handles the UI for the village shrine for each type of village.
 /// </summary>
 public class VillageShrineUIState : UIState {
+    private const float DefaultUIPanelPadding = 4f;
+
+    private const float BackPanelSideLength = 194f;
+
+    private const float ItemPanelSideLength = 48f;
+    private const float AddTakeButtonsHeight = 30f;
+    private const float AddRespawnButtonZoneYPos = ItemPanelSideLength + 4f;
+    private const float TakeRespawnButtonYPos = AddRespawnButtonZoneYPos + AddTakeButtonsHeight + 4f;
+
+    private const float RespawnTimerZoneXPos = ItemPanelSideLength + 4f;
+    private const float RespawnTimerZoneWidth = BackPanelSideLength - DefaultUIPanelPadding * 2 - ItemPanelSideLength - 4f;
+    private const float RespawnTimerTextHeight = 14.2933331f;
+    private const float RespawnTimerTextYPos = RespawnTimerTextHeight + 12f;
+
+    private const float HouseIconYPos = TakeRespawnButtonYPos + AddTakeButtonsHeight + 2f;
+    private const float HouseCountTextYPos = HouseIconYPos + 4f;
+    private const float DisplaySlots4IconWidth = 22f;
+    private const float HouseCountTextXPos = DisplaySlots4IconWidth + 4f;
+    private const float VanillaButtonIconSideLength = 22f;
+    private const float TakenHouseIconXPos = -2f;
+
+    private const float DisplaySlots4IconHeight = 24f;
+    private const float TakenHouseIconYPos = HouseIconYPos + DisplaySlots4IconHeight + 2f;
+    private const float TakenHouseCountTextYPos = TakenHouseIconYPos + 6f;
+    private const float TakenHouseCountTextXPos = TakenHouseIconXPos + 2f;
+
+    private const float ForceShrineSyncButtonZoneXPos = -VanillaButtonIconSideLength - 4;
+    private const float PauseVillagerSpawningZoneYPos = -VanillaButtonIconSideLength - 4f;
+
     public UIPanel backPanel;
 
     public UIPanel itemPanel;
@@ -84,23 +113,31 @@ public class VillageShrineUIState : UIState {
         Asset<Texture2D> gradientPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder");
         Asset<Texture2D> shadowedPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/ShadowedPanelBorder");
 
-        backPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) { BackgroundColor = new Color(59, 97, 203), BorderColor = Color.White };
-        backPanel.Width = backPanel.Height = new StyleDimension(194f, 0f);
+        backPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
+            Width = StyleDimension.FromPixels(BackPanelSideLength), Height = StyleDimension.FromPixels(BackPanelSideLength), BackgroundColor = new Color(59, 97, 203), BorderColor = Color.White
+        };
         Append(backPanel);
 
-        itemPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) { BackgroundColor = new Color(46, 46, 159), BorderColor = new Color(22, 29, 107) };
-        itemPanel.Width = itemPanel.Height = new StyleDimension(48f, 0f);
+        itemPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) {
+            Width = StyleDimension.FromPixels(ItemPanelSideLength),
+            Height = StyleDimension.FromPixels(ItemPanelSideLength),
+            BackgroundColor = new Color(46, 46, 159),
+            BorderColor = new Color(22, 29, 107)
+        };
         itemPanel.SetPadding(0f);
         backPanel.Append(itemPanel);
 
-        respawnItemDisplay = new UIBetterItemIcon(new Item(), 48f, true) { overrideDrawColor = Color.White * 0.45f };
-        respawnItemDisplay.Width = respawnItemDisplay.Height = itemPanel.Width;
+        respawnItemDisplay = new UIBetterItemIcon(new Item(), ItemPanelSideLength, true) {
+            Width = StyleDimension.FromPixels(ItemPanelSideLength), Height = StyleDimension.FromPixels(ItemPanelSideLength), overrideDrawColor = Color.White * 0.45f
+        };
         itemPanel.Append(respawnItemDisplay);
 
-        respawnItemCount = new UIModifiedText("0") { horizontalTextConstraint = itemPanel.Width.Pixels, HAlign = 0.5f, VAlign = 0.85f };
+        respawnItemCount = new UIModifiedText("0") { horizontalTextConstraint = ItemPanelSideLength, HAlign = 0.5f, VAlign = 0.85f };
         itemPanel.Append(respawnItemCount);
 
-        addRespawnButtonZone = new UIVisibilityElement { Height = StyleDimension.FromPixels(30f), Width = itemPanel.Width, Top = StyleDimension.FromPixels(itemPanel.Height.Pixels + 4f) };
+        addRespawnButtonZone = new UIVisibilityElement {
+            Height = StyleDimension.FromPixels(AddTakeButtonsHeight), Width = StyleDimension.FromPixels(ItemPanelSideLength), Top = StyleDimension.FromPixels(AddRespawnButtonZoneYPos)
+        };
         backPanel.Append(addRespawnButtonZone);
 
         addRespawnButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "UI.Shrine.AddText".Localized()) {
@@ -114,7 +151,7 @@ public class VillageShrineUIState : UIState {
         addRespawnButtonZone.Append(addRespawnButton);
 
         takeRespawnButtonZone = new UIVisibilityElement {
-            Height = StyleDimension.FromPixels(30f), Width = itemPanel.Width, Top = StyleDimension.FromPixels(addRespawnButtonZone.Top.Pixels + addRespawnButtonZone.Height.Pixels + 4f)
+            Height = StyleDimension.FromPixels(AddTakeButtonsHeight), Width = StyleDimension.FromPixels(ItemPanelSideLength), Top = StyleDimension.FromPixels(TakeRespawnButtonYPos)
         };
         backPanel.Append(takeRespawnButtonZone);
 
@@ -128,59 +165,50 @@ public class VillageShrineUIState : UIState {
         takeRespawnButton.OnLeftClick += TakeRespawnItem;
         takeRespawnButtonZone.Append(takeRespawnButton);
 
-        respawnTimerZone = new UIElement();
-        respawnTimerZone.Left.Set(itemPanel.Width.Pixels + 4f, 0f);
-        respawnTimerZone.Width.Set(backPanel.Width.Pixels - backPanel.PaddingLeft - backPanel.PaddingRight - itemPanel.Width.Pixels - 4f, 0f);
-        respawnTimerZone.Height.Set(itemPanel.Height.Pixels, 0f);
+        respawnTimerZone = new UIElement {
+            Left = StyleDimension.FromPixels(RespawnTimerZoneXPos), Width = StyleDimension.FromPixels(RespawnTimerZoneWidth), Height = StyleDimension.FromPixels(ItemPanelSideLength)
+        };
         backPanel.Append(respawnTimerZone);
 
-        respawnTimerHeader = new UIModifiedText("UI.Shrine.HarpyCountdown".Localized()) { HAlign = 0.5f, horizontalTextConstraint = respawnTimerZone.Width.Pixels };
+        respawnTimerHeader = new UIModifiedText("UI.Shrine.HarpyCountdown".Localized()) { HAlign = 0.5f, horizontalTextConstraint = RespawnTimerZoneWidth };
         respawnTimerZone.Append(respawnTimerHeader);
 
-        respawnTimer = new UIModifiedText("00:00", 0.67f, true) { HAlign = 0.5f, horizontalTextConstraint = respawnTimerZone.Width.Pixels };
-        respawnTimer.Top.Set(respawnTimerHeader.Height.Pixels + 12f, 0f);
+        respawnTimer = new UIModifiedText("00:00", 0.67f, true) { HAlign = 0.5f, horizontalTextConstraint = RespawnTimerZoneWidth, Top = StyleDimension.FromPixels(RespawnTimerTextYPos) };
         respawnTimerZone.Append(respawnTimer);
 
-        houseIcon = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/DisplaySlots_4", AssetRequestMode.ImmediateLoad));
-        houseIcon.Top.Set(takeRespawnButtonZone.Top.Pixels + takeRespawnButtonZone.Height.Pixels + 2f, 0f);
+        houseIcon = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/DisplaySlots_4")) { Top = StyleDimension.FromPixels(HouseIconYPos) };
         backPanel.Append(houseIcon);
 
-        houseCountText = new UIModifiedText("0");
-        houseCountText.Top.Set(houseIcon.Top.Pixels + 4f, 0f);
-        houseCountText.Left.Set(houseIcon.Width.Pixels + 4f, 0f);
+        houseCountText = new UIModifiedText("0") { Left = StyleDimension.FromPixels(HouseCountTextXPos), Top = StyleDimension.FromPixels(HouseCountTextYPos) };
         backPanel.Append(houseCountText);
 
-        takenHouseIcon = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/DisplaySlots_7", AssetRequestMode.ImmediateLoad));
-        takenHouseIcon.Top.Set(houseIcon.Top.Pixels + houseIcon.Height.Pixels + 2f, 0f);
-        takenHouseIcon.Left.Set(-2f, 0f);
+        takenHouseIcon = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/DisplaySlots_7")) {
+            Left = StyleDimension.FromPixels(TakenHouseIconXPos), Top = StyleDimension.FromPixels(TakenHouseIconYPos)
+        };
         backPanel.Append(takenHouseIcon);
 
-        takenHouseCountText = new UIModifiedText("0");
-        takenHouseCountText.Top.Set(takenHouseIcon.Top.Pixels + 6f, 0f);
-        takenHouseCountText.Left.Set(takenHouseIcon.Width.Pixels + 2f, 0f);
+        takenHouseCountText = new UIModifiedText("0") { Left = StyleDimension.FromPixels(TakenHouseCountTextXPos), Top = StyleDimension.FromPixels(TakenHouseCountTextYPos) };
         backPanel.Append(takenHouseCountText);
 
-        Asset<Texture2D> showVillageRadiusButtonTexture = Main.Assets.Request<Texture2D>("Images/UI/ButtonFavoriteInactive", AssetRequestMode.ImmediateLoad);
         showVillageRadiusButtonZone = new UITooltipElement("UI.Shrine.EnableVillageRadius".Localized()) {
-            HAlign = 1f, VAlign = 1f, Width = StyleDimension.FromPixels(showVillageRadiusButtonTexture.Width()), Height = StyleDimension.FromPixels(showVillageRadiusButtonTexture.Height())
+            HAlign = 1f, VAlign = 1f, Width = StyleDimension.FromPixels(VanillaButtonIconSideLength), Height = StyleDimension.FromPixels(VanillaButtonIconSideLength)
         };
         backPanel.Append(showVillageRadiusButtonZone);
 
-        showVillageRadiusButton = new UIBetterImageButton(showVillageRadiusButtonTexture);
+        showVillageRadiusButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonFavoriteInactive"));
         showVillageRadiusButton.OnLeftClick += ClickVillagerRadiusButton;
         showVillageRadiusButtonZone.Append(showVillageRadiusButton);
 
-        Asset<Texture2D> forceShrineSyncButtonTexture = Main.Assets.Request<Texture2D>("Images/UI/ButtonCloudActive", AssetRequestMode.ImmediateLoad);
         forceShrineSyncButtonZone = new UITooltipElement("UI.Shrine.ForceShrineButtonText".Localized()) {
             HAlign = 1f,
             VAlign = 1f,
-            Width = StyleDimension.FromPixels(forceShrineSyncButtonTexture.Width()),
-            Height = StyleDimension.FromPixels(forceShrineSyncButtonTexture.Height()),
-            Left = StyleDimension.FromPixels(-showVillageRadiusButtonZone.Width.Pixels - 4)
+            Width = StyleDimension.FromPixels(VanillaButtonIconSideLength),
+            Height = StyleDimension.FromPixels(VanillaButtonIconSideLength),
+            Left = StyleDimension.FromPixels(ForceShrineSyncButtonZoneXPos)
         };
         backPanel.Append(forceShrineSyncButtonZone);
 
-        forceShrineSyncButton = new UIBetterImageButton(forceShrineSyncButtonTexture);
+        forceShrineSyncButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/ButtonCloudActive"));
         forceShrineSyncButton.OnLeftClick += ClickShrineSyncButton;
         forceShrineSyncButtonZone.Append(forceShrineSyncButton);
 
@@ -188,9 +216,9 @@ public class VillageShrineUIState : UIState {
         pauseVillagerSpawningButtonZone = new UITooltipElement("UI.Shrine.PauseVillagerSpawning".Localized()) {
             HAlign = 1f,
             VAlign = 1f,
-            Width = StyleDimension.FromPixels(pauseVillagerSpawningButtonTexture.Width()),
-            Height = StyleDimension.FromPixels(pauseVillagerSpawningButtonTexture.Height()),
-            Top = StyleDimension.FromPixels(-showVillageRadiusButtonZone.Width.Pixels - 4)
+            Width = StyleDimension.FromPixels(VanillaButtonIconSideLength),
+            Height = StyleDimension.FromPixels(VanillaButtonIconSideLength),
+            Top = StyleDimension.FromPixels(PauseVillagerSpawningZoneYPos)
         };
         backPanel.Append(pauseVillagerSpawningButtonZone);
 
