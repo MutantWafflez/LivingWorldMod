@@ -17,7 +17,7 @@ namespace LivingWorldMod.Content.Villages.UI.VillageShrine;
 ///     UIState that handles the UI for the village shrine for each type of village.
 /// </summary>
 public class VillageShrineUIState : UIState {
-    private const float DefaultUIPanelPadding = 4f;
+    private const float DefaultUIPanelPadding = 12f;
 
     private const float BackPanelSideLength = 194f;
 
