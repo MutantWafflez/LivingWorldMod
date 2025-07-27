@@ -17,12 +17,6 @@ public class HappinessUIState : UIState {
     private sealed class UIMoodModifier : UIElement {
         //TODO: Use Scalie's asset generator?
 
-        public readonly UITooltipElement tooltipElement;
-        public readonly UIPanel backPanel;
-
-        public readonly UIModifiedText moodDescriptionText;
-        public readonly UIModifiedText moodOffsetText;
-
         public UIMoodModifier(MoodModifierInstance instance) {
             Height = StyleDimension.FromPixels(40f);
             Width = StyleDimension.Fill;
@@ -33,18 +27,18 @@ public class HappinessUIState : UIState {
                     new { FlavorText = instance.flavorText.ToString(), Time = Lang.LocalizedDuration(new TimeSpan(0, 0, instance.duration / LWMUtils.RealLifeSecond), true, true) }
                 )
                 : new DynamicLocalizedText("UI.MoodFlavorText".Localized(), new { FlavorText = instance.flavorText.ToString() });
-            tooltipElement = new UITooltipElement(templatedFlavorText) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+            UITooltipElement tooltipElement = new (templatedFlavorText) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
             Append(tooltipElement);
 
-            backPanel = new UIPanel(Main.Assets.Request<Texture2D>("Images/UI/PanelBackground"), ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder")) {
+            UIPanel backPanel = new (Main.Assets.Request<Texture2D>("Images/UI/PanelBackground"), ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder")) {
                 Width = StyleDimension.Fill, Height = StyleDimension.Fill
             };
             tooltipElement.Append(backPanel);
 
-            moodDescriptionText = new UIModifiedText(instance.descriptionText.SubstitutedText) { Height = StyleDimension.Fill, VAlign = 0.5f };
+            UIModifiedText moodDescriptionText = new (instance.descriptionText.SubstitutedText) { Height = StyleDimension.Fill, VAlign = 0.5f };
             backPanel.Append(moodDescriptionText);
 
-            moodOffsetText = new UIModifiedText(instance.moodOffset.ToString("#.##")) {
+            UIModifiedText moodOffsetText = new (instance.moodOffset.ToString("#.##")) {
                 Height = StyleDimension.Fill, HAlign = 1f, VAlign = 0.5f, TextColor = instance.moodOffset < 0f ? Color.Red : Color.Lime
             };
             backPanel.Append(moodOffsetText);
@@ -70,37 +64,37 @@ public class HappinessUIState : UIState {
     private const float ModifierScrollbarXOffset = -20f;
     private const float ModifierListWidth = MoodBackPanelWidth - 80f;
 
-    public UIPanel moodBackPanel;
+    private UIPanel _moodBackPanel;
 
-    public UIElement npcInfoAndPriceZone;
+    private UIElement _npcInfoAndPriceZone;
 
-    public UIImage npcHeadIcon;
+    private UIImage _npcHeadIcon;
 
-    public UIModifiedText npcName;
+    private UIModifiedText _npcName;
 
-    public UIModifiedText priceModifierTextNumber;
+    private UIModifiedText _priceModifierTextNumber;
 
-    public UIImage moneyBagIcon;
+    private UIImage _moneyBagIcon;
 
-    public UITooltipElement moneyBagTooltipElement;
+    private UITooltipElement _moneyBagTooltipElement;
 
-    public UITooltipElement happinessBarZone;
+    private UITooltipElement _happinessBarZone;
 
-    public UISquarePanel happinessBarBackPanel;
+    private UISquarePanel _happinessBarBackPanel;
 
-    public UISimpleRectangle happinessBar;
+    private UISimpleRectangle _happinessBar;
 
-    public UIImage moodLowIcon;
+    private UIImage _moodLowIcon;
 
-    public UIImage moodMidIcon;
+    private UIImage _moodMidIcon;
 
-    public UIImage moodHighIcon;
+    private UIImage _moodHighIcon;
 
-    public UIPanel modifierListBackPanel;
+    private UIPanel _modifierListBackPanel;
 
-    public UIBetterScrollbar modifierScrollbar;
+    private UIBetterScrollbar _modifierScrollbar;
 
-    public UIList modifierList;
+    private UIList _modifierList;
 
     public NPC NPCBeingTalkedTo {
         get;
@@ -112,7 +106,7 @@ public class HappinessUIState : UIState {
         Asset<Texture2D> gradientPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder");
         Asset<Texture2D> shadowedPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/ShadowedPanelBorder");
 
-        moodBackPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
+        _moodBackPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
             BackgroundColor = new Color(59, 97, 203),
             BorderColor = Color.White,
             HAlign = 0.5f,
@@ -121,92 +115,92 @@ public class HappinessUIState : UIState {
             Height = StyleDimension.FromPixels(MoodBackPanelHeight)
         };
 
-        npcInfoAndPriceZone = new UIElement { Width = StyleDimension.Fill, Height = StyleDimension.FromPixels(32f) } ;
-        moodBackPanel.Append(npcInfoAndPriceZone);
+        _npcInfoAndPriceZone = new UIElement { Width = StyleDimension.Fill, Height = StyleDimension.FromPixels(32f) } ;
+        _moodBackPanel.Append(_npcInfoAndPriceZone);
 
-        npcHeadIcon = new UIImage(TextureAssets.MagicPixel) { VAlign = 0.5f };
-        npcInfoAndPriceZone.Append(npcHeadIcon);
+        _npcHeadIcon = new UIImage(TextureAssets.MagicPixel) { VAlign = 0.5f };
+        _npcInfoAndPriceZone.Append(_npcHeadIcon);
 
-        npcName = new UIModifiedText("NPC Name", 0.75f, true) { Left = StyleDimension.FromPixels(NPCNameXPos), VAlign = 0.5f, horizontalTextConstraint = NPCNameTextConstraint };
-        npcInfoAndPriceZone.Append(npcName);
+        _npcName = new UIModifiedText("NPC Name", 0.75f, true) { Left = StyleDimension.FromPixels(NPCNameXPos), VAlign = 0.5f, horizontalTextConstraint = NPCNameTextConstraint };
+        _npcInfoAndPriceZone.Append(_npcName);
 
-        moneyBagIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/MoneyBag")) {
+        _moneyBagIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/MoneyBag")) {
             HAlign = 1f, Width = StyleDimension.FromPixels(IconSideLength), Height = StyleDimension.FromPixels(IconSideLength)
         };
-        npcInfoAndPriceZone.Append(moneyBagIcon);
+        _npcInfoAndPriceZone.Append(_moneyBagIcon);
 
-        moneyBagTooltipElement = new UITooltipElement("UI.NPCHappiness.PriceModifier".Localized()) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
-        moneyBagIcon.Append(moneyBagTooltipElement);
+        _moneyBagTooltipElement = new UITooltipElement("UI.NPCHappiness.PriceModifier".Localized()) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+        _moneyBagIcon.Append(_moneyBagTooltipElement);
 
-        priceModifierTextNumber = new UIModifiedText("", 0.75f, true) { VAlign = 0.5f, Left = StyleDimension.FromPixelsAndPercent(PriceModifierTextXOffset, 1f) };
-        npcInfoAndPriceZone.Append(priceModifierTextNumber);
+        _priceModifierTextNumber = new UIModifiedText("", 0.75f, true) { VAlign = 0.5f, Left = StyleDimension.FromPixelsAndPercent(PriceModifierTextXOffset, 1f) };
+        _npcInfoAndPriceZone.Append(_priceModifierTextNumber);
 
-        happinessBarZone = new UITooltipElement(new DynamicLocalizedText("UI.Fraction".Localized(), new { Numerator = 0, Denominator = 0 })) {
+        _happinessBarZone = new UITooltipElement(new DynamicLocalizedText("UI.Fraction".Localized(), new { Numerator = 0, Denominator = 0 })) {
             Width = StyleDimension.Fill, Height = StyleDimension.FromPixels(HappinessBarZoneHeight), Top = StyleDimension.FromPixels(HappinessBarZoneYPos)
         };
-        moodBackPanel.Append(happinessBarZone);
+        _moodBackPanel.Append(_happinessBarZone);
 
-        happinessBarBackPanel = new UISquarePanel(new Color(22, 29, 107), new Color(46, 46, 159)) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
-        happinessBarZone.Append(happinessBarBackPanel);
+        _happinessBarBackPanel = new UISquarePanel(new Color(22, 29, 107), new Color(46, 46, 159)) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+        _happinessBarZone.Append(_happinessBarBackPanel);
 
-        happinessBar = new UISimpleRectangle(Color.White) { Height = StyleDimension.FromPercent(0.75f), Width = StyleDimension.FromPercent(0.5f), VAlign = 0.5f };
-        happinessBarBackPanel.innerRectangle.Append(happinessBar);
+        _happinessBar = new UISimpleRectangle(Color.White) { Height = StyleDimension.FromPercent(0.75f), Width = StyleDimension.FromPercent(0.5f), VAlign = 0.5f };
+        _happinessBarBackPanel.innerRectangle.Append(_happinessBar);
 
-        moodLowIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/TownNPCMoodLow")) {
+        _moodLowIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/TownNPCMoodLow")) {
             Top = StyleDimension.FromPixelsAndPercent(MoodIconsYOffset, 1f), Width = StyleDimension.FromPixels(IconSideLength), Height = StyleDimension.FromPercent(IconSideLength)
         };
-        happinessBarZone.Append(moodLowIcon);
+        _happinessBarZone.Append(_moodLowIcon);
 
-        moodMidIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/TownNPCMoodMid")) {
+        _moodMidIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/TownNPCMoodMid")) {
             Top = StyleDimension.FromPixelsAndPercent(MoodIconsYOffset, 1f), HAlign = 0.5f, Width = StyleDimension.FromPixels(IconSideLength), Height = StyleDimension.FromPercent(IconSideLength)
         };
-        happinessBarZone.Append(moodMidIcon);
+        _happinessBarZone.Append(_moodMidIcon);
 
-        moodHighIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/TownNPCMoodHigh")) {
+        _moodHighIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/TownNPCMoodHigh")) {
             Top = StyleDimension.FromPixelsAndPercent(MoodIconsYOffset, 1f), HAlign = 1f, Width = StyleDimension.FromPixels(IconSideLength), Height = StyleDimension.FromPercent(IconSideLength)
         };
-        happinessBarZone.Append(moodHighIcon);
+        _happinessBarZone.Append(_moodHighIcon);
 
-        modifierListBackPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) {
+        _modifierListBackPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) {
             BackgroundColor = new Color(46, 46, 159),
             BorderColor = new Color(22, 29, 107),
             Width = StyleDimension.Fill,
             Height = StyleDimension.FromPixels(ModifierListBackPanelHeight),
             VAlign = 1f
         };
-        moodBackPanel.Append(modifierListBackPanel);
+        _moodBackPanel.Append(_modifierListBackPanel);
 
-        modifierScrollbar = new UIBetterScrollbar { Left = StyleDimension.FromPixelsAndPercent(ModifierScrollbarXOffset, 1f), Height = StyleDimension.Fill };
-        modifierListBackPanel.Append(modifierScrollbar);
+        _modifierScrollbar = new UIBetterScrollbar { Left = StyleDimension.FromPixelsAndPercent(ModifierScrollbarXOffset, 1f), Height = StyleDimension.Fill };
+        _modifierListBackPanel.Append(_modifierScrollbar);
 
-        modifierList = new UIList { Width = StyleDimension.FromPixels(ModifierListWidth), Height = StyleDimension.Fill };
-        modifierList.SetScrollbar(modifierScrollbar);
-        modifierListBackPanel.Append(modifierList);
+        _modifierList = new UIList { Width = StyleDimension.FromPixels(ModifierListWidth), Height = StyleDimension.Fill };
+        _modifierList.SetScrollbar(_modifierScrollbar);
+        _modifierListBackPanel.Append(_modifierList);
 
-        Append(moodBackPanel);
+        Append(_moodBackPanel);
     }
 
     public override void Update(GameTime gameTime) {
         base.Update(gameTime);
         TownNPCMoodModule moodModule = NPCBeingTalkedTo.GetGlobalNPC<TownNPCMoodModule>();
 
-        priceModifierTextNumber.SetText(Main.ShopHelper._currentPriceAdjustment.ToString("0.#%"));
-        priceModifierTextNumber.Left.Set(PriceModifierTextXOffset - IconSideLength - priceModifierTextNumber.GetDimensions().Width, 1f);
+        _priceModifierTextNumber.SetText(Main.ShopHelper._currentPriceAdjustment.ToString("0.#%"));
+        _priceModifierTextNumber.Left.Set(PriceModifierTextXOffset - IconSideLength - _priceModifierTextNumber.GetDimensions().Width, 1f);
 
-        happinessBarZone.ReformatText(new { Numerator = moodModule.CurrentMood, Denominator = TownNPCMoodModule.MaxMoodValue });
-        happinessBar.Width.Percent = Utils.Clamp(moodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue, 0f, 1f);
+        _happinessBarZone.ReformatText(new { Numerator = moodModule.CurrentMood, Denominator = TownNPCMoodModule.MaxMoodValue });
+        _happinessBar.Width.Percent = Utils.Clamp(moodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue, 0f, 1f);
 
-        modifierList.Clear();
+        _modifierList.Clear();
         foreach (MoodModifierInstance instance in moodModule.CurrentMoodModifiers) {
-            modifierList.Add(new UIMoodModifier(instance));
+            _modifierList.Add(new UIMoodModifier(instance));
         }
     }
 
     public void SetStateToNPC(NPC npc) {
         NPCBeingTalkedTo = npc;
-        modifierScrollbar.ViewPosition = 0f;
-        npcHeadIcon.SetImage(TextureAssets.NpcHead[TownNPCProfiles.GetHeadIndexSafe(npc)]);
-        npcName.SetText(npc.GivenOrTypeName);
+        _modifierScrollbar.ViewPosition = 0f;
+        _npcHeadIcon.SetImage(TextureAssets.NpcHead[TownNPCProfiles.GetHeadIndexSafe(npc)]);
+        _npcName.SetText(npc.GivenOrTypeName);
 
         RecalculateChildren();
     }
