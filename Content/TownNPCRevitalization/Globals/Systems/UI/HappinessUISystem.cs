@@ -18,8 +18,8 @@ public class HappinessUISystem : UISystem<HappinessUISystem, HappinessUIState> {
     }
 
     public void OpenHappinessState(NPC npc) {
-        UIState.SetStateToNPC(npc);
-
         OpenUIState();
+        
+        UIState.SetStateToNPC(npc);
     }
 }
