@@ -5,6 +5,7 @@ using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -323,18 +324,22 @@ public class VillagerHousingUIState : UIState {
         villagerHousingZone.SetVisibility(!villagerHousingZone.IsVisible);
 
         if (villagerHousingZone.IsVisible) {
-            SoundEngine.PlaySound(SoundID.MenuOpen);
-            openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_On"));
             Main.EquipPageSelected = -1;
             Main.EquipPage = -1;
+
             DisplayAvailableVillagers();
+            openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_On", AssetRequestMode.ImmediateLoad));
+
+            SoundEngine.PlaySound(SoundID.MenuOpen);
         }
         else {
-            SoundEngine.PlaySound(SoundID.MenuClose);
-            openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off"));
             Main.EquipPageSelected = 0;
             Main.EquipPage = 0;
+
+            openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off"));
             gridOfVillagers.Clear();
+
+            SoundEngine.PlaySound(SoundID.MenuClose);
         }
     }
 
