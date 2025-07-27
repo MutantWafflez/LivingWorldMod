@@ -32,22 +32,22 @@ public class VillagerHousingUIState : UIState {
         /// <summary>
         ///     The villager instance that this element is displaying.
         /// </summary>
-        public readonly Villager myVillager;
+        private readonly Villager _myVillager;
 
         /// <summary>
         ///     Whether or not this villager is currently selected.
         /// </summary>
-        public bool IsSelected => myVillager.NPC.whoAmI == Main.instance.mouseNPCIndex;
+        private bool IsSelected => _myVillager.NPC.whoAmI == Main.instance.mouseNPCIndex;
 
         /// <summary>
         ///     Whether or not this NPC is "allowed" to be housed, which is to say whether or not the
         ///     village that the villager belongs to likes the player.
         /// </summary>
         //TODO: Swap back to commented expression when Reputation system is re-implemented
-        public bool IsAllowed => true; //myVillager.RelationshipStatus >= VillagerRelationship.Like;
+        private bool IsAllowed => true; //myVillager.RelationshipStatus >= VillagerRelationship.Like;
 
         public UIHousingVillagerDisplay(Villager villager) {
-            myVillager = villager;
+            _myVillager = villager;
 
             Width = StyleDimension.FromPixels(SideLength);
             Height = StyleDimension.FromPixels(SideLength);
@@ -65,18 +65,18 @@ public class VillagerHousingUIState : UIState {
             }
             else {
                 //Our IL edit in NPCHousingPatches.cs handles the drawing here.
-                Main.instance.SetMouseNPC(myVillager.NPC.whoAmI, myVillager.Type);
+                Main.instance.SetMouseNPC(_myVillager.NPC.whoAmI, _myVillager.Type);
                 SoundEngine.PlaySound(SoundID.MenuTick);
             }
         }
 
         public override void Update(GameTime gameTime) {
-            if (!ContainsPoint(Main.MouseScreen) || myVillager is null) {
+            if (!ContainsPoint(Main.MouseScreen) || _myVillager is null) {
                 return;
             }
 
             Main.LocalPlayer.mouseInterface = true;
-            Main.instance.MouseText(IsAllowed ? myVillager.NPC.GivenName : "UI.VillagerHousing.VillagerTypeLocked".Localized().FormatWith(myVillager.VillagerType.ToString()));
+            Main.instance.MouseText(IsAllowed ? _myVillager.NPC.GivenName : "UI.VillagerHousing.VillagerTypeLocked".Localized().FormatWith(_myVillager.VillagerType.ToString()));
         }
 
         protected override void DrawChildren(SpriteBatch spriteBatch) {
@@ -94,8 +94,8 @@ public class VillagerHousingUIState : UIState {
             );
 
 
-            LayeredDrawObject drawObject = myVillager.drawObject;
-            Rectangle textureDrawRegion = new(0, 0, drawObject.GetLayerFrameWidth(), drawObject.GetLayerFrameHeight(0, 0, Main.npcFrameCount[myVillager.Type]));
+            LayeredDrawObject drawObject = _myVillager.drawObject;
+            Rectangle textureDrawRegion = new(0, 0, drawObject.GetLayerFrameWidth(), drawObject.GetLayerFrameHeight(0, 0, Main.npcFrameCount[_myVillager.Type]));
 
             drawObject.Draw(
                 spriteBatch,
@@ -109,7 +109,7 @@ public class VillagerHousingUIState : UIState {
                     0.75f,
                     SpriteEffects.None
                 ),
-                myVillager.DrawIndices
+                _myVillager.DrawIndices
             );
 
             if (IsAllowed) {
