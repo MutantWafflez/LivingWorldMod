@@ -137,14 +137,6 @@ public class TaxSheetUIState : UIState {
 
     private int? _selectedNPCGridIndex;
 
-    /// <remarks>
-    ///     This field needing to exist is symptomatic of big issues that very <i>old</i> LWM code causes. The short of it is that we activate and load our UIs during mod loading, instead of "on-demand."
-    ///     This causes UI states to have incorrect scale values, as while loading, <see cref="Main.UIScale" /> is different than in-game. As such, anything relying on position based on the
-    ///     screen size will get tripped up, and this is the first time it's been causing problems. This field will cause a recalculation to occur to band-aid fix the problem.
-    /// </remarks>
-    // TODO: Fix underlying UI loading code
-    private bool _hasDoubleInitialized;
-
     public NPC NPCBeingTalkedTo {
         get;
         private set;
@@ -190,19 +182,13 @@ public class TaxSheetUIState : UIState {
         );
     }
 
+    public override void Recalculate() {
+        base.Recalculate();
+        int hi = 0;
+    }
+
     public void SetStateToNPC(NPC npc) {
         NPCBeingTalkedTo = npc;
-
-        if (!_hasDoubleInitialized) {
-            for (int i = 0; i < 2; i++) {
-                Recalculate();
-
-                RemoveAllChildren();
-                OnInitialize();
-            }
-
-            _hasDoubleInitialized = true;
-        }
 
         RefreshStateWithCurrentNPC();
     }

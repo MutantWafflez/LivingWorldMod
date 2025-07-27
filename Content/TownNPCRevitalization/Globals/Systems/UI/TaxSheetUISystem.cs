@@ -10,13 +10,13 @@ public class TaxSheetUISystem : UISystem<TaxSheetUISystem, TaxSheetUIState> {
     public override void PostUpdateEverything() { }
 
     public override void UpdateUI(GameTime gameTime) {
+        base.UpdateUI(gameTime);
+
         if (!UIIsActive || (Main.LocalPlayer.TalkNPC is { } npc && npc == UIState.NPCBeingTalkedTo)) {
             return;
         }
 
         CloseUIState();
-
-        base.UpdateUI(gameTime);
     }
 
     public void OpenTaxesState(NPC npc) {

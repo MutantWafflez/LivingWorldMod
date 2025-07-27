@@ -43,7 +43,8 @@ public abstract partial class UISystem<TSystem, TState> : BaseModSystem<TSystem>
 
     public override void SetStaticDefaults() {
         _userInterface = new UserInterface();
-        UIState = new TState();
+
+        Player.Hooks.OnEnterWorld += InitializeUIState;
     }
 
     public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
@@ -65,6 +66,14 @@ public abstract partial class UISystem<TSystem, TState> : BaseModSystem<TSystem>
         if (_lastGameTime is not null && _userInterface.CurrentState == UIState) {
             _userInterface.Update(_lastGameTime);
         }
+    }
+
+    protected virtual void InitializeUIState(Player player) {
+        if (player.whoAmI != Main.myPlayer) {
+            return;
+        }
+
+        UIState = new TState();
     }
 
     /// <summary>
