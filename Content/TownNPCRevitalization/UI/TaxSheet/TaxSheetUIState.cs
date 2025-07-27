@@ -54,7 +54,7 @@ public class TaxSheetUIState : UIState {
             return;
 
             void OnHeadElementLeftClick(UIMouseEvent uiMouseEvent, UIElement uiElement) {
-                TaxSheetUIState state = TaxSheetUISystem.Instance.correspondingUIState;
+                TaxSheetUIState state = TaxSheetUISystem.Instance.UIState;
                 ref int? selectedNPCGridIndex = ref state._selectedNPCGridIndex;
 
                 if (selectedNPCGridIndex == this.indexInGrid) {
@@ -107,22 +107,22 @@ public class TaxSheetUIState : UIState {
     private float _tempSalesTaxValue;
 
     private UIPanel _backPanel;
-    private UIBetterText _titleText;
+    private UIModifiedText _titleText;
     private UIPanel _npcGridSubPanel;
     private UIBetterScrollbar _npcGridScrollBar;
     private UIGrid _npcGrid;
 
     private UIVisibilityElement _selectedNPCVisibilityElement;
     private UIPanel _selectedNPCBackPanel;
-    private UIBetterText _selectedNPCName;
+    private UIModifiedText _selectedNPCName;
 
-    private UIBetterText _propertyTaxText;
+    private UIModifiedText _propertyTaxText;
     private UICoinDisplay _propertyTaxDisplay;
     private UIBetterImageButton[,] _propertyTaxChangeButtons;
 
     private UIVisibilityElement _salesTaxVisibilityElement;
-    private UIBetterText _salesTaxText;
-    private UIBetterText _salesTaxDisplay;
+    private UIModifiedText _salesTaxText;
+    private UIModifiedText _salesTaxDisplay;
     private UIBetterImageButton[] _salesTaxChangeButtons;
 
     private UIVisibilityElement _confirmationButtonsVisibilityElement;
@@ -227,7 +227,7 @@ public class TaxSheetUIState : UIState {
         };
         Append(_backPanel);
 
-        _titleText = new UIBetterText("UI.TaxSheet.Title".Localized(), 1.25f) { HAlign = 0.5f };
+        _titleText = new UIModifiedText("UI.TaxSheet.Title".Localized(), 1.25f) { HAlign = 0.5f };
         _backPanel.Append(_titleText);
 
         _npcGridSubPanel = new UIPanel(vanillaPanelBackground, shadowedPanelBorder) {
@@ -270,10 +270,10 @@ public class TaxSheetUIState : UIState {
         };
         _selectedNPCVisibilityElement.Append(_selectedNPCBackPanel);
 
-        _selectedNPCName = new UIBetterText("Guide", 1.25f) { HAlign = 0.5f, horizontalTextConstraint = SelectedNPCBackPanelWidth - PaddingBetweenPanels * 2f };
+        _selectedNPCName = new UIModifiedText("Guide", 1.25f) { HAlign = 0.5f, horizontalTextConstraint = SelectedNPCBackPanelWidth - PaddingBetweenPanels * 2f };
         _selectedNPCBackPanel.Append(_selectedNPCName);
 
-        _propertyTaxText = new UIBetterText("Property Tax", 0.9f) { HAlign = 0.5f, Top = StyleDimension.FromPixels(30f) };
+        _propertyTaxText = new UIModifiedText("Property Tax", 0.9f) { HAlign = 0.5f, Top = StyleDimension.FromPixels(30f) };
         _selectedNPCBackPanel.Append(_propertyTaxText);
 
         _propertyTaxDisplay = new UICoinDisplay(
@@ -299,10 +299,10 @@ public class TaxSheetUIState : UIState {
         _salesTaxVisibilityElement = new UIVisibilityElement { Width = StyleDimension.Fill, Height = StyleDimension.FromPixels(50f), Top = StyleDimension.FromPixels(140f) };
         _selectedNPCBackPanel.Append(_salesTaxVisibilityElement);
 
-        _salesTaxText = new UIBetterText("Sales Tax", 0.9f) { HAlign = 0.5f };
+        _salesTaxText = new UIModifiedText("Sales Tax", 0.9f) { HAlign = 0.5f };
         _salesTaxVisibilityElement.Append(_salesTaxText);
 
-        _salesTaxDisplay = new UIBetterText("0%", 0.5f, true) { HAlign = 0.5f, Top = StyleDimension.FromPixels(25f) };
+        _salesTaxDisplay = new UIModifiedText("0%", 0.5f, true) { HAlign = 0.5f, Top = StyleDimension.FromPixels(25f) };
         _salesTaxVisibilityElement.Append(_salesTaxDisplay);
 
         _salesTaxChangeButtons = new UIBetterImageButton[2];

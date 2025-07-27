@@ -1,21 +1,27 @@
 using LivingWorldMod.Content.TownNPCRevitalization.UI.TaxSheet;
 using LivingWorldMod.Globals.BaseTypes.Systems;
+using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 
 public class TaxSheetUISystem : UISystem<TaxSheetUISystem, TaxSheetUIState> {
     public override string InternalInterfaceName => "Tax Collector Taxes Sheet";
 
-    public override void PostUpdateEverything() {
-        if (correspondingInterface.CurrentState == null || (Main.LocalPlayer.TalkNPC is { } npc && npc == correspondingUIState.NPCBeingTalkedTo)) {
+    public override void PostUpdateEverything() { }
+
+    public override void UpdateUI(GameTime gameTime) {
+        if (!UIIsActive || (Main.LocalPlayer.TalkNPC is { } npc && npc == UIState.NPCBeingTalkedTo)) {
             return;
         }
 
-        correspondingInterface.SetState(null);
+        CloseUIState();
+
+        base.UpdateUI(gameTime);
     }
 
     public void OpenTaxesState(NPC npc) {
-        correspondingUIState.SetStateToNPC(npc);
-        correspondingInterface.SetState(correspondingUIState);
+        OpenUIState();
+
+        UIState.SetStateToNPC(npc);
     }
 }

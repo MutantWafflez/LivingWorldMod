@@ -76,7 +76,7 @@ public class ShopUIState : UIState {
             itemNameText = new UIModifiedText(displayedItem.HoverName, 1.25f) { Left = StyleDimension.FromPixels(94f), VAlign = 0.5f, horizontalTextConstraint = 194f, IgnoresMouseInteraction = true };
             Append(itemNameText);
 
-            UICoinDisplay itemCostDisplay = new (displayedCost, UICoinDisplay.CoinDrawStyle.NoCoinsWithZeroValue, 1.34f) {
+            UICoinDisplay itemCostDisplay = new (displayedCost, new UICoinDisplay.CoinDrawStyle(UICoinDisplay.CoinDrawCondition.DrawOnlyWithNonZeroValue), 1.34f) {
                 Left = StyleDimension.FromPixels(-DefaultElementPadding), HAlign = 1f, VAlign = 0.5f, IgnoresMouseInteraction = true
             };
             Append(itemCostDisplay);
@@ -320,7 +320,7 @@ public class ShopUIState : UIState {
         _buyItemZone.Append(_buyItemStock);
 
         _buyItemButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "UI.VillagerShop.Buy".Localized()) {
-            BackgroundColor = new Color(59, 97, 203),
+            BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor,
             BorderColor = Color.White,
             Width = StyleDimension.FromPixels(BuyItemButtonWidth),
             Height = StyleDimension.FromPixels(BuyItemButtonHeight),

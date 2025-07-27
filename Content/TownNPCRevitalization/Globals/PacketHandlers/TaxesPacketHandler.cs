@@ -50,7 +50,7 @@ public class TaxesPacketHandler : PacketHandler {
 
                 // Client
                 TaxesSystem.Instance.SubmitNewTaxValues(npcType, newTaxValues);
-                TaxSheetUISystem.Instance.correspondingUIState.RefreshStateWithCurrentNPC();
+                TaxSheetUISystem.Instance.UIState.RefreshStateWithCurrentNPC();
                 break;
             }
         }
