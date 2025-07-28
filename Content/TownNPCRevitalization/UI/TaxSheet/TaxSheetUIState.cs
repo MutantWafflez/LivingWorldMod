@@ -260,7 +260,7 @@ public class TaxSheetUIState : UIState {
         };
         _selectedNPCVisibilityElement.Append(_selectedNPCBackPanel);
 
-        _selectedNPCName = new UIModifiedText("Guide", 1.25f) { HAlign = 0.5f, horizontalTextConstraint = SelectedNPCBackPanelWidth - PaddingBetweenPanels * 2f };
+        _selectedNPCName = new UIModifiedText("Guide", 1.25f) { HAlign = 0.5f, HorizontalTextConstraint = SelectedNPCBackPanelWidth - PaddingBetweenPanels * 2f };
         _selectedNPCBackPanel.Append(_selectedNPCName);
 
         _propertyTaxText = new UIModifiedText("Property Tax", 0.9f) { HAlign = 0.5f, Top = StyleDimension.FromPixels(30f) };
@@ -305,7 +305,7 @@ public class TaxSheetUIState : UIState {
             button.OnLeftClick += (_, _) => {
                 float oldTalesTax = _tempSalesTaxValue;
                 _tempSalesTaxValue = Utils.Clamp(_tempSalesTaxValue + changeAmount * ButtonChangeAmountMultiplier, 0f, TaxesSystem.MaxSalesTax);
-                _salesTaxDisplay.SetText($"{(int)Math.Round(_tempSalesTaxValue * 100)}%");
+                _salesTaxDisplay.DesiredText = $"{(int)Math.Round(_tempSalesTaxValue * 100)}%";
 
                 SoundEngine.PlaySound(Math.Abs(oldTalesTax - _tempSalesTaxValue) > 0.000005 ? SoundID.Coins : SoundID.Tink);
             };
@@ -450,7 +450,7 @@ public class TaxSheetUIState : UIState {
         _tempSalesTaxValue = selectedTaxValues.SalesTax;
 
         _propertyTaxDisplay.SetNewCoinValues(_tempPropertyTaxValue);
-        _salesTaxDisplay.SetText($"{(int)Math.Round(_tempSalesTaxValue * 100)}%");
+        _salesTaxDisplay.DesiredText = $"{(int)Math.Round(_tempSalesTaxValue * 100)}%";
     }
 
     private void RefreshSelectedNPCDisplay() {
@@ -463,7 +463,7 @@ public class TaxSheetUIState : UIState {
         RefreshTaxValueDisplays(selectedNPCType);
         RefreshDirectDepositButton(Main.LocalPlayer.GetModPlayer<TaxesPlayer>().directDeposit);
 
-        _selectedNPCName.SetText(LWMUtils.GetNPCTypeNameOrIDName(selectedNPCType));
+        _selectedNPCName.DesiredText = LWMUtils.GetNPCTypeNameOrIDName(selectedNPCType);
         _selectedNPCVisibilityElement.SetVisibility(true);
 
         _salesTaxVisibilityElement.SetVisibility(

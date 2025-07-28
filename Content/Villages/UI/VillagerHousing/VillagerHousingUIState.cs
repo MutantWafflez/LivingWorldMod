@@ -262,7 +262,7 @@ public class VillagerHousingUIState : UIState {
         _villagerHousingZone.Append(_villagerTypeZone);
 
         _villagerTypeText = new UIModifiedText("VillagerType.Harpy".Localized(), 1.1f) {
-            Left = StyleDimension.FromPixels(VillagerTypeTextXPos), horizontalTextConstraint = VillagerTypeZoneWidth, HAlign = 0.5f, VAlign = 0.5f
+            Left = StyleDimension.FromPixels(VillagerTypeTextXPos), HorizontalTextConstraint = VillagerTypeZoneWidth, HAlign = 0.5f, VAlign = 0.5f
         };
         _villagerTypeZone.Append(_villagerTypeText);
 
@@ -326,7 +326,7 @@ public class VillagerHousingUIState : UIState {
         }
 
         //Change to proper villager type text
-        _villagerTypeText.SetText($"VillagerType.{_typeToShow}".Localized());
+        _villagerTypeText.DesiredText = $"VillagerType.{_typeToShow}".Localized().Value;
 
         DisplayAvailableVillagers();
     }

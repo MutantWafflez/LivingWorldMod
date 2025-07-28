@@ -73,7 +73,7 @@ public class ShopUIState : UIState {
             };
             Append(itemImage);
 
-            itemNameText = new UIModifiedText(displayedItem.HoverName, 1.25f) { Left = StyleDimension.FromPixels(94f), VAlign = 0.5f, horizontalTextConstraint = 194f, IgnoresMouseInteraction = true };
+            itemNameText = new UIModifiedText(displayedItem.HoverName, 1.25f) { Left = StyleDimension.FromPixels(94f), VAlign = 0.5f, HorizontalTextConstraint = 194f, IgnoresMouseInteraction = true };
             Append(itemNameText);
 
             UICoinDisplay itemCostDisplay = new (displayedCost, new UICoinDisplay.CoinDrawStyle(UICoinDisplay.CoinDrawCondition.DrawOnlyWithNonZeroValue), 1.34f) {
@@ -296,7 +296,7 @@ public class ShopUIState : UIState {
         };
         _backImage.Append(_nameZone);
 
-        _nameText = new UIModifiedText(large: true) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = PortraitZoneSideLength };
+        _nameText = new UIModifiedText(large: true) { HAlign = 0.5f, VAlign = 0.5f, HorizontalTextConstraint = PortraitZoneSideLength };
         _nameZone.Append(_nameText);
 
         //Dialogue Zone
@@ -308,7 +308,7 @@ public class ShopUIState : UIState {
         };
         _backImage.Append(_dialogueZone);
 
-        _dialogueText = new UIModifiedText { IsWrapped = true, horizontalWrapConstraint = DialogueTextWrapConstraint };
+        _dialogueText = new UIModifiedText { WrapConstraint = DialogueTextWrapConstraint };
         _dialogueText.SetPadding(DefaultElementPadding);
         _dialogueZone.Append(_dialogueText);
 
@@ -332,7 +332,7 @@ public class ShopUIState : UIState {
         _buyItemStockHeader = new UIModifiedText("UI.VillagerShop.Stock".Localized(), 1.25f) { Top = StyleDimension.FromPixels(BuyItemStockHeaderYPos), HAlign = 0.5f };
         _buyItemZone.Append(_buyItemStockHeader);
 
-        _buyItemStock = new UIModifiedText("1000", 1.25f) { Top = StyleDimension.FromPixels(BuyItemStockYPos), horizontalTextConstraint = BuyItemZoneWidth, HAlign = 0.5f };
+        _buyItemStock = new UIModifiedText("1000", 1.25f) { Top = StyleDimension.FromPixels(BuyItemStockYPos), HorizontalTextConstraint = BuyItemZoneWidth, HAlign = 0.5f };
         _buyItemZone.Append(_buyItemStock);
 
         _buyItemButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "UI.VillagerShop.Buy".Localized()) {
@@ -402,8 +402,8 @@ public class ShopUIState : UIState {
                     player.QuickSpawnItem(new EntitySource_DropAsItem(player), _selectedItem.displayedItem);
 
                     _selectedItem.displayedItem.stack--;
-                    _selectedItem.itemNameText.SetText(_selectedItem.displayedItem.HoverName);
-                    _buyItemStock.SetText(villagerShopItem.Stock.ToString());
+                    _selectedItem.itemNameText.DesiredText = _selectedItem.displayedItem.HoverName;
+                    _buyItemStock.DesiredText = villagerShopItem.Stock.ToString();
 
                     _savingsDisplay.SetNewCoinValues(player.CalculateTotalSavings());
 
@@ -412,7 +412,7 @@ public class ShopUIState : UIState {
                         _portrait.temporaryExpressionTimer = 120f;
                     }
 
-                    _dialogueText.SetText(DialogueSystem.Instance.GetDialogue(_currentVillager.VillagerType, _currentVillager.RelationshipStatus, DialogueType.ShopBuy));
+                    _dialogueText.DesiredText = DialogueSystem.Instance.GetDialogue(_currentVillager.VillagerType, _currentVillager.RelationshipStatus, DialogueType.ShopBuy);
 
                     SoundEngine.PlaySound(SoundID.Coins);
                 }
@@ -441,9 +441,9 @@ public class ShopUIState : UIState {
 
         _portrait.ReloadPortrait(_currentVillager);
 
-        _nameText.SetText(_currentVillager.NPC.GivenName, large: true);
+        _nameText.DesiredText = _currentVillager.NPC.GivenName;
 
-        _dialogueText.SetText(DialogueSystem.Instance.GetDialogue(_currentVillager.VillagerType, _currentVillager.RelationshipStatus, DialogueType.ShopInitial));
+        _dialogueText.DesiredText = DialogueSystem.Instance.GetDialogue(_currentVillager.VillagerType, _currentVillager.RelationshipStatus, DialogueType.ShopInitial);
 
         _savingsDisplay.SetNewCoinValues(Main.LocalPlayer.CalculateTotalSavings());
 
@@ -481,7 +481,7 @@ public class ShopUIState : UIState {
         newSelectedItem.isSelected = true;
 
         _buyItemIcon.SetItem(newSelectedItem.displayedItem);
-        _buyItemStock.SetText(_currentVillager.shopInventory[newSelectedItem.shopIndex].Stock.ToString());
+        _buyItemStock.DesiredText = _currentVillager.shopInventory[newSelectedItem.shopIndex].Stock.ToString();
 
         _buyItemZone.SetVisibility(true);
 

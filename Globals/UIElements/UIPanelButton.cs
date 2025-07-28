@@ -38,10 +38,10 @@ public class UIPanelButton : UIPanel {
             case null:
                 return;
             case LocalizedText translation:
-                buttonText = new UIModifiedText(translation, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
+                buttonText = new UIModifiedText(translation, textSize) { HAlign = 0.5f, VAlign = 0.5f, HorizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
                 break;
             default:
-                buttonText = new UIModifiedText(_text as string, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
+                buttonText = new UIModifiedText(_text as string, textSize) { HAlign = 0.5f, VAlign = 0.5f, HorizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
                 break;
         }
 

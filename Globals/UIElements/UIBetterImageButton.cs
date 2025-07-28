@@ -44,10 +44,10 @@ public class UIBetterImageButton : UIElement {
             case null:
                 return;
             case LocalizedText translation:
-                buttonText = new UIModifiedText(translation, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
+                buttonText = new UIModifiedText(translation, textSize) { HAlign = 0.5f, VAlign = 0.5f, HorizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
                 break;
             default:
-                buttonText = new UIModifiedText(_text as string, textSize) { HAlign = 0.5f, VAlign = 0.5f, horizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
+                buttonText = new UIModifiedText(_text as string, textSize) { HAlign = 0.5f, VAlign = 0.5f, HorizontalTextConstraint = GetDimensions().Width, IgnoresMouseInteraction = true };
                 break;
         }
 
@@ -85,7 +85,7 @@ public class UIBetterImageButton : UIElement {
         Height.Set(_buttonTexture.Height(), 0f);
 
         if (buttonText is not null) {
-            buttonText.horizontalTextConstraint = _buttonTexture.Width();
+            buttonText.HorizontalTextConstraint = _buttonTexture.Width();
         }
 
         RecalculateChildren();

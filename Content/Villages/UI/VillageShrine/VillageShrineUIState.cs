@@ -115,7 +115,10 @@ public class VillageShrineUIState : UIState {
         Asset<Texture2D> shadowedPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/ShadowedPanelBorder");
 
         _backPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
-            Width = StyleDimension.FromPixels(BackPanelSideLength), Height = StyleDimension.FromPixels(BackPanelSideLength), BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor, BorderColor = Color.White
+            Width = StyleDimension.FromPixels(BackPanelSideLength),
+            Height = StyleDimension.FromPixels(BackPanelSideLength),
+            BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor,
+            BorderColor = Color.White
         };
         Append(_backPanel);
 
@@ -133,7 +136,7 @@ public class VillageShrineUIState : UIState {
         };
         _itemPanel.Append(_respawnItemDisplay);
 
-        _respawnItemCount = new UIModifiedText("0") { horizontalTextConstraint = ItemPanelSideLength, HAlign = 0.5f, VAlign = 0.85f };
+        _respawnItemCount = new UIModifiedText("0") { HorizontalTextConstraint = ItemPanelSideLength, HAlign = 0.5f, VAlign = 0.85f };
         _itemPanel.Append(_respawnItemCount);
 
         _addRespawnButtonZone = new UIVisibilityElement {
@@ -171,10 +174,10 @@ public class VillageShrineUIState : UIState {
         };
         _backPanel.Append(_respawnTimerZone);
 
-        _respawnTimerHeader = new UIModifiedText("UI.Shrine.HarpyCountdown".Localized()) { HAlign = 0.5f, horizontalTextConstraint = RespawnTimerZoneWidth };
+        _respawnTimerHeader = new UIModifiedText("UI.Shrine.HarpyCountdown".Localized()) { HAlign = 0.5f, HorizontalTextConstraint = RespawnTimerZoneWidth };
         _respawnTimerZone.Append(_respawnTimerHeader);
 
-        _respawnTimer = new UIModifiedText("00:00", 0.67f, true) { HAlign = 0.5f, horizontalTextConstraint = RespawnTimerZoneWidth, Top = StyleDimension.FromPixels(RespawnTimerTextYPos) };
+        _respawnTimer = new UIModifiedText("00:00", 0.67f, true) { HAlign = 0.5f, HorizontalTextConstraint = RespawnTimerZoneWidth, Top = StyleDimension.FromPixels(RespawnTimerTextYPos) };
         _respawnTimerZone.Append(_respawnTimer);
 
         _houseIcon = new UIImage(Main.Assets.Request<Texture2D>("Images/UI/DisplaySlots_4")) { Top = StyleDimension.FromPixels(HouseIconYPos) };
@@ -234,11 +237,10 @@ public class VillageShrineUIState : UIState {
             currentEntity.clientTimer++;
         }
 
-        _respawnTimer.SetText(
+        _respawnTimer.DesiredText =
             currentEntity.remainingRespawnItems < currentEntity.CurrentValidHouses
                 ? new TimeSpan((long)(TimeSpan.TicksPerSecond / (double)60 * (currentEntity.remainingRespawnTime - currentEntity.clientTimer))).ToString(@"mm\:ss")
-                : "\u221E"
-        );
+                : "\u221E";
 
         base.Update(gameTime);
     }
@@ -251,12 +253,12 @@ public class VillageShrineUIState : UIState {
         _backPanel.Left.Set(centerOfEntity.X - panelDimensions.Width / 2f - Main.screenPosition.X, 0f);
         _backPanel.Top.Set(centerOfEntity.Y - panelDimensions.Height - Main.screenPosition.Y, 0f);
 
-        _respawnItemCount.SetText(currentEntity.remainingRespawnItems.ToString());
+        _respawnItemCount.DesiredText = currentEntity.remainingRespawnItems.ToString();
         _addRespawnButtonZone.SetVisibility(currentEntity.remainingRespawnItems < currentEntity.CurrentValidHouses);
         _takeRespawnButtonZone.SetVisibility(currentEntity.remainingRespawnItems > 0);
 
-        _houseCountText.SetText(currentEntity.CurrentValidHouses.ToString());
-        _takenHouseCountText.SetText(currentEntity.CurrentHousedVillagersCount.ToString());
+        _houseCountText.DesiredText = currentEntity.CurrentValidHouses.ToString();
+        _takenHouseCountText.DesiredText = currentEntity.CurrentHousedVillagersCount.ToString();
     }
 
     public void SetVillagerPauseStatus() {
@@ -273,7 +275,7 @@ public class VillageShrineUIState : UIState {
         VillagerType shrineType = CurrentEntity.shrineType;
 
         _respawnItemDisplay.SetItem(LWMUtils.VillagerTypeToRespawnItemType(shrineType));
-        _respawnTimerHeader.SetText($"UI.Shrine.{shrineType}Countdown".Localized());
+        _respawnTimerHeader.DesiredText = $"UI.Shrine.{shrineType}Countdown".Localized().Value;
         SetVillagerPauseStatus();
     }
 

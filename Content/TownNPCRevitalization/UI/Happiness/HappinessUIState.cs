@@ -116,7 +116,7 @@ public class HappinessUIState : UIState {
         _npcHeadIcon = new UIImage(TextureAssets.MagicPixel) { VAlign = 0.5f };
         _npcInfoAndPriceZone.Append(_npcHeadIcon);
 
-        _npcName = new UIModifiedText("NPC Name", 0.75f, true) { Left = StyleDimension.FromPixels(NPCNameXPos), VAlign = 0.5f, horizontalTextConstraint = NPCNameTextConstraint };
+        _npcName = new UIModifiedText("NPC Name", 0.75f, true) { Left = StyleDimension.FromPixels(NPCNameXPos), VAlign = 0.5f, HorizontalTextConstraint = NPCNameTextConstraint };
         _npcInfoAndPriceZone.Append(_npcName);
 
         _moneyBagIcon = new UIImage(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Icons/MoneyBag")) {
@@ -185,7 +185,7 @@ public class HappinessUIState : UIState {
         NPCBeingTalkedTo = npc;
         _modifierScrollbar.ViewPosition = 0f;
         _npcHeadIcon.SetImage(TextureAssets.NpcHead[TownNPCProfiles.GetHeadIndexSafe(npc)]);
-        _npcName.SetText(npc.GivenOrTypeName);
+        _npcName.DesiredText = npc.GivenOrTypeName;
 
         RefreshMoodModifierList();
     }
@@ -205,7 +205,7 @@ public class HappinessUIState : UIState {
     private void RefreshMoodModifierList() {
         TownNPCMoodModule moodModule = NPCBeingTalkedTo.GetGlobalNPC<TownNPCMoodModule>();
 
-        _priceModifierTextNumber.SetText(Main.ShopHelper._currentPriceAdjustment.ToString("0.#%"));
+        _priceModifierTextNumber.DesiredText = Main.ShopHelper._currentPriceAdjustment.ToString("0.#%");
         _priceModifierTextNumber.Left.Set(PriceModifierTextXOffset - IconSideLength - _priceModifierTextNumber.GetDimensions().Width, 1f);
 
         _happinessBarZone.ReformatText(new { Numerator = moodModule.CurrentMood, Denominator = TownNPCMoodModule.MaxMoodValue });
