@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.PacketHandlers;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Players;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 using LivingWorldMod.Globals.UIElements;
@@ -92,7 +93,7 @@ public class TaxSheetUIState : UIState {
     }
 
     private const float BackPanelSideLength = 200f;
-    private const float HelpPanelSideLength = 32f;
+    private const float LeftSidePanelsSideLength = 32f;
     private const float PaddingBetweenPanels = 4f;
     private const float SelectedNPCBackPanelWidth = 130f;
     private const float CoinDisplayPadding = 40f;
@@ -135,6 +136,10 @@ public class TaxSheetUIState : UIState {
     private UITooltipElement _helpIconTooltipZone;
     private UIImage _helpIcon;
 
+    private UIPanel _directDepositPanel;
+    private UITooltipElement _directDepositTooltipZone;
+    private UIImage _directDepositIcon;
+
     private int? _selectedNPCGridIndex;
 
     public NPC NPCBeingTalkedTo {
@@ -160,6 +165,10 @@ public class TaxSheetUIState : UIState {
 
     private SelectableNPCHeadElement SelectedNPCElement => _selectedNPCGridIndex is { } index ? (SelectableNPCHeadElement)_npcGrid._items[index] : null;
 
+    private static void PlayTickSound(UIMouseEvent evt, UIElement listeningElement) {
+        SoundEngine.PlaySound(SoundID.MenuTick);
+    }
+
     public override void OnInitialize() {
         Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
         Asset<Texture2D> gradientPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder");
@@ -167,7 +176,7 @@ public class TaxSheetUIState : UIState {
 
         InitializeBackPanel(vanillaPanelBackground, gradientPanelBorder, shadowedPanelBorder);
         InitializeSelectedNPCPanel(vanillaPanelBackground, gradientPanelBorder);
-        InitializeHelpPanel(vanillaPanelBackground, gradientPanelBorder);
+        InitializeLeftSidePanels(vanillaPanelBackground, gradientPanelBorder);
     }
 
     public override void Update(GameTime gameTime) {
@@ -389,23 +398,49 @@ public class TaxSheetUIState : UIState {
         }
     }
 
-    private void InitializeHelpPanel(Asset<Texture2D> vanillaPanelBackground, Asset<Texture2D> gradientPanelBorder) {
+    private void InitializeLeftSidePanels(Asset<Texture2D> vanillaPanelBackground, Asset<Texture2D> gradientPanelBorder) {
+        CalculatedStyle backPanelDimensions = _backPanel.GetDimensions();
+        float leftPanelXPos = backPanelDimensions.X - LeftSidePanelsSideLength - PaddingBetweenPanels;
+
+        _helpIconTooltipZone = new UITooltipElement("UI.TaxSheet.Help".Localized()) {
+            Width = StyleDimension.FromPixels(LeftSidePanelsSideLength),
+            Height = StyleDimension.FromPixels(LeftSidePanelsSideLength),
+            Left = StyleDimension.FromPixels(leftPanelXPos),
+            Top = StyleDimension.FromPixels(backPanelDimensions.Y)
+        };
+        _helpIconTooltipZone.OnMouseOver += PlayTickSound;
+        Append(_helpIconTooltipZone);
+
         _helpIconPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
-            BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor,
-            BorderColor = Color.White,
-            Width = StyleDimension.FromPixels(HelpPanelSideLength),
-            Height = StyleDimension.FromPixels(HelpPanelSideLength),
-            Left = StyleDimension.FromPixels(-_backPanel.PaddingLeft - HelpPanelSideLength - PaddingBetweenPanels),
-            Top = StyleDimension.FromPixels(-_backPanel.PaddingLeft + 2)
+            BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor, BorderColor = Color.White, Width = StyleDimension.Fill, Height = StyleDimension.Fill
         };
         _helpIconPanel.SetPadding(0f);
-        _backPanel.Append(_helpIconPanel);
-
-        _helpIconTooltipZone = new UITooltipElement("UI.TaxSheet.Help".Localized()) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
-        _helpIconPanel.Append(_helpIconTooltipZone);
+        _helpIconTooltipZone.Append(_helpIconPanel);
 
         _helpIcon = new UIImage(TextureAssets.NpcHead[NPCHeadID.HousingQuery]) { VAlign = 0.5f, HAlign = 0.5f, ImageScale = 0.75f };
-        _helpIconPanel.Append(_helpIcon);
+        _helpIconTooltipZone.Append(_helpIcon);
+
+        _directDepositTooltipZone = new UITooltipElement("UI.TaxSheet.EnableDirectDeposit".Localized()) {
+            Width = StyleDimension.FromPixels(LeftSidePanelsSideLength),
+            Height = StyleDimension.FromPixels(LeftSidePanelsSideLength),
+            Left = StyleDimension.FromPixels(leftPanelXPos),
+            Top = StyleDimension.FromPixels(backPanelDimensions.Y + LeftSidePanelsSideLength + 4f)
+        };
+        _directDepositTooltipZone.OnMouseOver += PlayTickSound;
+        _directDepositTooltipZone.OnLeftClick += (_, _) => {
+            TaxesPlayer taxesPlayer = Main.LocalPlayer.GetModPlayer<TaxesPlayer>();
+
+            RefreshDirectDepositButton(taxesPlayer.directDeposit = !taxesPlayer.directDeposit, true);
+        };
+        Append(_directDepositTooltipZone);
+
+        _directDepositPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
+            BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor, BorderColor = Color.White, Width = StyleDimension.Fill, Height = StyleDimension.Fill
+        };
+        _directDepositTooltipZone.Append(_directDepositPanel);
+
+        _directDepositIcon = new UIImage(TextureAssets.Item[ItemID.PiggyBank]) { VAlign = 0.5f, HAlign = 0.5f, ImageScale = 0.75f };
+        _directDepositTooltipZone.Append(_directDepositIcon);
     }
 
     private void RefreshTaxValueDisplays(int npcType) {
@@ -426,6 +461,7 @@ public class TaxSheetUIState : UIState {
 
         int selectedNPCType = SelectedNPCElement.npcType;
         RefreshTaxValueDisplays(selectedNPCType);
+        RefreshDirectDepositButton(Main.LocalPlayer.GetModPlayer<TaxesPlayer>().directDeposit);
 
         _selectedNPCName.SetText(LWMUtils.GetNPCTypeNameOrIDName(selectedNPCType));
         _selectedNPCVisibilityElement.SetVisibility(true);
@@ -434,6 +470,23 @@ public class TaxSheetUIState : UIState {
             NPCShopDatabase.TryGetNPCShop(NPCShopDatabase.GetShopName(selectedNPCType), out AbstractNPCShop npcShop)
             && npcShop.ActiveEntries.Any(entry => entry.Item.shopSpecialCurrency == CustomCurrencyID.None)
         );
+    }
+
+    private void RefreshDirectDepositButton(bool directDepositEnabled, bool playSound = false) {
+        if (directDepositEnabled) {
+            _directDepositPanel.BackgroundColor = LWMUtils.YellowErrorTextColor;
+            _directDepositPanel.BorderColor = Color.Yellow;
+        }
+        else {
+            _directDepositPanel.BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor;
+            _directDepositPanel.BorderColor = Color.White;
+        }
+
+        _directDepositTooltipZone.SetText($"UI.TaxSheet.{(directDepositEnabled ? "Disable" : "Enable")}DirectDeposit".Localized());
+
+        if (playSound) {
+            SoundEngine.PlaySound(SoundID.Item59);
+        }
     }
 
     private void PopulateNPCGrid() {

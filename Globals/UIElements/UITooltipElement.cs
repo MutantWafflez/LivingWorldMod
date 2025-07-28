@@ -19,9 +19,11 @@ public class UITooltipElement(DynamicLocalizedText text) : UIElement {
     protected override void DrawSelf(SpriteBatch spriteBatch) {
         base.DrawSelf(spriteBatch);
 
-        if (!ContainsPoint(Main.MouseScreen)) {
+        if (!IsMouseHovering) {
             return;
         }
+
+        Main.LocalPlayer.mouseInterface = true;
 
         DummyItem.SetNameOverride(_formattedTooltipText);
         Main.HoverItem = DummyItem;
