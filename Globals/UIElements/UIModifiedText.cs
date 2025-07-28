@@ -15,6 +15,7 @@ namespace LivingWorldMod.Globals.UIElements;
 public class UIModifiedText : UIElement {
     public float textOriginX = 0.5f;
     public float textOriginY;
+
     private readonly bool _textInitialized;
 
     private string _desiredText;
@@ -120,7 +121,7 @@ public class UIModifiedText : UIElement {
 
         TextSnippet[] textSnippets = ChatManager.ParseMessage(Text, TextColor).ToArray();
         ChatManager.ConvertNormalSnippets(textSnippets);
-        
+
         ChatManager.DrawColorCodedStringShadow(spriteBatch, TextFont, textSnippets, pos, Color.Black * (TextColor.A / (float)byte.MaxValue), 0f, Vector2.Zero, TextScale);
         ChatManager.DrawColorCodedString(spriteBatch, TextFont, textSnippets, pos, Color.White, 0f, Vector2.Zero, TextScale, out _, -1f);
     }
@@ -137,22 +138,22 @@ public class UIModifiedText : UIElement {
         TextScale = DesiredTextScale;
         Text = WrapConstraint is { } wrapConstraint ? TextFont.CreateWrappedText(DesiredText, wrapConstraint) : DesiredText;
 
-        Vector2 textSize = ChatManager.GetStringSize(TextFont, Text, TextScale);
-        if (HorizontalTextConstraint is { } horizontalConstraint && textSize.X * TextScale.X > horizontalConstraint) {
-            Vector2 textScale = TextScale;
-            textScale.X *= horizontalConstraint / (textSize.X * TextScale.X);
+        Vector2 scaledTextSize = ChatManager.GetStringSize(TextFont, Text, TextScale);
+        if (HorizontalTextConstraint is { } horizontalConstraint && scaledTextSize.X > horizontalConstraint) {
+            Vector2 finalTextScale = TextScale;
+            finalTextScale.X *= horizontalConstraint / scaledTextSize.X;
 
-            TextScale = textScale;
-            TextSize = textSize * TextScale;
+            TextSize = scaledTextSize * finalTextScale;
+            TextScale = finalTextScale;
 
             Width = StyleDimension.FromPixels(horizontalConstraint);
         }
         else {
-            TextSize = textSize;
+            TextSize = scaledTextSize;
 
-            Width = StyleDimension.FromPixels(textSize.X + PaddingLeft + PaddingRight);
+            Width = StyleDimension.FromPixels(scaledTextSize.X + PaddingLeft + PaddingRight);
         }
 
-        Height = StyleDimension.FromPixels(textSize.Y + PaddingTop + PaddingBottom);
+        Height = StyleDimension.FromPixels(scaledTextSize.Y + PaddingTop + PaddingBottom);
     }
 }
