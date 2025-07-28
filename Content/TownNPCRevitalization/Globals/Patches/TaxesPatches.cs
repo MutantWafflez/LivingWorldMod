@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Players;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.DataStructures.Classes;
@@ -34,6 +35,24 @@ public class TaxesPatches : LoadablePatch {
     public override void LoadPatches() {
         IL_Player.CollectTaxes += CollectTaxesPatch;
         IL_Main.GUIChatDrawInner += TaxCollectorCollectButtonPatch;
+        IL_NPC.SpawnNPC += TorturedSoulsSpawnsAfterEvilBossPatch;
+    }
+
+    private void TorturedSoulsSpawnsAfterEvilBossPatch(ILContext il) {
+        currentContext = il;
+
+        // Very basic edit that modifies the spawn condition for Tortured Souls to be post-Evil Boss instead of hardmode
+        ILCursor c = new(il);
+
+        c.ErrorOnFailedGotoNext(
+            i => i.MatchLdsfld<Main>(nameof(Main.hardMode)),
+            i => i.MatchBrfalse(out _),
+            i => i.MatchLdsfld<NPC>(nameof(NPC.savedTaxCollector)),
+            i => i.MatchBrtrue(out _)
+        );
+
+        // Set the ldsfld for Main.hardMode to NPC.downedBoss2
+        c.Next!.Operand = typeof(NPC).GetField(nameof(NPC.downedBoss2), BindingFlags.Public | BindingFlags.Static)!;
     }
 
     private void TaxCollectorCollectButtonPatch(ILContext il) {
