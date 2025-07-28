@@ -82,8 +82,8 @@ public class UIModifiedText : UIElement {
 
     public Color TextColor {
         get;
-        init;
-    }
+        set;
+    } = Color.White;
 
     public DynamicSpriteFont TextFont {
         get;
@@ -118,12 +118,11 @@ public class UIModifiedText : UIElement {
         pos.X += (innerDimensions.Width - TextSize.X) * textOriginX;
         pos.Y += (innerDimensions.Height - TextSize.Y) * textOriginY - (TextFont == FontAssets.DeathText.Value ? 10f : 2f) * TextScale.Y;
 
-        Vector2 origin = new Vector2(0f, 0f) * TextFont.MeasureString(Text);
         TextSnippet[] textSnippets = ChatManager.ParseMessage(Text, TextColor).ToArray();
         ChatManager.ConvertNormalSnippets(textSnippets);
-
-        ChatManager.DrawColorCodedStringShadow(spriteBatch, TextFont, textSnippets, pos, Color.Black * (TextColor.A / (float)byte.MaxValue), 0f, origin, TextScale);
-        ChatManager.DrawColorCodedString(spriteBatch, TextFont, textSnippets, pos, Color.White, 0f, origin, TextScale, out _, -1f);
+        
+        ChatManager.DrawColorCodedStringShadow(spriteBatch, TextFont, textSnippets, pos, Color.Black * (TextColor.A / (float)byte.MaxValue), 0f, Vector2.Zero, TextScale);
+        ChatManager.DrawColorCodedString(spriteBatch, TextFont, textSnippets, pos, Color.White, 0f, Vector2.Zero, TextScale, out _, -1f);
     }
 
     private void TryRecalculate() {
