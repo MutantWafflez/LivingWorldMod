@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 using LivingWorldMod.DataStructures.Structs;
+using LivingWorldMod.Utilities;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 
@@ -13,14 +14,18 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     public const float MaxMoodValue = 100f;
     public const float MinMoodValue = 0f;
 
+    private const int UpdateMoodThreshold = LWMUtils.RealLifeSecond * 3;
+
     private readonly List<MoodModifierInstance> _currentMoodModifiers = [];
+
+    private int _moodUpdateTimer;
 
     public override int UpdatePriority => 2;
 
     public IReadOnlyList<MoodModifierInstance> CurrentMoodModifiers => _currentMoodModifiers;
 
     public float CurrentMood => Utils.Clamp(
-        BaseMoodValue + CurrentMoodModifiers.Sum(instance => instance.moodOffset),
+        BaseMoodValue + CurrentMoodModifiers.Sum(instance => instance.MoodOffset),
         MinMoodValue,
         MaxMoodValue
     );
@@ -38,22 +43,20 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     public static string GetFlavorTextKeyPrefix(int npcType) => npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{NPCID.Search.GetName(npcType)}";
 
     public override void UpdateModule() {
-        for (int i = 0; i < _currentMoodModifiers.Count; i++) {
-            MoodModifierInstance instance = _currentMoodModifiers[i];
-            if (--instance.duration <= 0) {
-                _currentMoodModifiers.RemoveAt(i--);
-            }
-            else {
-                _currentMoodModifiers[i] = instance;
-            }
+        if (++_moodUpdateTimer < UpdateMoodThreshold || Main.LocalPlayer.TalkNPC is null || Main.npcShop > 0) {
+            return;
         }
 
-        if (Main.LocalPlayer.talkNPC == NPC.whoAmI && Main.npcShop == 0)  {
-            RevitalizationNPCPatches.ProcessMoodOverride(Main.ShopHelper, Main.LocalPlayer, NPC);
-        }
+        _moodUpdateTimer = 0;
+
+        RevitalizationNPCPatches.ProcessMoodOverride(Main.ShopHelper, Main.LocalPlayer, NPC);
     }
 
-    public void AddModifier(DynamicLocalizedText descriptionText, DynamicLocalizedText flavorText, int moodOffset, int duration = 1) {
-        _currentMoodModifiers.Add(new MoodModifierInstance (descriptionText, flavorText, moodOffset, duration));
+    public void AddModifier(DynamicLocalizedText descriptionText, DynamicLocalizedText flavorText, int moodOffset) {
+        _currentMoodModifiers.Add(new MoodModifierInstance (descriptionText, flavorText, moodOffset));
+    }
+
+    public void ClearModifiers() {
+        _currentMoodModifiers.Clear();
     }
 }

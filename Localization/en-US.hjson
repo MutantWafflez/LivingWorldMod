@@ -348,12 +348,6 @@ Mods: {
 			NPCHappiness.PriceModifier: Price Modifier
 			Bestiary.SleepIntervalTooltip: Preferred Sleep Schedule
 			Fraction: "{Numerator}/{Denominator}"
-			DurationMoodFlavorText:
-				'''
-				\"{FlavorText}\"
-
-				Duration: {Time}
-				'''
 			MoodFlavorText: '''"{FlavorText}"'''
 
 			VillagerShop: {

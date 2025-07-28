@@ -41,6 +41,8 @@ public class RevitalizationNPCPatches : LoadablePatch {
             return;
         }
 
+        moodModule.ClearModifiers();
+
         // Happiness bar will disappear if the string is empty for certain NPCs
         // TODO: Dialect compatibility
         shopHelper._currentHappiness =
@@ -59,6 +61,8 @@ public class RevitalizationNPCPatches : LoadablePatch {
                 shopModifier.ApplyTrait(info, shopHelper);
             }
         }
+
+        HappinessUISystem.Instance.UIState.RefreshModifierList();
 
         shopHelper._currentPriceAdjustment = ShopCostModifierGradient.GetValue(moodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue);
     }
@@ -138,8 +142,7 @@ public class RevitalizationNPCPatches : LoadablePatch {
 
         c.GotoNext(i => i.MatchLdsfld<Main>(nameof(Main.npcChatFocus4)));
         c.GotoNext(i => i.MatchRet());
-        c.EmitDelegate(
-            () => {
+        c.EmitDelegate(() => {
                 Main.npcChatText = "";
                 HappinessUISystem.Instance.OpenHappinessState(Main.LocalPlayer.TalkNPC);
             }
@@ -164,8 +167,7 @@ public class RevitalizationNPCPatches : LoadablePatch {
 
         ILCursor c = new(il);
         c.Emit(OpCodes.Ldarg_0);
-        c.EmitDelegate<Func<NPC, bool>>(
-            npc => {
+        c.EmitDelegate<Func<NPC, bool>>(npc => {
                 if (!npc.TryGetGlobalNPC(out TownNPCCollisionModule collisionModule)) {
                     return false;
                 }
@@ -190,8 +192,7 @@ public class RevitalizationNPCPatches : LoadablePatch {
 
         c.Emit(OpCodes.Ldarg_0);
         // If this delegate returns false, prevent hat drawing
-        c.EmitDelegate<Func<NPC, bool>>(
-            npc => {
+        c.EmitDelegate<Func<NPC, bool>>(npc => {
                 if (!npc.TryGetGlobalNPC(out TownNPCSleepModule sleepModule)) {
                     return true;
                 }

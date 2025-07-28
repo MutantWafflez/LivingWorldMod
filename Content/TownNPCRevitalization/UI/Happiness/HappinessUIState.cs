@@ -1,5 +1,4 @@
-﻿using System;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
+﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Globals.UIElements;
@@ -21,13 +20,8 @@ public class HappinessUIState : UIState {
             Height = StyleDimension.FromPixels(40f);
             Width = StyleDimension.Fill;
 
-            DynamicLocalizedText templatedFlavorText = instance.duration >= LWMUtils.RealLifeSecond
-                ? new DynamicLocalizedText (
-                    "UI.DurationMoodFlavorText".Localized(),
-                    new { FlavorText = instance.flavorText.ToString(), Time = Lang.LocalizedDuration(new TimeSpan(0, 0, instance.duration / LWMUtils.RealLifeSecond), true, true) }
-                )
-                : new DynamicLocalizedText("UI.MoodFlavorText".Localized(), new { FlavorText = instance.flavorText.ToString() });
-            UITooltipElement tooltipElement = new (templatedFlavorText) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+            DynamicLocalizedText flavorText = new("UI.MoodFlavorText".Localized(), new { FlavorText = instance.FlavorText.ToString() });
+            UITooltipElement tooltipElement = new (flavorText) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
             Append(tooltipElement);
 
             UIPanel backPanel = new (Main.Assets.Request<Texture2D>("Images/UI/PanelBackground"), ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder")) {
@@ -35,11 +29,11 @@ public class HappinessUIState : UIState {
             };
             tooltipElement.Append(backPanel);
 
-            UIModifiedText moodDescriptionText = new (instance.descriptionText.SubstitutedText) { Height = StyleDimension.Fill, VAlign = 0.5f };
+            UIModifiedText moodDescriptionText = new (instance.DescriptionText.SubstitutedText) { Height = StyleDimension.Fill, VAlign = 0.5f };
             backPanel.Append(moodDescriptionText);
 
-            UIModifiedText moodOffsetText = new (instance.moodOffset.ToString("#.##")) {
-                Height = StyleDimension.Fill, HAlign = 1f, VAlign = 0.5f, TextColor = instance.moodOffset < 0f ? Color.Red : Color.Lime
+            UIModifiedText moodOffsetText = new (instance.MoodOffset.ToString("#.##")) {
+                Height = StyleDimension.Fill, HAlign = 1f, VAlign = 0.5f, TextColor = instance.MoodOffset < 0f ? Color.Red : Color.Lime
             };
             backPanel.Append(moodOffsetText);
         }
@@ -114,6 +108,7 @@ public class HappinessUIState : UIState {
             Width = StyleDimension.FromPixels(MoodBackPanelWidth),
             Height = StyleDimension.FromPixels(MoodBackPanelHeight)
         };
+        Append(_moodBackPanel);
 
         _npcInfoAndPriceZone = new UIElement { Width = StyleDimension.Fill, Height = StyleDimension.FromPixels(32f) } ;
         _moodBackPanel.Append(_npcInfoAndPriceZone);
@@ -176,12 +171,38 @@ public class HappinessUIState : UIState {
         _modifierList = new UIList { Width = StyleDimension.FromPixels(ModifierListWidth), Height = StyleDimension.Fill };
         _modifierList.SetScrollbar(_modifierScrollbar);
         _modifierListBackPanel.Append(_modifierList);
-
-        Append(_moodBackPanel);
     }
 
     public override void Update(GameTime gameTime) {
         base.Update(gameTime);
+
+        if (_moodBackPanel.IsMouseHovering) {
+            Main.LocalPlayer.mouseInterface = true;
+        }
+    }
+
+    public void SetStateToNPC(NPC npc) {
+        NPCBeingTalkedTo = npc;
+        _modifierScrollbar.ViewPosition = 0f;
+        _npcHeadIcon.SetImage(TextureAssets.NpcHead[TownNPCProfiles.GetHeadIndexSafe(npc)]);
+        _npcName.SetText(npc.GivenOrTypeName);
+
+        RefreshMoodModifierList();
+    }
+
+    public void RefreshModifierList() {
+        if (NPCBeingTalkedTo is null) {
+            return;
+        }
+
+        RefreshMoodModifierList();
+    }
+
+    public void ClearState() {
+        NPCBeingTalkedTo = null;
+    }
+
+    private void RefreshMoodModifierList() {
         TownNPCMoodModule moodModule = NPCBeingTalkedTo.GetGlobalNPC<TownNPCMoodModule>();
 
         _priceModifierTextNumber.SetText(Main.ShopHelper._currentPriceAdjustment.ToString("0.#%"));
@@ -194,18 +215,7 @@ public class HappinessUIState : UIState {
         foreach (MoodModifierInstance instance in moodModule.CurrentMoodModifiers) {
             _modifierList.Add(new UIMoodModifier(instance));
         }
-    }
-
-    public void SetStateToNPC(NPC npc) {
-        NPCBeingTalkedTo = npc;
-        _modifierScrollbar.ViewPosition = 0f;
-        _npcHeadIcon.SetImage(TextureAssets.NpcHead[TownNPCProfiles.GetHeadIndexSafe(npc)]);
-        _npcName.SetText(npc.GivenOrTypeName);
 
         RecalculateChildren();
-    }
-
-    public void ClearState() {
-        NPCBeingTalkedTo = null;
     }
 }
