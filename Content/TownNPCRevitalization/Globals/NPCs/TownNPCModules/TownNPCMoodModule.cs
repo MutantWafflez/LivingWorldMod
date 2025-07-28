@@ -14,7 +14,7 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     public const float MaxMoodValue = 100f;
     public const float MinMoodValue = 0f;
 
-    private const int UpdateMoodThreshold = LWMUtils.RealLifeSecond * 3;
+    private const int UpdateMoodThreshold = LWMUtils.RealLifeSecond * 15;
 
     private readonly List<MoodModifierInstance> _currentMoodModifiers = [];
 
@@ -43,7 +43,7 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     public static string GetFlavorTextKeyPrefix(int npcType) => npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{NPCID.Search.GetName(npcType)}";
 
     public override void UpdateModule() {
-        if (++_moodUpdateTimer < UpdateMoodThreshold || Main.LocalPlayer.TalkNPC is null || Main.npcShop > 0) {
+        if (Main.LocalPlayer.TalkNPC is null || Main.npcShop > 0 || ++_moodUpdateTimer < UpdateMoodThreshold) {
             return;
         }
 
