@@ -14,12 +14,14 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 /// </summary>
 public class TaxesPatches : LoadablePatch {
     private static void CollectTaxesFromNPCs(Player player, int taxCap) {
+        ShoppingSettings taxCollectorShopSettings = Main.ShopHelper.GetShoppingSettings(Main.LocalPlayer, LWMUtils.GetFirstNPC(npc => npc.type == NPCID.TaxCollector));
+
         foreach (NPC npc in Main.ActiveNPCs) {
             if (!TaxesSystem.IsNPCValidForTaxes(npc, out _)) {
                 continue;
             }
 
-            player.taxMoney += TaxesSystem.Instance.GetTaxValuesOrDefault(npc.type).PropertyTax;
+            player.taxMoney += (int)(TaxesSystem.Instance.GetTaxValuesOrDefault(npc.type).PropertyTax / taxCollectorShopSettings.PriceAdjustment);
             if (player.taxMoney < taxCap) {
                 continue;
             }
