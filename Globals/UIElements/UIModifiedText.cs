@@ -22,6 +22,7 @@ public class UIModifiedText : UIElement {
     private Vector2 _desiredTextScale;
     private float? _wrapConstraint;
     private float? _horizontalTextConstraint;
+    private bool _keepAspectRatio = true;
 
     /// <summary>
     ///     If set to a non-zero value, it will constrain the text to fix within the value
@@ -86,6 +87,18 @@ public class UIModifiedText : UIElement {
         set;
     } = Color.White;
 
+    /// <summary>
+    ///     When re-scaling the text to fit due to <see cref="HorizontalTextConstraint" />, re-size the text on both the X and Y axis, if true.
+    /// </summary>
+    public bool KeepAspectRatio {
+        get => _keepAspectRatio;
+        set {
+            _keepAspectRatio = value;
+
+            TryRecalculate();
+        }
+    }
+
     public DynamicSpriteFont TextFont {
         get;
     }
@@ -136,24 +149,38 @@ public class UIModifiedText : UIElement {
 
     private void RecalculateText() {
         TextScale = DesiredTextScale;
-        Text = WrapConstraint is { } wrapConstraint ? TextFont.CreateWrappedText(DesiredText, wrapConstraint) : DesiredText;
+        Text = DesiredText;
 
-        Vector2 scaledTextSize = ChatManager.GetStringSize(TextFont, Text, TextScale);
-        if (HorizontalTextConstraint is { } horizontalConstraint && scaledTextSize.X > horizontalConstraint) {
-            Vector2 finalTextScale = TextScale;
-            finalTextScale.X *= horizontalConstraint / scaledTextSize.X;
+        Vector2 scaledTextSize;
+        // TODO: Fix Height with wrapping text
+        if (WrapConstraint is { } wrapConstraint) {
+            Text = TextFont.CreateWrappedText(Text, wrapConstraint);
 
-            TextSize = scaledTextSize * finalTextScale;
-            TextScale = finalTextScale;
-
-            Width = StyleDimension.FromPixels(horizontalConstraint);
+            scaledTextSize = ChatManager.GetStringSize(TextFont, Text, TextScale);
         }
         else {
-            TextSize = scaledTextSize;
-
-            Width = StyleDimension.FromPixels(scaledTextSize.X + PaddingLeft + PaddingRight);
+            scaledTextSize = ChatManager.GetStringSize(TextFont, Text, TextScale);
+            scaledTextSize.Y = (TextFont == FontAssets.DeathText.Value ? 32f : 16f) * TextScale.Y;
         }
 
-        Height = StyleDimension.FromPixels(scaledTextSize.Y + PaddingTop + PaddingBottom);
+        TextSize = scaledTextSize;
+
+        if (HorizontalTextConstraint is { } horizontalConstraint && scaledTextSize.X > horizontalConstraint) {
+            Vector2 finalTextScale = TextScale;
+
+            float rescaleFactor = horizontalConstraint / scaledTextSize.X;
+            finalTextScale.X *= rescaleFactor;
+            if (KeepAspectRatio) {
+                finalTextScale.Y *= rescaleFactor;
+            }
+
+            Vector2 unscaledTextSize = ChatManager.GetStringSize(TextFont, Text, Vector2.One);
+            TextSize = unscaledTextSize * finalTextScale;
+
+            TextScale = finalTextScale;
+        }
+
+        Width = StyleDimension.FromPixels(TextSize.X);
+        Height = StyleDimension.FromPixels(TextSize.Y);
     }
 }
