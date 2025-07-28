@@ -31,6 +31,31 @@ public class TaxesPatches : LoadablePatch {
 
     public override void LoadPatches() {
         IL_Player.CollectTaxes += CollectTaxesPatch;
+        IL_Main.GUIChatDrawInner += TaxCollectorCollectButtonPatch;
+    }
+
+    private void TaxCollectorCollectButtonPatch(ILContext il) {
+        currentContext = il;
+
+        // Edit that patches out happiness affecting the Tax Collectors "Collect" button
+        // Happiness is being moved to directly affect how much goes into the bank from each NPC
+        ILCursor c = new(il);
+
+        int taxMoneyLocalIndex = int.MaxValue;
+        while (
+            c.TryGotoNext(
+                MoveType.After,
+                i => i.MatchLdfld<ShoppingSettings>(nameof(ShoppingSettings.PriceAdjustment)),
+                i => i.MatchDiv(),
+                i => i.MatchConvI4(),
+                i => i.MatchStloc(out taxMoneyLocalIndex)
+            )
+        ) {
+            c.Index--;
+
+            c.EmitPop();
+            c.EmitLdloc(taxMoneyLocalIndex);
+        }
     }
 
     private void CollectTaxesPatch(ILContext il) {
