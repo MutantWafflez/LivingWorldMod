@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using Terraria.GameContent;
@@ -13,6 +14,9 @@ namespace LivingWorldMod.Globals.UIElements;
 ///     Rewrite of <see cref="UIText" /> that has more functionality and operates more smoothly.
 /// </summary>
 public class UIModifiedText : UIElement {
+    private const float DeathTextLineHeight = 32f;
+    private const float MouseTextLineHeight = 16f;
+
     public float textOriginX = 0.5f;
     public float textOriginY;
 
@@ -151,17 +155,16 @@ public class UIModifiedText : UIElement {
         TextScale = DesiredTextScale;
         Text = DesiredText;
 
-        Vector2 scaledTextSize;
-        // TODO: Fix Height with wrapping text
+        int lineCount = 1;
+        // TODO: Fix wrapping height dimension
         if (WrapConstraint is { } wrapConstraint) {
             Text = TextFont.CreateWrappedText(Text, wrapConstraint);
 
-            scaledTextSize = ChatManager.GetStringSize(TextFont, Text, TextScale);
+            lineCount = Text.Count(c => c == '\n') + 1;
         }
-        else {
-            scaledTextSize = ChatManager.GetStringSize(TextFont, Text, TextScale);
-            scaledTextSize.Y = (TextFont == FontAssets.DeathText.Value ? 32f : 16f) * TextScale.Y;
-        }
+
+        Vector2 scaledTextSize = ChatManager.GetStringSize(TextFont, Text, TextScale);
+        scaledTextSize.Y = ((TextFont == FontAssets.DeathText.Value ? DeathTextLineHeight : MouseTextLineHeight) * lineCount + TextFont.LineSpacing * (lineCount - 1)) * TextScale.Y;
 
         TextSize = scaledTextSize;
 
