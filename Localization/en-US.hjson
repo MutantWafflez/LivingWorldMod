@@ -284,6 +284,33 @@ Mods: {
 				DisplayName: World Tapestry
 				Tooltip: ""
 			}
+
+			MutantDevHead: {
+				DisplayName: MutantWafflez' Cap
+				Tooltip:
+					'''
+					{$CommonItemTooltip.DevItem}
+					'Are you okay?'
+					'''
+			}
+
+			MutantDevBody: {
+				DisplayName: MutantWafflez' Vest & Gloves
+				Tooltip:
+					'''
+					{$CommonItemTooltip.DevItem}
+					'Buster Wolf!'
+					'''
+			}
+
+			MutantDevLegs: {
+				DisplayName: MutantWafflez' Jeans
+				Tooltip:
+					'''
+					{$CommonItemTooltip.DevItem}
+					'Hey, come on, come on!'
+					'''
+			}
 		}
 
 		MapInfo: {
