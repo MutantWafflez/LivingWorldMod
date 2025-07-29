@@ -30,6 +30,8 @@ Mods: {
 			VillagerLeft.Harpy: L'abitante arpia {0} è partita in cerca di una nuova casa!
 		}
 
+		// AdditionalTownNPCNames.WitchDoctor.Terry: Tairree
+
 		VillagerDialogue: {
 			Harpy: {
 				Event: {

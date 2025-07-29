@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
@@ -10,6 +12,11 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 ///     Global NPC that acts as the foundation of the Town NPC Revitalization. Has minimal code on its own, but is infinitely expandable using <see cref="TownNPCModule" /> instances.
 /// </summary>
 public class TownGlobalNPC : GlobalNPC {
+    /// <summary>
+    ///     Dictionary that maps a given NPC's type to any additional NPC display names this mod may add for said NPC.
+    /// </summary>
+    private static readonly Dictionary<int, LocalizedTextGroup> AdditionalTownNPCNames = [];
+
     private IReadOnlyList<TownNPCModule> _prioritizedModules;
 
     public override bool InstancePerEntity => true;
@@ -66,6 +73,15 @@ public class TownGlobalNPC : GlobalNPC {
         }
 
         _prioritizedModules = entityGlobals.OfType<TownNPCModule>().OrderBy(module => module.UpdatePriority).ToList();
+    }
+
+    public override void ModifyNPCNameList(NPC npc, List<string> nameList) {
+        string additionalNameListKey = $"AdditionalTownNPCNames.{LWMUtils.GetNPCTypeNameOrIDName(npc.type)}".PrependModKey();
+        if (!AdditionalTownNPCNames.TryGetValue(npc.type, out LocalizedTextGroup additionalNames)) {
+            AdditionalTownNPCNames[npc.type] = additionalNames = new LocalizedTextGroup(Lang.CreateDialogFilter(additionalNameListKey));
+        }
+
+        nameList.AddRange(additionalNames.Texts.Select(text => text.Value));
     }
 
     public override bool PreAI(NPC npc) {

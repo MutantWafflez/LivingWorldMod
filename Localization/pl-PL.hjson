@@ -30,6 +30,8 @@ Mods: {
 			VillagerLeft.Harpy: "{0} Harpia Vilager odeszła w poszukiwaniu nowego domu!"
 		}
 
+		// AdditionalTownNPCNames.WitchDoctor.Terry: Tairree
+
 		VillagerDialogue: {
 			Harpy: {
 				Event: {
