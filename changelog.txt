@@ -16,6 +16,8 @@ Additions:
 	-> To allow for more usage across the play-through (especially in pre-HM when money is more scarce) Tortured Souls now spawn after the Evil Boss has been defeated.
 	-> Added new "Direct Deposit" feature for taxes (enabled through the Tax Sheet menu), that instantly puts collected taxes into your inventory at each collection interval, at a 20% cut!
 		-> Canonically, this cut is the Tax Collector's paycheck. Which means, he doesn't get paid if you don't enable this! Do with this information what you will!
++ Added a new developer vanity set
++ Added an new name for the Witch Doctor, and an easter egg surrounding said name
 Changes:
 * Rewrote a lot of older UI code. This will have no technical gameplay change, but will (very minorly) increase loading times and performance for the mod.	
 * The Truffle now likes the Rain event (previously neutral)
