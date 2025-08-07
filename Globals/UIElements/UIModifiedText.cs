@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using Terraria.GameContent;
@@ -155,16 +154,14 @@ public class UIModifiedText : UIElement {
         TextScale = DesiredTextScale;
         Text = DesiredText;
 
-        int lineCount = 1;
-        // TODO: Fix wrapping height dimension
+        Vector2 scaledTextSize = ChatManager.GetStringSize(TextFont, Text, TextScale);
+        bool isWrapped = false;
         if (WrapConstraint is { } wrapConstraint) {
             Text = TextFont.CreateWrappedText(Text, wrapConstraint);
 
-            lineCount = Text.Count(c => c == '\n') + 1;
+            scaledTextSize = ChatManager.GetStringSize(TextFont, Text, TextScale);
+            isWrapped = true;
         }
-
-        Vector2 scaledTextSize = ChatManager.GetStringSize(TextFont, Text, TextScale);
-        scaledTextSize.Y = ((TextFont == FontAssets.DeathText.Value ? DeathTextLineHeight : MouseTextLineHeight) * lineCount + TextFont.LineSpacing * (lineCount - 1)) * TextScale.Y;
 
         TextSize = scaledTextSize;
 
@@ -181,6 +178,10 @@ public class UIModifiedText : UIElement {
             TextSize = unscaledTextSize * finalTextScale;
 
             TextScale = finalTextScale;
+        }
+
+        if (!isWrapped) {
+            TextSize = TextSize with { Y = (TextFont == FontAssets.DeathText.Value ? DeathTextLineHeight : MouseTextLineHeight) * TextScale.Y };
         }
 
         Width = StyleDimension.FromPixels(TextSize.X);
