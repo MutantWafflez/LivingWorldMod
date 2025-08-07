@@ -53,6 +53,7 @@ public class TownGlobalNPC : GlobalNPC {
         return true;
     }
 
+    // TODO: Fit the Travelling Merchant into all of this
     public static bool EntityIsValidTownNPC(NPC entity, bool lateInstantiation) => lateInstantiation
         && entity.aiStyle == NPCAIStyleID.Passive
         && entity.townNPC
