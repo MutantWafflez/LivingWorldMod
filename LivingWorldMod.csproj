@@ -62,6 +62,7 @@
 
         <!-- Town NPC Profiles Publicizing -->
         <Publicize Include="tModLoader:Terraria.GameContent.Profiles+StackedNPCProfile._profiles"/>
+        <Publicize Include="tModLoader:Terraria.GameContent.Profiles+VariantNPCProfile._variants"/>
 
         <!-- Bestiary Publicizing -->
         <Publicize Include="tModLoader:Terraria.GameContent.Bestiary.UnlockableNPCEntryIcon._npcCache"/>

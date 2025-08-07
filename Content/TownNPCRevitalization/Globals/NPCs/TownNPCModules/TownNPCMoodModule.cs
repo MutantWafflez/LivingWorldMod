@@ -42,6 +42,8 @@ public sealed class TownNPCMoodModule : TownNPCModule {
     /// </summary>
     public static string GetFlavorTextKeyPrefix(int npcType) => npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{NPCID.Search.GetName(npcType)}";
 
+    public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => base.AppliesToEntity(entity, lateInstantiation) && !NPCID.Sets.NoTownNPCHappiness[entity.type];
+
     public override void UpdateModule() {
         if (Main.LocalPlayer.TalkNPC is null || Main.npcShop > 0 || ++_moodUpdateTimer < UpdateMoodThreshold) {
             return;

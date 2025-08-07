@@ -254,8 +254,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
 
     public override void Unload() {
         if (spriteOverlayProfiles is not null) {
-            Main.QueueMainThreadAction(
-                () => {
+            Main.QueueMainThreadAction(() => {
                     foreach (TownNPCOverlayProfile spriteProfile in spriteOverlayProfiles.Values) {
                         spriteProfile.Dispose();
                     }
@@ -344,7 +343,12 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
                 continue;
             }
 
-            int npcVariationCount = profile is Profiles.StackedNPCProfile stackedNPCProfile ? stackedNPCProfile._profiles.Length : 1;
+            int npcVariationCount = profile switch {
+                Profiles.StackedNPCProfile stackedProfile => stackedProfile._profiles.Length,
+                Profiles.VariantNPCProfile variantProfile => variantProfile._variants.Length,
+                _ => 1
+            };
+
             List<TownNPCSpriteOverlay[]> spriteOverlays = [];
             for (int j = 0; j < npcVariationCount; npc.townNpcVariationIndex = ++j) {
                 npcAsset = profile.GetTextureNPCShouldUse(npc);
