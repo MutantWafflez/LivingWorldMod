@@ -1,8 +1,9 @@
 ﻿using System;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 using Microsoft.Xna.Framework;
 
-namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 
 /// <summary>
 ///     Town NPC module that handles the special collision of Town NPCs introduced by this mod.

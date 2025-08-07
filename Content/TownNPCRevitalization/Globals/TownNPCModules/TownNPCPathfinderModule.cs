@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Globals.Configs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -14,7 +15,7 @@ using Terraria.ModLoader.IO;
 using PathNode = LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCPathfinder.PathNode;
 using NodeMovementType = LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.TownNPCPathfinder.NodeMovementType;
 
-namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 
 public sealed class TownNPCPathfinderModule : TownNPCModule {
     private sealed class PathfinderResult(Point topLeftOfGrid, Point endPoint, PathNode lastConsumedNode, List<PathNode> path) {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Configs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
@@ -13,7 +14,7 @@ using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ModLoader.Config;
 
-namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 
 /// <summary>
 ///     Module for Town NPCs that deal with drawing related tasks.

@@ -1,7 +1,8 @@
 using LivingWorldMod.Content.DevSets.MutantWafflez;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using Terraria.GameContent.ItemDropRules;
 
-namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 
 /// <summary>
 ///     Specific module for the <see cref="NPCID.WitchDoctor" /> Town NPC that handles his special loot/item drops.

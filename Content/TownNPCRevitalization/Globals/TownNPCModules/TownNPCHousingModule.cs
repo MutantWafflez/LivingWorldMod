@@ -4,12 +4,14 @@ using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
+namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 
 public class TownNPCHousingModule : TownNPCModule {
     public override int UpdatePriority => -1;

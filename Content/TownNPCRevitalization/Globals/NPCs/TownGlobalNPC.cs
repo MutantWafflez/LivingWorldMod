@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 

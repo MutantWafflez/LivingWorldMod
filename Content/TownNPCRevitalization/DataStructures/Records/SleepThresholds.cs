@@ -1,4 +1,4 @@
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 

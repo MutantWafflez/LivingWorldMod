@@ -1,5 +1,5 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 using LivingWorldMod.Globals.Configs;
 using LivingWorldMod.Utilities;
 
