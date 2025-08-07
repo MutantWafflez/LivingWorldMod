@@ -7,7 +7,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes.Person
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs.TownNPCModules;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Globals.BaseTypes.Systems;
 using LivingWorldMod.Utilities;
@@ -331,7 +331,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         NPC npc = new();
         for (int i = 0; i < NPCLoader.NPCCount; i++) {
             npc.SetDefaults(i);
-            if (!TownGlobalNPC.EntityIsValidTownNPC(npc, true)) {
+            if (!TownNPCSpriteModule.EntityIsValidSpriteModuleTarget(npc, true)) {
                 continue;
             }
 

@@ -106,6 +106,10 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         }
     }
 
+    public static bool EntityIsValidSpriteModuleTarget(NPC entity, bool lateInstantiation) => TownGlobalNPC.EntityIsValidTownNPC(entity, lateInstantiation) && !NPCID.Sets.IsTownPet[entity.type];
+
+    public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => EntityIsValidSpriteModuleTarget(entity, lateInstantiation);
+
     public override void UpdateModule() {
         _drawOffset = Vector2.Zero;
         _frameYOverride = NoFrameYOverride;
