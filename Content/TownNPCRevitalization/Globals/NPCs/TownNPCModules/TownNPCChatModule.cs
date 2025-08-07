@@ -117,13 +117,12 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
         TownNPCChatModule otherChatModule = null;
         if (IsSpeaking
             || !Main.rand.NextBool(ChitChatChanceDenominator)
-            || LWMUtils.GetFirstNPC(
-                otherNPC =>
-                    NPC != otherNPC
-                    && otherNPC.TryGetGlobalNPC(out otherChatModule)
-                    && !otherChatModule.IsSpeaking
-                    && NPC.Center.Distance(otherNPC.Center) <= 100f
-                    && Collision.CanHit(NPC.Center, 0, 0, otherNPC.Center, 0, 0)
+            || LWMUtils.GetFirstNPC(otherNPC =>
+                NPC != otherNPC
+                && otherNPC.TryGetGlobalNPC(out otherChatModule)
+                && !otherChatModule.IsSpeaking
+                && NPC.Center.Distance(otherNPC.Center) <= 100f
+                && Collision.CanHit(NPC.Center, 0, 0, otherNPC.Center, 0, 0)
             ) is not { } chatRecipient
             || chatRecipient.GetGlobalNPC<TownNPCChatModule>()._chatReceptionCooldown > 0
         ) {
@@ -256,7 +255,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
         _chatReceptionCooldown = duration;
     }
 
-    public void UpdateSleep(NPC npc, Vector2? drawOffset, uint? frameOverride, bool passedOut) {
+    public void UpdateSleep(NPC npc, Vector2? drawOffset, uint? frameOverride) {
         if (Main.netMode == NetmodeID.Server) {
             return;
         }

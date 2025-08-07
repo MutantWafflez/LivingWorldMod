@@ -219,7 +219,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         _drawOffset = drawOffset;
     }
 
-    public void UpdateSleep(NPC npc, Vector2? drawOffset, uint? frameOverride, bool passedOut) {
+    public void UpdateSleep(NPC npc, Vector2? drawOffset, uint? frameOverride) {
         if (Main.netMode == NetmodeID.Server) {
             return;
         }
@@ -235,7 +235,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         CloseEyes();
 
         TownNPCDrawRequest drawRequest = npc.GetGlobalNPC<TownNPCSleepModule>().SleepSpriteDrawData;
-        RequestDraw(passedOut ? drawRequest with { Color = Color.Red * 0.8f } : drawRequest);
+        RequestDraw(drawRequest);
     }
 
     public void UpdateTownNPCSmallTalk(NPC npc, int remainingTicks) {

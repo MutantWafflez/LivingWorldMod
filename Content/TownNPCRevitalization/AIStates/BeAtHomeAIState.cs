@@ -113,7 +113,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
         }
 
         npc.ai[1] = IsSleepingStateFlag;
-        IUpdateSleep.Invoke(npc, drawOffset, frameOverride, false);
+        IUpdateSleep.Invoke(npc, drawOffset, frameOverride);
 
         pathfinderModule.CancelPathfind();
     }

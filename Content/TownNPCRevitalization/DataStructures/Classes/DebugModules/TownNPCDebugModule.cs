@@ -79,14 +79,7 @@ public class TownNPCDebugModule : DebugModule {
         }
 
         if (pressedKeys.Contains(Keys.NumPad1)) {
-            Main.NewText("Forcing NPC to Pass out");
-
-            _selectedNPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind();
-            TownNPCStateModule.RefreshToState<PassedOutAIState>(_selectedNPC);
-        }
-        else if (pressedKeys.Contains(Keys.NumPad2)) {
             Main.NewText("Forcing NPC to want to sleep");
-
 
             WantsToSleepSetMethod.Invoke(_selectedNPC.GetGlobalNPC<TownNPCSleepModule>(), [true]);
         }

@@ -39,8 +39,7 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     /// </summary>
     private BoundedNumber<int> _blockedSleepTimer = new(0, 0, MaxBlockedSleepValue);
 
-    public bool IsAsleep => NPC.ai[0] == TownNPCAIState.GetStateInteger<PassedOutAIState>()
-        || (NPC.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && NPC.ai[1] == BeAtHomeAIState.IsSleepingStateFlag);
+    public bool IsAsleep => NPC.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && NPC.ai[1] == BeAtHomeAIState.IsSleepingStateFlag;
 
     public override int UpdatePriority => 1;
 
@@ -70,12 +69,10 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     }
 
     /// <summary>
-    ///     Denotes whether there is anything event or tertiary circumstances that is preventing this NPC from sleeping. If this value is false, it means this NPC cannot sleep normally. They can still
-    ///     pass out, however.
+    ///     Denotes whether there is anything event or tertiary circumstances that is preventing this NPC from sleeping. If this value is false, it means this NPC cannot sleep normally.
     /// </summary>
     public bool CanSleep => _blockedSleepTimer <= 0
         && !NPC.GetGlobalNPC<TownNPCChatModule>().IsChattingWithPlayerDirectly
-        && NPC.ai[0] != TownNPCAIState.GetStateInteger<PassedOutAIState>()
         && !NPC.GetGlobalNPC<TownNPCCombatModule>().IsAttacking;
 
     /// <summary>
@@ -122,8 +119,6 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
         _blockedSleepTimer = new BoundedNumber<int>(binaryReader.ReadInt32(), _blockedSleepTimer.LowerBound, _blockedSleepTimer.UpperBound);
     }
 
-    public override bool? CanChat(NPC npc) => npc.ai[0] == TownNPCAIState.GetStateInteger<PassedOutAIState>() ? false : null;
-
     public override void HitEffect(NPC npc, NPC.HitInfo hit) {
         _blockedSleepTimer += LWMUtils.RealLifeSecond * 2;
     }
@@ -135,14 +130,6 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
         }
 
         CheckNPCUrgeToSleep();
-
-        if (awakeTicks < MaxAwakeValue) {
-            return;
-        }
-
-        // TODO: Add passed-out mood modifier
-        NPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind();
-        TownNPCStateModule.RefreshToState<PassedOutAIState>(NPC);
     }
 
     public void OnTownNPCAttack(NPC npc) {
