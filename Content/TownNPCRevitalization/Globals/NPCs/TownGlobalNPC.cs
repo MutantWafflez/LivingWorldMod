@@ -55,6 +55,7 @@ public class TownGlobalNPC : GlobalNPC {
     public static bool EntityIsValidTownNPC(NPC entity, bool lateInstantiation) => lateInstantiation
         && entity.aiStyle == NPCAIStyleID.Passive
         && entity.townNPC
+        && !NPCID.Sets.IsTownPet[entity.type]
         && !NPCID.Sets.IsTownSlime[entity.type];
 
     public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => EntityIsValidTownNPC(entity, lateInstantiation);
