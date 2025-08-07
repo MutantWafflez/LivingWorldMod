@@ -463,7 +463,7 @@ public class TaxSheetUIState : UIState {
         RefreshTaxValueDisplays(selectedNPCType);
         RefreshDirectDepositButton(Main.LocalPlayer.GetModPlayer<TaxesPlayer>().directDeposit);
 
-        _selectedNPCName.DesiredText = LWMUtils.GetNPCTypeNameOrIDName(selectedNPCType);
+        _selectedNPCName.DesiredText = Lang.GetNPCName(selectedNPCType).Value;
         _selectedNPCVisibilityElement.SetVisibility(true);
 
         _salesTaxVisibilityElement.SetVisibility(
