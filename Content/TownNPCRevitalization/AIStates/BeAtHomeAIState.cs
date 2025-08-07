@@ -44,8 +44,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
             return;
         }
 
-        TownNPCSleepModule sleepModule = npc.GetGlobalNPC<TownNPCSleepModule>();
-        if (!sleepModule.CanSleep) {
+        if (!npc.TryGetGlobalNPC(out TownNPCSleepModule sleepModule) || !sleepModule.CanSleep) {
             npc.ai[1] = StartSleepAnimationState;
             return;
         }
@@ -54,7 +53,9 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
         switch (npc.ai[1]) {
             case StartSleepAnimationState:
                 // TODO: Fix animation on MP clients
-                npc.GetGlobalNPC<TownNPCSpriteModule>().GiveItem();
+                if (npc.TryGetGlobalNPC(out TownNPCSpriteModule spriteModule)) {
+                    spriteModule.GiveItem();
+                }
 
                 npc.ai[3] = 0f;
                 npc.ai[1] = EndSleepAnimationState;

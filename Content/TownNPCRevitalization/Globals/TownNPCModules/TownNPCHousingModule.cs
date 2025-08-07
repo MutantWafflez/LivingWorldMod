@@ -28,9 +28,9 @@ public class TownNPCHousingModule : TownNPCModule {
 
     public bool ShouldGoHome {
         get {
-            TownNPCSleepModule sleepModule = NPC.GetGlobalNPC<TownNPCSleepModule>();
+            bool wantsToSleep = NPC.TryGetGlobalNPC(out TownNPCSleepModule sleepModule) && sleepModule.WantsToSleep && sleepModule.CanSleep;
 
-            return (sleepModule.WantsToSleep && sleepModule.CanSleep) || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
+            return wantsToSleep || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
         }
     }
 
@@ -125,13 +125,13 @@ public class TownNPCHousingModule : TownNPCModule {
             return;
         }
 
-        
+
         TownNPCPathfinderModule pathfinderModule = NPC.GetGlobalNPC<TownNPCPathfinderModule>();
         int beAtHomeStateInteger = TownNPCAIState.GetStateInteger<BeAtHomeAIState>();
         if (NPC.ai[0] != beAtHomeStateInteger) {
             TownNPCStateModule.RefreshToState(NPC, beAtHomeStateInteger);
             pathfinderModule.CancelPathfind();
-        } 
+        }
 
         bool nearbyPlayers = false;
         for (int i = 0; i < 2; i++) {
