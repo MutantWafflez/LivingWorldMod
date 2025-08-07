@@ -7,6 +7,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.UI.Bestiary;
 using LivingWorldMod.DataStructures.Records;
@@ -88,6 +89,8 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     public static SleepSchedule GetSleepProfileOrDefault(int npcType) => TownNPCDataSystem.sleepSchedules.GetValueOrDefault(npcType, DefaultSleepSchedule);
 
     public static SleepThresholds GetSleepThresholdsOrDefault(int npcType) => TownNPCDataSystem.sleepThresholds.GetValueOrDefault(npcType, DefaultSleepThresholds);
+
+    public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => TownGlobalNPC.IsValidFullTownNPC(entity, lateInstantiation);
 
     public override void SetBestiary(NPC npc, BestiaryDatabase database, BestiaryEntry bestiaryEntry) {
         bestiaryEntry.Info.Add(new TownNPCPreferredSleepTimeSpanElement(npc.type));

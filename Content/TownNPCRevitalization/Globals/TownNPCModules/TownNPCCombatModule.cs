@@ -88,7 +88,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
 
         NPC.localAI[1] = 0;
 
-        if (IsAttacking || NPC.velocity.Y != 0f || NPC.GetGlobalNPC<TownNPCSleepModule>().IsAsleep) {
+        if (IsAttacking || NPC.velocity.Y != 0f || !NPC.TryGetGlobalNPC(out TownNPCSleepModule sleepModule) || sleepModule.IsAsleep) {
             return;
         }
 
@@ -167,7 +167,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
 
         IOnTownNPCAttack.Invoke(NPC);
         NPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind();
-        
+
         NPC.localAI[3] = 0f;
         NPC.direction = NPC.position.X < AttackLocation.Value.position.X ? 1 : -1;
         NPC.netUpdate = true;
