@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Terraria.UI;
 
@@ -10,7 +10,7 @@ namespace LivingWorldMod.Globals.BaseTypes.Systems;
 ///     up and handling of the given UIState T.
 /// </summary>
 [Autoload(Side = ModSide.Client)]
-public abstract partial class UISystem<TSystem, TState> : BaseModSystem<TSystem> where TState : UIState, new() where TSystem : BaseModSystem<TSystem> {
+public abstract class UISystem<TSystem, TState> : BaseModSystem<TSystem> where TState : UIState, new() where TSystem : BaseModSystem<TSystem> {
     public TState UIState;
 
     private GameTime _lastGameTime;
@@ -31,15 +31,12 @@ public abstract partial class UISystem<TSystem, TState> : BaseModSystem<TSystem>
     ///     The internal name of this Interface when inserting into the Interface
     ///     Layers. Defaults to the name of the passed in UIState.
     /// </summary>
-    public virtual string InternalInterfaceName => SpaceBetweenCapitalsRegex().Replace(typeof(TState).Name, " $1").Trim();
+    public virtual string InternalInterfaceName => LWMUtils.SplitBetweenCapitalLetters(typeof(TState).Name).Trim();
 
     /// <summary>
     ///     What kind of scale type this interface will be using. Defaults to InterfaceScaleType.UI.
     /// </summary>
     public virtual InterfaceScaleType ScaleType => InterfaceScaleType.UI;
-
-    [GeneratedRegex("([A-Z])")]
-    private static partial Regex SpaceBetweenCapitalsRegex();
 
     public override void SetStaticDefaults() {
         _userInterface = new UserInterface();
