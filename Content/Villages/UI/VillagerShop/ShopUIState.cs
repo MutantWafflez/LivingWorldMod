@@ -306,10 +306,10 @@ public class ShopUIState : UIState {
             Left = StyleDimension.FromPixels(DialogueZoneXPos),
             Top = StyleDimension.FromPixels(DialogueZoneYPos)
         };
+        _dialogueZone.SetPadding(DefaultElementPadding);
         _backImage.Append(_dialogueZone);
 
         _dialogueText = new UIModifiedText { WrapConstraint = DialogueTextWrapConstraint };
-        _dialogueText.SetPadding(DefaultElementPadding);
         _dialogueZone.Append(_dialogueText);
 
         //Buy Item Zone
