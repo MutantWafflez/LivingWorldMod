@@ -27,7 +27,7 @@ public abstract class TownNPCModule : GlobalNPC {
     /// </summary>
     public virtual void UpdateModule() { }
 
-    public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => TownGlobalNPC.EntityIsValidTownNPC(entity, lateInstantiation);
+    public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => TownGlobalNPC.IsAnyValidTownNPC(entity, lateInstantiation);
 
     public override void SetDefaults(NPC entity) {
         NPC = entity;

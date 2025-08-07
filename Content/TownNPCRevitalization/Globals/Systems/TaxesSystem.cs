@@ -74,7 +74,7 @@ public class TaxesSystem : BaseModSystem<TaxesSystem>  {
     /// </summary>
     public static bool IsNPCValidForTaxes(NPC npc, out int headIndex) {
         headIndex = -1;
-        return TownGlobalNPC.EntityIsValidTownNPC(npc, true) && (headIndex = TownNPCProfiles.GetHeadIndexSafe(npc)) >= 0;
+        return TownGlobalNPC.IsValidFullTownNPC(npc, true) && (headIndex = TownNPCProfiles.GetHeadIndexSafe(npc)) >= 0;
     }
 
     public override void Load() {

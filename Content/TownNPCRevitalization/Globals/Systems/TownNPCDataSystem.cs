@@ -331,7 +331,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         NPC npc = new();
         for (int i = 0; i < NPCLoader.NPCCount; i++) {
             npc.SetDefaults(i);
-            if (!TownGlobalNPC.EntityIsValidTownNPC(npc, true)) {
+            if (!TownGlobalNPC.IsValidFullTownNPC(npc, true)) {
                 continue;
             }
 

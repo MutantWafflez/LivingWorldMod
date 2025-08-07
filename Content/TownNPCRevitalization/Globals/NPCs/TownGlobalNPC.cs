@@ -54,13 +54,31 @@ public class TownGlobalNPC : GlobalNPC {
     }
 
     // TODO: Fit the Travelling Merchant into all of this
-    public static bool EntityIsValidTownNPC(NPC entity, bool lateInstantiation) => lateInstantiation
+    /// <summary>
+    ///     This method determines if a given NPC is a "full" Town NPC. A "full" Town NPC is any NPC that uses <see cref="NPCAIStyleID.Passive" />, and is NOT a Town Pet. This includes the Guide,
+    ///     Merchant, Nurse, Princess, Angler, and so on.
+    /// </summary>
+    public static bool IsValidFullTownNPC(NPC entity, bool lateInstantiation) => lateInstantiation
         && entity.aiStyle == NPCAIStyleID.Passive
         && entity.townNPC
-        && !NPCID.Sets.IsTownPet[entity.type]
+        && !NPCID.Sets.IsTownPet[entity.type];
+
+    /// <summary>
+    ///     This method determines if a given NPC is a valid Town Pet. A valid Town NPC is any NPC that uses <see cref="NPCAIStyleID.Passive" />, and matches with the <see cref="NPCID.Sets.IsTownPet" />
+    ///     but also is NOT a Town Slime (i.e. <see cref="NPCID.Sets.IsTownSlime" />.
+    /// </summary>
+    public static bool IsValidTownPet(NPC entity, bool lateInstantiation) => lateInstantiation
+        && entity.aiStyle == NPCAIStyleID.Passive
+        && entity.townNPC
+        && NPCID.Sets.IsTownPet[entity.type]
         && !NPCID.Sets.IsTownSlime[entity.type];
 
-    public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => EntityIsValidTownNPC(entity, lateInstantiation);
+    /// <summary>
+    ///     Simple method that simply returns if this NPC is a valid Town NPC of ANY variety; that is, whether its a "full" Town NPC or a Town Pet.
+    /// </summary>
+    public static bool IsAnyValidTownNPC(NPC entity, bool lateInstantiation) => IsValidFullTownNPC(entity, lateInstantiation) || IsValidTownPet(entity, lateInstantiation);
+
+    public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => IsAnyValidTownNPC(entity, lateInstantiation);
 
     public override void SetDefaults(NPC entity) {
         if (ModLoader.isLoading) {
