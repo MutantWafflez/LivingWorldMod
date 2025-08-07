@@ -21,3 +21,6 @@ Additions:
 Changes:
 * Rewrote a lot of older UI code. This will have no technical gameplay change, but will (very minorly) increase loading times and performance for the mod.	
 * The Truffle now likes the Rain event (previously neutral)
+- Removed the "passing out" feature of Town NPCs
+	-> This feature is being removed because to be honest, it's not very engaging. More often than not, it is not the player's fault for not building housing problems, and more of a pathfinder issue.
+	-> NPCs will still get annoyed when they're tired, but technically they now have have a cap of "annoyance" where the pass-out threshold used to be.
