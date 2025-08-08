@@ -313,6 +313,11 @@ Mods: {
 					'Hey, come on, come on!'
 					'''
 			}
+
+			FetchingStick: {
+				DisplayName: Tree Branch
+				Tooltip: "'Perfect for playing fetch!'"
+			}
 		}
 
 		MapInfo: {
@@ -347,7 +352,12 @@ Mods: {
 		VillagerType.Harpy: Harpy
 		NPCs.HarpyVillager.DisplayName: Harpy Villager
 		NPCChatButtons.TaxCollector.TaxSheet: Tax Sheet
-		Projectiles.NimbusPetProjectile.DisplayName: Nimbus Pet
+
+		Projectiles: {
+			NimbusPetProjectile.DisplayName: Nimbus Pet
+			FetchingBallProj.DisplayName: Fetching Ball Proj
+			FetchingStickProj.DisplayName: Fetching Stick Proj
+		}
 
 		UI: {
 			TaxSheet: {
