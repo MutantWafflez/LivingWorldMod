@@ -25,7 +25,19 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         public PathNode lastConsumedNode = lastConsumedNode;
     }
 
-    private record struct OpenedDoorData(Point16 TilePos, Rectangle DoorHitBox, bool IsGate = false);
+    private record struct OpenedDoorData(Point16 TilePos, Rectangle DoorHitBox, bool IsGate = false) {
+        public Point16 TilePos {
+            get;
+        } = TilePos;
+
+        public Rectangle DoorHitBox {
+            get;
+        } = DoorHitBox;
+
+        public bool IsGate {
+            get;
+        } = IsGate;
+    }
 
     public const int PathfinderSize = 128;
     private const int MaxPathRecyclesBeforeFailure = 5;
@@ -46,6 +58,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     private TownNPCPathfinder _cachedPathfinder;
     private PathfinderResult _currentPathfinderResult;
+    private float _horizontalSpeed;
 
     public override int UpdatePriority => 3;
 
@@ -54,6 +67,14 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     public Point BottomLeftTileOfNPC => (NPC.BottomLeft + new Vector2(0f, -2f)).ToTileCoordinates();
 
     public Point TopLeftOfPathfinderZone => BottomLeftTileOfNPC - new Point(PathfinderSize / 2, PathfinderSize / 2);
+
+    /// <summary>
+    ///     This is what the X velocity for the NPC will be while moving horizontally (not jumping or falling). This defaults to 1f.
+    /// </summary>
+    public float HorizontalSpeed {
+        get => _horizontalSpeed;
+        set  => _horizontalSpeed = Math.Abs(value);
+    }
 
     private static void PrunePath(List<PathNode> path) {
         if (LWM.IsDebug && ModContent.GetInstance<DebugConfig>().disablePathPruning) {
@@ -81,7 +102,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         _cachedPathfinder = null;
 
         if (!IsPathfinding) {
-            return;
+            goto EarlyReturn;
         }
 
         Point topLeftOfGrid = _currentPathfinderResult.topLeftOfGrid;
@@ -94,13 +115,13 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             _isPaused = false;
             _wasPaused = true;
             NPC.velocity.X = 0f;
-            return;
+            goto EarlyReturn;
         }
 
         if (_wasPaused) {
             _wasPaused = false;
             GenerateAndUseNewPath(_currentPathfinderResult.endPoint);
-            return;
+            goto EarlyReturn;
         }
 
         // If the NPC does not make meaningful progress to the next node, regenerate the path
@@ -109,12 +130,12 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             if (++_notMakingProgressCounter >= LWMUtils.RealLifeSecond / 2) {
                 if (_pathRestartCount++ > MaxPathRecyclesBeforeFailure) {
                     EndPathfinding();
-                    return;
+                    goto EarlyReturn;
                 }
 
                 GenerateAndUseNewPath(_currentPathfinderResult.endPoint);
 
-                return;
+                goto EarlyReturn;
             }
         }
         else {
@@ -139,7 +160,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
             if (path.Count == 0) {
                 EndPathfinding();
-                return;
+                goto EarlyReturn;
             }
 
             nextNode = path.Last();
@@ -175,21 +196,21 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         switch (lastConsumedNode.MovementType) {
             //Step movements or horizontal movements
             case NodeMovementType.StepUp:
-                NPC.velocity.X = NPC.direction;
+                NPC.velocity.X = NPC.direction * HorizontalSpeed;
                 Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 
                 collisionModule.ignoreLiquidVelocityModifications = collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = collisionModule.walkThroughStairs = false;
                 CheckForDoors();
                 break;
             case NodeMovementType.StepDown:
-                NPC.velocity.X = NPC.direction;
+                NPC.velocity.X = NPC.direction * HorizontalSpeed;
 
                 collisionModule.ignoreLiquidVelocityModifications = collisionModule.fallThroughStairs = collisionModule.walkThroughStairs = collisionModule.fallThroughPlatforms = false;
                 CheckForDoors();
                 break;
             default:
             case NodeMovementType.PureHorizontal:
-                NPC.velocity.X = NPC.direction;
+                NPC.velocity.X = NPC.direction * HorizontalSpeed;
                 CheckForDoors();
 
                 collisionModule.ignoreLiquidVelocityModifications = collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = false;
@@ -198,27 +219,30 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             case NodeMovementType.Fall:
                 collisionModule.ignoreLiquidVelocityModifications = collisionModule.walkThroughStairs = false;
                 if (NPC.velocity.Y == 0f) {
-                    NPC.velocity.X = NPC.direction;
+                    NPC.velocity.X = NPC.direction * HorizontalSpeed;
                 }
 
                 if (!leftHasBreachedNode) {
-                    return;
+                    goto EarlyReturn;
                 }
 
                 NPC.velocity.X = 0f;
                 if (NPC.velocity.Y != 0f) {
-                    return;
+                    goto EarlyReturn;
                 }
 
                 collisionModule.fallThroughPlatforms = collisionModule.fallThroughStairs = true;
                 break;
             case NodeMovementType.Jump:
                 if (NPC.velocity.Y >= 0f) {
-                    NPC.velocity.X = NPC.direction;
+                    NPC.velocity.X = NPC.direction * HorizontalSpeed;
                 }
 
                 break;
         }
+
+        EarlyReturn:
+        HorizontalSpeed = 1f;
     }
 
     public override void PostDraw(NPC _, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
