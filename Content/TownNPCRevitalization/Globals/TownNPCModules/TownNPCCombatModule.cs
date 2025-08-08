@@ -88,7 +88,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
 
         NPC.localAI[1] = 0;
 
-        if (IsAttacking || NPC.velocity.Y != 0f || !NPC.TryGetGlobalNPC(out TownNPCSleepModule sleepModule) || sleepModule.IsAsleep) {
+        if (IsAttacking || NPC.velocity.Y != 0f || (NPC.TryGetGlobalNPC(out TownNPCSleepModule sleepModule) && sleepModule.IsAsleep)) {
             return;
         }
 
@@ -101,7 +101,8 @@ public sealed class TownNPCCombatModule : TownNPCModule {
                     && otherNPC.life < otherNPC.lifeMax
                     && (otherTownNPCIndex == -1 || otherNPC.lifeMax - otherNPC.life > Main.npc[otherTownNPCIndex].lifeMax - Main.npc[otherTownNPCIndex].life)
                     && Collision.CanHitLine(NPC.position, NPC.width, NPC.height, otherNPC.position, otherNPC.width, otherNPC.height)
-                    && NPC.Distance(otherNPC.Center) < 500f) {
+                    && NPC.Distance(otherNPC.Center) < 500f
+                ) {
                     otherTownNPCIndex = i;
                 }
             }
