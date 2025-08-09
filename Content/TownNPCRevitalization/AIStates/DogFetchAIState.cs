@@ -32,6 +32,7 @@ public class DogFetchAIState : TownNPCAIState {
                 pathfinderModule.RequestPathfind(dogStandPoint);
 
                 if (pathfinderModule.BottomLeftTileOfNPC == dogStandPoint) {
+                    npc.direction = Math.Sign(npc.DirectionTo(targetPlayer.Center).X);
                     npc.ai[1] = WaitingForPlayerToThrowState;
                 }
 
@@ -57,6 +58,7 @@ public class DogFetchAIState : TownNPCAIState {
                 break;
             }
             case WaitingForProjectileToSettleState: {
+                npc.direction = Math.Sign(npc.DirectionTo(targetProjectile.Center).X);
                 if (targetProjectile.ai[0] != FetchingStickProj.AtRestState) {
                     break;
                 }
