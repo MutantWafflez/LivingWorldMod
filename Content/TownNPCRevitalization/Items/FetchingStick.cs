@@ -27,9 +27,10 @@ public class FetchingStick : BaseItem {
 ///     <see cref="FetchingStick" /> associated projectile.
 /// </summary>
 public class FetchingStickProj : BaseProjectile {
-    private const float FreeFlyingState = 0f;
-    private const float FirstTileCollisionState = 1f;
-    private const float AtRestState = 2f;
+    public const int FreeFlyingState = 0;
+    public const int FirstTileCollisionState = 1;
+    public const int AtRestState = 2;
+    public const int PickedUpByDog = 3;
 
     private const float TerminalVelocity = 16f;
 
@@ -45,6 +46,27 @@ public class FetchingStickProj : BaseProjectile {
     }
 
     public override void AI() {
+        if (Projectile.ai[0] >= PickedUpByDog) {
+            Projectile.rotation = 0f;
+
+            Projectile.ai[1]++;
+            switch (Projectile.ai[1]) {
+                case < 8f:
+                    Projectile.gfxOffY = 2;
+                    break;
+                case >= 8f and <= 16f:
+                    Projectile.gfxOffY = -2;
+                    break;
+                default:
+                    Projectile.ai[1] = Projectile.gfxOffY = 0;
+                    break;
+            }
+
+            return;
+        }
+
+        Projectile.ai[1] = 0f;
+
         Projectile.velocity.Y += 0.4f;
         if (Projectile.velocity.Y >= TerminalVelocity) {
             Projectile.velocity.Y = TerminalVelocity;
