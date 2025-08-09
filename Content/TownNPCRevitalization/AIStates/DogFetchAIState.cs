@@ -28,7 +28,7 @@ public class DogFetchAIState : TownNPCAIState {
     private static DogStandPoints GetDogStandPoints(Player targetPlayer) {
         Point playerBottomLeft = (targetPlayer.BottomLeft + new Vector2(0, -2f)).ToTileCoordinates();
 
-        return new DogStandPoints(playerBottomLeft + new Point(-3, 0), playerBottomLeft + new Point((int)Math.Ceiling(targetPlayer.width / 16f) + 1, 0));
+        return new DogStandPoints(playerBottomLeft + new Point(-2, 0), playerBottomLeft + new Point((int)Math.Ceiling(targetPlayer.width / 16f) + 1, 0));
     }
 
     public override void DoState(NPC npc) {
