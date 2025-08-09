@@ -1,5 +1,6 @@
 using LivingWorldMod.Globals.BaseTypes.Items;
 using LivingWorldMod.Globals.BaseTypes.Projectiles;
+using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Items;
@@ -46,8 +47,13 @@ public class FetchingStickProj : BaseProjectile {
     }
 
     public override void AI() {
+        if (Projectile.timeLeft <= LWMUtils.RealLifeSecond) {
+            Projectile.alpha = (int)(byte.MaxValue * (1f - Projectile.timeLeft / (float)LWMUtils.RealLifeSecond));
+        }
+
         if (Projectile.ai[0] >= PickedUpByDog) {
             Projectile.rotation = 0f;
+            Projectile.timeLeft = LWMUtils.RealLifeSecond * 2;
 
             Projectile.ai[1]++;
             switch (Projectile.ai[1]) {

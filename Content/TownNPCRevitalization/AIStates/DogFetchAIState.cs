@@ -9,36 +9,97 @@ using Terraria.DataStructures;
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 
 public class DogFetchAIState : TownNPCAIState {
-    private const int WalkingToPlayerPreThrowState = 0;
-    private const int WaitingForPlayerToThrowState = 1;
-    private const int WaitingForProjectileToSettleState = 2;
-    private const int FetchingState = 3;
-    private const int ReachedProjectileState = 4;
-    private const int WalkingToPlayerPostFetchState = 5;
-    private const int WaitingForPlayerToThrowAgainBufferState = 6;
+    private readonly record struct DogStandPoints(Point LeftPoint, Point RightPoint);
+
+    private const int SubStateNone = 0;
+
+    private const int StateNavigatingToPlayerPreThrow = 0;
+
+    private const int SubStateAttemptingNavigationToPlayer = 0;
+    private const int SubStateWalkingToPlayer = 1;
+
+    private const int StateWaitingForPlayerToThrow = 1;
+    private const int StateWaitingForProjectileToSettle = 2;
+    private const int StateFetching = 3;
+    private const int StateReachedProjectile = 4;
+    private const int StateWalkingToPlayerPostFetch = 5;
+    private const int StateWaitingForPlayerToThrowAgainBuffer = 6;
+
+    private static DogStandPoints GetDogStandPoints(Player targetPlayer) {
+        Point playerBottomLeft = (targetPlayer.BottomLeft + new Vector2(0, -2f)).ToTileCoordinates();
+
+        return new DogStandPoints(playerBottomLeft + new Point(-3, 0), playerBottomLeft + new Point((int)Math.Ceiling(targetPlayer.width / 16f) + 1, 0));
+    }
 
     public override void DoState(NPC npc) {
+        ref float stateValue = ref npc.ai[1];
+
         TownDogModule dogModule = npc.GetGlobalNPC<TownDogModule>();
         Player targetPlayer = dogModule.fetchPlayer;
         Projectile targetProjectile = dogModule.fetchProj;
 
         TownNPCPathfinderModule pathfinderModule = npc.GetGlobalNPC<TownNPCPathfinderModule>();
-        switch ((int)npc.ai[1]) {
-            case WalkingToPlayerPreThrowState: {
-                Point dogStandPoint = (targetPlayer.BottomLeft + new Vector2(0, -2f)).ToTileCoordinates()
-                    + new Point(targetPlayer.direction * 2 + (targetPlayer.direction == 1 ? (int)Math.Ceiling(targetPlayer.width / 16f) - 1 : 0), 0);
+        switch ((int)stateValue) {
+            case StateNavigatingToPlayerPreThrow: {
+                ref float subStateNavigating = ref npc.ai[2];
 
-                pathfinderModule.HorizontalSpeed = 2f;
-                pathfinderModule.RequestPathfind(dogStandPoint);
+                DogStandPoints standPoints = GetDogStandPoints(targetPlayer);
+                switch ((int)subStateNavigating) {
+                    case SubStateAttemptingNavigationToPlayer: {
+                        ref float retryTimer = ref npc.ai[3];
 
-                if (pathfinderModule.BottomLeftTileOfNPC == dogStandPoint) {
-                    npc.direction = Math.Sign(npc.DirectionTo(targetPlayer.Center).X);
-                    npc.ai[1] = WaitingForPlayerToThrowState;
+                        if (retryTimer-- > 0) {
+                            break;
+                        }
+
+                        retryTimer = 0f;
+
+                        bool isFacingLeft = targetPlayer.IsFacingLeft();
+                        bool hasLeftPath = pathfinderModule.HasPath(standPoints.LeftPoint);
+                        bool hasRightPath = pathfinderModule.HasPath(standPoints.RightPoint);
+
+                        if ((isFacingLeft && hasLeftPath) || (!hasRightPath && hasLeftPath)) {
+                            pathfinderModule.RequestPathfind(standPoints.LeftPoint);
+
+                            subStateNavigating = SubStateWalkingToPlayer;
+                            break;
+                        }
+
+                        if ((!isFacingLeft && hasRightPath) || hasRightPath) {
+                            pathfinderModule.RequestPathfind(standPoints.RightPoint);
+
+                            subStateNavigating = SubStateWalkingToPlayer;
+                            break;
+                        }
+
+                        retryTimer = LWMUtils.RealLifeSecond * 4;
+
+                        break;
+                    }
+                    case SubStateWalkingToPlayer: {
+                        if (pathfinderModule.IsPathfinding) {
+                            break;
+                        }
+
+                        Point bottomLeftTileOfNPC = pathfinderModule.BottomLeftTileOfNPC;
+                        if (bottomLeftTileOfNPC != standPoints.LeftPoint && bottomLeftTileOfNPC != standPoints.RightPoint) {
+                            subStateNavigating = SubStateAttemptingNavigationToPlayer;
+
+                            break;
+                        }
+
+
+                        npc.direction = Math.Sign(npc.DirectionTo(targetPlayer.Center).X);
+
+                        stateValue = StateWaitingForPlayerToThrow;
+                        subStateNavigating = SubStateNone;
+                        break;
+                    }
                 }
 
                 break;
             }
-            case WaitingForPlayerToThrowState: {
+            case StateWaitingForPlayerToThrow: {
                 Projectile foundProjectile = null;
                 foreach (Projectile proj in Main.ActiveProjectiles) {
                     if (proj.type != ModContent.ProjectileType<FetchingStickProj>() || proj.owner != targetPlayer.whoAmI) {
@@ -53,35 +114,35 @@ public class DogFetchAIState : TownNPCAIState {
                 }
 
                 dogModule.fetchProj = foundProjectile;
-                npc.ai[1] = WaitingForProjectileToSettleState;
+                stateValue = StateWaitingForProjectileToSettle;
 
                 break;
             }
-            case WaitingForProjectileToSettleState: {
+            case StateWaitingForProjectileToSettle: {
                 npc.direction = Math.Sign(npc.DirectionTo(targetProjectile.Center).X);
                 if (targetProjectile.ai[0] != FetchingStickProj.AtRestState) {
                     break;
                 }
 
-                npc.ai[1] = FetchingState;
+                stateValue = StateFetching;
 
                 break;
             }
-            case FetchingState: {
+            case StateFetching: {
                 Point fetchPoint = (targetProjectile.BottomLeft + new Vector2(0, -2f)).ToTileCoordinates();
 
                 pathfinderModule.HorizontalSpeed = 3f;
                 pathfinderModule.RequestPathfind(fetchPoint);
 
                 if (pathfinderModule.BottomLeftTileOfNPC == fetchPoint) {
-                    npc.ai[1] = ReachedProjectileState;
+                    stateValue = StateReachedProjectile;
                 }
 
                 break;
             }
-            case ReachedProjectileState: {
+            case StateReachedProjectile: {
                 if (npc.ai[2]++ >= LWMUtils.RealLifeSecond) {
-                    npc.ai[1] = WalkingToPlayerPostFetchState;
+                    stateValue = StateWalkingToPlayerPostFetch;
                     npc.ai[2] = 0f;
 
                     targetProjectile.ai[0] = FetchingStickProj.PickedUpByDog;
@@ -89,7 +150,7 @@ public class DogFetchAIState : TownNPCAIState {
 
                 break;
             }
-            case WalkingToPlayerPostFetchState: {
+            case StateWalkingToPlayerPostFetch: {
                 Point dogStandPoint = (targetPlayer.BottomLeft + new Vector2(0, -2f)).ToTileCoordinates()
                     + new Point(targetPlayer.direction * 2 + (targetPlayer.direction == 1 ? (int)Math.Ceiling(targetPlayer.width / 16f) - 1 : 0), 0);
 
@@ -100,7 +161,7 @@ public class DogFetchAIState : TownNPCAIState {
                 targetProjectile.Center = npc.Top + new Vector2(npc.Size.X * npc.direction, 4f);
 
                 if (pathfinderModule.BottomLeftTileOfNPC == dogStandPoint) {
-                    npc.ai[1] = WaitingForPlayerToThrowAgainBufferState;
+                    npc.ai[1] = StateWaitingForPlayerToThrowAgainBuffer;
 
                     dogModule.fetchProj = null;
                     targetProjectile.Kill();
@@ -110,7 +171,7 @@ public class DogFetchAIState : TownNPCAIState {
 
                 break;
             }
-            case WaitingForPlayerToThrowAgainBufferState: {
+            case StateWaitingForPlayerToThrowAgainBuffer: {
                 if (npc.ai[2]++ < LWMUtils.RealLifeSecond * 3f) {
                     break;
                 }
@@ -120,7 +181,7 @@ public class DogFetchAIState : TownNPCAIState {
                     break;
                 }
 
-                npc.ai[1] = WaitingForPlayerToThrowState;
+                stateValue = StateWaitingForPlayerToThrow;
                 npc.ai[2] = 0f;
 
                 break;

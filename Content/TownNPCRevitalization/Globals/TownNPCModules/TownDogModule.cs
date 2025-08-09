@@ -41,6 +41,7 @@ public class TownDogModule : TownNPCModule {
             return;
         }
 
+        NPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind();
         TownNPCStateModule.RefreshToState<DogFetchAIState>(NPC);
     }
 }

@@ -40,4 +40,9 @@ public static partial class LWMUtils {
 
         return players;
     }
+
+    /// <summary>
+    ///     Whether this player is facing left, i.e. <see cref="Player.direction" /> is -1.
+    /// </summary>
+    public static bool IsFacingLeft(this Player player) => player.direction == -1;
 }
