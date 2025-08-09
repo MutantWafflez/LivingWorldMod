@@ -46,4 +46,9 @@ public static partial class LWMUtils {
     ///     Ticks in an in-game hour. Equivalent to a real life minute.
     /// </summary>
     public const int InGameHour = RealLifeMinute;
+
+    /// <summary>
+    ///     The side length of a tile, in pixels.
+    /// </summary>
+    public const int TilePixelsSideLength = 16;
 }
