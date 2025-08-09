@@ -83,6 +83,12 @@ public class TownNPCDebugModule : DebugModule {
 
             WantsToSleepSetMethod.Invoke(_selectedNPC.GetGlobalNPC<TownNPCSleepModule>(), [true]);
         }
+        else if (pressedKeys.Contains(Keys.NumPad2)) {
+            Main.NewText("Executing NPC");
+
+            _selectedNPC.StrikeInstantKill();
+            _selectedNPC = null;
+        }
         else if (pressedKeys.Contains(Keys.Subtract)) {
             Main.NewText("Decrement awake ticks by 10 seconds (less tired)");
 
