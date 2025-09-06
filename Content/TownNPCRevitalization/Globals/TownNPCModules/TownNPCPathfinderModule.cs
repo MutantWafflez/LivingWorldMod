@@ -204,6 +204,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
                 break;
             case NodeMovementType.StepDown:
                 NPC.velocity.X = NPC.direction * HorizontalSpeed;
+                Collision.StepDown(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 
                 collisionModule.ignoreLiquidVelocityModifications = collisionModule.fallThroughStairs = collisionModule.walkThroughStairs = collisionModule.fallThroughPlatforms = false;
                 CheckForDoors();
