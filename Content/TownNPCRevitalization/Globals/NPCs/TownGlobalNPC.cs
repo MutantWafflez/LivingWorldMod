@@ -12,6 +12,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 /// <summary>
 ///     Global NPC that acts as the foundation of the Town NPC Revitalization. Has minimal code on its own, but is infinitely expandable using <see cref="TownNPCModule" /> instances.
 /// </summary>
+/// TODO: Re-add Pirate Town NPC defecation easter egg (yea, seriously)
 public class TownGlobalNPC : GlobalNPC {
     /// <summary>
     ///     Dictionary that maps a given NPC's type to any additional NPC display names this mod may add for said NPC.
