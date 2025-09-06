@@ -348,51 +348,51 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             switch (NPC.ai[0]) {
                 // Town Pet Flavor Animation states
                 case >= 20f and <= 22f: {
-                    int num240 = NPC.frame.Y / frameHeight;
+                    int frame = NPC.frame.Y / frameHeight;
                     switch ((int)NPC.ai[0]) {
                         case 20:
                             switch (NPC.type) {
                                 case NPCID.TownBunny: {
-                                    if (NPC.ai[1] > 30f && num240 is < 7 or > 9) {
-                                        num240 = 7;
+                                    if (NPC.ai[1] > 30f && frame is < 7 or > 9) {
+                                        frame = 7;
                                     }
 
-                                    if (num240 > 0) {
+                                    if (frame > 0) {
                                         NPC.frameCounter += 1.0;
                                     }
 
                                     if (NPC.frameCounter > 4.0) {
                                         NPC.frameCounter = 0.0;
-                                        num240++;
-                                        if (num240 > 8 && NPC.ai[1] > 30f) {
-                                            num240 = 8;
+                                        frame++;
+                                        if (frame > 8 && NPC.ai[1] > 30f) {
+                                            frame = 8;
                                         }
 
-                                        if (num240 > 9) {
-                                            num240 = 0;
+                                        if (frame > 9) {
+                                            frame = 0;
                                         }
                                     }
 
                                     break;
                                 }
                                 case NPCID.TownCat: {
-                                    if (NPC.ai[1] > 30f && num240 is < 10 or > 16) {
-                                        num240 = 10;
+                                    if (NPC.ai[1] > 30f && frame is < 10 or > 16) {
+                                        frame = 10;
                                     }
 
-                                    if (num240 > 0) {
+                                    if (frame > 0) {
                                         NPC.frameCounter += 1.0;
                                     }
 
                                     if (NPC.frameCounter > 4.0) {
                                         NPC.frameCounter = 0.0;
-                                        num240++;
-                                        if (num240 > 13 && NPC.ai[1] > 30f) {
-                                            num240 = 13;
+                                        frame++;
+                                        if (frame > 13 && NPC.ai[1] > 30f) {
+                                            frame = 13;
                                         }
 
-                                        if (num240 > 16) {
-                                            num240 = 0;
+                                        if (frame > 16) {
+                                            frame = 0;
                                         }
                                     }
 
@@ -404,23 +404,23 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
                                 break;
                             }
 
-                            if (NPC.ai[1] > 30f && num240 is < 23 or > 27) {
-                                num240 = 23;
+                            if (NPC.ai[1] > 30f && frame is < 23 or > 27) {
+                                frame = 23;
                             }
 
-                            if (num240 > 0) {
+                            if (frame > 0) {
                                 NPC.frameCounter += 1.0;
                             }
 
                             if (NPC.frameCounter > 4.0) {
                                 NPC.frameCounter = 0.0;
-                                num240++;
-                                if (num240 > 26 && NPC.ai[1] > 30f) {
-                                    num240 = 24;
+                                frame++;
+                                if (frame > 26 && NPC.ai[1] > 30f) {
+                                    frame = 24;
                                 }
 
-                                if (num240 > 27) {
-                                    num240 = 0;
+                                if (frame > 27) {
+                                    frame = 0;
                                 }
                             }
 
@@ -428,46 +428,46 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
                         case 21:
                             switch (NPC.type) {
                                 case NPCID.TownBunny: {
-                                    if (NPC.ai[1] > 30f && num240 is < 10 or > 16) {
-                                        num240 = 10;
+                                    if (NPC.ai[1] > 30f && frame is < 10 or > 16) {
+                                        frame = 10;
                                     }
 
-                                    if (num240 > 0) {
+                                    if (frame > 0) {
                                         NPC.frameCounter += 1.0;
                                     }
 
                                     if (NPC.frameCounter > 4.0) {
                                         NPC.frameCounter = 0.0;
-                                        num240++;
-                                        if (num240 > 13 && NPC.ai[1] > 30f) {
-                                            num240 = 13;
+                                        frame++;
+                                        if (frame > 13 && NPC.ai[1] > 30f) {
+                                            frame = 13;
                                         }
 
-                                        if (num240 > 16) {
-                                            num240 = 0;
+                                        if (frame > 16) {
+                                            frame = 0;
                                         }
                                     }
 
                                     break;
                                 }
                                 case NPCID.TownCat: {
-                                    if (NPC.ai[1] > 30f && num240 is < 17 or > 21) {
-                                        num240 = 17;
+                                    if (NPC.ai[1] > 30f && frame is < 17 or > 21) {
+                                        frame = 17;
                                     }
 
-                                    if (num240 > 0) {
+                                    if (frame > 0) {
                                         NPC.frameCounter += 1.0;
                                     }
 
                                     if (NPC.frameCounter > 4.0) {
                                         NPC.frameCounter = 0.0;
-                                        num240++;
-                                        if (num240 > 19 && NPC.ai[1] > 30f) {
-                                            num240 = 19;
+                                        frame++;
+                                        if (frame > 19 && NPC.ai[1] > 30f) {
+                                            frame = 19;
                                         }
 
-                                        if (num240 > 21) {
-                                            num240 = 0;
+                                        if (frame > 21) {
+                                            frame = 0;
                                         }
                                     }
 
@@ -479,47 +479,47 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
                                 break;
                             }
 
-                            if (NPC.ai[1] > 30f && num240 is < 17 or > 22) {
-                                num240 = 17;
+                            if (NPC.ai[1] > 30f && frame is < 17 or > 22) {
+                                frame = 17;
                             }
 
-                            if (num240 > 0) {
+                            if (frame > 0) {
                                 NPC.frameCounter += 1.0;
                             }
 
                             if (NPC.frameCounter > 4.0) {
                                 NPC.frameCounter = 0.0;
-                                num240++;
-                                if (num240 > 21 && NPC.ai[1] > 30f) {
-                                    num240 = 18;
+                                frame++;
+                                if (frame > 21 && NPC.ai[1] > 30f) {
+                                    frame = 18;
                                 }
 
-                                if (num240 > 22) {
-                                    num240 = 0;
+                                if (frame > 22) {
+                                    frame = 0;
                                 }
                             }
 
                             break;
                         case 22:
                             if (NPC.type == NPCID.TownBunny) {
-                                int num241 = Main.npcFrameCount[NPC.type];
-                                if (NPC.ai[1] > 40f && (num240 < 17 || num240 >= num241)) {
-                                    num240 = 17;
+                                int frameCount = Main.npcFrameCount[NPC.type];
+                                if (NPC.ai[1] > 40f && (frame < 17 || frame >= frameCount)) {
+                                    frame = 17;
                                 }
 
-                                if (num240 > 0) {
+                                if (frame > 0) {
                                     NPC.frameCounter += 1.0;
                                 }
 
                                 if (NPC.frameCounter > 4.0) {
                                     NPC.frameCounter = 0.0;
-                                    num240++;
-                                    if (num240 > 20 && NPC.ai[1] > 40f) {
-                                        num240 = 19;
+                                    frame++;
+                                    if (frame > 20 && NPC.ai[1] > 40f) {
+                                        frame = 19;
                                     }
 
-                                    if (num240 >= num241) {
-                                        num240 = 0;
+                                    if (frame >= frameCount) {
+                                        frame = 0;
                                     }
                                 }
                             }
@@ -528,25 +528,25 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
                                 break;
                             }
 
-                            if (NPC.ai[1] > 30f && num240 is < 17 or > 27) {
-                                num240 = 17;
+                            if (NPC.ai[1] > 30f && frame is < 17 or > 27) {
+                                frame = 17;
                             }
 
-                            if (num240 > 0) {
+                            if (frame > 0) {
                                 NPC.frameCounter += 1.0;
                             }
 
                             if (NPC.frameCounter > 4.0) {
                                 NPC.frameCounter = 0.0;
-                                num240++;
-                                if (num240 > 27) {
-                                    num240 = !(NPC.ai[1] <= 30f) ? 22 : 20;
+                                frame++;
+                                if (frame > 27) {
+                                    frame = !(NPC.ai[1] <= 30f) ? 22 : 20;
                                 }
                                 else {
-                                    num240 = NPC.ai[1] switch {
-                                        <= 30f when num240 == 22 => 0,
-                                        > 30f when num240 > 19 && num240 < 22 => 22,
-                                        _ => num240
+                                    frame = NPC.ai[1] switch {
+                                        <= 30f when frame == 22 => 0,
+                                        > 30f when frame is > 19 and < 22 => 22,
+                                        _ => frame
                                     };
                                 }
                             }
@@ -554,7 +554,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
                             break;
                     }
 
-                    NPC.frame.Y = num240 * frameHeight;
+                    NPC.frame.Y = frame * frameHeight;
                     break;
                 }
                 // Throw attack state
@@ -562,63 +562,63 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
                 // Nurse heal state
                 case 13f: {
                     NPC.frameCounter += 1.0;
-                    int num255 = NPC.frame.Y / frameHeight;
-                    int num17 = num255 - nonAttackFrameCount;
-                    if ((uint)num17 > 3u && num255 != 0) {
+                    int frame = NPC.frame.Y / frameHeight;
+                    int framesAwayFromTotal = frame - nonAttackFrameCount;
+                    if ((uint)framesAwayFromTotal > 3u && frame != 0) {
                         NPC.frame.Y = 0;
                         NPC.frameCounter = 0.0;
                     }
 
-                    int num256 = 10;
-                    int num257 = 6;
+                    int frameDuration1 = 10;
+                    int frameDuration2 = 6;
                     if (NPC.type == NPCID.BestiaryGirl) {
-                        num256 = 0;
-                        num257 = 2;
+                        frameDuration1 = 0;
+                        frameDuration2 = 2;
                     }
 
-                    int num258  ;
-                    if (!(NPC.frameCounter < num256)) {
-                        if (NPC.frameCounter < num256 + num257) {
-                            num258 = nonAttackFrameCount;
+                    int nextFrame;
+                    if (!(NPC.frameCounter < frameDuration1)) {
+                        if (NPC.frameCounter < frameDuration1 + frameDuration2) {
+                            nextFrame = nonAttackFrameCount;
                         }
                         else {
-                            if (NPC.frameCounter < num256 + num257 * 2) {
-                                num258 = nonAttackFrameCount + 1;
+                            if (NPC.frameCounter < frameDuration1 + frameDuration2 * 2) {
+                                nextFrame = nonAttackFrameCount + 1;
                             }
                             else {
-                                if (NPC.frameCounter < num256 + num257 * 3) {
-                                    num258 = nonAttackFrameCount + 2;
+                                if (NPC.frameCounter < frameDuration1 + frameDuration2 * 3) {
+                                    nextFrame = nonAttackFrameCount + 2;
                                 }
                                 else {
-                                    if (NPC.frameCounter < num256 + num257 * 4) {
-                                        num258 = nonAttackFrameCount + 3;
+                                    if (NPC.frameCounter < frameDuration1 + frameDuration2 * 4) {
+                                        nextFrame = nonAttackFrameCount + 3;
                                     }
                                     else {
-                                        num258 = 0;
+                                        nextFrame = 0;
                                     }
                                 }
                             }
                         }
                     }
                     else {
-                        num258 = 0;
+                        nextFrame = 0;
                     }
 
-                    NPC.frame.Y = frameHeight * num258;
+                    NPC.frame.Y = frameHeight * nextFrame;
                     break;
                 }
                 // Melee attack state
                 case 15f: {
                     NPC.frameCounter += 1.0;
-                    int num259 = NPC.frame.Y / frameHeight;
-                    int num17 = num259 - nonAttackFrameCount;
-                    if ((uint)num17 > 3u && num259 != 0) {
+                    int frame = NPC.frame.Y / frameHeight;
+                    int framesAwayFromTotal = frame - nonAttackFrameCount;
+                    if ((uint)framesAwayFromTotal > 3u && frame != 0) {
                         NPC.frame.Y = 0;
                         NPC.frameCounter = 0.0;
                     }
 
-                    float num260 = NPC.ai[1] / NPCID.Sets.AttackTime[NPC.type];
-                    int num261 = num260 switch {
+                    float attackProgress = NPC.ai[1] / NPCID.Sets.AttackTime[NPC.type];
+                    int nextFrame = attackProgress switch {
                         > 0.65f => nonAttackFrameCount,
                         > 0.5f => nonAttackFrameCount + 1,
                         > 0.35f => nonAttackFrameCount + 2,
@@ -626,7 +626,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
                         _ => 0
                     };
 
-                    NPC.frame.Y = frameHeight * num261;
+                    NPC.frame.Y = frameHeight * nextFrame;
                     break;
                 }
                 // Shimmer transform state
@@ -636,51 +636,49 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
                 // Firearm attack state
                 case 12f: {
                     NPC.frameCounter += 1.0;
-                    int num262 = NPC.frame.Y / frameHeight;
-                    int num17 = num262 - nonAttackFrameCount;
-                    if ((uint)num17 > 4u && num262 != 0) {
+                    int frame = NPC.frame.Y / frameHeight;
+                    int framesAwayFromTotal = frame - nonAttackFrameCount;
+                    if ((uint)framesAwayFromTotal > 4u && frame != 0) {
                         NPC.frame.Y = 0;
                         NPC.frameCounter = 0.0;
                     }
 
-                    int num263 = nonAttackFrameCount + NPC.GetShootingFrame(NPC.ai[2]);
-                    NPC.frame.Y = frameHeight * num263;
+                    NPC.frame.Y = frameHeight * (nonAttackFrameCount + NPC.GetShootingFrame(NPC.ai[2]));
                     break;
                 }
                 // Magic attack state
                 case 14f: {
                     NPC.frameCounter += 1.0;
-                    int num264 = NPC.frame.Y / frameHeight;
-                    int num17 = num264 - nonAttackFrameCount;
-                    if ((uint)num17 > 1u && num264 != 0) {
+                    int frame = NPC.frame.Y / frameHeight;
+                    int framesAwayFromTotal = frame - nonAttackFrameCount;
+                    if ((uint)framesAwayFromTotal > 1u && frame != 0) {
                         NPC.frame.Y = 0;
                         NPC.frameCounter = 0.0;
                     }
 
-                    const int num265 = 12;
-                    int num266 = NPC.frameCounter % num265 * 2.0 < num265 ? nonAttackFrameCount : nonAttackFrameCount + 1;
-                    NPC.frame.Y = frameHeight * num266;
+                    const int timerCap = 12;
+                    NPC.frame.Y = frameHeight * (NPC.frameCounter % timerCap * 2.0 < timerCap ? nonAttackFrameCount : nonAttackFrameCount + 1);
                     break;
                 }
                 default: {
                     if (NPC.velocity.X == 0f) {
                         switch (NPC.type) {
                             case NPCID.TownDog: {
-                                int num286 = NPC.frame.Y / frameHeight;
-                                if (num286 > 7) {
-                                    num286 = 0;
+                                int frame = NPC.frame.Y / frameHeight;
+                                if (frame > 7) {
+                                    frame = 0;
                                 }
 
                                 NPC.frameCounter += 1.0;
                                 if (NPC.frameCounter > 4.0) {
                                     NPC.frameCounter = 0.0;
-                                    num286++;
-                                    if (num286 > 7) {
-                                        num286 = 0;
+                                    frame++;
+                                    if (frame > 7) {
+                                        frame = 0;
                                     }
                                 }
 
-                                NPC.frame.Y = num286 * frameHeight;
+                                NPC.frame.Y = frame * frameHeight;
                                 break;
                             }
                             default:
@@ -690,42 +688,31 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
                         }
                     }
                     else {
-                        int num287 = NPC.type switch {
+                        int frameDuration = NPC.type switch {
                             NPCID.TownDog or NPCID.TownBunny => 12,
                             _ => 6
                         };
 
-                        if (NPC.type == NPCID.BloodZombie) {
-                            num287 = 8;
-                            NPC.frameCounter += Math.Abs(NPC.velocity.X) * 1f;
-                            NPC.frameCounter += 0.5;
-                        }
-                        else {
-                            NPC.frameCounter += Math.Abs(NPC.velocity.X) * 2f;
-                            NPC.frameCounter += 1.0;
-                        }
+                        NPC.frameCounter += Math.Abs(NPC.velocity.X) * 2f;
+                        NPC.frameCounter += 1.0;
 
-                        if (NPC.type == NPCID.Fritz) {
-                            num287 = 9;
-                        }
-
-                        int num288 = NPC.type switch {
+                        int frameY = NPC.type switch {
                             NPCID.TownDog => frameHeight * 9,
                             NPCID.TownBunny => frameHeight,
                             _ => frameHeight * 2
                         };
 
-                        if (NPC.frame.Y < num288) {
-                            NPC.frame.Y = num288;
+                        if (NPC.frame.Y < frameY) {
+                            NPC.frame.Y = frameY;
                         }
 
-                        if (NPC.frameCounter > num287) {
+                        if (NPC.frameCounter > frameDuration) {
                             NPC.frame.Y += frameHeight;
                             NPC.frameCounter = 0.0;
                         }
 
                         if (NPC.frame.Y / frameHeight >= Main.npcFrameCount[NPC.type] - extraFrameCount) {
-                            NPC.frame.Y = num288;
+                            NPC.frame.Y = frameY;
                         }
                     }
 
