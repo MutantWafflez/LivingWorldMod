@@ -693,8 +693,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
                             _ => 6
                         };
 
-                        NPC.frameCounter += Math.Abs(NPC.velocity.X) * 2f;
-                        NPC.frameCounter += 1.0;
+                        NPC.frameCounter += Math.Abs(NPC.velocity.X) * 2f + 1f;
 
                         int frameY = NPC.type switch {
                             NPCID.TownDog => frameHeight * 9,
