@@ -11,6 +11,8 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 public class DogFetchAIState : TownNPCAIState {
     private readonly record struct DogStandPoints(Point LeftPoint, Point RightPoint);
 
+    private const int MaxTileDistanceToPlayFetch = LWMUtils.TilePixelsSideLength * 40;
+
     private const int SubStateNone = 0;
 
     private const int StateNavigatingToPlayerPreThrow = 0;
@@ -24,6 +26,10 @@ public class DogFetchAIState : TownNPCAIState {
     private const int StateReachedProjectile = 4;
     private const int StateWalkingToPlayerPostFetch = 5;
     private const int StateWaitingForPlayerToThrowAgainBuffer = 6;
+
+    public static bool PlayerIsValidToPlayFetchWith(Player player, NPC npc) => player.HeldItem.type == ModContent.ItemType<FetchingStick>()
+        && npc.Distance(player.Center) <= MaxTileDistanceToPlayFetch * MaxTileDistanceToPlayFetch
+        && Collision.CanHitLine(npc.Center, 2, 2, player.Center, 2, 2);
 
     private static DogStandPoints GetDogStandPoints(Player targetPlayer) {
         Point playerBottomLeft = (targetPlayer.BottomLeft + new Vector2(0, -2f)).ToTileCoordinates();
@@ -40,10 +46,17 @@ public class DogFetchAIState : TownNPCAIState {
         ref float subStateNavigating = ref npc.ai[2];
         ref float retryTimer = ref npc.ai[3];
 
+
         DogStandPoints standPoints = GetDogStandPoints(targetPlayer);
         switch ((int)subStateNavigating) {
             case SubStateAttemptingNavigationToPlayer: {
                 if (retryTimer-- > 0) {
+                    return false;
+                }
+
+                if (!PlayerIsValidToPlayFetchWith(targetPlayer, npc)) {
+                    CancelState(npc, pathfinderModule, npc.GetGlobalNPC<TownDogModule>());
+
                     return false;
                 }
 
@@ -95,9 +108,19 @@ public class DogFetchAIState : TownNPCAIState {
         return false;
     }
 
+    /// <summary>
+    ///     Cancels this entire state back to <see cref="DefaultAIState" />, canceling pathfinding, and setting <see cref="TownDogModule" /> related fields to their defaults.
+    /// </summary>
+    private static void CancelState(NPC npc, TownNPCPathfinderModule pathfinderModule, TownDogModule dogModule) {
+        TownNPCStateModule.RefreshToState<DefaultAIState>(npc);
+        pathfinderModule.CancelPathfind();
+
+        dogModule.fetchPlayer = null;
+        dogModule.fetchProj = null;
+    }
+
     public override void DoState(NPC npc) {
         ref float stateValue = ref npc.ai[1];
-        ref float subStateValue = ref npc.ai[2];
         ref float genericTimer = ref npc.ai[3];
 
         TownDogModule dogModule = npc.GetGlobalNPC<TownDogModule>();
@@ -112,6 +135,12 @@ public class DogFetchAIState : TownNPCAIState {
                 break;
             }
             case StateWaitingForPlayerToThrow: {
+                if (!PlayerIsValidToPlayFetchWith(targetPlayer, npc)) {
+                    CancelState(npc, pathfinderModule, dogModule);
+
+                    break;
+                }
+
                 Projectile foundProjectile = null;
                 foreach (Projectile proj in Main.ActiveProjectiles) {
                     if (proj.type != ModContent.ProjectileType<FetchingStickProj>() || proj.owner != targetPlayer.whoAmI) {
@@ -131,8 +160,17 @@ public class DogFetchAIState : TownNPCAIState {
                 break;
             }
             case StateWaitingForProjectileToSettle: {
+                ref float targetProjectileState = ref targetProjectile.ai[0];
+
+                if (targetProjectile is null || !targetProjectile.active) {
+                    CancelState(npc, pathfinderModule, dogModule);
+
+                    break;
+                }
+
                 npc.direction = Math.Sign(npc.DirectionTo(targetProjectile.Center).X);
-                if (targetProjectile.ai[0] != FetchingStickProj.AtRestState) {
+
+                if ((int)targetProjectileState != FetchingStickProj.AtRestState) {
                     break;
                 }
 
@@ -141,7 +179,20 @@ public class DogFetchAIState : TownNPCAIState {
                 break;
             }
             case StateFetching: {
+                if (targetProjectile is null || !targetProjectile.active) {
+                    CancelState(npc, pathfinderModule, dogModule);
+
+                    break;
+                }
+
                 Point fetchPoint = (targetProjectile.BottomLeft + new Vector2(0, -2f)).ToTileCoordinates();
+
+                bool hasPathToProj = pathfinderModule.HasPath(fetchPoint);
+                if (!hasPathToProj) {
+                    CancelState(npc, pathfinderModule, dogModule);
+
+                    break;
+                }
 
                 pathfinderModule.HorizontalSpeed = 3f;
                 pathfinderModule.RequestPathfind(fetchPoint);
@@ -153,11 +204,13 @@ public class DogFetchAIState : TownNPCAIState {
                 break;
             }
             case StateReachedProjectile: {
+                ref float targetProjectileState = ref targetProjectile.ai[0];
+
                 if (genericTimer++ >= LWMUtils.RealLifeSecond) {
                     stateValue = StateWalkingToPlayerPostFetch;
                     genericTimer = 0f;
 
-                    targetProjectile.ai[0] = FetchingStickProj.PickedUpByDog;
+                    targetProjectileState = FetchingStickProj.PickedUpByDog;
                 }
 
                 break;
@@ -182,8 +235,9 @@ public class DogFetchAIState : TownNPCAIState {
                     break;
                 }
 
-                if (targetPlayer.HeldItem.type != ModContent.ItemType<FetchingStick>()) {
-                    TownNPCStateModule.RefreshToState<DefaultAIState>(npc);
+                if (!PlayerIsValidToPlayFetchWith(targetPlayer, npc)) {
+                    CancelState(npc, pathfinderModule, dogModule);
+
                     break;
                 }
 
