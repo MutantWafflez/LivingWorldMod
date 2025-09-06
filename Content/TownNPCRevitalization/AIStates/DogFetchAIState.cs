@@ -125,7 +125,7 @@ public class DogFetchAIState : TownNPCAIState {
         pathfinderModule.CancelPathfind();
 
         if (dogModule.fetchProj is not null && dogModule.fetchProj.active) {
-            dogModule.fetchProj.Kill();
+            dogModule.fetchProj.timeLeft = LWMUtils.RealLifeSecond;
         }
 
         dogModule.fetchPlayer = null;
