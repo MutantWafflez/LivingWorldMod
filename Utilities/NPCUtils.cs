@@ -123,4 +123,9 @@ public static partial class LWMUtils {
     ///     Gets and returns either the type name (if a modded NPC) or <see cref="NPCID" /> name (if a vanilla NPC), based on the passed in npc type.
     /// </summary>
     public static string GetNPCTypeNameOrIDName(int npcType) => npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).Name : NPCID.Search.GetName(npcType);
+
+    /// <summary>
+    ///     Whether this entity is facing left, i.e. <see cref="Entity.direction" /> is -1.
+    /// </summary>
+    public static bool IsFacingLeft(this Entity entity) => entity.direction == -1;
 }
