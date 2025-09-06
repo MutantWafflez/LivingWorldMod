@@ -14,7 +14,6 @@ using ReLogic.Content;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
-using Terraria.GameContent.UI;
 using Terraria.ModLoader.Config;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
@@ -335,9 +334,8 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         RequestDraw(new TownNPCDrawRequest(wrenchTexture, new Vector2(0, Main.OffsetsPlayerHeadgear[offsetIndex].Y + wrenchTexture.Height / 2), wrenchCenterOffset, DrawLayer: -1));
     }
 
-    private void TownNPCFindFrame(int num) {
-        int num236 = NPC.isLikeATownNPC ? NPCID.Sets.ExtraFramesCount[NPC.type] : 0;
-        bool flag11 = NPCID.Sets.IsTownSlime[NPC.type];
+    private void TownNPCFindFrame(int frameHeight) {
+        int extraFrameCount = NPCID.Sets.ExtraFramesCount[NPC.type];
 
         if (NPC.velocity.Y == 0f) {
             NPC.spriteDirection = NPC.direction switch {
@@ -346,56 +344,13 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
                 _ => NPC.spriteDirection
             };
 
-            if (NPCID.Sets.IsTownSlime[NPC.type]) {
-                NPC.spriteDirection *= -1;
-            }
-
-            int num237 = Main.npcFrameCount[NPC.type] - NPCID.Sets.AttackFrameCount[NPC.type];
+            int nonAttackFrameCount = Main.npcFrameCount[NPC.type] - NPCID.Sets.AttackFrameCount[NPC.type];
             switch (NPC.ai[0]) {
-                case 23f: {
-                    NPC.frameCounter += 1.0;
-                    int num238 = NPC.frame.Y / num;
-                    int num17 = num237 - num238;
-                    if ((uint)(num17 - 1) > 1u && (uint)(num17 - 4) > 1u && num238 != 0) {
-                        NPC.frame.Y = 0;
-                        NPC.frameCounter = 0.0;
-                    }
-
-                    int num239  ;
-                    num239 = !(NPC.frameCounter < 6.0) ? num237 - 4 : num237 - 5;
-                    if (NPC.ai[1] < 6f) {
-                        num239 = num237 - 5;
-                    }
-
-                    NPC.frame.Y = num * num239;
-                    break;
-                }
+                // Town Pet Flavor Animation states
                 case >= 20f and <= 22f: {
-                    int num240 = NPC.frame.Y / num;
+                    int num240 = NPC.frame.Y / frameHeight;
                     switch ((int)NPC.ai[0]) {
                         case 20:
-                            if (flag11) {
-                                if (NPC.ai[1] > 30f && num240 is < 8 or > 13) {
-                                    num240 = 8;
-                                }
-
-                                if (num240 > 0) {
-                                    NPC.frameCounter += 1.0;
-                                }
-
-                                if (NPC.frameCounter >= 12.0) {
-                                    NPC.frameCounter = 0.0;
-                                    num240++;
-                                    if (num240 > 13 && NPC.ai[1] > 30f) {
-                                        num240 = 8;
-                                    }
-
-                                    if (num240 > 13) {
-                                        num240 = 0;
-                                    }
-                                }
-                            }
-
                             switch (NPC.type) {
                                 case NPCID.TownBunny: {
                                     if (NPC.ai[1] > 30f && num240 is < 7 or > 9) {
@@ -599,204 +554,16 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
                             break;
                     }
 
-                    NPC.frame.Y = num240 * num;
+                    NPC.frame.Y = num240 * frameHeight;
                     break;
                 }
-                case 2f: {
-                    NPC.frameCounter += 1.0;
-                    if (NPC.frame.Y / num == num237 - 1 && NPC.frameCounter >= 5.0) {
-                        NPC.frame.Y = 0;
-                        NPC.frameCounter = 0.0;
-                    }
-                    else if (NPC.frame.Y / num == 0 && NPC.frameCounter >= 40.0) {
-                        NPC.frame.Y = num * (num237 - 1);
-                        NPC.frameCounter = 0.0;
-                    }
-                    else if (NPC.frame.Y != 0 && NPC.frame.Y != num * (num237 - 1)) {
-                        NPC.frame.Y = 0;
-                        NPC.frameCounter = 0.0;
-                    }
-
-                    break;
-                }
-                case 11f: {
-                    NPC.frameCounter += 1.0;
-                    if (NPC.frame.Y / num == num237 - 1 && NPC.frameCounter >= 50.0) {
-                        if (NPC.frameCounter == 50.0) {
-                            int num242 = Main.rand.Next(4);
-                            for (int m = 0; m < 3 + num242; m++) {
-                                int num243 = Dust.NewDust(NPC.Center + Vector2.UnitX * -NPC.direction * 8f - Vector2.One * 5f + Vector2.UnitY * 8f, 3, 6, DustID.PirateStaff, -NPC.direction, 1f);
-                                Dust dust = Main.dust[num243];
-                                dust.velocity /= 2f;
-                                Main.dust[num243].scale = 0.8f;
-                            }
-
-                            if (Main.rand.Next(30) == 0) {
-                                int num244 = Gore.NewGore(new EntitySource_Misc(""), NPC.Center + Vector2.UnitX * -NPC.direction * 8f, Vector2.Zero, Main.rand.Next(580, 583));
-                                Gore gore = Main.gore[num244];
-                                gore.velocity /= 2f;
-                                Main.gore[num244].velocity.Y = Math.Abs(Main.gore[num244].velocity.Y);
-                                Main.gore[num244].velocity.X = (0f - Math.Abs(Main.gore[num244].velocity.X)) * NPC.direction;
-                            }
-                        }
-
-                        if (!(NPC.frameCounter >= 100.0) || !Main.rand.NextBool(20)) {
-                            return;
-                        }
-
-                        NPC.frame.Y = 0;
-                        NPC.frameCounter = 0.0;
-                    }
-                    else if (NPC.frame.Y / num == 0 && NPC.frameCounter >= 20.0) {
-                        NPC.frame.Y = num * (num237 - 1);
-                        NPC.frameCounter = 0.0;
-                        EmoteBubble.NewBubble(89, new WorldUIAnchor(NPC), 90);
-                    }
-                    else if (NPC.frame.Y != 0 && NPC.frame.Y != num * (num237 - 1)) {
-                        NPC.frame.Y = 0;
-                        NPC.frameCounter = 0.0;
-                    }
-
-                    break;
-                }
-                case 5f: {
-                    NPC.frame.Y = num * (num237 - 3);
-                    if (NPC.type == NPCID.TownCat) {
-                        NPC.frame.Y = num * 19;
-                    }
-
-                    NPC.frameCounter = 0.0;
-                    break;
-                }
-                case 6f: {
-                    NPC.frameCounter += 1.0;
-                    int num245 = NPC.frame.Y / num;
-                    int num17 = num237 - num245;
-                    if ((uint)(num17 - 1) > 1u && (uint)(num17 - 4) > 1u && num245 != 0) {
-                        NPC.frame.Y = 0;
-                        NPC.frameCounter = 0.0;
-                    }
-
-                    int num246 = NPC.frameCounter switch {
-                        < 16.0 => num237 - 5,
-                        < 46.0 => num237 - 4,
-                        < 72.0 => num237 - 5,
-                        < 102.0 => num237 - 4,
-                        < 120.0 => num237 - 5,
-                        < 150.0 => num237 - 4,
-                        < 168.0 => num237 - 5,
-                        < 198.0 => num237 - 4,
-                        < 216.0 => num237 - 5,
-                        < 246.0 => num237 - 4,
-                        < 264.0 => num237 - 5,
-                        < 294.0 => num237 - 4,
-                        < 300.0 => num237 - 5,
-                        _ => 0
-                    };
-
-                    if (num246 == num237 - 4 && num245 == num237 - 5) {
-                        Vector2 vector4 = NPC.Center + new Vector2(10 * NPC.direction, -4f);
-                        for (int n = 0; n < 8; n++) {
-                            int num247 = Main.rand.Next(139, 143);
-                            int num248 = Dust.NewDust(vector4, 0, 0, num247, NPC.velocity.X + NPC.direction, NPC.velocity.Y - 2.5f, 0, default(Color), 1.2f);
-                            Main.dust[num248].velocity.X += NPC.direction * 1.5f;
-                            Dust dust = Main.dust[num248];
-                            dust.position -= new Vector2(4f);
-                            dust = Main.dust[num248];
-                            dust.velocity *= 2f;
-                            Main.dust[num248].scale = 0.7f + Main.rand.NextFloat() * 0.3f;
-                        }
-                    }
-
-                    NPC.frame.Y = num * num246;
-                    if (NPC.frameCounter >= 300.0) {
-                        NPC.frameCounter = 0.0;
-                    }
-
-                    break;
-                }
-                case 7f or 19f when !NPCID.Sets.IsTownPet[NPC.type]: {
-                    NPC.frameCounter += 1.0;
-                    int num249 = NPC.frame.Y / num;
-                    int num17 = num237 - num249;
-                    if ((uint)(num17 - 1) > 1u && (uint)(num17 - 4) > 1u && num249 != 0) {
-                        NPC.frame.Y = 0;
-                        NPC.frameCounter = 0.0;
-                    }
-
-                    int num250 = 0;
-                    switch (NPC.frameCounter) {
-                        case < 16.0:
-                            num250 = 0;
-                            break;
-                        case 16.0:
-                            EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), 112);
-                            break;
-                        case < 128.0:
-                            num250 = NPC.frameCounter % 16.0 < 8.0 ? num237 - 2 : 0;
-                            break;
-                        case < 160.0:
-                            num250 = 0;
-                            break;
-                        default: {
-                            if (NPC.frameCounter != 160.0) {
-                                num250 = NPC.frameCounter < 220.0 ? NPC.frameCounter % 12.0 < 6.0 ? num237 - 2 : 0 : 0;
-                            }
-                            else {
-                                EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), 60);
-                            }
-
-                            break;
-                        }
-                    }
-
-                    NPC.frame.Y = num * num250;
-                    if (NPC.frameCounter >= 220.0) {
-                        NPC.frameCounter = 0.0;
-                    }
-
-                    break;
-                }
-                case 9f: {
-                    NPC.frameCounter += 1.0;
-                    int num251 = NPC.frame.Y / num;
-                    int num17 = num237 - num251;
-                    if ((uint)(num17 - 1) > 1u && (uint)(num17 - 4) > 1u && num251 != 0) {
-                        NPC.frame.Y = 0;
-                        NPC.frameCounter = 0.0;
-                    }
-
-                    int num252  ;
-                    num252 = !(NPC.frameCounter < 10.0) ? !(NPC.frameCounter < 16.0) ? num237 - 4 : num237 - 5 : 0;
-                    if (NPC.ai[1] < 16f) {
-                        num252 = num237 - 5;
-                    }
-
-                    if (NPC.ai[1] < 10f) {
-                        num252 = 0;
-                    }
-
-                    NPC.frame.Y = num * num252;
-                    break;
-                }
-                case 18f: {
-                    NPC.frameCounter += 1.0;
-                    int num253 = NPC.frame.Y / num;
-                    int num17 = num237 - num253;
-                    if ((uint)(num17 - 1) > 1u && (uint)(num17 - 4) > 1u && num253 != 0) {
-                        NPC.frame.Y = 0;
-                        NPC.frameCounter = 0.0;
-                    }
-
-
-                    NPC.frame.Y = num * (Main.npcFrameCount[NPC.type] - 2);
-                    break;
-                }
+                // Throw attack state
                 case 10f:
+                // Nurse heal state
                 case 13f: {
                     NPC.frameCounter += 1.0;
-                    int num255 = NPC.frame.Y / num;
-                    int num17 = num255 - num237;
+                    int num255 = NPC.frame.Y / frameHeight;
+                    int num17 = num255 - nonAttackFrameCount;
                     if ((uint)num17 > 3u && num255 != 0) {
                         NPC.frame.Y = 0;
                         NPC.frameCounter = 0.0;
@@ -812,19 +579,19 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
                     int num258  ;
                     if (!(NPC.frameCounter < num256)) {
                         if (NPC.frameCounter < num256 + num257) {
-                            num258 = num237;
+                            num258 = nonAttackFrameCount;
                         }
                         else {
                             if (NPC.frameCounter < num256 + num257 * 2) {
-                                num258 = num237 + 1;
+                                num258 = nonAttackFrameCount + 1;
                             }
                             else {
                                 if (NPC.frameCounter < num256 + num257 * 3) {
-                                    num258 = num237 + 2;
+                                    num258 = nonAttackFrameCount + 2;
                                 }
                                 else {
                                     if (NPC.frameCounter < num256 + num257 * 4) {
-                                        num258 = num237 + 3;
+                                        num258 = nonAttackFrameCount + 3;
                                     }
                                     else {
                                         num258 = 0;
@@ -837,13 +604,14 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
                         num258 = 0;
                     }
 
-                    NPC.frame.Y = num * num258;
+                    NPC.frame.Y = frameHeight * num258;
                     break;
                 }
+                // Melee attack state
                 case 15f: {
                     NPC.frameCounter += 1.0;
-                    int num259 = NPC.frame.Y / num;
-                    int num17 = num259 - num237;
+                    int num259 = NPC.frame.Y / frameHeight;
+                    int num17 = num259 - nonAttackFrameCount;
                     if ((uint)num17 > 3u && num259 != 0) {
                         NPC.frame.Y = 0;
                         NPC.frameCounter = 0.0;
@@ -851,402 +619,113 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
 
                     float num260 = NPC.ai[1] / NPCID.Sets.AttackTime[NPC.type];
                     int num261 = num260 switch {
-                        > 0.65f => num237,
-                        > 0.5f => num237 + 1,
-                        > 0.35f => num237 + 2,
-                        > 0f => num237 + 3,
+                        > 0.65f => nonAttackFrameCount,
+                        > 0.5f => nonAttackFrameCount + 1,
+                        > 0.35f => nonAttackFrameCount + 2,
+                        > 0f => nonAttackFrameCount + 3,
                         _ => 0
                     };
 
-                    NPC.frame.Y = num * num261;
+                    NPC.frame.Y = frameHeight * num261;
                     break;
                 }
+                // Shimmer transform state
                 case 25f:
-                    NPC.frame.Y = num;
+                    NPC.frame.Y = frameHeight;
                     break;
+                // Firearm attack state
                 case 12f: {
                     NPC.frameCounter += 1.0;
-                    int num262 = NPC.frame.Y / num;
-                    int num17 = num262 - num237;
+                    int num262 = NPC.frame.Y / frameHeight;
+                    int num17 = num262 - nonAttackFrameCount;
                     if ((uint)num17 > 4u && num262 != 0) {
                         NPC.frame.Y = 0;
                         NPC.frameCounter = 0.0;
                     }
 
-                    int num263 = num237 + NPC.GetShootingFrame(NPC.ai[2]);
-                    NPC.frame.Y = num * num263;
+                    int num263 = nonAttackFrameCount + NPC.GetShootingFrame(NPC.ai[2]);
+                    NPC.frame.Y = frameHeight * num263;
                     break;
                 }
-                case 14f:
-                case 24f: {
+                // Magic attack state
+                case 14f: {
                     NPC.frameCounter += 1.0;
-                    int num264 = NPC.frame.Y / num;
-                    int num17 = num264 - num237;
+                    int num264 = NPC.frame.Y / frameHeight;
+                    int num17 = num264 - nonAttackFrameCount;
                     if ((uint)num17 > 1u && num264 != 0) {
                         NPC.frame.Y = 0;
                         NPC.frameCounter = 0.0;
                     }
 
                     const int num265 = 12;
-                    int num266 = NPC.frameCounter % num265 * 2.0 < num265 ? num237 : num237 + 1;
-                    NPC.frame.Y = num * num266;
-                    if (NPC.ai[0] == 24f) {
-                        switch (NPC.frameCounter) {
-                            case 60.0:
-                                EmoteBubble.NewBubble(87, new WorldUIAnchor(NPC), 60);
-                                break;
-                            case 150.0:
-                                EmoteBubble.NewBubble(3, new WorldUIAnchor(NPC), 90);
-                                break;
-                            case >= 240.0:
-                                NPC.frame.Y = 0;
-                                break;
-                        }
-                    }
-
+                    int num266 = NPC.frameCounter % num265 * 2.0 < num265 ? nonAttackFrameCount : nonAttackFrameCount + 1;
+                    NPC.frame.Y = frameHeight * num266;
                     break;
                 }
-                case 1001f:
-                    NPC.frame.Y = num * (num237 - 1);
-                    NPC.frameCounter = 0.0;
-                    break;
                 default: {
-                    switch (NPC.CanTalk) {
-                        case true when NPC.ai[0] == 3f || NPC.ai[0] == 4f: {
-                            NPC.frameCounter += 1.0;
-                            int num267 = NPC.frame.Y / num;
-                            int num17 = num237 - num267;
-                            if ((uint)(num17 - 1) > 1u && (uint)(num17 - 4) > 1u && num267 != 0) {
-                                NPC.frame.Y = 0;
-                                NPC.frameCounter = 0.0;
-                            }
-
-                            bool flag12 = NPC.ai[0] == 3f;
-                            int num268 = 0;
-                            int num269 = 0;
-                            int num270 = -1;
-                            int num271 = -1;
-                            switch (NPC.frameCounter) {
-                                case < 10.0:
-                                    num268 = 0;
-                                    break;
-                                case < 16.0:
-                                    num268 = num237 - 5;
-                                    break;
-                                case < 46.0:
-                                    num268 = num237 - 4;
-                                    break;
-                                case < 60.0:
-                                    num268 = num237 - 5;
-                                    break;
-                                case < 216.0:
-                                    num268 = 0;
-                                    break;
-                                case 216.0 when Main.netMode != NetmodeID.MultiplayerClient:
-                                    num270 = 70;
-                                    break;
-                                case < 286.0:
-                                    num268 = NPC.frameCounter % 12.0 < 6.0 ? num237 - 2 : 0;
-                                    break;
-                                case < 320.0:
-                                    num268 = 0;
-                                    break;
-                                default: {
-                                    if (NPC.frameCounter != 320.0 || Main.netMode == NetmodeID.MultiplayerClient) {
-                                        num268 = NPC.frameCounter < 420.0 ? NPC.frameCounter % 16.0 < 8.0 ? num237 - 2 : 0 : 0;
-                                    }
-                                    else {
-                                        num270 = 100;
-                                    }
-
-                                    break;
-                                }
-                            }
-
-                            if (NPC.frameCounter < 70.0) {
-                                num269 = 0;
-                            }
-                            else if (NPC.frameCounter != 70.0 || Main.netMode == NetmodeID.MultiplayerClient) {
-                                num269 = NPC.frameCounter < 160.0 ? NPC.frameCounter % 16.0 < 8.0 ? num237 - 2 : 0 :
-                                    NPC.frameCounter < 166.0 ? num237 - 5 :
-                                    NPC.frameCounter < 186.0 ? num237 - 4 :
-                                    NPC.frameCounter < 200.0 ? num237 - 5 :
-                                    !(NPC.frameCounter < 320.0) ? NPC.frameCounter < 326.0 ? num237 - 1 : 0 : 0;
-                            }
-                            else {
-                                num271 = 90;
-                            }
-
-                            if (flag12) {
-                                NPC nPC = Main.npc[(int)NPC.ai[2]];
-                                if (num270 != -1) {
-                                    EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), num270, new WorldUIAnchor(nPC));
+                    if (NPC.velocity.X == 0f) {
+                        switch (NPC.type) {
+                            case NPCID.TownDog: {
+                                int num286 = NPC.frame.Y / frameHeight;
+                                if (num286 > 7) {
+                                    num286 = 0;
                                 }
 
-                                if (num271 != -1 && nPC.CanTalk) {
-                                    EmoteBubble.NewBubbleNPC(new WorldUIAnchor(nPC), num271, new WorldUIAnchor(NPC));
-                                }
-                            }
-
-                            NPC.frame.Y = num * (flag12 ? num268 : num269);
-                            if (NPC.frameCounter >= 420.0) {
-                                NPC.frameCounter = 0.0;
-                            }
-
-                            break;
-                        }
-                        case true when NPC.ai[0] == 16f || NPC.ai[0] == 17f: {
-                            NPC.frameCounter += 1.0;
-                            int num272 = NPC.frame.Y / num;
-                            int num17 = num237 - num272;
-                            if ((uint)(num17 - 1) > 1u && (uint)(num17 - 4) > 1u && num272 != 0) {
-                                NPC.frame.Y = 0;
-                                NPC.frameCounter = 0.0;
-                            }
-
-                            bool flag13 = NPC.ai[0] == 16f;
-                            int num273 = 0;
-                            int num274 = -1;
-                            switch (NPC.frameCounter) {
-                                case < 10.0:
-                                    num273 = 0;
-                                    break;
-                                case < 16.0:
-                                    num273 = num237 - 5;
-                                    break;
-                                case < 22.0:
-                                    num273 = num237 - 4;
-                                    break;
-                                case < 28.0:
-                                    num273 = num237 - 5;
-                                    break;
-                                case < 34.0:
-                                    num273 = num237 - 4;
-                                    break;
-                                case < 40.0:
-                                    num273 = num237 - 5;
-                                    break;
-                                case 40.0 when Main.netMode != NetmodeID.MultiplayerClient:
-                                    num274 = 45;
-                                    break;
-                                case < 70.0:
-                                    num273 = num237 - 4;
-                                    break;
-                                case < 76.0:
-                                    num273 = num237 - 5;
-                                    break;
-                                case < 82.0:
-                                    num273 = num237 - 4;
-                                    break;
-                                case < 88.0:
-                                    num273 = num237 - 5;
-                                    break;
-                                case < 94.0:
-                                    num273 = num237 - 4;
-                                    break;
-                                case < 100.0:
-                                    num273 = num237 - 5;
-                                    break;
-                                case 100.0 when Main.netMode != NetmodeID.MultiplayerClient:
-                                    num274 = 45;
-                                    break;
-                                case < 130.0:
-                                    num273 = num237 - 4;
-                                    break;
-                                case < 136.0:
-                                    num273 = num237 - 5;
-                                    break;
-                                case < 142.0:
-                                    num273 = num237 - 4;
-                                    break;
-                                case < 148.0:
-                                    num273 = num237 - 5;
-                                    break;
-                                case < 154.0:
-                                    num273 = num237 - 4;
-                                    break;
-                                case < 160.0:
-                                    num273 = num237 - 5;
-                                    break;
-                                default: {
-                                    if (NPC.frameCounter != 160.0 || Main.netMode == NetmodeID.MultiplayerClient) {
-                                        num273 = NPC.frameCounter < 220.0 ? num237 - 4 : NPC.frameCounter < 226.0 ? num237 - 5 : 0;
-                                    }
-                                    else {
-                                        num274 = 75;
-                                    }
-
-                                    break;
-                                }
-                            }
-
-                            if (flag13 && num274 != -1) {
-                                int num275 = (int)NPC.localAI[2];
-                                int num276 = (int)NPC.localAI[3];
-                                int num277 = (int)Main.npc[(int)NPC.ai[2]].localAI[3];
-                                int num278 = (int)Main.npc[(int)NPC.ai[2]].localAI[2];
-                                int num279 = 3 - num275 - num276;
-                                int num280 = NPC.frameCounter switch {
-                                    40.0 => 1,
-                                    100.0 => 2,
-                                    160.0 => 3,
-                                    _ => 0
-                                };
-
-                                int num281 = 3 - num280;
-                                int num282 = -1;
-                                int num283 = 0;
-                                while (num282 < 0) {
-                                    num17 = num283 + 1;
-                                    num283 = num17;
-                                    if (num17 >= 100) {
-                                        break;
-                                    }
-
-                                    num282 = Main.rand.Next(2);
-                                    if (num282 == 0 && num278 >= num276) {
-                                        num282 = -1;
-                                    }
-
-                                    if (num282 == 1 && num277 >= num275) {
-                                        num282 = -1;
-                                    }
-
-                                    if (num282 == -1 && num281 <= num279) {
-                                        num282 = 2;
-                                    }
-                                }
-
-                                switch (num282) {
-                                    case 0:
-                                        Main.npc[(int)NPC.ai[2]].localAI[3] += 1f;
-                                        num277++;
-                                        break;
-                                    case 1:
-                                        Main.npc[(int)NPC.ai[2]].localAI[2] += 1f;
-                                        num278++;
-                                        break;
-                                }
-
-                                int num284 = Utils.SelectRandom(Main.rand, 38, 37, 36);
-                                int num285 = num284;
-                                num285 = num282 switch {
-                                    0 => num284 switch {
-                                        38 => 37,
-                                        37 => 36,
-                                        36 => 38,
-                                        _ => num285
-                                    },
-                                    1 => num284 switch {
-                                        38 => 36,
-                                        37 => 38,
-                                        36 => 37,
-                                        _ => num285
-                                    },
-                                    _ => num285
-                                };
-
-                                if (num281 == 0) {
-                                    if (num277 >= 2) {
-                                        num284 -= 3;
-                                    }
-
-                                    if (num278 >= 2) {
-                                        num285 -= 3;
-                                    }
-                                }
-
-                                EmoteBubble.NewBubble(num284, new WorldUIAnchor(NPC), num274);
-                                EmoteBubble.NewBubble(num285, new WorldUIAnchor(Main.npc[(int)NPC.ai[2]]), num274);
-                            }
-
-                            NPC.frame.Y = num * (flag13 ? num273 : num273);
-                            if (NPC.frameCounter >= 420.0) {
-                                NPC.frameCounter = 0.0;
-                            }
-
-                            break;
-                        }
-                        default: {
-                            if (NPC.velocity.X == 0f) {
-                                switch (NPC.type) {
-                                    case NPCID.TownDog: {
-                                        int num286 = NPC.frame.Y / num;
-                                        if (num286 > 7) {
-                                            num286 = 0;
-                                        }
-
-                                        NPC.frameCounter += 1.0;
-                                        if (NPC.frameCounter > 4.0) {
-                                            NPC.frameCounter = 0.0;
-                                            num286++;
-                                            if (num286 > 7) {
-                                                num286 = 0;
-                                            }
-                                        }
-
-                                        NPC.frame.Y = num286 * num;
-                                        break;
-                                    }
-                                    case NPCID.PossessedArmor or NPCID.BloodZombie:
-                                        NPC.frame.Y = num;
-                                        NPC.frameCounter = 0.0;
-                                        break;
-                                    default:
-                                        NPC.frame.Y = 0;
-                                        NPC.frameCounter = 0.0;
-                                        break;
-                                }
-                            }
-                            else {
-                                int num287 = NPC.type switch {
-                                    NPCID.MaggotZombie or NPCID.DemonTaxCollector or NPCID.TownDog or NPCID.TownBunny => 12,
-                                    _ => 6
-                                };
-
-                                if (flag11) {
-                                    num287 = 12;
-                                }
-
-                                if (NPC.type == NPCID.BloodZombie) {
-                                    num287 = 8;
-                                    NPC.frameCounter += Math.Abs(NPC.velocity.X) * 1f;
-                                    NPC.frameCounter += 0.5;
-                                }
-                                else {
-                                    NPC.frameCounter += Math.Abs(NPC.velocity.X) * 2f;
-                                    NPC.frameCounter += 1.0;
-                                }
-
-                                if (NPC.type == NPCID.Fritz) {
-                                    num287 = 9;
-                                }
-
-                                int num288 = NPC.type switch {
-                                    NPCID.TownDog => num * 9,
-                                    NPCID.TownBunny => num,
-                                    _ => num * 2
-                                };
-
-                                if (flag11) {
-                                    num288 = num;
-                                }
-
-                                if (NPC.frame.Y < num288) {
-                                    NPC.frame.Y = num288;
-                                }
-
-                                if (NPC.frameCounter > num287) {
-                                    NPC.frame.Y += num;
+                                NPC.frameCounter += 1.0;
+                                if (NPC.frameCounter > 4.0) {
                                     NPC.frameCounter = 0.0;
+                                    num286++;
+                                    if (num286 > 7) {
+                                        num286 = 0;
+                                    }
                                 }
 
-                                if (NPC.frame.Y / num >= Main.npcFrameCount[NPC.type] - num236) {
-                                    NPC.frame.Y = num288;
-                                }
+                                NPC.frame.Y = num286 * frameHeight;
+                                break;
                             }
+                            default:
+                                NPC.frame.Y = 0;
+                                NPC.frameCounter = 0.0;
+                                break;
+                        }
+                    }
+                    else {
+                        int num287 = NPC.type switch {
+                            NPCID.TownDog or NPCID.TownBunny => 12,
+                            _ => 6
+                        };
 
-                            break;
+                        if (NPC.type == NPCID.BloodZombie) {
+                            num287 = 8;
+                            NPC.frameCounter += Math.Abs(NPC.velocity.X) * 1f;
+                            NPC.frameCounter += 0.5;
+                        }
+                        else {
+                            NPC.frameCounter += Math.Abs(NPC.velocity.X) * 2f;
+                            NPC.frameCounter += 1.0;
+                        }
+
+                        if (NPC.type == NPCID.Fritz) {
+                            num287 = 9;
+                        }
+
+                        int num288 = NPC.type switch {
+                            NPCID.TownDog => frameHeight * 9,
+                            NPCID.TownBunny => frameHeight,
+                            _ => frameHeight * 2
+                        };
+
+                        if (NPC.frame.Y < num288) {
+                            NPC.frame.Y = num288;
+                        }
+
+                        if (NPC.frameCounter > num287) {
+                            NPC.frame.Y += frameHeight;
+                            NPC.frameCounter = 0.0;
+                        }
+
+                        if (NPC.frame.Y / frameHeight >= Main.npcFrameCount[NPC.type] - extraFrameCount) {
+                            NPC.frame.Y = num288;
                         }
                     }
 
@@ -1257,81 +736,11 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             return;
         }
 
-        if (NPC.type == NPCID.Fritz) {
-            NPC.frameCounter = 0.0;
-            if (NPC.velocity.Y < 0f) {
-                NPC.frame.Y = num;
-            }
-            else {
-                NPC.frame.Y = num * 2;
-            }
-
-            return;
-        }
-
-        if (flag11) {
-            NPC.spriteDirection = -NPC.direction;
-            int num289 = NPC.frame.Y / num;
-            switch (NPC.velocity.Y) {
-                case < 0f: {
-                    if (num289 is < 2 or > 3) {
-                        num289 = 2;
-                        NPC.frameCounter = -1.0;
-                    }
-
-                    if ((NPC.frameCounter += 1.0) >= 4.0) {
-                        NPC.frameCounter = 0.0;
-                        num289++;
-                        if (num289 >= 3) {
-                            num289 = 3;
-                        }
-                    }
-
-                    NPC.frame.Y = num289 * num;
-                    break;
-                }
-                case > 0f: {
-                    if (num289 is < 3 or > 6) {
-                        num289 = 3;
-                        NPC.frameCounter = -1.0;
-                    }
-
-                    if ((NPC.frameCounter += 1.0) >= 4.0) {
-                        NPC.frameCounter = 0.0;
-                        num289++;
-                        if (num289 >= 6) {
-                            num289 = 6;
-                        }
-                    }
-
-                    NPC.frame.Y = num289 * num;
-                    break;
-                }
-            }
-        }
-        else {
-            NPC.frameCounter = 0.0;
-            NPC.frame.Y = num;
-        }
+        NPC.frameCounter = 0.0;
+        NPC.frame.Y = frameHeight;
 
         NPC.frame.Y = NPC.type switch {
-            NPCID.BloodZombie
-                or NPCID.Skeleton
-                or NPCID.AngryBones
-                or NPCID.AngryBonesBig
-                or NPCID.Splinterling
-                or NPCID.AngryBonesBigMuscle
-                or NPCID.AngryBonesBigHelmet
-                or NPCID.UndeadMiner
-                or NPCID.ArmoredSkeleton
-                or NPCID.ChaosElemental
-                or NPCID.PossessedArmor
-                or NPCID.Vampire
-                or NPCID.UndeadViking
-                or NPCID.ArmoredViking
-                or NPCID.HeadacheSkeleton
-                or NPCID.MisassembledSkeleton => 0,
-            NPCID.TownDog => num * 8,
+            NPCID.TownDog => frameHeight * 8,
             _ => NPC.frame.Y
         };
     }
