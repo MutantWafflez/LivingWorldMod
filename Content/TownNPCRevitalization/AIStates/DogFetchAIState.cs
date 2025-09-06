@@ -249,7 +249,7 @@ public class DogFetchAIState : TownNPCAIState {
                 break;
             }
             case StateWaitingForPlayerToThrowAgainBuffer: {
-                if (genericTimer++ < LWMUtils.RealLifeSecond * 3f) {
+                if (genericTimer++ < LWMUtils.RealLifeSecond) {
                     break;
                 }
 

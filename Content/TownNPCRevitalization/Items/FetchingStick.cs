@@ -14,8 +14,9 @@ public class FetchingStick : BaseItem {
 
     public override void SetDefaults() {
         Item.CloneDefaults(ItemID.Snowball);
-        Item.damage = 3;
+        Item.damage = 1;
         Item.shoot = ModContent.ProjectileType<FetchingStickProj>();
+        Item.DamageType = DamageClass.Throwing;
         Item.knockBack = 0.2f;
         Item.shootSpeed = 12f;
         Item.ammo = AmmoID.None;
