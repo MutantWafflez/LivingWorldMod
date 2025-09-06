@@ -12,6 +12,7 @@ public class DogFetchAIState : TownNPCAIState {
     private readonly record struct DogStandPoints(Point LeftPoint, Point RightPoint);
 
     private const int MaxTileDistanceToPlayFetch = LWMUtils.TilePixelsSideLength * 40;
+    private const int MaxDogPatienceBeforeThrow = LWMUtils.RealLifeSecond * 15;
 
     private const int SubStateNone = 0;
 
@@ -28,8 +29,10 @@ public class DogFetchAIState : TownNPCAIState {
     private const int StateWaitingForPlayerToThrowAgainBuffer = 6;
 
     public static bool PlayerIsValidToPlayFetchWith(Player player, NPC npc) => player.HeldItem.type == ModContent.ItemType<FetchingStick>()
-        && npc.Distance(player.Center) <= MaxTileDistanceToPlayFetch * MaxTileDistanceToPlayFetch
+        && PlayerWithinValidFetchingDistance(player, npc)
         && Collision.CanHitLine(npc.Center, 2, 2, player.Center, 2, 2);
+
+    private static bool PlayerWithinValidFetchingDistance(Player player, NPC npc) => npc.Distance(player.Center) <= MaxTileDistanceToPlayFetch * MaxTileDistanceToPlayFetch;
 
     private static DogStandPoints GetDogStandPoints(Player targetPlayer) {
         Point playerBottomLeft = (targetPlayer.BottomLeft + new Vector2(0, -2f)).ToTileCoordinates();
@@ -41,11 +44,17 @@ public class DogFetchAIState : TownNPCAIState {
     ///     Generic handler for an AI state that has the two "navigation" substates. Returns false when the navigation is not completed yet, and returns true when navigation is complete and is going
     ///     to transition to the next STATE (not sub-state).
     /// </summary>
-    private static bool HandleNavigationToPlayerSubStates(NPC npc, Player targetPlayer, TownNPCPathfinderModule pathfinderModule, int nextSuccessfulState, float dogMoveSpeed) {
+    private static bool HandleNavigationToPlayerSubStates(
+        NPC npc,
+        Player targetPlayer,
+        TownNPCPathfinderModule pathfinderModule,
+        int nextSuccessfulState,
+        float dogMoveSpeed,
+        Func<Player, NPC, bool> canContinueFetchFunc
+    ) {
         ref float stateValue = ref npc.ai[1];
         ref float subStateNavigating = ref npc.ai[2];
         ref float retryTimer = ref npc.ai[3];
-
 
         DogStandPoints standPoints = GetDogStandPoints(targetPlayer);
         switch ((int)subStateNavigating) {
@@ -54,7 +63,7 @@ public class DogFetchAIState : TownNPCAIState {
                     return false;
                 }
 
-                if (!PlayerIsValidToPlayFetchWith(targetPlayer, npc)) {
+                if (!canContinueFetchFunc(targetPlayer, npc)) {
                     CancelState(npc, pathfinderModule, npc.GetGlobalNPC<TownDogModule>());
 
                     return false;
@@ -115,6 +124,10 @@ public class DogFetchAIState : TownNPCAIState {
         TownNPCStateModule.RefreshToState<DefaultAIState>(npc);
         pathfinderModule.CancelPathfind();
 
+        if (dogModule.fetchProj is not null && dogModule.fetchProj.active) {
+            dogModule.fetchProj.Kill();
+        }
+
         dogModule.fetchPlayer = null;
         dogModule.fetchProj = null;
     }
@@ -130,12 +143,12 @@ public class DogFetchAIState : TownNPCAIState {
         TownNPCPathfinderModule pathfinderModule = npc.GetGlobalNPC<TownNPCPathfinderModule>();
         switch ((int)stateValue) {
             case StateNavigatingToPlayerPreThrow: {
-                HandleNavigationToPlayerSubStates(npc, targetPlayer, pathfinderModule, StateWaitingForPlayerToThrow, 2f);
+                HandleNavigationToPlayerSubStates(npc, targetPlayer, pathfinderModule, StateWaitingForPlayerToThrow, 2f, PlayerIsValidToPlayFetchWith);
 
                 break;
             }
             case StateWaitingForPlayerToThrow: {
-                if (!PlayerIsValidToPlayFetchWith(targetPlayer, npc)) {
+                if (!PlayerIsValidToPlayFetchWith(targetPlayer, npc) || ++genericTimer >= MaxDogPatienceBeforeThrow) {
                     CancelState(npc, pathfinderModule, dogModule);
 
                     break;
@@ -143,7 +156,7 @@ public class DogFetchAIState : TownNPCAIState {
 
                 Projectile foundProjectile = null;
                 foreach (Projectile proj in Main.ActiveProjectiles) {
-                    if (proj.type != ModContent.ProjectileType<FetchingStickProj>() || proj.owner != targetPlayer.whoAmI) {
+                    if (proj.type != ModContent.ProjectileType<FetchingStickProj>() || proj.owner != targetPlayer.whoAmI || (int)proj.ai[1] == FetchingStickProj.StickClaimedByDog) {
                         continue;
                     }
 
@@ -155,7 +168,10 @@ public class DogFetchAIState : TownNPCAIState {
                 }
 
                 dogModule.fetchProj = foundProjectile;
+                foundProjectile.ai[1] = FetchingStickProj.StickClaimedByDog;
+
                 stateValue = StateWaitingForProjectileToSettle;
+                genericTimer = 0;
 
                 break;
             }
@@ -186,16 +202,18 @@ public class DogFetchAIState : TownNPCAIState {
                 }
 
                 Point fetchPoint = (targetProjectile.BottomLeft + new Vector2(0, -2f)).ToTileCoordinates();
+                if (!pathfinderModule.IsPathfinding) {
+                    bool hasPathToProj = pathfinderModule.HasPath(fetchPoint);
+                    if (!hasPathToProj) {
+                        CancelState(npc, pathfinderModule, dogModule);
 
-                bool hasPathToProj = pathfinderModule.HasPath(fetchPoint);
-                if (!hasPathToProj) {
-                    CancelState(npc, pathfinderModule, dogModule);
+                        break;
+                    }
 
-                    break;
+                    pathfinderModule.RequestPathfind(fetchPoint);
                 }
 
                 pathfinderModule.HorizontalSpeed = 3f;
-                pathfinderModule.RequestPathfind(fetchPoint);
 
                 if (pathfinderModule.BottomLeftTileOfNPC == fetchPoint) {
                     stateValue = StateReachedProjectile;
@@ -219,7 +237,7 @@ public class DogFetchAIState : TownNPCAIState {
                 targetProjectile.direction = npc.direction;
                 targetProjectile.Center = npc.Top + new Vector2(npc.Size.X * npc.direction, 4f);
 
-                if (!HandleNavigationToPlayerSubStates(npc, targetPlayer, pathfinderModule, StateWaitingForPlayerToThrowAgainBuffer, 1.5f)) {
+                if (!HandleNavigationToPlayerSubStates(npc, targetPlayer, pathfinderModule, StateWaitingForPlayerToThrowAgainBuffer, 1.5f, PlayerWithinValidFetchingDistance)) {
                     break;
                 }
 

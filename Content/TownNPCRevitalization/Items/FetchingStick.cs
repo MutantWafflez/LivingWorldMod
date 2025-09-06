@@ -33,6 +33,8 @@ public class FetchingStickProj : BaseProjectile {
     public const int AtRestState = 2;
     public const int PickedUpByDog = 3;
 
+    public const int StickClaimedByDog = 1;
+
     private const float TerminalVelocity = 16f;
 
     public override string Texture => ModContent.GetInstance<FetchingStick>().Texture;
