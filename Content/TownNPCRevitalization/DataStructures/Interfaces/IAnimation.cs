@@ -12,7 +12,7 @@ public interface IAnimation {
     }
 
     /// <summary>
-    ///     The priority of this animation. The higher, the more priority this animation will have to overwrite other running animations.
+    ///     The priority of this animation. The lower this number is, the more priority this animation will have to overwrite other running animations.
     /// </summary>
     public int Priority {
         get;
