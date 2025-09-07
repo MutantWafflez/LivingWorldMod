@@ -4,11 +4,9 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records.Animations;
 
 /// <summary>
-///     Represents the "walk" animation of
+///     Represents the "walk" animation of Town NPC, starting at <see cref="StartFrame" />, incrementing after <see cref="FrameDuration" /> is reached, until <see cref="EndFrame" /> is met,
+///     where it then repeats until the NPC stops moving horizontally.
 /// </summary>
-/// <param name="StartFrame"></param>
-/// <param name="EndFrame"></param>
-/// <param name="FrameDuration"></param>
 public readonly record struct WalkAnimation(int StartFrame, int EndFrame, int FrameDuration, int Priority = 0) : IAnimation {
     public const int TownDogStartFrame = 9;
     public const int TownBunnyStartFrame = 1;
