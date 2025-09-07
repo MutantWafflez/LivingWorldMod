@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
@@ -206,6 +207,15 @@ public class RevitalizationNPCPatches : LoadablePatch {
         branchInstr.Operand = c.MarkLabel();
     }
 
+    private static void SkipVanillaFindFrame(On_NPC.orig_VanillaFindFrame orig, NPC self, int num, bool isLikeATownNPC, int type) {
+        // Skips VanillaFindFrame for any NPCs that have the Revitalization enabled, since we handle it ourselves in TownNPCAnimationModule.cs
+        if (TownGlobalNPC.IsAnyValidTownNPC(self, true)) {
+            return;
+        }
+
+        orig(self, num, isLikeATownNPC, type);
+    }
+
     public override void LoadPatches() {
         IL_Main.DrawNPCExtras += il => _drawNPCExtrasBody = il.Body;
         _addExtrasToNPCDrawingHook = new ILHook(AddExtrasToNPCDrawingInfo, DrawNPCExtrasConsumptionPatch);
@@ -214,6 +224,8 @@ public class RevitalizationNPCPatches : LoadablePatch {
         IL_ShopHelper.ProcessMood += ProcessMoodOverridePatch;
         IL_NPC.UpdateCollision += NPCCollisionUpdatePatch;
         IL_NPC.UsesPartyHat += DrawsPartyHatPatch;
+
+        On_NPC.VanillaFindFrame += SkipVanillaFindFrame;
     }
 
     public override void Unload() {

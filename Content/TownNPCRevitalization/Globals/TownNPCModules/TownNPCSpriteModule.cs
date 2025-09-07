@@ -56,20 +56,13 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
     private const int TalkOverlayIndex = 0;
     private const int EyelidOverlayIndex = 1;
 
-    /// <summary>
-    ///     The value that <see cref="_frameYOverride" /> is set to when there is currently no frame override occuring for this NPC.
-    /// </summary>
-    private const int NoFrameYOverride = -1;
-
     private readonly List<TownNPCDrawRequest> _drawRequests = [];
 
     private int _blinkTimer;
     private int _mouthOpenTimer;
 
-    private int _givingTimer;
-    private int _givingItemType;
-
-    private int _frameYOverride = NoFrameYOverride;
+    // private int _givingTimer;
+    // private int _givingItemType;
 
     private Vector2 _drawOffset;
 
@@ -78,10 +71,10 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         private set;
     }
 
-    public bool IsGiving {
-        get;
-        private set;
-    }
+    // public bool IsGiving {
+    //     get;
+    //     private set;
+    // }
 
     public bool IsTalking {
         get;
@@ -113,7 +106,6 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
 
     public override void UpdateModule() {
         _drawOffset = Vector2.Zero;
-        _frameYOverride = NoFrameYOverride;
         _drawRequests.Clear();
 
         if (Main.netMode == NetmodeID.Server || IsDrawOverhaulDisabled) {
@@ -132,7 +124,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         Vector2 defaultOrigin = halfSize * NPC.scale;
         RequestDraw(new TownNPCDrawRequest(npcAsset.Value, Vector2.Zero, defaultOrigin, NPC.frame));
 
-        UpdateFlavorAnimations(frameWidth, frameHeight, defaultOrigin);
+        AddFlavorOverlays(frameWidth, frameHeight, defaultOrigin);
         if (NPC.type == NPCID.Mechanic) {
             DrawMechanicWrench();
         }
@@ -173,17 +165,11 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         return false;
     }
 
-    public override void FindFrame(NPC npc, int frameHeight) {
-        if (_frameYOverride >= 0) {
-            npc.frame.Y = frameHeight * _frameYOverride;
-        }
-    }
-
-    public void GiveItem(int givingItemType = -1) {
-        IsGiving = true;
-        _givingTimer = GivingAnimationDuration;
-        _givingItemType = givingItemType;
-    }
+    // public void GiveItem(int givingItemType = -1) {
+    //     IsGiving = true;
+    //     _givingTimer = GivingAnimationDuration;
+    //     _givingItemType = givingItemType;
+    // }
 
     public void CloseEyes(int duration = EyelidClosedDuration) {
         AreEyesClosed = true;
@@ -193,15 +179,6 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
     public void DoTalk(int duration = TalkDuration) {
         IsTalking = true;
         _mouthOpenTimer = duration;
-    }
-
-    /// <summary>
-    ///     Requests a Y Frame override for the NPC. The request is only accepted if there is no override already occuring.
-    /// </summary>
-    public void RequestFrameOverride(uint newFrameY) {
-        if (_frameYOverride == -1) {
-            _frameYOverride = (int)newFrameY;
-        }
     }
 
     /// <summary>
@@ -233,10 +210,6 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             OffsetDrawPosition(offset);
         }
 
-        if (frameOverride is { } @override) {
-            RequestFrameOverride(@override);
-        }
-
         CloseEyes();
 
         TownNPCDrawRequest drawRequest = npc.GetGlobalNPC<TownNPCSleepModule>().SleepSpriteDrawData;
@@ -251,7 +224,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
 
     private TownNPCSpriteOverlay GetOverlay(int overlayIndex) => TownNPCDataSystem.spriteOverlayProfiles[NPC.type].GetCurrentSpriteOverlay(NPC, overlayIndex);
 
-    private void UpdateFlavorAnimations(int frameWidth, int frameHeight, Vector2 defaultOrigin) {
+    private void AddFlavorOverlays(int frameWidth, int frameHeight, Vector2 defaultOrigin) {
         if (!AreEyesClosed) {
             if (--_blinkTimer <= 0) {
                 CloseEyes();
@@ -267,25 +240,25 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             _mouthOpenTimer = 0;
         }
 
-        if (IsGiving) {
-            int nonAttackFrameCount = Main.npcFrameCount[NPC.type] - NPCID.Sets.AttackFrameCount[NPC.type];
-            const int animationHalf = GivingAnimationDuration / 2;
-            RequestFrameOverride(
-                (uint)((_givingTimer <= animationHalf ? _givingTimer : animationHalf - _givingTimer % (animationHalf + 1)) switch {
-                    >= 10 and < 16 => nonAttackFrameCount - 5,
-                    >= 16 => nonAttackFrameCount - 4,
-                    _ => 0
-                })
-            );
+        // if (IsGiving) {
+        //     int nonAttackFrameCount = Main.npcFrameCount[NPC.type] - NPCID.Sets.AttackFrameCount[NPC.type];
+        //     const int animationHalf = GivingAnimationDuration / 2;
+        //     RequestFrameOverride(
+        //         (uint)((_givingTimer <= animationHalf ? _givingTimer : animationHalf - _givingTimer % (animationHalf + 1)) switch {
+        //             >= 10 and < 16 => nonAttackFrameCount - 5,
+        //             >= 16 => nonAttackFrameCount - 4,
+        //             _ => 0
+        //         })
+        //     );
+        //
+        //     if (--_givingTimer <= 0) {
+        //         IsGiving = false;
+        //         _givingTimer = 0;
+        //         _givingItemType = -1;
+        //     }
+        // }
 
-            if (--_givingTimer <= 0) {
-                IsGiving = false;
-                _givingTimer = 0;
-                _givingItemType = -1;
-            }
-        }
-
-        int currentYFrame = _frameYOverride == NoFrameYOverride ? NPC.frame.Y / frameHeight : _frameYOverride;
+        int currentYFrame = NPC.frame.Y / frameHeight;
         (bool, int)[] overlayPairs = [(AreEyesClosed, EyelidOverlayIndex), (IsTalking, TalkOverlayIndex)];
         foreach ((bool isOverlayActive, int overlayIndex) in overlayPairs) {
             if (!isOverlayActive) {

@@ -1,15 +1,15 @@
 using System;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 
-namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs.Animations;
+namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records.Animations;
 
 /// <summary>
 ///     Represents the "walk" animation of
 /// </summary>
-/// <param name="startFrame"></param>
-/// <param name="endFrame"></param>
-/// <param name="frameDuration"></param>
-public struct WalkAnimation(int startFrame, int endFrame, int frameDuration, int priority = 0) : IAnimation {
+/// <param name="StartFrame"></param>
+/// <param name="EndFrame"></param>
+/// <param name="FrameDuration"></param>
+public readonly record struct WalkAnimation(int StartFrame, int EndFrame, int FrameDuration, int Priority = 0) : IAnimation {
     public const int TownDogStartFrame = 9;
     public const int TownBunnyStartFrame = 1;
     public const int DefaultStartFrame = 2;
@@ -17,14 +17,9 @@ public struct WalkAnimation(int startFrame, int endFrame, int frameDuration, int
     public const int TownDogAndBunnyFrameDuration = 12;
     public const int DefaultFrameDuration = 6;
 
-    public bool IsFinished {
-        get;
-        private set;
-    }
-
     public int Priority {
         get;
-    } = priority;
+    } = Priority;
 
     public WalkAnimation(NPC npc) : this(
         npc.type switch {
@@ -39,27 +34,27 @@ public struct WalkAnimation(int startFrame, int endFrame, int frameDuration, int
         }
     ) { }
 
-    public void Update(NPC npc, int frameHeight) {
+    public bool Update(NPC npc, int frameHeight) {
         if (npc.velocity.X == 0f) {
-            IsFinished = true;
-
-            return;
+            return true;
         }
 
         npc.frameCounter += Math.Abs(npc.velocity.X) * 2f + 1f;
 
-        int startFrameY = startFrame * frameHeight;
+        int startFrameY = StartFrame * frameHeight;
         if (npc.frame.Y < startFrameY) {
             npc.frame.Y = startFrameY;
         }
 
-        if (npc.frameCounter > frameDuration) {
+        if (npc.frameCounter > FrameDuration) {
             npc.frame.Y += frameHeight;
             npc.frameCounter = 0.0;
         }
 
-        if (npc.frame.Y >= endFrame * frameHeight) {
+        if (npc.frame.Y >= EndFrame * frameHeight) {
             npc.frame.Y = startFrameY;
         }
+
+        return false;
     }
 }
