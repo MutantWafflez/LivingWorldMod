@@ -32,6 +32,11 @@ public readonly record struct WalkAnimation(int StartFrame, int EndFrame, int Fr
         }
     ) { }
 
+    public void Start(NPC npc, int frameHeight) {
+        npc.frame.Y = StartFrame * frameHeight;
+        npc.frameCounter = 0;
+    }
+
     public bool Update(NPC npc, int frameHeight) {
         if (npc.velocity.X == 0f) {
             return true;
@@ -39,18 +44,13 @@ public readonly record struct WalkAnimation(int StartFrame, int EndFrame, int Fr
 
         npc.frameCounter += Math.Abs(npc.velocity.X) * 2f + 1f;
 
-        int startFrameY = StartFrame * frameHeight;
-        if (npc.frame.Y < startFrameY) {
-            npc.frame.Y = startFrameY;
-        }
-
         if (npc.frameCounter > FrameDuration) {
             npc.frame.Y += frameHeight;
             npc.frameCounter = 0.0;
         }
 
         if (npc.frame.Y >= EndFrame * frameHeight) {
-            npc.frame.Y = startFrameY;
+            npc.frame.Y = StartFrame * frameHeight;
         }
 
         return false;

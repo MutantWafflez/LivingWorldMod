@@ -1,7 +1,7 @@
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 
 /// <summary>
-///     Describes an object which has a priority, and can be updated. Used for Town NPC animations.
+///     Describes an object which has a priority, a start method, and can be updated. Used for Town NPC animations.
 /// </summary>
 public interface IAnimation {
     /// <summary>
@@ -13,7 +13,12 @@ public interface IAnimation {
     }
 
     /// <summary>
-    ///     Called every tick that this animation object is considered to be running. Returns true when the animation is considered complete/finished.
+    ///     Called once when the animation is first requested. Typically used to set the current frame to the starting frame of the animation.
+    /// </summary>
+    public void Start(NPC npc, int frameHeight);
+
+    /// <summary>
+    ///     Called every tick that this animation object is considered to be running after <see cref="Start" /> is called. Returns true when the animation is considered complete/finished.
     /// </summary>
     public bool Update(NPC npc, int frameHeight);
 }

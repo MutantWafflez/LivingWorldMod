@@ -9,6 +9,8 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 /// </summary>
 public class TownNPCAnimationModule : TownNPCModule {
     private IAnimation _currentAnimation;
+    private bool _animationStarted;
+
     public override int UpdatePriority => -2;
 
     public override void UpdateModule() {
@@ -22,17 +24,31 @@ public class TownNPCAnimationModule : TownNPCModule {
     public override void FindFrame(NPC npc, int frameHeight) {
         NPC.spriteDirection = npc.direction;
 
-        if (!(_currentAnimation?.Update(npc, frameHeight) ?? false)) {
+        if (_currentAnimation is null) {
+            return;
+        }
+
+        if (!_animationStarted) {
+            _currentAnimation.Start(npc, frameHeight);
+
+            _animationStarted = true;
+        }
+
+        if (!_currentAnimation.Update(npc, frameHeight)) {
             return;
         }
 
         _currentAnimation = null;
+        _animationStarted = false;
         npc.frame.Y = (int)(npc.frameCounter = 0);
     }
 
     public void RequestAnimation(IAnimation newAnimation) {
-        if (_currentAnimation is null || _currentAnimation.Priority >= newAnimation.Priority) {
-            _currentAnimation = newAnimation;
+        if (_currentAnimation is not null && _currentAnimation.Priority <= newAnimation.Priority) {
+            return;
         }
+
+        _animationStarted = false;
+        _currentAnimation = newAnimation;
     }
 }
