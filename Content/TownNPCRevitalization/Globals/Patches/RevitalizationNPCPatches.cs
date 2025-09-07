@@ -33,7 +33,10 @@ public class RevitalizationNPCPatches : LoadablePatch {
 
     private static readonly MethodInfo AddExtrasToNPCDrawingInfo = typeof(RevitalizationNPCPatches).GetMethod(nameof(AddExtrasToNPCDrawing), BindingFlags.Public | BindingFlags.Static)!;
     private static MethodBody? _drawNPCExtrasBody;
-    private ILHook? _addExtrasToNPCDrawingHook;
+    private static ILHook? _addExtrasToNPCDrawingHook;
+
+    private static readonly MethodInfo NPCLoaderFindFrameInfo = typeof(NPCLoader).GetMethod(nameof(NPCLoader.FindFrame), BindingFlags.Public | BindingFlags.Static)!;
+    private static ILHook? _npcLoaderFindFrameHook;
 
     public static void ProcessMoodOverride(ShopHelper shopHelper, Player player, NPC npc) {
         if (NPCID.Sets.NoTownNPCHappiness[npc.type] || !npc.TryGetGlobalNPC(out TownNPCMoodModule moodModule)) {
@@ -207,13 +210,24 @@ public class RevitalizationNPCPatches : LoadablePatch {
         branchInstr.Operand = c.MarkLabel();
     }
 
-    private static void SkipVanillaFindFrame(On_NPC.orig_VanillaFindFrame orig, NPC self, int num, bool isLikeATownNPC, int type) {
-        // Skips VanillaFindFrame for any NPCs that have the Revitalization enabled, since we handle it ourselves in TownNPCAnimationModule.cs
-        if (TownGlobalNPC.IsAnyValidTownNPC(self, true)) {
-            return;
-        }
+    private static void SkipVanillaFindFrame(ILContext il) {
+        // Unfortunately, the NPC.VanillaFindFrame method is too large to detour directly. As such, we are going to go around it in the only place it's called: NPCLoader.FindFrame
+        currentContext = il;
 
-        orig(self, num, isLikeATownNPC, type);
+        // If the given NPC is a valid Town NPC for the revitalization, skip VanillaFindFrame
+        ILCursor c = new(il);
+        c.Emit(OpCodes.Ldarg_0);
+        c.EmitDelegate<Func<NPC, bool>>(npc => TownGlobalNPC.IsAnyValidTownNPC(npc, true));
+
+        ILCursor branchCursor = new(c);
+        branchCursor.ErrorOnFailedGotoNext(
+            MoveType.After,
+            i => i.MatchCallvirt<NPC>("get_ModNPC"),
+            i => i.MatchCallvirt<ModNPC>("get_AnimationType"),
+            i => i.MatchCallvirt<NPC>(nameof(NPC.VanillaFindFrame))
+        );
+
+        c.EmitBrtrue(branchCursor.Next!);
     }
 
     public override void LoadPatches() {
@@ -225,11 +239,14 @@ public class RevitalizationNPCPatches : LoadablePatch {
         IL_NPC.UpdateCollision += NPCCollisionUpdatePatch;
         IL_NPC.UsesPartyHat += DrawsPartyHatPatch;
 
-        On_NPC.VanillaFindFrame += SkipVanillaFindFrame;
+        _npcLoaderFindFrameHook = new ILHook(NPCLoaderFindFrameInfo, SkipVanillaFindFrame);
     }
 
     public override void Unload() {
         _addExtrasToNPCDrawingHook?.Dispose();
         _addExtrasToNPCDrawingHook = null;
+
+        _npcLoaderFindFrameHook?.Dispose();
+        _npcLoaderFindFrameHook = null;
     }
 }
