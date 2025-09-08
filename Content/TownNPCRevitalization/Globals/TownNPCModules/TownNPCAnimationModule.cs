@@ -1,6 +1,5 @@
 using System;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records.Animations;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs.Animations;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 
