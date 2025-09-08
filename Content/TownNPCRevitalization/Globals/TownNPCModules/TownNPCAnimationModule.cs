@@ -8,12 +8,23 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 ///     Town NPC Module that deals specifically with animations/framing for Town NPCs. This module handles no additional drawing; that is for <see cref="TownNPCSpriteModule" /> to handle.
 /// </summary>
 public class TownNPCAnimationModule : TownNPCModule {
+    private const int TownDogVerticalMovementFrame = 8;
+    private const int DefaultVerticalMovementFrame = 1;
+
     private IAnimation _currentAnimation;
     private bool _animationStarted;
 
     public override int UpdatePriority => -2;
 
+    private static bool IsVerticalMovementAnimationFinished(in NPC npc) => npc.velocity.Y == 0f;
+
     public override void UpdateModule() {
+        if (NPC.velocity.Y != 0f) {
+            RequestVerticalMovementAnimation();
+
+            return;
+        }
+
         if (NPC.velocity.X == 0f) {
             return;
         }
@@ -50,5 +61,14 @@ public class TownNPCAnimationModule : TownNPCModule {
 
         _animationStarted = false;
         _currentAnimation = newAnimation;
+    }
+
+    private void RequestVerticalMovementAnimation() {
+        int fallingFrame = NPC.type switch {
+            NPCID.TownDog => TownDogVerticalMovementFrame,
+            _ => DefaultVerticalMovementFrame
+        };
+
+        RequestAnimation(new SingleFrameAnimation(fallingFrame, IsVerticalMovementAnimationFinished, -1));
     }
 }
