@@ -1,5 +1,7 @@
+using System;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records.Animations;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs.Animations;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
@@ -8,6 +10,15 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 ///     Town NPC Module that deals specifically with animations/framing for Town NPCs. This module handles no additional drawing; that is for <see cref="TownNPCSpriteModule" /> to handle.
 /// </summary>
 public class TownNPCAnimationModule : TownNPCModule {
+    // Walk frame info
+    private const int TownDogWalkStartFrame = 9;
+    private const int TownBunnyWalkStartFrame = 1;
+    private const int DefaultWalkStartFrame = 2;
+
+    private const int TownDogAndBunnyWalkFrameDuration = 12;
+    private const int DefaultWalkFrameDuration = 6;
+
+    // Vertical frame info
     private const int TownDogVerticalMovementFrame = 8;
     private const int DefaultVerticalMovementFrame = 1;
 
@@ -17,6 +28,10 @@ public class TownNPCAnimationModule : TownNPCModule {
     public override int UpdatePriority => -2;
 
     private static bool IsVerticalMovementAnimationFinished(in NPC npc) => npc.velocity.Y == 0f;
+
+    private static float WalkingAnimationTickRate(in NPC npc) => Math.Abs(npc.velocity.X) * 2f + 1f;
+
+    private static bool IsWalkingAnimationFinished(in NPC npc) => npc.velocity.X == 0f;
 
     public override void UpdateModule() {
         if (NPC.velocity.Y != 0f) {
@@ -29,7 +44,23 @@ public class TownNPCAnimationModule : TownNPCModule {
             return;
         }
 
-        RequestAnimation(new WalkAnimation(NPC));
+        // Walk animation
+        RequestAnimation(
+            new LoopingAnimation(
+                NPC.type switch {
+                    NPCID.TownDog => TownDogWalkStartFrame,
+                    NPCID.TownBunny => TownBunnyWalkStartFrame,
+                    _ => DefaultWalkStartFrame
+                },
+                Main.npcFrameCount[NPC.type] - NPCID.Sets.ExtraFramesCount[NPC.type],
+                NPC.type switch {
+                    NPCID.TownDog or NPCID.TownBunny => TownDogAndBunnyWalkFrameDuration,
+                    _ => DefaultWalkFrameDuration
+                },
+                IsWalkingAnimationFinished,
+                WalkingAnimationTickRate
+            )
+        );
     }
 
     public override void FindFrame(NPC npc, int frameHeight) {
