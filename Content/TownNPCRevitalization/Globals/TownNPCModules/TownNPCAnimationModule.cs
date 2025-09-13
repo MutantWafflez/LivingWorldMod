@@ -38,6 +38,15 @@ public class TownNPCAnimationModule : TownNPCModule {
 
     public override int UpdatePriority => -2;
 
+    public static SingleFrameAnimation GetVerticalMovementAnimation(in NPC npc, SingleFrameAnimation.AnimationFinishedPredicate animationFinished = null) {
+        int fallingFrame = npc.type switch {
+            NPCID.TownDog => TownDogVerticalMovementFrame,
+            _ => DefaultVerticalMovementFrame
+        };
+
+        return new SingleFrameAnimation(fallingFrame, animationFinished ?? IsVerticalMovementAnimationFinished, -1);
+    }
+
     private static bool IsVerticalMovementAnimationFinished(in NPC npc) => npc.velocity.Y == 0f;
 
     private static float WalkingAnimationTickRate(in NPC npc) => Math.Abs(npc.velocity.X) * 2f + 1f;
@@ -48,7 +57,7 @@ public class TownNPCAnimationModule : TownNPCModule {
 
     public override void UpdateModule() {
         if (NPC.velocity.Y != 0f) {
-            RequestVerticalMovementAnimation();
+            RequestAnimation(GetVerticalMovementAnimation(NPC));
 
             return;
         }
@@ -115,14 +124,5 @@ public class TownNPCAnimationModule : TownNPCModule {
         }
 
         RequestAnimation(DogIdleTailWagAnimation);
-    }
-
-    private void RequestVerticalMovementAnimation() {
-        int fallingFrame = NPC.type switch {
-            NPCID.TownDog => TownDogVerticalMovementFrame,
-            _ => DefaultVerticalMovementFrame
-        };
-
-        RequestAnimation(new SingleFrameAnimation(fallingFrame, IsVerticalMovementAnimationFinished, -1));
     }
 }

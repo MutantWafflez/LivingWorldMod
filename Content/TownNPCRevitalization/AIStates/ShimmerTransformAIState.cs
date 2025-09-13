@@ -1,14 +1,21 @@
 using System;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent.Drawing;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 
 public class ShimmerTransformAIState : TownNPCAIState {
-    public override int ReservedStateInteger => 25;
+    private const int StateInteger = 25;
 
-    public override void DoState( NPC npc) {
+    public override int ReservedStateInteger => StateInteger;
+
+    private static bool IsVerticalMovementAnimationFinished(in NPC npc) => (int)npc.ai[0] != StateInteger;
+
+    public override void DoState(NPC npc) {
+        npc.GetGlobalNPC<TownNPCAnimationModule>().RequestAnimation(TownNPCAnimationModule.GetVerticalMovementAnimation(npc, IsVerticalMovementAnimationFinished));
+
         // Adapted vanilla code
         npc.dontTakeDamage = true;
         if (npc.ai[1] == 0f) {
