@@ -21,6 +21,18 @@ public class TownNPCAnimationModule : TownNPCModule {
     private const int TownDogVerticalMovementFrame = 8;
     private const int DefaultVerticalMovementFrame = 1;
 
+    // Idle animation info
+    private const int DogIdleTailWagAnimationFrameDuration = 4;
+    private const int DogIdleTailWagAnimationEndFrame = 7;
+
+    private static readonly LoopingAnimation DogIdleTailWagAnimation = new(
+        0,
+        DogIdleTailWagAnimationEndFrame,
+        DogIdleTailWagAnimationFrameDuration,
+        IsDogIdleTailWagAnimationFinished,
+        priority: 1
+    );
+
     private IAnimation _currentAnimation;
     private bool _animationStarted;
 
@@ -32,6 +44,8 @@ public class TownNPCAnimationModule : TownNPCModule {
 
     private static bool IsWalkingAnimationFinished(in NPC npc) => npc.velocity.X == 0f;
 
+    private static bool IsDogIdleTailWagAnimationFinished(in NPC npc) => npc.velocity.LengthSquared() != 0f;
+
     public override void UpdateModule() {
         if (NPC.velocity.Y != 0f) {
             RequestVerticalMovementAnimation();
@@ -40,6 +54,8 @@ public class TownNPCAnimationModule : TownNPCModule {
         }
 
         if (NPC.velocity.X == 0f) {
+            HandleDogIdleAnimation();
+
             return;
         }
 
@@ -51,7 +67,7 @@ public class TownNPCAnimationModule : TownNPCModule {
                     NPCID.TownBunny => TownBunnyWalkStartFrame,
                     _ => DefaultWalkStartFrame
                 },
-                Main.npcFrameCount[NPC.type] - NPCID.Sets.ExtraFramesCount[NPC.type],
+                Main.npcFrameCount[NPC.type] - NPCID.Sets.ExtraFramesCount[NPC.type] - 1,
                 NPC.type switch {
                     NPCID.TownDog or NPCID.TownBunny => TownDogAndBunnyWalkFrameDuration,
                     _ => DefaultWalkFrameDuration
@@ -91,6 +107,14 @@ public class TownNPCAnimationModule : TownNPCModule {
 
         _animationStarted = false;
         _currentAnimation = newAnimation;
+    }
+
+    private void HandleDogIdleAnimation() {
+        if (NPC.type is not NPCID.TownDog) {
+            return;
+        }
+
+        RequestAnimation(DogIdleTailWagAnimation);
     }
 
     private void RequestVerticalMovementAnimation() {
