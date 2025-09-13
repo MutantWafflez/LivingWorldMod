@@ -13,6 +13,17 @@ public interface IAnimation {
     }
 
     /// <summary>
+    ///     Default boilerplate of <see cref="Start" /> that sets the NPC's frame to some abitrary start frame value.
+    /// </summary>
+    /// <param name="npc"></param>
+    /// <param name="frameHeight"></param>
+    /// <param name="startFrame"></param>
+    public static void StartAnimationWithFrame(NPC npc, int frameHeight, int startFrame) {
+        npc.frame.Y = startFrame * frameHeight;
+        npc.frameCounter = 0;
+    }
+
+    /// <summary>
     ///     Called once when the animation is first requested. Typically used to set the current frame to the starting frame of the animation.
     /// </summary>
     public void Start(NPC npc, int frameHeight);
