@@ -1,13 +1,17 @@
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs.Animations;
 
 /// <summary>
-///     Simple animation object type that represents an equally-spaced, conditionally looping animation. To be more specific, the animation will start at <see cref="startFrame" />, incrementing
-///     linearly through each frame after <see cref="frameDuration" /> ticks have passed, up to <see cref="endFrame" />, where the animation then loops from <see cref="startFrame" />.
-///     This animation will keep looping until <see cref="animationFinished" /> returns true. Also supports a variable tick rate, via a delegate <see cref="GetVariableTickRateDelegate" /> or flat
-///     tick rate via <see cref="tickRate" />.
+///     Simple animation object type that represents an equally-spaced, linear, and conditionally looping animation.
 /// </summary>
+/// <param name="startFrame"> The frame the animation will start on. </param>
+/// <param name="endFrame"> The last frame the animation will be on BEFORE it loops.</param>
+/// <param name="frameDuration"> How long, in ticks, each frame will last before moving to the next frame. </param>
+/// <param name="animationFinished"> The predicate that determines whether this animation is considered finished. </param>
+/// <param name="tickRate"> The flat rate at which this animation "ticks". By default, 1 animation for each in-game tick.</param>
+/// <param name="priority"> The priority of this animation when requested in <see cref="TownNPCAnimationModule" />. </param>
 public readonly struct LoopingAnimation(
     int startFrame,
     int endFrame,
@@ -54,7 +58,7 @@ public readonly struct LoopingAnimation(
             npc.frameCounter = 0;
         }
 
-        if (npc.frame.Y >= endFrame * frameHeight) {
+        if (npc.frame.Y > endFrame * frameHeight) {
             npc.frame.Y = startFrame * frameHeight;
         }
 
