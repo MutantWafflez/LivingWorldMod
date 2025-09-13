@@ -8,7 +8,9 @@ using Microsoft.Xna.Framework;
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 
 public class MeleeAttackAIState : TownNPCAIState {
-    public override int ReservedStateInteger => 15;
+    public const int StateInteger = 15;
+
+    public override int ReservedStateInteger => StateInteger;
 
     public override void DoState( NPC npc) {
         TownNPCCombatModule combatModule = npc.GetGlobalNPC<TownNPCCombatModule>();

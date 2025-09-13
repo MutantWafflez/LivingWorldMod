@@ -110,7 +110,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
             if (otherTownNPCIndex != -1) {
                 NPC.localAI[2] = NPC.localAI[3] = 0f;
 
-                NPC.ai[0] = TownNPCAIState.GetStateInteger<NurseHealAIState>();
+                NPC.ai[0] = NurseHealAIState.StateInteger;
                 NPC.ai[1] = 34f;
                 NPC.ai[2] = otherTownNPCIndex;
 
@@ -155,10 +155,10 @@ public sealed class TownNPCCombatModule : TownNPCModule {
         }
 
         NPC.ai[0] = NPCID.Sets.AttackType[NPC.type] switch {
-            0 => TownNPCAIState.GetStateInteger<ThrowAttackAIState>(),
-            1 => TownNPCAIState.GetStateInteger<FirearmAttackAIState>(),
-            2 => TownNPCAIState.GetStateInteger<MagicAttackAIState>(),
-            _ => TownNPCAIState.GetStateInteger<MeleeAttackAIState>()
+            0 => ThrowAttackAIState.StateInteger,
+            1 => FirearmAttackAIState.StateInteger,
+            2 => MagicAttackAIState.StateInteger,
+            _ => MeleeAttackAIState.StateInteger
         };
         NPC.ai[1] = NPCID.Sets.AttackTime[NPC.type];
         NPC.ai[2] = NPCID.Sets.AttackType[NPC.type] switch {

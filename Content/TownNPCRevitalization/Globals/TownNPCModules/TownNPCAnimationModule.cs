@@ -1,14 +1,16 @@
 using System;
+using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs.Animations;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 
 /// <summary>
 ///     Town NPC Module that deals specifically with animations/framing for Town NPCs. This module handles no additional drawing; that is for <see cref="TownNPCSpriteModule" /> to handle.
 /// </summary>
-public class TownNPCAnimationModule : TownNPCModule {
+public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
     // Walk frame info
     private const int TownDogWalkStartFrame = 9;
     private const int TownBunnyWalkStartFrame = 1;
@@ -63,7 +65,7 @@ public class TownNPCAnimationModule : TownNPCModule {
         }
 
         if (NPC.velocity.X == 0f) {
-            HandleDogIdleAnimation();
+            RequestDogIdleAnimation();
 
             return;
         }
@@ -118,7 +120,25 @@ public class TownNPCAnimationModule : TownNPCModule {
         _currentAnimation = newAnimation;
     }
 
-    private void HandleDogIdleAnimation() {
+    public void OnTownNPCAttack(NPC npc) {
+        switch (npc.ai[0]) {
+            case NurseHealAIState.StateInteger:
+            case ThrowAttackAIState.StateInteger: {
+                break;
+            }
+            case FirearmAttackAIState.StateInteger: {
+                break;
+            }
+            case MagicAttackAIState.StateInteger: {
+                break;
+            }
+            case MeleeAttackAIState.StateInteger: {
+                break;
+            }
+        }
+    }
+
+    private void RequestDogIdleAnimation() {
         if (NPC.type is not NPCID.TownDog) {
             return;
         }

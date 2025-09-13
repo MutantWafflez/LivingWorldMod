@@ -5,7 +5,9 @@ using Microsoft.Xna.Framework;
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 
 public class NurseHealAIState : TownNPCAIState {
-    public override int ReservedStateInteger => 13;
+    public const int StateInteger = 13;
+
+    public override int ReservedStateInteger => StateInteger;
 
     public override void DoState( NPC npc) {
         npc.ai[1] -= 1f;
