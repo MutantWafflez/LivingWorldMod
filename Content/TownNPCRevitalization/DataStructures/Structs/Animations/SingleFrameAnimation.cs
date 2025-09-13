@@ -14,8 +14,7 @@ public readonly struct SingleFrameAnimation(int frame, SingleFrameAnimation.Anim
     } = priority;
 
     public void Start(NPC npc, int frameHeight) {
-        npc.frame.Y = frame * frameHeight;
-        npc.frameCounter = 0;
+        IAnimation.StartAnimationWithFrame(npc, frameHeight, frame);
     }
 
     public bool Update(NPC npc, int frameHeight) => animationFinished(in npc);

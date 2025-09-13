@@ -42,8 +42,7 @@ public readonly struct LoopingAnimation(
     }
 
     public void Start(NPC npc, int frameHeight) {
-        npc.frame.Y = startFrame * frameHeight;
-        npc.frameCounter = 0;
+        IAnimation.StartAnimationWithFrame(npc, frameHeight, startFrame);
     }
 
     public bool Update(NPC npc, int frameHeight) {
