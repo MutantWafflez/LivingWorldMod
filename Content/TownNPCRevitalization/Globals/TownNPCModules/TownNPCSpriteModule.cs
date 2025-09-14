@@ -49,7 +49,6 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
     /// </summary>
     private record TownNPCDrawParameters(Asset<Texture2D> NPCAsset, int FrameWidth, int FrameHeight, Vector2 HalfSize, float NPCAddHeight, SpriteEffects SpriteEffects);
 
-    public const int GivingAnimationDuration = (int)(LWMUtils.RealLifeSecond * 1.5f);
     private const int EyelidClosedDuration = 15;
     private const int TalkDuration = 8;
 
@@ -61,20 +60,12 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
     private int _blinkTimer;
     private int _mouthOpenTimer;
 
-    // private int _givingTimer;
-    // private int _givingItemType;
-
     private Vector2 _drawOffset;
 
     public bool AreEyesClosed {
         get;
         private set;
     }
-
-    // public bool IsGiving {
-    //     get;
-    //     private set;
-    // }
 
     public bool IsTalking {
         get;
@@ -165,12 +156,6 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         return false;
     }
 
-    // public void GiveItem(int givingItemType = -1) {
-    //     IsGiving = true;
-    //     _givingTimer = GivingAnimationDuration;
-    //     _givingItemType = givingItemType;
-    // }
-
     public void CloseEyes(int duration = EyelidClosedDuration) {
         AreEyesClosed = true;
         _blinkTimer = duration;
@@ -239,24 +224,6 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             IsTalking = false;
             _mouthOpenTimer = 0;
         }
-
-        // if (IsGiving) {
-        //     int nonAttackFrameCount = Main.npcFrameCount[NPC.type] - NPCID.Sets.AttackFrameCount[NPC.type];
-        //     const int animationHalf = GivingAnimationDuration / 2;
-        //     RequestFrameOverride(
-        //         (uint)((_givingTimer <= animationHalf ? _givingTimer : animationHalf - _givingTimer % (animationHalf + 1)) switch {
-        //             >= 10 and < 16 => nonAttackFrameCount - 5,
-        //             >= 16 => nonAttackFrameCount - 4,
-        //             _ => 0
-        //         })
-        //     );
-        //
-        //     if (--_givingTimer <= 0) {
-        //         IsGiving = false;
-        //         _givingTimer = 0;
-        //         _givingItemType = -1;
-        //     }
-        // }
 
         int currentYFrame = NPC.frame.Y / frameHeight;
         (bool, int)[] overlayPairs = [(AreEyesClosed, EyelidOverlayIndex), (IsTalking, TalkOverlayIndex)];

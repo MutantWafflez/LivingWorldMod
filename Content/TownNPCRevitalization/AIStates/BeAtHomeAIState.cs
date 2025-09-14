@@ -52,16 +52,13 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
         npc.ai[2] = 0f;
         switch (npc.ai[1]) {
             case StartSleepAnimationState:
-                // TODO: Fix animation on MP clients
-                if (npc.TryGetGlobalNPC(out TownNPCSpriteModule spriteModule)) {
-                    // spriteModule.GiveItem();
-                }
+                npc.GetGlobalNPC<TownNPCAnimationModule>().RequestAnimation(TownNPCAnimationModule.GetGiveItemAnimation(in npc));
 
                 npc.ai[3] = 0f;
                 npc.ai[1] = EndSleepAnimationState;
                 return;
             case EndSleepAnimationState:
-                if (++npc.ai[3] <= TownNPCSpriteModule.GivingAnimationDuration) {
+                if (++npc.ai[3] <= 90) {
                     return;
                 }
 

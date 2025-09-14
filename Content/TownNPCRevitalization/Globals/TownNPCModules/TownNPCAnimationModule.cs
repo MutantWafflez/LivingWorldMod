@@ -5,6 +5,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs.Animations;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
+using LivingWorldMod.Utilities;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 
@@ -35,6 +36,10 @@ public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
 
     private const int MagicAttackFrameDuration = 12;
 
+    // Give animation info
+    private const int ArmHalfwayUpFrameDuration = 15;
+    private const int ArmFullUpFrameDuration = LWMUtils.RealLifeSecond;
+
     private static readonly LoopingAnimation DogIdleTailWagAnimation = new(
         0,
         DogIdleTailWagAnimationEndFrame,
@@ -55,6 +60,17 @@ public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
         };
 
         return new SingleFrameAnimation(fallingFrame, animationFinished ?? IsVerticalMovementAnimationFinished, -1);
+    }
+
+    public static LinearAnimation GetGiveItemAnimation(in NPC npc) {
+        int nonAttackFrameCount = Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type];
+
+        int armHalfwayUpFrame = nonAttackFrameCount - 5;
+        int armFullUpFrame = nonAttackFrameCount - 4;
+        return new LinearAnimation(
+            [armHalfwayUpFrame, armFullUpFrame, armHalfwayUpFrame],
+            [ArmHalfwayUpFrameDuration, ArmFullUpFrameDuration, ArmHalfwayUpFrameDuration]
+        );
     }
 
     private static bool IsVerticalMovementAnimationFinished(in NPC npc) => npc.velocity.Y == 0f;
