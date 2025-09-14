@@ -75,6 +75,36 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
 
     public override int UpdatePriority => -2;
 
+    private Color BlanketColor {
+        get {
+            // Adapted vanilla code
+            int partyHatEnumValue = NPC.GivenOrTypeName.Length + NPC.GivenOrTypeName[0];
+            int secondaryPartyHatInfluence = Main.moonPhase;
+            if (Main.dayTime) {
+                secondaryPartyHatInfluence--;
+            }
+
+            partyHatEnumValue += secondaryPartyHatInfluence * (NPC.whoAmI % 2 == 0).ToDirectionInt() + NPC.whoAmI;
+            if (partyHatEnumValue < 0) {
+                partyHatEnumValue += (int)PartyHatColor.Count;
+            }
+
+            partyHatEnumValue %= (int)PartyHatColor.Count;
+            if (partyHatEnumValue == 0) {
+                partyHatEnumValue++;
+            }
+            // End of adapted vanilla code
+
+            return (PartyHatColor)partyHatEnumValue switch {
+                PartyHatColor.Blue => Color.PaleVioletRed,
+                PartyHatColor.Pink => Color.LightPink,
+                PartyHatColor.Cyan => Color.LightCyan,
+                PartyHatColor.Purple => Color.MediumPurple,
+                _ => Color.LightBlue
+            };
+        }
+    }
+
     private bool IsDrawOverhaulDisabled => ModContent.GetInstance<RevitalizationConfigClient>().disabledDrawOverhauls.Contains(new NPCDefinition(NPC.type));
 
     private TownNPCDrawParameters DrawParameters {
@@ -210,6 +240,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
                 ModContent.Request<Texture2D>($"{LWM.SpritePath}TownNPCRevitalization/Overlays/SleepingBlanket", AssetRequestMode.ImmediateLoad).Value,
                 new Vector2(24f, 10f),
                 Vector2.Zero,
+                Color: BlanketColor,
                 DrawLayer: 1
             )
         );
