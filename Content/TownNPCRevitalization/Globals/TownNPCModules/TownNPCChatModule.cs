@@ -256,7 +256,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
         _chatReceptionCooldown = duration;
     }
 
-    public void UpdateSleep(NPC npc, Vector2? drawOffset, uint? frameOverride) {
+    public void UpdateSleep(NPC npc, Vector2? drawOffset) {
         if (Main.netMode == NetmodeID.Server) {
             return;
         }

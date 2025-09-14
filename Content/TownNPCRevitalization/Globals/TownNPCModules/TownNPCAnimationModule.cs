@@ -79,6 +79,11 @@ public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
         );
     }
 
+    public static SingleFrameAnimation GetSittingAnimation(in NPC npc, SingleFrameAnimation.AnimationFinishedPredicate animationFinished) => new(
+        Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type] - 3,
+        animationFinished
+    );
+
     private static bool IsVerticalMovementAnimationFinished(in NPC npc) => npc.velocity.Y == 0f;
 
     private static float WalkingAnimationTickRate(in NPC npc) => Math.Abs(npc.velocity.X) * 2f + 1f;

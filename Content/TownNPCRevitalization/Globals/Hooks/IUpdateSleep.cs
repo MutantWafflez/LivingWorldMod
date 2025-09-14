@@ -13,12 +13,12 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 public interface IUpdateSleep {
     public static readonly GlobalHookList<GlobalNPC> Hook = NPCLoader.AddModHook(GlobalHookList<GlobalNPC>.Create(i => ((Hook)i).UpdateSleep));
 
-    public static void Invoke(NPC npc, Vector2? drawOffset, uint? frameOverride) {
+    public static void Invoke(NPC npc, Vector2? drawOffset) {
         foreach (Hook g in Hook.Enumerate(npc)) {
-            g.UpdateSleep(npc, drawOffset, frameOverride);
+            g.UpdateSleep(npc, drawOffset);
         }
     }
 
     /// <inheritdoc cref="IUpdateSleep" />
-    void UpdateSleep(NPC npc, Vector2? drawOffset, uint? frameOverride);
+    void UpdateSleep(NPC npc, Vector2? drawOffset);
 }

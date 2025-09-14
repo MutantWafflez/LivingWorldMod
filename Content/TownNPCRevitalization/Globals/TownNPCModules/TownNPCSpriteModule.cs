@@ -186,7 +186,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         _drawOffset = drawOffset;
     }
 
-    public void UpdateSleep(NPC npc, Vector2? drawOffset, uint? frameOverride) {
+    public void UpdateSleep(NPC npc, Vector2? drawOffset) {
         if (Main.netMode == NetmodeID.Server) {
             return;
         }

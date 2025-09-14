@@ -20,6 +20,8 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
 
     private const float RetryPathfindToHomeCooldown = LWMUtils.RealLifeSecond * 5;
 
+    private static bool IsSittingAnimationFinished(in NPC npc) => (int)npc.ai[1] != IsSleepingStateFlag;
+
     public override void DoState(NPC npc) {
         if (!npc.GetGlobalNPC<TownNPCHousingModule>().ShouldGoHome) {
             TownNPCStateModule.RefreshToState<DefaultAIState>(npc);
@@ -95,7 +97,8 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                 sleepModule.awakeTicks -= 1.6f * currentSleepQualityModifier;
 
                 drawOffset = newBottom - npc.Bottom;
-                frameOverride = (uint)(Main.npcFrameCount[npc.type] - NPCID.Sets.AttackFrameCount[npc.type] - 3);
+
+                npc.GetGlobalNPC<TownNPCAnimationModule>().RequestAnimation(TownNPCAnimationModule.GetSittingAnimation(npc, IsSittingAnimationFinished));
                 break;
             default:
             case NPCRestType.Floor:
@@ -111,7 +114,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
         }
 
         npc.ai[1] = IsSleepingStateFlag;
-        IUpdateSleep.Invoke(npc, drawOffset, frameOverride);
+        IUpdateSleep.Invoke(npc, drawOffset);
 
         pathfinderModule.CancelPathfind();
     }
