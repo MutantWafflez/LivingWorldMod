@@ -274,6 +274,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         RequestDraw(new TownNPCDrawRequest(wrenchTexture, new Vector2(0, Main.OffsetsPlayerHeadgear[offsetIndex].Y + wrenchTexture.Height / 2), wrenchCenterOffset, DrawLayer: -1));
     }
 
+    // TODO: Get rid of this once pet animations are all fully implemented again
     private void TownNPCFindFrame(int frameHeight) {
         int extraFrameCount = NPCID.Sets.ExtraFramesCount[NPC.type];
 
