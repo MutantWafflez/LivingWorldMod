@@ -43,17 +43,17 @@ public struct LinearAnimation : IAnimation {
     }
 
     public bool Update(NPC npc, int frameHeight) {
-        if (_currentAnimationStage >= _frameCount) {
-            return true;
-        }
-
-        npc.frameCounter += 1f;
+        npc.frameCounter++;
 
         if (npc.frameCounter < _frameDurations[_currentAnimationStage]) {
             return false;
         }
 
-        npc.frame.Y = _frames[++_currentAnimationStage] * frameHeight;
+        if (++_currentAnimationStage >= _frameCount) {
+            return true;
+        }
+
+        npc.frame.Y = _frames[_currentAnimationStage] * frameHeight;
         npc.frameCounter = 0;
 
         return false;
