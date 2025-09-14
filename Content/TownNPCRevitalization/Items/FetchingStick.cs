@@ -23,6 +23,13 @@ public class FetchingStick : BaseItem {
         Item.width = StickWidth;
         Item.height = StickHeight;
     }
+
+    public override void AddRecipes() {
+        CreateRecipe()
+            .AddIngredient(ItemID.Wood, 2)
+            .AddTile(TileID.WorkBenches)
+            .Register();
+    }
 }
 
 /// <summary>
