@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs.Animations;
@@ -26,6 +27,7 @@ public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
     // Idle animation info
     private const int DogIdleTailWagAnimationFrameDuration = 4;
     private const int DogIdleTailWagAnimationEndFrame = 7;
+    private const int AttackAnimationPriority = -2;
 
     private static readonly LoopingAnimation DogIdleTailWagAnimation = new(
         0,
@@ -121,6 +123,9 @@ public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
     }
 
     public void OnTownNPCAttack(NPC npc) {
+        int nonAttackFrameCount = Main.npcFrameCount[NPC.type] - NPCID.Sets.AttackFrameCount[NPC.type];
+        int attackFrameCount = NPCID.Sets.AttackFrameCount[NPC.type];
+
         switch (npc.ai[0]) {
             case NurseHealAIState.StateInteger:
             case ThrowAttackAIState.StateInteger: {
@@ -133,10 +138,21 @@ public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
                 break;
             }
             case MeleeAttackAIState.StateInteger: {
+                RequestAnimation(
+                    new PercentageAnimation(
+                        Enumerable.Range(nonAttackFrameCount, attackFrameCount).ToArray(),
+                        [0f, 0.35f, 0.5f, 0.85f],
+                        MeleeAttackAnimationProgress,
+                        AttackAnimationPriority
+                    )
+                );
+
                 break;
             }
         }
     }
+
+    private float MeleeAttackAnimationProgress(in NPC npc) => 1f - npc.ai[1] / NPCID.Sets.AttackTime[NPC.type];
 
     private void RequestDogIdleAnimation() {
         if (NPC.type is not NPCID.TownDog) {
