@@ -20,6 +20,7 @@ Additions:
 + Added an new name for the Witch Doctor, and an easter egg surrounding said name
 + The Travelling Merchant, Old Man, and Town Pets now have several of the Revitalization features
 + Added "Fake Tree Branch" item and the ability to play Fetch with Town Dogs
++ Town NPCs will now sleep with a blanket when in a laying down position
 Changes:
 * Rewrote a lot of older UI code. This will have no technical gameplay change, but will (very minorly) increase loading times and performance for the mod.	
 * The Truffle now likes the Rain event (previously neutral)
