@@ -1,4 +1,5 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Configs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
@@ -256,7 +257,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
         _chatReceptionCooldown = duration;
     }
 
-    public void UpdateSleep(NPC npc, Vector2? drawOffset) {
+    public void UpdateSleep(NPC npc, Vector2? drawOffset, NPCRestType restType) {
         if (Main.netMode == NetmodeID.Server) {
             return;
         }

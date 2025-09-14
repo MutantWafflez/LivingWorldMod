@@ -1,4 +1,5 @@
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader.Core;
 using Hook = LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks.IUpdateSleep;
@@ -13,12 +14,12 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 public interface IUpdateSleep {
     public static readonly GlobalHookList<GlobalNPC> Hook = NPCLoader.AddModHook(GlobalHookList<GlobalNPC>.Create(i => ((Hook)i).UpdateSleep));
 
-    public static void Invoke(NPC npc, Vector2? drawOffset) {
+    public static void Invoke(NPC npc, Vector2? drawOffset, NPCRestType restType) {
         foreach (Hook g in Hook.Enumerate(npc)) {
-            g.UpdateSleep(npc, drawOffset);
+            g.UpdateSleep(npc, drawOffset, restType);
         }
     }
 
     /// <inheritdoc cref="IUpdateSleep" />
-    void UpdateSleep(NPC npc, Vector2? drawOffset);
+    void UpdateSleep(NPC npc, Vector2? drawOffset, NPCRestType restType);
 }

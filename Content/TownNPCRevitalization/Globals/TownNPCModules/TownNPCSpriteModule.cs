@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Configs;
@@ -186,7 +187,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         _drawOffset = drawOffset;
     }
 
-    public void UpdateSleep(NPC npc, Vector2? drawOffset) {
+    public void UpdateSleep(NPC npc, Vector2? drawOffset, NPCRestType restType) {
         if (Main.netMode == NetmodeID.Server) {
             return;
         }
@@ -199,6 +200,19 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
 
         TownNPCDrawRequest drawRequest = npc.GetGlobalNPC<TownNPCSleepModule>().SleepSpriteDrawData;
         RequestDraw(drawRequest);
+
+        if (restType is not (NPCRestType.Bed or NPCRestType.Floor)) {
+            return;
+        }
+
+        RequestDraw(
+            new TownNPCDrawRequest(
+                ModContent.Request<Texture2D>($"{LWM.SpritePath}TownNPCRevitalization/Overlays/SleepingBlanket", AssetRequestMode.ImmediateLoad).Value,
+                new Vector2(24f, 10f),
+                Vector2.Zero,
+                DrawLayer: 1
+            )
+        );
     }
 
     public void UpdateTownNPCSmallTalk(NPC npc, int remainingTicks) {
