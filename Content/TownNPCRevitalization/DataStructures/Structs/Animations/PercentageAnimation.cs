@@ -49,9 +49,9 @@ public readonly struct PercentageAnimation : IAnimation {
             return true;
         }
 
-        int currentFrameIndex = 0;
-        for (int i = 0; i < _frameCount; i++) {
-            if (currentProgress < _frameThresholds[i]) {
+        int currentFrameIndex = _frameCount - 1;
+        for (int i = 0; i < _frameCount - 1; i++) {
+            if (currentProgress >= _frameThresholds[i + 1]) {
                 continue;
             }
 

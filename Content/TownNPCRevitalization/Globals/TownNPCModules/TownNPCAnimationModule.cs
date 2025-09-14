@@ -152,7 +152,7 @@ public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
         }
     }
 
-    private float MeleeAttackAnimationProgress(in NPC npc) => 1f - npc.ai[1] / NPCID.Sets.AttackTime[NPC.type];
+    private float MeleeAttackAnimationProgress(in NPC npc) => (int)npc.ai[0] == MeleeAttackAIState.StateInteger ? 1f - npc.ai[1] / NPCID.Sets.AttackTime[npc.type] : 1f;
 
     private void RequestDogIdleAnimation() {
         if (NPC.type is not NPCID.TownDog) {
