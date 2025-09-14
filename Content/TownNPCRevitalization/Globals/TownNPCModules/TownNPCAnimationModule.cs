@@ -13,6 +13,9 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 ///     Town NPC Module that deals specifically with animations/framing for Town NPCs. This module handles no additional drawing; that is for <see cref="TownNPCSpriteModule" /> to handle.
 /// </summary>
 public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
+    // (public) Give animation info
+    public const int GiveItemAnimationDuration = ArmHalfwayUpFrameDuration * 2 + ArmFullUpFrameDuration;
+
     // Walk frame info
     private const int TownDogWalkStartFrame = 9;
     private const int TownBunnyWalkStartFrame = 1;
@@ -28,7 +31,6 @@ public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
     // Idle animation info
     private const int DogIdleTailWagAnimationFrameDuration = 4;
     private const int DogIdleTailWagAnimationEndFrame = 7;
-    private const int AttackAnimationPriority = -2;
 
     // Attack animation info
     private const int DefaultThrowAttackFrameDuration = 6;
@@ -36,9 +38,12 @@ public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
 
     private const int MagicAttackFrameDuration = 12;
 
-    // Give animation info
+    // (private) Give animation info
     private const int ArmHalfwayUpFrameDuration = 15;
     private const int ArmFullUpFrameDuration = LWMUtils.RealLifeSecond;
+
+    // Generic animation constants
+    private const int AttackAnimationPriority = -2;
 
     private static readonly LoopingAnimation DogIdleTailWagAnimation = new(
         0,
@@ -69,7 +74,8 @@ public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
         int armFullUpFrame = nonAttackFrameCount - 4;
         return new LinearAnimation(
             [armHalfwayUpFrame, armFullUpFrame, armHalfwayUpFrame],
-            [ArmHalfwayUpFrameDuration, ArmFullUpFrameDuration, ArmHalfwayUpFrameDuration]
+            [ArmHalfwayUpFrameDuration, ArmFullUpFrameDuration, ArmHalfwayUpFrameDuration],
+            AttackAnimationPriority
         );
     }
 

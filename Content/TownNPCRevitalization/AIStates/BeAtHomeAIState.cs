@@ -58,7 +58,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
                 npc.ai[1] = EndSleepAnimationState;
                 return;
             case EndSleepAnimationState:
-                if (++npc.ai[3] <= 90) {
+                if (++npc.ai[3] <= TownNPCAnimationModule.GiveItemAnimationDuration) {
                     return;
                 }
 
