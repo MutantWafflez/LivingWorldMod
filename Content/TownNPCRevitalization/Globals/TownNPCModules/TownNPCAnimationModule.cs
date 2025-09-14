@@ -29,6 +29,12 @@ public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
     private const int DogIdleTailWagAnimationEndFrame = 7;
     private const int AttackAnimationPriority = -2;
 
+    // Attack animation info
+    private const int DefaultThrowAttackFrameDuration = 6;
+    private const int BestiaryGirlThrowAttackFrameDuration = 2;
+
+    private const int MagicAttackFrameDuration = 12;
+
     private static readonly LoopingAnimation DogIdleTailWagAnimation = new(
         0,
         DogIdleTailWagAnimationEndFrame,
@@ -61,7 +67,9 @@ public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
 
     private static float MeleeAttackAnimationProgress(in NPC npc) => (int)npc.ai[0] == MeleeAttackAIState.StateInteger ? 1f - npc.ai[1] / NPCID.Sets.AttackTime[npc.type] : 1f;
 
-    private static bool FirearmAnimationFinished(in NPC npc) => (int)npc.ai[0] != FirearmAttackAIState.StateInteger;
+    private static bool FirearmAttackAnimationFinished(in NPC npc) => (int)npc.ai[0] != FirearmAttackAIState.StateInteger;
+
+    private static bool MagicAttackAnimationFinished(in NPC npc) => (int)npc.ai[0] != MagicAttackAIState.StateInteger;
 
     public override void UpdateModule() {
         if (NPC.velocity.Y != 0f) {
@@ -133,7 +141,7 @@ public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
         switch (npc.ai[0]) {
             case NurseHealAIState.StateInteger:
             case ThrowAttackAIState.StateInteger: {
-                int subsequentFrameDuration = npc.type is NPCID.BestiaryGirl ? 2 : 6;
+                int subsequentFrameDuration = npc.type is NPCID.BestiaryGirl ? BestiaryGirlThrowAttackFrameDuration : DefaultThrowAttackFrameDuration;
 
                 RequestAnimation(
                     new LinearAnimation(
@@ -146,11 +154,21 @@ public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
                 break;
             }
             case FirearmAttackAIState.StateInteger: {
-                RequestAnimation(new SingleFrameAnimation(nonAttackFrameCount + npc.GetShootingFrame(NPC.ai[2]), FirearmAnimationFinished, AttackAnimationPriority));
+                RequestAnimation(new SingleFrameAnimation(nonAttackFrameCount + npc.GetShootingFrame(NPC.ai[2]), FirearmAttackAnimationFinished, AttackAnimationPriority));
 
                 break;
             }
             case MagicAttackAIState.StateInteger: {
+                RequestAnimation(
+                    new LoopingAnimation(
+                        nonAttackFrameCount,
+                        nonAttackFrameCount + 1,
+                        MagicAttackFrameDuration,
+                        MagicAttackAnimationFinished,
+                        priority: AttackAnimationPriority
+                    )
+                );
+
                 break;
             }
             case MeleeAttackAIState.StateInteger: {
