@@ -4,7 +4,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs.Animations;
 
 /// <summary>
-///     Represents a meta-animation object that individually does not animation anything, but takes children animations that will play linear-ly until each one is considered finished.
+///     Represents a meta-animation object that individually does not animation anything, but takes children animations that will play linearly until each one is considered finished.
 /// </summary>
 public struct ChainedAnimation : IAnimation {
     private readonly IAnimation[] _animations;
@@ -31,15 +31,15 @@ public struct ChainedAnimation : IAnimation {
     }
 
     public bool Update(NPC npc, int frameHeight) {
-        if (_currentAnimationState >= _animations.Length) {
-            return true;
-        }
-
         if (!_animations[_currentAnimationState].Update(npc, frameHeight)) {
             return false;
         }
 
-        _currentAnimationState++;
+        if (++_currentAnimationState >= _animations.Length) {
+            return true;
+        }
+
+        _animations[_currentAnimationState].Start(npc, frameHeight);
         return false;
     }
 }

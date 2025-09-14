@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs.Animations;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Items;
@@ -28,9 +30,38 @@ public class DogFetchAIState : TownNPCAIState {
     private const int StateWalkingToPlayerPostFetch = 5;
     private const int StateWaitingForPlayerToThrowAgainBuffer = 6;
 
+    // Animation info
+    private const int GoingDownHalfKneeledFrame = 17;
+    private const int GoingUpHalfKneeledFrame = 22;
+    private const int HalfKneeledFrameDuration = 12;
+
+    private const int KneeledTailWagStartFrame = 18;
+    private const int KneeledTailWagEndFrame = 21;
+    private const int KneeledTailWagFrameDuration = 4;
+
+    private const int PickUpStickFromGroundAnimationFrameCount = 3;
+
+    private static readonly LinearAnimation KneelingDownAnimation = new([GoingDownHalfKneeledFrame], [HalfKneeledFrameDuration]);
+    private static readonly LinearAnimation StandingUpFromKneelAnimation = new([GoingUpHalfKneeledFrame], [HalfKneeledFrameDuration]);
+
+    private static readonly LinearAnimation PickUpStickFromGroundAnimation = new(
+        [GoingDownHalfKneeledFrame, KneeledTailWagStartFrame, GoingUpHalfKneeledFrame],
+        Enumerable.Repeat(HalfKneeledFrameDuration, PickUpStickFromGroundAnimationFrameCount).ToArray(),
+        -2
+    );
+
+    private static readonly ChainedAnimation EasedKneeledTailWaggingAnimation = new (
+        0,
+        KneelingDownAnimation,
+        new LoopingAnimation(KneeledTailWagStartFrame, KneeledTailWagEndFrame, KneeledTailWagFrameDuration, LoopingKneeledTailWagAnimationFinished),
+        StandingUpFromKneelAnimation
+    );
+
     public static bool PlayerIsValidToPlayFetchWith(Player player, NPC npc) => player.HeldItem.type == ModContent.ItemType<FetchingStick>()
         && PlayerWithinValidFetchingDistance(player, npc)
         && Collision.CanHitLine(npc.Center, 2, 2, player.Center, 2, 2);
+
+    private static bool LoopingKneeledTailWagAnimationFinished(in NPC npc) => (int)npc.ai[1] != StateWaitingForPlayerToThrow;
 
     private static bool PlayerWithinValidFetchingDistance(Player player, NPC npc) => npc.Distance(player.Center) <= MaxTileDistanceToPlayFetch * MaxTileDistanceToPlayFetch;
 
@@ -141,10 +172,14 @@ public class DogFetchAIState : TownNPCAIState {
         Projectile targetProjectile = dogModule.fetchProj;
 
         TownNPCPathfinderModule pathfinderModule = npc.GetGlobalNPC<TownNPCPathfinderModule>();
+        TownNPCAnimationModule animationModule = npc.GetGlobalNPC<TownNPCAnimationModule>();
         switch ((int)stateValue) {
             case StateNavigatingToPlayerPreThrow: {
-                HandleNavigationToPlayerSubStates(npc, targetPlayer, pathfinderModule, StateWaitingForPlayerToThrow, 2f, PlayerIsValidToPlayFetchWith);
+                if (!HandleNavigationToPlayerSubStates(npc, targetPlayer, pathfinderModule, StateWaitingForPlayerToThrow, 2f, PlayerIsValidToPlayFetchWith)) {
+                    break;
+                }
 
+                animationModule.RequestAnimation(EasedKneeledTailWaggingAnimation);
                 break;
             }
             case StateWaitingForPlayerToThrow: {
@@ -216,6 +251,8 @@ public class DogFetchAIState : TownNPCAIState {
                 pathfinderModule.HorizontalSpeed = 3f;
 
                 if (pathfinderModule.BottomLeftTileOfNPC == fetchPoint) {
+                    animationModule.RequestAnimation(PickUpStickFromGroundAnimation);
+
                     stateValue = StateReachedProjectile;
                 }
 
@@ -224,7 +261,7 @@ public class DogFetchAIState : TownNPCAIState {
             case StateReachedProjectile: {
                 ref float targetProjectileState = ref targetProjectile.ai[0];
 
-                if (genericTimer++ >= LWMUtils.RealLifeSecond) {
+                if (genericTimer++ >= HalfKneeledFrameDuration * PickUpStickFromGroundAnimationFrameCount) {
                     stateValue = StateWalkingToPlayerPostFetch;
                     genericTimer = 0f;
 
@@ -261,6 +298,8 @@ public class DogFetchAIState : TownNPCAIState {
 
                 stateValue = StateWaitingForPlayerToThrow;
                 genericTimer = 0f;
+
+                animationModule.RequestAnimation(EasedKneeledTailWaggingAnimation);
 
                 break;
             }
