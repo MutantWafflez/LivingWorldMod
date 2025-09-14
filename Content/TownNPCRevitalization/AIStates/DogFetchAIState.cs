@@ -31,6 +31,8 @@ public class DogFetchAIState : TownNPCAIState {
     private const int StateWaitingForPlayerToThrowAgainBuffer = 6;
 
     // Animation info
+    private const int DefaultFrame = 0;
+
     private const int GoingDownHalfKneeledFrame = 17;
     private const int GoingUpHalfKneeledFrame = 22;
     private const int HalfKneeledFrameDuration = 12;
@@ -39,13 +41,13 @@ public class DogFetchAIState : TownNPCAIState {
     private const int KneeledTailWagEndFrame = 21;
     private const int KneeledTailWagFrameDuration = 4;
 
-    private const int PickUpStickFromGroundAnimationFrameCount = 3;
+    private const int PickUpStickFromGroundAnimationFrameCount = 4;
 
     private static readonly LinearAnimation KneelingDownAnimation = new([GoingDownHalfKneeledFrame], [HalfKneeledFrameDuration]);
     private static readonly LinearAnimation StandingUpFromKneelAnimation = new([GoingUpHalfKneeledFrame], [HalfKneeledFrameDuration]);
 
     private static readonly LinearAnimation PickUpStickFromGroundAnimation = new(
-        [GoingDownHalfKneeledFrame, KneeledTailWagStartFrame, GoingUpHalfKneeledFrame],
+        [DefaultFrame, GoingDownHalfKneeledFrame, KneeledTailWagStartFrame, GoingUpHalfKneeledFrame],
         Enumerable.Repeat(HalfKneeledFrameDuration, PickUpStickFromGroundAnimationFrameCount).ToArray(),
         -2
     );
