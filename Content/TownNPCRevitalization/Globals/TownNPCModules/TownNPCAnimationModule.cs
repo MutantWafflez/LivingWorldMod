@@ -131,6 +131,19 @@ public class TownNPCAnimationModule : TownNPCModule, IOnTownNPCAttack {
         switch (npc.ai[0]) {
             case NurseHealAIState.StateInteger:
             case ThrowAttackAIState.StateInteger: {
+                int firstFrameDuration = 10;
+                int subsequentFrameDuration = 6;
+                if (npc.type is NPCID.BestiaryGirl) {
+                    firstFrameDuration = 0;
+                    subsequentFrameDuration = 2;
+                }
+                
+                RequestAnimation(new LinearAnimation(
+                    Enumerable.Range(nonAttackFrameCount, attackFrameCount).Prepend(0).ToArray(),
+                    Enumerable.Repeat(subsequentFrameDuration, attackFrameCount).Prepend(firstFrameDuration).ToArray(),
+                    AttackAnimationPriority
+                ));
+                
                 break;
             }
             case FirearmAttackAIState.StateInteger: {
