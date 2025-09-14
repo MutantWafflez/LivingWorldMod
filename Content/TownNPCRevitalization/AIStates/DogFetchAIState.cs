@@ -290,7 +290,9 @@ public class DogFetchAIState : TownNPCAIState {
                 dogModule.fetchProj = null;
                 targetProjectile.Kill();
 
-                targetPlayer.QuickSpawnItem(new EntitySource_Gift(npc), ModContent.ItemType<FetchingStick>());
+                if (Main.netMode != NetmodeID.MultiplayerClient) {
+                    targetPlayer.QuickSpawnItem(new EntitySource_Gift(npc), ModContent.ItemType<FetchingStick>());
+                }
 
                 break;
             }
