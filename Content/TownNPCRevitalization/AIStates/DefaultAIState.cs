@@ -18,6 +18,10 @@ public class DefaultAIState : TownNPCAIState {
             npc.velocity *= 0.75f;
         }
 
+        if (Main.netMode == NetmodeID.MultiplayerClient) {
+            return;
+        }
+
         if (npc.breath == 0) {
             TownNPCStateModule.RefreshToState<WalkToRandomPosState>(npc);
             return;
