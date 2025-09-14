@@ -46,12 +46,19 @@ public class DogFetchAIState : TownNPCAIState {
     private static readonly LinearAnimation KneelingDownAnimation = new([GoingDownHalfKneeledFrame], [HalfKneeledFrameDuration]);
     private static readonly LinearAnimation StandingUpFromKneelAnimation = new([GoingUpHalfKneeledFrame], [HalfKneeledFrameDuration]);
 
+    /// <summary>
+    ///     Represents linear animation where a Town Dog will kneel down and immediately stand back up.
+    /// </summary>
     private static readonly LinearAnimation PickUpStickFromGroundAnimation = new(
         [DefaultFrame, GoingDownHalfKneeledFrame, KneeledTailWagStartFrame, GoingUpHalfKneeledFrame],
         Enumerable.Repeat(HalfKneeledFrameDuration, PickUpStickFromGroundAnimationFrameCount).ToArray(),
         -2
     );
 
+    /// <summary>
+    ///     Represents animation where a Town Dog will kneel down on their front legs and wag their tail on loop until <see cref="LoopingKneeledTailWagAnimationFinished" /> returns true, where
+    ///     the dog will then stand back up.
+    /// </summary>
     private static readonly ChainedAnimation EasedKneeledTailWaggingAnimation = new (
         0,
         KneelingDownAnimation,
