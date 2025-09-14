@@ -12,6 +12,8 @@ public class NurseHealAIState : TownNPCAIState {
     public override void DoState( NPC npc) {
         npc.ai[1] -= 1f;
         npc.localAI[3] += 1f;
+
+        // TODO: Fix self-heal for Nurse
         if (npc.localAI[3] == 1f && Main.netMode != NetmodeID.MultiplayerClient) {
             Vector2 projVelocity = npc.DirectionTo(Main.npc[(int)npc.ai[2]].Center + new Vector2(0f, -20f));
             if (projVelocity.HasNaNs() || Math.Sign(projVelocity.X) == -npc.spriteDirection) {
