@@ -14,6 +14,7 @@ Additions:
 		-> This also means that the player will always receive EXACTLY what's in the bank, instead of it varying (like in Vanilla).
 		-> This is to prevent players from cranking the Tax Collector's happiness at cash-out and generating money out of thin air.
 	-> To allow for more usage across the play-through (especially in pre-HM when money is more scarce) Tortured Souls now spawn after the Evil Boss has been defeated.
+		-> NOTE: Due to a limitation within tModLoader itself (specifically MonoMod), this is inconsistent and will break. tML needs to fix this before such a change is possible.
 	-> Added new "Direct Deposit" feature for taxes (enabled through the Tax Sheet menu), that instantly puts collected taxes into your inventory at each collection interval, at a 20% cut!
 		-> Canonically, this cut is the Tax Collector's paycheck. Which means, he doesn't get paid if you don't enable this! Do with this information what you will!
 + Added a new developer vanity set

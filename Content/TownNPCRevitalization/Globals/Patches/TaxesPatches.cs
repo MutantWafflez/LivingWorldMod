@@ -41,6 +41,7 @@ public class TaxesPatches : LoadablePatch {
     private void TorturedSoulsSpawnsAfterEvilBossPatch(ILContext il) {
         currentContext = il;
 
+        // TODO: Currently it is impossible to directly IL edit NPC.SpawnNPC(), due to MonoMod limitations. As such, this does not work.
         // Very basic edit that modifies the spawn condition for Tortured Souls to be post-Evil Boss instead of hardmode
         ILCursor c = new(il);
 
