@@ -124,6 +124,24 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         }
     }
 
+    /// <summary>
+    ///     Returns the final color that the passed-in color would be drawn as if all necessary vanilla modifications were done. This incorporates lighting as well as other slight modifications
+    ///     (<see cref="TintNPCDrawColor" />).
+    /// </summary>
+    private static Color GetFullyModifiedNPCDrawColor(NPC npc, Color color) => TintNPCDrawColor(npc, Lighting.GetColor(npc.Center.ToTileCoordinates(), color));
+
+    /// <summary>
+    ///     Returns the modified color that a Town NPC should be drawn with, according to the vanilla method.
+    /// </summary>
+    /// <remarks>
+    ///     This does not take into account lighting; that must be done manually.
+    /// </remarks>
+    private static Color TintNPCDrawColor(NPC npc, Color color) {
+        Color buffTintedColor = npc.GetNPCColorTintedByBuffs(color);
+
+        return npc.color == default(Color) ? npc.GetAlpha(buffTintedColor) : npc.GetColor(buffTintedColor);
+    }
+
     public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => TownGlobalNPC.IsValidFullTownNPC(entity, lateInstantiation);
 
     public override void UpdateModule() {
@@ -167,13 +185,11 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             npc.position.Y + npc.height - frameHeight * npc.scale + 4f + /*halfSize.Y * npc.scale*/ + npcAddHeight /*+ num35*/ + npc.gfxOffY + _drawOffset.Y
         );
 
-        drawColor = npc.GetNPCColorTintedByBuffs(drawColor);
-        Color shiftedDrawColor = npc.color == default(Color) ? npc.GetAlpha(drawColor) : npc.GetColor(drawColor);
         DrawData defaultDrawData = new (
             null,
             drawPos,
             null,
-            shiftedDrawColor,
+            TintNPCDrawColor(npc, drawColor),
             npc.rotation,
             Vector2.Zero,
             npc.scale,
@@ -240,7 +256,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
                 ModContent.Request<Texture2D>($"{LWM.SpritePath}TownNPCRevitalization/Overlays/SleepingBlanket", AssetRequestMode.ImmediateLoad).Value,
                 new Vector2(24f, 10f),
                 Vector2.Zero,
-                Color: BlanketColor,
+                Color: GetFullyModifiedNPCDrawColor(npc, BlanketColor),
                 DrawLayer: 1
             )
         );
