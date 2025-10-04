@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using Terraria.GameContent;
+using Terraria.GameContent.UI;
 using Terraria.Localization;
 using Terraria.UI.Chat;
 
@@ -17,6 +18,12 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 ///     Module that handles various aspects of the social-ness of Town NPCs. Involves code for the player talking to this NPC, and for the flavor animations of "talking" to other Town NPCs.
 /// </summary>
 public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
+    private sealed class ChatModuleGlobalEmote : GlobalEmoteBubble {
+        public override bool PreDraw(EmoteBubble emoteBubble, SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Rectangle frame, Vector2 origin, SpriteEffects spriteEffects) =>
+            // Only draw emotes when player is zoomed OUT far enough
+            !(emoteBubble.anchor.entity is NPC npc && npc.TryGetGlobalNPC(out TownNPCChatModule chatModule) && chatModule.IsChattingToEntityInBackground && HasMinimumZoomToSeeWords());
+    }
+
     private const int DefaultChatBubbleDuration = LWMUtils.RealLifeSecond * 5;
 
     /// <summary>
@@ -58,6 +65,13 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
     ///     Whether this NPC is currently talking to any entity at all.
     /// </summary>
     public bool IsSpeaking => IsChattingWithPlayerDirectly || IsChattingToEntityInBackground;
+
+    private static bool HasMinimumZoomToSeeWords() {
+        Vector2 currentZoom = Main.GameViewMatrix.Zoom;
+        Vector2 zoomRequired = new (ModContent.GetInstance<RevitalizationConfigClient>().minimumZoomToSeeSmallTalk);
+
+        return currentZoom.X >= zoomRequired.X && currentZoom.Y >= zoomRequired.Y;
+    }
 
     public override void SetStaticDefaults() {
         _chatTemplateGroup = new LocalizedTextGroup(Lang.CreateDialogFilter("Mods.LivingWorldMod.InterTownNPCChat."));
@@ -112,10 +126,6 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
             return;
         }
 
-        if (!ModContent.GetInstance<RevitalizationConfigClient>().enabledNPCSmallTalk) {
-            return;
-        }
-
         TownNPCChatModule otherChatModule = null;
         if (IsSpeaking
             || !Main.rand.NextBool(ChitChatChanceDenominator)
@@ -146,14 +156,15 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
 
         _currentSentence = chatTemplate.FormatWith(chatSubstitutions);
         _chatBubbleDuration = DefaultChatBubbleDuration;
+        EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), DefaultChatBubbleDuration, new WorldUIAnchor(chatRecipient));
         otherChatModule._chatReceptionCooldown = _chatBubbleDuration + LWMUtils.RealLifeSecond;
 
         // chatHistory.Add(_currentSentence);
     }
 
     // TODO: Re-write chat bubble drawing
-    public override void PostDraw(NPC _, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-        if (!IsChattingToEntityInBackground) {
+    public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
+        if (!IsChattingToEntityInBackground || !HasMinimumZoomToSeeWords()) {
             return;
         }
 

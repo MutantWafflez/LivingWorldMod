@@ -452,17 +452,9 @@ Mods: {
 						''' */
 				}
 
-				enabledNPCSmallTalk: {
-					// Label: Town NPC Small Talk
-					/* Tooltip:
-						'''
-						Enables NPCs engaging in "small talk" with each other, shown with text bubbles of randomly generated sentences
-						over them.
-
-						Note: This system overrides the normal Vanilla "Chat Icon Bubbles" feature. Currently, even if this system is disabled, 
-						this will not re-enable the Vanilla "Chat Icon Bubbles" feature. This system and functionality is going to be overhauled 
-						and fixed in Part 2 of this update.
-						''' */
+				minimumZoomToSeeSmallTalk: {
+					// Label: Small Talk Minimum Game Zoom
+					// Tooltip: The minimum zoom percentage required to see the actual words Town NPCs are saying instead of their emote bubbles.
 				}
 			}
 		}

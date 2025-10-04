@@ -14,10 +14,11 @@ public class RevitalizationConfigClient : ModConfig {
     public HashSet<NPCDefinition> disabledDrawOverhauls = [];
 
     /// <summary>
-    ///     Whether or not the inter-NPC "small talk" will take place, with the chat bubbles.
+    ///     The zoom percentage required to see the actual words of Town NPC small talk instead of the emote bubbles. Defaults to 1.75, or 175%.
     /// </summary>
-    [DefaultValue(true)]
-    public bool enabledNPCSmallTalk;
+    [Range(1f, 4f)]
+    [DefaultValue(1.75f)]
+    public float minimumZoomToSeeSmallTalk;
 
     public override ConfigScope Mode => ConfigScope.ClientSide;
 }
