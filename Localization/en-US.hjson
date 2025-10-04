@@ -456,6 +456,11 @@ Mods: {
 					Label: Small Talk Minimum Game Zoom
 					Tooltip: The minimum zoom percentage required to see the actual words Town NPCs are saying instead of their emote bubbles.
 				}
+
+				smallTalkTextSize: {
+					Label: Small Talk Text Size
+					Tooltip: The size of the text for Town NPC Small Talk. Increase this if you have trouble reading the text when zoomed in.
+				}
 			}
 		}
 

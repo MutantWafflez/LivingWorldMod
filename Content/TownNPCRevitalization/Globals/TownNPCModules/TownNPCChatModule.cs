@@ -169,8 +169,9 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
         }
 
         DynamicSpriteFont font = FontAssets.MouseText.Value;
+
         const float maxWidth = 200f;
-        Vector2 textScale = new(0.45f);
+        Vector2 textScale = new(ModContent.GetInstance<RevitalizationConfigClient>().smallTalkTextSize);
         float fadeAlpha = MathHelper.Clamp(_chatBubbleDuration / (float)LWMUtils.RealLifeSecond, 0f, 1f);
 
         Vector2 textSize = ChatManager.GetStringSize(font, _currentSentence, textScale, maxWidth);
@@ -237,17 +238,16 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
             Color.White * fadeAlpha
         );
 
-        ChatManager.DrawColorCodedStringWithShadow(
+        ChatManager.DrawColorCodedString(
             spriteBatch,
             font,
             _currentSentence,
             textDrawPos,
-            Color.LightGray * fadeAlpha,
+            Color.Black * fadeAlpha,
             0f,
             Vector2.Zero,
             textScale,
-            maxWidth,
-            1.05f
+            maxWidth
         );
     }
 
