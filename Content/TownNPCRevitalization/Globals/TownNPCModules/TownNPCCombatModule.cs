@@ -75,6 +75,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
 
         if (enemyNearby && NPCID.Sets.PrettySafe[NPC.type] != -1 && closestHostileNPCDistance is { } value && NPCID.Sets.PrettySafe[NPC.type] < value) {
             isCapableOfViolence = NPCID.Sets.AttackType[NPC.type] > -1;
+            // TODO: Re-add fearful running from enemies
             /*
             int wanderState = TownNPCAIState.GetStateInteger<WanderAIState>();
             if (npc.ai[0] != wanderState) {
