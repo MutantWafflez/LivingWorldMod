@@ -25,8 +25,8 @@ Additions:
 + Completely overhauled the Town NPC "Small Talk" system
 	-> Town NPCs will now use their Emote chat bubbles like they do in vanilla, but will swap to actual words/conversations when zoomed in!
 	-> Added a WHOLE LOT of different conversations, depending on who's talking to who, what's happening, and much more!
-	-> How far you need to be zoomed in to see the conversations defaults to 167%, but this can be changed in the config.
-	-> Furthermore, there were quite a few complaints about people being unable to read the conversations, even on high zoom. To allievate this, a config option was added that controls the text size.
+	-> How far you need to be zoomed in to see the conversations defaults to 167%, but this can be changed in the config
+	-> Furthermore, there were quite a few complaints about people being unable to read the conversations, even on high zoom. To alleviate this, a config option has been added that controls the text size
 Changes:
 * Rewrote a lot of older UI code. This will have no technical gameplay change, but will (very minorly) increase loading times and performance for the mod
 * The Truffle now likes the Rain event (previously neutral)
