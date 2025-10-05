@@ -154,9 +154,11 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
             RandomPlayer = Main.rand.Next(LWMUtils.GetAllPlayers(_ => true)).name
         };
 
-        _currentSentence = chatTemplate.FormatWith(chatSubstitutions);
+        EmoteBubble emoteBubble = EmoteBubble.GetExistingEmoteBubble(EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), DefaultChatBubbleDuration, new WorldUIAnchor(chatRecipient)));
+
+        _currentSentence = $"TownNPCSmallTalk.Default.{EmoteID.Search.GetName(emoteBubble.emote)}".Localized().Format(NPC.GivenOrTypeName, chatRecipient.GivenOrTypeName);
+        // _currentSentence = chatTemplate.FormatWith(chatSubstitutions);
         _chatBubbleDuration = DefaultChatBubbleDuration;
-        EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), DefaultChatBubbleDuration, new WorldUIAnchor(chatRecipient));
         otherChatModule._chatReceptionCooldown = _chatBubbleDuration + LWMUtils.RealLifeSecond;
 
         // chatHistory.Add(_currentSentence);
