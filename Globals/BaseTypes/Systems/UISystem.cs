@@ -44,6 +44,10 @@ public abstract class UISystem<TSystem, TState> : BaseModSystem<TSystem> where T
         Player.Hooks.OnEnterWorld += InitializeUIState;
     }
 
+    public override void Unload() {
+        Player.Hooks.OnEnterWorld -= InitializeUIState;
+    }
+
     public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
         int specifiedIndex = layers.FindIndex(layer => layer.Name.Equals(VanillaInterfaceLocation));
         if (specifiedIndex != -1) {
