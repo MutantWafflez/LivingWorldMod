@@ -20,7 +20,7 @@ public class HappinessUIState : UIState {
             Height = StyleDimension.FromPixels(40f);
             Width = StyleDimension.Fill;
 
-            DynamicLocalizedText flavorText = new("UI.MoodFlavorText".Localized(), new { FlavorText = instance.FlavorText.ToString() });
+            DynamicLocalizedText flavorText = new("UI.MoodFlavorText".Localized(), [instance.FlavorText.ToString()]);
             UITooltipElement tooltipElement = new (flavorText) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
             Append(tooltipElement);
 
@@ -130,7 +130,7 @@ public class HappinessUIState : UIState {
         _priceModifierTextNumber = new UIModifiedText("", 0.75f, true) { VAlign = 0.5f, Left = StyleDimension.FromPixelsAndPercent(PriceModifierTextXOffset, 1f) };
         _npcInfoAndPriceZone.Append(_priceModifierTextNumber);
 
-        _happinessBarZone = new UITooltipElement(new DynamicLocalizedText("UI.Fraction".Localized(), new { Numerator = 0, Denominator = 0 })) {
+        _happinessBarZone = new UITooltipElement(new DynamicLocalizedText("UI.Fraction".Localized(), [0, 0])) {
             Width = StyleDimension.Fill, Height = StyleDimension.FromPixels(HappinessBarZoneHeight), Top = StyleDimension.FromPixels(HappinessBarZoneYPos)
         };
         _moodBackPanel.Append(_happinessBarZone);
@@ -208,7 +208,7 @@ public class HappinessUIState : UIState {
         _priceModifierTextNumber.DesiredText = Main.ShopHelper._currentPriceAdjustment.ToString("0.#%");
         _priceModifierTextNumber.Left.Set(PriceModifierTextXOffset - IconSideLength - _priceModifierTextNumber.GetDimensions().Width, 1f);
 
-        _happinessBarZone.ReformatText(new { Numerator = moodModule.CurrentMood, Denominator = TownNPCMoodModule.MaxMoodValue });
+        _happinessBarZone.ReformatText([moodModule.CurrentMood, TownNPCMoodModule.MaxMoodValue]);
         _happinessBar.Width.Percent = Utils.Clamp(moodModule.CurrentMood / TownNPCMoodModule.MaxMoodValue, 0f, 1f);
 
         _modifierList.Clear();

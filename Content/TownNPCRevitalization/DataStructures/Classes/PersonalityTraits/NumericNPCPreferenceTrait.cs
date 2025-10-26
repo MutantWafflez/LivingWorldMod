@@ -24,11 +24,11 @@ public class NumericNPCPreferenceTrait(int moodOffset, int npcType) : IPersonali
             .AddModifier(
                 new DynamicLocalizedText(
                     "TownNPCMoodDescription.NeighborNPC".Localized(),
-                    new { NPCTypeName = LWMUtils.GetFirstNPC(npc => npc.type == npcType)?.TypeName ?? "Error"  }
+                    [LWMUtils.GetFirstNPC(npc => npc.type == npcType)?.TypeName ?? "Error"]
                 ),
                 new DynamicLocalizedText(
                     TownNPCDataSystem.GetAutoloadedFlavorTextOrDefault($"{LWMUtils.GetNPCTypeNameOrIDName(info.NPC.type)}.NPC_{LWMUtils.GetNPCTypeNameOrIDName(npcType)}"),
-                    new { NPCName = NPC.GetFirstNPCNameOrNull(npcType) }
+                    [NPC.GetFirstNPCNameOrNull(npcType)]
                 ),
                 moodOffset
             );

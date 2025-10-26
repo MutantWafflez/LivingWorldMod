@@ -36,7 +36,7 @@ public class UITooltipElement(DynamicLocalizedText text) : UIElement {
         _formattedTooltipText = newText.SubstitutedText;
     }
 
-    public void ReformatText(object formatSubstitutesObject = null) {
+    public void ReformatText(object[] formatSubstitutesObject = null) {
         _text = new DynamicLocalizedText(_text.text, formatSubstitutesObject);
         _formattedTooltipText = _text.SubstitutedText;
     }
