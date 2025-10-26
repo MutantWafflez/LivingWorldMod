@@ -1,4 +1,4 @@
-﻿using LivingWorldMod.DataStructures.Structs;
+﻿using LivingWorldMod.DataStructures.Records;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Localization;
 using Terraria.UI;
@@ -11,7 +11,7 @@ public class UITooltipElement(DynamicLocalizedText text) : UIElement {
         type = ItemID.IronPickaxe
     };
 
-    private string _formattedTooltipText = text.SubstitutedText;
+    private string _formattedTooltipText = text.FormattedString;
     private DynamicLocalizedText _text = text;
 
     public UITooltipElement (string text) : this(new LocalizedText(null, text)) { }
@@ -33,11 +33,11 @@ public class UITooltipElement(DynamicLocalizedText text) : UIElement {
 
     public void SetText(DynamicLocalizedText newText) {
         _text = newText;
-        _formattedTooltipText = newText.SubstitutedText;
+        _formattedTooltipText = newText.FormattedString;
     }
 
     public void ReformatText(object[] formatSubstitutesObject = null) {
-        _text = new DynamicLocalizedText(_text.text, formatSubstitutesObject);
-        _formattedTooltipText = _text.SubstitutedText;
+        _text = new DynamicLocalizedText(_text.OriginalText, formatSubstitutesObject);
+        _formattedTooltipText = _text.FormattedString;
     }
 }

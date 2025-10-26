@@ -1,4 +1,4 @@
-using LivingWorldMod.DataStructures.Structs;
+using LivingWorldMod.DataStructures.Records;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 

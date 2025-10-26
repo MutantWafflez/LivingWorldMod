@@ -1,6 +1,6 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
-using LivingWorldMod.DataStructures.Structs;
+using LivingWorldMod.DataStructures.Records;
 using LivingWorldMod.Globals.UIElements;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
@@ -29,7 +29,7 @@ public class HappinessUIState : UIState {
             };
             tooltipElement.Append(backPanel);
 
-            UIModifiedText moodDescriptionText = new (instance.DescriptionText.SubstitutedText) { Height = StyleDimension.Fill, VAlign = 0.5f };
+            UIModifiedText moodDescriptionText = new (instance.DescriptionText.FormattedString) { Height = StyleDimension.Fill, VAlign = 0.5f };
             backPanel.Append(moodDescriptionText);
 
             UIModifiedText moodOffsetText = new (instance.MoodOffset.ToString("#.##")) {

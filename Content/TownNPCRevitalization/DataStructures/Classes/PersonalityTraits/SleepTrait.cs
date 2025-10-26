@@ -1,7 +1,7 @@
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
-using LivingWorldMod.DataStructures.Structs;
+using LivingWorldMod.DataStructures.Records;
 using LivingWorldMod.Utilities;
 using Terraria.GameContent;
 
@@ -38,7 +38,7 @@ public class SleepTrait : IPersonalityTrait {
         npc.GetGlobalNPC<TownNPCMoodModule>()
             .AddModifier(
                 new DynamicLocalizedText($"TownNPCMoodDescription.{sleepQualityKey}".Localized()),
-                new DynamicLocalizedText(flavorTextKey.Localized(), fallbackText: flavorTextKey.Replace(npcTypeName, "Default").Localized()),
+                new DynamicLocalizedText(flavorTextKey.Localized(), FallbackText: flavorTextKey.Replace(npcTypeName, "Default").Localized()),
                 moodOffset
             );
     }

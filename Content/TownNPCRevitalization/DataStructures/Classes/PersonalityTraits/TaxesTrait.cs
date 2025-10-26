@@ -54,7 +54,7 @@ public class TaxesTrait : IPersonalityTrait {
         string defaultFlavorTextKey = $"TownNPCMoodFlavorText.Default.{propertyTaxKey}";
         moodModule.AddModifier(
             new DynamicLocalizedText($"TownNPCMoodDescription.{propertyTaxKey}".Localized()),
-            new DynamicLocalizedText(flavorTextKey.Localized(), fallbackText: defaultFlavorTextKey.Localized()),
+            new DynamicLocalizedText(flavorTextKey.Localized(), FallbackText: defaultFlavorTextKey.Localized()),
             (int)PropertyTaxGradient.GetValue(propertyTax)
         );
     }
@@ -75,7 +75,7 @@ public class TaxesTrait : IPersonalityTrait {
         string defaultFlavorTextKey = $"TownNPCMoodFlavorText.Default.{salesTaxKey}";
         moodModule.AddModifier(
             new DynamicLocalizedText($"TownNPCMoodDescription.{salesTaxKey}".Localized()),
-            new DynamicLocalizedText(flavorTextKey.Localized(), fallbackText: defaultFlavorTextKey.Localized()),
+            new DynamicLocalizedText(flavorTextKey.Localized(), FallbackText: defaultFlavorTextKey.Localized()),
             (int)SalesTaxGradient.GetValue(salesTax)
         );
     }
