@@ -3,6 +3,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Configs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
+using LivingWorldMod.DataStructures.Records;
 using LivingWorldMod.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -155,8 +156,26 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
         };
 
         EmoteBubble emoteBubble = EmoteBubble.GetExistingEmoteBubble(EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), DefaultChatBubbleDuration, new WorldUIAnchor(chatRecipient)));
+        string emoteBubbleName = EmoteID.Search.GetName(emoteBubble.emote);
+        string speakingNPCTypeName = LWMUtils.GetNPCTypeNameOrIDName(NPC.type);
+        string recipientNPCTypeName = LWMUtils.GetNPCTypeNameOrIDName(chatRecipient.type);
+        object[] formatArray = [NPC.GivenOrTypeName, chatRecipient.GivenOrTypeName];
 
-        _currentSentence = $"TownNPCSmallTalk.Default.{EmoteID.Search.GetName(emoteBubble.emote)}".Localized().Format(NPC.GivenOrTypeName, chatRecipient.GivenOrTypeName);
+        // _currentSentence = $"TownNPCSmallTalk.Default.{EmoteID.Search.GetName(emoteBubble.emote)}".Localized().Format(NPC.GivenOrTypeName, chatRecipient.GivenOrTypeName);
+        _currentSentence = new DynamicLocalizedText(
+            $"TownNPCSmallTalk.{speakingNPCTypeName}.{recipientNPCTypeName}.{emoteBubbleName}".Localized(),
+            formatArray,
+            new DynamicLocalizedText(
+                $"TownNPCSmallTalk.{speakingNPCTypeName}.{emoteBubbleName}".Localized(),
+                formatArray,
+                new DynamicLocalizedText(
+                    $"TownNPCSmallTalk.Default.{emoteBubbleName}".Localized(),
+                    formatArray
+                )
+            )
+        ).FormattedString;
+
+
         // _currentSentence = chatTemplate.FormatWith(chatSubstitutions);
         _chatBubbleDuration = DefaultChatBubbleDuration;
         otherChatModule._chatReceptionCooldown = _chatBubbleDuration + LWMUtils.RealLifeSecond;
