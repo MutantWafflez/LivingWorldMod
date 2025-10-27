@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using LivingWorldMod.DataStructures.Enums;
 using LivingWorldMod.Globals.Systems;
-using LivingWorldMod.Utilities;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
@@ -37,11 +35,6 @@ public abstract class WorldGenFeature : ModType {
     public abstract string InsertionPassNameForFeature {
         get;
     }
-
-    /// <summary>
-    ///     The size of the world that is currently being generated.
-    /// </summary>
-    public WorldSize CurrentWorldSize => LWMUtils.CurrentWorldSize;
 
     /// <summary>
     ///     Allows for modification of the list directly. Do not use this to add new passes, only

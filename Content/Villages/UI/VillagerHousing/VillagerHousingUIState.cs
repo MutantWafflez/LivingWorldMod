@@ -2,7 +2,7 @@
 using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.Globals.UIElements;
-using LivingWorldMod.Utilities;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

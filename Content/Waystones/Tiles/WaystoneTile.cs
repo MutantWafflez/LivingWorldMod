@@ -4,7 +4,7 @@ using LivingWorldMod.Content.Waystones.DataStructures.Enums;
 using LivingWorldMod.Content.Waystones.Globals.PacketHandlers;
 using LivingWorldMod.Content.Waystones.Globals.Systems;
 using LivingWorldMod.Globals.BaseTypes.Tiles;
-using LivingWorldMod.Utilities;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

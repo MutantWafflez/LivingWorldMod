@@ -2,7 +2,7 @@
 using LivingWorldMod.Content.Waystones.Globals.Systems;
 using LivingWorldMod.Content.Waystones.Tiles;
 using LivingWorldMod.Globals.ModTypes;
-using LivingWorldMod.Utilities;
+
 using Terraria.DataStructures;
 
 namespace LivingWorldMod.Content.Waystones.Globals.PacketHandlers;

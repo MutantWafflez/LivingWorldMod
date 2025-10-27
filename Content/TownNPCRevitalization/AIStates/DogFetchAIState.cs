@@ -4,7 +4,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs.Animat
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 using LivingWorldMod.Content.TownNPCRevitalization.Items;
-using LivingWorldMod.Utilities;
+
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 

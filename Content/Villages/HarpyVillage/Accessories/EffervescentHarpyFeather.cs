@@ -1,5 +1,5 @@
 ﻿using LivingWorldMod.Globals.BaseTypes.Items;
-using LivingWorldMod.Utilities;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;

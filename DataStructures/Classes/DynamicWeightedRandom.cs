@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using LivingWorldMod.Utilities;
+
 using Terraria.Utilities;
 
 namespace LivingWorldMod.DataStructures.Classes;

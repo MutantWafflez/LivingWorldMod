@@ -3,7 +3,7 @@ using System.IO;
 using LivingWorldMod.Content.Waystones.DataStructures.Classes;
 using LivingWorldMod.Content.Waystones.Tiles;
 using LivingWorldMod.Globals.BaseTypes.Systems;
-using LivingWorldMod.Utilities;
+
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.Waystones.Globals.Systems;

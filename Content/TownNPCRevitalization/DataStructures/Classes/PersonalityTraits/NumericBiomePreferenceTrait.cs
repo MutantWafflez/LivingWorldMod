@@ -3,7 +3,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 using LivingWorldMod.DataStructures.Records;
-using LivingWorldMod.Utilities;
+
 using Terraria.GameContent;
 using Terraria.GameContent.Personalities;
 

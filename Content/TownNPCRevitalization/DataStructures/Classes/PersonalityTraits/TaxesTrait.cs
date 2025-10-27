@@ -4,7 +4,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 using LivingWorldMod.DataStructures.Records;
 using LivingWorldMod.DataStructures.Structs;
-using LivingWorldMod.Utilities;
+
 using Microsoft.Xna.Framework;
 using Terraria.GameContent;
 

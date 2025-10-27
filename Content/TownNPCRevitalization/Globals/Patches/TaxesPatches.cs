@@ -3,7 +3,7 @@ using System.Reflection;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Players;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.DataStructures.Classes;
-using LivingWorldMod.Utilities;
+
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria.DataStructures;

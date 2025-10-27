@@ -5,7 +5,7 @@ using LivingWorldMod.Content.Waystones.Tiles;
 using LivingWorldMod.DataStructures.Classes.GenConditions;
 using LivingWorldMod.DataStructures.Enums;
 using LivingWorldMod.Globals.ModTypes;
-using LivingWorldMod.Utilities;
+
 using Microsoft.Xna.Framework;
 using Terraria.IO;
 using Terraria.WorldBuilding;
@@ -24,21 +24,23 @@ public class Waystones : WorldGenFeature {
         progress.Message = "Paving the way";
         progress.Set(0f);
 
+        WorldSize worldSizeX = LWMUtils.CurrentWorldSizeX;
+
         // How many times we will cut up the world when searching for places to put Waystones
-        float worldDivisions = LWMUtils.CurrentWorldSize switch {
+        float worldDivisions = worldSizeX switch {
+            WorldSize.SmallerThanSmall => 300f,
             WorldSize.Small => 500f,
             WorldSize.Medium => 1000f,
             WorldSize.Large => 1500f,
-            WorldSize.Custom => 300f,
-            _ => 50f
+            _ => 2000f
         };
 
-        int minTilesBetweenWaystones = LWMUtils.CurrentWorldSize switch {
+        int minTilesBetweenWaystones = worldSizeX switch {
+            WorldSize.SmallerThanSmall => 150,
             WorldSize.Small => 250,
             WorldSize.Medium => 325,
             WorldSize.Large => 375,
-            WorldSize.Custom => 250,
-            _ => 175
+            _ => 450
         };
 
         //Define what waystone types can have what tiles under them

@@ -1,7 +1,7 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 using LivingWorldMod.Globals.Configs;
-using LivingWorldMod.Utilities;
+
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 

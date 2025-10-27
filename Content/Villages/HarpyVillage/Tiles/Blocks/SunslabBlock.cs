@@ -1,6 +1,6 @@
 ﻿using LivingWorldMod.Globals.BaseTypes.Items;
 using LivingWorldMod.Globals.BaseTypes.Tiles;
-using LivingWorldMod.Utilities;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

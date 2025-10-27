@@ -1,7 +1,7 @@
 using System.Reflection;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.DataStructures.Classes;
-using LivingWorldMod.Utilities;
+
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 

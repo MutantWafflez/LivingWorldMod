@@ -1,7 +1,7 @@
 ﻿using LivingWorldMod.Globals.BaseTypes.Items;
 using LivingWorldMod.Globals.BaseTypes.StatusEffects;
 using LivingWorldMod.Globals.Players;
-using LivingWorldMod.Utilities;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.DataStructures;

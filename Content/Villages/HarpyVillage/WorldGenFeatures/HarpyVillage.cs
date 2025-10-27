@@ -9,7 +9,7 @@ using LivingWorldMod.DataStructures.Enums;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Globals.ModTypes;
 using LivingWorldMod.Globals.Systems;
-using LivingWorldMod.Utilities;
+
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Terraria.IO;
@@ -39,8 +39,10 @@ public class HarpyVillage : WorldGenFeature {
         progress.Message = "Generating Structures... Harpy Village";
         progress.Set(0f);
 
+        WorldSize currentWorldSizeY = LWMUtils.CurrentWorldSizeY;
+
         //Used to define the rectangle to search and to displace the origin to the actual correct position when generating the village so it doesn't generate on the top left of the rectangle
-        int rectangleHeight = CurrentWorldSize != WorldSize.Small ? 175 : 123;
+        int rectangleHeight = currentWorldSizeY > WorldSize.Small ? 175 : 123;
         const int rectangleWidth = 175;
         const int originHorizontalDisplacement = (int)(rectangleWidth * (0.88f / 1.75f));
         int originVerticalDisplacement = (int)(rectangleHeight * (1.34f / 1.75f));
@@ -104,7 +106,7 @@ public class HarpyVillage : WorldGenFeature {
         }
 
         float xScale = WorldGen.genRand.NextFloat(1.6f, 1.75f);
-        float yScale = CurrentWorldSize != WorldSize.Small ? 0.65f : 0.45f; //Village is overall much smaller in smaller worlds
+        float yScale = currentWorldSizeY > WorldSize.Small ? 0.65f : 0.45f; //Village is overall much smaller in smaller worlds
         const int radius = 35;
 
         ShapeData mainIslandData = new();
@@ -158,7 +160,7 @@ public class HarpyVillage : WorldGenFeature {
             new Shapes.Slime(radius, xScale * 0.125f, yScale * 0.25f),
             Actions.Chain(
                 new Modifiers.Flip(false, true),
-                new Modifiers.Offset(0, -(int)(radius * yScale * (CurrentWorldSize != WorldSize.Small ? 0.465f : 0.4f))),
+                new Modifiers.Offset(0, -(int)(radius * yScale * (currentWorldSizeY > WorldSize.Small ? 0.465f : 0.4f))),
                 new Modifiers.Conditions(new Conditions.IsTile(TileID.Dirt)),
                 new Actions.ClearTile(true),
                 new Actions.ClearWall(true),
@@ -184,8 +186,7 @@ public class HarpyVillage : WorldGenFeature {
                     Actions.Chain(
                         new Modifiers.Conditions(new Conditions.IsTile(TileID.Dirt)),
                         new Modifiers.IsTouchingAir(true),
-                        new Actions.Custom(
-                            (i, j, args) => {
+                        new Actions.Custom((i, j, args) => {
                                 WorldGen.SpreadGrass(i, j, repeat: false);
                                 return true;
                             }
@@ -203,8 +204,7 @@ public class HarpyVillage : WorldGenFeature {
             Actions.Chain(
                 new Modifiers.Dither(0.967),
                 new Modifiers.Conditions(new Conditions.IsTile(TileID.Dirt)),
-                new Actions.Custom(
-                    (i, j, args) => {
+                new Actions.Custom((i, j, args) => {
                         WorldGen.TileRunner(i, j, WorldGen.genRand.Next(2, 5), 5, TileID.Stone, ignoreTileType: TileID.Grass);
                         return true;
                     }
@@ -231,6 +231,7 @@ public class HarpyVillage : WorldGenFeature {
         for (int i = 0; i < 3; i++) {
             possibleHouses.Add($"HighRise{i}");
         }
+
         for (int i = 0; i < 6; i++) {
             possibleHouses.Add($"GroundHouse{i}");
         }
@@ -300,7 +301,7 @@ public class HarpyVillage : WorldGenFeature {
 
         //Place smaller island clouds and houses on top of them, for a total of 4 (in Medium+ worlds)
         for (int i = -1; i < 2; i += 2) {
-            for (int j = 0; j < (CurrentWorldSize != WorldSize.Small ? 2 : 1); j++) {
+            for (int j = 0; j < (currentWorldSizeY > WorldSize.Small ? 2 : 1); j++) {
                 //Only worlds that are Medium size or bigger will generate the top islands
                 string selectedHouseType = WorldGen.genRand.Next(possibleHouses);
                 possibleHouses.Remove(selectedHouseType);

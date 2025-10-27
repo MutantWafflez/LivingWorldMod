@@ -1,7 +1,7 @@
 ﻿using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.Villages.UI.VillagerShop;
 using LivingWorldMod.Globals.BaseTypes.Systems;
-using LivingWorldMod.Utilities;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

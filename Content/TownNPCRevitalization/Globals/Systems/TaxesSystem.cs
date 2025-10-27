@@ -5,7 +5,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 using LivingWorldMod.Content.TownNPCRevitalization.UI.TaxSheet;
 using LivingWorldMod.Globals.BaseTypes.Systems;
-using LivingWorldMod.Utilities;
+
 using Terraria.GameContent;
 using Terraria.ModLoader.IO;
 

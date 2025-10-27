@@ -1,6 +1,6 @@
 using LivingWorldMod.Globals.BaseTypes.Items;
 using LivingWorldMod.Globals.BaseTypes.Projectiles;
-using LivingWorldMod.Utilities;
+
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Items;
