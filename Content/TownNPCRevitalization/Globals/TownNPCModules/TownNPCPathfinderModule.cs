@@ -6,7 +6,6 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Globals.Configs;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.DataStructures;
@@ -25,19 +24,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         public PathNode lastConsumedNode = lastConsumedNode;
     }
 
-    private record struct OpenedDoorData(Point16 TilePos, Rectangle DoorHitBox, bool IsGate = false) {
-        public Point16 TilePos {
-            get;
-        } = TilePos;
-
-        public Rectangle DoorHitBox {
-            get;
-        } = DoorHitBox;
-
-        public bool IsGate {
-            get;
-        } = IsGate;
-    }
+    private readonly record struct OpenedDoorData(Point16 TilePos, Rectangle DoorHitBox, bool IsGate = false);
 
     public const int PathfinderSize = 128;
     private const int MaxPathRecyclesBeforeFailure = 5;
