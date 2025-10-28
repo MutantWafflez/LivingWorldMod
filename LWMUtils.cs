@@ -37,11 +37,6 @@ public static partial class LWMUtils {
     }
 
     /// <summary>
-    ///     Exception that designates the given IL search parameters did not yield any found instruction.
-    /// </summary>
-    public class InstructionNotFoundException : Exception { }
-
-    /// <summary>
     ///     Ticks in a real world second.
     /// </summary>
     public const int RealLifeSecond = 60;
@@ -209,6 +204,8 @@ public static partial class LWMUtils {
         set;
     }
 
+    private static Exception ILInstructionNotFoundException => new ("Could not find specified IL instruction.");
+
     /// <summary>
     ///     Extension for strings that will turn the provided string into its <see cref="LocalizedText" /> equivalent, assuming
     ///     the provided string is the key for a <see cref="LWM" /> localization file text value.
@@ -362,8 +359,8 @@ public static partial class LWMUtils {
     ///     when finished being generated.
     /// </param>
     public static void GenerateStructure(StructureData data, int startingX, int startingY, bool autoFrame = true) {
-        for (int y = 0; y < data.structureHeight; y++) {
-            for (int x = 0; x < data.structureWidth; x++) {
+        for (int x = 0; x < data.structureWidth; x++) {
+            for (int y = 0; y < data.structureHeight; y++) {
                 Tile selectedTile = Framing.GetTileSafely(startingX + x + data.structureDisplacement.X, startingY + y + data.structureDisplacement.Y);
                 TileData tileData = data.structureTileData[x][y];
 
@@ -395,7 +392,7 @@ public static partial class LWMUtils {
                         break;
                     }
                     case -1:
-                        selectedTile.TileType = 0;
+                        selectedTile.TileType = TileID.Dirt;
                         selectedTile.HasTile = false;
                         selectedTile.HasActuator = tileData.hasActuator;
                         selectedTile.RedWire = tileData.hasRedWire;
@@ -407,19 +404,21 @@ public static partial class LWMUtils {
                         break;
                 }
 
-                if (tileData.wallType != -1) {
-                    if (ModContent.TryFind(tileData.modWallOwner, tileData.modWallName, out ModWall modWall)) {
-                        selectedTile.WallType = modWall.Type;
-                    }
-                    else {
-                        selectedTile.WallType = (ushort)tileData.wallType;
-                    }
-
-                    selectedTile.WallColor = (byte)tileData.wallColor;
-                    selectedTile.WallFrameNumber = (byte)tileData.wallFrame;
-                    selectedTile.WallFrameX = tileData.wallFrameX;
-                    selectedTile.WallFrameY = tileData.wallFrameY;
+                if (tileData.wallType == -1) {
+                    continue;
                 }
+
+                if (ModContent.TryFind(tileData.modWallOwner, tileData.modWallName, out ModWall modWall)) {
+                    selectedTile.WallType = modWall.Type;
+                }
+                else {
+                    selectedTile.WallType = (ushort)tileData.wallType;
+                }
+
+                selectedTile.WallColor = (byte)tileData.wallColor;
+                selectedTile.WallFrameNumber = (byte)tileData.wallFrame;
+                selectedTile.WallFrameX = tileData.wallFrameX;
+                selectedTile.WallFrameY = tileData.wallFrameY;
             }
         }
 
@@ -453,18 +452,6 @@ public static partial class LWMUtils {
             tiles.Enqueue(new Point(x, y));
         }
 
-        void SearchAroundTile(int i, int j) {
-            for (int k = -1; k <= 1; k++) {
-                for (int l = -1; l <= 1; l += k == 0 ? 2 : 1) {
-                    Tile tile = Main.tile[i + k, j + l];
-
-                    if (((tile.HasTile && !(ignoredTileTypes?.Contains(tile.TileType) ?? false)) || tile.WallType > WallID.None) && !tiles.Any(point => point.X == i + k && point.Y == j + l)) {
-                        tiles.Enqueue(new Point(i + k, j + l));
-                    }
-                }
-            }
-        }
-
         uint repetitions = 0;
         while (tiles.Count != 0 && repetitions < maxRepetitions) {
             repetitions++;
@@ -475,6 +462,20 @@ public static partial class LWMUtils {
 
             Main.tile[tilePos].ClearTile();
             Main.tile[tilePos].WallType = 0;
+        }
+
+        return;
+
+        void SearchAroundTile(int i, int j) {
+            for (int k = -1; k <= 1; k++) {
+                for (int l = -1; l <= 1; l += k == 0 ? 2 : 1) {
+                    Tile tile = Main.tile[i + k, j + l];
+
+                    if (((tile.HasTile && !(ignoredTileTypes?.Contains(tile.TileType) ?? false)) || tile.WallType > WallID.None) && !tiles.Any(point => point.X == i + k && point.Y == j + l)) {
+                        tiles.Enqueue(new Point(i + k, j + l));
+                    }
+                }
+            }
         }
     }
 
@@ -550,20 +551,6 @@ public static partial class LWMUtils {
     }
 
     /// <summary>
-    ///     Runs the given function for each tile inside the provided rectangle. If the function returns true on
-    ///     a given index, then this method terminates.
-    /// </summary>
-    public static void DoInRectangle(Rectangle rectangle, Func<Point, bool> function) {
-        for (int i = rectangle.X; i < rectangle.X + rectangle.Width; i++) {
-            for (int j = rectangle.Y; j < rectangle.Y + rectangle.Height; j++) {
-                if (function(new Point(i, j))) {
-                    return;
-                }
-            }
-        }
-    }
-
-    /// <summary>
     ///     A more "auto-magic" version of <see cref="AddMapEntry" />, where assumptions are automatically made about what kind of map entry is intended to be added, and where.
     ///     <para></para>
     ///     If the <see cref="instance" /> parameter is a <see cref="ModTile" /> instance, it will be assumed that <see cref="MapLoader.tileEntries" /> is going to be added to. The same applies for
@@ -618,21 +605,6 @@ public static partial class LWMUtils {
     }
 
     /// <summary>
-    ///     Adds to the <see cref="WeightedRandom{T}" /> only if the given condition returns true.
-    /// </summary>
-    /// <param name="list"> List to add to. </param>
-    /// <param name="obj"> Object to add to the list. </param>
-    /// <param name="condition">
-    ///     Condition that determines whether or not to add the given object to the list.
-    /// </param>
-    /// <param name="weight"> The potential weight of the object, if required. </param>
-    public static void AddConditionally<T>(this ICollection<T> list, T obj, bool condition) {
-        if (condition) {
-            list.Add(obj);
-        }
-    }
-
-    /// <summary>
     ///     Constructs a new <see cref="Rectangle" /> from two points representing opposite corners.
     ///     These corners can be any of the corners - but make sure that they are OPPOSITE
     ///     corners, such as top-left/bottom-right or bottom-left/top-right.
@@ -670,7 +642,7 @@ public static partial class LWMUtils {
             return;
         }
 
-        throw new ILPatchFailureException(LWM.Instance, cursor.Context, new InstructionNotFoundException());
+        throw new ILPatchFailureException(LWM.Instance, cursor.Context, ILInstructionNotFoundException);
     }
 
     /// <summary>
@@ -682,7 +654,7 @@ public static partial class LWMUtils {
             return;
         }
 
-        throw new ILPatchFailureException(LWM.Instance, cursor.Context, new InstructionNotFoundException());
+        throw new ILPatchFailureException(LWM.Instance, cursor.Context, ILInstructionNotFoundException);
     }
 
     /// <summary>
@@ -694,7 +666,7 @@ public static partial class LWMUtils {
             return;
         }
 
-        throw new ILPatchFailureException(LWM.Instance, cursor.Context, new InstructionNotFoundException());
+        throw new ILPatchFailureException(LWM.Instance, cursor.Context, ILInstructionNotFoundException);
     }
 
     /// <summary>
@@ -706,14 +678,7 @@ public static partial class LWMUtils {
             return;
         }
 
-        throw new ILPatchFailureException(LWM.Instance, cursor.Context, new InstructionNotFoundException());
-    }
-
-    /// <summary>
-    ///     Moves and points this cursor to the very last instruction in the given IL content.
-    /// </summary>
-    public static void GotoLastInstruction(this ILCursor cursor) {
-        cursor.Index = cursor.Instrs.Count - 1;
+        throw new ILPatchFailureException(LWM.Instance, cursor.Context, ILInstructionNotFoundException);
     }
 
     /// <summary>
@@ -824,8 +789,7 @@ public static partial class LWMUtils {
     /// <param name="x"> The x coordinate of the potential entity. </param>
     /// <param name="y"> The y coordinate of the potential entity. </param>
     /// <param name="entity"> The potential entity. </param>
-    public static bool TryFindModEntity<T>(int x, int y, out T entity)
-        where T : ModTileEntity {
+    public static bool TryFindModEntity<T>(int x, int y, out T entity) where T : ModTileEntity {
         TileEntity.ByPosition.TryGetValue(new Point16(x, y), out TileEntity retrievedEntity);
 
         if (retrievedEntity is T castEntity) {
@@ -869,34 +833,13 @@ public static partial class LWMUtils {
     /// <param name="player"> </param>
     /// <returns> </returns>
     public static long CalculateTotalSavings(this Player player) {
-        bool _;
+        long playerInvCashCount = Utils.CoinsCount(out bool _, player.inventory);
+        long piggyCashCount = Utils.CoinsCount(out bool _, player.bank.item);
+        long safeCashCount = Utils.CoinsCount(out bool _, player.bank2.item);
+        long defForgeCashCount = Utils.CoinsCount(out bool _, player.bank3.item);
+        long voidVaultCashCount = Utils.CoinsCount(out bool _, player.bank4.item);
 
-        long playerInvCashCount = Utils.CoinsCount(out _, player.inventory);
-        long piggyCashCount = Utils.CoinsCount(out _, player.bank.item);
-        long safeCashCount = Utils.CoinsCount(out _, player.bank2.item);
-        long defForgeCashCount = Utils.CoinsCount(out _, player.bank3.item);
-        long voidVaultCashCount = Utils.CoinsCount(out _, player.bank4.item);
-
-        return Utils.CoinsCombineStacks(out _, playerInvCashCount, piggyCashCount, safeCashCount, defForgeCashCount, voidVaultCashCount);
-    }
-
-    /// <summary>
-    ///     Get all Players that meet the passed in predicate.
-    /// </summary>
-    /// <remarks>
-    ///     Note that <see cref="Player.active" /> is checked by default, along-side the predicate.
-    /// </remarks>
-    public static List<Player> GetAllPlayers(Predicate<Player> predicate) {
-        List<Player> players = [];
-        for (int i = 0; i < Main.maxPlayers; i++) {
-            Player player = Main.player[i];
-
-            if (player.active && predicate.Invoke(player)) {
-                players.Add(player);
-            }
-        }
-
-        return players;
+        return Utils.CoinsCombineStacks(out bool _, playerInvCashCount, piggyCashCount, safeCashCount, defForgeCashCount, voidVaultCashCount);
     }
 
     public static double NextDouble(this UnifiedRandom self, double maxValue) => self.NextDouble() * maxValue;

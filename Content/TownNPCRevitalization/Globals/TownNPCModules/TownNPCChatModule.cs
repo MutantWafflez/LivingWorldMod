@@ -4,13 +4,11 @@ using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Configs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.DataStructures.Records;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using Terraria.GameContent;
 using Terraria.GameContent.UI;
-using Terraria.Localization;
 using Terraria.UI.Chat;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
@@ -142,18 +140,18 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
             return;
         }
 
-        LocalizedText chatTemplate = _chatTemplateGroup.RandomText;
-        var chatSubstitutions = new {
-            SpeakingNPC = NPC.GivenOrTypeName,
-            RandomNPCName = _npcNameGroup.RandomText,
-            RandomNPCNameTwo = _npcNameGroup.RandomText,
-            ChatRecipient = chatRecipient.GivenOrTypeName,
-            Noun = _nounGroup.RandomText.Value.ToLower(),
-            Adjective = _adjectiveGroup.RandomText.Value.ToLower(),
-            Location = _locationGroup.RandomText,
-            RandomItemName = _itemNameGroup.RandomText,
-            RandomPlayer = Main.rand.Next(LWMUtils.GetAllPlayers(_ => true)).name
-        };
+        // LocalizedText chatTemplate = _chatTemplateGroup.RandomText;
+        // var chatSubstitutions = new {
+        //     SpeakingNPC = NPC.GivenOrTypeName,
+        //     RandomNPCName = _npcNameGroup.RandomText,
+        //     RandomNPCNameTwo = _npcNameGroup.RandomText,
+        //     ChatRecipient = chatRecipient.GivenOrTypeName,
+        //     Noun = _nounGroup.RandomText.Value.ToLower(),
+        //     Adjective = _adjectiveGroup.RandomText.Value.ToLower(),
+        //     Location = _locationGroup.RandomText,
+        //     RandomItemName = _itemNameGroup.RandomText,
+        //     RandomPlayer = Main.rand.Next(Main.ActivePlayers.).name
+        // };
 
         EmoteBubble emoteBubble = EmoteBubble.GetExistingEmoteBubble(EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), DefaultChatBubbleDuration, new WorldUIAnchor(chatRecipient)));
         string emoteBubbleName = EmoteID.Search.GetName(emoteBubble.emote);
