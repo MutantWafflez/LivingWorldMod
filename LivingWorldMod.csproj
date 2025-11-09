@@ -15,6 +15,7 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Krafs.Publicizer" Version="2.2.1" PrivateAssets="all"/>
+        <PackageReference Include="AssGen" Version="3.0.1" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
 
         <!--> Mod Loader Publicizing -->
         <Publicize Include="tModLoader:Terraria.ModLoader.ModLoader.isLoading"/>
