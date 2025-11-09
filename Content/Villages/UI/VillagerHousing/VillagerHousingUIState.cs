@@ -333,7 +333,7 @@ public class VillagerHousingUIState : UIState {
             Main.EquipPage = -1;
 
             DisplayAvailableVillagers();
-            _openMenuButton.SetImage(Assets.Villages.UI.VillagerHousingUI.VillagerHousing_On);
+            _openMenuButton.SetImage(Assets.Villages.UI.VillagerHousingUI.VillagerHousing_On.EnsureAssetLoaded());
 
             SoundEngine.PlaySound(SoundID.MenuOpen);
         }
