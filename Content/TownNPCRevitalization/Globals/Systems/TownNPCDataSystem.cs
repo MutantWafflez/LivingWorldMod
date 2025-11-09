@@ -10,7 +10,6 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Globals.BaseTypes.Systems;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -335,11 +334,11 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
                 continue;
             }
 
-            string modName = i >= NPCID.Count ? NPCLoader.GetNPC(i).Mod.Name : "Terraria";
+            AssetRepository assetRepo = i >= NPCID.Count ? NPCLoader.GetNPC(i).Mod.Assets : (AssetRepository)Main.Assets;
             Asset<Texture2D> npcAsset;
             if (!TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile)) {
                 npcAsset = TextureAssets.Npc[i];
-                overlayTextures[i] = new TownNPCOverlayProfile(GenerateTownNPCSpriteOverlays(npcAsset.Name, npcAsset.ForceLoadAsset(modName), i));
+                overlayTextures[i] = new TownNPCOverlayProfile(GenerateTownNPCSpriteOverlays(npcAsset.Name, npcAsset.EnsureAssetLoaded(assetRepo).Value, i));
                 continue;
             }
 
@@ -352,7 +351,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
             List<TownNPCSpriteOverlay[]> spriteOverlays = [];
             for (int j = 0; j < npcVariationCount; npc.townNpcVariationIndex = ++j) {
                 npcAsset = profile.GetTextureNPCShouldUse(npc);
-                spriteOverlays.Add(GenerateTownNPCSpriteOverlays(npcAsset.Name, npcAsset.ForceLoadAsset(modName), i));
+                spriteOverlays.Add(GenerateTownNPCSpriteOverlays(npcAsset.Name, npcAsset.EnsureAssetLoaded(assetRepo).Value, i));
             }
 
             overlayTextures[i] = new TownNPCOverlayProfile(spriteOverlays.ToArray());

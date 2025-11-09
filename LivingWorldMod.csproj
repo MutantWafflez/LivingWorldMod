@@ -14,62 +14,14 @@
         <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Krafs.Publicizer" Version="2.2.1" PrivateAssets="all"/>
+        <PackageReference Include="Krafs.Publicizer" Version="2.3.0" PrivateAssets="all"/>
         <PackageReference Include="AssGen" Version="3.0.1" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
 
-        <!--> Mod Loader Publicizing -->
-        <Publicize Include="tModLoader:Terraria.ModLoader.ModLoader.isLoading"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Publicize Include="ReLogic"/>
 
-        <!-- Main Publicizing -->
-        <Publicize Include="tModLoader:Terraria.Main.mH"/>
-
-        <!-- Map Publicizing -->
-        <Publicize Include="tModLoader:Terraria.ModLoader.MapEntry"/>
-        <Publicize Include="tModLoader:Terraria.ModLoader.MapEntry..ctor"/>
-        <Publicize Include="tModLoader:Terraria.ModLoader.MapLoader"/>
-        <Publicize Include="tModLoader:Terraria.ModLoader.MapLoader.initialized"/>
-        <Publicize Include="tModLoader:Terraria.ModLoader.MapLoader.tileEntries"/>
-        <Publicize Include="tModLoader:Terraria.ModLoader.MapLoader.wallEntries"/>
-
-        <!--> Event Publicizing -->
-        <Publicize Include="tModLoader:Terraria.GameContent.Events.BirthdayParty.CanNPCParty"/>
-
-        <!-- Main Publicizing -->
-        <Publicize Include="tModLoader:Terraria.Main.DrawNPCExtras"/>
-
-        <!-- NPC Publicizing -->
-        <Publicize Include="tModLoader:Terraria.NPC.AI_007_TownEntities_Shimmer_TeleportToLandingSpot"/>
-
-        <!-- Collision Publicizing -->
-        <Publicize Include="tModLoader:Terraria.NPC.Collision_WalkDownSlopes"/>
-        <Publicize Include="tModLoader:Terraria.NPC.Collision_LavaCollision"/>
-        <Publicize Include="tModLoader:Terraria.NPC.Collision_WaterCollision"/>
-        <Publicize Include="tModLoader:Terraria.NPC.Collision_DecideFallThroughPlatforms"/>
-        <Publicize Include="tModLoader:Terraria.NPC.Collision_MoveSlopesAndStairFall"/>
-
-        <!-- Shop Helper Publicizing -->
-        <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentNPCBeingTalkedTo"/>
-        <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentPriceAdjustment"/>
-        <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._currentHappiness"/>
-        <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper.GetNearbyResidentNPCs"/>
-        <Publicize Include="tModLoader:Terraria.GameContent.ShopHelper._database"/>
-
-        <!-- Personality Database Publicizing -->
-        <Publicize Include="tModLoader:Terraria.GameContent.Personalities.PersonalityDatabase._personalityProfiles"/>
-
-        <!-- Language/Localization Publicizing -->
-        <Publicize Include="tModLoader:Terraria.Localization.LanguageManager._localizedTexts"/>
-        <Publicize Include="tModLoader:Terraria.Localization.LocalizedText..ctor"/>
-
-        <!-- Town NPC Profiles Publicizing -->
-        <Publicize Include="tModLoader:Terraria.GameContent.Profiles+StackedNPCProfile._profiles"/>
-        <Publicize Include="tModLoader:Terraria.GameContent.Profiles+VariantNPCProfile._variants"/>
-
-        <!-- Bestiary Publicizing -->
-        <Publicize Include="tModLoader:Terraria.GameContent.Bestiary.UnlockableNPCEntryIcon._npcCache"/>
-
-        <!-- UI Publicizing -->
-        <Publicize Include="tModLoader:Terraria.UI.UIElement.set_Parent"/>
-
+        <Publicize Include="tModLoader" IncludeVirtualMembers="false" IncludeCompilerGeneratedMembers="false"/>
+        <DoNotPublicize Include="tModLoader:Terraria.TileData"/>
     </ItemGroup>
 </Project>

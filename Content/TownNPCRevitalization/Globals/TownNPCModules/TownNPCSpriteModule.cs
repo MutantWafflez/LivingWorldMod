@@ -108,10 +108,10 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
 
     private TownNPCDrawParameters DrawParameters {
         get {
-            Asset<Texture2D> npcAsset = TownNPCProfiles.Instance.GetProfile(NPC, out ITownNPCProfile profile) ? profile.GetTextureNPCShouldUse(NPC) : TextureAssets.Npc[NPC.type];
-            if (!npcAsset.IsLoaded) {
-                npcAsset.ForceLoadAsset(NPC.ModNPC is { } modNPC ? modNPC.Mod.Name : "Terraria");
-            }
+            Asset<Texture2D> npcAsset =
+                (TownNPCProfiles.Instance.GetProfile(NPC, out ITownNPCProfile profile) ? profile.GetTextureNPCShouldUse(NPC) : TextureAssets.Npc[NPC.type]).EnsureAssetLoaded(
+                    NPC.ModNPC is { } modNPC ? modNPC.Mod.Assets : (AssetRepository)Main.Assets
+                );
 
             int frameWidth = npcAsset.Width();
             int frameHeight = npcAsset.Height() / Main.npcFrameCount[NPC.type];
