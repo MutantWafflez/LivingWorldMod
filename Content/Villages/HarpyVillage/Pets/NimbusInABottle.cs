@@ -54,7 +54,7 @@ public class NimbusPetBuff : BaseStatusEffect {
 
         if (!nimbusSpawned && player.whoAmI == Main.myPlayer) {
             for (int i = 0; i < 15; i++) {
-                Dust.NewDustPerfect(player.Center, 16, Main.rand.NextVector2Unit() * 3, Scale: Main.rand.NextFloat(0.8f, 1.5f));
+                Dust.NewDustPerfect(player.Center, DustID.Cloud, Main.rand.NextVector2Unit() * 3, Scale: Main.rand.NextFloat(0.8f, 1.5f));
             }
 
             Projectile.NewProjectile(new EntitySource_Buff(player, Type, buffIndex), player.Center - Vector2.UnitY * 5, Vector2.UnitX * player.direction * 5, nimbusProjectileID, 0, 0, player.whoAmI);

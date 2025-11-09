@@ -248,7 +248,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             };
 
             spriteBatch.Draw(
-                TextureAssets.Extra[66].Value,
+                TextureAssets.Extra[ExtrasID.SuspiciousTentacle].Value,
                 _currentPathfinderResult.topLeftOfGrid.ToWorldCoordinates(2f, 2.5f) + new Vector2(node.NodePos.x, node.NodePos.y).ToWorldCoordinates(0f, 0f) - screenPos,
                 nodeColor
             );

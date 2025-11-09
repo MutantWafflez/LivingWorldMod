@@ -133,7 +133,7 @@ public abstract class Villager : ModNPC {
         NPC.lifeMax = 500;
         NPC.defense = 15;
         NPC.knockBackResist = 0.5f;
-        NPC.aiStyle = 7;
+        NPC.aiStyle = NPCAIStyleID.Passive;
         AnimationType = NPCID.Guide;
     }
 

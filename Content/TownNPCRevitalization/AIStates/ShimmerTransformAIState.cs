@@ -64,7 +64,7 @@ public class ShimmerTransformAIState : TownNPCAIState {
         if (Main.rand.NextFloat() > Utils.Remap(npc.ai[1], 30f, 60f, 1f, 0.5f)) {
             Dust.NewDustPerfect(
                 Main.rand.NextVector2FromRectangle(hitbox) + Main.rand.NextVector2Circular(8f, 0f) + new Vector2(0f, 4f),
-                309,
+            DustID.ShimmerSpark,
                 new Vector2(0f, -2f).RotatedBy(randomDustDirection * ((float)Math.PI * 2f) * 0.11f),
                 0,
                 default(Color),

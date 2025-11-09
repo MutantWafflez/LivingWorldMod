@@ -461,7 +461,7 @@ public static partial class LWMUtils {
             SearchAroundTile(tilePos.X, tilePos.Y);
 
             Main.tile[tilePos].ClearTile();
-            Main.tile[tilePos].WallType = 0;
+            Main.tile[tilePos].WallType = WallID.None;
         }
 
         return;
