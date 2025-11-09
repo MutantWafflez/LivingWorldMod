@@ -349,7 +349,7 @@ Mods: {
 			StarTorchTile.MapEntry: "{$ItemName.Torch}"
 		}
 
-		VillagerType.Harpy: Harpy
+		// VillagerTypeName.Harpy: Harpy
 		NPCs.HarpyVillager.DisplayName: Harpy Villager
 		// NPCChatButtons.TaxCollector.TaxSheet: Tax Sheet
 
