@@ -4,7 +4,6 @@ using LivingWorldMod.Content.Waystones.DataStructures.Enums;
 using LivingWorldMod.Content.Waystones.Globals.PacketHandlers;
 using LivingWorldMod.Content.Waystones.Globals.Systems;
 using LivingWorldMod.Globals.BaseTypes.Tiles;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -29,7 +28,7 @@ public class WaystoneTile : BasePylon {
     public override Color? TileColorOnMap => Color.White;
 
     public override void Load() {
-        waystoneMapIcons = ModContent.Request<Texture2D>($"{LWM.SpritePath}MapIcons/WaystoneIcons");
+        waystoneMapIcons = Assets.MapIcons.WaystoneIcons;
     }
 
     public override void SetStaticDefaults() {

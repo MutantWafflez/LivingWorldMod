@@ -3,7 +3,6 @@ using LivingWorldMod.Content.Villages.DataStructures.Enums;
 using LivingWorldMod.Content.Villages.Globals.PacketHandlers;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 using LivingWorldMod.Globals.UIElements;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -111,8 +110,8 @@ public class VillageShrineUIState : UIState {
 
     public override void OnInitialize() {
         Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
-        Asset<Texture2D> gradientPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder");
-        Asset<Texture2D> shadowedPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/ShadowedPanelBorder");
+        Asset<Texture2D> gradientPanelBorder = Assets.UI.Elements.GradientPanelBorder;
+        Asset<Texture2D> shadowedPanelBorder = Assets.UI.Elements.ShadowedPanelBorder;
 
         _backPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
             Width = StyleDimension.FromPixels(BackPanelSideLength),

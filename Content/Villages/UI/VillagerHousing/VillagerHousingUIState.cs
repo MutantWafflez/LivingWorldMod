@@ -2,10 +2,8 @@
 using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.Globals.UIElements;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -210,11 +208,6 @@ public class VillagerHousingUIState : UIState {
     /// </summary>
     public bool VillagerHousingListOpen => _villagerHousingZone.IsVisible;
 
-    /// <summary>
-    ///     Path to the sprites for this UI.
-    /// </summary>
-    private static string HousingTexturePath => $"{LWM.SpritePath}Villages/UI/VillagerHousingUI/";
-
     private static void WhileHoveringButton() {
         Main.instance.MouseText("UI.VillagerHousing.ButtonHoverText".Localized().Value);
     }
@@ -225,8 +218,8 @@ public class VillagerHousingUIState : UIState {
         _openMenuButtonZone = new UIVisibilityElement { Width = StyleDimension.FromPixels(OpenMenuButtonSideLength), Height = StyleDimension.FromPixels(OpenMenuButtonSideLength) };
         Append(_openMenuButtonZone);
 
-        _openMenuButton = new UIBetterImageButton(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off")) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
-        _openMenuButton.SetHoverImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Hovered"));
+        _openMenuButton = new UIBetterImageButton(Assets.Villages.UI.VillagerHousingUI.VillagerHousing_Off) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+        _openMenuButton.SetHoverImage(Assets.Villages.UI.VillagerHousingUI.VillagerHousing_Hovered);
         _openMenuButton.SetVisibility(1f, 1f);
         _openMenuButton.WhileHovering += WhileHoveringButton;
         _openMenuButton.OnLeftClick += MenuButtonClicked;
@@ -240,7 +233,7 @@ public class VillagerHousingUIState : UIState {
         };
         Append(_villagerHousingZone);
 
-        _enumerateRightButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Forward")) {
+        _enumerateRightButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Button_Forward")) {
             Width = StyleDimension.FromPixels(VanillaArrowButtonsSideLength),
             Height = StyleDimension.FromPixels(VanillaArrowButtonsSideLength),
             Left = StyleDimension.FromPixels(EnumerateRightButtonXPos)
@@ -249,7 +242,7 @@ public class VillagerHousingUIState : UIState {
         _enumerateRightButton.OnLeftClick += EnumerateTypeButtonClicked;
         _villagerHousingZone.Append(_enumerateRightButton);
 
-        _enumerateLeftButton = new UIBetterImageButton(ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Button_Back")) {
+        _enumerateLeftButton = new UIBetterImageButton(Main.Assets.Request<Texture2D>("Images/UI/Bestiary/Button_Back")) {
             Width = StyleDimension.FromPixels(VanillaArrowButtonsSideLength),
             Height = StyleDimension.FromPixels(VanillaArrowButtonsSideLength),
             Left = StyleDimension.FromPixels(EnumerateLeftButtonXPos)
@@ -307,7 +300,7 @@ public class VillagerHousingUIState : UIState {
     /// </summary>
     private void CloseMenu() {
         _villagerHousingZone.SetVisibility(false);
-        _openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off"));
+        _openMenuButton.SetImage(Assets.Villages.UI.VillagerHousingUI.VillagerHousing_Off);
         _gridOfVillagers.Clear();
     }
 
@@ -340,7 +333,7 @@ public class VillagerHousingUIState : UIState {
             Main.EquipPage = -1;
 
             DisplayAvailableVillagers();
-            _openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_On", AssetRequestMode.ImmediateLoad));
+            _openMenuButton.SetImage(Assets.Villages.UI.VillagerHousingUI.VillagerHousing_On);
 
             SoundEngine.PlaySound(SoundID.MenuOpen);
         }
@@ -348,7 +341,7 @@ public class VillagerHousingUIState : UIState {
             Main.EquipPageSelected = 0;
             Main.EquipPage = 0;
 
-            _openMenuButton.SetImage(ModContent.Request<Texture2D>(HousingTexturePath + "VillagerHousing_Off"));
+            _openMenuButton.SetImage(Assets.Villages.UI.VillagerHousingUI.VillagerHousing_Off);
             _gridOfVillagers.Clear();
 
             SoundEngine.PlaySound(SoundID.MenuClose);

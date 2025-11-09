@@ -6,7 +6,6 @@ using LivingWorldMod.Content.Villages.Globals.Systems.UI;
 using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Globals.BaseTypes.Items;
 using LivingWorldMod.Globals.BaseTypes.Tiles;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -40,7 +39,7 @@ public class VillageShrineTile : BasePylon {
     public override Color? TileColorOnMap => Color.Yellow;
 
     public override void Load() {
-        shrineIcons = ModContent.Request<Texture2D>($"{LWM.SpritePath}MapIcons/ShrineIcons");
+        shrineIcons = Assets.MapIcons.ShrineIcons;
     }
 
     public override NPCShop.Entry GetNPCShopEntry() => null;

@@ -8,7 +8,6 @@ using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -253,7 +252,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
 
         RequestDraw(
             new TownNPCDrawRequest(
-                ModContent.Request<Texture2D>($"{LWM.SpritePath}TownNPCRevitalization/Overlays/SleepingBlanket", AssetRequestMode.ImmediateLoad).Value,
+                Assets.TownNPCRevitalization.Overlays.SleepingBlanket.Value,
                 new Vector2(24f, 10f),
                 Vector2.Zero,
                 Color: GetFullyModifiedNPCDrawColor(npc, BlanketColor),

@@ -7,7 +7,6 @@ using LivingWorldMod.Content.TownNPCRevitalization.Globals.Players;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 using LivingWorldMod.Globals.UIElements;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -171,8 +170,8 @@ public class TaxSheetUIState : UIState {
 
     public override void OnInitialize() {
         Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
-        Asset<Texture2D> gradientPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder");
-        Asset<Texture2D> shadowedPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/ShadowedPanelBorder");
+        Asset<Texture2D> gradientPanelBorder = Assets.UI.Elements.GradientPanelBorder;
+        Asset<Texture2D> shadowedPanelBorder = Assets.UI.Elements.ShadowedPanelBorder;
 
         InitializeBackPanel(vanillaPanelBackground, gradientPanelBorder, shadowedPanelBorder);
         InitializeSelectedNPCPanel(vanillaPanelBackground, gradientPanelBorder);
@@ -238,9 +237,7 @@ public class TaxSheetUIState : UIState {
     }
 
     private void InitializeSelectedNPCPanel(Asset<Texture2D> vanillaPanelBackground, Asset<Texture2D> gradientPanelBorder) {
-        Asset<Texture2D>[] changeButtonTextures = [
-            ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/ButtonIcons/PlusButton"), ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/ButtonIcons/MinusButton")
-        ];
+        Asset<Texture2D>[] changeButtonTextures = [Assets.UI.ButtonIcons.PlusButton, Assets.UI.ButtonIcons.MinusButton];
 
         _selectedNPCVisibilityElement = new UIVisibilityElement {
             VAlign = 0.5f,
@@ -317,9 +314,7 @@ public class TaxSheetUIState : UIState {
         _confirmationButtonsVisibilityElement = new UIVisibilityElement { HAlign = 0.5f, VAlign = 1f, Width = StyleDimension.Fill, Height = StyleDimension.FromPixels(ButtonsSideLength) };
         _selectedNPCBackPanel.Append(_confirmationButtonsVisibilityElement);
 
-        _denyNewTaxesButton = new UIBetterImageButton(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/ButtonIcons/DenyButton")) {
-            Width = StyleDimension.FromPixels(ButtonsSideLength), Height = StyleDimension.FromPixels(ButtonsSideLength)
-        };
+        _denyNewTaxesButton = new UIBetterImageButton(Assets.UI.ButtonIcons.DenyButton) { Width = StyleDimension.FromPixels(ButtonsSideLength), Height = StyleDimension.FromPixels(ButtonsSideLength) };
         _denyNewTaxesButton.OnLeftClick += (_, _) =>  {
             RefreshTaxValueDisplays(SelectedNPCElement.npcType);
 
@@ -330,7 +325,7 @@ public class TaxSheetUIState : UIState {
         _denyNewTaxesButtonTooltip = new UITooltipElement("UI.TaxSheet.DenyButton".Localized()) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
         _denyNewTaxesButton.Append(_denyNewTaxesButtonTooltip);
 
-        _acceptNewTaxesButton = new UIBetterImageButton(ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/ButtonIcons/AcceptButton")) {
+        _acceptNewTaxesButton = new UIBetterImageButton(Assets.UI.ButtonIcons.AcceptButton) {
             HAlign = 1f, Width = StyleDimension.FromPixels(ButtonsSideLength), Height = StyleDimension.FromPixels(ButtonsSideLength), Left = StyleDimension.FromPixels(-2f)
         };
         _acceptNewTaxesButton.OnLeftClick += (_, _) => {

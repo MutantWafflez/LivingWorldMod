@@ -6,7 +6,6 @@ using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.Villages.Globals.Systems.UI;
 using LivingWorldMod.Content.Villages.HarpyVillage.Tiles.Furniture;
 using LivingWorldMod.DataStructures.Classes;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
@@ -190,7 +189,7 @@ public class NPCHousingPatches : LoadablePatch {
                     bannerWorldY += bannerYPixelOffset;
 
                     SpriteEffects spriteEffects = SpriteEffects.None;
-                    Texture2D bannerTexture = ModContent.Request<Texture2D>(LWM.SpritePath + "Villages/UI/VillagerHousingUI/VillagerHousing_Banner").Value;
+                    Texture2D bannerTexture = Assets.Villages.UI.VillagerHousingUI.VillagerHousing_Banner.Value;
                     Rectangle bannerFrame = bannerTexture.Frame();
                     if (Main.LocalPlayer.gravDir == -1f) {
                         bannerWorldY -= Main.screenPosition.Y;

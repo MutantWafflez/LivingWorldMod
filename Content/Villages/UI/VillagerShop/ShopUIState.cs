@@ -6,7 +6,6 @@ using LivingWorldMod.Content.Villages.Globals.Systems;
 using LivingWorldMod.Content.Villages.Globals.Systems.UI;
 using LivingWorldMod.Content.Villages.HarpyVillage.NPCs;
 using LivingWorldMod.Globals.UIElements;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -242,7 +241,7 @@ public class ShopUIState : UIState {
 
     public override void OnInitialize() {
         Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
-        Asset<Texture2D> gradientPanelBorder = ModContent.Request<Texture2D>($"{LWM.SpritePath}UI/Elements/GradientPanelBorder");
+        Asset<Texture2D> gradientPanelBorder = Assets.UI.Elements.GradientPanelBorder;
 
         string shopUIPath = $"{LWM.SpritePath}Villages/UI/ShopUI/Harpy/";
 
