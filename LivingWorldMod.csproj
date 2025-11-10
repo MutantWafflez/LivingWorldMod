@@ -1,27 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="..\tModLoader.targets"/>
+<Project Sdk="Tomat.Terraria.ModLoader.Sdk/1.0.8">
     <PropertyGroup>
-        <DotNetPath Condition=" '$(OS)' == 'Windows_NT' ">dotnet.exe</DotNetPath>
-        <DotNetPath Condition=" '$(OS)' == 'Unix' ">dotnet/dotnet</DotNetPath>
-        <DotNetPath Condition=" '$(DotNetPath)' == '' ">dotnet/dotnet</DotNetPath>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
-
-    <PropertyGroup>
-        <AssemblyName>LivingWorldMod</AssemblyName>
-        <LangVersion>latest</LangVersion>
-
-        <NoWarn>IDE0034;CS0436</NoWarn>
-        <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-    </PropertyGroup>
-    <ItemGroup>
-        <PackageReference Include="Krafs.Publicizer" Version="2.3.0" PrivateAssets="all"/>
-        <PackageReference Include="AssGen" Version="3.0.1" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
-
-    </ItemGroup>
     <ItemGroup>
         <Publicize Include="ReLogic"/>
 
-        <Publicize Include="tModLoader" IncludeVirtualMembers="false" IncludeCompilerGeneratedMembers="false"/>
         <DoNotPublicize Include="tModLoader:Terraria.TileData"/>
     </ItemGroup>
 </Project>

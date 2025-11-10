@@ -1,6 +1,6 @@
-﻿sampler uImage0 : register(s0);
-sampler uImage1 : register(s1);
-sampler uImage2 : register(s2);
+sampler uImage0 : register(s0);
+sampler uImage1 : register(s1); // Automatically Images/Misc/Perlin via Force Shader testing option
+sampler uImage2 : register(s2); // Automatically Images/Misc/noise via Force Shader testing option
 sampler uImage3 : register(s3);
 float3 uColor;
 float3 uSecondaryColor;
@@ -20,7 +20,7 @@ float uSaturation;
 float4 uSourceRect;
 float2 uZoom;
 
-float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
+float4 Grayscale(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 color = tex2D(uImage0, coords);
     float flash = ((sin(uTime - 3.1415927 / 2) + 1) / 2) + 1;
@@ -30,8 +30,8 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 
 technique Technique1
 {
-    pass ModdersToolkitShaderPass
+    pass Grayscale
     {
-        PixelShader = compile ps_2_0 PixelShaderFunction();
+        PixelShader = compile ps_2_0 Grayscale();
     }
 }

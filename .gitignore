@@ -27,3 +27,6 @@ bld/
 # JetBrains Rider
 .idea/
 *.sln.iml
+
+# tML Specific
+.tml-build/
