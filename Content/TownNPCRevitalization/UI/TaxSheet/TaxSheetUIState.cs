@@ -170,8 +170,8 @@ public class TaxSheetUIState : UIState {
 
     public override void OnInitialize() {
         Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
-        Asset<Texture2D> gradientPanelBorder = Assets.UI.Elements.GradientPanelBorder;
-        Asset<Texture2D> shadowedPanelBorder = Assets.UI.Elements.ShadowedPanelBorder;
+        Asset<Texture2D> gradientPanelBorder = Assets.Sprites.UI.Elements.GradientPanelBorder.Asset;
+        Asset<Texture2D> shadowedPanelBorder = Assets.Sprites.UI.Elements.ShadowedPanelBorder.Asset;
 
         InitializeBackPanel(vanillaPanelBackground, gradientPanelBorder, shadowedPanelBorder);
         InitializeSelectedNPCPanel(vanillaPanelBackground, gradientPanelBorder);
@@ -237,7 +237,7 @@ public class TaxSheetUIState : UIState {
     }
 
     private void InitializeSelectedNPCPanel(Asset<Texture2D> vanillaPanelBackground, Asset<Texture2D> gradientPanelBorder) {
-        Asset<Texture2D>[] changeButtonTextures = [Assets.UI.ButtonIcons.PlusButton, Assets.UI.ButtonIcons.MinusButton];
+        Asset<Texture2D>[] changeButtonTextures = [Assets.Sprites.UI.ButtonIcons.PlusButton.Asset, Assets.Sprites.UI.ButtonIcons.MinusButton.Asset];
 
         _selectedNPCVisibilityElement = new UIVisibilityElement {
             VAlign = 0.5f,
@@ -314,7 +314,7 @@ public class TaxSheetUIState : UIState {
         _confirmationButtonsVisibilityElement = new UIVisibilityElement { HAlign = 0.5f, VAlign = 1f, Width = StyleDimension.Fill, Height = StyleDimension.FromPixels(ButtonsSideLength) };
         _selectedNPCBackPanel.Append(_confirmationButtonsVisibilityElement);
 
-        _denyNewTaxesButton = new UIBetterImageButton(Assets.UI.ButtonIcons.DenyButton) { Width = StyleDimension.FromPixels(ButtonsSideLength), Height = StyleDimension.FromPixels(ButtonsSideLength) };
+        _denyNewTaxesButton = new UIBetterImageButton(Assets.Sprites.UI.ButtonIcons.DenyButton.Asset) { Width = StyleDimension.FromPixels(ButtonsSideLength), Height = StyleDimension.FromPixels(ButtonsSideLength) };
         _denyNewTaxesButton.OnLeftClick += (_, _) =>  {
             RefreshTaxValueDisplays(SelectedNPCElement.npcType);
 
@@ -325,7 +325,7 @@ public class TaxSheetUIState : UIState {
         _denyNewTaxesButtonTooltip = new UITooltipElement("UI.TaxSheet.DenyButton".Localized()) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
         _denyNewTaxesButton.Append(_denyNewTaxesButtonTooltip);
 
-        _acceptNewTaxesButton = new UIBetterImageButton(Assets.UI.ButtonIcons.AcceptButton) {
+        _acceptNewTaxesButton = new UIBetterImageButton(Assets.Sprites.UI.ButtonIcons.AcceptButton.Asset) {
             HAlign = 1f, Width = StyleDimension.FromPixels(ButtonsSideLength), Height = StyleDimension.FromPixels(ButtonsSideLength), Left = StyleDimension.FromPixels(-2f)
         };
         _acceptNewTaxesButton.OnLeftClick += (_, _) => {

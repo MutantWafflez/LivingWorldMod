@@ -252,7 +252,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
 
         RequestDraw(
             new TownNPCDrawRequest(
-                Assets.TownNPCRevitalization.Overlays.SleepingBlanket.EnsureAssetLoaded().Value,
+                Assets.Sprites.TownNPCRevitalization.Overlays.SleepingBlanket.Asset.EnsureAssetLoaded().Value,
                 new Vector2(24f, 10f),
                 Vector2.Zero,
                 Color: GetFullyModifiedNPCDrawColor(npc, BlanketColor),

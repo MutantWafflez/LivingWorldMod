@@ -241,7 +241,7 @@ public class ShopUIState : UIState {
 
     public override void OnInitialize() {
         Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
-        Asset<Texture2D> gradientPanelBorder = Assets.UI.Elements.GradientPanelBorder;
+        Asset<Texture2D> gradientPanelBorder = Assets.Sprites.UI.Elements.GradientPanelBorder.Asset;
 
         string shopUIPath = $"{LWM.SpritePath}Villages/UI/ShopUI/Harpy/";
 

@@ -39,7 +39,7 @@ public class VillageShrineTile : BasePylon {
     public override Color? TileColorOnMap => Color.Yellow;
 
     public override void Load() {
-        shrineIcons = Assets.MapIcons.ShrineIcons;
+        shrineIcons = Assets.Sprites.MapIcons.ShrineIcons.Asset;
     }
 
     public override NPCShop.Entry GetNPCShopEntry() => null;

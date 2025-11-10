@@ -189,7 +189,7 @@ public class NPCHousingPatches : LoadablePatch {
                     bannerWorldY += bannerYPixelOffset;
 
                     SpriteEffects spriteEffects = SpriteEffects.None;
-                    Texture2D bannerTexture = Assets.Villages.UI.VillagerHousingUI.VillagerHousing_Banner.Value;
+                    Texture2D bannerTexture = Assets.Sprites.Villages.UI.VillagerHousingUI.VillagerHousing_Banner.Asset.Value;
                     Rectangle bannerFrame = bannerTexture.Frame();
                     if (Main.LocalPlayer.gravDir == -1f) {
                         bannerWorldY -= Main.screenPosition.Y;

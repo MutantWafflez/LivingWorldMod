@@ -28,7 +28,7 @@ public class WaystoneTile : BasePylon {
     public override Color? TileColorOnMap => Color.White;
 
     public override void Load() {
-        waystoneMapIcons = Assets.MapIcons.WaystoneIcons;
+        waystoneMapIcons = Assets.Sprites.MapIcons.WaystoneIcons.Asset;
     }
 
     public override void SetStaticDefaults() {

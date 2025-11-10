@@ -110,8 +110,8 @@ public class VillageShrineUIState : UIState {
 
     public override void OnInitialize() {
         Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
-        Asset<Texture2D> gradientPanelBorder = Assets.UI.Elements.GradientPanelBorder;
-        Asset<Texture2D> shadowedPanelBorder = Assets.UI.Elements.ShadowedPanelBorder;
+        Asset<Texture2D> gradientPanelBorder = Assets.Sprites.UI.Elements.GradientPanelBorder.Asset;
+        Asset<Texture2D> shadowedPanelBorder = Assets.Sprites.UI.Elements.ShadowedPanelBorder.Asset;
 
         _backPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
             Width = StyleDimension.FromPixels(BackPanelSideLength),

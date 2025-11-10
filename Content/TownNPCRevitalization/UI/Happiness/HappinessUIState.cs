@@ -23,7 +23,7 @@ public class HappinessUIState : UIState {
             UITooltipElement tooltipElement = new (flavorText) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
             Append(tooltipElement);
 
-            UIPanel backPanel = new (Main.Assets.Request<Texture2D>("Images/UI/PanelBackground"), Assets.UI.Elements.GradientPanelBorder) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+            UIPanel backPanel = new (Main.Assets.Request<Texture2D>("Images/UI/PanelBackground"), Assets.Sprites.UI.Elements.GradientPanelBorder.Asset) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
             tooltipElement.Append(backPanel);
 
             UIModifiedText moodDescriptionText = new (instance.DescriptionText.FormattedString) { Height = StyleDimension.Fill, VAlign = 0.5f };
@@ -94,8 +94,8 @@ public class HappinessUIState : UIState {
 
     public override void OnInitialize() {
         Asset<Texture2D> vanillaPanelBackground = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground");
-        Asset<Texture2D> gradientPanelBorder = Assets.UI.Elements.GradientPanelBorder;
-        Asset<Texture2D> shadowedPanelBorder = Assets.UI.Elements.ShadowedPanelBorder;
+        Asset<Texture2D> gradientPanelBorder = Assets.Sprites.UI.Elements.GradientPanelBorder.Asset;
+        Asset<Texture2D> shadowedPanelBorder = Assets.Sprites.UI.Elements.ShadowedPanelBorder.Asset;
 
         _moodBackPanel = new UIPanel(vanillaPanelBackground, gradientPanelBorder) {
             BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor,
@@ -116,7 +116,7 @@ public class HappinessUIState : UIState {
         _npcName = new UIModifiedText("NPC Name", 0.75f, true) { Left = StyleDimension.FromPixels(NPCNameXPos), VAlign = 0.5f, HorizontalTextConstraint = NPCNameTextConstraint };
         _npcInfoAndPriceZone.Append(_npcName);
 
-        _moneyBagIcon = new UIImage(Assets.UI.Icons.MoneyBag) { HAlign = 1f, Width = StyleDimension.FromPixels(IconSideLength), Height = StyleDimension.FromPixels(IconSideLength) };
+        _moneyBagIcon = new UIImage(Assets.Sprites.UI.Icons.MoneyBag.Asset) { HAlign = 1f, Width = StyleDimension.FromPixels(IconSideLength), Height = StyleDimension.FromPixels(IconSideLength) };
         _npcInfoAndPriceZone.Append(_moneyBagIcon);
 
         _moneyBagTooltipElement = new UITooltipElement("UI.NPCHappiness.PriceModifier".Localized()) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
@@ -136,17 +136,17 @@ public class HappinessUIState : UIState {
         _happinessBar = new UISimpleRectangle(Color.White) { Height = StyleDimension.FromPercent(0.75f), Width = StyleDimension.FromPercent(0.5f), VAlign = 0.5f };
         _happinessBarBackPanel.innerRectangle.Append(_happinessBar);
 
-        _moodLowIcon = new UIImage(Assets.UI.Icons.TownNPCMoodLow) {
+        _moodLowIcon = new UIImage(Assets.Sprites.UI.Icons.TownNPCMoodLow.Asset) {
             Top = StyleDimension.FromPixelsAndPercent(MoodIconsYOffset, 1f), Width = StyleDimension.FromPixels(IconSideLength), Height = StyleDimension.FromPercent(IconSideLength)
         };
         _happinessBarZone.Append(_moodLowIcon);
 
-        _moodMidIcon = new UIImage(Assets.UI.Icons.TownNPCMoodMid) {
+        _moodMidIcon = new UIImage(Assets.Sprites.UI.Icons.TownNPCMoodMid.Asset) {
             Top = StyleDimension.FromPixelsAndPercent(MoodIconsYOffset, 1f), HAlign = 0.5f, Width = StyleDimension.FromPixels(IconSideLength), Height = StyleDimension.FromPercent(IconSideLength)
         };
         _happinessBarZone.Append(_moodMidIcon);
 
-        _moodHighIcon = new UIImage(Assets.UI.Icons.TownNPCMoodHigh) {
+        _moodHighIcon = new UIImage(Assets.Sprites.UI.Icons.TownNPCMoodHigh.Asset) {
             Top = StyleDimension.FromPixelsAndPercent(MoodIconsYOffset, 1f), HAlign = 1f, Width = StyleDimension.FromPixels(IconSideLength), Height = StyleDimension.FromPercent(IconSideLength)
         };
         _happinessBarZone.Append(_moodHighIcon);

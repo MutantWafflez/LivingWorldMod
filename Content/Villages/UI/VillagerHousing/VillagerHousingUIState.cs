@@ -218,8 +218,8 @@ public class VillagerHousingUIState : UIState {
         _openMenuButtonZone = new UIVisibilityElement { Width = StyleDimension.FromPixels(OpenMenuButtonSideLength), Height = StyleDimension.FromPixels(OpenMenuButtonSideLength) };
         Append(_openMenuButtonZone);
 
-        _openMenuButton = new UIBetterImageButton(Assets.Villages.UI.VillagerHousingUI.VillagerHousing_Off) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
-        _openMenuButton.SetHoverImage(Assets.Villages.UI.VillagerHousingUI.VillagerHousing_Hovered);
+        _openMenuButton = new UIBetterImageButton(Assets.Sprites.Villages.UI.VillagerHousingUI.VillagerHousing_Off.Asset) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+        _openMenuButton.SetHoverImage(Assets.Sprites.Villages.UI.VillagerHousingUI.VillagerHousing_Hovered.Asset);
         _openMenuButton.SetVisibility(1f, 1f);
         _openMenuButton.WhileHovering += WhileHoveringButton;
         _openMenuButton.OnLeftClick += MenuButtonClicked;
@@ -300,7 +300,7 @@ public class VillagerHousingUIState : UIState {
     /// </summary>
     private void CloseMenu() {
         _villagerHousingZone.SetVisibility(false);
-        _openMenuButton.SetImage(Assets.Villages.UI.VillagerHousingUI.VillagerHousing_Off);
+        _openMenuButton.SetImage(Assets.Sprites.Villages.UI.VillagerHousingUI.VillagerHousing_Off.Asset);
         _gridOfVillagers.Clear();
     }
 
@@ -333,7 +333,7 @@ public class VillagerHousingUIState : UIState {
             Main.EquipPage = -1;
 
             DisplayAvailableVillagers();
-            _openMenuButton.SetImage(Assets.Villages.UI.VillagerHousingUI.VillagerHousing_On.EnsureAssetLoaded());
+            _openMenuButton.SetImage(Assets.Sprites.Villages.UI.VillagerHousingUI.VillagerHousing_On.Asset.EnsureAssetLoaded());
 
             SoundEngine.PlaySound(SoundID.MenuOpen);
         }
@@ -341,7 +341,7 @@ public class VillagerHousingUIState : UIState {
             Main.EquipPageSelected = 0;
             Main.EquipPage = 0;
 
-            _openMenuButton.SetImage(Assets.Villages.UI.VillagerHousingUI.VillagerHousing_Off);
+            _openMenuButton.SetImage(Assets.Sprites.Villages.UI.VillagerHousingUI.VillagerHousing_Off.Asset);
             _gridOfVillagers.Clear();
 
             SoundEngine.PlaySound(SoundID.MenuClose);

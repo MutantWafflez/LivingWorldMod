@@ -199,7 +199,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
         // Manual panel drawing, since we have to deal with variable text sizes. Not perfect, but it's better than nothing
         const int panelPadding = 6;
         const int cornerPixelSize = 2;
-        Texture2D chatBottomTexture = Assets.UI.TownNPCChats.Chat_Bottom.Value;
+        Texture2D chatBottomTexture = Assets.Sprites.UI.TownNPCChats.Chat_Bottom.Asset.Value;
 
         Color topLeftBorderColor = new(71, 83, 156);
         Rectangle topBorderRect = new((int)(textDrawPos.X - panelPadding + cornerPixelSize), (int)(textDrawPos.Y - panelPadding), (int)textSize.X + panelPadding * 2, cornerPixelSize);
