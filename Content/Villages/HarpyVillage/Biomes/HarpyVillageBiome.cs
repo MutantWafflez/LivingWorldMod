@@ -9,7 +9,7 @@ namespace LivingWorldMod.Content.Villages.HarpyVillage.Biomes;
 ///     "Biome" that surrounds a given harpy shrine.
 /// </summary>
 public class HarpyVillageBiome : ModBiome {
-    public override int Music => MusicLoader.GetMusicSlot(Mod, LWM.MusicPath + $"Village/Harpy{(Main.dayTime ? "Day" : "Night")}");
+    public override int Music => Main.dayTime ? Assets.Audio.Music.Village.HarpyDay.Slot : Assets.Audio.Music.Village.HarpyNight.Slot;
 
     public override SceneEffectPriority Priority => SceneEffectPriority.Environment;
 

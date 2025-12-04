@@ -44,13 +44,11 @@ public class LivingWorldMod : Mod {
     /// </summary>
     public static string SpritePath => nameof(LivingWorldMod) + "/Assets/Sprites/";
 
-    /// <summary>
-    ///     Directory of the Music files for LivingWorldMod.
-    /// </summary>
-    public static string MusicPath => "Assets/Audio/Music/";
-
     public LivingWorldMod() {
         Instance = this;
+
+        // TODO: Remove once tml-build handles manually
+        MusicAutoloadingEnabled = false;
     }
 
     public override void HandlePacket(BinaryReader reader, int whoAmI) {
