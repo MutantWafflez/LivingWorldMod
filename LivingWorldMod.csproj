@@ -1,12 +1,15 @@
 <Project Sdk="Tomat.Terraria.ModLoader.Sdk/1.0.9">
     <PropertyGroup>
-        <Nullable>enable</Nullable>
+        <AssemblyName>LivingWorldMod</AssemblyName>
+        <Nullable>disable</Nullable>
     </PropertyGroup>
+    
     <ItemGroup>
         <Publicize Include="ReLogic"/>
 
         <DoNotPublicize Include="tModLoader:Terraria.TileData"/>
     </ItemGroup>
+    
     <ItemGroup>
       <Reference Include="Daybreak">
         <HintPath>lib\Daybreak.dll</HintPath>
