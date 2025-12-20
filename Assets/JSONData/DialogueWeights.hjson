@@ -1,0 +1,57 @@
+Harpy: {
+    Event: {
+        0: {
+            Weight: 2
+            Events: Rain
+        }
+        1: {
+            Weight: 2
+            Events: Rain
+        }
+        2: {
+            Weight: 2
+            Events: Eclipse
+        }
+        3: {
+            Weight: 2
+            Events: Eclipse
+        }
+        4: {
+            Priority: 1
+            Events: BloodMoon
+        }
+        5: {
+            Events: BloodMoon
+        }
+        6: {
+            Weight: 1.5
+            Priority: 1
+            Events: BloodMoon|Rain
+        }
+    }
+    Dislike: {
+        6: {
+            Weight: 0.33
+        }
+    }
+    Neutral: {
+        5: {
+            Weight: 0.66
+        }
+        6: {
+            Weight: 0.33
+        }
+    }
+    Like: {
+        5: {
+            Weight: 0.66
+        }
+        6: {
+            Weight: 0.66
+        }
+        7: {
+            Weight: 0.33
+            Events: !BloodMoon
+        }
+    }
+}
