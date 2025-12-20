@@ -7,4 +7,9 @@
 
         <DoNotPublicize Include="tModLoader:Terraria.TileData"/>
     </ItemGroup>
+    <ItemGroup>
+      <Reference Include="Daybreak">
+        <HintPath>lib\Daybreak.dll</HintPath>
+      </Reference>
+    </ItemGroup>
 </Project>
