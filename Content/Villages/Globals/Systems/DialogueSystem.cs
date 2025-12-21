@@ -43,7 +43,7 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
             .Where(pair => pair.Value.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue"))
             .ToDictionary(pair => pair.Key, pair => pair.Value);
 
-        JsonValue jsonReputationData = LWMUtils.GetJSONFromFile("Assets/JSONData/DialogueWeights.json");
+        JsonValue jsonReputationData = LWMUtils.GetJsonFromHjsonFile("Assets/JSONData/DialogueWeights.json");
         for (VillagerType type = 0; (int)type < LWMUtils.GetTotalVillagerTypeCount(); type++) {
             List<DialogueData> finalDialogueData = [];
 

@@ -243,7 +243,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         princessProfile.AddRange([new HomelessTrait(), new HomeProximityTrait(), new LonelyTrait(), new SleepTrait()]);
         PersonalityDatabase[NPCID.Princess] = princessProfile;
 
-        JsonObject jsonEventPreferenceValues = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCEventPreferences.json").Qo();
+        JsonObject jsonEventPreferenceValues = LWMUtils.GetJsonFromHjsonFile("Assets/JSONData/TownNPCEventPreferences.json").Qo();
         foreach ((string npcName, JsonValue eventData) in jsonEventPreferenceValues) {
             int npcType = NPCID.Search.GetId(npcName);
 
@@ -265,7 +265,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
     public override void Load() {
         // TODO: Combine JSON into one file(?)
         sleepSchedules = new Dictionary<int, SleepSchedule>();
-        JsonObject sleepSchedulesJSON = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCSleepSchedules.json").Qo();
+        JsonObject sleepSchedulesJSON = LWMUtils.GetJsonFromHjsonFile("Assets/JSONData/TownNPCSleepSchedules.json").Qo();
         foreach ((string npcName, JsonValue sleepSchedule) in sleepSchedulesJSON) {
             int npcType = NPCID.Search.GetId(npcName);
 
@@ -274,7 +274,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
 
         sleepThresholds = new Dictionary<int, SleepThresholds>();
 
-        JsonObject jsonAttackData = LWMUtils.GetJSONFromFile("Assets/JSONData/TownNPCAttackData.json").Qo();
+        JsonObject jsonAttackData = LWMUtils.GetJsonFromHjsonFile("Assets/JSONData/TownNPCAttackData.json").Qo();
         JsonObject projJSONAttackData = jsonAttackData["ProjNPCs"].Qo();
         JsonObject meleeJSONAttackData = jsonAttackData["MeleeNPCs"].Qo();
 

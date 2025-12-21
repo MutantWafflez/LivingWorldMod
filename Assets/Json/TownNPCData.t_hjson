@@ -1,0 +1,486 @@
+DyeTrader: {
+	AttackData: {
+		damage: 11
+		itemWidth: 32
+		itemHeight: 32
+		attackCooldown: 12
+		maxValue: 6
+		knockBack: 4.25
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: -10
+		Rain: -8
+	}
+}
+TaxCollector: {
+	AttackData: {
+		damage: 9
+		itemWidth: 28
+		itemHeight: 28
+		attackCooldown: 9
+		maxValue: 3
+		knockBack: 3.5
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: -10
+	}	
+}
+Stylist: {
+	AttackData: {
+		damage: 10
+		itemWidth: 32
+		itemHeight: 32
+		attackCooldown: 15
+		maxValue: 8
+		knockBack: 5
+	}
+	EventPrefs: {
+		BloodMoon: -40
+		Party: 10
+	}
+	SleepSchedule: {
+		Start: 21:30
+		End: 05:45
+	}
+}
+Demolitionist: {
+	AttackData: {
+		projType: 30
+		speedMult: 6
+		projDamage: 20
+		attackDelay: 10
+		attackCooldown: 180
+		maxValue: 120
+		gravityCorrection: 16
+		knockBack: 7
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: 10
+	}
+	SleepSchedule: {
+		Start: 23:30
+		End: 07:45
+	}
+}
+BestiaryGirl: {
+	AttackData: {
+		projType: 880
+		speedMult: 24
+		projDamage: 15
+		attackDelay: 1
+		gravityCorrection: 0
+		knockBack: 7
+		attackCooldown: 15
+		maxValue: 10
+	}
+	EventPrefs: {
+		BloodMoon: -40
+		Party: 10
+		Rain: -8
+		Storm: -20
+	}
+}
+DD2Bartender: {
+	AttackData: {
+		projType: 669
+		speedMult: 6
+		projDamage: 24
+		attackDelay: 10
+		attackCooldown: 120
+		maxValue: 60
+		gravityCorrection: 16
+		knockBack: 9
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: -10
+	}
+	SleepSchedule: {
+		Start: 03:45
+		End: 12:00
+	}
+}
+Golfer: {
+	AttackData: {
+		projType: 721
+		speedMult: 8
+		projDamage: 15
+		attackDelay: 5
+		attackCooldown: 20
+		maxValue: 10
+		gravityCorrection: 16
+		knockBack: 9
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: -10
+		Rain: -8
+	}
+}
+PartyGirl: {
+	AttackData: {
+		projType: 588
+		speedMult: 6
+		projDamage: 30
+		attackDelay: 10
+		attackCooldown: 60
+		maxValue: 120
+		gravityCorrection: 16
+		knockBack: 6
+	}
+	EventPrefs: {
+		Party: 20
+		BloodMoon: -10
+		Rain: -8
+		Storm: -10
+	}
+	SleepSchedule: {
+		Start: 02:30
+		End: 11:00
+	}
+}
+Merchant: {
+	AttackData: {
+		projType: 48
+		speedMult: 9
+		projDamage: 12
+		attackDelay: 10
+		attackCooldown: 60
+		maxValue: 60
+		gravityCorrection: 16
+		knockBack: 1.5
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: -10
+	}
+}
+Angler: {
+	AttackData: {
+		projType: 520
+		speedMult: 12
+		projDamage: 10
+		attackDelay: 10
+		attackCooldown: 0
+		maxValue: 1
+		gravityCorrection: 16
+		knockBack: 3
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: -10
+		Rain: 20
+	}
+	SleepSchedule: {
+		Start: 22:00
+		End: 06:30
+	}
+}
+SkeletonMerchant: {
+	AttackData: {
+		projType: 21
+		speedMult: 14
+		projDamage: 14
+		attackDelay: 10
+		attackCooldown: 0
+		maxValue: 1
+		gravityCorrection: 16
+		knockBack: 3
+	}
+}
+GoblinTinkerer: {
+	AttackData: {
+		projType: 24
+		speedMult: 5
+		projDamage: 15
+		attackDelay: 10
+		attackCooldown: 60
+		maxValue: 60
+		gravityCorrection: 16
+		knockBack: 1
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: -10
+	}
+	SleepSchedule: {
+		Start: 02:00
+		End: 10:45
+	}
+}
+Mechanic: {
+	AttackData: {
+		projType: 582
+		speedMult: 10
+		projDamage: 11
+		attackDelay: 1
+		attackCooldown: 30
+		maxValue: 30
+		knockBack: 3.5
+	}
+	EventPrefs: {
+		BloodMoon: -40
+		Party: 10
+		Rain: -8
+		Storm: -8
+	}
+	SleepSchedule: {
+		Start: 03:00
+		End: 11:30
+	}
+}
+Nurse: {
+	AttackData: {
+		projType: 583
+		speedMult: 8
+		projDamage: 8
+		attackDelay: 1
+		attackCooldown: 15
+		maxValue: 10
+		knockBack: 2
+		gravityCorrection: 10
+	}
+	EventPrefs: {
+		BloodMoon: -40
+		Party: 10
+	}
+}
+SantaClaus: {
+	AttackData: {
+		projType: 589
+		speedMult: 7
+		projDamage: 22
+		attackDelay: 1
+		attackCooldown: 10
+		maxValue: 1
+		knockBack: 2
+		gravityCorrection: 10
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: -10
+	}
+}
+ArmsDealer: {
+	AttackData: {
+		projType: 14
+		speedMult: 13
+		projDamage: 24
+		attackCooldown: 14
+		maxValue: 4
+		knockBack: 3
+		attackDelay: 1
+		randomOffset: 0.5
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: 10
+	}
+	SleepSchedule: {
+		Start: 23:45
+		End: 07:45
+	}
+}
+Painter: {
+	AttackData: {
+		projType: 587
+		speedMult: 10
+		projDamage: 8
+		attackCooldown: 10
+		maxValue: 1
+		knockBack: 1.75
+		attackDelay: 1
+		randomOffset: 0.5
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: -10
+		Rain: -8
+	}
+}
+TravellingMerchant: {
+	AttackData: {
+		projType: 14
+		speedMult: 13
+		projDamage: 24
+		attackCooldown: 12
+		maxValue: 5
+		knockBack: 2
+		attackDelay: 1
+		randomOffset: 0.2
+	}
+}
+Guide: {
+	AttackData: {
+		speedMult: 10
+		projDamage: 8
+		attackDelay: 1
+		projType: 1
+		attackCooldown: 30
+		maxValue: 20
+		knockBack: 2.75
+		gravityCorrection: 4
+		randomOffset: 0.7
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: -10
+		Rain: 5
+	}
+}
+WitchDoctor: {
+	AttackData: {
+		projType: 267
+		speedMult: 14
+		projDamage: 20
+		attackDelay: 1
+		attackCooldown: 10
+		maxValue: 1
+		knockBack: 3
+		gravityCorrection: 6
+		randomOffset: 0.4
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: -10
+		Rain: 5
+	}
+}
+Steampunker: {
+	AttackData: {
+		projType: 242
+		speedMult: 13
+		projDamage: 15
+		attackCooldown: 10
+		maxValue: 1
+		knockBack: 2
+		attackDelay: 1
+		randomOffset: 0.3
+	}
+	EventPrefs: {
+		BloodMoon: -40
+		Party: 10
+		Rain: -8
+	}
+	SleepSchedule: {
+		Start: 10:30
+		End: 06:45
+	}
+}
+Pirate: {
+	AttackData: {
+		projType: 14
+		speedMult: 14
+		projDamage: 24
+		attackCooldown: 10
+		maxValue: 1
+		knockBack: 2
+		attackDelay: 1
+		randomOffset: 0.7
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: 10
+		Rain: 10
+	}
+	SleepSchedule: {
+		Start: 01:00
+		End: 10:30
+	}
+}
+Cyborg: {
+	AttackData: {
+		attackDelay: 1
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: -10
+		Rain: -8
+	}
+}
+Clothier: {
+	AttackData: {
+		projType: 585
+		speedMult: 10
+		projDamage: 16
+		attackDelay: 30
+		attackCooldown: 20
+		maxValue: 15
+		knockBack: 2
+		randomOffset: 1
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: -10
+		Rain: -8
+	}
+	SleepSchedule: {
+		Start: 23:00
+		End: 07:30
+	}
+}
+Wizard: {
+	AttackData: {
+		projType: 15
+		speedMult: 6
+		projDamage: 18
+		attackDelay: 15
+		attackCooldown: 15
+		maxValue: 5
+		knockBack: 3
+		gravityCorrection: 20
+	}
+	EventPrefs: {
+		Party: 10
+		BloodMoon: -10
+	}
+}
+Truffle: {
+	AttackData: {
+		projType: 590
+		projDamage: 40
+		attackDelay: 15
+		attackCooldown: 10
+		maxValue: 1
+		knockBack: 3
+	}
+	EventPrefs: {
+		Party: 4
+		BloodMoon: -10
+		Rain: 8
+	}
+}
+Princess: {
+	AttackData: {
+		projType: 950
+		projDamage: 20
+		attackDelay: 15
+		attackCooldown: 0
+		maxValue: 0
+		knockBack: 3
+	}
+	EventPrefs: {
+		Party: 10
+	}
+}
+Dryad: {
+	AttackData: {
+		projType: 586
+		attackDelay: 24
+		attackCooldown: 10
+		maxValue: 1
+		knockBack: 3
+	}
+	EventPrefs: {
+		BloodMoon: -40
+		Party: 10
+		Rain: 8
+	}
+	SleepSchedule: {
+		Start: 21:30
+		End: 05:45
+	}
+}

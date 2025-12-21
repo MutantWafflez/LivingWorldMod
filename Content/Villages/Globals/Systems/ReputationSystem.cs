@@ -22,7 +22,7 @@ public class ReputationSystem : BaseModSystem<ReputationSystem> {
         _villageReputation = new int[LWMUtils.GetTotalVillagerTypeCount()];
         villageThresholdData = [];
 
-        JsonObject jsonReputationData = LWMUtils.GetJSONFromFile("Assets/JSONData/ReputationData.json").Qo();
+        JsonObject jsonReputationData = LWMUtils.GetJsonFromHjsonFile("Assets/JSONData/ReputationData.json").Qo();
         foreach (VillagerType type in Enum.GetValues<VillagerType>()) {
             JsonObject villageSpecificData = jsonReputationData[type.ToString()].Qo();
 

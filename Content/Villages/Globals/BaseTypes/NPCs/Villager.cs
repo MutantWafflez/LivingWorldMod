@@ -117,7 +117,7 @@ public abstract class Villager : ModNPC {
 
         // Villager Names
         Dictionary<VillagerType, IReadOnlyList<string>> tempVillagerNames = [];
-        JsonValue villagerNameData = LWMUtils.GetJSONFromFile("Assets/JSONData/VillagerNames.json");
+        JsonValue villagerNameData = LWMUtils.GetJsonFromHjsonFile("Assets/JSONData/VillagerNames.json");
 
         for (VillagerType villagerType = 0; (int)villagerType < LWMUtils.GetTotalVillagerTypeCount(); villagerType++) {
             tempVillagerNames[villagerType] = villagerNameData[villagerType.ToString()].Qa().Select(value => value.Qs()).ToList();

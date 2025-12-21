@@ -1072,9 +1072,9 @@ public static partial class LWMUtils {
     ///     Gets and returns the json data from the specified file path. This is for specifically
     ///     LWM, so the file path does not need to include "LivingWorldMod".
     /// </summary>
-    public static JsonValue GetJSONFromFile(string filePath) {
+    public static JsonValue GetJsonFromHjsonFile(string filePath) {
         Stream jsonStream = LWM.Instance.GetFileStream(filePath);
-        JsonValue jsonData = JsonValue.Load(jsonStream);
+        JsonValue jsonData = HjsonValue.Load(jsonStream);
         jsonStream.Close();
 
         return jsonData;
