@@ -151,7 +151,7 @@ public abstract class Villager : ModNPC {
 
             VillagerProfiles[villagerType] = new VillagerTypeProfile(
                 JsonConvert.DeserializeObject<List<string>>(villagerTypeData["Names"].ToString()),
-                JsonConvert.DeserializeObject<ReputationThresholdData>(villagerTypeData["ReputationData"].ToString()),
+                JsonConvert.DeserializeObject<ReputationThresholdData>(villagerTypeData["ReputationThresholds"].ToString()),
                 ParseDialogueJson(villagerType, villagerTypeData["DialogueData"])
             );
         }
