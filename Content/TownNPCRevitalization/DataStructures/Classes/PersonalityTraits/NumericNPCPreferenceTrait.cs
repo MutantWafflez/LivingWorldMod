@@ -3,7 +3,6 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 using LivingWorldMod.DataStructures.Records;
-
 using Terraria.GameContent;
 using Terraria.GameContent.Personalities;
 
@@ -24,11 +23,11 @@ public class NumericNPCPreferenceTrait(int moodOffset, int npcType) : IPersonali
             .AddModifier(
                 new DynamicLocalizedText(
                     "TownNPCMoodDescription.NeighborNPC".Localized(),
-                    [LWMUtils.GetFirstNPC(npc => npc.type == npcType)?.TypeName ?? "Error"]
+                    new object[] { LWMUtils.GetFirstNPC(npc => npc.type == npcType)?.TypeName ?? "Error" }
                 ),
                 new DynamicLocalizedText(
                     TownNPCDataSystem.GetAutoloadedFlavorTextOrDefault($"{LWMUtils.GetNPCTypeNameOrIDName(info.NPC.type)}.NPC_{LWMUtils.GetNPCTypeNameOrIDName(npcType)}"),
-                    [NPC.GetFirstNPCNameOrNull(npcType)]
+                    new { NPCName = NPC.GetFirstNPCNameOrNull(npcType) }
                 ),
                 moodOffset
             );

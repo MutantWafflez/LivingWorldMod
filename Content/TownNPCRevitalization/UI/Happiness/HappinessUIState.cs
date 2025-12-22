@@ -13,17 +13,16 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.UI.Happiness;
 
 public class HappinessUIState : UIState {
     private sealed class UIMoodModifier : UIElement {
-        //TODO: Use Scalie's asset generator?
-
         public UIMoodModifier(MoodModifierInstance instance) {
             Height = StyleDimension.FromPixels(40f);
             Width = StyleDimension.Fill;
 
-            DynamicLocalizedText flavorText = new("UI.MoodFlavorText".Localized(), [instance.FlavorText.ToString()]);
+            DynamicLocalizedText flavorText = new("UI.MoodFlavorText".Localized(), new object[] { instance.FlavorText.ToString() } );
             UITooltipElement tooltipElement = new (flavorText) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
             Append(tooltipElement);
 
-            UIPanel backPanel = new (Main.Assets.Request<Texture2D>("Images/UI/PanelBackground"), Assets.Sprites.UI.Elements.GradientPanelBorder.Asset) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
+            UIPanel backPanel =
+                new (Main.Assets.Request<Texture2D>("Images/UI/PanelBackground"), Assets.Sprites.UI.Elements.GradientPanelBorder.Asset) { Width = StyleDimension.Fill, Height = StyleDimension.Fill };
             tooltipElement.Append(backPanel);
 
             UIModifiedText moodDescriptionText = new (instance.DescriptionText.FormattedString) { Height = StyleDimension.Fill, VAlign = 0.5f };
@@ -125,7 +124,7 @@ public class HappinessUIState : UIState {
         _priceModifierTextNumber = new UIModifiedText("", 0.75f, true) { VAlign = 0.5f, Left = StyleDimension.FromPixelsAndPercent(PriceModifierTextXOffset, 1f) };
         _npcInfoAndPriceZone.Append(_priceModifierTextNumber);
 
-        _happinessBarZone = new UITooltipElement(new DynamicLocalizedText("UI.Fraction".Localized(), [0, 0])) {
+        _happinessBarZone = new UITooltipElement(new DynamicLocalizedText("UI.Fraction".Localized())) {
             Width = StyleDimension.Fill, Height = StyleDimension.FromPixels(HappinessBarZoneHeight), Top = StyleDimension.FromPixels(HappinessBarZoneYPos)
         };
         _moodBackPanel.Append(_happinessBarZone);

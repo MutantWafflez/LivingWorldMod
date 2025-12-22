@@ -3,7 +3,6 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 using LivingWorldMod.DataStructures.Records;
-
 using Terraria.GameContent;
 using Terraria.GameContent.Personalities;
 
@@ -23,7 +22,7 @@ public class NumericBiomePreferenceTrait(int moodOffset, IShoppingBiome biome) :
 
         info.NPC.GetGlobalNPC<TownNPCMoodModule>()
             .AddModifier(
-                new DynamicLocalizedText("TownNPCMoodDescription.InBiome".Localized(), [ShopHelper.BiomeNameByKey(biome.NameKey)]),
+                new DynamicLocalizedText("TownNPCMoodDescription.InBiome".Localized(), new object[] { ShopHelper.BiomeNameByKey(biome.NameKey) }),
                 TownNPCDataSystem.GetAutoloadedFlavorTextOrDefault($"{LWMUtils.GetNPCTypeNameOrIDName(info.NPC.type)}.Biome_{biome.NameKey}"),
                 moodOffset
             );
