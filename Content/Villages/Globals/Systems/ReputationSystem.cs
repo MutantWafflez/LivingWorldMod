@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using Hjson;
 using LivingWorldMod.Content.Villages.DataStructures.Enums;
-using LivingWorldMod.Content.Villages.DataStructures.Records;
 using LivingWorldMod.Globals.BaseTypes.Systems;
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader.IO;
@@ -14,25 +11,10 @@ namespace LivingWorldMod.Content.Villages.Globals.Systems;
 /// </summary>
 public class ReputationSystem : BaseModSystem<ReputationSystem> {
     public const int VillageReputationConstraint = 100;
-    public Dictionary<VillagerType, ReputationThresholdData> villageThresholdData;
     private int[] _villageReputation;
 
     public override void Load() {
         _villageReputation = new int[LWMUtils.GetTotalVillagerTypeCount()];
-        villageThresholdData = [];
-
-        JsonObject jsonReputationData = LWMUtils.GetJsonFromHjsonFile("Assets/JSONData/ReputationData.json").Qo();
-        foreach (VillagerType type in Enum.GetValues<VillagerType>()) {
-            JsonObject villageSpecificData = jsonReputationData[type.ToString()].Qo();
-
-            villageThresholdData[type] = new ReputationThresholdData(
-                villageSpecificData["Hate"].Qi(),
-                villageSpecificData["SevereDislike"].Qi(),
-                villageSpecificData["Dislike"].Qi(),
-                villageSpecificData["Like"].Qi(),
-                villageSpecificData["Love"].Qi()
-            );
-        }
     }
 
     public override void Unload() {
@@ -48,11 +30,9 @@ public class ReputationSystem : BaseModSystem<ReputationSystem> {
         //Make sure to keep the array size up to date in case a player is loading an old world
         if (savedVillageRep.Length != _villageReputation.Length) {
             Array.Resize(ref savedVillageRep, _villageReputation.Length);
-            _villageReputation = savedVillageRep;
         }
-        else {
-            _villageReputation = savedVillageRep;
-        }
+
+        _villageReputation = savedVillageRep;
     }
 
     /// <summary>
