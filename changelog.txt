@@ -1,14 +1,8 @@
-INDEV RELEASE v0.4.1.0 [Cogs and Bugs] (March 30th, 2025)
+INDEV RELEASE v0.4.1.1 [Cull the Dupes] (December 21st, 2025)
+Additions:
++ Added command that kills all duplicate Town NPCs, as well as a warning message upon joining a world with duplicate Town NPCs
+	-> I wished it didn't have to come to this, but unfortunately I have still been unable to debug why exactly Town NPCs have been duplicating this last update.
+	-> As such, by adding this command, I can alleviate the actual issue in the meantime while I continue to work on figuring out why this is happening in the first place.
+	-> Thank you for your patience on this!
 Changes:
-+ Added two new client-side configuration options: Sprite Overhaul Disabling and Town NPC Small Talk Toggle
-	Notes:
-	* The Sprite Overhaul Disable list allows you to disable specific Town NPCs' special drawing. This has the effect of removing their "blinking" and "talking" animation, but will likely fix any animation errors they may have
-	* The small-talk feature betweeen Town NPCs has been a little divisive, so for the time being, I have added an option to disable it. Note that I plan to overhaul this system in Part II, so this is just a band-aid fix for now
-- Removed "Pathfinder size" config option
-Fixes:
-* Fixed waystones "disabling" themselves in multiplayer and "re-enabling" themselves when you get near them 
-	Notes:
-	* This has been a long-standing bug that quite a few people have reported. Funnily enough, this is a bug that I had fixed before, but somehow managed to bring back!
-	* Hopefully this is the last of the waystone bugs, but please do let me know if you have additional issues in multiplayer (or singleplayer, for that matter)
-	* Also, sorry for taking so long fixing this one!
-* Fixed Town NPCs not closing doors after they open them in multiplayer
+* Changed the internal license of the code from GPLv3 to AGPLv3
