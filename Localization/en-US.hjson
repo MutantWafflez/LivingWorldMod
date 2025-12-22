@@ -30,6 +30,16 @@ Mods: {
 			VillagerLeft.Harpy: "{0} the Harpy Vilager has departed for a new home!"
 		}
 
+		Debug: {
+			KillDupeNPCs: Killing all duplicate Town NPCs!
+			DuplicateNPCsWarning:
+				'''
+				WARNING: Living World Mod has detected duplicated Town NPCs! Use the /killdupe command to kill all said duplicates.
+				Living World Mod is still working on debugging and fixing this as soon as possible, so this command is merely a band-aid
+				for the time being. Sorry for the inconvenience!
+				'''
+		}
+
 		VillagerDialogue: {
 			Harpy: {
 				Event: {
