@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Hjson;
 using LivingWorldMod.Content.Villages.DataStructures.Enums;
-using LivingWorldMod.Content.Villages.DataStructures.Structs;
+using LivingWorldMod.Content.Villages.DataStructures.Records;
+using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Globals.BaseTypes.Systems;
-
 using Terraria.GameContent.Events;
 using Terraria.Localization;
 using Terraria.Utilities;
@@ -18,7 +17,6 @@ namespace LivingWorldMod.Content.Villages.Globals.Systems;
 /// </summary>
 [Autoload(Side = ModSide.Client)]
 public class DialogueSystem : BaseModSystem<DialogueSystem> {
-    private Dictionary<VillagerType, List<DialogueData>> _villagerDialogue;
     private Dictionary<string, Func<bool>> _eventCheckers;
 
     public override void Load() {
@@ -35,52 +33,6 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
         };
     }
 
-    public override void PostSetupContent() {
-        _villagerDialogue = [];
-
-        Dictionary<string, LocalizedText> translationDict = LanguageManager.Instance._localizedTexts;
-        Dictionary<string, LocalizedText> allDialogue = translationDict
-            .Where(pair => pair.Value.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue"))
-            .ToDictionary(pair => pair.Key, pair => pair.Value);
-
-        JsonValue jsonReputationData = LWMUtils.GetJsonFromHjsonFile("Assets/JSONData/DialogueWeights.json");
-        for (VillagerType type = 0; (int)type < LWMUtils.GetTotalVillagerTypeCount(); type++) {
-            List<DialogueData> finalDialogueData = [];
-
-            // TODO: Use something like Lang.CreateDialogueFilter instead of enumerating manually
-            string keyStart = $"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{type}";
-            Dictionary<string, LocalizedText> typeDialogue = allDialogue.Where(pair => pair.Key.StartsWith(keyStart)).ToDictionary(pair => pair.Key, pair => pair.Value);
-            JsonObject villageSpecificData = jsonReputationData[type.ToString()].Qo();
-
-            foreach ((string key, LocalizedText value) in typeDialogue) {
-                double weight = 1;
-                int priority = 0;
-                string[] requiredEvents = null;
-
-                string[] splitKey = key[(keyStart.Length + 1)..].Split('.');
-                if (villageSpecificData.TryGetValue(splitKey[0], out JsonValue dialogueSubdivisionData) && dialogueSubdivisionData.Qo().TryGetValue(splitKey[1], out JsonValue specificDialogueValue)) {
-                    JsonObject specificDialogueObject = specificDialogueValue.Qo();
-
-                    if (specificDialogueObject.TryGetValue("Weight", out JsonValue weightValue)) {
-                        weight = weightValue.Qd();
-                    }
-
-                    if (specificDialogueObject.TryGetValue("Priority", out JsonValue priorityValue)) {
-                        priority = priorityValue.Qi();
-                    }
-
-                    if (specificDialogueObject.TryGetValue("Events", out JsonValue eventsValue)) {
-                        requiredEvents = eventsValue.Qs().Split('|');
-                    }
-                }
-
-                finalDialogueData.Add(new DialogueData(value, weight, priority, requiredEvents));
-            }
-
-            _villagerDialogue[type] = finalDialogueData;
-        }
-    }
-
     /// <summary>
     ///     Selects a piece of localized dialogue for the specified villager type, based on the current relationship status,
     ///     any possible events, and weights of each dialogue.
@@ -89,31 +41,31 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
     /// <param name="relationshipStatus"> The current relationship status with the villager type in question. </param>
     /// <param name="dialogueType"> The type of dialogue wanted. </param>
     /// <returns></returns>
-    public string GetDialogue(VillagerType villagerType, VillagerRelationship relationshipStatus, DialogueType dialogueType) {
-        List<DialogueData> allDialogue = _villagerDialogue[villagerType];
-        WeightedRandom<string> dialogueOptions = new();
-        int priorityThreshold = allDialogue.Min(data => data.priority);
+    public LocalizedText GetDialogue(VillagerType villagerType, VillagerRelationship relationshipStatus, DialogueType dialogueType) {
+        List<DialogueData> allDialogue = Villager.VillagerProfiles[villagerType].Dialogues;
+        WeightedRandom<LocalizedText> dialogueOptions = new();
+        int priorityThreshold = allDialogue.Min(data => data.Priority);
 
         foreach (DialogueData data in dialogueType == DialogueType.Normal
-            ? allDialogue.Where(dialogue => !dialogue.dialogue.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Shop"))
-            : allDialogue.Where(dialogue => dialogue.dialogue.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Shop.{dialogueType.ToString().Replace("Shop", "")}"))) {
+            ? allDialogue.Where(dialogue => !dialogue.DialogueKey.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Shop"))
+            : allDialogue.Where(dialogue => dialogue.DialogueKey.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Shop.{dialogueType.ToString().Replace("Shop", "")}"))) {
             //So many checks! Conditionals!
-            if ((!data.dialogue.Key.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Event")
-                    && !data.dialogue.Key.Contains($".{relationshipStatus}."))
-                || !TestEvents(data.requiredEvents)
-                || data.priority < priorityThreshold) {
+            if ((!data.DialogueKey.StartsWith($"Mods.{nameof(LivingWorldMod)}.VillagerDialogue.{villagerType}.Event")
+                    && !data.DialogueKey.Contains($".{relationshipStatus}."))
+                || !TestEvents(data.RequiredEvents)
+                || data.Priority < priorityThreshold) {
                 continue;
             }
 
-            if (data.priority > priorityThreshold) {
-                priorityThreshold = data.priority;
+            if (data.Priority > priorityThreshold) {
+                priorityThreshold = data.Priority;
                 dialogueOptions.Clear();
             }
 
-            dialogueOptions.Add(data.dialogue.Value, data.weight);
+            dialogueOptions.Add(data.DialogueKey.Localized(), data.Weight);
         }
 
-        return dialogueOptions.elements.Count != 0 ? dialogueOptions : "Dialogue error! No dialogue found, report to devs!";
+        return dialogueOptions.elements.Count > 0 ? dialogueOptions : LocalizedText.Empty;
     }
 
     /// <summary>

@@ -411,7 +411,7 @@ public class ShopUIState : UIState {
                         _portrait.temporaryExpressionTimer = 120f;
                     }
 
-                    _dialogueText.DesiredText = DialogueSystem.Instance.GetDialogue(_currentVillager.VillagerType, _currentVillager.RelationshipStatus, DialogueType.ShopBuy);
+                    _dialogueText.DesiredText = DialogueSystem.Instance.GetDialogue(_currentVillager.VillagerType, _currentVillager.RelationshipStatus, DialogueType.ShopBuy).Value;
 
                     SoundEngine.PlaySound(SoundID.Coins);
                 }
@@ -442,7 +442,7 @@ public class ShopUIState : UIState {
 
         _nameText.DesiredText = _currentVillager.NPC.GivenName;
 
-        _dialogueText.DesiredText = DialogueSystem.Instance.GetDialogue(_currentVillager.VillagerType, _currentVillager.RelationshipStatus, DialogueType.ShopInitial);
+        _dialogueText.DesiredText = DialogueSystem.Instance.GetDialogue(_currentVillager.VillagerType, _currentVillager.RelationshipStatus, DialogueType.ShopInitial).Value;
 
         _savingsDisplay.SetNewCoinValues(Main.LocalPlayer.CalculateTotalSavings());
 

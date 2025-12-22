@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Hjson;
 using LivingWorldMod.Content.Villages.DataStructures.Enums;
 using LivingWorldMod.Content.Villages.DataStructures.Records;
 using LivingWorldMod.Content.Villages.Globals.Systems;
 using LivingWorldMod.Content.Villages.Globals.Systems.UI;
 using LivingWorldMod.DataStructures.Classes;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.DataStructures;
@@ -24,11 +23,6 @@ namespace LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 /// </summary>
 public abstract class Villager : ModNPC {
     /// <summary>
-    ///     A dictionary holding all villager names for each type.
-    /// </summary>
-    public static IReadOnlyDictionary<VillagerType, IReadOnlyList<string>> villagerNames;
-
-    /// <summary>
     ///     The draw object used to draw this villager.
     /// </summary>
     public LayeredDrawObject drawObject;
@@ -42,6 +36,11 @@ public abstract class Villager : ModNPC {
     ///     A counter for how long this Villager has been homeless for, used for automatically leaving
     /// </summary>
     private int _homelessCounter;
+
+    public static Dictionary<VillagerType, VillagerTypeProfile> VillagerProfiles {
+        get;
+        private set;
+    }
 
     public sealed override string Texture => LWM.SpritePath + $"NPCs/Villagers/{VillagerType}/DefaultStyle";
 
@@ -76,6 +75,34 @@ public abstract class Villager : ModNPC {
     public int[] DrawIndices {
         get;
         protected set;
+    }
+
+    private static List<DialogueData> ParseDialogueJson(VillagerType villagerType, JsonValue dialogueJson) {
+        List<DialogueData> dialogueData = [];
+        foreach ((string dialogueTypeKey, JsonValue dialogueOptions) in dialogueJson.Qo()) {
+            foreach ((string dialogueOptionKey, JsonValue dialogueValue) in dialogueOptions.Qo()) {
+                JsonObject dialogueObject = dialogueValue.Qo();
+                double weight = 1;
+                int priority = 0;
+                string[] requiredEvents = null;
+
+                if (dialogueObject.TryGetValue("Weight", out JsonValue weightValue)) {
+                    weight = weightValue.Qd();
+                }
+
+                if (dialogueObject.TryGetValue("Priority", out JsonValue priorityValue)) {
+                    priority = priorityValue.Qi();
+                }
+
+                if (dialogueObject.TryGetValue("Events", out JsonValue eventsValue)) {
+                    requiredEvents = eventsValue.Qs().Split('|');
+                }
+
+                dialogueData.Add(new DialogueData($"{villagerType}.{dialogueTypeKey}.{dialogueOptionKey}".PrependModKey(), weight, priority, requiredEvents));
+            }
+        }
+
+        return dialogueData;
     }
 
     public override ModNPC NewInstance(NPC entity) {
@@ -115,15 +142,19 @@ public abstract class Villager : ModNPC {
         NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new() { Velocity = 1f, Direction = -1 };
         NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 
-        // Villager Names
-        Dictionary<VillagerType, IReadOnlyList<string>> tempVillagerNames = [];
-        JsonValue villagerNameData = LWMUtils.GetJsonFromHjsonFile("Assets/JSONData/VillagerNames.json");
+        // Villager data
+        VillagerProfiles = [];
+        JsonValue villagerData = LWMUtils.GetJsonFromHjsonFile("Assets/Json/VillagerData.t_hjson");
 
         for (VillagerType villagerType = 0; (int)villagerType < LWMUtils.GetTotalVillagerTypeCount(); villagerType++) {
-            tempVillagerNames[villagerType] = villagerNameData[villagerType.ToString()].Qa().Select(value => value.Qs()).ToList();
-        }
+            JsonValue villagerTypeData = villagerData[villagerType.ToString()];
 
-        villagerNames = tempVillagerNames;
+            VillagerProfiles[villagerType] = new VillagerTypeProfile(
+                JsonConvert.DeserializeObject<List<string>>(villagerTypeData["Names"].ToString()),
+                JsonConvert.DeserializeObject<ReputationThresholdData>(villagerTypeData["ReputationData"].ToString()),
+                ParseDialogueJson(villagerType, villagerTypeData["DialogueData"])
+            );
+        }
     }
 
     public override void SetDefaults() {
@@ -167,7 +198,7 @@ public abstract class Villager : ModNPC {
 
     public override bool CheckActive() => false;
 
-    public override List<string> SetNPCNameList() => villagerNames[VillagerType].ToList();
+    public override List<string> SetNPCNameList() => VillagerProfiles[VillagerType].PossibleNames;
 
     public override void SetChatButtons(ref string button, ref string button2) {
         button = Language.GetTextValue("LegacyInterface.28"); //"Shop"
@@ -189,7 +220,7 @@ public abstract class Villager : ModNPC {
             return "..."; //The player should be unable to chat with the villagers if they are hated, but just in case that occurs, return something in order to prevent an error thrown
         }
 
-        return DialogueSystem.Instance.GetDialogue(VillagerType, RelationshipStatus, DialogueType.Normal);
+        return DialogueSystem.Instance.GetDialogue(VillagerType, RelationshipStatus, DialogueType.Normal).Value;
     }
 
     public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {

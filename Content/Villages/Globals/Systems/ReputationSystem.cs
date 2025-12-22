@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using Hjson;
 using LivingWorldMod.Content.Villages.DataStructures.Enums;
-using LivingWorldMod.Content.Villages.DataStructures.Structs;
+using LivingWorldMod.Content.Villages.DataStructures.Records;
 using LivingWorldMod.Globals.BaseTypes.Systems;
-
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader.IO;
 

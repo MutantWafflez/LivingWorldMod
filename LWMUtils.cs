@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Hjson;
 using LivingWorldMod.Content.Villages.DataStructures.Enums;
-using LivingWorldMod.Content.Villages.DataStructures.Structs;
+using LivingWorldMod.Content.Villages.DataStructures.Records;
 using LivingWorldMod.Content.Villages.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.Villages.Globals.Systems;
 using LivingWorldMod.Content.Villages.HarpyVillage.Materials;
@@ -245,7 +245,7 @@ public static partial class LWMUtils {
         ReputationThresholdData thresholds = ReputationSystem.Instance.villageThresholdData[villager.VillagerType];
 
         float reputationValue = ReputationSystem.Instance.GetNumericVillageReputation(villager.VillagerType);
-        float centerPoint = (thresholds.likeThreshold - thresholds.dislikeThreshold) / 2f;
+        float centerPoint = (thresholds.LikeThreshold - thresholds.DislikeThreshold) / 2f;
 
         return MathHelper.Clamp(1 - reputationValue / (ReputationSystem.VillageReputationConstraint - centerPoint) / 2f, 0.67f, 1.67f);
     }
