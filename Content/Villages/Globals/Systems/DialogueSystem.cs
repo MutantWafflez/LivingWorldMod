@@ -62,7 +62,7 @@ public class DialogueSystem : BaseModSystem<DialogueSystem> {
                 dialogueOptions.Clear();
             }
 
-            dialogueOptions.Add(data.DialogueKey.Localized(), data.Weight);
+            dialogueOptions.Add(Language.GetText(data.DialogueKey), data.Weight);
         }
 
         return dialogueOptions.elements.Count > 0 ? dialogueOptions : LocalizedText.Empty;

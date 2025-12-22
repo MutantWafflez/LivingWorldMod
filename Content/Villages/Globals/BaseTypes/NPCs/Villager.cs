@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Hjson;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.Villages.DataStructures.Enums;
 using LivingWorldMod.Content.Villages.DataStructures.Records;
 using LivingWorldMod.Content.Villages.Globals.Systems;
@@ -79,6 +81,8 @@ public abstract class Villager : ModNPC {
 
     private static List<DialogueData> ParseDialogueJson(VillagerType villagerType, JsonValue dialogueJson) {
         List<DialogueData> dialogueData = [];
+        HashSet<string> preExistingKeys = [];
+
         foreach ((string dialogueTypeKey, JsonValue dialogueOptions) in dialogueJson.Qo()) {
             foreach ((string dialogueOptionKey, JsonValue dialogueValue) in dialogueOptions.Qo()) {
                 JsonObject dialogueObject = dialogueValue.Qo();
@@ -98,9 +102,14 @@ public abstract class Villager : ModNPC {
                     requiredEvents = eventsValue.Qs().Split('|');
                 }
 
-                dialogueData.Add(new DialogueData($"{villagerType}.{dialogueTypeKey}.{dialogueOptionKey}".PrependModKey(), weight, priority, requiredEvents));
+                string key = $"VillagerDialogue.{villagerType}.{dialogueTypeKey}.{dialogueOptionKey}".PrependModKey();
+                preExistingKeys.Add(key);
+                dialogueData.Add(new DialogueData(key, weight, priority, requiredEvents));
             }
         }
+
+        LocalizedTextGroup allDialogue = new(Lang.CreateDialogFilter($"VillagerDialogue.{villagerType}".PrependModKey()));
+        dialogueData.AddRange(allDialogue.Texts.Where(text => !preExistingKeys.Contains(text.Key)).Select(text => new DialogueData(text.Key, 1, 0, null)));
 
         return dialogueData;
     }
