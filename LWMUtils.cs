@@ -245,7 +245,7 @@ public static partial class LWMUtils {
         ReputationThresholdData thresholds = Villager.VillagerProfiles[villager.VillagerType].ReputationThresholds;
 
         float reputationValue = ReputationSystem.Instance.GetNumericVillageReputation(villager.VillagerType);
-        float centerPoint = (thresholds.LikeThreshold - thresholds.DislikeThreshold) / 2f;
+        float centerPoint = (thresholds.Like - thresholds.Dislike) / 2f;
 
         return MathHelper.Clamp(1 - reputationValue / (ReputationSystem.VillageReputationConstraint - centerPoint) / 2f, 0.67f, 1.67f);
     }
