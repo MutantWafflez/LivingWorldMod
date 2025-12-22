@@ -13,14 +13,14 @@ public class FirearmAttackAIState : TownNPCAIState {
 
     public override void DoState( NPC npc) {
         TownNPCCombatModule combatModule = npc.GetGlobalNPC<TownNPCCombatModule>();
-        TownNPCDataSystem.projectileAttackDatas.TryGetValue(npc.type, out TownNPCProjAttackData attackData);
+        TownNPCAttackData attackData = TownNPCDataSystem.ProfileDatabase[npc.type].AttackData;
 
         bool inBetweenShots = false;
         // Everything in this switch block is vanilla hardcode, unmanagable with a JSON file, so here it stays
         switch (npc.type) {
             case NPCID.ArmsDealer: {
                 if (Main.hardMode) {
-                    attackData.projDamage = 15;
+                    attackData.damage = 15;
                     if (npc.localAI[3] > attackData.attackDelay) {
                         attackData.attackDelay = 10;
                         inBetweenShots = true;
@@ -46,14 +46,14 @@ public class FirearmAttackAIState : TownNPCAIState {
                 }
 
                 if (Main.hardMode) {
-                    attackData.projDamage += 2;
+                    attackData.damage += 2;
                 }
 
                 break;
             }
             case NPCID.TravellingMerchant: {
                 if (Main.hardMode) {
-                    attackData.projDamage = 30;
+                    attackData.damage = 30;
                     attackData.projType = 357;
                 }
 
@@ -64,7 +64,7 @@ public class FirearmAttackAIState : TownNPCAIState {
                     attackData.projType = 2;
                     attackData.attackCooldown = 15;
                     attackData.maxValue = 10;
-                    attackData.projDamage += 6;
+                    attackData.damage += 6;
                 }
 
                 break;
@@ -96,7 +96,7 @@ public class FirearmAttackAIState : TownNPCAIState {
                 if (npc.localAI[3] == 0f && combatModule.AttackLocation is { } location && npc.Distance(location.Center) < NPCID.Sets.PrettySafe[npc.type]) {
                     attackData.randomOffset = 0.1f;
                     attackData.projType = 162;
-                    attackData.projDamage = 50;
+                    attackData.damage = 50;
                     attackData.knockBack = 10f;
                     attackData.speedMult = 24f;
                 }
@@ -108,7 +108,7 @@ public class FirearmAttackAIState : TownNPCAIState {
                 switch (attackData.projType) {
                     case 135:
                         attackData.speedMult = 12f;
-                        attackData.projDamage = 30;
+                        attackData.damage = 30;
                         attackData.attackCooldown = 30;
                         attackData.maxValue = 10;
                         attackData.knockBack = 7f;
@@ -116,7 +116,7 @@ public class FirearmAttackAIState : TownNPCAIState {
                         break;
                     case 133:
                         attackData.speedMult = 10f;
-                        attackData.projDamage = 25;
+                        attackData.damage = 25;
                         attackData.attackCooldown = 10;
                         attackData.maxValue = 1;
                         attackData.knockBack = 6f;
@@ -124,7 +124,7 @@ public class FirearmAttackAIState : TownNPCAIState {
                         break;
                     case 134:
                         attackData.speedMult = 13f;
-                        attackData.projDamage = 20;
+                        attackData.damage = 20;
                         attackData.attackCooldown = 20;
                         attackData.maxValue = 10;
                         attackData.knockBack = 4f;
@@ -135,17 +135,17 @@ public class FirearmAttackAIState : TownNPCAIState {
                 break;
         }
 
-        NPCLoader.TownNPCAttackStrength(npc, ref attackData.projDamage, ref attackData.knockBack);
+        NPCLoader.TownNPCAttackStrength(npc, ref attackData.damage, ref attackData.knockBack);
         NPCLoader.TownNPCAttackCooldown(npc, ref attackData.attackCooldown, ref attackData.maxValue);
         NPCLoader.TownNPCAttackProj(npc, ref attackData.projType, ref attackData.attackDelay);
         NPCLoader.TownNPCAttackProjSpeed(npc, ref attackData.speedMult, ref attackData.gravityCorrection, ref attackData.randomOffset);
         NPCLoader.TownNPCAttackShoot(npc, ref inBetweenShots);
 
         if (Main.expertMode) {
-            attackData.projDamage = (int)(attackData.projDamage * Main.GameModeInfo.TownNPCDamageMultiplier);
+            attackData.damage = (int)(attackData.damage * Main.GameModeInfo.TownNPCDamageMultiplier);
         }
 
-        attackData.projDamage = (int)(attackData.projDamage * combatModule.CurrentDamageMultiplier);
+        attackData.damage = (int)(attackData.damage * combatModule.CurrentDamageMultiplier);
 
         npc.ai[1] -= 1f;
         npc.localAI[3] += 1f;
@@ -168,7 +168,7 @@ public class FirearmAttackAIState : TownNPCAIState {
                 npc.Center + new Vector2(0, -2),
                 projVelocity,
                 attackData.projType,
-                attackData.projDamage,
+                attackData.damage,
                 attackData.knockBack,
                 Main.myPlayer,
                 ai1: npc.type == NPCID.Painter ? Main.rand.Next(12) / 6f : 0f

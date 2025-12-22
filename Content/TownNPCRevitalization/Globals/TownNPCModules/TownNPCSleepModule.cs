@@ -26,8 +26,6 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
 
     private const int MaxBlockedSleepValue = LWMUtils.RealLifeSecond * 10;
 
-    private static readonly SleepThresholds DefaultSleepThresholds = new (LWMUtils.InGameHour * 17, LWMUtils.InGameHour * 13, LWMUtils.InGameHour * 5);
-    private static readonly SleepSchedule DefaultSleepSchedule = new(new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
 
     private static readonly Gradient<Color> SleepIconColorGradient = new (Color.Lerp, (0f, Color.Red), (0.5f, Color.DarkOrange), (1f, Color.White));
 
@@ -86,10 +84,6 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
         private set;
     }
 
-    public static SleepSchedule GetSleepProfileOrDefault(int npcType) => TownNPCDataSystem.sleepSchedules.GetValueOrDefault(npcType, DefaultSleepSchedule);
-
-    public static SleepThresholds GetSleepThresholdsOrDefault(int npcType) => TownNPCDataSystem.sleepThresholds.GetValueOrDefault(npcType, DefaultSleepThresholds);
-
     public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => TownGlobalNPC.IsValidFullTownNPC(entity, lateInstantiation);
 
     public override void SetBestiary(NPC npc, BestiaryDatabase database, BestiaryEntry bestiaryEntry) {
@@ -145,10 +139,10 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
             return;
         }
 
-        SleepThresholds thresholds = GetSleepThresholdsOrDefault(NPC.type);
+        SleepThresholds thresholds = TownNPCDataSystem.ProfileDatabase[NPC.type].SleepThresholds;
         int bestRestedLimit = MaxAwakeValue - thresholds.BestRestLimit;
 
-        SleepSchedule npcSleepSchedule = GetSleepProfileOrDefault(NPC.type);
+        SleepSchedule npcSleepSchedule = TownNPCDataSystem.ProfileDatabase[NPC.type].SleepSchedule;
         bool isBedTime = LWMUtils.CurrentInGameTime.IsBetween(npcSleepSchedule.StartTime, npcSleepSchedule.EndTime);
         switch (WantsToSleep) {
             case true when (!isBedTime || awakeTicks <= bestRestedLimit / 3f) && Main.rand.NextBool(Math.Max(1, (int)awakeTicks)):

@@ -267,7 +267,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         }
     }
 
-    private TownNPCSpriteOverlay GetOverlay(int overlayIndex) => TownNPCDataSystem.spriteOverlayProfiles[NPC.type].GetCurrentSpriteOverlay(NPC, overlayIndex);
+    private TownNPCSpriteOverlay GetOverlay(int overlayIndex) => TownNPCDataSystem.ProfileDatabase[NPC.type].OverlayProfile.GetCurrentSpriteOverlay(NPC, overlayIndex);
 
     private void AddFlavorOverlays(int frameWidth, int frameHeight, Vector2 defaultOrigin) {
         if (!AreEyesClosed) {

@@ -1,11 +1,11 @@
 DyeTrader: {
 	AttackData: {
-		damage: 11
-		itemWidth: 32
-		itemHeight: 32
-		attackCooldown: 12
-		maxValue: 6
-		knockBack: 4.25
+		Damage: 11
+		ItemWidth: 32
+		ItemHeight: 32
+		AttackCooldown: 12
+		MaxValue: 6
+		KnockBack: 4.25
 	}
 	EventPrefs: {
 		Party: 10
@@ -15,12 +15,12 @@ DyeTrader: {
 }
 TaxCollector: {
 	AttackData: {
-		damage: 9
-		itemWidth: 28
-		itemHeight: 28
-		attackCooldown: 9
-		maxValue: 3
-		knockBack: 3.5
+		Damage: 9
+		ItemWidth: 28
+		ItemHeight: 28
+		AttackCooldown: 9
+		MaxValue: 3
+		KnockBack: 3.5
 	}
 	EventPrefs: {
 		Party: 10
@@ -29,12 +29,12 @@ TaxCollector: {
 }
 Stylist: {
 	AttackData: {
-		damage: 10
-		itemWidth: 32
-		itemHeight: 32
-		attackCooldown: 15
-		maxValue: 8
-		knockBack: 5
+		Damage: 10
+		ItemWidth: 32
+		ItemHeight: 32
+		AttackCooldown: 15
+		MaxValue: 8
+		KnockBack: 5
 	}
 	EventPrefs: {
 		BloodMoon: -40
@@ -47,14 +47,14 @@ Stylist: {
 }
 Demolitionist: {
 	AttackData: {
-		projType: 30
-		speedMult: 6
-		projDamage: 20
-		attackDelay: 10
-		attackCooldown: 180
-		maxValue: 120
-		gravityCorrection: 16
-		knockBack: 7
+		ProjType: 30
+		SpeedMult: 6
+		Damage: 20
+		AttackDelay: 10
+		AttackCooldown: 180
+		MaxValue: 120
+		GravityCorrection: 16
+		KnockBack: 7
 	}
 	EventPrefs: {
 		Party: 10
@@ -67,14 +67,14 @@ Demolitionist: {
 }
 BestiaryGirl: {
 	AttackData: {
-		projType: 880
-		speedMult: 24
-		projDamage: 15
-		attackDelay: 1
-		gravityCorrection: 0
-		knockBack: 7
-		attackCooldown: 15
-		maxValue: 10
+		ProjType: 880
+		SpeedMult: 24
+		Damage: 15
+		AttackDelay: 1
+		GravityCorrection: 0
+		KnockBack: 7
+		AttackCooldown: 15
+		MaxValue: 10
 	}
 	EventPrefs: {
 		BloodMoon: -40
@@ -85,14 +85,14 @@ BestiaryGirl: {
 }
 DD2Bartender: {
 	AttackData: {
-		projType: 669
-		speedMult: 6
-		projDamage: 24
-		attackDelay: 10
-		attackCooldown: 120
-		maxValue: 60
-		gravityCorrection: 16
-		knockBack: 9
+		ProjType: 669
+		SpeedMult: 6
+		Damage: 24
+		AttackDelay: 10
+		AttackCooldown: 120
+		MaxValue: 60
+		GravityCorrection: 16
+		KnockBack: 9
 	}
 	EventPrefs: {
 		Party: 10
@@ -105,14 +105,14 @@ DD2Bartender: {
 }
 Golfer: {
 	AttackData: {
-		projType: 721
-		speedMult: 8
-		projDamage: 15
-		attackDelay: 5
-		attackCooldown: 20
-		maxValue: 10
-		gravityCorrection: 16
-		knockBack: 9
+		ProjType: 721
+		SpeedMult: 8
+		Damage: 15
+		AttackDelay: 5
+		AttackCooldown: 20
+		MaxValue: 10
+		GravityCorrection: 16
+		KnockBack: 9
 	}
 	EventPrefs: {
 		Party: 10
@@ -122,14 +122,14 @@ Golfer: {
 }
 PartyGirl: {
 	AttackData: {
-		projType: 588
-		speedMult: 6
-		projDamage: 30
-		attackDelay: 10
-		attackCooldown: 60
-		maxValue: 120
-		gravityCorrection: 16
-		knockBack: 6
+		ProjType: 588
+		SpeedMult: 6
+		Damage: 30
+		AttackDelay: 10
+		AttackCooldown: 60
+		MaxValue: 120
+		GravityCorrection: 16
+		KnockBack: 6
 	}
 	EventPrefs: {
 		Party: 20
@@ -144,14 +144,14 @@ PartyGirl: {
 }
 Merchant: {
 	AttackData: {
-		projType: 48
-		speedMult: 9
-		projDamage: 12
-		attackDelay: 10
-		attackCooldown: 60
-		maxValue: 60
-		gravityCorrection: 16
-		knockBack: 1.5
+		ProjType: 48
+		SpeedMult: 9
+		Damage: 12
+		AttackDelay: 10
+		AttackCooldown: 60
+		MaxValue: 60
+		GravityCorrection: 16
+		KnockBack: 1.5
 	}
 	EventPrefs: {
 		Party: 10
@@ -160,14 +160,14 @@ Merchant: {
 }
 Angler: {
 	AttackData: {
-		projType: 520
-		speedMult: 12
-		projDamage: 10
-		attackDelay: 10
-		attackCooldown: 0
-		maxValue: 1
-		gravityCorrection: 16
-		knockBack: 3
+		ProjType: 520
+		SpeedMult: 12
+		Damage: 10
+		AttackDelay: 10
+		AttackCooldown: 0
+		MaxValue: 1
+		GravityCorrection: 16
+		KnockBack: 3
 	}
 	EventPrefs: {
 		Party: 10
@@ -181,26 +181,26 @@ Angler: {
 }
 SkeletonMerchant: {
 	AttackData: {
-		projType: 21
-		speedMult: 14
-		projDamage: 14
-		attackDelay: 10
-		attackCooldown: 0
-		maxValue: 1
-		gravityCorrection: 16
-		knockBack: 3
+		ProjType: 21
+		SpeedMult: 14
+		Damage: 14
+		AttackDelay: 10
+		AttackCooldown: 0
+		MaxValue: 1
+		GravityCorrection: 16
+		KnockBack: 3
 	}
 }
 GoblinTinkerer: {
 	AttackData: {
-		projType: 24
-		speedMult: 5
-		projDamage: 15
-		attackDelay: 10
-		attackCooldown: 60
-		maxValue: 60
-		gravityCorrection: 16
-		knockBack: 1
+		ProjType: 24
+		SpeedMult: 5
+		Damage: 15
+		AttackDelay: 10
+		AttackCooldown: 60
+		MaxValue: 60
+		GravityCorrection: 16
+		KnockBack: 1
 	}
 	EventPrefs: {
 		Party: 10
@@ -213,13 +213,13 @@ GoblinTinkerer: {
 }
 Mechanic: {
 	AttackData: {
-		projType: 582
-		speedMult: 10
-		projDamage: 11
-		attackDelay: 1
-		attackCooldown: 30
-		maxValue: 30
-		knockBack: 3.5
+		ProjType: 582
+		SpeedMult: 10
+		Damage: 11
+		AttackDelay: 1
+		AttackCooldown: 30
+		MaxValue: 30
+		KnockBack: 3.5
 	}
 	EventPrefs: {
 		BloodMoon: -40
@@ -234,14 +234,14 @@ Mechanic: {
 }
 Nurse: {
 	AttackData: {
-		projType: 583
-		speedMult: 8
-		projDamage: 8
-		attackDelay: 1
-		attackCooldown: 15
-		maxValue: 10
-		knockBack: 2
-		gravityCorrection: 10
+		ProjType: 583
+		SpeedMult: 8
+		Damage: 8
+		AttackDelay: 1
+		AttackCooldown: 15
+		MaxValue: 10
+		KnockBack: 2
+		GravityCorrection: 10
 	}
 	EventPrefs: {
 		BloodMoon: -40
@@ -250,14 +250,14 @@ Nurse: {
 }
 SantaClaus: {
 	AttackData: {
-		projType: 589
-		speedMult: 7
-		projDamage: 22
-		attackDelay: 1
-		attackCooldown: 10
-		maxValue: 1
-		knockBack: 2
-		gravityCorrection: 10
+		ProjType: 589
+		SpeedMult: 7
+		Damage: 22
+		AttackDelay: 1
+		AttackCooldown: 10
+		MaxValue: 1
+		KnockBack: 2
+		GravityCorrection: 10
 	}
 	EventPrefs: {
 		Party: 10
@@ -266,14 +266,14 @@ SantaClaus: {
 }
 ArmsDealer: {
 	AttackData: {
-		projType: 14
-		speedMult: 13
-		projDamage: 24
-		attackCooldown: 14
-		maxValue: 4
-		knockBack: 3
-		attackDelay: 1
-		randomOffset: 0.5
+		ProjType: 14
+		SpeedMult: 13
+		Damage: 24
+		AttackCooldown: 14
+		MaxValue: 4
+		KnockBack: 3
+		AttackDelay: 1
+		RandomOffset: 0.5
 	}
 	EventPrefs: {
 		Party: 10
@@ -286,14 +286,14 @@ ArmsDealer: {
 }
 Painter: {
 	AttackData: {
-		projType: 587
-		speedMult: 10
-		projDamage: 8
-		attackCooldown: 10
-		maxValue: 1
-		knockBack: 1.75
-		attackDelay: 1
-		randomOffset: 0.5
+		ProjType: 587
+		SpeedMult: 10
+		Damage: 8
+		AttackCooldown: 10
+		MaxValue: 1
+		KnockBack: 1.75
+		AttackDelay: 1
+		RandomOffset: 0.5
 	}
 	EventPrefs: {
 		Party: 10
@@ -303,27 +303,27 @@ Painter: {
 }
 TravellingMerchant: {
 	AttackData: {
-		projType: 14
-		speedMult: 13
-		projDamage: 24
-		attackCooldown: 12
-		maxValue: 5
-		knockBack: 2
-		attackDelay: 1
-		randomOffset: 0.2
+		ProjType: 14
+		SpeedMult: 13
+		Damage: 24
+		AttackCooldown: 12
+		MaxValue: 5
+		KnockBack: 2
+		AttackDelay: 1
+		RandomOffset: 0.2
 	}
 }
 Guide: {
 	AttackData: {
-		speedMult: 10
-		projDamage: 8
-		attackDelay: 1
-		projType: 1
-		attackCooldown: 30
-		maxValue: 20
-		knockBack: 2.75
-		gravityCorrection: 4
-		randomOffset: 0.7
+		SpeedMult: 10
+		Damage: 8
+		AttackDelay: 1
+		ProjType: 1
+		AttackCooldown: 30
+		MaxValue: 20
+		KnockBack: 2.75
+		GravityCorrection: 4
+		RandomOffset: 0.7
 	}
 	EventPrefs: {
 		Party: 10
@@ -333,15 +333,15 @@ Guide: {
 }
 WitchDoctor: {
 	AttackData: {
-		projType: 267
-		speedMult: 14
-		projDamage: 20
-		attackDelay: 1
-		attackCooldown: 10
-		maxValue: 1
-		knockBack: 3
-		gravityCorrection: 6
-		randomOffset: 0.4
+		ProjType: 267
+		SpeedMult: 14
+		Damage: 20
+		AttackDelay: 1
+		AttackCooldown: 10
+		MaxValue: 1
+		KnockBack: 3
+		GravityCorrection: 6
+		RandomOffset: 0.4
 	}
 	EventPrefs: {
 		Party: 10
@@ -351,14 +351,14 @@ WitchDoctor: {
 }
 Steampunker: {
 	AttackData: {
-		projType: 242
-		speedMult: 13
-		projDamage: 15
-		attackCooldown: 10
-		maxValue: 1
-		knockBack: 2
-		attackDelay: 1
-		randomOffset: 0.3
+		ProjType: 242
+		SpeedMult: 13
+		Damage: 15
+		AttackCooldown: 10
+		MaxValue: 1
+		KnockBack: 2
+		AttackDelay: 1
+		RandomOffset: 0.3
 	}
 	EventPrefs: {
 		BloodMoon: -40
@@ -372,14 +372,14 @@ Steampunker: {
 }
 Pirate: {
 	AttackData: {
-		projType: 14
-		speedMult: 14
-		projDamage: 24
-		attackCooldown: 10
-		maxValue: 1
-		knockBack: 2
-		attackDelay: 1
-		randomOffset: 0.7
+		ProjType: 14
+		SpeedMult: 14
+		Damage: 24
+		AttackCooldown: 10
+		MaxValue: 1
+		KnockBack: 2
+		AttackDelay: 1
+		RandomOffset: 0.7
 	}
 	EventPrefs: {
 		Party: 10
@@ -393,7 +393,7 @@ Pirate: {
 }
 Cyborg: {
 	AttackData: {
-		attackDelay: 1
+		AttackDelay: 1
 	}
 	EventPrefs: {
 		Party: 10
@@ -403,14 +403,14 @@ Cyborg: {
 }
 Clothier: {
 	AttackData: {
-		projType: 585
-		speedMult: 10
-		projDamage: 16
-		attackDelay: 30
-		attackCooldown: 20
-		maxValue: 15
-		knockBack: 2
-		randomOffset: 1
+		ProjType: 585
+		SpeedMult: 10
+		Damage: 16
+		AttackDelay: 30
+		AttackCooldown: 20
+		MaxValue: 15
+		KnockBack: 2
+		RandomOffset: 1
 	}
 	EventPrefs: {
 		Party: 10
@@ -424,14 +424,14 @@ Clothier: {
 }
 Wizard: {
 	AttackData: {
-		projType: 15
-		speedMult: 6
-		projDamage: 18
-		attackDelay: 15
-		attackCooldown: 15
-		maxValue: 5
-		knockBack: 3
-		gravityCorrection: 20
+		ProjType: 15
+		SpeedMult: 6
+		Damage: 18
+		AttackDelay: 15
+		AttackCooldown: 15
+		MaxValue: 5
+		KnockBack: 3
+		GravityCorrection: 20
 	}
 	EventPrefs: {
 		Party: 10
@@ -440,12 +440,12 @@ Wizard: {
 }
 Truffle: {
 	AttackData: {
-		projType: 590
-		projDamage: 40
-		attackDelay: 15
-		attackCooldown: 10
-		maxValue: 1
-		knockBack: 3
+		ProjType: 590
+		Damage: 40
+		AttackDelay: 15
+		AttackCooldown: 10
+		MaxValue: 1
+		KnockBack: 3
 	}
 	EventPrefs: {
 		Party: 4
@@ -455,12 +455,12 @@ Truffle: {
 }
 Princess: {
 	AttackData: {
-		projType: 950
-		projDamage: 20
-		attackDelay: 15
-		attackCooldown: 0
-		maxValue: 0
-		knockBack: 3
+		ProjType: 950
+		Damage: 20
+		AttackDelay: 15
+		AttackCooldown: 0
+		MaxValue: 0
+		KnockBack: 3
 	}
 	EventPrefs: {
 		Party: 10
@@ -468,11 +468,11 @@ Princess: {
 }
 Dryad: {
 	AttackData: {
-		projType: 586
-		attackDelay: 24
-		attackCooldown: 10
-		maxValue: 1
-		knockBack: 3
+		ProjType: 586
+		AttackDelay: 24
+		AttackCooldown: 10
+		MaxValue: 1
+		KnockBack: 3
 	}
 	EventPrefs: {
 		BloodMoon: -40

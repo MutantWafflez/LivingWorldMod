@@ -1,5 +1,6 @@
 using System.Globalization;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 using LivingWorldMod.Globals.UIElements;
 
@@ -36,7 +37,7 @@ public class TownNPCPreferredSleepTimeSpanElement (int npcType) : IBestiaryInfoE
         backPanel.SetPadding(0f);
         elementZone.Append(backPanel);
 
-        SleepSchedule sleepSchedule = TownNPCSleepModule.GetSleepProfileOrDefault(npcType);
+        SleepSchedule sleepSchedule = TownNPCDataSystem.ProfileDatabase[npcType].SleepSchedule;
         CultureInfo currentInGameCulture = Language.ActiveCulture.CultureInfo;
         UIText sleepIntervalElement = new ($"{sleepSchedule.StartTime.ToString("t", currentInGameCulture)} - {sleepSchedule.EndTime.ToString("t", currentInGameCulture)}", 0.85f) {
             HAlign = 1f, VAlign = 0.5f, Left = StyleDimension.FromPixels(-5f)

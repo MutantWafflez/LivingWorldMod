@@ -1,5 +1,6 @@
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 using LivingWorldMod.DataStructures.Records;
 
@@ -15,7 +16,7 @@ public class SleepTrait : IPersonalityTrait {
         NPC npc = info.NPC;
         TownNPCSleepModule sleepModule = npc.GetGlobalNPC<TownNPCSleepModule>();
 
-        SleepThresholds thresholds = TownNPCSleepModule.GetSleepThresholdsOrDefault(npc.type);
+        SleepThresholds thresholds = TownNPCDataSystem.ProfileDatabase[npc.type].SleepThresholds;
         float awakeValue = sleepModule.awakeTicks;
 
         string sleepQualityKey = "SleepDeprived";

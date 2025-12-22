@@ -13,19 +13,19 @@ public class MagicAttackAIState : TownNPCAIState {
 
     public override void DoState( NPC npc) {
         TownNPCCombatModule combatModule = npc.GetGlobalNPC<TownNPCCombatModule>();
-        TownNPCDataSystem.projectileAttackDatas.TryGetValue(npc.type, out TownNPCProjAttackData attackData);
+        TownNPCAttackData attackData = TownNPCDataSystem.ProfileDatabase[npc.type].AttackData;
         float auraLightMultiplier = 1f;
 
-        NPCLoader.TownNPCAttackStrength(npc, ref attackData.projDamage, ref attackData.knockBack);
+        NPCLoader.TownNPCAttackStrength(npc, ref attackData.damage, ref attackData.knockBack);
         NPCLoader.TownNPCAttackCooldown(npc, ref attackData.attackCooldown, ref attackData.maxValue);
         NPCLoader.TownNPCAttackProj(npc, ref attackData.projType, ref attackData.attackDelay);
         NPCLoader.TownNPCAttackProjSpeed(npc, ref attackData.speedMult, ref attackData.gravityCorrection, ref attackData.randomOffset);
         NPCLoader.TownNPCAttackMagic(npc, ref auraLightMultiplier);
         if (Main.expertMode) {
-            attackData.projDamage = (int)(attackData.projDamage * Main.GameModeInfo.TownNPCDamageMultiplier);
+            attackData.damage = (int)(attackData.damage * Main.GameModeInfo.TownNPCDamageMultiplier);
         }
 
-        attackData.projDamage = (int)(attackData.projDamage * combatModule.CurrentDamageMultiplier);
+        attackData.damage = (int)(attackData.damage * combatModule.CurrentDamageMultiplier);
 
         npc.ai[1] -= 1f;
         npc.localAI[3] += 1f;
@@ -37,7 +37,7 @@ public class MagicAttackAIState : TownNPCAIState {
                     location.Center
                     + new Vector2(
                         0f,
-                        (0f - attackData.gravityCorrection) * MathHelper.Clamp(npc.Distance(location.Center) / attackData.dangerDetectRange, 0f, 1f)
+                        (0f - attackData.gravityCorrection) * MathHelper.Clamp(npc.Distance(location.Center) / NPCID.Sets.DangerDetectRange[npc.type], 0f, 1f)
                     )
                 );
             }
@@ -61,7 +61,7 @@ public class MagicAttackAIState : TownNPCAIState {
                             npc.Center + new Vector2(0, -2f),
                             projVelocity + randomOffsetTwo,
                             attackData.projType,
-                            attackData.projDamage,
+                            attackData.damage,
                             attackData.knockBack,
                             Main.myPlayer
                         );
@@ -88,7 +88,7 @@ public class MagicAttackAIState : TownNPCAIState {
                             projPosition,
                             Vector2.Zero,
                             attackData.projType,
-                            attackData.projDamage,
+                            attackData.damage,
                             attackData.knockBack,
                             Main.myPlayer
                         );
@@ -115,7 +115,7 @@ public class MagicAttackAIState : TownNPCAIState {
                             projPosition,
                             Vector2.Zero,
                             attackData.projType,
-                            attackData.projDamage,
+                            attackData.damage,
                             attackData.knockBack,
                             Main.myPlayer
                         );
@@ -132,7 +132,7 @@ public class MagicAttackAIState : TownNPCAIState {
                         npc.Center + new Vector2(0, -2f),
                         projVelocity,
                         attackData.projType,
-                        attackData.projDamage,
+                        attackData.damage,
                         attackData.knockBack,
                         Main.myPlayer,
                         ai1: npc.whoAmI
@@ -148,7 +148,7 @@ public class MagicAttackAIState : TownNPCAIState {
                         npc.Center + new Vector2(0, -2f),
                         projVelocity,
                         attackData.projType,
-                        attackData.projDamage,
+                        attackData.damage,
                         attackData.knockBack,
                         Main.myPlayer
                     );

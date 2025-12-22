@@ -13,28 +13,28 @@ public class ThrowAttackAIState : TownNPCAIState {
 
     public override void DoState( NPC npc) {
         TownNPCCombatModule combatModule = npc.GetGlobalNPC<TownNPCCombatModule>();
-        TownNPCDataSystem.projectileAttackDatas.TryGetValue(npc.type, out TownNPCProjAttackData attackData);
+        TownNPCAttackData attackData = TownNPCDataSystem.ProfileDatabase[npc.type].AttackData;
 
         switch (npc.type) {
             case NPCID.BestiaryGirl:
                 if (npc.ShouldBestiaryGirlBeLycantrope()) {
                     attackData.projType = 929;
-                    attackData.projDamage = (int)(attackData.projDamage * 1.5f);
+                    attackData.damage = (int)(attackData.damage * 1.5f);
                 }
 
                 break;
         }
 
-        NPCLoader.TownNPCAttackStrength(npc, ref attackData.projDamage, ref attackData.knockBack);
+        NPCLoader.TownNPCAttackStrength(npc, ref attackData.damage, ref attackData.knockBack);
         NPCLoader.TownNPCAttackCooldown(npc, ref attackData.attackCooldown, ref attackData.attackCooldown);
         NPCLoader.TownNPCAttackProj(npc, ref attackData.projType, ref attackData.attackDelay);
         NPCLoader.TownNPCAttackProjSpeed(npc, ref attackData.speedMult, ref attackData.gravityCorrection, ref attackData.randomOffset);
 
         if (Main.expertMode) {
-            attackData.projDamage = (int)(attackData.projDamage * Main.GameModeInfo.TownNPCDamageMultiplier);
+            attackData.damage = (int)(attackData.damage * Main.GameModeInfo.TownNPCDamageMultiplier);
         }
 
-        attackData.projDamage = (int)(attackData.projDamage * combatModule.CurrentDamageMultiplier);
+        attackData.damage = (int)(attackData.damage * combatModule.CurrentDamageMultiplier);
 
         npc.ai[1] -= 1f;
         npc.localAI[3] += 1f;
@@ -45,7 +45,7 @@ public class ThrowAttackAIState : TownNPCAIState {
                     location.Center
                     + new Vector2(
                         0f,
-                        (0f - attackData.gravityCorrection) * MathHelper.Clamp(npc.Distance(location.Center) / attackData.dangerDetectRange, 0f, 1f)
+                        (0f - attackData.gravityCorrection) * MathHelper.Clamp(npc.Distance(location.Center) / NPCID.Sets.DangerDetectRange[npc.type], 0f, 1f)
                     )
                 );
             }
@@ -68,7 +68,7 @@ public class ThrowAttackAIState : TownNPCAIState {
                 npc.Center + new Vector2(0, -2f),
                 projVelocity,
                 attackData.projType,
-                attackData.projDamage,
+                attackData.damage,
                 attackData.knockBack,
                 Main.myPlayer,
                 0f,

@@ -12,6 +12,7 @@ using LivingWorldMod.DataStructures.Structs;
 using LivingWorldMod.Globals.BaseTypes.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.GameContent.Personalities;
@@ -23,20 +24,15 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 ///     ModSystem that holds all of the static data needed for the Town NPC Revitalization to function.
 /// </summary>
 public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
-    public static Dictionary<int, SleepSchedule> sleepSchedules;
-    public static Dictionary<int, SleepThresholds> sleepThresholds;
-
-    public static Dictionary<int, TownNPCProjAttackData> projectileAttackDatas;
-    public static Dictionary<int, TownNPCMeleeAttackData> meleeAttackDatas;
-
-    public static IReadOnlyDictionary<int, TownNPCOverlayProfile> spriteOverlayProfiles;
-
     private static readonly Point DefaultOverlayCornerOne = new (int.MaxValue, int.MaxValue);
     private static readonly TownNPCSpriteOverlay DefaultSpriteOverlay = new(Asset<Texture2D>.DefaultValue, Vector2.Zero);
 
     private static Dictionary<string, LocalizedText> _autoloadedFlavorTexts;
+    
+    private static readonly SleepThresholds DefaultSleepThresholds = new (LWMUtils.InGameHour * 17, LWMUtils.InGameHour * 13, LWMUtils.InGameHour * 5);
+    private static readonly SleepSchedule DefaultSleepSchedule = new(new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
 
-    public static Dictionary<int, List<IPersonalityTrait>> PersonalityDatabase {
+    public static Dictionary<int, TownNPCProfile> ProfileDatabase {
         get;
         private set;
     }
@@ -164,7 +160,6 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
 
     private static void LoadPersonalities() {
         _autoloadedFlavorTexts = [];
-        PersonalityDatabase = new Dictionary<int, List<IPersonalityTrait>>();
 
         // Princess does not use the profile system, using a hardcoded system instead. Thus, we need to instantiate her profile ourselves since that hardcoded system has been removed 
         List<IPersonalityTrait> princessProfile = [];
@@ -176,7 +171,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
             ModNPC potentialModNPC = NPCLoader.GetNPC(npcType);
             string npcTypeName = LWMUtils.GetNPCTypeNameOrIDName(npcType);
             string moodKeyPrefix = npcType >= NPCID.Count ? potentialModNPC.GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{npcTypeName}";
-            List<IPersonalityTrait> newPersonalityTraits = PersonalityDatabase[npcType] = [];
+            List<IPersonalityTrait> newPersonalityTraits = [];
 
             // All Town NPCs liking the Princess is not handled through NPCPreferenceTrait (and is instead hard-coded), as such we add a fake preference trait that will be translated numerically 
             foreach (NPCPreferenceTrait trait in oldProfile.ShopModifiers.OfType<NPCPreferenceTrait>().Append(princessPreferenceTrait).ToList()) {
@@ -238,107 +233,86 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
             _autoloadedFlavorTexts[newPrincessKey] = Language.GetText(princessLoveFlavorTextKey);
 
             princessProfile.Add(new NumericNPCPreferenceTrait(20, npcType));
+            ProfileDatabase[npcType].Traits.AddRange(newPersonalityTraits);
         }
 
         princessProfile.AddRange([new HomelessTrait(), new HomeProximityTrait(), new LonelyTrait(), new SleepTrait()]);
-        PersonalityDatabase[NPCID.Princess] = princessProfile;
-
-        JsonObject jsonEventPreferenceValues = LWMUtils.GetJsonFromHjsonFile("Assets/JSONData/TownNPCEventPreferences.json").Qo();
-        foreach ((string npcName, JsonValue eventData) in jsonEventPreferenceValues) {
-            int npcType = NPCID.Search.GetId(npcName);
-
-            PersonalityDatabase[npcType].Add(new EventPreferencesTrait(eventData.Qo().Select(pair => new EventPreferencesTrait.EventPreference(pair.Key, pair.Value)).ToArray()));
-        }
+        ProfileDatabase[NPCID.Princess].Traits.AddRange(princessProfile);
     }
 
     public override void Unload() {
-        if (spriteOverlayProfiles is not null) {
+        if (ProfileDatabase is not null) {
             Main.QueueMainThreadAction(() => {
-                    foreach (TownNPCOverlayProfile spriteProfile in spriteOverlayProfiles.Values) {
-                        spriteProfile.Dispose();
+                    foreach (OverlayProfile spriteProfile in ProfileDatabase.Select(pair => pair.Value.OverlayProfile)) {
+                        spriteProfile?.Dispose();
                     }
                 }
             );
         }
     }
 
-    public override void Load() {
-        // TODO: Combine JSON into one file(?)
-        sleepSchedules = new Dictionary<int, SleepSchedule>();
-        JsonObject sleepSchedulesJSON = LWMUtils.GetJsonFromHjsonFile("Assets/JSONData/TownNPCSleepSchedules.json").Qo();
-        foreach ((string npcName, JsonValue sleepSchedule) in sleepSchedulesJSON) {
-            int npcType = NPCID.Search.GetId(npcName);
+    private static SleepSchedule ParseSleepSchedule(JsonObject sleepScheduleJson) {
+        return new SleepSchedule(TimeOnly.Parse(sleepScheduleJson["Start"]), TimeOnly.Parse(sleepScheduleJson["End"]));
+    }
 
-            sleepSchedules[npcType] = new SleepSchedule(TimeOnly.Parse(sleepSchedule["Start"]), TimeOnly.Parse(sleepSchedule["End"]));
+    private static List<EventPreferencesTrait.EventPreference> ParseEventPreferences(JsonObject eventPrefsJson) {
+        List<EventPreferencesTrait.EventPreference> eventPreferences = [];
+        
+        foreach ((string eventName, JsonValue eventValue) in eventPrefsJson) {
+            eventPreferences.Add(new EventPreferencesTrait.EventPreference(eventName, eventValue.Qi()));
         }
 
-        sleepThresholds = new Dictionary<int, SleepThresholds>();
-
-        JsonObject jsonAttackData = LWMUtils.GetJsonFromHjsonFile("Assets/JSONData/TownNPCAttackData.json").Qo();
-        JsonObject projJSONAttackData = jsonAttackData["ProjNPCs"].Qo();
-        JsonObject meleeJSONAttackData = jsonAttackData["MeleeNPCs"].Qo();
-
-        Dictionary<int, TownNPCProjAttackData> projDict = [];
-        foreach ((string npcName, JsonValue jsonValue) in projJSONAttackData) {
-            JsonObject jsonObject = jsonValue.Qo();
-            int npcType = NPCID.Search.GetId(npcName);
-
-            projDict[npcType] = new TownNPCProjAttackData(
-                jsonObject.Qi("projType"),
-                jsonObject.Qi("projDamage"),
-                (float)jsonObject.Qd("knockBack"),
-                (float)jsonObject.Qd("speedMult"),
-                jsonObject.Qi("attackDelay"),
-                jsonObject.Qi("attackCooldown"),
-                jsonObject.Qi("maxValue"),
-                jsonObject.Qi("gravityCorrection"),
-                NPCID.Sets.DangerDetectRange[npcType],
-                (float)jsonObject.Qd("randomOffset")
-            );
-        }
-
-        projectileAttackDatas = projDict;
-
-        Dictionary<int, TownNPCMeleeAttackData> meleeDict = [];
-        foreach ((string npcName, JsonValue jsonValue) in meleeJSONAttackData) {
-            JsonObject jsonObject = jsonValue.Qo();
-            int npcType = NPCID.Search.GetId(npcName);
-
-            meleeDict[npcType] = new TownNPCMeleeAttackData(
-                jsonObject.Qi("attackCooldown"),
-                jsonObject.Qi("maxValue"),
-                jsonObject.Qi("damage"),
-                (float)jsonObject.Qd("knockBack"),
-                jsonObject.Qi("itemWidth"),
-                jsonObject.Qi("itemHeight")
-            );
-        }
-
-        meleeAttackDatas = meleeDict;
+        return eventPreferences;
     }
 
     public override void PostSetupContent() {
-        if (Main.netMode != NetmodeID.Server) {
-            Main.QueueMainThreadAction(GenerateTownNPCSpriteProfiles);
-        }
-
-        LoadPersonalities();
-    }
-
-    private void GenerateTownNPCSpriteProfiles() {
-        Dictionary<int, TownNPCOverlayProfile> overlayTextures = [];
+        ProfileDatabase = []; 
+        
         NPC npc = new();
         for (int i = 0; i < NPCLoader.NPCCount; i++) {
             npc.SetDefaults(i);
-            if (!TownGlobalNPC.IsValidFullTownNPC(npc, true)) {
+            if (!TownGlobalNPC.IsAnyValidTownNPC(npc, true)) {
                 continue;
             }
 
-            AssetRepository assetRepo = i >= NPCID.Count ? NPCLoader.GetNPC(i).Mod.Assets : (AssetRepository)Main.Assets;
+            ProfileDatabase[i] = new TownNPCProfile(new TownNPCAttackData(), [], DefaultSleepSchedule, DefaultSleepThresholds, null);
+        }
+
+        JsonObject townNPCData = LWMUtils.GetJsonFromHjsonFile("Assets/Json/TownNPCData.t_hjson").Qo();
+        foreach ((string npcName, JsonValue npcData) in townNPCData) {
+            int npcType = NPCID.Search.GetId(npcName);
+            TownNPCProfile currentProfile = ProfileDatabase[npcType];
+
+            ProfileDatabase[npcType] = currentProfile with {
+                AttackData = JsonConvert.DeserializeObject<TownNPCAttackData>(npcData["AttackData"].ToString()),
+                Traits = [new EventPreferencesTrait(ParseEventPreferences(npcData["EventPrefs"].Qo()).ToArray())],
+                SleepSchedule = npcData.ContainsKey("SleepSchedule") ? ParseSleepSchedule(npcData["SleepSchedule"].Qo()) : currentProfile.SleepSchedule
+            };
+        }
+        
+        LoadPersonalities();
+        
+        if (Main.netMode != NetmodeID.Server) {
+            Main.QueueMainThreadAction(GenerateTownNPCSpriteProfiles);
+        }
+    }
+
+    private static void GenerateTownNPCSpriteProfiles() {
+        NPC npc = new();
+        foreach (int npcType in ProfileDatabase.Keys) {
+            npc.SetDefaults(npcType);
+            if (!TownGlobalNPC.IsValidFullTownNPC(npc, true)) {
+                continue;
+            }
+            
+            TownNPCProfile currentProfile = ProfileDatabase[npcType];
+            AssetRepository assetRepo = npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).Mod.Assets : (AssetRepository)Main.Assets;
             Asset<Texture2D> npcAsset;
             if (!TownNPCProfiles.Instance.GetProfile(npc, out ITownNPCProfile profile)) {
-                npcAsset = TextureAssets.Npc[i];
-                overlayTextures[i] = new TownNPCOverlayProfile(GenerateTownNPCSpriteOverlays(npcAsset.Name, npcAsset.EnsureAssetLoaded(assetRepo).Value, i));
+                npcAsset = TextureAssets.Npc[npcType];
+                ProfileDatabase[npcType] = currentProfile with {
+                    OverlayProfile = new OverlayProfile(GenerateTownNPCSpriteOverlays(npcAsset.Name, npcAsset.EnsureAssetLoaded(assetRepo).Value, npcType))
+                };
                 continue;
             }
 
@@ -351,12 +325,10 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
             List<TownNPCSpriteOverlay[]> spriteOverlays = [];
             for (int j = 0; j < npcVariationCount; npc.townNpcVariationIndex = ++j) {
                 npcAsset = profile.GetTextureNPCShouldUse(npc);
-                spriteOverlays.Add(GenerateTownNPCSpriteOverlays(npcAsset.Name, npcAsset.EnsureAssetLoaded(assetRepo).Value, i));
+                spriteOverlays.Add(GenerateTownNPCSpriteOverlays(npcAsset.Name, npcAsset.EnsureAssetLoaded(assetRepo).Value, npcType));
             }
 
-            overlayTextures[i] = new TownNPCOverlayProfile(spriteOverlays.ToArray());
+            ProfileDatabase[npcType] = currentProfile with { OverlayProfile = new OverlayProfile(spriteOverlays.ToArray()) };
         }
-
-        spriteOverlayProfiles = overlayTextures;
     }
 }

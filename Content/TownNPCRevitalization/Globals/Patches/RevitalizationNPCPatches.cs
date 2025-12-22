@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -11,7 +10,6 @@ using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems.UI;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 using LivingWorldMod.DataStructures.Classes;
 using LivingWorldMod.DataStructures.Records;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
@@ -60,10 +58,9 @@ public class RevitalizationNPCPatches : LoadablePatch {
         }
 
         PersonalityHelperInfo info = new(player, npc, npcNeighbors, npcNeighborsByType, npcsWithinHouse, npcsWithinVillage);
-        if (TownNPCDataSystem.PersonalityDatabase.TryGetValue(npc.type, out List<IPersonalityTrait>? personalityTraits)) {
-            foreach (IPersonalityTrait shopModifier in personalityTraits) {
-                shopModifier.ApplyTrait(info, shopHelper);
-            }
+        List<IPersonalityTrait> personalityTraits = TownNPCDataSystem.ProfileDatabase[npc.type].Traits;
+        foreach (IPersonalityTrait shopModifier in personalityTraits) {
+            shopModifier.ApplyTrait(info, shopHelper);
         }
 
         HappinessUISystem.Instance.UIState.RefreshModifierList();
