@@ -28,7 +28,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
     private static readonly TownNPCSpriteOverlay DefaultSpriteOverlay = new(Asset<Texture2D>.DefaultValue, Vector2.Zero);
 
     private static Dictionary<string, LocalizedText> _autoloadedFlavorTexts;
-    
+
     private static readonly SleepThresholds DefaultSleepThresholds = new (LWMUtils.InGameHour * 17, LWMUtils.InGameHour * 13, LWMUtils.InGameHour * 5);
     private static readonly SleepSchedule DefaultSleepSchedule = new(new TimeOnly(19, 30, 0), new TimeOnly(4, 30, 0));
 
@@ -240,61 +240,16 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         ProfileDatabase[NPCID.Princess].Traits.AddRange(princessProfile);
     }
 
-    public override void Unload() {
-        if (ProfileDatabase is not null) {
-            Main.QueueMainThreadAction(() => {
-                    foreach (OverlayProfile spriteProfile in ProfileDatabase.Select(pair => pair.Value.OverlayProfile)) {
-                        spriteProfile?.Dispose();
-                    }
-                }
-            );
-        }
-    }
-
-    private static SleepSchedule ParseSleepSchedule(JsonObject sleepScheduleJson) {
-        return new SleepSchedule(TimeOnly.Parse(sleepScheduleJson["Start"]), TimeOnly.Parse(sleepScheduleJson["End"]));
-    }
+    private static SleepSchedule ParseSleepSchedule(JsonObject sleepScheduleJson) => new (TimeOnly.Parse(sleepScheduleJson["Start"]), TimeOnly.Parse(sleepScheduleJson["End"]));
 
     private static List<EventPreferencesTrait.EventPreference> ParseEventPreferences(JsonObject eventPrefsJson) {
         List<EventPreferencesTrait.EventPreference> eventPreferences = [];
-        
+
         foreach ((string eventName, JsonValue eventValue) in eventPrefsJson) {
             eventPreferences.Add(new EventPreferencesTrait.EventPreference(eventName, eventValue.Qi()));
         }
 
         return eventPreferences;
-    }
-
-    public override void PostSetupContent() {
-        ProfileDatabase = []; 
-        
-        NPC npc = new();
-        for (int i = 0; i < NPCLoader.NPCCount; i++) {
-            npc.SetDefaults(i);
-            if (!TownGlobalNPC.IsAnyValidTownNPC(npc, true)) {
-                continue;
-            }
-
-            ProfileDatabase[i] = new TownNPCProfile(new TownNPCAttackData(), [], DefaultSleepSchedule, DefaultSleepThresholds, null);
-        }
-
-        JsonObject townNPCData = LWMUtils.GetJsonFromHjsonFile("Assets/Json/TownNPCData.t_hjson").Qo();
-        foreach ((string npcName, JsonValue npcData) in townNPCData) {
-            int npcType = NPCID.Search.GetId(npcName);
-            TownNPCProfile currentProfile = ProfileDatabase[npcType];
-
-            ProfileDatabase[npcType] = currentProfile with {
-                AttackData = JsonConvert.DeserializeObject<TownNPCAttackData>(npcData["AttackData"].ToString()),
-                Traits = [new EventPreferencesTrait(ParseEventPreferences(npcData["EventPrefs"].Qo()).ToArray())],
-                SleepSchedule = npcData.ContainsKey("SleepSchedule") ? ParseSleepSchedule(npcData["SleepSchedule"].Qo()) : currentProfile.SleepSchedule
-            };
-        }
-        
-        LoadPersonalities();
-        
-        if (Main.netMode != NetmodeID.Server) {
-            Main.QueueMainThreadAction(GenerateTownNPCSpriteProfiles);
-        }
     }
 
     private static void GenerateTownNPCSpriteProfiles() {
@@ -304,7 +259,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
             if (!TownGlobalNPC.IsValidFullTownNPC(npc, true)) {
                 continue;
             }
-            
+
             TownNPCProfile currentProfile = ProfileDatabase[npcType];
             AssetRepository assetRepo = npcType >= NPCID.Count ? NPCLoader.GetNPC(npcType).Mod.Assets : (AssetRepository)Main.Assets;
             Asset<Texture2D> npcAsset;
@@ -329,6 +284,58 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
             }
 
             ProfileDatabase[npcType] = currentProfile with { OverlayProfile = new OverlayProfile(spriteOverlays.ToArray()) };
+        }
+    }
+
+    public override void Unload() {
+        if (ProfileDatabase is not null) {
+            Main.QueueMainThreadAction(() => {
+                    foreach (OverlayProfile spriteProfile in ProfileDatabase.Select(pair => pair.Value.OverlayProfile)) {
+                        spriteProfile?.Dispose();
+                    }
+                }
+            );
+        }
+    }
+
+    public override void PostSetupContent() {
+        ProfileDatabase = [];
+
+        NPC npc = new();
+        for (int i = 0; i < NPCLoader.NPCCount; i++) {
+            npc.SetDefaults(i);
+            if (!TownGlobalNPC.IsAnyValidTownNPC(npc, true)) {
+                continue;
+            }
+
+            ProfileDatabase[i] = new TownNPCProfile(new TownNPCAttackData(), [], DefaultSleepSchedule, DefaultSleepThresholds, null);
+        }
+
+        JsonObject townNPCData = LWMUtils.GetJsonFromHjsonFile("Assets/Json/TownNPCData.t_hjson").Qo();
+        foreach ((string npcName, JsonValue npcData) in townNPCData) {
+            JsonObject npcObject = npcData.Qo();
+            int npcType = NPCID.Search.GetId(npcName);
+            TownNPCProfile currentProfile = ProfileDatabase[npcType];
+
+            TownNPCAttackData attackData = npcObject.TryGetValue("AttackData", out JsonValue attackDataJson)
+                ? JsonConvert.DeserializeObject<TownNPCAttackData>(attackDataJson.ToString())
+                : currentProfile.AttackData;
+
+            List<IPersonalityTrait> traits = npcObject.TryGetValue("EventPrefs", out JsonValue traitsJson)
+                ? [new EventPreferencesTrait(ParseEventPreferences(traitsJson.Qo()).ToArray())]
+                : currentProfile.Traits;
+
+            SleepSchedule sleepSchedule = npcObject.TryGetValue("SleepSchedule", out JsonValue scheduleJson)
+                ? ParseSleepSchedule(scheduleJson.Qo())
+                : currentProfile.SleepSchedule;
+
+            ProfileDatabase[npcType] = currentProfile with { AttackData = attackData, Traits = traits, SleepSchedule = sleepSchedule };
+        }
+
+        LoadPersonalities();
+
+        if (Main.netMode != NetmodeID.Server) {
+            Main.QueueMainThreadAction(GenerateTownNPCSpriteProfiles);
         }
     }
 }

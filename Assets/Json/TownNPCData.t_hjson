@@ -179,6 +179,7 @@ Angler: {
 		End: 06:30
 	}
 }
+/*
 SkeletonMerchant: {
 	AttackData: {
 		ProjType: 21
@@ -191,6 +192,7 @@ SkeletonMerchant: {
 		KnockBack: 3
 	}
 }
+*/
 GoblinTinkerer: {
 	AttackData: {
 		ProjType: 24
