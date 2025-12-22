@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
-using LivingWorldMod.Utilities;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Players;
 
@@ -10,7 +9,7 @@ public class CheckDupeTownNPCsPlayer : ModPlayer {
     public static Dictionary<int, List<int>> GetAllTownNPCs() {
         Dictionary<int, List<int>> allTownNPCs = [];
         foreach (NPC npc in Main.ActiveNPCs) {
-            if (!TownGlobalNPC.EntityIsValidTownNPC(npc, true)) {
+            if (!TownGlobalNPC.IsAnyValidTownNPC(npc, true)) {
                 continue;
             }
 

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Players;
-using LivingWorldMod.Utilities;
 using Terraria.Chat;
 using Terraria.Localization;
 
