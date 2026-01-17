@@ -30,6 +30,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         public void Update(BestiaryUICollectionInfo providedInfo, Rectangle hitbox, EntryIconDrawSettings settings) {
             icon.Update(providedInfo, hitbox, settings);
 
+            icon._npcCache.GetGlobalNPC<TownNPCAnimationModule>().UpdateModule();
             icon._npcCache.GetGlobalNPC<TownNPCSpriteModule>().UpdateModule();
         }
 
