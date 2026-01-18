@@ -197,7 +197,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         );
 
         foreach (TownNPCDrawRequest request in _drawRequests) {
-            request.UnionWithDrawData(defaultDrawData, screenPos).Draw(spriteBatch);
+            request.MergeDrawData(defaultDrawData, screenPos).Draw(spriteBatch);
         }
 
         return false;

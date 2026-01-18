@@ -46,7 +46,7 @@ public readonly record struct TownNPCDrawRequest(
     /// <summary>
     ///     "Unionizes" this DrawRequest with a <see cref="DrawData" />, where every DrawRequest field is overriden if it is null.
     /// </summary>
-    public DrawData UnionWithDrawData(DrawData data, Vector2 screenPos) {
+    public DrawData MergeDrawData(DrawData data, Vector2 screenPos) {
         Vector2 origin = UsesAbsoluteOrigin ? Origin ?? data.origin : data.origin + (Origin ?? Vector2.Zero);
 
         return new DrawData (
