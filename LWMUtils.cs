@@ -848,22 +848,8 @@ public static partial class LWMUtils {
     ///     Ensures that this asset is loaded by forcefully loading it if it's yet to be loaded, and no-ops if the asset has already been loaded, returning itself.
     ///     Uses LWM's Asset Repo by default (i.e. assetRepo param = <see langword="null" />).
     /// </summary>
-    public static Asset<T> EnsureAssetLoaded<T>(this Asset<T> asset, AssetRepository assetRepo = null) where T : class {
-        if (asset.IsLoaded) {
-            return asset;
-        }
-
-        assetRepo ??= LWM.Instance.Assets;
-
-        lock (assetRepo._requestLock) {
-            assetRepo.EnsureReloadActionExistsForType<T>();
-            assetRepo.LoadAsset(asset, AssetRequestMode.ImmediateLoad);
-        }
-
-        asset.Wait();
-
-        return asset;
-    }
+    public static Asset<T> EnsureAssetLoaded<T>(this Asset<T> asset, AssetRepository assetRepo = null) where T : class =>
+        asset.IsLoaded ? asset : (assetRepo ?? LWM.Instance.Assets).Request<T>(asset.Name, AssetRequestMode.ImmediateLoad);
 
     /// <summary>
     ///     Converts a <see cref="Point" /> type to its <see cref="Point16" /> equivalent.
