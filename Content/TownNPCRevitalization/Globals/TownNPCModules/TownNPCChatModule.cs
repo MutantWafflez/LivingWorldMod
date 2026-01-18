@@ -1,4 +1,5 @@
-﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
+﻿using System;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
@@ -105,7 +106,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
 
             IsChattingWithPlayerDirectly = true;
 
-            NPC.direction = player.position.X + player.width / 2f < NPC.position.X + NPC.width / 2f ? -1 : 1;
+            NPC.direction = Math.Sign(player.Center.X - NPC.Center.X);
             NPC.GetGlobalNPC<TownNPCPathfinderModule>().PausePathfind();
         }
         // End of adapted code
