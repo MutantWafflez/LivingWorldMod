@@ -45,4 +45,6 @@ public readonly record struct BoundedNumber<T>(T Value, T LowerBound, T UpperBou
     public static bool operator <=(BoundedNumber<T> baseNumber, T operand) => baseNumber.Value <= operand;
 
     public BoundedNumber<T> ResetToBound(bool lowerBound) => new (lowerBound ? LowerBound : UpperBound, LowerBound, UpperBound);
+
+    public BoundedNumber<T> NewWithValue(T newValue) => new(newValue, LowerBound, UpperBound);
 }
