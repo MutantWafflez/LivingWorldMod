@@ -24,6 +24,8 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 ///     Patches that assists with the various overhauls of the Town NPC Revitalization.
 /// </summary>
 public class RevitalizationNPCPatches : LoadablePatch {
+    private const int PartyAltTextureID = 1;
+
     private const float MinCostModifier = 0.67f;
     private const float MaxCostModifier = 1.5f;
 
@@ -228,19 +230,15 @@ public class RevitalizationNPCPatches : LoadablePatch {
     }
 
     private static void ForcePartyTextureOnSleep(On_NPC.orig_UpdateAltTexture orig, NPC self) {
-        // Simple detour that wraps the call to NPC::UpdateAltTexture() with ForcePartyHatOn = true to force the party texture to be used. Most NPCs who wear hats take them off during a party,
+        // Simple detour that replaces the call to NPC::UpdateAltTexture() to force the party texture to be used. Most NPCs who wear hats take them off during a party,
         // so we are leveraging that to create the illusion the NPC is taking off their hats to sleep.
-        if (!self.TryGetGlobalNPC(out TownNPCSleepModule sleepModule)) {
+        if (!self.TryGetGlobalNPC(out TownNPCSleepModule sleepModule) || !sleepModule.IsAsleep) {
             orig(self);
 
             return;
         }
 
-        bool oldForcePartyHat = self.ForcePartyHatOn;
-
-        self.ForcePartyHatOn = sleepModule.IsAsleep;
-        orig(self);
-        self.ForcePartyHatOn = oldForcePartyHat;
+        self.altTexture = PartyAltTextureID;
     }
 
     public override void LoadPatches() {
