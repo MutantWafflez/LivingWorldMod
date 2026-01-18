@@ -227,6 +227,22 @@ public class RevitalizationNPCPatches : LoadablePatch {
         c.EmitBrtrue(branchCursor.Next!);
     }
 
+    private static void ForcePartyTextureOnSleep(On_NPC.orig_UpdateAltTexture orig, NPC self) {
+        // Simple detour that wraps the call to NPC::UpdateAltTexture() with ForcePartyHatOn = true to force the party texture to be used. Most NPCs who wear hats take them off during a party,
+        // so we are leveraging that to create the illusion the NPC is taking off their hats to sleep.
+        if (!self.TryGetGlobalNPC(out TownNPCSleepModule sleepModule)) {
+            orig(self);
+
+            return;
+        }
+
+        bool oldForcePartyHat = self.ForcePartyHatOn;
+
+        self.ForcePartyHatOn = sleepModule.IsAsleep;
+        orig(self);
+        self.ForcePartyHatOn = oldForcePartyHat;
+    }
+
     public override void LoadPatches() {
         IL_Main.DrawNPCExtras += il => _drawNPCExtrasBody = il.Body;
         _addExtrasToNPCDrawingHook = new ILHook(AddExtrasToNPCDrawingInfo, DrawNPCExtrasConsumptionPatch);
@@ -237,6 +253,8 @@ public class RevitalizationNPCPatches : LoadablePatch {
         IL_NPC.UsesPartyHat += DrawsPartyHatPatch;
 
         _npcLoaderFindFrameHook = new ILHook(NPCLoaderFindFrameInfo, SkipVanillaFindFrame);
+
+        On_NPC.UpdateAltTexture += ForcePartyTextureOnSleep;
     }
 
     public override void Unload() {
