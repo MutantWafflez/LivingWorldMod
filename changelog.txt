@@ -22,6 +22,7 @@ Additions:
 + Town Dogs now have several Revitalization features
 + Added "Fake Tree Branch" item and the ability to play Fetch with Town Dogs
 + Town NPCs will now sleep with a blanket when in a laying down position
++ Town NPCs (who have them) will take off their hats when sleeping
 + Reworked the Town NPC Small Talk System
 	-> Town NPCs will now use their Emote chat bubbles like they do in vanilla, but will swap to actual words/conversations when zoomed in!
 	-> How far you need to be zoomed in to see the conversations defaults to 167%, but this can be changed in the config
