@@ -300,7 +300,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
 
     private ITownNPCSmallTalkObject GetSmallTalkObject() {
         foreach (Player player in Main.ActivePlayers) {
-            if (NPC.Center.Distance(player.Center) > MaxDistanceForChatting || Collision.CanHit(NPC.Center, 0, 0, player.Center, 0, 0)) {
+            if (NPC.Center.Distance(player.Center) > MaxDistanceForChatting || !Collision.CanHit(NPC.Center, 0, 0, player.Center, 0, 0)) {
                 continue;
             }
 
