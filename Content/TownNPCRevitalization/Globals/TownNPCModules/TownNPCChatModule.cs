@@ -1,8 +1,10 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Configs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Players;
 using LivingWorldMod.DataStructures.Records;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,7 +18,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 /// <summary>
 ///     Module that handles various aspects of the social-ness of Town NPCs. Involves code for the player talking to this NPC, and for the flavor animations of "talking" to other Town NPCs.
 /// </summary>
-public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
+public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSmallTalkObject {
     private sealed class ChatModuleGlobalEmote : GlobalEmoteBubble {
         public override bool PreDraw(EmoteBubble emoteBubble, SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Rectangle frame, Vector2 origin, SpriteEffects spriteEffects) =>
             // Only draw emotes when player is zoomed OUT far enough
@@ -31,6 +33,8 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
     /// </summary>
     private const int ChitChatChanceDenominator = 75;
 
+    private const float MaxDistanceForChatting = LWMUtils.TilePixelsSideLength * 8;
+
     private static LocalizedTextGroup _chatTemplateGroup;
     private static LocalizedTextGroup _npcNameGroup;
     private static LocalizedTextGroup _nounGroup;
@@ -43,7 +47,15 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
     private string _currentSentence;
     private int _chatBubbleDuration;
     private int _chatCooldown;
-    private int _chatReceptionCooldown;
+
+    public BoundedNumber<int> SmallTalkReceptionCooldown {
+        get;
+        set;
+    } = new(0, 0, int.MaxValue);
+
+    public string SmallTalkLocalizationCategory => LWMUtils.GetNPCTypeNameOrIDName(NPC.type);
+
+    public string SmallTalkFlavorTextSubstitution => NPC.GivenOrTypeName;
 
     public override int UpdatePriority => -1;
 
@@ -102,10 +114,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
             return;
         }
 
-        if (--_chatReceptionCooldown <= 0) {
-            _chatReceptionCooldown = 0;
-        }
-
+        SmallTalkReceptionCooldown -= 1;
         if (_currentSentence is not null) {
             IUpdateTownNPCSmallTalk.Invoke(NPC, --_chatBubbleDuration);
 
@@ -125,18 +134,12 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
             return;
         }
 
-        TownNPCChatModule otherChatModule = null;
-        if (IsSpeaking
-            || !Main.rand.NextBool(ChitChatChanceDenominator)
-            || LWMUtils.GetFirstNPC(otherNPC =>
-                NPC != otherNPC
-                && otherNPC.TryGetGlobalNPC(out otherChatModule)
-                && !otherChatModule.IsSpeaking
-                && NPC.Center.Distance(otherNPC.Center) <= 100f
-                && Collision.CanHit(NPC.Center, 0, 0, otherNPC.Center, 0, 0)
-            ) is not { } chatRecipient
-            || chatRecipient.GetGlobalNPC<TownNPCChatModule>()._chatReceptionCooldown > 0
-        ) {
+        if (IsSpeaking || !Main.rand.NextBool(ChitChatChanceDenominator)) {
+            return;
+        }
+
+        ITownNPCSmallTalkObject recipientObject = GetSmallTalkObject();
+        if (recipientObject is null) {
             return;
         }
 
@@ -153,15 +156,14 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
         //     RandomPlayer = Main.rand.Next(Main.ActivePlayers.).name
         // };
 
-        EmoteBubble emoteBubble = EmoteBubble.GetExistingEmoteBubble(EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), DefaultChatBubbleDuration, new WorldUIAnchor(chatRecipient)));
+        EmoteBubble emoteBubble = EmoteBubble.GetExistingEmoteBubble(EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), DefaultChatBubbleDuration /*, new WorldUIAnchor(chatRecipient)*/));
         string emoteBubbleName = EmoteID.Search.GetName(emoteBubble.emote);
         string speakingNPCTypeName = LWMUtils.GetNPCTypeNameOrIDName(NPC.type);
-        string recipientNPCTypeName = LWMUtils.GetNPCTypeNameOrIDName(chatRecipient.type);
-        object[] formatArray = [NPC.GivenOrTypeName, chatRecipient.GivenOrTypeName];
+        object[] formatArray = [NPC.GivenOrTypeName, recipientObject.SmallTalkFlavorTextSubstitution];
 
         // _currentSentence = $"TownNPCSmallTalk.Default.{EmoteID.Search.GetName(emoteBubble.emote)}".Localized().Format(NPC.GivenOrTypeName, chatRecipient.GivenOrTypeName);
         _currentSentence = new DynamicLocalizedText(
-            $"TownNPCSmallTalk.{speakingNPCTypeName}.{recipientNPCTypeName}.{emoteBubbleName}".Localized(),
+            $"TownNPCSmallTalk.{speakingNPCTypeName}.{recipientObject.SmallTalkLocalizationCategory}.{emoteBubbleName}".Localized(),
             formatArray,
             new DynamicLocalizedText(
                 $"TownNPCSmallTalk.{speakingNPCTypeName}.{emoteBubbleName}".Localized(),
@@ -176,7 +178,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
 
         // _currentSentence = chatTemplate.FormatWith(chatSubstitutions);
         _chatBubbleDuration = DefaultChatBubbleDuration;
-        otherChatModule._chatReceptionCooldown = _chatBubbleDuration + LWMUtils.RealLifeSecond;
+        recipientObject.SmallTalkReceptionCooldown = recipientObject.SmallTalkReceptionCooldown.NewWithValue(_chatBubbleDuration + LWMUtils.RealLifeSecond);
 
         // chatHistory.Add(_currentSentence);
     }
@@ -284,7 +286,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
     ///     Disables the ability for other NPCs to chat with this NPC for the specified duration, in ticks.
     /// </summary>
     public void DisableChatReception(int duration) {
-        _chatReceptionCooldown = duration;
+        SmallTalkReceptionCooldown = SmallTalkReceptionCooldown.NewWithValue(duration);
     }
 
     public void UpdateSleep(NPC npc, Vector2? drawOffset, NPCRestType restType) {
@@ -294,5 +296,36 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep {
 
         DisableChatting(LWMUtils.RealLifeSecond);
         DisableChatReception(LWMUtils.RealLifeSecond);
+    }
+
+    private ITownNPCSmallTalkObject GetSmallTalkObject() {
+        foreach (Player player in Main.ActivePlayers) {
+            if (NPC.Center.Distance(player.Center) > MaxDistanceForChatting || Collision.CanHit(NPC.Center, 0, 0, player.Center, 0, 0)) {
+                continue;
+            }
+
+            TownNPCSmallTalkPlayer modPlayer = player.GetModPlayer<TownNPCSmallTalkPlayer>();
+            if (modPlayer.SmallTalkReceptionCooldown > 0) {
+                continue;
+            }
+
+            return modPlayer;
+        }
+
+        foreach (NPC npc in Main.ActiveNPCs) {
+            if (NPC == npc
+                || !npc.TryGetGlobalNPC(out TownNPCChatModule otherChatModule)
+                || otherChatModule.IsSpeaking
+                || otherChatModule.SmallTalkReceptionCooldown > 0
+                || NPC.Center.Distance(npc.Center) > MaxDistanceForChatting
+                || !Collision.CanHit(NPC.Center, 0, 0, npc.Center, 0, 0)
+            ) {
+                continue;
+            }
+
+            return otherChatModule;
+        }
+
+        return null;
     }
 }
