@@ -4,7 +4,6 @@ using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
-
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
@@ -54,7 +53,6 @@ public class TownGlobalNPC : GlobalNPC {
         return true;
     }
 
-    // TODO: Fit the Travelling Merchant into all of this
     /// <summary>
     ///     This method determines if a given NPC is a "full" Town NPC. A "full" Town NPC is any NPC that uses <see cref="NPCAIStyleID.Passive" />, and is NOT a Town Pet. This includes the Guide,
     ///     Merchant, Nurse, Princess, Angler, and so on.
@@ -62,7 +60,11 @@ public class TownGlobalNPC : GlobalNPC {
     public static bool IsValidFullTownNPC(NPC entity, bool lateInstantiation) => lateInstantiation
         && entity.aiStyle == NPCAIStyleID.Passive
         && entity.townNPC
-        && !NPCID.Sets.IsTownPet[entity.type];
+        // TODO: Add Revitalization features for Old Man, Travelling Merchant, etc. (lol is there any other NPC in that list)?
+        && !NPCID.Sets.IsTownPet[entity.type]
+        && !NPCID.Sets.CannotSitOnFurniture[entity.type]
+        && !NPCID.Sets.IsTownSlime[entity.type]
+        && !NPCID.Sets.NoTownNPCHappiness[entity.type];
 
     /// <summary>
     ///     This method determines if a given NPC is a valid Town Pet. A valid Town NPC is any NPC that uses <see cref="NPCAIStyleID.Passive" />, and matches with the <see cref="NPCID.Sets.IsTownPet" />
@@ -70,9 +72,10 @@ public class TownGlobalNPC : GlobalNPC {
     /// </summary>
     public static bool IsValidTownPet(NPC entity, bool lateInstantiation) => lateInstantiation
         && entity.aiStyle == NPCAIStyleID.Passive
-        && entity.townNPC
-        && NPCID.Sets.IsTownPet[entity.type]
-        && !NPCID.Sets.IsTownSlime[entity.type];
+        // TODO: Enable rest of the Town Pets for revitalization
+        && entity is { townNPC: true, type: NPCID.TownDog };
+    // && NPCID.Sets.IsTownPet[entity.type]
+    // && !NPCID.Sets.IsTownSlime[entity.type];
 
     /// <summary>
     ///     Simple method that simply returns if this NPC is a valid Town NPC of ANY variety; that is, whether its a "full" Town NPC or a Town Pet.

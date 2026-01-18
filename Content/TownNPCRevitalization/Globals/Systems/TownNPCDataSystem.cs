@@ -314,8 +314,11 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         JsonObject townNPCData = LWMUtils.GetJsonFromHjsonFile("Assets/Json/TownNPCData.t_hjson").Qo();
         foreach ((string npcName, JsonValue npcData) in townNPCData) {
             JsonObject npcObject = npcData.Qo();
+
             int npcType = NPCID.Search.GetId(npcName);
-            TownNPCProfile currentProfile = ProfileDatabase[npcType];
+            if (!ProfileDatabase.TryGetValue(npcType, out TownNPCProfile currentProfile)) {
+                continue;
+            }
 
             TownNPCAttackData attackData = npcObject.TryGetValue("AttackData", out JsonValue attackDataJson)
                 ? JsonConvert.DeserializeObject<TownNPCAttackData>(attackDataJson.ToString())
