@@ -22,11 +22,13 @@ Additions:
 + The Travelling Merchant, Old Man, and Town Pets now have several of the Revitalization features
 + Added "Fake Tree Branch" item and the ability to play Fetch with Town Dogs
 + Town NPCs will now sleep with a blanket when in a laying down position
-+ Completely overhauled the Town NPC "Small Talk" system
++ Reworked the Town NPC Small Talk System
 	-> Town NPCs will now use their Emote chat bubbles like they do in vanilla, but will swap to actual words/conversations when zoomed in!
-	-> Added a WHOLE LOT of different conversations, depending on who's talking to who, what's happening, and much more!
 	-> How far you need to be zoomed in to see the conversations defaults to 167%, but this can be changed in the config
+	-> Removed the old randomly generated system of creating sentences
+	-> Town NPCs will now also talk to players in this new system
 	-> Furthermore, there were quite a few complaints about people being unable to read the conversations, even on high zoom. To alleviate this, a config option has been added that controls the text size
+	-> More will be done with this system - stay tuned!
 Changes:
 * The Truffle now likes the Rain event (previously neutral)
 * The Harpy Village & Waystone World Generation now slightly better respects world size and sizes smaller than Small and larger than Large
