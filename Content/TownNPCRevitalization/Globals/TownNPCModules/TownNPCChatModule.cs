@@ -1,5 +1,4 @@
 ﻿using System;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
@@ -35,13 +34,6 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
     private const int ChitChatChanceDenominator = 75;
 
     private const float MaxDistanceForChatting = LWMUtils.TilePixelsSideLength * 8;
-
-    private static LocalizedTextGroup _chatTemplateGroup;
-    private static LocalizedTextGroup _npcNameGroup;
-    private static LocalizedTextGroup _nounGroup;
-    private static LocalizedTextGroup _adjectiveGroup;
-    private static LocalizedTextGroup _locationGroup;
-    private static LocalizedTextGroup _itemNameGroup;
 
     // public readonly ForgetfulArray<string> chatHistory = new(50);
 
@@ -83,15 +75,6 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
         Vector2 zoomRequired = new (ModContent.GetInstance<RevitalizationConfigClient>().minimumZoomToSeeSmallTalk);
 
         return currentZoom.X >= zoomRequired.X && currentZoom.Y >= zoomRequired.Y;
-    }
-
-    public override void SetStaticDefaults() {
-        _chatTemplateGroup = new LocalizedTextGroup(Lang.CreateDialogFilter("Mods.LivingWorldMod.InterTownNPCChat."));
-        _npcNameGroup = new LocalizedTextGroup(Lang.CreateDialogFilter("NPCName."));
-        _nounGroup = new LocalizedTextGroup(Lang.CreateDialogFilter("RandomWorldName_Noun."));
-        _adjectiveGroup = new LocalizedTextGroup(Lang.CreateDialogFilter("RandomWorldName_Adjective."));
-        _locationGroup = new LocalizedTextGroup(Lang.CreateDialogFilter("RandomWorldName_Location."));
-        _itemNameGroup = new LocalizedTextGroup(Lang.CreateDialogFilter("ItemName."));
     }
 
     public override void UpdateModule() {
@@ -144,25 +127,11 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
             return;
         }
 
-        // LocalizedText chatTemplate = _chatTemplateGroup.RandomText;
-        // var chatSubstitutions = new {
-        //     SpeakingNPC = NPC.GivenOrTypeName,
-        //     RandomNPCName = _npcNameGroup.RandomText,
-        //     RandomNPCNameTwo = _npcNameGroup.RandomText,
-        //     ChatRecipient = chatRecipient.GivenOrTypeName,
-        //     Noun = _nounGroup.RandomText.Value.ToLower(),
-        //     Adjective = _adjectiveGroup.RandomText.Value.ToLower(),
-        //     Location = _locationGroup.RandomText,
-        //     RandomItemName = _itemNameGroup.RandomText,
-        //     RandomPlayer = Main.rand.Next(Main.ActivePlayers.).name
-        // };
-
         EmoteBubble emoteBubble = EmoteBubble.GetExistingEmoteBubble(EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), DefaultChatBubbleDuration /*, new WorldUIAnchor(chatRecipient)*/));
         string emoteBubbleName = EmoteID.Search.GetName(emoteBubble.emote);
         string speakingNPCTypeName = LWMUtils.GetNPCTypeNameOrIDName(NPC.type);
         object[] formatArray = [NPC.GivenOrTypeName, recipientObject.SmallTalkFlavorTextSubstitution];
 
-        // _currentSentence = $"TownNPCSmallTalk.Default.{EmoteID.Search.GetName(emoteBubble.emote)}".Localized().Format(NPC.GivenOrTypeName, chatRecipient.GivenOrTypeName);
         _currentSentence = new DynamicLocalizedText(
             $"TownNPCSmallTalk.{speakingNPCTypeName}.{recipientObject.SmallTalkLocalizationCategory}.{emoteBubbleName}".Localized(),
             formatArray,
@@ -176,12 +145,8 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
             )
         ).FormattedString;
 
-
-        // _currentSentence = chatTemplate.FormatWith(chatSubstitutions);
         _chatBubbleDuration = DefaultChatBubbleDuration;
         recipientObject.SmallTalkReceptionCooldown = recipientObject.SmallTalkReceptionCooldown.NewWithValue(_chatBubbleDuration + LWMUtils.RealLifeSecond);
-
-        // chatHistory.Add(_currentSentence);
     }
 
     // TODO: Re-write chat bubble drawing
