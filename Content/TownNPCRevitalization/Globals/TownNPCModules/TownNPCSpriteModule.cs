@@ -256,7 +256,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             new TownNPCDrawRequest(
                 blanketTexture,
                 new Vector2(24f, 10f),
-                new Vector2(blanketTexture.Width, blanketTexture.Height) * NPC.scale / 2f,
+                GetDefaultOriginOfTexture(blanketTexture),
                 Color: GetFullyModifiedNPCDrawColor(npc, BlanketColor),
                 DrawLayer: 1
             )
@@ -268,6 +268,13 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             DoTalk();
         }
     }
+
+    /// <summary>
+    ///     Returns the default origin of a texture to be drawn which aligns properly for rotation when necessary.
+    /// </summary>
+    /// <param name="drawTexture"></param>
+    /// <returns></returns>
+    private Vector2 GetDefaultOriginOfTexture(Texture2D drawTexture) => new Vector2(drawTexture.Width, drawTexture.Height) * NPC.scale / 2f;
 
     private TownNPCSpriteOverlay GetOverlay(int overlayIndex) => TownNPCDataSystem.ProfileDatabase[NPC.type].OverlayProfile.GetCurrentSpriteOverlay(NPC, overlayIndex);
 
@@ -332,8 +339,9 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             wrenchTexture = TextureAssets.Extra[ExtrasID.ShimmeredMechanicWrench].Value;
         }
 
-        Vector2 wrenchCenterOffset = new Vector2(wrenchTexture.Width, wrenchTexture.Height) * NPC.scale / 2f;
-        RequestDraw(new TownNPCDrawRequest(wrenchTexture, new Vector2(0, Main.OffsetsPlayerHeadgear[offsetIndex].Y + wrenchTexture.Height / 2), wrenchCenterOffset, DrawLayer: -1));
+        RequestDraw(
+            new TownNPCDrawRequest(wrenchTexture, new Vector2(0, Main.OffsetsPlayerHeadgear[offsetIndex].Y + wrenchTexture.Height / 2), GetDefaultOriginOfTexture(wrenchTexture), DrawLayer: -1)
+        );
     }
 
     // TODO: Get rid of this once pet animations are all fully implemented again
