@@ -251,11 +251,12 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             return;
         }
 
+        Texture2D blanketTexture = Assets.Sprites.TownNPCRevitalization.Overlays.SleepingBlanket.Asset.EnsureAssetLoaded().Value;
         RequestDraw(
             new TownNPCDrawRequest(
-                Assets.Sprites.TownNPCRevitalization.Overlays.SleepingBlanket.Asset.EnsureAssetLoaded().Value,
+                blanketTexture,
                 new Vector2(24f, 10f),
-                Vector2.Zero,
+                new Vector2(blanketTexture.Width, blanketTexture.Height) * NPC.scale / 2f,
                 Color: GetFullyModifiedNPCDrawColor(npc, BlanketColor),
                 DrawLayer: 1
             )
