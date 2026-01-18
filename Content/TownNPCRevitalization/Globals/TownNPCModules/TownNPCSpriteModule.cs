@@ -48,7 +48,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
     /// <summary>
     ///     Small helper record that holds data on some helpful parameters for usage with drawing Town NPCs.
     /// </summary>
-    private record TownNPCDrawParameters(Asset<Texture2D> NPCAsset, int FrameWidth, int FrameHeight, Vector2 HalfSize, float NPCAddHeight, SpriteEffects SpriteEffects);
+    private record TownNPCDrawParameters(Asset<Texture2D> NPCAsset, int FrameWidth, int FrameHeight, Vector2 HalfSize, Vector2 DefaultOrigin, float NPCAddHeight, SpriteEffects SpriteEffects);
 
     private const int EyelidClosedDuration = 15;
     private const int TalkDuration = 8;
@@ -117,10 +117,11 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             int frameWidth = npcAsset.Width();
             int frameHeight = npcAsset.Height() / Main.npcFrameCount[NPC.type];
             Vector2 halfSize = new(frameWidth / 2, frameHeight / 2);
+            Vector2 defaultOrigin = halfSize * NPC.scale;
             float npcAddHeight = Main.NPCAddHeight(NPC);
             SpriteEffects spriteEffects = NPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            return new TownNPCDrawParameters(npcAsset, frameWidth, frameHeight, halfSize, npcAddHeight, spriteEffects);
+            return new TownNPCDrawParameters(npcAsset, frameWidth, frameHeight, halfSize, defaultOrigin, npcAddHeight, spriteEffects);
         }
     }
 
@@ -152,7 +153,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             return;
         }
 
-        (Asset<Texture2D> npcAsset, int frameWidth, int frameHeight, Vector2 halfSize, float npcAddHeight, SpriteEffects spriteEffects) = DrawParameters;
+        (Asset<Texture2D> npcAsset, int frameWidth, int frameHeight, Vector2 halfSize, Vector2 defaultOrigin, float npcAddHeight, SpriteEffects spriteEffects) = DrawParameters;
 
         // Method Gaslighting
         // See RevitalizationNPCPatches.cs: TL;DR is the method is patched so that all sprite-batch calls are re-routed back to here (the sprite module) and we control the drawing
@@ -161,8 +162,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         }
 
         // This is the request to actually draw the NPC itself
-        Vector2 defaultOrigin = halfSize * NPC.scale;
-        RequestDraw(new TownNPCDrawRequest(npcAsset.Value, Vector2.Zero, defaultOrigin, NPC.frame));
+        RequestDraw(new TownNPCDrawRequest(npcAsset.Value, Vector2.Zero, SourceRectangle: NPC.frame));
 
         AddFlavorOverlays(frameWidth, frameHeight, defaultOrigin);
         if (NPC.type == NPCID.Mechanic) {
@@ -179,7 +179,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
         }
 
-        (Asset<Texture2D> _, int frameWidth, int frameHeight, Vector2 _, float npcAddHeight, SpriteEffects spriteEffects) = DrawParameters;
+        (Asset<Texture2D> _, int frameWidth, int frameHeight, Vector2 _, Vector2 defaultOrigin, float npcAddHeight, SpriteEffects spriteEffects) = DrawParameters;
         Vector2 drawPos = new (
             npc.position.X + npc.width / 2 - frameWidth * npc.scale / 2f + /*halfSize.X * npc.scale*/ + _drawOffset.X,
             npc.position.Y + npc.height - frameHeight * npc.scale + 4f + /*halfSize.Y * npc.scale*/ + npcAddHeight /*+ num35*/ + npc.gfxOffY + _drawOffset.Y
@@ -191,7 +191,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             null,
             TintNPCDrawColor(npc, drawColor),
             npc.rotation,
-            Vector2.Zero,
+            defaultOrigin,
             npc.scale,
             spriteEffects
         );
@@ -247,16 +247,17 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         TownNPCDrawRequest drawRequest = npc.GetGlobalNPC<TownNPCSleepModule>().SleepSpriteDrawData;
         RequestDraw(drawRequest);
 
-        if (restType is not (NPCRestType.Bed or NPCRestType.Floor)) {
+        if (restType is not (NPCRestType.Floor or NPCRestType.Bed)) {
             return;
         }
 
         Texture2D blanketTexture = Assets.Sprites.TownNPCRevitalization.Overlays.SleepingBlanket.Asset.EnsureAssetLoaded().Value;
+        Vector2 blanketPos = new(4f, 24f);
         RequestDraw(
             new TownNPCDrawRequest(
                 blanketTexture,
-                new Vector2(24f, 10f),
-                GetDefaultOriginOfTexture(blanketTexture),
+                blanketPos,
+                -blanketPos,
                 Color: GetFullyModifiedNPCDrawColor(npc, BlanketColor),
                 DrawLayer: 1
             )
@@ -268,13 +269,6 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             DoTalk();
         }
     }
-
-    /// <summary>
-    ///     Returns the default origin of a texture to be drawn which aligns properly for rotation when necessary.
-    /// </summary>
-    /// <param name="drawTexture"></param>
-    /// <returns></returns>
-    private Vector2 GetDefaultOriginOfTexture(Texture2D drawTexture) => new Vector2(drawTexture.Width, drawTexture.Height) * NPC.scale / 2f;
 
     private TownNPCSpriteOverlay GetOverlay(int overlayIndex) => TownNPCDataSystem.ProfileDatabase[NPC.type].OverlayProfile.GetCurrentSpriteOverlay(NPC, overlayIndex);
 
@@ -314,7 +308,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             (defaultOrigin.X - overlay.DefaultDrawOffset.X) * -NPC.spriteDirection + (NPC.spriteDirection == 1 ? overlay.Texture.Width : 0),
             defaultOrigin.Y - adjustedDrawOffset.Y
         );
-        RequestDraw(new TownNPCDrawRequest(overlay.Texture, adjustedDrawOffset, overlayOrigin, DrawLayer: 1));
+        RequestDraw(new TownNPCDrawRequest(overlay.Texture, adjustedDrawOffset, overlayOrigin, DrawLayer: 1, UsesAbsoluteOrigin: true));
     }
 
     private void DrawMechanicWrench() {
@@ -340,7 +334,13 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         }
 
         RequestDraw(
-            new TownNPCDrawRequest(wrenchTexture, new Vector2(0, Main.OffsetsPlayerHeadgear[offsetIndex].Y + wrenchTexture.Height / 2), GetDefaultOriginOfTexture(wrenchTexture), DrawLayer: -1)
+            new TownNPCDrawRequest(
+                wrenchTexture,
+                new Vector2(0, Main.OffsetsPlayerHeadgear[offsetIndex].Y + wrenchTexture.Height / 2),
+                new Vector2(wrenchTexture.Width, wrenchTexture.Height) * NPC.scale / 2f,
+                DrawLayer: -1,
+                UsesAbsoluteOrigin: true
+            )
         );
     }
 

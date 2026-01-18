@@ -132,7 +132,7 @@ public class RevitalizationNPCPatches : LoadablePatch {
         }
 
         int drawLayer = beforeDraw ? -1 : 1;
-        spriteModule.RequestDraw(new TownNPCDrawRequest(texture, position, origin, sourceRect, color, rotation, new Vector2(scale), effects, true,  drawLayer));
+        spriteModule.RequestDraw(new TownNPCDrawRequest(texture, position, origin, sourceRect, color, rotation, new Vector2(scale), effects, drawLayer, true, true));
     }
 
     private static void HappinessUIPatch(ILContext il) {
