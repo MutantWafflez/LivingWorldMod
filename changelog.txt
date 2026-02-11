@@ -43,4 +43,3 @@ Dev Stuff:
 * Rewrote how animations are handled for Town NPCs, which will make working with them much easier in the future
 * Rewrote how Villager info & Town NPC data is loaded from disk (now from their own, merged .hjson file)
 * Now using tml-build (https://github.com/gold-meridian/tml-build) as the base SDK instead of tML's base
-+ Added dependency to the Daybreak library
