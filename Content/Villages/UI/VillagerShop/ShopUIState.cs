@@ -75,7 +75,7 @@ public class ShopUIState : UIState {
             itemNameText = new UIModifiedText(displayedItem.HoverName, 1.25f) { Left = StyleDimension.FromPixels(94f), VAlign = 0.5f, HorizontalTextConstraint = 194f, IgnoresMouseInteraction = true };
             Append(itemNameText);
 
-            UICoinDisplay itemCostDisplay = new (displayedCost, new UICoinDisplay.CoinDrawStyle(UICoinDisplay.CoinDrawCondition.DrawOnlyWithNonZeroValue), 1.34f) {
+            UICoinDisplay itemCostDisplay = new (displayedCost, new UICoinDisplay.CoinDrawStyle(UICoinDisplay.CoinDrawCondition.DrawOnlyWithNonZeroValue)) {
                 Left = StyleDimension.FromPixels(-DefaultElementPadding), HAlign = 1f, VAlign = 0.5f, IgnoresMouseInteraction = true
             };
             Append(itemCostDisplay);

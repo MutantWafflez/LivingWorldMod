@@ -69,6 +69,11 @@ public class UICoinDisplay : UIElement {
         _displayScale = displayScale;
     }
 
+    public override void Recalculate() {
+        CalculateDimensions();
+        base.Recalculate();
+    }
+
     protected override void DrawSelf(SpriteBatch spriteBatch) {
         Vector2 startPos = GetDimensions().Position();
 
