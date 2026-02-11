@@ -415,8 +415,8 @@ Mods: {
 
 			Shrine: {
 				HarpyCountdown: New Harpy Egg in:
-				AddText: Add 1
-				TakeText: Take 1
+				AddText: Add
+				TakeText: Take
 				DisableVillageRadius: Hide Village Radius Display
 				EnableVillageRadius: Show Village Radius Display
 				ForceShrineButtonText: Force Synchronize Housing
