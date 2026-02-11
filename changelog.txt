@@ -1,4 +1,4 @@
-INDEV RELEASE v0.5.0.0 [The Town NPC Revitalization Pt. 2] (???, 202X)
+INDEV RELEASE v0.5.0.0 [Major Revitalization Patch #1] (Feb 11th, 2026)
 Additions:
 + Revamped the Tax Collector entirely:
 	-> Each Town NPC can have their taxes modified on an individual level, which will worsen mood depending on how high the taxes are
