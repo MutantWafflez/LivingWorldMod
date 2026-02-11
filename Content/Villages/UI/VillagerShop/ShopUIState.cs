@@ -226,6 +226,7 @@ public class ShopUIState : UIState {
     private UIModifiedText _buyItemStockHeader;
     private UIModifiedText _buyItemStock;
     private UIPanelButton _buyItemButton;
+    private UIModifiedText _buyItemButtonText;
 
     private UIElement _savingsZone;
     private UIModifiedText _savingsText;
@@ -334,7 +335,7 @@ public class ShopUIState : UIState {
         _buyItemStock = new UIModifiedText("1000", 1.25f) { Top = StyleDimension.FromPixels(BuyItemStockYPos), HorizontalTextConstraint = BuyItemZoneWidth, HAlign = 0.5f };
         _buyItemZone.Append(_buyItemStock);
 
-        _buyItemButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder, text: "UI.VillagerShop.Buy".Localized()) {
+        _buyItemButton = new UIPanelButton(vanillaPanelBackground, gradientPanelBorder) {
             BackgroundColor = LWMUtils.LWMCustomUIPanelBackgroundColor,
             BorderColor = Color.White,
             Width = StyleDimension.FromPixels(BuyItemButtonWidth),
@@ -342,7 +343,11 @@ public class ShopUIState : UIState {
             Top = StyleDimension.FromPixels(BuyItemButtonYPos),
             HAlign = 0.5f
         };
+        _buyItemButton.SetPadding(0);
         _buyItemZone.Append(_buyItemButton);
+
+        _buyItemButtonText = new UIModifiedText("UI.VillagerShop.Buy".Localized()) { HAlign = 0.5f, VAlign = 0.5f, HorizontalTextConstraint = BuyItemButtonWidth, IgnoresMouseInteraction = true };
+        _buyItemButton.Append(_buyItemButtonText);
 
         //Savings Zone
         _savingsZone = new UIElement {
