@@ -1,45 +1,4 @@
-INDEV RELEASE v0.5.0.0 [Major Revitalization Patch #1] (Feb 11th, 2026)
-Additions:
-+ Revamped the Tax Collector entirely:
-	-> Each Town NPC can have their taxes modified on an individual level, which will worsen mood depending on how high the taxes are
-	-> Added a new type of tax, "sales tax", which is self explanatory (percent of NPC sales go to taxes, up to 40%)
-	-> Increased per-player tax bank cap from 25g -> 1p. This further increases at certain milestones:
-		-> 2p (Hardmode)
-		-> 3p (Post-Plantera)
-		-> 4p (Post-ML)
-		-> Note: This cap is still doubled in the tenth anniversary seed, just like in Vanilla
-	-> Tax Collector now "collects" taxes every in-game day (24 real-world minutes) instead of every in-game hour (1 real-world minute)
-	-> Happiness now affects how much is gathered at each collection interval, instead of when the player cashes out: 
-		-> For example, if 2g of taxes were to be collected at the 24 minute collection interval and the Tax Collector has a 108% price modifier, only 1g 84s would be collected and added to the bank
-		-> This also means that the player will always receive EXACTLY what's in the bank, instead of it varying (like in Vanilla)
-		-> This is to prevent players from cranking the Tax Collector's happiness at cash-out and generating money out of thin air
-	-> To allow for more usage across the play-through (especially in pre-HM when money is more scarce) Tortured Souls now spawn after the Evil Boss has been defeated
-		-> NOTE: Due to a limitation within tModLoader itself (specifically MonoMod), this is inconsistent and will break. tML needs to fix this before such a change is possible
-	-> Added new "Direct Deposit" feature for taxes (enabled through the Tax Sheet menu), that instantly puts collected taxes into your inventory at each collection interval, at a 20% cut!
-		-> Canonically, this cut is the Tax Collector's paycheck. Which means, he doesn't get paid if you don't enable this! Do with this information what you will!
-+ Added a new developer vanity set
-+ Added an new name for the Witch Doctor, and an easter egg surrounding said name
-+ Town Dogs now have several Revitalization features
-+ Added "Fake Tree Branch" item and the ability to play Fetch with Town Dogs
-+ Town NPCs will now sleep with a blanket when in a laying down position
-+ Town NPCs (who have them) will take off their hats when sleeping
-+ Reworked the Town NPC Small Talk System
-	-> Town NPCs will now use their Emote chat bubbles like they do in vanilla, but will swap to actual words/conversations when zoomed in!
-	-> How far you need to be zoomed in to see the conversations defaults to 167%, but this can be changed in the config
-	-> Removed the old randomly generated system of creating sentences
-	-> Town NPCs will now also talk to players in this new system
-	-> Furthermore, there were quite a few complaints about people being unable to read the conversations, even on high zoom. To alleviate this, a config option has been added that controls the text size
-	-> More will be done with this system - stay tuned!
-Changes:
-* The Truffle now likes the Rain event (previously neutral)
-* The Harpy Village & Waystone World Generation now slightly better respects world size and sizes smaller than Small and larger than Large
-- Removed the "passing out" feature of Town NPCs
-	-> This feature is being removed because to be honest, it's not very engaging. More often than not, it is not the player's fault for not building housing problems, and more of a pathfinder issue
-	-> NPCs will still get annoyed when they're tired, but technically they now have have a cap of "annoyance" where the pass-out threshold used to be
+INDEV RELEASE v0.5.0.1 [Revitalization Hotfix #6] (Feb 12th, 2026)
 Fixes:
-* Fixed Town NPCs attempting to pathfind to their own unique wander locations instead of syncing with the server's wander points
-Dev Stuff:
-* Rewrote a lot of older UI code. This will have no technical gameplay change, but will (very minorly) increase loading times and performance for the mod
-* Rewrote how animations are handled for Town NPCs, which will make working with them much easier in the future
-* Rewrote how Villager info & Town NPC data is loaded from disk (now from their own, merged .hjson file)
-* Now using tml-build (https://github.com/gold-meridian/tml-build) as the base SDK instead of tML's base
+* Fixed mod compatibility conflict during load relating to loading the personalities of NPCs who don't count as Town NPCs
+	-> This notably affected (from testing) Spirit Reforged
