@@ -128,7 +128,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
         }
 
         EmoteBubble emoteBubble = EmoteBubble.GetExistingEmoteBubble(EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), DefaultChatBubbleDuration /*, new WorldUIAnchor(chatRecipient)*/));
-        string emoteBubbleName = EmoteID.Search.GetName(emoteBubble.emote);
+        string emoteBubbleName = emoteBubble.emote <= EmoteID.BossDeerclops ? EmoteID.Search.GetName(emoteBubble.emote) : "Default";
         string speakingNPCTypeName = LWMUtils.GetNPCTypeNameOrIDName(NPC.type);
         object[] formatArray = [NPC.GivenOrTypeName, recipientObject.SmallTalkFlavorTextSubstitution];
 
