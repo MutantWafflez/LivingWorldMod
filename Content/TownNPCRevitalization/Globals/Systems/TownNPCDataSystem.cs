@@ -37,6 +37,8 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         private set;
     }
 
+    private static TownNPCProfile DefaultTownNPCProfile => new (new TownNPCAttackData(), [], DefaultSleepSchedule, DefaultSleepThresholds, null);
+
     public static LocalizedText GetAutoloadedFlavorTextOrDefault(string key) => !_autoloadedFlavorTexts.TryGetValue(key, out LocalizedText text) ? new LocalizedText(key, key) : text;
 
     private static TownNPCSpriteOverlay GenerateOverlayFromDifferenceBetweenFrames(
@@ -308,7 +310,7 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
                 continue;
             }
 
-            ProfileDatabase[i] = new TownNPCProfile(new TownNPCAttackData(), [], DefaultSleepSchedule, DefaultSleepThresholds, null);
+            ProfileDatabase[i] = DefaultTownNPCProfile;
         }
 
         JsonObject townNPCData = LWMUtils.GetJsonFromHjsonFile("Assets/Json/TownNPCData.t_hjson").Qo();
