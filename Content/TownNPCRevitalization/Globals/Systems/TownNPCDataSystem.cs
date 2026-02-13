@@ -169,7 +169,12 @@ public class TownNPCDataSystem : BaseModSystem<TownNPCDataSystem> {
         List<BiomePreferenceListTrait.BiomePreference> evilBiomePreferences = new List<IShoppingBiome>([new CorruptionBiome(), new CrimsonBiome(), new DungeonBiome()])
             .Select(biome => new BiomePreferenceListTrait.BiomePreference(AffectionLevel.Hate, biome))
             .ToList();
-        foreach ((int npcType, PersonalityProfile oldProfile) in Main.ShopHelper._database._personalityProfiles) {
+
+        foreach ((int npcType, TownNPCProfile _) in ProfileDatabase) {
+            if (!Main.ShopHelper._database._personalityProfiles.TryGetValue(npcType, out PersonalityProfile oldProfile)) {
+                continue;
+            }
+
             ModNPC potentialModNPC = NPCLoader.GetNPC(npcType);
             string npcTypeName = LWMUtils.GetNPCTypeNameOrIDName(npcType);
             string moodKeyPrefix = npcType >= NPCID.Count ? potentialModNPC.GetLocalizationKey("TownNPCMood") : $"TownNPCMood_{npcTypeName}";
