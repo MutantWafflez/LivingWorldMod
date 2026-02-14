@@ -94,7 +94,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
         }
         // End of adapted code
 
-        if (Main.netMode == NetmodeID.Server) {
+        if (Main.netMode == NetmodeID.Server || NPCID.Sets.IsTownPet[NPC.type]) {
             return;
         }
 
