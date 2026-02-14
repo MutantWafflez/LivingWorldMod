@@ -1,3 +1,4 @@
 INDEV RELEASE v0.5.X.X [Revitalization Minor Update #1] (XXX, 2026)
 Fixes:
 * Fixed Town Pets speaking fluent English
+* Fixed Town NPCs trying to go home or sleep even if they're being actively threatened
