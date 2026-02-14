@@ -3,7 +3,6 @@ using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
-
 using Microsoft.Xna.Framework;
 using Terraria.GameContent;
 
@@ -23,7 +22,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
     private static bool IsSittingAnimationFinished(in NPC npc) => (int)npc.ai[1] != IsSleepingStateFlag;
 
     public override void DoState(NPC npc) {
-        if (!npc.GetGlobalNPC<TownNPCHousingModule>().ShouldGoHome) {
+        if (!npc.GetGlobalNPC<TownNPCHousingModule>().WillGoHome) {
             TownNPCStateModule.RefreshToState<DefaultAIState>(npc);
             return;
         }

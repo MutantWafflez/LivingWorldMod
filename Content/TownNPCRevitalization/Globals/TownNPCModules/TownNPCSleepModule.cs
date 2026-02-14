@@ -1,17 +1,14 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.UI.Bestiary;
 using LivingWorldMod.DataStructures.Records;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
@@ -20,12 +17,11 @@ using Terraria.ModLoader.IO;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 
-public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
+public sealed class TownNPCSleepModule : TownNPCModule {
     private const int MaxAwakeValue = LWMUtils.InGameHour * 24;
     private const float DefaultAwakeValue = MaxAwakeValue * 0.2f;
 
     private const int MaxBlockedSleepValue = LWMUtils.RealLifeSecond * 10;
-
 
     private static readonly Gradient<Color> SleepIconColorGradient = new (Color.Lerp, (0f, Color.Red), (0.5f, Color.DarkOrange), (1f, Color.White));
 
@@ -33,11 +29,6 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     ///     The amount of ticks that this NPC has been awake. The higher the value, the more severe effects on mood will occur. This value is decreased rapidly by a Town NPC sleeping.
     /// </summary>
     public BoundedNumber<float> awakeTicks = new(DefaultAwakeValue, 0, MaxAwakeValue);
-
-    /// <summary>
-    ///     The amount of ticks that must pass before this NPC is allowed to sleep, even if they really want to.
-    /// </summary>
-    private BoundedNumber<int> _blockedSleepTimer = new(0, 0, MaxBlockedSleepValue);
 
     public bool IsAsleep => NPC.ai[0] == TownNPCAIState.GetStateInteger<BeAtHomeAIState>() && NPC.ai[1] == BeAtHomeAIState.IsSleepingStateFlag;
 
@@ -71,8 +62,7 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     /// <summary>
     ///     Denotes whether there is anything event or tertiary circumstances that is preventing this NPC from sleeping. If this value is false, it means this NPC cannot sleep normally.
     /// </summary>
-    public bool CanSleep => _blockedSleepTimer <= 0
-        && !NPC.GetGlobalNPC<TownNPCChatModule>().IsChattingWithPlayerDirectly
+    public bool CanSleep => !NPC.GetGlobalNPC<TownNPCChatModule>().IsChattingWithPlayerDirectly
         && !NPC.GetGlobalNPC<TownNPCCombatModule>().IsAttacking;
 
     /// <summary>
@@ -108,30 +98,19 @@ public sealed class TownNPCSleepModule : TownNPCModule, IOnTownNPCAttack {
     public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) {
         bitWriter.WriteBit(WantsToSleep);
         binaryWriter.Write(awakeTicks);
-        binaryWriter.Write(_blockedSleepTimer);
     }
 
     public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader) {
         WantsToSleep = bitReader.ReadBit();
         awakeTicks = new BoundedNumber<float>(binaryReader.ReadSingle(), awakeTicks.LowerBound, awakeTicks.UpperBound);
-        _blockedSleepTimer = new BoundedNumber<int>(binaryReader.ReadInt32(), _blockedSleepTimer.LowerBound, _blockedSleepTimer.UpperBound);
-    }
-
-    public override void HitEffect(NPC npc, NPC.HitInfo hit) {
-        _blockedSleepTimer += LWMUtils.RealLifeSecond * 2;
     }
 
     public override void UpdateModule() {
-        _blockedSleepTimer -= 1;
         if (!IsAsleep && !NightPartySystem.IsNightPartyOccuring) {
             awakeTicks += 1f;
         }
 
         CheckNPCUrgeToSleep();
-    }
-
-    public void OnTownNPCAttack(NPC npc) {
-        _blockedSleepTimer += LWMUtils.RealLifeSecond * 8;
     }
 
     private void CheckNPCUrgeToSleep() {

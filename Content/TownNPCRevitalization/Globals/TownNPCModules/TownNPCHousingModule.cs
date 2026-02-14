@@ -5,15 +5,23 @@ using LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
-
+using LivingWorldMod.DataStructures.Records;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 
-public class TownNPCHousingModule : TownNPCModule {
+public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
+    private const int MaxBlockedHomeValue = LWMUtils.RealLifeSecond * 15;
+
+    /// <summary>
+    ///     The amount of ticks that must pass before this NPC is capable of trying to go home, even if they really want to.
+    /// </summary>
+    private BoundedNumber<int> _blockedHomeTimer = new(0, 0, MaxBlockedHomeValue);
+
     public override int UpdatePriority => -1;
 
     public Rectangle? RoomBoundingBox {
@@ -26,15 +34,17 @@ public class TownNPCHousingModule : TownNPCModule {
         private set;
     }
 
-    public bool ShouldGoHome {
+    public bool WillGoHome {
         get {
             bool wantsToSleep = NPC.TryGetGlobalNPC(out TownNPCSleepModule sleepModule) && sleepModule.WantsToSleep && sleepModule.CanSleep;
 
-            return wantsToSleep || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon;
+            return _blockedHomeTimer <= 0 && (wantsToSleep || Main.eclipse || Main.raining || Main.bloodMoon || Main.snowMoon || Main.pumpkinMoon);
         }
     }
 
     public override void UpdateModule() {
+        _blockedHomeTimer -= 1;
+
         if (NPC.homeTileX == -1 && NPC.homeTileY == -1 && NPC.velocity.Y == 0f && !NPC.shimmering) {
             NPC.UpdateHomeTileState(NPC.homeless, (int)NPC.Center.X / 16, (int)(NPC.position.Y + NPC.height + 4f) / 16);
         }
@@ -53,6 +63,10 @@ public class TownNPCHousingModule : TownNPCModule {
 
         Rectangle worldBoundingBox = new(boundingBox.X * 16, boundingBox.Y * 16, boundingBox.Width * 16, boundingBox.Height * 16);
         Utils.DrawRect(spriteBatch, worldBoundingBox, Main.DiscoColor);
+    }
+
+    public override void HitEffect(NPC npc, NPC.HitInfo hit) {
+        _blockedHomeTimer += LWMUtils.RealLifeSecond * 2;
     }
 
     // Adapted vanilla code
@@ -112,6 +126,10 @@ public class TownNPCHousingModule : TownNPCModule {
         return possibleRestInfos.Count == 0 ? new HomeRestingInfo(floorPos + new Point(0, -1), floorPos, NPCRestType.Floor) : possibleRestInfos.OrderByDescending(info => info.RestType).First();
     }
 
+    public void OnTownNPCAttack(NPC npc) {
+        _blockedHomeTimer += LWMUtils.RealLifeSecond * 8;
+    }
+
     private void HomelessTeleportCheck() {
         //Adapted vanilla code
         Point bottomOfNPC = (NPC.Bottom + new Vector2(0, 1f)).ToTileCoordinates();
@@ -121,7 +139,7 @@ public class TownNPCHousingModule : TownNPCModule {
             return;
         }
 
-        if (Main.netMode == NetmodeID.MultiplayerClient || !ShouldGoHome) {
+        if (Main.netMode == NetmodeID.MultiplayerClient || !WillGoHome) {
             return;
         }
 
