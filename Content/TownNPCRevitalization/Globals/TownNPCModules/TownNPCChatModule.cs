@@ -108,14 +108,18 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
         if (_currentSentence is not null) {
             IUpdateTownNPCSmallTalk.Invoke(NPC, --_chatBubbleDuration);
 
-            if (Main.netMode == NetmodeID.MultiplayerClient || _chatBubbleDuration > 0) {
+            if (_chatBubbleDuration > 0) {
                 return;
             }
 
             ClearSmallTalkData();
-            _chatCooldown = (ushort)Main.rand.Next(LWMUtils.RealLifeSecond * 3, LWMUtils.RealLifeSecond * 5);
 
-            NPC.netUpdate = true;
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                return;
+            }
+
+            // Only SP/Server needs to handle the cooldown to avoid un-necessary syncing
+            _chatCooldown = Main.rand.Next(LWMUtils.RealLifeSecond * 3, LWMUtils.RealLifeSecond * 5);
             return;
         }
 
@@ -137,11 +141,14 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
 
         int newBubbleID = EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), DefaultChatBubbleDuration, _recipientObject.ObjectAnchor);
         if (newBubbleID < 0) {
+            ClearSmallTalkData();
+
+            _chatCooldown = Main.rand.Next(LWMUtils.RealLifeSecond * 1, LWMUtils.RealLifeSecond * 3);
             return;
         }
 
         SetCurrentSentence(newBubbleID, _recipientObject);
-        // Only want the object's reception cooldown to be handled in SP/Server, otherwise a lot of unnecessary syncing will be required
+        // Only want the object's reception cooldown to be handled in SP/Server, otherwise a lot of unnecessary (and tedious) syncing will be required
         _recipientObject.SmallTalkReceptionCooldown = _recipientObject.SmallTalkReceptionCooldown.NewWithValue(_chatBubbleDuration + LWMUtils.RealLifeSecond);
 
         NPC.netUpdate = true;
@@ -149,7 +156,6 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
 
     public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) {
         binaryWriter.Write(_currentEmoteBubbleID);
-        binaryWriter.Write((ushort)_chatCooldown);
         binaryWriter.Write((ushort)_chatBubbleDuration);
         if (_currentEmoteBubbleID < 0) {
             return;
@@ -165,17 +171,14 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
 
     public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader) {
         _currentEmoteBubbleID = binaryReader.ReadInt32();
-        ushort chatCooldown = binaryReader.ReadUInt16();
         ushort chatBubbleDuration = binaryReader.ReadUInt16();
         if (_currentEmoteBubbleID < 0) {
             ClearSmallTalkData();
-            _chatCooldown = chatCooldown;
             _chatBubbleDuration = chatBubbleDuration;
 
             return;
         }
 
-        _chatCooldown = chatCooldown;
         _chatBubbleDuration = chatBubbleDuration;
 
         int recipientAnchorObjectType = binaryReader.ReadByte();
