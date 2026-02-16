@@ -1,5 +1,6 @@
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.DataStructures.Records;
+using Terraria.GameContent.UI;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Players;
 
@@ -21,11 +22,9 @@ public class TownNPCSmallTalkPlayer : ModPlayer, ITownNPCSmallTalkObject {
 
     public string SmallTalkFlavorTextSubstitution => Player.name;
 
-    public override void PostUpdate() {
-        if (Main.netMode == NetmodeID.Server) {
-            return;
-        }
+    public WorldUIAnchor ObjectAnchor => new(Player);
 
+    public override void PostUpdate() {
         SmallTalkReceptionCooldown -= 1;
     }
 }

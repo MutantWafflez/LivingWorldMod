@@ -1,4 +1,5 @@
 using LivingWorldMod.DataStructures.Records;
+using Terraria.GameContent.UI;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 
@@ -27,6 +28,13 @@ public interface ITownNPCSmallTalkObject {
     ///     display name.
     /// </summary>
     public string SmallTalkFlavorTextSubstitution {
+        get;
+    }
+
+    /// <summary>
+    ///     The anchor in the world that this object needs to be spoken to.
+    /// </summary>
+    public WorldUIAnchor ObjectAnchor {
         get;
     }
 }

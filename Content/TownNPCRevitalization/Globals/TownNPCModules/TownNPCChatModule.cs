@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
@@ -11,6 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using Terraria.GameContent;
 using Terraria.GameContent.UI;
+using Terraria.ModLoader.IO;
 using Terraria.UI.Chat;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
@@ -38,8 +40,10 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
     // public readonly ForgetfulArray<string> chatHistory = new(50);
 
     private string _currentSentence;
+    private int _currentEmoteBubbleID;
     private int _chatBubbleDuration;
     private int _chatCooldown;
+    private ITownNPCSmallTalkObject _recipientObject;
 
     public BoundedNumber<int> SmallTalkReceptionCooldown {
         get;
@@ -49,6 +53,8 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
     public string SmallTalkLocalizationCategory => LWMUtils.GetNPCTypeNameOrIDName(NPC.type);
 
     public string SmallTalkFlavorTextSubstitution => NPC.GivenOrTypeName;
+
+    public WorldUIAnchor ObjectAnchor => new(NPC);
 
     public override int UpdatePriority => -1;
 
@@ -94,7 +100,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
         }
         // End of adapted code
 
-        if (Main.netMode == NetmodeID.Server || NPCID.Sets.IsTownPet[NPC.type]) {
+        if (NPCID.Sets.IsTownPet[NPC.type]) {
             return;
         }
 
@@ -102,13 +108,15 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
         if (_currentSentence is not null) {
             IUpdateTownNPCSmallTalk.Invoke(NPC, --_chatBubbleDuration);
 
-            if (_chatBubbleDuration > 0) {
+            if (Main.netMode == NetmodeID.MultiplayerClient || _chatBubbleDuration > 0) {
                 return;
             }
 
-            _currentSentence = null;
-            _chatBubbleDuration = 0;
-            _chatCooldown = Main.rand.Next(LWMUtils.RealLifeSecond * 3, LWMUtils.RealLifeSecond * 5);
+            ClearSmallTalkData();
+            _chatCooldown = (ushort)Main.rand.Next(LWMUtils.RealLifeSecond * 3, LWMUtils.RealLifeSecond * 5);
+
+            NPC.netUpdate = true;
+            return;
         }
 
         if (--_chatCooldown <= 0) {
@@ -118,35 +126,74 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
             return;
         }
 
-        if (IsSpeaking || !Main.rand.NextBool(ChitChatChanceDenominator)) {
+        if (Main.netMode == NetmodeID.MultiplayerClient || IsSpeaking || !Main.rand.NextBool(ChitChatChanceDenominator)) {
             return;
         }
 
-        ITownNPCSmallTalkObject recipientObject = GetSmallTalkObject();
-        if (recipientObject is null) {
+        _recipientObject = GetSmallTalkObject();
+        if (_recipientObject is null) {
             return;
         }
 
-        EmoteBubble emoteBubble = EmoteBubble.GetExistingEmoteBubble(EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), DefaultChatBubbleDuration /*, new WorldUIAnchor(chatRecipient)*/));
-        string emoteBubbleName = emoteBubble.emote <= EmoteID.BossDeerclops ? EmoteID.Search.GetName(emoteBubble.emote) : "Default";
-        string speakingNPCTypeName = LWMUtils.GetNPCTypeNameOrIDName(NPC.type);
-        object[] formatArray = [NPC.GivenOrTypeName, recipientObject.SmallTalkFlavorTextSubstitution];
+        int newBubbleID = EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), DefaultChatBubbleDuration, _recipientObject.ObjectAnchor);
+        if (newBubbleID < 0) {
+            return;
+        }
 
-        _currentSentence = new DynamicLocalizedText(
-            $"TownNPCSmallTalk.{speakingNPCTypeName}.{recipientObject.SmallTalkLocalizationCategory}.{emoteBubbleName}".Localized(),
-            formatArray,
-            new DynamicLocalizedText(
-                $"TownNPCSmallTalk.{speakingNPCTypeName}.{emoteBubbleName}".Localized(),
-                formatArray,
-                new DynamicLocalizedText(
-                    $"TownNPCSmallTalk.Default.{emoteBubbleName}".Localized(),
-                    formatArray
-                )
-            )
-        ).FormattedString;
+        SetCurrentSentence(newBubbleID, _recipientObject);
+        // Only want the object's reception cooldown to be handled in SP/Server, otherwise a lot of unnecessary syncing will be required
+        _recipientObject.SmallTalkReceptionCooldown = _recipientObject.SmallTalkReceptionCooldown.NewWithValue(_chatBubbleDuration + LWMUtils.RealLifeSecond);
 
-        _chatBubbleDuration = DefaultChatBubbleDuration;
-        recipientObject.SmallTalkReceptionCooldown = recipientObject.SmallTalkReceptionCooldown.NewWithValue(_chatBubbleDuration + LWMUtils.RealLifeSecond);
+        NPC.netUpdate = true;
+    }
+
+    public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) {
+        binaryWriter.Write(_currentEmoteBubbleID);
+        binaryWriter.Write((ushort)_chatCooldown);
+        binaryWriter.Write((ushort)_chatBubbleDuration);
+        if (_currentEmoteBubbleID < 0) {
+            return;
+        }
+
+        WorldUIAnchor recipientAnchor = _recipientObject.ObjectAnchor;
+        Tuple<int, int> serializedAnchorData = EmoteBubble.SerializeNetAnchor(recipientAnchor);
+
+        binaryWriter.Write((byte)serializedAnchorData.Item1);
+        // TODO: Support recipient projectile anchors(?)
+        binaryWriter.Write((ushort)serializedAnchorData.Item2);
+    }
+
+    public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader) {
+        _currentEmoteBubbleID = binaryReader.ReadInt32();
+        ushort chatCooldown = binaryReader.ReadUInt16();
+        ushort chatBubbleDuration = binaryReader.ReadUInt16();
+        if (_currentEmoteBubbleID < 0) {
+            ClearSmallTalkData();
+            _chatCooldown = chatCooldown;
+            _chatBubbleDuration = chatBubbleDuration;
+
+            return;
+        }
+
+        _chatCooldown = chatCooldown;
+        _chatBubbleDuration = chatBubbleDuration;
+
+        int recipientAnchorObjectType = binaryReader.ReadByte();
+        // whoAmI of whatever object type
+        int recipientAnchorMetadata = binaryReader.ReadUInt16();
+        WorldUIAnchor recipientAnchor = EmoteBubble.DeserializeNetAnchor(recipientAnchorObjectType, recipientAnchorMetadata);
+
+        switch (recipientAnchor.entity) {
+            case Player recipientPlayer:
+                _recipientObject = recipientPlayer.GetModPlayer<TownNPCSmallTalkPlayer>();
+                break;
+            case NPC recipientNPC:
+                _recipientObject = recipientNPC.GetGlobalNPC<TownNPCChatModule>();
+                break;
+            default:
+                ClearSmallTalkData();
+                break;
+        }
     }
 
     // TODO: Re-write chat bubble drawing
@@ -256,12 +303,38 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
     }
 
     public void UpdateSleep(NPC npc, Vector2? drawOffset, NPCRestType restType) {
-        if (Main.netMode == NetmodeID.Server) {
-            return;
-        }
-
         DisableChatting(LWMUtils.RealLifeSecond);
         DisableChatReception(LWMUtils.RealLifeSecond);
+    }
+
+    private void ClearSmallTalkData() {
+        _currentSentence = null;
+        _currentEmoteBubbleID = -1;
+        _chatBubbleDuration = 0;
+        _recipientObject = null;
+        _chatCooldown = 0;
+    }
+
+    private void SetCurrentSentence(int newBubbleID, ITownNPCSmallTalkObject recipientObject) {
+        EmoteBubble emoteBubble = EmoteBubble.GetExistingEmoteBubble(newBubbleID);
+        string emoteBubbleName = emoteBubble.emote <= EmoteID.BossDeerclops ? EmoteID.Search.GetName(emoteBubble.emote) : "Default";
+        string speakingNPCTypeName = LWMUtils.GetNPCTypeNameOrIDName(NPC.type);
+        object[] formatArray = [NPC.GivenOrTypeName, recipientObject.SmallTalkFlavorTextSubstitution];
+
+        _currentSentence = new DynamicLocalizedText(
+            $"TownNPCSmallTalk.{speakingNPCTypeName}.{recipientObject.SmallTalkLocalizationCategory}.{emoteBubbleName}".Localized(),
+            formatArray,
+            new DynamicLocalizedText(
+                $"TownNPCSmallTalk.{speakingNPCTypeName}.{emoteBubbleName}".Localized(),
+                formatArray,
+                new DynamicLocalizedText(
+                    $"TownNPCSmallTalk.Default.{emoteBubbleName}".Localized(),
+                    formatArray
+                )
+            )
+        ).FormattedString;
+
+        _chatBubbleDuration = DefaultChatBubbleDuration;
     }
 
     private ITownNPCSmallTalkObject GetSmallTalkObject() {
