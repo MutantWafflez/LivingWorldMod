@@ -135,7 +135,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
         }
 
         ITownNPCSmallTalkObject recipientObject = GetSmallTalkObject();
-        if (_recipientObject is null) {
+        if (recipientObject is null) {
             return;
         }
 
