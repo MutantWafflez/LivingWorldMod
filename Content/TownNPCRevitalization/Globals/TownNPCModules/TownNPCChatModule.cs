@@ -39,11 +39,11 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
 
     // public readonly ForgetfulArray<string> chatHistory = new(50);
 
-    private string _currentSentence;
-    private int _currentEmoteBubbleID;
+    private int _currentEmoteBubbleID = -1;
     private int _chatBubbleDuration;
     private int _chatCooldown;
     private ITownNPCSmallTalkObject _recipientObject;
+    private string _currentSentence;
 
     public BoundedNumber<int> SmallTalkReceptionCooldown {
         get;
@@ -134,12 +134,12 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
             return;
         }
 
-        _recipientObject = GetSmallTalkObject();
+        ITownNPCSmallTalkObject recipientObject = GetSmallTalkObject();
         if (_recipientObject is null) {
             return;
         }
 
-        int newBubbleID = EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), DefaultChatBubbleDuration, _recipientObject.ObjectAnchor);
+        int newBubbleID = EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), DefaultChatBubbleDuration, recipientObject.ObjectAnchor);
         if (newBubbleID < 0) {
             ClearSmallTalkData();
 
@@ -147,19 +147,21 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
             return;
         }
 
-        SetCurrentSentence(newBubbleID, _recipientObject);
         // Only want the object's reception cooldown to be handled in SP/Server, otherwise a lot of unnecessary (and tedious) syncing will be required
-        _recipientObject.SmallTalkReceptionCooldown = _recipientObject.SmallTalkReceptionCooldown.NewWithValue(_chatBubbleDuration + LWMUtils.RealLifeSecond);
+        recipientObject.SmallTalkReceptionCooldown = recipientObject.SmallTalkReceptionCooldown.NewWithValue(_chatBubbleDuration + LWMUtils.RealLifeSecond);
+
+        SetCurrentSentence(newBubbleID, recipientObject, DefaultChatBubbleDuration);
 
         NPC.netUpdate = true;
     }
 
     public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) {
         binaryWriter.Write(_currentEmoteBubbleID);
-        binaryWriter.Write((ushort)_chatBubbleDuration);
         if (_currentEmoteBubbleID < 0) {
             return;
         }
+
+        binaryWriter.Write((ushort)_chatBubbleDuration);
 
         WorldUIAnchor recipientAnchor = _recipientObject.ObjectAnchor;
         Tuple<int, int> serializedAnchorData = EmoteBubble.SerializeNetAnchor(recipientAnchor);
@@ -170,33 +172,33 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
     }
 
     public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader) {
-        _currentEmoteBubbleID = binaryReader.ReadInt32();
-        ushort chatBubbleDuration = binaryReader.ReadUInt16();
-        if (_currentEmoteBubbleID < 0) {
+        int emoteID = binaryReader.ReadInt32();
+        if (emoteID < 0) {
             ClearSmallTalkData();
-            _chatBubbleDuration = chatBubbleDuration;
 
             return;
         }
 
-        _chatBubbleDuration = chatBubbleDuration;
-
+        ushort chatBubbleDuration = binaryReader.ReadUInt16();
         int recipientAnchorObjectType = binaryReader.ReadByte();
         // whoAmI of whatever object type
         int recipientAnchorMetadata = binaryReader.ReadUInt16();
         WorldUIAnchor recipientAnchor = EmoteBubble.DeserializeNetAnchor(recipientAnchorObjectType, recipientAnchorMetadata);
 
+        ITownNPCSmallTalkObject recipientObject;
         switch (recipientAnchor.entity) {
             case Player recipientPlayer:
-                _recipientObject = recipientPlayer.GetModPlayer<TownNPCSmallTalkPlayer>();
+                recipientObject = recipientPlayer.GetModPlayer<TownNPCSmallTalkPlayer>();
                 break;
             case NPC recipientNPC:
-                _recipientObject = recipientNPC.GetGlobalNPC<TownNPCChatModule>();
+                recipientObject = recipientNPC.GetGlobalNPC<TownNPCChatModule>();
                 break;
             default:
                 ClearSmallTalkData();
-                break;
+                return;
         }
+
+        SetCurrentSentence(emoteID, recipientObject, chatBubbleDuration);
     }
 
     // TODO: Re-write chat bubble drawing
@@ -295,6 +297,10 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
     ///     This only prevents new chats from occuring, and won't cancel chats that have already started.
     /// </remarks>
     public void DisableChatting(int duration) {
+        if (Main.netMode == NetmodeID.MultiplayerClient) {
+            return;
+        }
+
         _chatCooldown = duration;
     }
 
@@ -302,23 +308,34 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
     ///     Disables the ability for other NPCs to chat with this NPC for the specified duration, in ticks.
     /// </summary>
     public void DisableChatReception(int duration) {
+        if (Main.netMode == NetmodeID.MultiplayerClient) {
+            return;
+        }
+
         SmallTalkReceptionCooldown = SmallTalkReceptionCooldown.NewWithValue(duration);
     }
 
     public void UpdateSleep(NPC npc, Vector2? drawOffset, NPCRestType restType) {
+        if (Main.netMode == NetmodeID.MultiplayerClient) {
+            return;
+        }
+
         DisableChatting(LWMUtils.RealLifeSecond);
         DisableChatReception(LWMUtils.RealLifeSecond);
     }
 
     private void ClearSmallTalkData() {
-        _currentSentence = null;
         _currentEmoteBubbleID = -1;
+        _chatCooldown = 0;
         _chatBubbleDuration = 0;
         _recipientObject = null;
-        _chatCooldown = 0;
+        _currentSentence = null;
     }
 
-    private void SetCurrentSentence(int newBubbleID, ITownNPCSmallTalkObject recipientObject) {
+    private void SetCurrentSentence(int newBubbleID, ITownNPCSmallTalkObject recipientObject, int duration) {
+        _currentEmoteBubbleID = newBubbleID;
+        _recipientObject = recipientObject;
+
         EmoteBubble emoteBubble = EmoteBubble.GetExistingEmoteBubble(newBubbleID);
         string emoteBubbleName = emoteBubble.emote <= EmoteID.BossDeerclops ? EmoteID.Search.GetName(emoteBubble.emote) : "Default";
         string speakingNPCTypeName = LWMUtils.GetNPCTypeNameOrIDName(NPC.type);
@@ -337,7 +354,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
             )
         ).FormattedString;
 
-        _chatBubbleDuration = DefaultChatBubbleDuration;
+        _chatBubbleDuration = duration;
     }
 
     private ITownNPCSmallTalkObject GetSmallTalkObject() {
