@@ -69,7 +69,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
     /// <summary>
     ///     Whether this NPC is currently chatting to another entity in the background, i.e with the chat bubbles.
     /// </summary>
-    public bool IsChattingToEntityInBackground => _currentSentence is not null;
+    public bool IsChattingToEntityInBackground => _currentEmoteBubbleID >= 0;
 
     /// <summary>
     ///     Whether this NPC is currently talking to any entity at all.
@@ -105,7 +105,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
         }
 
         SmallTalkReceptionCooldown -= 1;
-        if (_currentSentence is not null) {
+        if (IsChattingToEntityInBackground) {
             IUpdateTownNPCSmallTalk.Invoke(NPC, --_chatBubbleDuration);
 
             if (_chatBubbleDuration > 0) {
