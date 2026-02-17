@@ -259,14 +259,17 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             blanketFrame.Y = blanketFrame.Height * info.TileStyle;
         }
 
-        Vector2 blanketPos = new(4f, 24f);
+        bool isFacingLeft = npc.IsFacingLeft();
+        Vector2 blanketPos = new(isFacingLeft ? -12f : 6f, 0f);
         RequestDraw(
             new TownNPCDrawRequest(
                 blanketTexture,
                 blanketPos,
                 -blanketPos,
                 blanketFrame,
-                GetFullyModifiedNPCDrawColor(npc, BlanketColor),
+                GetFullyModifiedNPCDrawColor(npc, Color.White),
+                0f,
+                SpriteEffect: isFacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
                 DrawLayer: 1
             )
         );
