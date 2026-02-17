@@ -251,7 +251,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
             return;
         }
 
-        Texture2D blanketTexture = Assets.Sprites.TownNPCRevitalization.Overlays.SleepingBlanket.Asset.EnsureAssetLoaded().Value;
+        Texture2D blanketTexture = Assets.Sprites.TownNPCRevitalization.Overlays.TownNPCBlankets.Asset.EnsureAssetLoaded().Value;
         Vector2 blanketPos = new(4f, 24f);
         RequestDraw(
             new TownNPCDrawRequest(
