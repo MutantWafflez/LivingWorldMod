@@ -117,7 +117,7 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
                     continue;
                 }
 
-                HomeRestingInfo info = new (pathfindPos, restPos, restType);
+                HomeRestingInfo info = new(pathfindPos, restPos, restType);
                 possibleRestInfos.Add(info);
                 j = restPos.Y;
             }
@@ -133,6 +133,7 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
     private void HomelessTeleportCheck() {
         //Adapted vanilla code
         Point bottomOfNPC = (NPC.Bottom + new Vector2(0, 1f)).ToTileCoordinates();
+        // TODO: Make this check not every tick
         RestInfo = GetRestingInfo();
 
         if (!WorldGen.InWorld(bottomOfNPC.X, bottomOfNPC.Y) || (Main.netMode == NetmodeID.MultiplayerClient && !Main.sectionManager.TileLoaded(bottomOfNPC.X, bottomOfNPC.Y))) {
@@ -142,7 +143,6 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
         if (Main.netMode == NetmodeID.MultiplayerClient || !WillGoHome) {
             return;
         }
-
 
         TownNPCPathfinderModule pathfinderModule = NPC.GetGlobalNPC<TownNPCPathfinderModule>();
         int beAtHomeStateInteger = TownNPCAIState.GetStateInteger<BeAtHomeAIState>();
