@@ -139,7 +139,8 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
             return;
         }
 
-        int newBubbleID = EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), DefaultChatBubbleDuration, recipientObject.ObjectAnchor);
+        // Vanilla code throws an exception if the WorldAnchor Entity is anything other than an NPC in ProbeExceptions(), so we can only allow "other" to be passed if its an NPC.
+        int newBubbleID = EmoteBubble.NewBubbleNPC(new WorldUIAnchor(NPC), DefaultChatBubbleDuration, recipientObject.ObjectAnchor.entity is NPC ? recipientObject.ObjectAnchor : null);
         if (newBubbleID < 0) {
             ClearSmallTalkData();
 
