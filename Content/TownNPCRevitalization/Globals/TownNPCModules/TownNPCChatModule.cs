@@ -180,7 +180,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
             return;
         }
 
-        ushort chatBubbleDuration = binaryReader.ReadUInt16();
+        int chatBubbleDuration = binaryReader.ReadUInt16();
         int recipientAnchorObjectType = binaryReader.ReadByte();
         // whoAmI of whatever object type
         int recipientAnchorMetadata = binaryReader.ReadUInt16();
