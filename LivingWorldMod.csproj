@@ -9,8 +9,4 @@
 
         <DoNotPublicize Include="tModLoader:Terraria.TileData"/>
     </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Content\Villages\DataStructures\Structs\"/>
-    </ItemGroup>
 </Project>
