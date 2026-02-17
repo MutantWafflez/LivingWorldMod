@@ -1,4 +1,4 @@
-INDEV RELEASE v0.5.1.0 [Revitalization Minor Update #1] (Feb 16th, 2026)
+INDEV RELEASE v0.5.1.0 [Revitalization Minor Patch #1] (Feb 16th, 2026)
 Additions:
 + Town NPC blankets now change based on what kind of bed the NPC is sleeping on
 Fixes:
