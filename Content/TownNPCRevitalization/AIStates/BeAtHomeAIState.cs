@@ -1,10 +1,10 @@
 ﻿using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 using Microsoft.Xna.Framework;
-using Terraria.GameContent;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
 
@@ -27,7 +27,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
             return;
         }
 
-        (Point pathfindPos, Point restTilePos, NPCRestType npcRestType) = npc.GetGlobalNPC<TownNPCHousingModule>().RestInfo;
+        (Point pathfindPos, Point restTilePos, NPCRestType npcRestType, BedInfo? bedInfo) = npc.GetGlobalNPC<TownNPCHousingModule>().RestInfo;
         TownNPCPathfinderModule pathfinderModule = npc.GetGlobalNPC<TownNPCPathfinderModule>();
         if (!TownGlobalNPC.IsValidStandingPosition(npc, pathfindPos)) {
             return;
@@ -75,16 +75,21 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
         uint? frameOverride = null;
         switch (npcRestType) {
             case NPCRestType.Bed:
-                npc.friendlyRegen += 10;
+                // If BedInfo is broken for some reason, jump to sleeping on the floor at the foot of the bed.
+                if (bedInfo is not var (_, _, sleepDirection, anchorPosition, sleepDrawOffset)) {
+                    goto case NPCRestType.Floor;
+                }
 
-                PlayerSleepingHelper.GetSleepingTargetInfo(restTilePos.X, restTilePos.Y, out int targetDirection, out _, out Vector2 visualOffset);
-                npc.direction = targetDirection;
-                npc.rotation = MathHelper.PiOver2 * -targetDirection;
+                npc.friendlyRegen += 10;
+                npc.direction = sleepDirection;
+                npc.rotation = MathHelper.PiOver2 * -sleepDirection;
+
                 Main.sleepingManager.AddNPC(npc.whoAmI, restTilePos);
 
                 sleepModule.awakeTicks -= 1.875f * currentSleepQualityModifier;
 
-                drawOffset = targetDirection == 1 ? new Vector2(npc.width / 2f, visualOffset.Y) : new Vector2(npc.width, visualOffset.Y);
+                Vector2 visualOffset = anchorPosition - npc.Bottom + sleepDrawOffset;
+                drawOffset = sleepDirection == 1 ? new Vector2(npc.width / 2f, visualOffset.Y) : new Vector2(npc.width, visualOffset.Y);
                 break;
             case NPCRestType.Chair:
                 npc.friendlyRegen += 5;
@@ -113,7 +118,7 @@ public sealed class BeAtHomeAIState : TownNPCAIState {
         }
 
         npc.ai[1] = IsSleepingStateFlag;
-        IUpdateSleep.Invoke(npc, drawOffset, npcRestType);
+        IUpdateSleep.Invoke(npc, drawOffset, npcRestType, bedInfo);
 
         pathfinderModule.CancelPathfind();
     }

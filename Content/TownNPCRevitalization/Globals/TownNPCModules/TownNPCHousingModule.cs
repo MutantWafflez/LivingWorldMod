@@ -11,6 +11,8 @@ using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Records;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria.GameContent;
+using Terraria.ObjectData;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
 
@@ -91,11 +93,17 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
                 }
 
                 NPCRestType restType;
+                BedInfo? bedInfo = null;
                 if (isSittingTile) {
                     restType = NPCRestType.Chair;
                 }
                 else if (isSleepingTile) {
                     restType = NPCRestType.Bed;
+
+                    Point topLeftOfBed = LWMUtils.GetCornerOfMultiTile(tile, i, j, LWMUtils.CornerType.TopLeft);
+                    PlayerSleepingHelper.GetSleepingTargetInfo(i, j, out int targetDirection, out Vector2 anchorPosition, out Vector2 visualOffset);
+
+                    bedInfo = new BedInfo(tile.TileType, TileObjectData.GetTileStyle(Main.tile[topLeftOfBed]), targetDirection, anchorPosition, visualOffset);
                 }
                 else {
                     continue;
@@ -117,7 +125,7 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
                     continue;
                 }
 
-                HomeRestingInfo info = new(pathfindPos, restPos, restType);
+                HomeRestingInfo info = new(pathfindPos, restPos, restType, bedInfo);
                 possibleRestInfos.Add(info);
                 j = restPos.Y;
             }

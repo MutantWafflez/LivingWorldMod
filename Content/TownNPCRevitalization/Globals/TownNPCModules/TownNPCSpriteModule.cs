@@ -56,6 +56,8 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
     private const int TalkOverlayIndex = 0;
     private const int EyelidOverlayIndex = 1;
 
+    private const int VanillaBedStyleCount = 43;
+
     private readonly List<TownNPCDrawRequest> _drawRequests = [];
 
     private int _blinkTimer;
@@ -233,7 +235,7 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         _drawOffset = drawOffset;
     }
 
-    public void UpdateSleep(NPC npc, Vector2? drawOffset, NPCRestType restType) {
+    public void UpdateSleep(NPC npc, Vector2? drawOffset, NPCRestType restType, BedInfo? bedInfo) {
         if (Main.netMode == NetmodeID.Server) {
             return;
         }
@@ -252,13 +254,19 @@ public sealed class TownNPCSpriteModule : TownNPCModule, IUpdateSleep, IUpdateTo
         }
 
         Texture2D blanketTexture = Assets.Sprites.TownNPCRevitalization.Overlays.TownNPCBlankets.Asset.EnsureAssetLoaded().Value;
+        Rectangle blanketFrame = blanketTexture.Frame(verticalFrames: VanillaBedStyleCount);
+        if (restType is NPCRestType.Bed && bedInfo is { TileID: TileID.Beds } info) {
+            blanketFrame.Y = blanketFrame.Height * info.TileStyle;
+        }
+
         Vector2 blanketPos = new(4f, 24f);
         RequestDraw(
             new TownNPCDrawRequest(
                 blanketTexture,
                 blanketPos,
                 -blanketPos,
-                Color: GetFullyModifiedNPCDrawColor(npc, BlanketColor),
+                blanketFrame,
+                GetFullyModifiedNPCDrawColor(npc, BlanketColor),
                 DrawLayer: 1
             )
         );

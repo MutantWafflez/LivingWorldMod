@@ -2,6 +2,7 @@
 using System.IO;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Enums;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Interfaces;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Records;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Configs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
@@ -316,7 +317,7 @@ public sealed class TownNPCChatModule : TownNPCModule, IUpdateSleep, ITownNPCSma
         SmallTalkReceptionCooldown = SmallTalkReceptionCooldown.NewWithValue(duration);
     }
 
-    public void UpdateSleep(NPC npc, Vector2? drawOffset, NPCRestType restType) {
+    public void UpdateSleep(NPC npc, Vector2? drawOffset, NPCRestType restType, BedInfo? bedInfo) {
         if (Main.netMode == NetmodeID.MultiplayerClient) {
             return;
         }
