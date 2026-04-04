@@ -1,7 +1,1 @@
-INDEV RELEASE v0.5.1.0 [Revitalization Minor Patch #1] (Feb 16th, 2026)
-Additions:
-+ Town NPC blankets now change based on what kind of bed the NPC is sleeping on
-Fixes:
-* Fixed Town Pets speaking fluent English
-* Fixed Town NPCs trying to go home or sleep even if they're being actively threatened
-* Fixed Town NPCs phasing in and out of existence when bantering in Multiplayer
+INDEV RELEASE v0.5.2.0 [Revitalization Minor Patch #2] (XXX, 2026)
