@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Globals.BaseTypes.Systems;
 using Microsoft.Xna.Framework;
-using Terraria.DataStructures;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 
@@ -34,8 +33,12 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
         _towns = [];
 
         // Using Vector2 for its better hash function in comparison to Point
-        List<Vector2> allRoomPositions = WorldGen.TownManager._roomLocationPairs.Select(pair => pair.Item2.ToVector2()).ToList();
-        Dictionary<Vector2, HashSet<Vector2>> allLinkedRooms = [];
+        List<Vector2> allRoomPositions = WorldGen.TownManager._roomLocationPairs.Select(pair => pair.Item2.ToVector2()).Distinct().ToList();
+        if (allRoomPositions.Count <= 0) {
+            return;
+        }
+
+        Dictionary<Vector2, List<Vector2>> allLinkedRooms = [];
 
         // First pass; link all rooms that are directly connected via the maximum distance
         for (int i = 0; i < allRoomPositions.Count; i++) {
@@ -55,24 +58,34 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
                 allLinkedRooms[posOne].Add(posTwo);
             }
         }
-        
-        // Second pass; link all rooms that are "chained" together, i.e. transitive (if A -> B and B -> C, then A -> C)
-        foreach (Vector2 pos in allRoomPositions) {
-            if (!allLinkedRooms.TryGetValue(pos, out HashSet<Vector2> initialLinkedRooms)) {
+
+        // Second pass; link all rooms that are "chained" together via multiple BFS (my goat), i.e. transitive (if A -> B and B -> C, then A -> C)
+        HashSet<Vector2> visitedSet = [];
+        foreach (Vector2 rootVertex in allRoomPositions) {
+            if (visitedSet.Contains(rootVertex)) {
                 continue;
             }
 
-            HashSet<Vector2> linkedRoomsUnion = [];
-            linkedRoomsUnion.UnionWith(initialLinkedRooms);
-            foreach (Vector2 linkedRoom in initialLinkedRooms) {
-                linkedRoomsUnion.UnionWith(allLinkedRooms[linkedRoom]);
-                allLinkedRooms.Remove(linkedRoom);
+            List<Vector2> linkedVertices = [];
+            Queue<Vector2> frontier = [];
+            frontier.Enqueue(rootVertex);
+            while (frontier.Count > 0) {
+                Vector2 currentVertex = frontier.Dequeue();
+                linkedVertices.Add(currentVertex);
+                visitedSet.Add(currentVertex);
+
+                foreach (Vector2 linkedVertex in allLinkedRooms[currentVertex]) {
+                    if (!visitedSet.Add(linkedVertex)) {
+                        continue;
+                    }
+
+                    frontier.Enqueue(linkedVertex);
+                }
             }
 
-            List<Vector2> roomsList = linkedRoomsUnion.ToList();
-            Vector2 centroid = roomsList.Aggregate(Vector2.Zero, (current, roomPos) => current + roomPos) / roomsList.Count;
-            
-            _towns.Add(new TownData(linkedRoomsUnion.ToList(), centroid.ToPoint(), []));
+
+            Vector2 centroid = linkedVertices.Aggregate(Vector2.Zero, (current, roomPos) => current + roomPos) / linkedVertices.Count;
+            _towns.Add(new TownData(linkedVertices, centroid.ToPoint(), []));
         }
     }
 }
