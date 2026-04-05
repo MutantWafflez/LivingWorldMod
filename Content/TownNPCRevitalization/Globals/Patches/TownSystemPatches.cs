@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.DataStructures.Classes;
 using Microsoft.Xna.Framework;
@@ -27,6 +28,17 @@ public class TownSystemPatches : LoadablePatch {
     }
 
     private void OnKickOutRefreshLWMTowns(On_TownRoomManager.orig_KickOut_int orig, TownRoomManager self, int npcType) {
+        Point roomPos;
+        lock (TownRoomManager.EntityCreationLock) {
+            roomPos = self._roomLocationPairs.FirstOrDefault(pair => pair.Item1 == npcType)?.Item2 ?? Point.Zero;
+        }
+
         orig(self, npcType);
+
+        if (roomPos == Point.Zero) {
+            return;
+        }
+
+        TownNPCTownSystem.Instance.RemoveRoomFromTown(roomPos);
     }
 }

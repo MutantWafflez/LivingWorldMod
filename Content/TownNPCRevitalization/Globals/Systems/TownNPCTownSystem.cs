@@ -48,8 +48,14 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
         return LWMUtils.NewRectFromCorners(topLeftOfTown, bottomRightOfTown);
     }
 
+    public override void ClearWorld() {
+        _towns = [];
+    }
+
     public override void PostWorldLoad() {
-        CalculateTowns();
+        _towns = [];
+
+        CalculateTowns(WorldGen.TownManager._roomLocationPairs.Select(pair => pair.Item2).ToList());
     }
 
     public override void PostDrawTiles() {
@@ -72,7 +78,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     /// </summary>
     public void AddRoomToTown(Point roomPos) {
         if (_towns.Count <= 0) {
-            AddTownFromRooms([roomPos]);
+            CreateTownObjectFromRooms([roomPos]);
             return;
         }
 
@@ -94,7 +100,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
         bool canLinkToTown = closestTown.RoomPositions.Any(point => !(point.ToVector2().DistanceSQ(roomPos.ToVector2()) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking));
         if (!canLinkToTown) {
-            AddTownFromRooms([roomPos]);
+            CreateTownObjectFromRooms([roomPos]);
             return;
         }
 
@@ -103,30 +109,112 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     }
 
     /// <summary>
-    ///     Generate all internal towns for each stored home location of the NPCs in the world.
+    ///     Searches all current towns for the one that contains the passed-in room and removes it. If this room was the only one in the town, the town is also removed. If no town was found to contain this
+    ///     room, nothing occurs. This method also handles splitting towns into two, if such an edge case occurs.
     /// </summary>
-    private void CalculateTowns() {
-        _towns = [];
+    public void RemoveRoomFromTown(Point roomPos) {
+        if (_towns.Count <= 0) {
+            return;
+        }
 
-        // Using Vector2 for its better hash function in comparison to Point
-        List<Vector2> allRoomPositions = WorldGen.TownManager._roomLocationPairs.Select(pair => pair.Item2.ToVector2()).Distinct().ToList();
+        int ownedTownIndex = 0;
+        int ownedTownRoomPosIndex = 0;
+        TownData ownedTown = _towns[ownedTownIndex];
+        for (int i = 0; i < _towns.Count; i++) {
+            TownData town = _towns[i];
+
+            for (int j = 0; j < town.RoomPositions.Count; j++) {
+                Point point = town.RoomPositions[j];
+                if (roomPos != point) {
+                    continue;
+                }
+
+                ownedTownIndex = i;
+                ownedTown = town;
+                ownedTownRoomPosIndex = j;
+                goto OutsideLoop;
+            }
+        }
+
+        return;
+
+        OutsideLoop:
+        if (ownedTown.RoomPositions.Count <= 1) {
+            _towns.RemoveAt(ownedTownIndex);
+            return;
+        }
+
+        ownedTown.RoomPositions.RemoveAt(ownedTownRoomPosIndex);
+
+        // Verify that the town is still valid, and if not, create new towns based on all of the rooms that were unlinked as a result of the removal
+        if (IsTownValid(ownedTown, out List<Point> unlinkedRoomPositions)) {
+            return;
+        }
+
+        CalculateTowns(unlinkedRoomPositions);
+    }
+
+    /// <summary>
+    ///     Confirms that the town in question is still "valid", meaning that all rooms are still within linkable distance (<see cref="MaximumTileRangeForRoomLinking" />) of each other. If valid, return
+    ///     true. If invalid, returns false and passes out a list of room positions that were unlinked.
+    /// </summary>
+    private bool IsTownValid(TownData townData, out List<Point> unlinkedRoomPositions) {
+        unlinkedRoomPositions = [];
+        if (townData.RoomPositions.Count <= 0) {
+            return false;
+        }
+
+        HashSet<Vector2> visitedSet = [];
+        Queue<Vector2> frontier = [];
+        frontier.Enqueue(townData.RoomPositions[0].ToVector2());
+        while (frontier.Count > 0) {
+            Vector2 currentVertex = frontier.Dequeue();
+            if (!visitedSet.Add(currentVertex)) {
+                continue;
+            }
+
+            foreach (Point linkedRoomPoint in townData.RoomPositions) {
+                Vector2 linkedVertex = linkedRoomPoint.ToVector2();
+                if (currentVertex.DistanceSQ(linkedVertex) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking) {
+                    continue;
+                }
+
+                frontier.Enqueue(linkedVertex);
+            }
+        }
+
+        if (visitedSet.Count == townData.RoomPositions.Count) {
+            return true;
+        }
+
+        unlinkedRoomPositions = townData.RoomPositions.Except(visitedSet.Select(vector => vector.ToPoint())).ToList();
+        return false;
+    }
+
+    /// <summary>
+    ///     From a list of room positions, follow a linking process by distance to determine all grouped together rooms, which will be conglomerated into individual <see cref="TownData" /> objects, added to
+    ///     the internal <see cref="_towns" /> list.
+    /// </summary>
+    private void CalculateTowns(List<Point> allRoomPositions) {
         if (allRoomPositions.Count <= 0) {
             return;
         }
 
+        // Using Vector2 for its better hash function in comparison to Point
+        List<Vector2> allRoomVertices = allRoomPositions.Select(point => point.ToVector2()).ToList();
         Dictionary<Vector2, List<Vector2>> allLinkedRooms = [];
 
         // First pass; link all rooms that are directly connected via the maximum distance
-        for (int i = 0; i < allRoomPositions.Count; i++) {
-            Vector2 posOne = allRoomPositions[i];
+        for (int i = 0; i < allRoomVertices.Count; i++) {
+            Vector2 posOne = allRoomVertices[i];
             allLinkedRooms[posOne] = [];
 
-            for (int j = 0; j < allRoomPositions.Count; j++) {
+            for (int j = 0; j < allRoomVertices.Count; j++) {
                 if (i == j) {
                     continue;
                 }
 
-                Vector2 posTwo = allRoomPositions[j];
+                Vector2 posTwo = allRoomVertices[j];
                 if (posOne.DistanceSQ(posTwo) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking) {
                     continue;
                 }
@@ -137,7 +225,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
         // Second pass; link all rooms that are "chained" together via multiple BFS (my goat), i.e. transitive (if A -> B and B -> C, then A -> C)
         HashSet<Vector2> visitedSet = [];
-        foreach (Vector2 rootVertex in allRoomPositions) {
+        foreach (Vector2 rootVertex in allRoomVertices) {
             if (visitedSet.Contains(rootVertex)) {
                 continue;
             }
@@ -161,11 +249,15 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
 
             List<Point> finalRoomPositions = linkedVertices.Select(vertex => vertex.ToPoint()).ToList();
-            AddTownFromRooms(finalRoomPositions);
+            CreateTownObjectFromRooms(finalRoomPositions);
         }
     }
 
-    private void AddTownFromRooms(List<Point> roomPositions) {
+    /// <summary>
+    ///     Given a list of room positions, add a new <see cref="TownData" /> object to the internal <see cref="_towns" /> list. This method assumes that the room positions have been determined to be linked
+    ///     together by distance.
+    /// </summary>
+    private void CreateTownObjectFromRooms(List<Point> roomPositions) {
         _towns.Add(new TownData(CreateTownZoneFromRoomPositions(roomPositions), roomPositions, null));
     }
 }
