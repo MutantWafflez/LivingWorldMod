@@ -18,19 +18,13 @@ public class TownSystemPatches : LoadablePatch {
 
     private void OnAddOccuputantsRefreshLWMTowns(On_TownRoomManager.orig_AddOccupantsToList_Point_List1 orig, TownRoomManager self, Point tilePosition, List<int> occupants) {
         orig(self, tilePosition, occupants);
-
-        TownNPCTownSystem.Instance.CalculateTowns();
     }
 
     private void OnSetRoomRefreshLWMTowns(On_TownRoomManager.orig_SetRoom_int_Point orig, TownRoomManager self, int npcID, Point pt) {
         orig(self, npcID, pt);
-
-        TownNPCTownSystem.Instance.CalculateTowns();
     }
 
     private void OnKickOutRefreshLWMTowns(On_TownRoomManager.orig_KickOut_int orig, TownRoomManager self, int npcType) {
         orig(self, npcType);
-
-        TownNPCTownSystem.Instance.CalculateTowns();
     }
 }

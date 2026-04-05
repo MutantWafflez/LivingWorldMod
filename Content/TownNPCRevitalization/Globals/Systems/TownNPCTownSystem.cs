@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Globals.BaseTypes.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,7 +18,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
     private readonly record struct PointOfInterest(PointOfInterestType Type, Point Position);
 
-    private readonly record struct TownData(Rectangle TownZone, List<Point> RoomPositions, List<PointOfInterest> PointsOfInterest);
+    private readonly record struct TownData(Rectangle TownZone, List<Point> RoomPositions, TownNPCPathfinder TownPathfinder);
 
     private const int MaximumTileRangeForRoomLinking = 75;
 
@@ -42,13 +43,9 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     }
 
     /// <summary>
-    ///     Generate all internal towns for each stored home location of the NPCs in the world. At this point in time.
+    ///     Generate all internal towns for each stored home location of the NPCs in the world.
     /// </summary>
-    /// <remarks>
-    ///     Ideally we don't do a FULL recalculation every time (other than when we first enter the world in <see cref="PostWorldLoad" />), but the maximum amount of assigned rooms we could have is
-    ///     200 (maxNPCs), so performance isn't really a concern here, even in spam scenarios.
-    /// </remarks>
-    public void CalculateTowns() {
+    private void CalculateTowns() {
         _towns = [];
 
         // Using Vector2 for its better hash function in comparison to Point
@@ -124,7 +121,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
                 }
             }
 
-            _towns.Add(new TownData(LWMUtils.NewRectFromCorners(topLeftOfTown, bottomRightOfTown), finalRoomPositions, []));
+            _towns.Add(new TownData(LWMUtils.NewRectFromCorners(topLeftOfTown, bottomRightOfTown), finalRoomPositions, null));
         }
     }
 }
