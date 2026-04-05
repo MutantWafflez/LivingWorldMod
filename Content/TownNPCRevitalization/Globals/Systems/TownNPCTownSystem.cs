@@ -16,20 +16,20 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
     private readonly record struct PointOfInterest(PointOfInterestType Type, Point Position);
 
-    private readonly record struct TownData(List<Vector2> Rooms, Point Centroid, List<PointOfInterest> PointsOfInterest);
+    private readonly record struct TownData(Rectangle TownZone, List<Point> RoomPositions, List<PointOfInterest> PointsOfInterest);
 
     private const int MaximumTileRangeForRoomLinking = 75;
 
     private List<TownData> _towns;
 
     public override void PostWorldLoad() {
-        GenerateTownGraphs();
+        CalculateTowns();
     }
 
     /// <summary>
-    ///     Generate all internal graphs for each stored home location of the NPCs in the world. This is the most expensive mapping, as it clears all current data and re-instatiates all of it.
+    ///     Generate all internal towns for each stored home location of the NPCs in the world. This is the most expensive mapping, as it clears all current data and re-instatiates all of it.
     /// </summary>
-    private void GenerateTownGraphs() {
+    private void CalculateTowns() {
         _towns = [];
 
         // Using Vector2 for its better hash function in comparison to Point
@@ -84,8 +84,28 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
             }
 
 
-            Vector2 centroid = linkedVertices.Aggregate(Vector2.Zero, (current, roomPos) => current + roomPos) / linkedVertices.Count;
-            _towns.Add(new TownData(linkedVertices, centroid.ToPoint(), []));
+            List<Point> finalRoomPositions = linkedVertices.Select(vertex => vertex.ToPoint()).ToList();
+            Point topLeftOfTown = new (int.MaxValue, int.MaxValue);
+            Point bottomRightOfTown = new (int.MinValue, int.MinValue);
+            foreach (Point point in finalRoomPositions) {
+                if (point.X < topLeftOfTown.X) {
+                    topLeftOfTown.X = point.X;
+                }
+
+                if (point.Y < topLeftOfTown.Y) {
+                    topLeftOfTown.Y = point.Y;
+                }
+
+                if (point.X > bottomRightOfTown.X) {
+                    bottomRightOfTown.X = point.X + 1;
+                }
+
+                if (point.Y > bottomRightOfTown.Y) {
+                    bottomRightOfTown.Y = point.Y + 1;
+                }
+            }
+
+            _towns.Add(new TownData(LWMUtils.NewRectFromCorners(topLeftOfTown, bottomRightOfTown), finalRoomPositions, []));
         }
     }
 }
