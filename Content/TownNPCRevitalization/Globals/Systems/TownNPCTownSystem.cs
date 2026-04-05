@@ -24,6 +24,30 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
     private List<TownData> _towns;
 
+    private static Rectangle CreateTownZoneFromRoomPositions(List<Point> roomPositions) {
+        Point topLeftOfTown = new (int.MaxValue, int.MaxValue);
+        Point bottomRightOfTown = new (int.MinValue, int.MinValue);
+        foreach (Point point in roomPositions) {
+            if (point.X < topLeftOfTown.X) {
+                topLeftOfTown.X = point.X;
+            }
+
+            if (point.Y < topLeftOfTown.Y) {
+                topLeftOfTown.Y = point.Y;
+            }
+
+            if (point.X > bottomRightOfTown.X) {
+                bottomRightOfTown.X = point.X + 1;
+            }
+
+            if (point.Y > bottomRightOfTown.Y) {
+                bottomRightOfTown.Y = point.Y + 1;
+            }
+        }
+
+        return LWMUtils.NewRectFromCorners(topLeftOfTown, bottomRightOfTown);
+    }
+
     public override void PostWorldLoad() {
         CalculateTowns();
     }
@@ -40,6 +64,42 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
         }
 
         Main.spriteBatch.End();
+    }
+
+    /// <summary>
+    ///     Searches the current list of towns and attempts to add the passed-in room to its proper town. If no town is close enough to be grouped into any town, a new town will be created with the room as
+    ///     the only position.
+    /// </summary>
+    public void AddRoomToTown(Point roomPos) {
+        if (_towns.Count <= 0) {
+            AddTownFromRooms([roomPos]);
+            return;
+        }
+
+        float closestTownDistanceSquared = float.MaxValue;
+        int closestTownIndex = 0;
+        TownData closestTown = _towns[closestTownIndex];
+        for (int i = 0; i < _towns.Count; i++) {
+            TownData town = _towns[i];
+
+            float distanceSquaredToTown = town.TownZone.Center.ToVector2().DistanceSQ(roomPos.ToVector2());
+            if (distanceSquaredToTown > closestTownDistanceSquared) {
+                continue;
+            }
+
+            closestTownDistanceSquared = distanceSquaredToTown;
+            closestTownIndex = i;
+            closestTown = town;
+        }
+
+        bool canLinkToTown = closestTown.RoomPositions.Any(point => !(point.ToVector2().DistanceSQ(roomPos.ToVector2()) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking));
+        if (!canLinkToTown) {
+            AddTownFromRooms([roomPos]);
+            return;
+        }
+
+        closestTown.RoomPositions.Add(roomPos);
+        _towns[closestTownIndex] = closestTown with { TownZone = CreateTownZoneFromRoomPositions(closestTown.RoomPositions) };
     }
 
     /// <summary>
@@ -101,27 +161,11 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
 
             List<Point> finalRoomPositions = linkedVertices.Select(vertex => vertex.ToPoint()).ToList();
-            Point topLeftOfTown = new (int.MaxValue, int.MaxValue);
-            Point bottomRightOfTown = new (int.MinValue, int.MinValue);
-            foreach (Point point in finalRoomPositions) {
-                if (point.X < topLeftOfTown.X) {
-                    topLeftOfTown.X = point.X;
-                }
-
-                if (point.Y < topLeftOfTown.Y) {
-                    topLeftOfTown.Y = point.Y;
-                }
-
-                if (point.X > bottomRightOfTown.X) {
-                    bottomRightOfTown.X = point.X + 1;
-                }
-
-                if (point.Y > bottomRightOfTown.Y) {
-                    bottomRightOfTown.Y = point.Y + 1;
-                }
-            }
-
-            _towns.Add(new TownData(LWMUtils.NewRectFromCorners(topLeftOfTown, bottomRightOfTown), finalRoomPositions, null));
+            AddTownFromRooms(finalRoomPositions);
         }
+    }
+
+    private void AddTownFromRooms(List<Point> roomPositions) {
+        _towns.Add(new TownData(CreateTownZoneFromRoomPositions(roomPositions), roomPositions, null));
     }
 }
