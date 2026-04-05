@@ -79,40 +79,40 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     public void AddRoomToTown(Point roomPos) {
         if (_towns.Count <= 0) {
             CreateTownObjectFromRooms([roomPos]);
-            return;
         }
 
-        float closestTownDistanceSquared = float.MaxValue;
-        int closestTownIndex = 0;
-        TownData closestTown = _towns[closestTownIndex];
-        for (int i = 0; i < _towns.Count; i++) {
-            TownData town = _towns[i];
 
-            float distanceSquaredToTown = town.TownZone.Center.ToVector2().DistanceSQ(roomPos.ToVector2());
-            if (distanceSquaredToTown > closestTownDistanceSquared) {
-                continue;
-            }
-
-            closestTownDistanceSquared = distanceSquaredToTown;
-            closestTownIndex = i;
-            closestTown = town;
-        }
-
-        bool canLinkToTown = closestTown.RoomPositions.Any(point => !(point.ToVector2().DistanceSQ(roomPos.ToVector2()) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking));
-        if (!canLinkToTown) {
-            CreateTownObjectFromRooms([roomPos]);
-            return;
-        }
-
-        closestTown.RoomPositions.Add(roomPos);
-        _towns[closestTownIndex] = closestTown with { TownZone = CreateTownZoneFromRoomPositions(closestTown.RoomPositions) };
+        // float closestTownDistanceSquared = float.MaxValue;
+        // int closestTownIndex = 0;
+        // TownData closestTown = _towns[closestTownIndex];
+        // for (int i = 0; i < _towns.Count; i++) {
+        //     TownData town = _towns[i];
+        //
+        //     float distanceSquaredToTown = town.TownZone.Center.ToVector2().DistanceSQ(roomPos.ToVector2());
+        //     if (distanceSquaredToTown > closestTownDistanceSquared) {
+        //         continue;
+        //     }
+        //
+        //     closestTownDistanceSquared = distanceSquaredToTown;
+        //     closestTownIndex = i;
+        //     closestTown = town;
+        // }
+        //
+        // bool canLinkToTown = closestTown.RoomPositions.Any(point => !(point.ToVector2().DistanceSQ(roomPos.ToVector2()) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking));
+        // if (!canLinkToTown) {
+        //     CreateTownObjectFromRooms([roomPos]);
+        //     return;
+        // }
+        //
+        // closestTown.RoomPositions.Add(roomPos);
+        // _towns[closestTownIndex] = closestTown with { TownZone = CreateTownZoneFromRoomPositions(closestTown.RoomPositions) };
     }
 
     /// <summary>
     ///     Searches all current towns for the one that contains the passed-in room and removes it. If this room was the only one in the town, the town is also removed. If no town was found to contain this
-    ///     room, nothing occurs. This method also handles splitting towns into two, if such an edge case occurs.
+    ///     room, nothing occurs. This method also handles splitting towns into two, if such an edge case occurs (unless disabled; enabled by default).
     /// </summary>
-    public void RemoveRoomFromTown(Point roomPos) {
+    public void RemoveRoomFromTown(Point roomPos, bool doSplitCheck = true) {
         if (_towns.Count <= 0) {
             return;
         }
@@ -145,6 +145,10 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
         }
 
         ownedTown.RoomPositions.RemoveAt(ownedTownRoomPosIndex);
+
+        if (!doSplitCheck) {
+            return;
+        }
 
         // Verify that the town is still valid, and if not, create new towns based on all of the rooms that were unlinked as a result of the removal
         if (IsTownValid(ownedTown, out List<Point> unlinkedRoomPositions)) {

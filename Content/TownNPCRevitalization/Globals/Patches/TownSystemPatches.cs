@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.DataStructures.Classes;
@@ -11,28 +10,34 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Patches;
 ///     Patch class that handles the necessary patches/detours for stitching together Vanilla's <see cref="TownRoomManager" /> and LWM's <see cref="TownNPCTownSystem" />
 /// </summary>
 public class TownSystemPatches : LoadablePatch {
+    private static Point GetRoomBeforeRemoval(TownRoomManager roomManager, int npcType) {
+        Point roomPos;
+        lock (TownRoomManager.EntityCreationLock) {
+            roomPos = roomManager._roomLocationPairs.FirstOrDefault(pair => pair.Item1 == npcType)?.Item2 ?? Point.Zero;
+        }
+
+        return roomPos;
+    }
+
     public override void LoadPatches() {
-        On_TownRoomManager.AddOccupantsToList_Point_List1 += OnAddOccuputantsRefreshLWMTowns;
         On_TownRoomManager.SetRoom_int_Point += OnSetRoomRefreshLWMTowns;
         On_TownRoomManager.KickOut_int += OnKickOutRefreshLWMTowns;
     }
 
-    private void OnAddOccuputantsRefreshLWMTowns(On_TownRoomManager.orig_AddOccupantsToList_Point_List1 orig, TownRoomManager self, Point tilePosition, List<int> occupants) {
-        orig(self, tilePosition, occupants);
-
-        TownNPCTownSystem.Instance.AddRoomToTown(tilePosition);
-    }
-
     private void OnSetRoomRefreshLWMTowns(On_TownRoomManager.orig_SetRoom_int_Point orig, TownRoomManager self, int npcID, Point pt) {
+        Point previousRoomPos = GetRoomBeforeRemoval(self, npcID);
+
         orig(self, npcID, pt);
+
+        if (previousRoomPos != Point.Zero) {
+            TownNPCTownSystem.Instance.RemoveRoomFromTown(previousRoomPos, false);
+        }
+
+        TownNPCTownSystem.Instance.AddRoomToTown(pt);
     }
 
     private void OnKickOutRefreshLWMTowns(On_TownRoomManager.orig_KickOut_int orig, TownRoomManager self, int npcType) {
-        Point roomPos;
-        lock (TownRoomManager.EntityCreationLock) {
-            roomPos = self._roomLocationPairs.FirstOrDefault(pair => pair.Item1 == npcType)?.Item2 ?? Point.Zero;
-        }
-
+        Point roomPos = GetRoomBeforeRemoval(self, npcType);
         orig(self, npcType);
 
         if (roomPos == Point.Zero) {
