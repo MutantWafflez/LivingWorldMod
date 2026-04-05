@@ -35,7 +35,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
         Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
         foreach (TownData town in _towns) {
-            Utils.DrawRect(Main.spriteBatch, town.TownZone, new Color(town.TownZone.X, town.TownZone.Y, town.TownZone.X + town.TownZone.Y));
+            Utils.DrawRect(Main.spriteBatch, town.TownZone.ToWorldCoordinates(), new Color((byte)town.TownZone.X, (byte)town.TownZone.Y, (byte)(town.TownZone.X + town.TownZone.Y)));
         }
 
         Main.spriteBatch.End();
