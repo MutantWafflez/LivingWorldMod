@@ -42,9 +42,13 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     }
 
     /// <summary>
-    ///     Generate all internal towns for each stored home location of the NPCs in the world. This is the most expensive mapping, as it clears all current data and re-instatiates all of it.
+    ///     Generate all internal towns for each stored home location of the NPCs in the world. At this point in time.
     /// </summary>
-    private void CalculateTowns() {
+    /// <remarks>
+    ///     Ideally we don't do a FULL recalculation every time (other than when we first enter the world in <see cref="PostWorldLoad" />), but the maximum amount of assigned rooms we could have is
+    ///     200 (maxNPCs), so performance isn't really a concern here, even in spam scenarios.
+    /// </remarks>
+    public void CalculateTowns() {
         _towns = [];
 
         // Using Vector2 for its better hash function in comparison to Point
