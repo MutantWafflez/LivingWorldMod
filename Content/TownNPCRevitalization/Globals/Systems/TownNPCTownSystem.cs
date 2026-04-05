@@ -48,6 +48,12 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
         return LWMUtils.NewRectFromCorners(topLeftOfTown, bottomRightOfTown);
     }
 
+    /// <summary>
+    ///     Returns a copy of the passed-in town object with the zone replace with a correct one based on the town's room positions. Only really needs to be called if the internal room position list is
+    ///     modified without copying the struct.
+    /// </summary>
+    private static TownData CopyTownWithNewZone(TownData town) => town with { TownZone = CreateTownZoneFromRoomPositions(town.RoomPositions) };
+
     public override void ClearWorld() {
         _towns = [];
     }
@@ -55,7 +61,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     public override void PostWorldLoad() {
         _towns = [];
 
-        CalculateTowns(WorldGen.TownManager._roomLocationPairs.Select(pair => pair.Item2).ToList());
+        CalculateTowns(WorldGen.TownManager._roomLocationPairs.Select(pair => pair.Item2).Distinct().ToList());
     }
 
     public override void PostDrawTiles() {
@@ -81,31 +87,30 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
             CreateTownObjectFromRooms([roomPos]);
         }
 
+        float closestTownDistanceSquared = float.MaxValue;
+        int closestTownIndex = 0;
+        TownData closestTown = _towns[closestTownIndex];
+        for (int i = 0; i < _towns.Count; i++) {
+            TownData town = _towns[i];
 
-        // float closestTownDistanceSquared = float.MaxValue;
-        // int closestTownIndex = 0;
-        // TownData closestTown = _towns[closestTownIndex];
-        // for (int i = 0; i < _towns.Count; i++) {
-        //     TownData town = _towns[i];
-        //
-        //     float distanceSquaredToTown = town.TownZone.Center.ToVector2().DistanceSQ(roomPos.ToVector2());
-        //     if (distanceSquaredToTown > closestTownDistanceSquared) {
-        //         continue;
-        //     }
-        //
-        //     closestTownDistanceSquared = distanceSquaredToTown;
-        //     closestTownIndex = i;
-        //     closestTown = town;
-        // }
-        //
-        // bool canLinkToTown = closestTown.RoomPositions.Any(point => !(point.ToVector2().DistanceSQ(roomPos.ToVector2()) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking));
-        // if (!canLinkToTown) {
-        //     CreateTownObjectFromRooms([roomPos]);
-        //     return;
-        // }
-        //
-        // closestTown.RoomPositions.Add(roomPos);
-        // _towns[closestTownIndex] = closestTown with { TownZone = CreateTownZoneFromRoomPositions(closestTown.RoomPositions) };
+            float distanceSquaredToTown = town.TownZone.Center.ToVector2().DistanceSQ(roomPos.ToVector2());
+            if (distanceSquaredToTown > closestTownDistanceSquared) {
+                continue;
+            }
+
+            closestTownDistanceSquared = distanceSquaredToTown;
+            closestTownIndex = i;
+            closestTown = town;
+        }
+
+        bool canLinkToTown = closestTown.RoomPositions.Any(point => !(point.ToVector2().DistanceSQ(roomPos.ToVector2()) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking));
+        if (!canLinkToTown) {
+            CreateTownObjectFromRooms([roomPos]);
+            return;
+        }
+
+        closestTown.RoomPositions.Add(roomPos);
+        _towns[closestTownIndex] = CopyTownWithNewZone(closestTown);
     }
 
     /// <summary>
@@ -131,6 +136,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
                 ownedTownIndex = i;
                 ownedTown = town;
+
                 ownedTownRoomPosIndex = j;
                 goto OutsideLoop;
             }
@@ -145,7 +151,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
         }
 
         ownedTown.RoomPositions.RemoveAt(ownedTownRoomPosIndex);
-
+        _towns[ownedTownIndex] = CopyTownWithNewZone(ownedTown);
         if (!doSplitCheck) {
             return;
         }
@@ -154,6 +160,9 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
         if (IsTownValid(ownedTown, out List<Point> unlinkedRoomPositions)) {
             return;
         }
+
+        ownedTown.RoomPositions.RemoveAll(pos => unlinkedRoomPositions.Contains(pos));
+        _towns[ownedTownIndex] = CopyTownWithNewZone(ownedTown);
 
         CalculateTowns(unlinkedRoomPositions);
     }
