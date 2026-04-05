@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Globals.BaseTypes.Systems;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 
@@ -24,6 +25,20 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
     public override void PostWorldLoad() {
         CalculateTowns();
+    }
+
+    public override void PostDrawTiles() {
+        if (!LWM.IsDebug) {
+            return;
+        }
+
+        Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
+        foreach (TownData town in _towns) {
+            Utils.DrawRect(Main.spriteBatch, town.TownZone, new Color(town.TownZone.X, town.TownZone.Y, town.TownZone.X + town.TownZone.Y));
+        }
+
+        Main.spriteBatch.End();
     }
 
     /// <summary>
