@@ -46,7 +46,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
             }
         }
 
-        return LWMUtils.NewRectFromCorners((Point)topLeftOfTown, (Point)bottomRightOfTown);
+        return LWMUtils.NewRectFromCorners(topLeftOfTown, bottomRightOfTown);
     }
 
     /// <summary>

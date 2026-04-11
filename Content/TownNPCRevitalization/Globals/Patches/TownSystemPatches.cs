@@ -45,12 +45,12 @@ public class TownSystemPatches : LoadablePatch {
 
         List<int> typesLeftInPrevRoom = GetTypesInRoom(self, previousRoomPos);
         if (!AnyValidNPC(typesLeftInPrevRoom)) {
-            TownNPCTownSystem.Instance.RemoveRoomFromTown((HashPoint<int>)previousRoomPos);
+            TownNPCTownSystem.Instance.RemoveRoomFromTown(previousRoomPos);
         }
 
         List<int> typesInNewRoom = GetTypesInRoom(self, pt);
         if (!AnyValidNPC(typesInNewRoom)) {
-            TownNPCTownSystem.Instance.AddRoomToTown((HashPoint<int>)pt);
+            TownNPCTownSystem.Instance.AddRoomToTown(pt);
         }
     }
 
@@ -66,6 +66,6 @@ public class TownSystemPatches : LoadablePatch {
             return;
         }
 
-        TownNPCTownSystem.Instance.RemoveRoomFromTown((HashPoint<int>)roomPos);
+        TownNPCTownSystem.Instance.RemoveRoomFromTown(roomPos);
     }
 }

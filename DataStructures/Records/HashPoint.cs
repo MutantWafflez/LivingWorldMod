@@ -36,9 +36,9 @@ public record struct HashPoint<T>(T X, T Y) where T : struct, INumber<T> {
 
     public static explicit operator Vector2(HashPoint<T> hashPoint) => new (Unsafe.BitCast<T, float>(hashPoint.X), Unsafe.BitCast<T, float>(hashPoint.Y));
 
-    public static explicit operator Point(HashPoint<T> hashPoint) => new (Unsafe.BitCast<T, int>(hashPoint.X), Unsafe.BitCast<T, int>(hashPoint.Y));
+    public static implicit operator Point(HashPoint<T> hashPoint) => new (Unsafe.BitCast<T, int>(hashPoint.X), Unsafe.BitCast<T, int>(hashPoint.Y));
 
-    public static explicit operator HashPoint<T>(Point point) => new (Unsafe.BitCast<int, T>(point.X), Unsafe.BitCast<int, T>(point.Y));
+    public static implicit operator HashPoint<T>(Point point) => new (Unsafe.BitCast<int, T>(point.X), Unsafe.BitCast<int, T>(point.Y));
 
     public override int GetHashCode() => X.GetHashCode() + Y.GetHashCode();
 
