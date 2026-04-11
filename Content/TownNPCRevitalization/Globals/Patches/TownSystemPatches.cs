@@ -3,6 +3,7 @@ using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.DataStructures.Classes;
+using LivingWorldMod.DataStructures.Records;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent;
 
@@ -44,12 +45,12 @@ public class TownSystemPatches : LoadablePatch {
 
         List<int> typesLeftInPrevRoom = GetTypesInRoom(self, previousRoomPos);
         if (!AnyValidNPC(typesLeftInPrevRoom)) {
-            TownNPCTownSystem.Instance.RemoveRoomFromTown(previousRoomPos);
+            TownNPCTownSystem.Instance.RemoveRoomFromTown((HashPoint<int>)previousRoomPos);
         }
 
         List<int> typesInNewRoom = GetTypesInRoom(self, pt);
         if (!AnyValidNPC(typesInNewRoom)) {
-            TownNPCTownSystem.Instance.AddRoomToTown(pt);
+            TownNPCTownSystem.Instance.AddRoomToTown((HashPoint<int>)pt);
         }
     }
 
@@ -65,6 +66,6 @@ public class TownSystemPatches : LoadablePatch {
             return;
         }
 
-        TownNPCTownSystem.Instance.RemoveRoomFromTown(roomPos);
+        TownNPCTownSystem.Instance.RemoveRoomFromTown((HashPoint<int>)roomPos);
     }
 }

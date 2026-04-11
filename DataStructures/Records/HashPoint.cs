@@ -13,7 +13,7 @@ namespace LivingWorldMod.DataStructures.Records;
 /// </summary>
 [DebuggerDisplay("{DebugDisplayString,nq}")]
 [Serializable]
-public readonly record struct HashPoint<T>(T X, T Y) where T : struct, INumber<T> {
+public record struct HashPoint<T>(T X, T Y) where T : struct, INumber<T> {
     public static HashPoint<T> NegativeOne {
         get;
     } = new (Unsafe.BitCast<int, T>(-1));
