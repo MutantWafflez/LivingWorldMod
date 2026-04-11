@@ -204,6 +204,13 @@ public static partial class LWMUtils {
         set;
     }
 
+    /// <summary>
+    ///     Dummy NPC used for any purpose across the entire mod, instead of creating multiple, scattered instances.
+    /// </summary>
+    public static NPC DummyNPC {
+        get;
+    } = new ();
+
     private static Exception ILInstructionNotFoundException => new ("Could not find specified IL instruction.");
 
     /// <summary>
