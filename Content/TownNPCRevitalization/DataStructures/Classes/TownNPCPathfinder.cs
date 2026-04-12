@@ -93,13 +93,13 @@ public class TownNPCPathfinder {
     private const int AdditionalCostForStairs = 15;
 
     private readonly UPoint16 _topLeftOfGrid;
-    private readonly ushort _rectSizeX;
-    private readonly ushort _rectSizeY;
     private readonly ushort _gridSizeX;
     private readonly ushort _gridSizeY;
     private readonly PointGrid<InternalNode> _nodeGrid;
     private readonly PointGrid<TileData> _tileGrid;
     private readonly PriorityQueue<UPoint16, UPoint16> _openQueue;
+    private ushort _rectSizeX;
+    private ushort _rectSizeY;
     private UPoint16 _start;
     private UPoint16 _end;
     private bool _pathfindingStopped;
@@ -108,12 +108,10 @@ public class TownNPCPathfinder {
     private byte _currentOpenNodeValue = 1;
     private byte _currentClosedNodeValue = 2;
 
-    public TownNPCPathfinder(UPoint16 topLeftOfGrid, ushort gridSize, ushort rectSizeX, ushort rectSizeY) : this(topLeftOfGrid, gridSize, gridSize, rectSizeX, rectSizeY) { }
+    public TownNPCPathfinder(UPoint16 topLeftOfGrid, ushort gridSize) : this(topLeftOfGrid, gridSize, gridSize) { }
 
-    public TownNPCPathfinder(UPoint16 topLeftOfGrid, ushort gridSizeWidth, ushort gridSizeHeight, ushort rectSizeX, ushort rectSizeY) {
+    public TownNPCPathfinder(UPoint16 topLeftOfGrid, ushort gridSizeWidth, ushort gridSizeHeight) {
         _topLeftOfGrid = topLeftOfGrid;
-        _rectSizeX = rectSizeX;
-        _rectSizeY = rectSizeY;
 
         _gridSizeX = gridSizeWidth;
         _gridSizeY = gridSizeHeight;
@@ -142,9 +140,12 @@ public class TownNPCPathfinder {
         return tileCost;
     }
 
-    public List<PathNode> FindPath(UPoint16 startPoint, UPoint16 endPoint) {
+    public List<PathNode> FindPath(UPoint16 startPoint, UPoint16 endPoint, ushort rectSizeX, ushort rectSizeY) {
         _start = startPoint;
         _end = endPoint;
+
+        _rectSizeX = rectSizeX;
+        _rectSizeY = rectSizeY;
 
         if (!StartAndEndPointsAreValid()) {
             return null;

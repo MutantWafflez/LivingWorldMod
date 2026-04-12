@@ -360,9 +360,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         topLeftOfGrid.X = Utils.Clamp(topLeftOfGrid.X, worldFluff, Main.maxTilesX - PathfinderSize - worldFluff - 1);
         topLeftOfGrid.Y = Utils.Clamp(topLeftOfGrid.Y, 0, Main.maxTilesY - PathfinderSize - 1);
 
-        TownNPCPathfinder pathFinder =
-            _cachedPathfinder
-            ?? new TownNPCPathfinder(new UPoint16(topLeftOfGrid.X, topLeftOfGrid.Y), PathfinderSize, (ushort)Math.Ceiling(NPC.width / 16f), (ushort)Math.Ceiling(NPC.height / 16f));
+        TownNPCPathfinder pathFinder = _cachedPathfinder ?? new TownNPCPathfinder(new UPoint16(topLeftOfGrid.X, topLeftOfGrid.Y), PathfinderSize);
 
         Point adjustedBottomLeftOfNPC = BottomLeftTileOfNPC;
         Tile bottomLeftTileOfNPC = Main.tile[adjustedBottomLeftOfNPC];
@@ -370,7 +368,12 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             adjustedBottomLeftOfNPC.Y--;
         }
 
-        List<PathNode> path = pathFinder.FindPath(new UPoint16(adjustedBottomLeftOfNPC - topLeftOfGrid), new UPoint16(endPoint - topLeftOfGrid));
+        List<PathNode> path = pathFinder.FindPath(
+            new UPoint16(adjustedBottomLeftOfNPC - topLeftOfGrid),
+            new UPoint16(endPoint - topLeftOfGrid),
+            (ushort)Math.Ceiling(NPC.width / 16f),
+            (ushort)Math.Ceiling(NPC.height / 16f)
+        );
 
         if (path is null) {
             return null;
