@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.DataStructures.Records;
 using LivingWorldMod.Globals.BaseTypes.Systems;
 using Microsoft.Xna.Framework;
@@ -24,6 +25,12 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     private const int MaximumTileRangeForRoomLinking = 75;
 
     private List<TownData> _towns;
+
+    public static bool NPCTypeIsValidForTownInclusion(int type) {
+        LWMUtils.DummyNPC.SetDefaults(type);
+
+        return TownGlobalNPC.IsAnyValidTownNPC(LWMUtils.DummyNPC, true);
+    }
 
     private static Rectangle CreateTownZoneFromRoomPositions(List<HashPoint<int>> roomPositions) {
         HashPoint<int> topLeftOfTown = new (int.MaxValue, int.MaxValue);
@@ -62,7 +69,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     public override void PostWorldLoad() {
         _towns = [];
 
-        CalculateTowns(WorldGen.TownManager._roomLocationPairs.Select(pair => (HashPoint<int>)pair.Item2).Distinct().ToList());
+        CalculateTowns(WorldGen.TownManager._roomLocationPairs.Where(pair => NPCTypeIsValidForTownInclusion(pair.Item1)).Select(pair => (HashPoint<int>)pair.Item2).Distinct().ToList());
     }
 
     public override void PostDrawTiles() {
@@ -214,7 +221,6 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
         }
 
         Dictionary<HashPoint<int>, List<HashPoint<int>>> allLinkedRooms = [];
-
         // First pass; link all rooms that are directly connected via the maximum distance
         for (int i = 0; i < allRoomPositions.Count; i++) {
             HashPoint<int> posOne = allRoomPositions[i];

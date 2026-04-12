@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.DataStructures.Classes;
-using LivingWorldMod.DataStructures.Records;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent;
 
@@ -22,16 +20,11 @@ public class TownSystemPatches : LoadablePatch {
         return roomPos;
     }
 
+    private static bool AnyValidNPCTypes(List<int> types) => types.Any(TownNPCTownSystem.NPCTypeIsValidForTownInclusion);
+
     private static List<int> GetTypesInRoom(TownRoomManager roomManager, Point roomPos) {
         return roomManager._roomLocationPairs.Where(pair => pair.Item2 == roomPos).Select(pair => pair.Item1).ToList();
     }
-
-    private static bool AnyValidNPC(List<int> npcTypes) => npcTypes.Count > 0
-        && npcTypes.Any(type => {
-                LWMUtils.DummyNPC.SetDefaults(type);
-                return TownGlobalNPC.IsAnyValidTownNPC(LWMUtils.DummyNPC, true);
-            }
-        );
 
     public override void LoadPatches() {
         On_TownRoomManager.SetRoom_int_Point += OnSetRoomRefreshLWMTowns;
@@ -44,12 +37,12 @@ public class TownSystemPatches : LoadablePatch {
         orig(self, npcID, pt);
 
         List<int> typesLeftInPrevRoom = GetTypesInRoom(self, previousRoomPos);
-        if (!AnyValidNPC(typesLeftInPrevRoom)) {
+        if (!AnyValidNPCTypes(typesLeftInPrevRoom)) {
             TownNPCTownSystem.Instance.RemoveRoomFromTown(previousRoomPos);
         }
 
         List<int> typesInNewRoom = GetTypesInRoom(self, pt);
-        if (!AnyValidNPC(typesInNewRoom)) {
+        if (!AnyValidNPCTypes(typesInNewRoom)) {
             TownNPCTownSystem.Instance.AddRoomToTown(pt);
         }
     }
@@ -62,7 +55,7 @@ public class TownSystemPatches : LoadablePatch {
         List<int> typesLeftInRoom = GetTypesInRoom(self, roomPos);
         // Only remove the room if there are either no NPCs left in that room, or the remaining NPCs do not adhere to the Revitalization (Town Slimes and some pets at this moment)
         // TODO: Update this comment when this changes ^
-        if (roomPos == Point.Zero || AnyValidNPC(typesLeftInRoom)) {
+        if (roomPos == Point.Zero || AnyValidNPCTypes(typesLeftInRoom)) {
             return;
         }
 
