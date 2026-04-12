@@ -6,6 +6,8 @@ using LivingWorldMod.DataStructures.Records;
 using LivingWorldMod.Globals.BaseTypes.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria.GameContent;
+using Terraria.UI.Chat;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 
@@ -87,8 +89,25 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
         Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-        foreach (TownData town in _towns) {
-            Utils.DrawRect(Main.spriteBatch, town.TownZone.ToWorldCoordinates(), new Color((byte)town.TownZone.X, (byte)town.TownZone.Y, (byte)(town.TownZone.X + town.TownZone.Y)));
+        for (int i = 0; i < _towns.Count; i++) {
+            TownData town = _towns[i];
+            Utils.DrawRectForTilesInWorld(Main.spriteBatch, town.TownZone, new Color((byte)town.TownZone.X, (byte)town.TownZone.Y, (byte)(town.TownZone.X + town.TownZone.Y)));
+
+            string townInfo = $"Town Index: {i}, Room Count: {town.RoomPositions.Count}";
+            ChatManager.DrawColorCodedStringWithShadow(
+                Main.spriteBatch,
+                FontAssets.MouseText.Value,
+                townInfo,
+                town.TownZone.ToWorldCoordinates().TopLeft() - Main.screenPosition,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                Vector2.One
+            );
+
+            foreach (HashPoint<int> point in town.RoomPositions) {
+                Utils.DrawRectForTilesInWorld(Main.spriteBatch, new Rectangle(point.X, point.Y, 1, 1), Main.DiscoColor);
+            }
         }
 
         Main.spriteBatch.End();
@@ -96,37 +115,53 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
     /// <summary>
     ///     Searches the current list of towns and attempts to add the passed-in room to its proper town. If no town is close enough to be grouped into any town, a new town will be created with the room as
-    ///     the only position.
+    ///     the only position. This method also is capable of merging towns together if such an edge case occurs.
     /// </summary>
     public void AddRoomToTown(HashPoint<int> roomPos) {
         if (_towns.Count <= 0) {
             CreateTownObjectFromRooms([roomPos]);
         }
 
-        float closestTownDistanceSquared = float.MaxValue;
-        int closestTownIndex = 0;
-        TownData closestTown = _towns[closestTownIndex];
-        for (int i = 0; i < _towns.Count; i++) {
-            TownData town = _towns[i];
+        List<TownData> townsByDistance = _towns.OrderBy(town => town.TownZone.Center.ToVector2().DistanceSQ((Vector2)roomPos)).ToList();
+        List<int> linkableTownIndices = [];
+        for (int i = 0; i < townsByDistance.Count; i++) {
+            TownData townData = townsByDistance[i];
 
-            float distanceSquaredToTown = town.TownZone.Center.ToVector2().DistanceSQ((Vector2)roomPos);
-            if (distanceSquaredToTown > closestTownDistanceSquared) {
-                continue;
+            foreach (HashPoint<int> point in townData.RoomPositions) {
+                if (point.DistanceSquared(roomPos) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking) {
+                    continue;
+                }
+
+                linkableTownIndices.Add(i);
+
+                break;
             }
-
-            closestTownDistanceSquared = distanceSquaredToTown;
-            closestTownIndex = i;
-            closestTown = town;
         }
 
-        bool canLinkToTown = closestTown.RoomPositions.Any(point => !(point.DistanceSquared(roomPos) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking));
-        if (!canLinkToTown) {
-            CreateTownObjectFromRooms([roomPos]);
-            return;
+        switch (linkableTownIndices.Count) {
+            case <= 0:
+                CreateTownObjectFromRooms([roomPos]);
+
+                return;
+            case 1: {
+                int firstIndex = linkableTownIndices[0];
+
+                _towns[firstIndex].RoomPositions.Add(roomPos);
+                _towns[firstIndex] = CopyTownWithNewZone(_towns[firstIndex]);
+
+                return;
+            }
         }
 
-        closestTown.RoomPositions.Add(roomPos);
-        _towns[closestTownIndex] = CopyTownWithNewZone(closestTown);
+        List<HashPoint<int>> finalTownRoomPosList = [];
+        for (int i = 0; i < linkableTownIndices.Count; i++) {
+            int townIndex = linkableTownIndices[i];
+
+            finalTownRoomPosList.AddRange(_towns[townIndex].RoomPositions);
+            _towns.RemoveAt(townIndex - i);
+        }
+
+        CreateTownObjectFromRooms(finalTownRoomPosList);
     }
 
     /// <summary>

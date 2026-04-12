@@ -11,7 +11,6 @@ using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.DataStructures.Records;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
 using Terraria.ObjectData;
 
@@ -75,15 +74,6 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
         UpdateRoomBoundingBox();
 
         HomelessTeleportCheck();
-    }
-
-    public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-        if (RoomBoundingBox is not { } boundingBox || !LWM.IsDebug) {
-            return;
-        }
-
-        Rectangle worldBoundingBox = new(boundingBox.X * 16, boundingBox.Y * 16, boundingBox.Width * 16, boundingBox.Height * 16);
-        Utils.DrawRect(spriteBatch, worldBoundingBox, Main.DiscoColor);
     }
 
     public override void HitEffect(NPC npc, NPC.HitInfo hit) {
