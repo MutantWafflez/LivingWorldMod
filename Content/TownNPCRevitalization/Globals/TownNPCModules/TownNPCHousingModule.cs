@@ -35,7 +35,7 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
     public Rectangle? PrevTickRoomBoundingBox {
         get;
         private set;
-    }
+    } = Rectangle.Empty;
 
     public HomeRestingInfo RestInfo {
         get;
@@ -59,7 +59,7 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
             NPC.UpdateHomeTileState(NPC.homeless, (int)NPC.Center.X / 16, (int)(NPC.position.Y + NPC.height + 4f) / 16);
         }
 
-        if (PrevTickRoomBoundingBox != RoomBoundingBox) {
+        if (PrevTickRoomBoundingBox != Rectangle.Empty && PrevTickRoomBoundingBox != RoomBoundingBox) {
             if (PrevTickRoomBoundingBox is { } prevTickRoomBoundingBox) {
                 TownNPCTownSystem.Instance.RemoveRoomFromTown(new HashPoint<int>(prevTickRoomBoundingBox.X, prevTickRoomBoundingBox.Y));
             }
@@ -69,11 +69,11 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
             }
         }
 
+        PrevTickRoomBoundingBox = RoomBoundingBox;
+
         UpdateRoomBoundingBox();
 
         HomelessTeleportCheck();
-
-        PrevTickRoomBoundingBox = RoomBoundingBox;
     }
 
     public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
