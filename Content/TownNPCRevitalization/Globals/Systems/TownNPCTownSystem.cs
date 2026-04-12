@@ -122,11 +122,8 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
             CreateTownObjectFromRooms([roomPos]);
         }
 
-        List<TownData> townsByDistance = _towns.OrderBy(town => town.TownZone.Center.ToVector2().DistanceSQ((Vector2)roomPos)).ToList();
         List<int> linkableTownIndices = [];
-        for (int i = 0; i < townsByDistance.Count; i++) {
-            TownData townData = townsByDistance[i];
-
+        foreach ((int i, TownData townData) in _towns.Select((town, index) => (Index: index, Town: town)).OrderBy(pair => pair.Town.TownZone.Center.ToVector2().DistanceSQ((Vector2)roomPos))) {
             foreach (HashPoint<int> point in townData.RoomPositions) {
                 if (point.DistanceSquared(roomPos) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking) {
                     continue;
@@ -155,10 +152,10 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
         List<HashPoint<int>> finalTownRoomPosList = [];
         for (int i = 0; i < linkableTownIndices.Count; i++) {
-            int townIndex = linkableTownIndices[i];
+            int townIndex = linkableTownIndices[i] - i;
 
             finalTownRoomPosList.AddRange(_towns[townIndex].RoomPositions);
-            _towns.RemoveAt(townIndex - i);
+            _towns.RemoveAt(townIndex);
         }
 
         CreateTownObjectFromRooms(finalTownRoomPosList);
