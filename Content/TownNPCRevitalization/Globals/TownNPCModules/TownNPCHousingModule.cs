@@ -8,6 +8,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.DataStructures.Records;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -31,10 +32,17 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
         private set;
     }
 
+    public Rectangle? PrevTickRoomBoundingBox {
+        get;
+        private set;
+    }
+
     public HomeRestingInfo RestInfo {
         get;
         private set;
     }
+
+    public HashPoint<int> CurrentHomeTilePos => new (NPC.homeTileX, NPC.homeTileY);
 
     public bool WillGoHome {
         get {
@@ -47,15 +55,25 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
     public override void UpdateModule() {
         _blockedHomeTimer -= 1;
 
-        if (NPC.homeTileX == -1 && NPC.homeTileY == -1 && NPC.velocity.Y == 0f && !NPC.shimmering) {
+        if (CurrentHomeTilePos == HashPoint<int>.NegativeOne && NPC.velocity.Y == 0f && !NPC.shimmering) {
             NPC.UpdateHomeTileState(NPC.homeless, (int)NPC.Center.X / 16, (int)(NPC.position.Y + NPC.height + 4f) / 16);
         }
 
-        RoomBoundingBox = !NPC.homeless && WorldGen.StartRoomCheck(NPC.homeTileX, NPC.homeTileY - 1)
-            ? new Rectangle(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1 + 1, WorldGen.roomY2 - WorldGen.roomY1 + 1)
-            : null;
+        if (PrevTickRoomBoundingBox != RoomBoundingBox) {
+            if (PrevTickRoomBoundingBox is { } prevTickRoomBoundingBox) {
+                TownNPCTownSystem.Instance.RemoveRoomFromTown(new HashPoint<int>(prevTickRoomBoundingBox.X, prevTickRoomBoundingBox.Y));
+            }
+
+            if (RoomBoundingBox is { } roomBoundingBox) {
+                TownNPCTownSystem.Instance.AddRoomToTown(new HashPoint<int>(roomBoundingBox.X, roomBoundingBox.Y));
+            }
+        }
+
+        UpdateRoomBoundingBox();
 
         HomelessTeleportCheck();
+
+        PrevTickRoomBoundingBox = RoomBoundingBox;
     }
 
     public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
@@ -69,6 +87,12 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
 
     public override void HitEffect(NPC npc, NPC.HitInfo hit) {
         _blockedHomeTimer += LWMUtils.RealLifeSecond * 2;
+    }
+
+    public Rectangle? UpdateRoomBoundingBox() {
+        return RoomBoundingBox = !NPC.homeless && WorldGen.StartRoomCheck(NPC.homeTileX, NPC.homeTileY - 1)
+            ? new Rectangle(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1 + 1, WorldGen.roomY2 - WorldGen.roomY1 + 1)
+            : null;
     }
 
     // Adapted vanilla code
