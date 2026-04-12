@@ -42,7 +42,7 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
         private set;
     }
 
-    public HashPoint<int> CurrentHomeTilePos => new (NPC.homeTileX, NPC.homeTileY);
+    public Point2D<int> CurrentHomeTilePos => new (NPC.homeTileX, NPC.homeTileY);
 
     public bool WillGoHome {
         get {
@@ -55,17 +55,17 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
     public override void UpdateModule() {
         _blockedHomeTimer -= 1;
 
-        if (CurrentHomeTilePos == HashPoint<int>.NegativeOne && NPC.velocity.Y == 0f && !NPC.shimmering) {
+        if (CurrentHomeTilePos == Point2D<int>.NegativeOne && NPC.velocity.Y == 0f && !NPC.shimmering) {
             NPC.UpdateHomeTileState(NPC.homeless, (int)NPC.Center.X / 16, (int)(NPC.position.Y + NPC.height + 4f) / 16);
         }
 
         if (PrevTickRoomBoundingBox != LWMUtils.InvalidRectangle && PrevTickRoomBoundingBox != RoomBoundingBox) {
             if (PrevTickRoomBoundingBox is { } prevTickRoomBoundingBox) {
-                TownNPCTownSystem.Instance.RemoveRoomFromTown(new HashPoint<int>(prevTickRoomBoundingBox.X, prevTickRoomBoundingBox.Y));
+                TownNPCTownSystem.Instance.RemoveRoomFromTown(new Point2D<int>(prevTickRoomBoundingBox.X, prevTickRoomBoundingBox.Y));
             }
 
             if (RoomBoundingBox is { } roomBoundingBox) {
-                TownNPCTownSystem.Instance.AddRoomToTown(new HashPoint<int>(roomBoundingBox.X, roomBoundingBox.Y));
+                TownNPCTownSystem.Instance.AddRoomToTown(new Point2D<int>(roomBoundingBox.X, roomBoundingBox.Y));
             }
         }
 
