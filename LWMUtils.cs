@@ -122,6 +122,12 @@ public static partial class LWMUtils {
     public static readonly Color UIPanelBackgroundColor = new Color(63, 82, 151) * 0.7f;
 
     /// <summary>
+    ///     A rectangle considered to be "invalid" or equivalent to a "null" rectangle. Arbitrarily set to a value where X and Y is -1. Useful in scenarios where <see cref="Rectangle" />? is unwanted for
+    ///     some reason.
+    /// </summary>
+    public static readonly Rectangle InvalidRectangle = new(-1, -1, 0, 0);
+
+    /// <summary>
     ///     Returns world size (on the X coordinate) of the current world being played.
     /// </summary>
     public static WorldSize CurrentWorldSizeX {

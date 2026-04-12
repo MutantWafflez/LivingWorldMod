@@ -35,7 +35,8 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
     public Rectangle? PrevTickRoomBoundingBox {
         get;
         private set;
-    } = Rectangle.Empty;
+        // Set to "invalid" so that the first update cycle we don't trigger a mass town-creation cascade
+    } = LWMUtils.InvalidRectangle;
 
     public HomeRestingInfo RestInfo {
         get;
@@ -59,7 +60,7 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
             NPC.UpdateHomeTileState(NPC.homeless, (int)NPC.Center.X / 16, (int)(NPC.position.Y + NPC.height + 4f) / 16);
         }
 
-        if (PrevTickRoomBoundingBox != Rectangle.Empty && PrevTickRoomBoundingBox != RoomBoundingBox) {
+        if (PrevTickRoomBoundingBox != LWMUtils.InvalidRectangle && PrevTickRoomBoundingBox != RoomBoundingBox) {
             if (PrevTickRoomBoundingBox is { } prevTickRoomBoundingBox) {
                 TownNPCTownSystem.Instance.RemoveRoomFromTown(new HashPoint<int>(prevTickRoomBoundingBox.X, prevTickRoomBoundingBox.Y));
             }
