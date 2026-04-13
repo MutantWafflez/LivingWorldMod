@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text.RegularExpressions;
 using Hjson;
 using LivingWorldMod.Content.Villages.DataStructures.Enums;
@@ -24,6 +25,7 @@ using Terraria.Localization;
 using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 using Terraria.Utilities;
+using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace LivingWorldMod;
 
@@ -856,6 +858,25 @@ public static partial class LWMUtils {
     }
 
     public static double NextDouble(this UnifiedRandom self, double maxValue) => self.NextDouble() * maxValue;
+
+    /// <summary>
+    ///     Takes the given unsigned number and rounds it up to the nearest power of two.
+    /// </summary>
+    /// <remarks>
+    ///     Algorithm uses bit-shifting shenanigans courtesy of Bit Hacks: https://graphics.stanford.edu/%7Eseander/bithacks.html#RoundUpPowerOf2. Overkill, but all of the for love of the game.
+    /// </remarks>
+    public static unsafe T CeilingToNearestPowerOfTwo<T>(T number) where T : unmanaged, IUnsignedNumber<T>, IBitwiseOperators<T, T, T>, IShiftOperators<T, int, T> {
+        int bytesOfType = sizeof(T);
+
+        number--;
+        for (int i = 0; i < bytesOfType + 1; i++) {
+            number |= number >> (1 << i);
+        }
+
+        number++;
+
+        return number;
+    }
 
     /// <summary>
     ///     Ensures that this asset is loaded by forcefully loading it if it's yet to be loaded, and no-ops if the asset has already been loaded, returning itself.

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
@@ -58,6 +59,15 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     /// </summary>
     private static TownData CopyTownWithNewZone(TownData town) => town with { TownZone = CreateTownZoneFromRoomPositions(town.RoomPositions) };
 
+    /// <summary>
+    ///     Creates a new <see cref="TownNPCPathfinder" /> instance based on the rectangle passed in for use for NPCs within whatever Town has said rectangle as its zone.
+    /// </summary>
+    private static TownNPCPathfinder CreatePathfinderFromTownZone(Rectangle townZone) {
+        ushort gridSize = Math.Max(LWMUtils.CeilingToNearestPowerOfTwo((ushort)Math.Max(townZone.Width, townZone.Height)), (ushort)TownNPCPathfinderModule.PathfinderSize);
+
+        return new TownNPCPathfinder((Point2D<ushort>)(townZone.Center - new Point(gridSize / 2, gridSize / 2)), gridSize);
+    }
+
     public override void ClearWorld() {
         _towns = [];
     }
@@ -90,22 +100,41 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
         Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
         for (int i = 0; i < _towns.Count; i++) {
-            TownData town = _towns[i];
-            Utils.DrawRectForTilesInWorld(Main.spriteBatch, town.TownZone, new Color((byte)town.TownZone.X, (byte)town.TownZone.Y, (byte)(town.TownZone.X + town.TownZone.Y)));
+            (Rectangle townZone, List<Point2D<int>> roomPositions, TownNPCPathfinder pathfinder) = _towns[i];
 
-            string townInfo = $"Town Index: {i}, Room Count: {town.RoomPositions.Count}";
+            Utils.DrawRectForTilesInWorld(Main.spriteBatch, townZone, new Color((byte)townZone.X, (byte)townZone.Y, (byte)(townZone.X + townZone.Y)));
+
+            string townInfo = $"Town Index: {i}, Room Count: {roomPositions.Count}";
             ChatManager.DrawColorCodedStringWithShadow(
                 Main.spriteBatch,
                 FontAssets.MouseText.Value,
                 townInfo,
-                town.TownZone.ToWorldCoordinates().TopLeft() - Main.screenPosition,
+                townZone.ToWorldCoordinates().TopLeft() - Main.screenPosition,
                 Color.White,
                 0f,
                 Vector2.Zero,
                 Vector2.One
             );
 
-            foreach (Point2D<int> point in town.RoomPositions) {
+            Utils.DrawRectForTilesInWorld(
+                Main.spriteBatch,
+                new Rectangle(pathfinder.topLeftOfGrid.X, pathfinder.topLeftOfGrid.Y, pathfinder.gridSizeX, pathfinder.gridSizeY),
+                Color.White
+            );
+
+            string pathfinderInfo = $"Pathfinder Grid Size: {pathfinder.gridSizeX}, {pathfinder.gridSizeY}";
+            ChatManager.DrawColorCodedStringWithShadow(
+                Main.spriteBatch,
+                FontAssets.MouseText.Value,
+                pathfinderInfo,
+                pathfinder.topLeftOfGrid.ToWorldCoordinates() - Main.screenPosition,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                Vector2.One
+            );
+
+            foreach (Point2D<int> point in roomPositions) {
                 Utils.DrawRectForTilesInWorld(Main.spriteBatch, new Rectangle(point.X, point.Y, 1, 1), Main.DiscoColor);
             }
         }
@@ -171,7 +200,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
         }
 
         int ownedTownIndex = 0;
-        int ownedTownRoomPosIndex = 0;
+        int ownedTownRoomPosIndex;
         TownData ownedTown = _towns[ownedTownIndex];
         for (int i = 0; i < _towns.Count; i++) {
             TownData town = _towns[i];
@@ -313,6 +342,8 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     ///     together by distance.
     /// </summary>
     private void CreateTownObjectFromRooms(List<Point2D<int>> roomPositions) {
-        _towns.Add(new TownData(CreateTownZoneFromRoomPositions(roomPositions), roomPositions, null));
+        Rectangle townZone = CreateTownZoneFromRoomPositions(roomPositions);
+
+        _towns.Add(new TownData(townZone, roomPositions, CreatePathfinderFromTownZone(townZone)));
     }
 }

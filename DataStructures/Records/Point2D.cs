@@ -89,7 +89,7 @@ public record struct Point2D<T>(T X, T Y) where T : struct, INumber<T> {
     ///     Creates a <see cref="Vector2" /> equivalent of this Point adjusted to its "world coordinates" equivalent, i.e. multiplying its value by <see cref="LWMUtils.TilePixelsSideLength" />. Also
     ///     incorporates adjustment arguments for small tweaks beyond it.
     /// </summary>
-    public readonly Vector2 ToWorldCoordinates(float adjustX, float adjustY) => (Vector2)(this * T.CreateTruncating(LWMUtils.TilePixelsSideLength)) + new Vector2(adjustX, adjustY);
+    public readonly Vector2 ToWorldCoordinates(float adjustX, float adjustY) => (Vector2)Convert<float>() * float.CreateTruncating(LWMUtils.TilePixelsSideLength) + new Vector2(adjustX, adjustY);
 
     /// <summary>
     ///     Creates a copy of this Point adjusted to its "tile coordinates" equivalent, i.e. diving its value by <see cref="LWMUtils.TilePixelsSideLength" />.

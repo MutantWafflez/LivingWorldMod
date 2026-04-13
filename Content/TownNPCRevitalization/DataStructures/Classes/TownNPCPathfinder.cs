@@ -92,9 +92,10 @@ public class TownNPCPathfinder {
     private const int MaxFallDistance = 11;
     private const int AdditionalCostForStairs = 15;
 
-    private readonly Point2D<ushort> _topLeftOfGrid;
-    private readonly ushort _gridSizeX;
-    private readonly ushort _gridSizeY;
+    public readonly Point2D<ushort> topLeftOfGrid;
+    public readonly ushort gridSizeX;
+    public readonly ushort gridSizeY;
+
     private readonly PointGrid<InternalNode> _nodeGrid;
     private readonly PointGrid<TileData> _tileGrid;
     private readonly PriorityQueue<Point2D<ushort>, Point2D<ushort>> _openQueue;
@@ -111,12 +112,12 @@ public class TownNPCPathfinder {
     public TownNPCPathfinder(Point2D<ushort> topLeftOfGrid, ushort gridSize) : this(topLeftOfGrid, gridSize, gridSize) { }
 
     public TownNPCPathfinder(Point2D<ushort> topLeftOfGrid, ushort gridSizeWidth, ushort gridSizeHeight) {
-        _topLeftOfGrid = topLeftOfGrid;
+        this.topLeftOfGrid = topLeftOfGrid;
 
-        _gridSizeX = gridSizeWidth;
-        _gridSizeY = gridSizeHeight;
+        gridSizeX = gridSizeWidth;
+        gridSizeY = gridSizeHeight;
 
-        _nodeGrid = new PointGrid<InternalNode>(new InternalNode[_gridSizeX, _gridSizeY]);
+        _nodeGrid = new PointGrid<InternalNode>(new InternalNode[gridSizeX, gridSizeY]);
         _tileGrid = new PointGrid<TileData>(GenerateTileGrid());
         _openQueue = new PriorityQueue<Point2D<ushort>, Point2D<ushort>>(Comparer<Point2D<ushort>>.Create((pointOne, pointTwo) => _nodeGrid[pointOne].f.CompareTo(_nodeGrid[pointTwo].f)));
     }
@@ -159,11 +160,11 @@ public class TownNPCPathfinder {
     }
 
     private TileData[,] GenerateTileGrid() {
-        TileData[,] grid = new TileData[_gridSizeX, _gridSizeY];
+        TileData[,] grid = new TileData[gridSizeX, gridSizeY];
 
-        for (int i = 0; i < _gridSizeX; i++) {
-            for (int j = 0; j < _gridSizeY; j++) {
-                Point16 tilePos = (Point16)(_topLeftOfGrid + new Point2D<ushort>((ushort)i, (ushort)j));
+        for (int i = 0; i < gridSizeX; i++) {
+            for (int j = 0; j < gridSizeY; j++) {
+                Point16 tilePos = (Point16)(topLeftOfGrid + new Point2D<ushort>((ushort)i, (ushort)j));
                 Tile tile = Main.tile[tilePos];
 
                 bool hasTile = tile.HasTile;
@@ -442,7 +443,7 @@ public class TownNPCPathfinder {
         ushort outerBoundX = (ushort)(bottomLeft.X + sizeX - 1);
         ushort outerBoundY = (ushort)(bottomLeft.Y - sizeY + 1);
 
-        return bottomLeft.X < _gridSizeX && bottomLeft.Y < _gridSizeY && outerBoundX < _gridSizeX && outerBoundY < _gridSizeY;
+        return bottomLeft.X < gridSizeX && bottomLeft.Y < gridSizeY && outerBoundX < gridSizeX && outerBoundY < gridSizeY;
     }
 
     private IEnumerable<TileFlags> FlagsOfTilesRectangleIsOn(Point2D<ushort> bottomLeft, ushort rectWidth) {
