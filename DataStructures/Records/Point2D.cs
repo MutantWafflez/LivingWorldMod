@@ -12,8 +12,8 @@ namespace LivingWorldMod.DataStructures.Records;
 ///     pre-existing XNA types for use within Vanilla. This is strictly a point in 2-dimensional space.
 /// </summary>
 /// <remarks>
-///     This data structure is not intended as a complete replacement of <see cref="Point" />, <see cref="Point16" />, or <see cref="Vector2" />. It merely exists for scenarios where those types are
-///     insufficient; otherwise those types are still prefered for code readability and usability within Vanilla.
+///     Despite mimic-ing them, this data structure is not intended as a complete replacement of <see cref="Point" />, <see cref="Point16" />, or <see cref="Vector2" />. It merely exists for scenarios
+///     where those types are insufficient; otherwise those types are still prefered for code readability and usability within Vanilla.
 /// </remarks>
 [DebuggerDisplay("{DebugDisplayString,nq}")]
 [Serializable]
