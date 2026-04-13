@@ -63,9 +63,10 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     ///     Creates a new <see cref="TownNPCPathfinder" /> instance based on the rectangle passed in for use for NPCs within whatever Town has said rectangle as its zone.
     /// </summary>
     private static TownNPCPathfinder CreatePathfinderFromTownZone(Rectangle townZone) {
-        ushort gridSize = Math.Max(LWMUtils.CeilingToNearestPowerOfTwo((ushort)Math.Max(townZone.Width, townZone.Height)), (ushort)TownNPCPathfinderModule.PathfinderSize);
+        ushort gridSizeX = Math.Max(LWMUtils.CeilingToNearestPowerOfTwo((ushort)townZone.Width), (ushort)TownNPCPathfinderModule.PathfinderSize);
+        ushort gridSizeY = Math.Max(LWMUtils.CeilingToNearestPowerOfTwo((ushort)townZone.Height), (ushort)(TownNPCPathfinderModule.PathfinderSize / 2));
 
-        return new TownNPCPathfinder((Point2D<ushort>)(townZone.Center - new Point(gridSize / 2, gridSize / 2)), gridSize);
+        return new TownNPCPathfinder((Point2D<ushort>)(townZone.Center - new Point(gridSizeX / 2, gridSizeY / 2)), gridSizeX, gridSizeY);
     }
 
     public override void ClearWorld() {
