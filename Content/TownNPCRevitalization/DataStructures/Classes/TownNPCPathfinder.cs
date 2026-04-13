@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
+using LivingWorldMod.DataStructures.Records;
 using Terraria.DataStructures;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
@@ -16,7 +16,7 @@ namespace LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 ///     https://www.codeproject.com/articles/15307/a-algorithm-implementation-in-c.
 /// </remarks>
 public class TownNPCPathfinder {
-    public record struct PathNode(UPoint16 NodePos, UPoint16 ParentNodePos, NodeMovementType MovementType);
+    public record struct PathNode(Point2D<ushort> NodePos, Point2D<ushort> ParentNodePos, NodeMovementType MovementType);
 
     public enum NodeMovementType : byte {
         PureHorizontal,
@@ -37,13 +37,13 @@ public class TownNPCPathfinder {
     private struct InternalNode {
         public ushort f;
         public ushort g;
-        public UPoint16 parentPos;
+        public Point2D<ushort> parentPos;
         public byte nodeStatusInteger;
     }
 
     private readonly struct PointGrid<T>(T[,] grid)
         where T : struct {
-        public ref T this[UPoint16 point] => ref grid[point.x, point.y];
+        public ref T this[Point2D<ushort> point] => ref grid[point.X, point.Y];
     }
 
     [Flags]
@@ -92,25 +92,25 @@ public class TownNPCPathfinder {
     private const int MaxFallDistance = 11;
     private const int AdditionalCostForStairs = 15;
 
-    private readonly UPoint16 _topLeftOfGrid;
+    private readonly Point2D<ushort> _topLeftOfGrid;
     private readonly ushort _gridSizeX;
     private readonly ushort _gridSizeY;
     private readonly PointGrid<InternalNode> _nodeGrid;
     private readonly PointGrid<TileData> _tileGrid;
-    private readonly PriorityQueue<UPoint16, UPoint16> _openQueue;
+    private readonly PriorityQueue<Point2D<ushort>, Point2D<ushort>> _openQueue;
     private ushort _rectSizeX;
     private ushort _rectSizeY;
-    private UPoint16 _start;
-    private UPoint16 _end;
+    private Point2D<ushort> _start;
+    private Point2D<ushort> _end;
     private bool _pathfindingStopped;
     private bool _reachedGoal;
     private int _nodesClosed;
     private byte _currentOpenNodeValue = 1;
     private byte _currentClosedNodeValue = 2;
 
-    public TownNPCPathfinder(UPoint16 topLeftOfGrid, ushort gridSize) : this(topLeftOfGrid, gridSize, gridSize) { }
+    public TownNPCPathfinder(Point2D<ushort> topLeftOfGrid, ushort gridSize) : this(topLeftOfGrid, gridSize, gridSize) { }
 
-    public TownNPCPathfinder(UPoint16 topLeftOfGrid, ushort gridSizeWidth, ushort gridSizeHeight) {
+    public TownNPCPathfinder(Point2D<ushort> topLeftOfGrid, ushort gridSizeWidth, ushort gridSizeHeight) {
         _topLeftOfGrid = topLeftOfGrid;
 
         _gridSizeX = gridSizeWidth;
@@ -118,7 +118,7 @@ public class TownNPCPathfinder {
 
         _nodeGrid = new PointGrid<InternalNode>(new InternalNode[_gridSizeX, _gridSizeY]);
         _tileGrid = new PointGrid<TileData>(GenerateTileGrid());
-        _openQueue = new PriorityQueue<UPoint16, UPoint16>(Comparer<UPoint16>.Create((pointOne, pointTwo) => _nodeGrid[pointOne].f.CompareTo(_nodeGrid[pointTwo].f)));
+        _openQueue = new PriorityQueue<Point2D<ushort>, Point2D<ushort>>(Comparer<Point2D<ushort>>.Create((pointOne, pointTwo) => _nodeGrid[pointOne].f.CompareTo(_nodeGrid[pointTwo].f)));
     }
 
     private static byte GetTileMovementCost(Tile tile) {
@@ -140,7 +140,7 @@ public class TownNPCPathfinder {
         return tileCost;
     }
 
-    public List<PathNode> FindPath(UPoint16 startPoint, UPoint16 endPoint, ushort rectSizeX, ushort rectSizeY) {
+    public List<PathNode> FindPath(Point2D<ushort> startPoint, Point2D<ushort> endPoint, ushort rectSizeX, ushort rectSizeY) {
         _start = startPoint;
         _end = endPoint;
 
@@ -163,7 +163,7 @@ public class TownNPCPathfinder {
 
         for (int i = 0; i < _gridSizeX; i++) {
             for (int j = 0; j < _gridSizeY; j++) {
-                Point16 tilePos = (_topLeftOfGrid + new UPoint16(i, j)).Point16;
+                Point16 tilePos = (Point16)(_topLeftOfGrid + new Point2D<ushort>((ushort)i, (ushort)j));
                 Tile tile = Main.tile[tilePos];
 
                 bool hasTile = tile.HasTile;
@@ -249,7 +249,7 @@ public class TownNPCPathfinder {
     private void DoPathfindingLoop() {
         // TODO: Performance seems to be good, but needs more data from various machines to know for sure (check on release?)
         while (_openQueue.Count > 0 && !_pathfindingStopped) {
-            UPoint16 curNodePos = _openQueue.Dequeue();
+            Point2D<ushort> curNodePos = _openQueue.Dequeue();
 
             if (_nodeGrid[curNodePos].nodeStatusInteger == _currentClosedNodeValue) {
                 continue;
@@ -268,7 +268,7 @@ public class TownNPCPathfinder {
 
             // Left or right pure horizontal
             for (sbyte i = -1; i < 2; i += 2) {
-                UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y);
+                Point2D<ushort> nextNodePos = new((ushort)(curNodePos.X + i), curNodePos.Y);
 
                 if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
                     continue;
@@ -278,9 +278,9 @@ public class TownNPCPathfinder {
             }
 
             // One tile move up (step or jump)
-            if (RectangleHasNoTiles(new UPoint16(curNodePos.x, curNodePos.y - 1), _rectSizeX, _rectSizeY)) {
+            if (RectangleHasNoTiles(new Point2D<ushort>(curNodePos.X, (ushort)(curNodePos.Y - 1)), _rectSizeX, _rectSizeY)) {
                 for (sbyte i = -1; i < 2; i += 2) {
-                    UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y - 1);
+                    Point2D<ushort> nextNodePos = new((ushort)(curNodePos.X + i), (ushort)(curNodePos.Y - 1));
                     if (RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY) && PointOnStandableTile(nextNodePos, _rectSizeX)) {
                         DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, 2);
                     }
@@ -289,7 +289,7 @@ public class TownNPCPathfinder {
 
             // One tile move down (step or fall)
             for (sbyte i = -1; i < 2; i += 2) {
-                UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y + 1);
+                Point2D<ushort> nextNodePos = new((ushort)(curNodePos.X + i), (ushort)(curNodePos.Y + 1));
                 if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, (ushort)(_rectSizeY + 1)) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
                     continue;
                 }
@@ -303,12 +303,12 @@ public class TownNPCPathfinder {
 
             // Falls
             for (sbyte i = -1; i < 2; i++) {
-                UPoint16 nextNodePos = new(curNodePos.x + i, curNodePos.y);
-                if (!RectangleHasNoTiles(new UPoint16(nextNodePos.x, nextNodePos.y + 1), _rectSizeX, 1) || (i != 0 && !RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY))) {
+                Point2D<ushort> nextNodePos = new((ushort)(curNodePos.X + i), curNodePos.Y);
+                if (!RectangleHasNoTiles(new Point2D<ushort>(nextNodePos.X, (ushort)(nextNodePos.Y + 1)), _rectSizeX, 1) || (i != 0 && !RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY))) {
                     continue;
                 }
 
-                for (nextNodePos.y += 2; nextNodePos.y <= curNodePos.y + MaxFallDistance; nextNodePos.y++) {
+                for (nextNodePos.Y += 2; nextNodePos.Y <= curNodePos.Y + MaxFallDistance; nextNodePos.Y++) {
                     if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
                         break;
                     }
@@ -319,20 +319,20 @@ public class TownNPCPathfinder {
 
                     // Add additional weight if the end location is a platform, for more dissuading
                     ushort finalPlatformCost = (ushort)(startingPlatformCost + (PointOnSolidTopTile(nextNodePos, _rectSizeX) ? AdditionalCostForStairs : 0));
-                    DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(Math.Abs(i) + finalPlatformCost + (nextNodePos.y - curNodePos.y) * 2));
+                    DoSuccessorChecksAndCalculations(curNodePos, nextNodePos, (ushort)(Math.Abs(i) + finalPlatformCost + (nextNodePos.Y - curNodePos.Y) * 2));
                     break;
                 }
             }
 
             // Jumps
             for (ushort i = 2; i < MaxJumpHeight; i++) {
-                UPoint16 nextNodePos = new(curNodePos.x, curNodePos.y - i);
+                Point2D<ushort> nextNodePos = new(curNodePos.X, (ushort)(curNodePos.Y - i));
                 if (!RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) {
                     break;
                 }
 
                 for (sbyte j = -1; j < 2; j++) {
-                    nextNodePos = new UPoint16(curNodePos.x + j, nextNodePos.y);
+                    nextNodePos = new Point2D<ushort>((ushort)(curNodePos.X + j), nextNodePos.Y);
                     if ((j != 0 && !RectangleHasNoTiles(nextNodePos, _rectSizeX, _rectSizeY)) || !PointOnStandableTile(nextNodePos, _rectSizeX)) {
                         continue;
                     }
@@ -345,7 +345,7 @@ public class TownNPCPathfinder {
         }
     }
 
-    private void DoSuccessorChecksAndCalculations(UPoint16 curNodePos, UPoint16 nextNodePos, ushort gCostModifier) {
+    private void DoSuccessorChecksAndCalculations(Point2D<ushort> curNodePos, Point2D<ushort> nextNodePos, ushort gCostModifier) {
         ushort newG = (ushort)(_nodeGrid[curNodePos].g + _tileGrid[nextNodePos].weight + gCostModifier);
 
         if (_nodeGrid[nextNodePos].nodeStatusInteger == _currentOpenNodeValue || _nodeGrid[nextNodePos].nodeStatusInteger == _currentClosedNodeValue) {
@@ -358,7 +358,7 @@ public class TownNPCPathfinder {
             parentPos = curNodePos,
             g = newG,
             // Manhattan distance heuristic
-            f = (ushort)(newG + ManhattanEstimateTuneValue * (Math.Abs(nextNodePos.x - _end.x) + Math.Abs(nextNodePos.y - _end.y))),
+            f = (ushort)(newG + ManhattanEstimateTuneValue * (Math.Abs(nextNodePos.X - _end.X) + Math.Abs(nextNodePos.Y - _end.Y))),
             nodeStatusInteger = _currentOpenNodeValue
         };
 
@@ -379,9 +379,9 @@ public class TownNPCPathfinder {
             foundPath.Add(curPathNode);
 
             NodeMovementType nextMovementType;
-            UPoint16 parentNodePos = curPathNode.ParentNodePos;
-            int yNodeDiff = parentNodePos.y - curPathNode.NodePos.y;
-            int xNodeDiff = parentNodePos.x - curPathNode.NodePos.x;
+            Point2D<ushort> parentNodePos = curPathNode.ParentNodePos;
+            int yNodeDiff = parentNodePos.Y - curPathNode.NodePos.Y;
+            int xNodeDiff = parentNodePos.X - curPathNode.NodePos.X;
             // Remember that to construct the path we go from END to START. So everything is reversed
             switch (yNodeDiff) {
                 case 0:
@@ -421,14 +421,14 @@ public class TownNPCPathfinder {
         return foundPath;
     }
 
-    private bool RectangleHasNoTiles(UPoint16 bottomLeft, ushort sizeX, ushort sizeY) {
+    private bool RectangleHasNoTiles(Point2D<ushort> bottomLeft, ushort sizeX, ushort sizeY) {
         if (!RectangleWithinGrid(bottomLeft, sizeX, sizeY)) {
             return false;
         }
 
-        for (ushort i = bottomLeft.x; i < bottomLeft.x + sizeX; i++) {
-            for (ushort j = (ushort)(bottomLeft.y - sizeY + 1); j <= bottomLeft.y; j++) {
-                TileFlags tileFlags = _tileGrid[new UPoint16(i, j)].flags;
+        for (ushort i = bottomLeft.X; i < bottomLeft.X + sizeX; i++) {
+            for (ushort j = (ushort)(bottomLeft.Y - sizeY + 1); j <= bottomLeft.Y; j++) {
+                TileFlags tileFlags = _tileGrid[new Point2D<ushort>(i, j)].flags;
                 if (tileFlags.HasFlag(TileFlags.Solid) || tileFlags.HasFlag(TileFlags.Impassable)) {
                     return false;
                 }
@@ -438,33 +438,33 @@ public class TownNPCPathfinder {
         return true;
     }
 
-    private bool RectangleWithinGrid(UPoint16 bottomLeft, ushort sizeX, ushort sizeY) {
-        ushort outerBoundX = (ushort)(bottomLeft.x + sizeX - 1);
-        ushort outerBoundY = (ushort)(bottomLeft.y - sizeY + 1);
+    private bool RectangleWithinGrid(Point2D<ushort> bottomLeft, ushort sizeX, ushort sizeY) {
+        ushort outerBoundX = (ushort)(bottomLeft.X + sizeX - 1);
+        ushort outerBoundY = (ushort)(bottomLeft.Y - sizeY + 1);
 
-        return bottomLeft.x < _gridSizeX && bottomLeft.y < _gridSizeY && outerBoundX < _gridSizeX && outerBoundY < _gridSizeY;
+        return bottomLeft.X < _gridSizeX && bottomLeft.Y < _gridSizeY && outerBoundX < _gridSizeX && outerBoundY < _gridSizeY;
     }
 
-    private IEnumerable<TileFlags> FlagsOfTilesRectangleIsOn(UPoint16 bottomLeft, ushort rectWidth) {
-        if (!RectangleWithinGrid(bottomLeft + new UPoint16(0, 1), rectWidth, 1)) {
+    private IEnumerable<TileFlags> FlagsOfTilesRectangleIsOn(Point2D<ushort> bottomLeft, ushort rectWidth) {
+        if (!RectangleWithinGrid(bottomLeft + new Point2D<ushort>(0, 1), rectWidth, 1)) {
             yield break;
         }
 
         for (ushort i = 0; i < rectWidth; i++) {
-            yield return _tileGrid[new UPoint16(bottomLeft.x + i, bottomLeft.y + 1)].flags;
+            yield return _tileGrid[new Point2D<ushort>((ushort)(bottomLeft.X + i), (ushort)(bottomLeft.Y + 1))].flags;
         }
     }
 
-    private bool PointOnStandableTile(UPoint16 bottomLeft, ushort rectWidth) =>
+    private bool PointOnStandableTile(Point2D<ushort> bottomLeft, ushort rectWidth) =>
         FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth).Any(flags => flags.HasFlag(TileFlags.Solid) || flags.HasFlag(TileFlags.SolidTop));
 
-    private bool PointOnSolidTopTile(UPoint16 bottomLeft, ushort rectWidth, bool stairCheck = false) => FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth)
+    private bool PointOnSolidTopTile(Point2D<ushort> bottomLeft, ushort rectWidth, bool stairCheck = false) => FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth)
         .Any(flags => flags.HasFlag(TileFlags.SolidTop) && (!stairCheck || (!flags.HasFlag(TileFlags.CanStepWhenComingFromLeft) && !flags.HasFlag(TileFlags.CanStepWhenComingFromRight))));
 
-    private bool IsStandingOnHalfTile(UPoint16 bottomLeft, ushort rectWidth) => FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth).Any(flags => flags.HasFlag(TileFlags.HalfTile));
+    private bool IsStandingOnHalfTile(Point2D<ushort> bottomLeft, ushort rectWidth) => FlagsOfTilesRectangleIsOn(bottomLeft, rectWidth).Any(flags => flags.HasFlag(TileFlags.HalfTile));
 
-    private bool CanStep(UPoint16 wantedStepPos, ushort rectWidth, bool fromLeft) => FlagsOfTilesRectangleIsOn(wantedStepPos, rectWidth)
+    private bool CanStep(Point2D<ushort> wantedStepPos, ushort rectWidth, bool fromLeft) => FlagsOfTilesRectangleIsOn(wantedStepPos, rectWidth)
         .Any(flags => flags.HasFlag(fromLeft ? TileFlags.CanStepWhenComingFromLeft : TileFlags.CanStepWhenComingFromRight));
 
-    private bool CanStepDown(UPoint16 startNodePos, ushort rectWidth, bool fromLeft) => !PointOnSolidTopTile(startNodePos, rectWidth, true) && CanStep(startNodePos, rectWidth, !fromLeft);
+    private bool CanStepDown(Point2D<ushort> startNodePos, ushort rectWidth, bool fromLeft) => !PointOnSolidTopTile(startNodePos, rectWidth, true) && CanStep(startNodePos, rectWidth, !fromLeft);
 }

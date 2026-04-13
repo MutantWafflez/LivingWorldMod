@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
-using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
+using LivingWorldMod.DataStructures.Records;
 using LivingWorldMod.Globals.Configs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -132,7 +132,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         NPC.GravityIgnoresLiquid = lastConsumedNode.MovementType == NodeMovementType.Jump || nextNode.MovementType == NodeMovementType.Jump;
         _prevDistanceToNextNode = curDistanceToNextNode;
 
-        Vector2 nextNodeCenter = (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates();
+        Vector2 nextNodeCenter = (topLeftOfGrid + new Point(nextNode.NodePos.X, nextNode.NodePos.Y)).ToWorldCoordinates();
         Vector2 nextNodeBottom = nextNodeCenter + new Vector2(0f, 8f);
 
         Rectangle nodeRectangle = new((int)(nextNodeCenter.X - 8f), (int)(nextNodeCenter.Y - 8f), 16, 16);
@@ -151,7 +151,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             }
 
             nextNode = path.Last();
-            nextNodeCenter = (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates();
+            nextNodeCenter = (topLeftOfGrid + new Point(nextNode.NodePos.X, nextNode.NodePos.Y)).ToWorldCoordinates();
 
             // TODO: Figure out solution for 5+ block jumps from the left not clearing (sometimes??? can't reproduce)
             if (lastConsumedNode.MovementType is NodeMovementType.Jump) {
@@ -163,7 +163,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
                 NPC.velocity *= 0f;
 
                 float npcGravity = NPC.gravity;
-                float jumpHeight = NPC.Bottom.Y - (topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates(0f).Y;
+                float jumpHeight = NPC.Bottom.Y - (topLeftOfGrid + new Point(nextNode.NodePos.X, nextNode.NodePos.Y)).ToWorldCoordinates(0f).Y;
                 float yDisplacement = jumpHeight - NPC.height;
 
                 // Horizontal Velocity = X Displacement / (sqrt(-2 * h / g) + sqrt(2(Y Displacement - h) / g))
@@ -249,7 +249,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
             spriteBatch.Draw(
                 TextureAssets.Extra[ExtrasID.SuspiciousTentacle].Value,
-                _currentPathfinderResult.topLeftOfGrid.ToWorldCoordinates(2f, 2.5f) + new Vector2(node.NodePos.x, node.NodePos.y).ToWorldCoordinates(0f, 0f) - screenPos,
+                _currentPathfinderResult.topLeftOfGrid.ToWorldCoordinates(2f, 2.5f) + new Vector2(node.NodePos.X, node.NodePos.Y).ToWorldCoordinates(0f, 0f) - screenPos,
                 nodeColor
             );
         }
@@ -360,7 +360,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         topLeftOfGrid.X = Utils.Clamp(topLeftOfGrid.X, worldFluff, Main.maxTilesX - PathfinderSize - worldFluff - 1);
         topLeftOfGrid.Y = Utils.Clamp(topLeftOfGrid.Y, 0, Main.maxTilesY - PathfinderSize - 1);
 
-        TownNPCPathfinder pathFinder = _cachedPathfinder ?? new TownNPCPathfinder(new UPoint16(topLeftOfGrid.X, topLeftOfGrid.Y), PathfinderSize);
+        TownNPCPathfinder pathFinder = _cachedPathfinder ?? new TownNPCPathfinder(new Point2D<ushort>((ushort)topLeftOfGrid.X, (ushort)topLeftOfGrid.Y), PathfinderSize);
 
         Point adjustedBottomLeftOfNPC = BottomLeftTileOfNPC;
         Tile bottomLeftTileOfNPC = Main.tile[adjustedBottomLeftOfNPC];
@@ -369,8 +369,8 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         }
 
         List<PathNode> path = pathFinder.FindPath(
-            new UPoint16(adjustedBottomLeftOfNPC - topLeftOfGrid),
-            new UPoint16(endPoint - topLeftOfGrid),
+            (Point2D<ushort>)(adjustedBottomLeftOfNPC - topLeftOfGrid),
+            (Point2D<ushort>)(endPoint - topLeftOfGrid),
             (ushort)Math.Ceiling(NPC.width / 16f),
             (ushort)Math.Ceiling(NPC.height / 16f)
         );
@@ -402,12 +402,12 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
             _prevDistanceToNextNode = GetDistanceToNode(path.Last());
             _notMakingProgressCounter = 0;
-            NPC.direction = NPC.Center.X > (path.Last().NodePos.x + _currentPathfinderResult.topLeftOfGrid.X) * 16 + 8 ? -1 : 1;
+            NPC.direction = NPC.Center.X > (path.Last().NodePos.X + _currentPathfinderResult.topLeftOfGrid.X) * 16 + 8 ? -1 : 1;
             NPC.velocity.X = NPC.direction;
         }
     }
 
-    private float GetDistanceToNode(PathNode nextNode) => NPC.BottomLeft.Distance((_currentPathfinderResult.topLeftOfGrid + new Point(nextNode.NodePos.x, nextNode.NodePos.y)).ToWorldCoordinates());
+    private float GetDistanceToNode(PathNode nextNode) => NPC.BottomLeft.Distance((_currentPathfinderResult.topLeftOfGrid + new Point(nextNode.NodePos.X, nextNode.NodePos.Y)).ToWorldCoordinates());
 
     private void EndPathfinding() {
         _prevDistanceToNextNode = float.MaxValue;
