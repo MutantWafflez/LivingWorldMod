@@ -29,7 +29,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
     private List<TownData> _towns;
 
-    private static Rectangle2D<int> CreateTownZoneFromRoomPositions(List<Rectangle2D<int>> roomRects) {
+    private static Rectangle2D<int> CreateTownZoneFromRoomRects(List<Rectangle2D<int>> roomRects) {
         Point2D<int> topLeftOfTown = new(int.MaxValue, int.MaxValue);
         Point2D<int> bottomRightOfTown = new(int.MinValue, int.MinValue);
         foreach (Rectangle2D<int> rect in roomRects) {
@@ -54,10 +54,10 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     }
 
     /// <summary>
-    ///     Returns a copy of the passed-in town object with the zone replace with a correct one based on the town's room positions. Only really needs to be called if the internal room position list is
+    ///     Returns a copy of the passed-in town object with the zone replace with a correct one based on the town's room rectangles. Only really needs to be called if the internal room rectangle list is
     ///     modified without copying the struct.
     /// </summary>
-    private static TownData CopyTownWithNewZone(TownData town) => town with { TownZone = CreateTownZoneFromRoomPositions(town.RoomRects) };
+    private static TownData CopyTownWithNewZone(TownData town) => town with { TownZone = CreateTownZoneFromRoomRects(town.RoomRects) };
 
     /// <summary>
     ///     Creates a new <see cref="TownNPCPathfinder" /> instance based on the rectangle passed in for use for NPCs within whatever Town has said rectangle as its zone.
@@ -176,7 +176,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
     /// <summary>
     ///     Searches the current list of towns and attempts to add the passed-in room to its proper town. If no town is close enough to be grouped into any town, a new town will be created with the room as
-    ///     the only position. This method also is capable of merging towns together if such an edge case occurs.
+    ///     the only rectangle. This method also is capable of merging towns together if such an edge case occurs.
     /// </summary>
     public void AddRoomToTown(Rectangle2D<int> roomRect) {
         if (_towns.Count <= 0) {
@@ -338,7 +338,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     ///     together by distance.
     /// </summary>
     private void CreateTownObjectFromRooms(List<Rectangle2D<int>> roomPositions) {
-        Rectangle2D<int> townZone = CreateTownZoneFromRoomPositions(roomPositions);
+        Rectangle2D<int> townZone = CreateTownZoneFromRoomRects(roomPositions);
 
         _towns.Add(new TownData(townZone, roomPositions, CreatePathfinderFromTownZone(townZone)));
     }
