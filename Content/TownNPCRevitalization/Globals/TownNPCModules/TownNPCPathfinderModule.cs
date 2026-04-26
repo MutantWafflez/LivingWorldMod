@@ -45,7 +45,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     private TownNPCPathfinder _cachedPathfinder;
     private PathfinderResult _currentPathfinderResult;
-    private float _horizontalSpeed;
 
     public override int UpdatePriority => 3;
 
@@ -59,8 +58,8 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     ///     This is what the X velocity for the NPC will be while moving horizontally (not jumping or falling). This defaults to 1f.
     /// </summary>
     public float HorizontalSpeed {
-        get => _horizontalSpeed;
-        set  => _horizontalSpeed = Math.Abs(value);
+        get;
+        set => field = Math.Abs(value);
     }
 
     private static void PrunePath(List<PathNode> path) {

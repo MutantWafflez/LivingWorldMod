@@ -21,20 +21,14 @@ public class UIModifiedText : UIElement {
 
     private readonly bool _textInitialized;
 
-    private string _desiredText;
-    private Vector2 _desiredTextScale;
-    private float? _wrapConstraint;
-    private float? _horizontalTextConstraint;
-    private bool _keepAspectRatio = true;
-
     /// <summary>
     ///     If set to a non-zero value, it will constrain the text to fix within the value
     ///     set, in pixels.
     /// </summary>
     public float? HorizontalTextConstraint {
-        get => _horizontalTextConstraint;
+        get;
         set {
-            _horizontalTextConstraint = value;
+            field = value;
 
             TryRecalculate();
         }
@@ -44,18 +38,18 @@ public class UIModifiedText : UIElement {
     ///     If a non-zero value, denotes how far the text can be drawn before wrapping around to the next line.
     /// </summary>
     public float? WrapConstraint {
-        get => _wrapConstraint;
+        get;
         set {
-            _wrapConstraint = value;
+            field = value;
 
             TryRecalculate();
         }
     }
 
     public Vector2 DesiredTextScale {
-        get => _desiredTextScale;
+        get;
         set {
-            _desiredTextScale = value;
+            field = value;
 
             TryRecalculate();
         }
@@ -72,9 +66,9 @@ public class UIModifiedText : UIElement {
     }
 
     public string DesiredText {
-        get => _desiredText;
+        get;
         set {
-            _desiredText = value;
+            field = value;
 
             TryRecalculate();
         }
@@ -94,13 +88,13 @@ public class UIModifiedText : UIElement {
     ///     When re-scaling the text to fit due to <see cref="HorizontalTextConstraint" />, re-size the text on both the X and Y axis, if true.
     /// </summary>
     public bool KeepAspectRatio {
-        get => _keepAspectRatio;
+        get;
         set {
-            _keepAspectRatio = value;
+            field = value;
 
             TryRecalculate();
         }
-    }
+    } = true;
 
     public DynamicSpriteFont TextFont {
         get;
