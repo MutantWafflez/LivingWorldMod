@@ -33,6 +33,8 @@ public readonly record struct Rectangle2D<T>(T X, T Y, T Width, T Height) where 
 
     public Point2D<T> Center => new(X + Width / T.CreateTruncating(2), Y + Height / T.CreateTruncating(2));
 
+    public Point2D<T> Size => new(Width, Height);
+
     private string DebugDisplayString => $"{X.ToString()} {Y.ToString()} {Width.ToString()} {Height.ToString()}";
 
     // Can't extend the default empty constructor
@@ -61,6 +63,10 @@ public readonly record struct Rectangle2D<T>(T X, T Y, T Width, T Height) where 
         T.CreateTruncating(rectangle.Width),
         T.CreateTruncating(rectangle.Height)
     );
+    
+    public static Rectangle2D<T> operator +(Rectangle2D<T> rect, Point2D<T> point) => rect with { X = rect.X + point.X, Y = rect.Y + point.Y };
+
+    public static Rectangle2D<T> operator -(Rectangle2D<T> rect, Point2D<T> point) => rect with { X = rect.X - point.X, Y = rect.Y - point.Y };
 
     public override string ToString() => $"{{X:{X.ToString()} Y:{Y.ToString()} Width:{Width.ToString()} Height:{Height.ToString()}}}";
 

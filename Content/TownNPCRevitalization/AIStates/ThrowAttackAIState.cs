@@ -42,10 +42,10 @@ public class ThrowAttackAIState : TownNPCAIState {
             Vector2 projVelocity = -Vector2.UnitY;
             if (combatModule.AttackLocation is { } location) {
                 projVelocity = npc.DirectionTo(
-                    location.Center
+                    (Vector2)location.Center
                     + new Vector2(
                         0f,
-                        (0f - attackData.gravityCorrection) * MathHelper.Clamp(npc.Distance(location.Center) / NPCID.Sets.DangerDetectRange[npc.type], 0f, 1f)
+                        (0f - attackData.gravityCorrection) * MathHelper.Clamp(npc.Distance((Vector2)location.Center) / NPCID.Sets.DangerDetectRange[npc.type], 0f, 1f)
                     )
                 );
             }

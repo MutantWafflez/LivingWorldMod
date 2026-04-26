@@ -93,7 +93,7 @@ public class FirearmAttackAIState : TownNPCAIState {
                     inBetweenShots = true;
                 }
 
-                if (npc.localAI[3] == 0f && combatModule.AttackLocation is { } location && npc.Distance(location.Center) < NPCID.Sets.PrettySafe[npc.type]) {
+                if (npc.localAI[3] == 0f && combatModule.AttackLocation is { } location && npc.Distance((Vector2)location.Center) < NPCID.Sets.PrettySafe[npc.type]) {
                     attackData.randomOffset = 0.1f;
                     attackData.projType = 162;
                     attackData.damage = 50;
@@ -153,7 +153,7 @@ public class FirearmAttackAIState : TownNPCAIState {
         if (npc.localAI[3] == attackData.attackDelay && Main.netMode != NetmodeID.MultiplayerClient) {
             Vector2 projVelocity = Vector2.Zero;
             if (combatModule.AttackLocation is { } location) {
-                projVelocity = npc.DirectionTo(location.Center + new Vector2(0f, -attackData.gravityCorrection));
+                projVelocity = npc.DirectionTo((Vector2)location.Center + new Vector2(0f, -attackData.gravityCorrection));
             }
 
             if (projVelocity.HasNaNs() || projVelocity == Vector2.Zero) {
@@ -179,7 +179,7 @@ public class FirearmAttackAIState : TownNPCAIState {
         }
 
         if (npc.localAI[3] == attackData.attackDelay && inBetweenShots && combatModule.AttackLocation is { } location2) {
-            Vector2 vector = npc.DirectionTo(location2.Center);
+            Vector2 vector = npc.DirectionTo((Vector2)location2.Center);
             if (vector.Y is <= 0.5f and >= -0.5f) {
                 npc.ai[2] = vector.Y;
             }

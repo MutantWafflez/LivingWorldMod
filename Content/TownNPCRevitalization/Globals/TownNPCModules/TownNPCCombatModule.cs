@@ -2,6 +2,7 @@
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Hooks;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
+using LivingWorldMod.DataStructures.Records;
 using LivingWorldMod.DataStructures.Structs;
 
 using Microsoft.Xna.Framework;
@@ -20,7 +21,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
         private set;
     }
 
-    public PreciseRectangle? AttackLocation {
+    public Rectangle2D<float>? AttackLocation {
         get;
         private set;
     }
@@ -70,7 +71,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
             }
 
             closestHostileNPCDistance = distanceToNPC;
-            AttackLocation = otherNPC.CanBeChasedBy(NPC) ? otherNPC.GetPreciseRectangle() : AttackLocation;
+            AttackLocation = otherNPC.CanBeChasedBy(NPC) ? otherNPC.GetPreciseHitbox() : AttackLocation;
         }
 
         if (enemyNearby && NPCID.Sets.PrettySafe[NPC.type] != -1 && closestHostileNPCDistance is { } value && NPCID.Sets.PrettySafe[NPC.type] < value) {
@@ -134,7 +135,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
         AttemptTriggerAttack();
     }
 
-    public void RequestAttackToLocation(PreciseRectangle attackLocation) {
+    public void RequestAttackToLocation(Rectangle2D<float> attackLocation) {
         if (IsAttacking) {
             return;
         }
@@ -144,11 +145,11 @@ public sealed class TownNPCCombatModule : TownNPCModule {
     }
 
     private void AttemptTriggerAttack() {
-        bool canHitAttackLocation = Collision.CanHit(NPC.Center, 0, 0, AttackLocation!.Value.Center, 0, 0);
+        bool canHitAttackLocation = Collision.CanHit(NPC.Center, 0, 0, (Vector2)AttackLocation!.Value.Center, 0, 0);
 
         //Hard-coded vanilla check. Not much I can do about it :(
         if (canHitAttackLocation && NPC.type == NPCID.BestiaryGirl) {
-            canHitAttackLocation = Vector2.Distance(NPC.Center, AttackLocation.Value.Center) <= 50f;
+            canHitAttackLocation = Vector2.Distance(NPC.Center, (Vector2)AttackLocation.Value.Center) <= 50f;
         }
 
         if (!canHitAttackLocation) {
@@ -163,7 +164,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
         };
         NPC.ai[1] = NPCID.Sets.AttackTime[NPC.type];
         NPC.ai[2] = NPCID.Sets.AttackType[NPC.type] switch {
-            1 => NPC.DirectionTo(AttackLocation.Value.Center).Y,
+            1 => NPC.DirectionTo((Vector2)AttackLocation.Value.Center).Y,
             _ => 0f
         };
 
@@ -171,7 +172,7 @@ public sealed class TownNPCCombatModule : TownNPCModule {
         NPC.GetGlobalNPC<TownNPCPathfinderModule>().CancelPathfind();
 
         NPC.localAI[3] = 0f;
-        NPC.direction = NPC.position.X < AttackLocation.Value.position.X ? 1 : -1;
+        NPC.direction = NPC.position.X < AttackLocation.Value.X ? 1 : -1;
         NPC.netUpdate = true;
     }
 

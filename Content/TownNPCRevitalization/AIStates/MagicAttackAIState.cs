@@ -34,10 +34,10 @@ public class MagicAttackAIState : TownNPCAIState {
             Vector2 projVelocity = Vector2.Zero;
             if (combatModule.AttackLocation is { } location) {
                 projVelocity = npc.DirectionTo(
-                    location.Center
+                    (Vector2)location.Center
                     + new Vector2(
                         0f,
-                        (0f - attackData.gravityCorrection) * MathHelper.Clamp(npc.Distance(location.Center) / NPCID.Sets.DangerDetectRange[npc.type], 0f, 1f)
+                        (0f - attackData.gravityCorrection) * MathHelper.Clamp(npc.Distance((Vector2)location.Center) / NPCID.Sets.DangerDetectRange[npc.type], 0f, 1f)
                     )
                 );
             }
@@ -74,13 +74,13 @@ public class MagicAttackAIState : TownNPCAIState {
                 }
                 case NPCID.Truffle: {
                     if (combatModule.AttackLocation is { } location2) {
-                        Vector2 projPosition = location2.position - location2.size * 2f + location2.size * Utils.RandomVector2(Main.rand, 0f, 1f) * 5f;
+                        Vector2 projPosition = (Vector2)(location2 - location2.Size * 2f + location2.Size).TopLeft * Utils.RandomVector2(Main.rand, 0f, 1f) * 5f;
 
                         int firstAirTileY = 10;
                         while (firstAirTileY > 0 && WorldGen.SolidTile(Framing.GetTileSafely((int)projPosition.X / 16, (int)projPosition.Y / 16))) {
                             firstAirTileY--;
 
-                            projPosition = location2.position - location2.size * 2f + location2.size * Utils.RandomVector2(Main.rand, 0f, 1f) * 5f;
+                            projPosition = (Vector2)(location2 - location2.Size * 2f + location2.Size).TopLeft * Utils.RandomVector2(Main.rand, 0f, 1f) * 5f;
                         }
 
                         Projectile projectile = Projectile.NewProjectileDirect(
@@ -101,13 +101,13 @@ public class MagicAttackAIState : TownNPCAIState {
                 }
                 case NPCID.Princess: {
                     if (combatModule.AttackLocation is { } location2) {
-                        Vector2 projPosition = location2.position + location2.size * Utils.RandomVector2(Main.rand, 0f, 1f) * 1f;
+                        Vector2 projPosition = (Vector2)(location2 + location2.Size).TopLeft * Utils.RandomVector2(Main.rand, 0f, 1f) * 1f;
 
                         int firstAirTileY = 5;
                         while (firstAirTileY > 0 && WorldGen.SolidTile(Framing.GetTileSafely((int)projPosition.X / 16, (int)projPosition.Y / 16))) {
                             firstAirTileY--;
 
-                            projPosition = location2.position + location2.size * Utils.RandomVector2(Main.rand, 0f, 1f) * 1f;
+                            projPosition = (Vector2)(location2 + location2.Size).TopLeft * Utils.RandomVector2(Main.rand, 0f, 1f) * 1f;
                         }
 
                         Projectile projectile = Projectile.NewProjectileDirect(

@@ -12,6 +12,7 @@ using LivingWorldMod.Content.Villages.Globals.Systems;
 using LivingWorldMod.Content.Villages.HarpyVillage.Materials;
 using LivingWorldMod.Content.Villages.HarpyVillage.NPCs;
 using LivingWorldMod.DataStructures.Enums;
+using LivingWorldMod.DataStructures.Records;
 using LivingWorldMod.DataStructures.Structs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -319,7 +320,7 @@ public static partial class LWMUtils {
     /// <summary>
     ///     Returns a precise version of the rectangle bounding box of this npc.
     /// </summary>
-    public static PreciseRectangle GetPreciseRectangle(this NPC npc) => new(npc.position, npc.Size);
+    public static Rectangle2D<float> GetPreciseHitbox(this NPC npc) => new(npc.position.X, npc.position.Y, npc.Size.X, npc.Size.Y);
 
     /// <summary>
     ///     Returns the first NPC that meets the passed in function requirement.

@@ -72,7 +72,7 @@ public class MeleeAttackAIState : TownNPCAIState {
         bool canHitEnemy = false;
         //if (_enemyNearby) {
         int directionToEnemy = combatModule.AttackLocation is { } location
-            ? Math.Sign(npc.DirectionTo(location.Center).X)
+            ? Math.Sign(npc.DirectionTo((Vector2)location.Center).X)
             : 1;
 
         if (!Collision.CanHit(npc.Center, 0, 0, npc.Center + Vector2.UnitX * directionToEnemy * 32f, 0, 0)) {
@@ -80,7 +80,7 @@ public class MeleeAttackAIState : TownNPCAIState {
         }
 
         if (canHitEnemy) {
-            bool secondCanHitCheck = combatModule.AttackLocation is { } location2 && Collision.CanHit(npc.Center, 0, 0, location2.Center, 0, 0);
+            bool secondCanHitCheck = combatModule.AttackLocation is { } location2 && Collision.CanHit(npc.Center, 0, 0, (Vector2)location2.Center, 0, 0);
 
             if (secondCanHitCheck) {
                 npc.ai[0] = ReservedStateInteger;
