@@ -2,6 +2,7 @@ using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Structs;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.ModTypes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.TownNPCModules;
+using LivingWorldMod.DataStructures.Records;
 using Microsoft.Xna.Framework;
 
 namespace LivingWorldMod.Content.TownNPCRevitalization.AIStates;
@@ -74,13 +75,13 @@ public class MagicAttackAIState : TownNPCAIState {
                 }
                 case NPCID.Truffle: {
                     if (combatModule.AttackLocation is { } location2) {
-                        Vector2 projPosition = (Vector2)(location2 - location2.Size * 2f + location2.Size).TopLeft * Utils.RandomVector2(Main.rand, 0f, 1f) * 5f;
+                        Vector2 projPosition = (Vector2)(location2.TopLeft - location2.Size * 2f + location2.Size * (Point2D<float>)Utils.RandomVector2(Main.rand, 0f, 1f) * 5f);
 
                         int firstAirTileY = 10;
                         while (firstAirTileY > 0 && WorldGen.SolidTile(Framing.GetTileSafely((int)projPosition.X / 16, (int)projPosition.Y / 16))) {
                             firstAirTileY--;
 
-                            projPosition = (Vector2)(location2 - location2.Size * 2f + location2.Size).TopLeft * Utils.RandomVector2(Main.rand, 0f, 1f) * 5f;
+                            projPosition = (Vector2)(location2.TopLeft - location2.Size * 2f + location2.Size * (Point2D<float>)Utils.RandomVector2(Main.rand, 0f, 1f) * 5f);
                         }
 
                         Projectile projectile = Projectile.NewProjectileDirect(
@@ -101,13 +102,13 @@ public class MagicAttackAIState : TownNPCAIState {
                 }
                 case NPCID.Princess: {
                     if (combatModule.AttackLocation is { } location2) {
-                        Vector2 projPosition = (Vector2)(location2 + location2.Size).TopLeft * Utils.RandomVector2(Main.rand, 0f, 1f) * 1f;
+                        Vector2 projPosition = (Vector2)(location2.TopLeft + location2.Size * (Point2D<float>)Utils.RandomVector2(Main.rand, 0f, 1f));
 
                         int firstAirTileY = 5;
                         while (firstAirTileY > 0 && WorldGen.SolidTile(Framing.GetTileSafely((int)projPosition.X / 16, (int)projPosition.Y / 16))) {
                             firstAirTileY--;
 
-                            projPosition = (Vector2)(location2 + location2.Size).TopLeft * Utils.RandomVector2(Main.rand, 0f, 1f) * 1f;
+                            projPosition = (Vector2)(location2.TopLeft + location2.Size * (Point2D<float>)Utils.RandomVector2(Main.rand, 0f, 1f));
                         }
 
                         Projectile projectile = Projectile.NewProjectileDirect(
