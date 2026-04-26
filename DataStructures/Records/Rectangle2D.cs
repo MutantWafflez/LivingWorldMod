@@ -19,21 +19,47 @@ public readonly record struct Rectangle2D<T>(T X, T Y, T Width, T Height) where 
     /// <summary>
     ///     Represents an "Empty" rectangle that has no position in space or size (all zero).
     /// </summary>
-    public static readonly Rectangle2D<T> Empty = new (T.CreateTruncating(0), T.CreateTruncating(0), T.CreateTruncating(0), T.CreateTruncating(0));
+    public static readonly Rectangle2D<T> Empty = new(T.CreateTruncating(0), T.CreateTruncating(0), T.CreateTruncating(0), T.CreateTruncating(0));
+
+    public static readonly Rectangle2D<T> NegativeOne = new(T.CreateTruncating(-1), T.CreateTruncating(-1), T.CreateTruncating(0), T.CreateTruncating(0));
 
     public T Right => X + Width;
 
     public T Bottom => Y + Height;
 
+    public Point2D<T> TopLeft => new(X, Y);
+
+    public Point2D<T> BottomRight => new(Right, Bottom);
+
     public Point2D<T> Center => new(X + Width / T.CreateTruncating(2), Y + Height / T.CreateTruncating(2));
 
     private string DebugDisplayString => $"{X.ToString()} {Y.ToString()} {Width.ToString()} {Height.ToString()}";
+
+    // Can't extend the default empty constructor
+    public Rectangle2D(Point2D<T> cornerOne, Point2D<T> cornerTwo) : this(T.CreateTruncating(0), T.CreateTruncating(0), T.CreateTruncating(0), T.CreateTruncating(0)) {
+        T minX = T.Min(cornerOne.X, cornerTwo.X);
+        T maxX = T.Max(cornerOne.X, cornerTwo.X);
+        T minY = T.Min(cornerOne.Y, cornerTwo.Y);
+        T maxY = T.Max(cornerOne.Y, cornerTwo.Y);
+
+        X = minX;
+        Y = minY;
+        Width = maxX - minX;
+        Height = maxY - minY;
+    }
 
     public static explicit operator Rectangle(Rectangle2D<T> rectangle) => new(
         int.CreateTruncating(rectangle.X),
         int.CreateTruncating(rectangle.Y),
         int.CreateTruncating(rectangle.Width),
         int.CreateTruncating(rectangle.Height)
+    );
+
+    public static explicit operator Rectangle2D<T>(Rectangle rectangle) => new(
+        T.CreateTruncating(rectangle.X),
+        T.CreateTruncating(rectangle.Y),
+        T.CreateTruncating(rectangle.Width),
+        T.CreateTruncating(rectangle.Height)
     );
 
     public override string ToString() => $"{{X:{X.ToString()} Y:{Y.ToString()} Width:{Width.ToString()} Height:{Height.ToString()}}}";
@@ -52,4 +78,14 @@ public readonly record struct Rectangle2D<T>(T X, T Y, T Width, T Height) where 
     );
 
     public bool Intersects(Rectangle2D<T> other) => other.X < Right && X < other.Right && other.Y < Bottom && Y < other.Bottom;
+
+    /// <summary>
+    ///     Creates a copy of this rectangle in World Coordinates, i.e. all fields multiplied by 16.
+    /// </summary>
+    public Rectangle2D<T> ToWorldCoordinates() => new(
+        X * T.CreateTruncating(LWMUtils.TilePixelsSideLength),
+        Y * T.CreateTruncating(LWMUtils.TilePixelsSideLength),
+        Width * T.CreateTruncating(LWMUtils.TilePixelsSideLength),
+        Height * T.CreateTruncating(LWMUtils.TilePixelsSideLength)
+    );
 }

@@ -26,16 +26,16 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
 
     public override int UpdatePriority => -1;
 
-    public Rectangle? RoomBoundingBox {
+    public Rectangle2D<int>? RoomBoundingBox {
         get;
         private set;
     }
 
-    public Rectangle? PrevTickRoomBoundingBox {
+    public Rectangle2D<int>? PrevTickRoomBoundingBox {
         get;
         private set;
         // Set to "invalid" so that the first update cycle we don't trigger a mass town-creation cascade
-    } = LWMUtils.InvalidRectangle;
+    } = Rectangle2D<int>.NegativeOne;
 
     public HomeRestingInfo RestInfo {
         get;
@@ -59,13 +59,13 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
             NPC.UpdateHomeTileState(NPC.homeless, (int)NPC.Center.X / 16, (int)(NPC.position.Y + NPC.height + 4f) / 16);
         }
 
-        if (PrevTickRoomBoundingBox != LWMUtils.InvalidRectangle && PrevTickRoomBoundingBox != RoomBoundingBox) {
+        if (PrevTickRoomBoundingBox != Rectangle2D<int>.NegativeOne && PrevTickRoomBoundingBox != RoomBoundingBox) {
             if (PrevTickRoomBoundingBox is { } prevTickRoomBoundingBox) {
-                TownNPCTownSystem.Instance.RemoveRoomFromTown(new Point2D<int>(prevTickRoomBoundingBox.X, prevTickRoomBoundingBox.Y));
+                TownNPCTownSystem.Instance.RemoveRoomFromTown(prevTickRoomBoundingBox);
             }
 
             if (RoomBoundingBox is { } roomBoundingBox) {
-                TownNPCTownSystem.Instance.AddRoomToTown(new Point2D<int>(roomBoundingBox.X, roomBoundingBox.Y));
+                TownNPCTownSystem.Instance.AddRoomToTown(roomBoundingBox);
             }
         }
 
@@ -80,9 +80,9 @@ public class TownNPCHousingModule : TownNPCModule, IOnTownNPCAttack {
         _blockedHomeTimer += LWMUtils.RealLifeSecond * 2;
     }
 
-    public Rectangle? UpdateRoomBoundingBox() {
+    public Rectangle2D<int>? UpdateRoomBoundingBox() {
         return RoomBoundingBox = !NPC.homeless && WorldGen.StartRoomCheck(NPC.homeTileX, NPC.homeTileY - 1)
-            ? new Rectangle(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1 + 1, WorldGen.roomY2 - WorldGen.roomY1 + 1)
+            ? new Rectangle2D<int>(WorldGen.roomX1, WorldGen.roomY1, WorldGen.roomX2 - WorldGen.roomX1 + 1, WorldGen.roomY2 - WorldGen.roomY1 + 1)
             : null;
     }
 

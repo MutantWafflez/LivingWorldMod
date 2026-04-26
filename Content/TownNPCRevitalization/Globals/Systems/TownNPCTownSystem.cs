@@ -23,50 +23,86 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
     private readonly record struct PointOfInterest(PointOfInterestType Type, Point2D<int> Position);
 
-    private readonly record struct TownData(Rectangle TownZone, List<Point2D<int>> RoomPositions, TownNPCPathfinder TownPathfinder);
+    private readonly record struct TownData(Rectangle2D<int> TownZone, List<Rectangle2D<int>> RoomRects, TownNPCPathfinder TownPathfinder);
 
     private const int MaximumTileRangeForRoomLinking = 75;
 
     private List<TownData> _towns;
 
-    private static Rectangle CreateTownZoneFromRoomPositions(List<Point2D<int>> roomPositions) {
+    private static Rectangle2D<int> CreateTownZoneFromRoomPositions(List<Rectangle2D<int>> roomRects) {
         Point2D<int> topLeftOfTown = new (int.MaxValue, int.MaxValue);
         Point2D<int> bottomRightOfTown = new (int.MinValue, int.MinValue);
-        foreach (Point2D<int> point in roomPositions) {
-            if (point.X < topLeftOfTown.X) {
-                topLeftOfTown.X = point.X;
+        foreach (Rectangle2D<int> rect in roomRects) {
+            if (rect.X < topLeftOfTown.X) {
+                topLeftOfTown.X = rect.X;
             }
 
-            if (point.Y < topLeftOfTown.Y) {
-                topLeftOfTown.Y = point.Y;
+            if (rect.Y < topLeftOfTown.Y) {
+                topLeftOfTown.Y = rect.Y;
             }
 
-            if (point.X > bottomRightOfTown.X) {
-                bottomRightOfTown.X = point.X + 1;
+            if (rect.Right > bottomRightOfTown.X) {
+                bottomRightOfTown.X = rect.X + 1;
             }
 
-            if (point.Y > bottomRightOfTown.Y) {
-                bottomRightOfTown.Y = point.Y + 1;
+            if (rect.Y > bottomRightOfTown.Y) {
+                bottomRightOfTown.Y = rect.Y + 1;
             }
         }
 
-        return LWMUtils.NewRectFromCorners((Point)topLeftOfTown, (Point)bottomRightOfTown);
+        return new Rectangle2D<int>(topLeftOfTown, bottomRightOfTown);
     }
 
     /// <summary>
     ///     Returns a copy of the passed-in town object with the zone replace with a correct one based on the town's room positions. Only really needs to be called if the internal room position list is
     ///     modified without copying the struct.
     /// </summary>
-    private static TownData CopyTownWithNewZone(TownData town) => town with { TownZone = CreateTownZoneFromRoomPositions(town.RoomPositions) };
+    private static TownData CopyTownWithNewZone(TownData town) => town with { TownZone = CreateTownZoneFromRoomPositions(town.RoomRects) };
 
     /// <summary>
     ///     Creates a new <see cref="TownNPCPathfinder" /> instance based on the rectangle passed in for use for NPCs within whatever Town has said rectangle as its zone.
     /// </summary>
-    private static TownNPCPathfinder CreatePathfinderFromTownZone(Rectangle townZone) {
+    private static TownNPCPathfinder CreatePathfinderFromTownZone(Rectangle2D<int> townZone) {
         ushort gridSizeX = Math.Max(LWMUtils.CeilingToNearestPowerOfTwo((ushort)townZone.Width), (ushort)TownNPCPathfinderModule.PathfinderSize);
         ushort gridSizeY = Math.Max(LWMUtils.CeilingToNearestPowerOfTwo((ushort)townZone.Height), (ushort)(TownNPCPathfinderModule.PathfinderSize / 2));
 
-        return new TownNPCPathfinder((Point2D<ushort>)(townZone.Center - new Point(gridSizeX / 2, gridSizeY / 2)), gridSizeX, gridSizeY);
+        return new TownNPCPathfinder((townZone.Center - new Point2D<int>(gridSizeX / 2, gridSizeY / 2)).Convert<ushort>(), gridSizeX, gridSizeY);
+    }
+
+    /// <summary>
+    ///     Confirms that the town in question is still "valid", meaning that all rooms are still within linkable distance (<see cref="MaximumTileRangeForRoomLinking" />) of each other. If valid, return
+    ///     true. If invalid, returns false and passes out a list of room positions that were unlinked.
+    /// </summary>
+    private static bool IsTownValid(TownData townData, out List<Rectangle2D<int>> unlinkedRoomPositions) {
+        unlinkedRoomPositions = [];
+        if (townData.RoomRects.Count <= 0) {
+            return false;
+        }
+
+        HashSet<Rectangle2D<int>> visitedSet = [];
+        Queue<Rectangle2D<int>> frontier = [];
+        frontier.Enqueue(townData.RoomRects[0]);
+        while (frontier.Count > 0) {
+            Rectangle2D<int> currentRoom = frontier.Dequeue();
+            if (!visitedSet.Add(currentRoom)) {
+                continue;
+            }
+
+            foreach (Rectangle2D<int> linkedRoom in townData.RoomRects) {
+                if (currentRoom.Center.DistanceSquared(linkedRoom.Center) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking) {
+                    continue;
+                }
+
+                frontier.Enqueue(linkedRoom);
+            }
+        }
+
+        if (visitedSet.Count == townData.RoomRects.Count) {
+            return true;
+        }
+
+        unlinkedRoomPositions = townData.RoomRects.Except(visitedSet).ToList();
+        return false;
     }
 
     public override void ClearWorld() {
@@ -76,21 +112,16 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     public override void PostWorldLoad() {
         _towns = [];
 
-        List<Point2D<int>> roomPoints = [];
+        List<Rectangle2D<int>> roomRects = [];
         foreach (NPC npc in Main.ActiveNPCs) {
-            if (!npc.TryGetGlobalNPC(out TownNPCHousingModule housingModule) || housingModule.UpdateRoomBoundingBox() is not { } roomBoundingBox) {
+            if (!npc.TryGetGlobalNPC(out TownNPCHousingModule housingModule) || housingModule.UpdateRoomBoundingBox() is not { } roomBoundingBox || roomRects.Contains(roomBoundingBox)) {
                 continue;
             }
 
-            Point2D<int> point = new(roomBoundingBox.X, roomBoundingBox.Y);
-            if (roomPoints.Contains(point)) {
-                continue;
-            }
-
-            roomPoints.Add(point);
+            roomRects.Add(roomBoundingBox);
         }
 
-        CalculateTowns(roomPoints);
+        CalculateTowns(roomRects);
     }
 
     public override void PostDrawTiles() {
@@ -101,16 +132,16 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
         Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
         for (int i = 0; i < _towns.Count; i++) {
-            (Rectangle townZone, List<Point2D<int>> roomPositions, TownNPCPathfinder pathfinder) = _towns[i];
+            (Rectangle2D<int> townZone, List<Rectangle2D<int>> roomRects, TownNPCPathfinder pathfinder) = _towns[i];
 
-            Utils.DrawRectForTilesInWorld(Main.spriteBatch, townZone, new Color((byte)townZone.X, (byte)townZone.Y, (byte)(townZone.X + townZone.Y)));
+            Utils.DrawRectForTilesInWorld(Main.spriteBatch, (Rectangle)townZone, new Color((byte)townZone.X, (byte)townZone.Y, (byte)(townZone.X + townZone.Y)));
 
-            string townInfo = $"Town Index: {i}, Room Count: {roomPositions.Count}";
+            string townInfo = $"Town Index: {i}, Room Count: {roomRects.Count}";
             ChatManager.DrawColorCodedStringWithShadow(
                 Main.spriteBatch,
                 FontAssets.MouseText.Value,
                 townInfo,
-                townZone.ToWorldCoordinates().TopLeft() - Main.screenPosition,
+                (Vector2)townZone.ToWorldCoordinates().TopLeft - Main.screenPosition,
                 Color.White,
                 0f,
                 Vector2.Zero,
@@ -135,8 +166,8 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
                 Vector2.One
             );
 
-            foreach (Point2D<int> point in roomPositions) {
-                Utils.DrawRectForTilesInWorld(Main.spriteBatch, new Rectangle(point.X, point.Y, 1, 1), Main.DiscoColor);
+            foreach (Rectangle2D<int> rect in roomRects) {
+                Utils.DrawRectForTilesInWorld(Main.spriteBatch, (Rectangle)rect, Main.DiscoColor);
             }
         }
 
@@ -147,15 +178,15 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     ///     Searches the current list of towns and attempts to add the passed-in room to its proper town. If no town is close enough to be grouped into any town, a new town will be created with the room as
     ///     the only position. This method also is capable of merging towns together if such an edge case occurs.
     /// </summary>
-    public void AddRoomToTown(Point2D<int> roomPos) {
+    public void AddRoomToTown(Rectangle2D<int> roomRect) {
         if (_towns.Count <= 0) {
-            CreateTownObjectFromRooms([roomPos]);
+            CreateTownObjectFromRooms([roomRect]);
         }
 
         List<int> linkableTownIndices = [];
-        foreach ((int i, TownData townData) in _towns.Select((town, index) => (Index: index, Town: town)).OrderBy(pair => pair.Town.TownZone.Center.ToVector2().DistanceSQ((Vector2)roomPos))) {
-            foreach (Point2D<int> point in townData.RoomPositions) {
-                if (point.DistanceSquared(roomPos) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking) {
+        foreach ((int i, TownData townData) in _towns.Select((town, index) => (Index: index, Town: town)).OrderBy(pair => pair.Town.TownZone.Center.DistanceSquared(roomRect.Center))) {
+            foreach (Rectangle2D<int> rect in townData.RoomRects) {
+                if (rect.Center.DistanceSquared(roomRect.Center) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking) {
                     continue;
                 }
 
@@ -167,48 +198,48 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
         switch (linkableTownIndices.Count) {
             case <= 0:
-                CreateTownObjectFromRooms([roomPos]);
+                CreateTownObjectFromRooms([roomRect]);
 
                 return;
             case 1: {
                 int firstIndex = linkableTownIndices[0];
 
-                _towns[firstIndex].RoomPositions.Add(roomPos);
+                _towns[firstIndex].RoomRects.Add(roomRect);
                 _towns[firstIndex] = CopyTownWithNewZone(_towns[firstIndex]);
 
                 return;
             }
         }
 
-        List<Point2D<int>> finalTownRoomPosList = [];
+        List<Rectangle2D<int>> finalTownRoomRectList = [];
         for (int i = 0; i < linkableTownIndices.Count; i++) {
             int townIndex = linkableTownIndices[i] - i;
 
-            finalTownRoomPosList.AddRange(_towns[townIndex].RoomPositions);
+            finalTownRoomRectList.AddRange(_towns[townIndex].RoomRects);
             _towns.RemoveAt(townIndex);
         }
 
-        CreateTownObjectFromRooms(finalTownRoomPosList);
+        CreateTownObjectFromRooms(finalTownRoomRectList);
     }
 
     /// <summary>
     ///     Searches all current towns for the one that contains the passed-in room and removes it. If this room was the only one in the town, the town is also removed. If no town was found to contain this
     ///     room, nothing occurs. This method also handles splitting towns into two, if such an edge case occurs (unless disabled; enabled by default).
     /// </summary>
-    public void RemoveRoomFromTown(Point2D<int> roomPos, bool doSplitCheck = true) {
+    public void RemoveRoomFromTown(Rectangle2D<int> roomRect, bool doSplitCheck = true) {
         if (_towns.Count <= 0) {
             return;
         }
 
         int ownedTownIndex = 0;
         int ownedTownRoomPosIndex;
-        TownData ownedTown = _towns[ownedTownIndex];
+        TownData ownedTown;
         for (int i = 0; i < _towns.Count; i++) {
             TownData town = _towns[i];
 
-            for (int j = 0; j < town.RoomPositions.Count; j++) {
-                Point2D<int> point = town.RoomPositions[j];
-                if (roomPos != point) {
+            for (int j = 0; j < town.RoomRects.Count; j++) {
+                Rectangle2D<int> rect = town.RoomRects[j];
+                if (roomRect != rect) {
                     continue;
                 }
 
@@ -223,118 +254,82 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
         return;
 
         OutsideLoop:
-        if (ownedTown.RoomPositions.Count <= 1) {
+        if (ownedTown.RoomRects.Count <= 1) {
             _towns.RemoveAt(ownedTownIndex);
             return;
         }
 
-        ownedTown.RoomPositions.RemoveAt(ownedTownRoomPosIndex);
+        ownedTown.RoomRects.RemoveAt(ownedTownRoomPosIndex);
         _towns[ownedTownIndex] = CopyTownWithNewZone(ownedTown);
         if (!doSplitCheck) {
             return;
         }
 
         // Verify that the town is still valid, and if not, create new towns based on all of the rooms that were unlinked as a result of the removal
-        if (IsTownValid(ownedTown, out List<Point2D<int>> unlinkedRoomPositions)) {
+        if (IsTownValid(ownedTown, out List<Rectangle2D<int>> unlinkedRoomPositions)) {
             return;
         }
 
-        ownedTown.RoomPositions.RemoveAll(pos => unlinkedRoomPositions.Contains(pos));
+        ownedTown.RoomRects.RemoveAll(rect => unlinkedRoomPositions.Contains(rect));
         _towns[ownedTownIndex] = CopyTownWithNewZone(ownedTown);
 
         CalculateTowns(unlinkedRoomPositions);
     }
 
     /// <summary>
-    ///     Confirms that the town in question is still "valid", meaning that all rooms are still within linkable distance (<see cref="MaximumTileRangeForRoomLinking" />) of each other. If valid, return
-    ///     true. If invalid, returns false and passes out a list of room positions that were unlinked.
-    /// </summary>
-    private bool IsTownValid(TownData townData, out List<Point2D<int>> unlinkedRoomPositions) {
-        unlinkedRoomPositions = [];
-        if (townData.RoomPositions.Count <= 0) {
-            return false;
-        }
-
-        HashSet<Point2D<int>> visitedSet = [];
-        Queue<Point2D<int>> frontier = [];
-        frontier.Enqueue(townData.RoomPositions[0]);
-        while (frontier.Count > 0) {
-            Point2D<int> currentVertex = frontier.Dequeue();
-            if (!visitedSet.Add(currentVertex)) {
-                continue;
-            }
-
-            foreach (Point2D<int> linkedVertex in townData.RoomPositions) {
-                if (currentVertex.DistanceSquared(linkedVertex) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking) {
-                    continue;
-                }
-
-                frontier.Enqueue(linkedVertex);
-            }
-        }
-
-        if (visitedSet.Count == townData.RoomPositions.Count) {
-            return true;
-        }
-
-        unlinkedRoomPositions = townData.RoomPositions.Except(visitedSet).ToList();
-        return false;
-    }
-
-    /// <summary>
     ///     From a list of room positions, follow a linking process by distance to determine all grouped together rooms, which will be conglomerated into individual <see cref="TownData" /> objects, added to
     ///     the internal <see cref="_towns" /> list.
     /// </summary>
-    private void CalculateTowns(List<Point2D<int>> allRoomPositions) {
-        if (allRoomPositions.Count <= 0) {
+    private void CalculateTowns(List<Rectangle2D<int>> allRoomRects) {
+        if (allRoomRects.Count <= 0) {
             return;
         }
 
-        Dictionary<Point2D<int>, List<Point2D<int>>> allLinkedRooms = [];
+        Dictionary<Rectangle2D<int>, List<Rectangle2D<int>>> allLinkedRooms = [];
         // First pass; link all rooms that are directly connected via the maximum distance
-        for (int i = 0; i < allRoomPositions.Count; i++) {
-            Point2D<int> posOne = allRoomPositions[i];
-            allLinkedRooms[posOne] = [];
+        for (int i = 0; i < allRoomRects.Count; i++) {
+            Rectangle2D<int> rectOne = allRoomRects[i];
+            allLinkedRooms[rectOne] = [];
 
-            for (int j = 0; j < allRoomPositions.Count; j++) {
+            for (int j = 0; j < allRoomRects.Count; j++) {
                 if (i == j) {
                     continue;
                 }
 
-                Point2D<int> posTwo = allRoomPositions[j];
-                if (posOne.DistanceSquared(posTwo) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking) {
+                Rectangle2D<int> rectTwo = allRoomRects[j];
+                if (rectOne.Center.DistanceSquared(rectTwo.Center) > MaximumTileRangeForRoomLinking * MaximumTileRangeForRoomLinking) {
                     continue;
                 }
 
-                allLinkedRooms[posOne].Add(posTwo);
+                allLinkedRooms[rectOne].Add(rectTwo);
             }
         }
 
         // Second pass; link all rooms that are "chained" together via multiple BFS (my goat), i.e. transitive (if A -> B and B -> C, then A -> C)
-        HashSet<Point2D<int>> visitedSet = [];
-        foreach (Point2D<int> rootVertex in allRoomPositions) {
-            if (visitedSet.Contains(rootVertex)) {
+        HashSet<Rectangle2D<int>> visitedSet = [];
+        foreach (Rectangle2D<int> rootRect in allRoomRects) {
+            if (visitedSet.Contains(rootRect)) {
                 continue;
             }
 
-            List<Point2D<int>> linkedVertices = [];
-            Queue<Point2D<int>> frontier = [];
-            frontier.Enqueue(rootVertex);
+            List<Rectangle2D<int>> linkedRooms = [];
+            Queue<Rectangle2D<int>> frontier = [];
+            frontier.Enqueue(rootRect);
             while (frontier.Count > 0) {
-                Point2D<int> currentVertex = frontier.Dequeue();
-                linkedVertices.Add(currentVertex);
+                Rectangle2D<int> currentVertex = frontier.Dequeue();
+                linkedRooms.Add(currentVertex);
                 visitedSet.Add(currentVertex);
 
-                foreach (Point2D<int> linkedVertex in allLinkedRooms[currentVertex]) {
-                    if (!visitedSet.Add(linkedVertex)) {
+                foreach (Rectangle2D<int> linkedRect in allLinkedRooms[currentVertex]) {
+                    if (!visitedSet.Add(linkedRect)) {
                         continue;
                     }
 
-                    frontier.Enqueue(linkedVertex);
+                    frontier.Enqueue(linkedRect);
                 }
             }
 
-            CreateTownObjectFromRooms(linkedVertices);
+            CreateTownObjectFromRooms(linkedRooms);
         }
     }
 
@@ -342,8 +337,8 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     ///     Given a list of room positions, add a new <see cref="TownData" /> object to the internal <see cref="_towns" /> list. This method assumes that the room positions have been determined to be linked
     ///     together by distance.
     /// </summary>
-    private void CreateTownObjectFromRooms(List<Point2D<int>> roomPositions) {
-        Rectangle townZone = CreateTownZoneFromRoomPositions(roomPositions);
+    private void CreateTownObjectFromRooms(List<Rectangle2D<int>> roomPositions) {
+        Rectangle2D<int> townZone = CreateTownZoneFromRoomPositions(roomPositions);
 
         _towns.Add(new TownData(townZone, roomPositions, CreatePathfinderFromTownZone(townZone)));
     }

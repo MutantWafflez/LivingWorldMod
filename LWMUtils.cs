@@ -38,6 +38,20 @@ public static partial class LWMUtils {
         BottomRight
     }
 
+    extension(string key) {
+        /// <summary>
+        ///     Extension for strings that will turn the provided string into its <see cref="LocalizedText" /> equivalent, assuming
+        ///     the provided string is the key for a <see cref="LWM" /> localization file text value.
+        /// </summary>
+        public LocalizedText Localized() => LWM.Instance.GetLocalization(key);
+
+        /// <summary>
+        ///     Extension for strings that will prepend "Mods.LivingWorldMod." to the string, for use with generating localization keys
+        ///     instead of <see cref="LocalizedText" /> objects directly.
+        /// </summary>
+        public string PrependModKey() => $"Mods.{nameof(LivingWorldMod)}.{key}";
+    }
+
     /// <summary>
     ///     Ticks in a real world second.
     /// </summary>
@@ -127,7 +141,7 @@ public static partial class LWMUtils {
     ///     A rectangle considered to be "invalid" or equivalent to a "null" rectangle. Arbitrarily set to a value where X and Y is -1. Useful in scenarios where <see cref="Rectangle" />? is unwanted for
     ///     some reason.
     /// </summary>
-    public static readonly Rectangle InvalidRectangle = new(-1, -1, 0, 0);
+    public static readonly Rectangle InvalidXnaRectangle = new(-1, -1, 0, 0);
 
     /// <summary>
     ///     Returns world size (on the X coordinate) of the current world being played.
@@ -220,20 +234,6 @@ public static partial class LWMUtils {
     } = new ();
 
     private static Exception ILInstructionNotFoundException => new ("Could not find specified IL instruction.");
-
-    extension(string key) {
-        /// <summary>
-        ///     Extension for strings that will turn the provided string into its <see cref="LocalizedText" /> equivalent, assuming
-        ///     the provided string is the key for a <see cref="LWM" /> localization file text value.
-        /// </summary>
-        public LocalizedText Localized() => LWM.Instance.GetLocalization(key);
-
-        /// <summary>
-        ///     Extension for strings that will prepend "Mods.LivingWorldMod." to the string, for use with generating localization keys
-        ///     instead of <see cref="LocalizedText" /> objects directly.
-        /// </summary>
-        public string PrependModKey() => $"Mods.{nameof(LivingWorldMod)}.{key}";
-    }
 
     /// <summary>
     ///     Converts this <see cref="LocalizedText" /> instance into its <see cref="NetworkText" /> equivalent.
