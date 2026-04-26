@@ -30,8 +30,8 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     private List<TownData> _towns;
 
     private static Rectangle2D<int> CreateTownZoneFromRoomPositions(List<Rectangle2D<int>> roomRects) {
-        Point2D<int> topLeftOfTown = new (int.MaxValue, int.MaxValue);
-        Point2D<int> bottomRightOfTown = new (int.MinValue, int.MinValue);
+        Point2D<int> topLeftOfTown = new(int.MaxValue, int.MaxValue);
+        Point2D<int> bottomRightOfTown = new(int.MinValue, int.MinValue);
         foreach (Rectangle2D<int> rect in roomRects) {
             if (rect.X < topLeftOfTown.X) {
                 topLeftOfTown.X = rect.X;
@@ -42,11 +42,11 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
             }
 
             if (rect.Right > bottomRightOfTown.X) {
-                bottomRightOfTown.X = rect.X + 1;
+                bottomRightOfTown.X = rect.Right;
             }
 
-            if (rect.Y > bottomRightOfTown.Y) {
-                bottomRightOfTown.Y = rect.Y + 1;
+            if (rect.Bottom > bottomRightOfTown.Y) {
+                bottomRightOfTown.Y = rect.Bottom;
             }
         }
 
