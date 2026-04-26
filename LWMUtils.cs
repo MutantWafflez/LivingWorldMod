@@ -53,6 +53,56 @@ public static partial class LWMUtils {
         public string PrependModKey() => $"Mods.{nameof(LivingWorldMod)}.{key}";
     }
 
+    extension(ILCursor cursor) {
+        /// <summary>
+        ///     Calls <seealso cref="ILCursor.TryGotoNext" /> normally, but will throw an exception if
+        ///     the goto does not work or does not find the proper instruction.
+        /// </summary>
+        public void ErrorOnFailedGotoNext(  params Func<Instruction, bool>[] predicates) {
+            if (cursor.TryGotoNext(predicates)) {
+                return;
+            }
+
+            throw new ILPatchFailureException(LWM.Instance, cursor.Context, ILInstructionNotFoundException);
+        }
+
+        /// <summary>
+        ///     Calls <seealso cref="ILCursor.TryGotoNext" /> normally, but will throw an exception if
+        ///     the goto does not work or does not find the proper instruction.
+        /// </summary>
+        public void ErrorOnFailedGotoNext( MoveType moveType, params Func<Instruction, bool>[] predicates) {
+            if (cursor.TryGotoNext(moveType, predicates)) {
+                return;
+            }
+
+            throw new ILPatchFailureException(LWM.Instance, cursor.Context, ILInstructionNotFoundException);
+        }
+
+        /// <summary>
+        ///     Calls <seealso cref="ILCursor.TryGotoPrev" /> normally, but will throw an exception if
+        ///     the goto does not work or does not find the proper instruction.
+        /// </summary>
+        public void ErrorOnFailedGotoPrev( params Func<Instruction, bool>[] predicates) {
+            if (cursor.TryGotoPrev(predicates)) {
+                return;
+            }
+
+            throw new ILPatchFailureException(LWM.Instance, cursor.Context, ILInstructionNotFoundException);
+        }
+
+        /// <summary>
+        ///     Calls <seealso cref="ILCursor.TryGotoPrev" /> normally, but will throw an exception if
+        ///     the goto does not work or does not find the proper instruction.
+        /// </summary>
+        public void ErrorOnFailedGotoPrev( MoveType moveType, params Func<Instruction, bool>[] predicates) {
+            if (cursor.TryGotoPrev(moveType, predicates)) {
+                return;
+            }
+
+            throw new ILPatchFailureException(LWM.Instance, cursor.Context, ILInstructionNotFoundException);
+        }
+    }
+
     /// <summary>
     ///     Ticks in a real world second.
     /// </summary>
@@ -650,54 +700,6 @@ public static partial class LWMUtils {
         rectangle.Width * 16,
         rectangle.Height * 16
     );
-
-    /// <summary>
-    ///     Calls <seealso cref="ILCursor.TryGotoNext" /> normally, but will throw an exception if
-    ///     the goto does not work or does not find the proper instruction.
-    /// </summary>
-    public static void ErrorOnFailedGotoNext(this ILCursor cursor, params Func<Instruction, bool>[] predicates) {
-        if (cursor.TryGotoNext(predicates)) {
-            return;
-        }
-
-        throw new ILPatchFailureException(LWM.Instance, cursor.Context, ILInstructionNotFoundException);
-    }
-
-    /// <summary>
-    ///     Calls <seealso cref="ILCursor.TryGotoNext" /> normally, but will throw an exception if
-    ///     the goto does not work or does not find the proper instruction.
-    /// </summary>
-    public static void ErrorOnFailedGotoNext(this ILCursor cursor, MoveType moveType, params Func<Instruction, bool>[] predicates) {
-        if (cursor.TryGotoNext(moveType, predicates)) {
-            return;
-        }
-
-        throw new ILPatchFailureException(LWM.Instance, cursor.Context, ILInstructionNotFoundException);
-    }
-
-    /// <summary>
-    ///     Calls <seealso cref="ILCursor.TryGotoPrev" /> normally, but will throw an exception if
-    ///     the goto does not work or does not find the proper instruction.
-    /// </summary>
-    public static void ErrorOnFailedGotoPrev(this ILCursor cursor, params Func<Instruction, bool>[] predicates) {
-        if (cursor.TryGotoPrev(predicates)) {
-            return;
-        }
-
-        throw new ILPatchFailureException(LWM.Instance, cursor.Context, ILInstructionNotFoundException);
-    }
-
-    /// <summary>
-    ///     Calls <seealso cref="ILCursor.TryGotoPrev" /> normally, but will throw an exception if
-    ///     the goto does not work or does not find the proper instruction.
-    /// </summary>
-    public static void ErrorOnFailedGotoPrev(this ILCursor cursor, MoveType moveType, params Func<Instruction, bool>[] predicates) {
-        if (cursor.TryGotoPrev(moveType, predicates)) {
-            return;
-        }
-
-        throw new ILPatchFailureException(LWM.Instance, cursor.Context, ILInstructionNotFoundException);
-    }
 
     /// <summary>
     ///     Clones the given method body to the cursor, wholesale copying all
