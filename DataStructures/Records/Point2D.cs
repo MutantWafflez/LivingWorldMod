@@ -60,7 +60,7 @@ public record struct Point2D<T>(T X, T Y) where T : struct, INumber<T> {
 
     public static explicit operator Point2D<T>(Point point) => new (T.CreateTruncating(point.X), T.CreateTruncating(point.Y));
 
-    public override int GetHashCode() => X.GetHashCode() + Y.GetHashCode();
+    public override int GetHashCode() => HashCode.Combine(X, Y);
 
     public override string ToString() => $"{{X:{X.ToString()} Y:{Y.ToString()}}}";
 
