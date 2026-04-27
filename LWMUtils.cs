@@ -1106,6 +1106,42 @@ public static partial class LWMUtils {
     }
 
     /// <summary>
+    ///     Takes the given rectangle and clamps it within the current world using <see cref="Main.maxTilesX" /> and <see cref="Main.maxTilesY" />. Also has a "fluff" parameter that allows for constraining
+    ///     further into the world bounds if necessary.
+    /// </summary>
+    public static Rectangle2D<int> ClampRectangleToWorld(Rectangle2D<int> rect, int worldFluffX = 10, int worldFluffY = 0) {
+        int left = Math.Max(worldFluffX, rect.X);
+        int right = Math.Min(Main.maxTilesX - worldFluffX, rect.Right);
+        int top = Math.Max(worldFluffY, rect.Y);
+        int bottom = Math.Min(Main.maxTilesY - worldFluffY, rect.Bottom);
+
+        Point2D<int> cornerOne = Point2D<int>.Zero;
+        Point2D<int> cornerTwo = Point2D<int>.Zero;
+        if (left <= right) {
+            cornerOne.X = left;
+            cornerTwo.X = left + rect.Width;
+        }
+        else {
+            cornerOne.X = right - rect.Width;
+            cornerTwo.X = right;
+        }
+
+        if (bottom <= top) {
+            cornerOne.Y = top;
+            cornerTwo.Y = top + rect.Height;
+        }
+        else {
+            cornerOne.Y = bottom - rect.Height;
+            cornerTwo.Y = bottom;
+        }
+
+        Rectangle2D<int> worldRect = new (worldFluffX, worldFluffY, Main.maxTilesX - worldFluffX * 2, Main.maxTilesY - worldFluffY * 2);
+        Rectangle2D<int> newRect = new (cornerOne, cornerTwo);
+
+        return worldRect.Intersect(newRect);
+    }
+
+    /// <summary>
     ///     Regex used to
     /// </summary>
     /// <returns></returns>

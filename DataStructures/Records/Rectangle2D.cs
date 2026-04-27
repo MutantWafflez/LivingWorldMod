@@ -19,7 +19,7 @@ public readonly record struct Rectangle2D<T>(T X, T Y, T Width, T Height) where 
     /// <summary>
     ///     Represents an "Empty" rectangle that has no position in space or size (all zero).
     /// </summary>
-    public static readonly Rectangle2D<T> Empty = new(T.CreateTruncating(0), T.CreateTruncating(0), T.CreateTruncating(0), T.CreateTruncating(0));
+    public static readonly Rectangle2D<T> Zero = new(T.CreateTruncating(0), T.CreateTruncating(0), T.CreateTruncating(0), T.CreateTruncating(0));
 
     public static readonly Rectangle2D<T> NegativeOne = new(T.CreateTruncating(-1), T.CreateTruncating(-1), T.CreateTruncating(0), T.CreateTruncating(0));
 
@@ -28,6 +28,10 @@ public readonly record struct Rectangle2D<T>(T X, T Y, T Width, T Height) where 
     public T Bottom => Y + Height;
 
     public Point2D<T> TopLeft => new(X, Y);
+
+    public Point2D<T> TopRight => new(Right, Y);
+
+    public Point2D<T> BottomLeft => new(X, Bottom);
 
     public Point2D<T> BottomRight => new(Right, Bottom);
 
@@ -50,6 +54,8 @@ public readonly record struct Rectangle2D<T>(T X, T Y, T Width, T Height) where 
         Height = maxY - minY;
     }
 
+    public Rectangle2D(Point2D<T> topLeft, T width, T height) : this(topLeft.X, topLeft.Y, width, height) { }
+
     public static explicit operator Rectangle(Rectangle2D<T> rectangle) => new(
         int.CreateTruncating(rectangle.X),
         int.CreateTruncating(rectangle.Y),
@@ -63,7 +69,7 @@ public readonly record struct Rectangle2D<T>(T X, T Y, T Width, T Height) where 
         T.CreateTruncating(rectangle.Width),
         T.CreateTruncating(rectangle.Height)
     );
-    
+
     public static Rectangle2D<T> operator +(Rectangle2D<T> rect, Point2D<T> point) => rect with { X = rect.X + point.X, Y = rect.Y + point.Y };
 
     public static Rectangle2D<T> operator -(Rectangle2D<T> rect, Point2D<T> point) => rect with { X = rect.X - point.X, Y = rect.Y - point.Y };
@@ -71,6 +77,16 @@ public readonly record struct Rectangle2D<T>(T X, T Y, T Width, T Height) where 
     public override string ToString() => $"{{X:{X.ToString()} Y:{Y.ToString()} Width:{Width.ToString()} Height:{Height.ToString()}}}";
 
     public override int GetHashCode() => HashCode.Combine(X, Y, Width, Height);
+
+    /// <summary>
+    ///     Creates a new instance of this point converted to the <see cref="TOther" /> type instead of <see cref="T" />.
+    /// </summary>
+    public Rectangle2D<TOther> Convert<TOther>() where TOther : struct, INumber<TOther> => new (
+        TOther.CreateTruncating(X),
+        TOther.CreateTruncating(Y),
+        TOther.CreateTruncating(Width),
+        TOther.CreateTruncating(Height)
+    );
 
     public bool Contains(Point2D<T> point) => X <= point.X && point.X < X + Width && Y <= point.Y && point.Y < Y + Height;
 
@@ -84,6 +100,22 @@ public readonly record struct Rectangle2D<T>(T X, T Y, T Width, T Height) where 
     );
 
     public bool Intersects(Rectangle2D<T> other) => other.X < Right && X < other.Right && other.Y < Bottom && Y < other.Bottom;
+
+    /// <summary>
+    ///     Returns a new rectangle that is the insersection of this rectangle and the passed-in rectangle.
+    /// </summary>
+    public Rectangle2D<T> Intersect(Rectangle2D<T> other) {
+        if (!Intersects(other)) {
+            return Zero;
+        }
+
+        T width = T.Min(X + Width, other.X + other.Width);
+        T height = T.Min(Y + Height, other.Y + other.Height);
+
+        T x = T.Max(X, other.X);
+        T y = T.Max(Y, other.Y);
+        return new Rectangle2D<T>(x, y, width - x, height - y);
+    }
 
     /// <summary>
     ///     Creates a copy of this rectangle in World Coordinates, i.e. all fields multiplied by 16.

@@ -109,18 +109,20 @@ public class TownNPCPathfinder {
     private byte _currentOpenNodeValue = 1;
     private byte _currentClosedNodeValue = 2;
 
-    public TownNPCPathfinder(Point2D<ushort> topLeftOfGrid, ushort gridSize) : this(topLeftOfGrid, gridSize, gridSize) { }
+    public TownNPCPathfinder(Point2D<ushort> topLeftOfGrid, ushort gridSize) : this(new Rectangle2D<ushort>(topLeftOfGrid, gridSize, gridSize)) { }
 
-    public TownNPCPathfinder(Point2D<ushort> topLeftOfGrid, ushort gridSizeWidth, ushort gridSizeHeight) {
-        this.topLeftOfGrid = topLeftOfGrid;
+    public TownNPCPathfinder(Rectangle2D<ushort> pathfinderGrid)  {
+        topLeftOfGrid = pathfinderGrid.TopLeft;
 
-        gridSizeX = gridSizeWidth;
-        gridSizeY = gridSizeHeight;
+        gridSizeX = pathfinderGrid.Width;
+        gridSizeY = pathfinderGrid.Height;
 
         _nodeGrid = new PointGrid<InternalNode>(new InternalNode[gridSizeX, gridSizeY]);
         _tileGrid = new PointGrid<TileData>(GenerateTileGrid());
         _openQueue = new PriorityQueue<Point2D<ushort>, Point2D<ushort>>(Comparer<Point2D<ushort>>.Create((pointOne, pointTwo) => _nodeGrid[pointOne].f.CompareTo(_nodeGrid[pointTwo].f)));
     }
+
+    public TownNPCPathfinder(Point2D<ushort> topLeftOfGrid, ushort gridSizeWidth, ushort gridSizeHeight) : this(new Rectangle2D<ushort>(topLeftOfGrid, gridSizeWidth, gridSizeHeight)) { }
 
     private static byte GetTileMovementCost(Tile tile) {
         byte tileCost = 0;

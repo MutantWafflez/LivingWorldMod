@@ -353,13 +353,8 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             return _currentPathfinderResult;
         }
 
-        Point topLeftOfGrid = TopLeftOfPathfinderZone;
-
-        const int worldFluff = 10;
-        topLeftOfGrid.X = Utils.Clamp(topLeftOfGrid.X, worldFluff, Main.maxTilesX - PathfinderSize - worldFluff - 1);
-        topLeftOfGrid.Y = Utils.Clamp(topLeftOfGrid.Y, 0, Main.maxTilesY - PathfinderSize - 1);
-
-        TownNPCPathfinder pathFinder = _cachedPathfinder ?? new TownNPCPathfinder(new Point2D<ushort>((ushort)topLeftOfGrid.X, (ushort)topLeftOfGrid.Y), PathfinderSize);
+        Rectangle2D<int> pathfinderGrid = LWMUtils.ClampRectangleToWorld(new Rectangle2D<int>(TopLeftOfPathfinderZone.X, TopLeftOfPathfinderZone.Y, PathfinderSize, PathfinderSize));
+        TownNPCPathfinder pathFinder = _cachedPathfinder ?? new TownNPCPathfinder(pathfinderGrid.Convert<ushort>());
 
         Point adjustedBottomLeftOfNPC = BottomLeftTileOfNPC;
         Tile bottomLeftTileOfNPC = Main.tile[adjustedBottomLeftOfNPC];
@@ -368,8 +363,8 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         }
 
         List<PathNode> path = pathFinder.FindPath(
-            (Point2D<ushort>)(adjustedBottomLeftOfNPC - topLeftOfGrid),
-            (Point2D<ushort>)(endPoint - topLeftOfGrid),
+            (Point2D<ushort>)(adjustedBottomLeftOfNPC - (Point)pathfinderGrid.TopLeft),
+            (Point2D<ushort>)(endPoint - (Point)pathfinderGrid.TopLeft),
             (ushort)Math.Ceiling(NPC.width / 16f),
             (ushort)Math.Ceiling(NPC.height / 16f)
         );
@@ -379,7 +374,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
         }
 
         PrunePath(path);
-        PathfinderResult result = new(topLeftOfGrid, endPoint, default(PathNode), path);
+        PathfinderResult result = new((Point)pathfinderGrid.TopLeft, endPoint, default(PathNode), path);
         _cachedResults.Add(result);
         return result;
     }
