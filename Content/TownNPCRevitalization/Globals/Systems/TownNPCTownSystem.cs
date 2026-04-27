@@ -67,7 +67,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
         ushort gridSizeY = Math.Max(LWMUtils.CeilingToNearestPowerOfTwo((ushort)townZone.Height), (ushort)(TownNPCPathfinderModule.PathfinderSize / 2));
         Point2D<int> topLeftOfGrid = townZone.Center - new Point2D<int>(gridSizeX / 2, gridSizeY / 2);
 
-        Rectangle2D<ushort> pathfinderGrid = LWMUtils.ClampRectangleToWorld(new Rectangle2D<int>(topLeftOfGrid.Convert<int>(), gridSizeX, gridSizeY)).Convert<ushort>();
+        Rectangle2D<ushort> pathfinderGrid = LWMUtils.ClampRectangleToWorld(new Rectangle2D<int>(topLeftOfGrid, gridSizeX, gridSizeY)).Convert<ushort>();
         return new TownNPCPathfinder(pathfinderGrid);
     }
 
