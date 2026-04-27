@@ -13,16 +13,9 @@ using Terraria.UI.Chat;
 namespace LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 
 /// <summary>
-///     System that handles the conglomeration of Town NPCs in the same area, internally referred to as a "Town". Manages the shared usage of a pathfinder grid for performance, "Points of Interest"
-///     for selecting places for Town NPCs to pathfind to, and more to-be implemented.
+///     System that handles the conglomeration of Town NPCs in the same area, internally referred to as a "Town". Manages the shared usage of a pathfinder grid for performance and other related benefits.
 /// </summary>
 public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
-    private enum PointOfInterestType : byte {
-        None
-    }
-
-    private readonly record struct PointOfInterest(PointOfInterestType Type, Point2D<int> Position);
-
     private readonly record struct TownData(Rectangle2D<int> TownZone, List<Rectangle2D<int>> RoomRects, TownNPCPathfinder TownPathfinder);
 
     private const int MaximumTileRangeForRoomLinking = 75;
