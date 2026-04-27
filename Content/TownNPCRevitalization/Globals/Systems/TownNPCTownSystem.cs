@@ -65,8 +65,10 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     private static TownNPCPathfinder CreatePathfinderFromTownZone(Rectangle2D<int> townZone) {
         ushort gridSizeX = Math.Max(LWMUtils.CeilingToNearestPowerOfTwo((ushort)townZone.Width), (ushort)TownNPCPathfinderModule.PathfinderSize);
         ushort gridSizeY = Math.Max(LWMUtils.CeilingToNearestPowerOfTwo((ushort)townZone.Height), (ushort)(TownNPCPathfinderModule.PathfinderSize / 2));
+        Point2D<int> topLeftOfGrid = townZone.Center - new Point2D<int>(gridSizeX / 2, gridSizeY / 2);
 
-        return new TownNPCPathfinder((townZone.Center - new Point2D<int>(gridSizeX / 2, gridSizeY / 2)).Convert<ushort>(), gridSizeX, gridSizeY);
+        Rectangle2D<ushort> pathfinderGrid = LWMUtils.ClampRectangleToWorld(new Rectangle2D<int>(topLeftOfGrid.Convert<int>(), gridSizeX, gridSizeY)).Convert<ushort>();
+        return new TownNPCPathfinder(pathfinderGrid);
     }
 
     /// <summary>
@@ -231,7 +233,7 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
             return;
         }
 
-        int ownedTownIndex = 0;
+        int ownedTownIndex;
         int ownedTownRoomPosIndex;
         TownData ownedTown;
         for (int i = 0; i < _towns.Count; i++) {
