@@ -92,9 +92,7 @@ public class TownNPCPathfinder {
     private const int MaxFallDistance = 11;
     private const int AdditionalCostForStairs = 15;
 
-    public readonly Point2D<ushort> topLeftOfGrid;
-    public readonly ushort gridSizeX;
-    public readonly ushort gridSizeY;
+    public readonly Rectangle2D<ushort> pathfinderGrid;
 
     private readonly PointGrid<InternalNode> _nodeGrid;
     private readonly PointGrid<TileData> _tileGrid;
@@ -112,12 +110,9 @@ public class TownNPCPathfinder {
     public TownNPCPathfinder(Point2D<ushort> topLeftOfGrid, ushort gridSize) : this(new Rectangle2D<ushort>(topLeftOfGrid, gridSize, gridSize)) { }
 
     public TownNPCPathfinder(Rectangle2D<ushort> pathfinderGrid)  {
-        topLeftOfGrid = pathfinderGrid.TopLeft;
+        this.pathfinderGrid = pathfinderGrid;
 
-        gridSizeX = pathfinderGrid.Width;
-        gridSizeY = pathfinderGrid.Height;
-
-        _nodeGrid = new PointGrid<InternalNode>(new InternalNode[gridSizeX, gridSizeY]);
+        _nodeGrid = new PointGrid<InternalNode>(new InternalNode[this.pathfinderGrid.Width, this.pathfinderGrid.Height]);
         _tileGrid = new PointGrid<TileData>(GenerateTileGrid());
         _openQueue = new PriorityQueue<Point2D<ushort>, Point2D<ushort>>(Comparer<Point2D<ushort>>.Create((pointOne, pointTwo) => _nodeGrid[pointOne].f.CompareTo(_nodeGrid[pointTwo].f)));
     }
@@ -162,11 +157,11 @@ public class TownNPCPathfinder {
     }
 
     private TileData[,] GenerateTileGrid() {
-        TileData[,] grid = new TileData[gridSizeX, gridSizeY];
+        TileData[,] grid = new TileData[pathfinderGrid.Width, pathfinderGrid.Height];
 
-        for (int i = 0; i < gridSizeX; i++) {
-            for (int j = 0; j < gridSizeY; j++) {
-                Point16 tilePos = (Point16)(topLeftOfGrid + new Point2D<ushort>((ushort)i, (ushort)j));
+        for (int i = 0; i < pathfinderGrid.Width; i++) {
+            for (int j = 0; j < pathfinderGrid.Height; j++) {
+                Point16 tilePos = (Point16)(pathfinderGrid.TopLeft + new Point2D<ushort>((ushort)i, (ushort)j));
                 Tile tile = Main.tile[tilePos];
 
                 bool hasTile = tile.HasTile;
@@ -445,7 +440,7 @@ public class TownNPCPathfinder {
         ushort outerBoundX = (ushort)(bottomLeft.X + sizeX - 1);
         ushort outerBoundY = (ushort)(bottomLeft.Y - sizeY + 1);
 
-        return bottomLeft.X < gridSizeX && bottomLeft.Y < gridSizeY && outerBoundX < gridSizeX && outerBoundY < gridSizeY;
+        return bottomLeft.X < pathfinderGrid.Width && bottomLeft.Y < pathfinderGrid.Height && outerBoundX < pathfinderGrid.Width && outerBoundY < pathfinderGrid.Height;
     }
 
     private IEnumerable<TileFlags> FlagsOfTilesRectangleIsOn(Point2D<ushort> bottomLeft, ushort rectWidth) {

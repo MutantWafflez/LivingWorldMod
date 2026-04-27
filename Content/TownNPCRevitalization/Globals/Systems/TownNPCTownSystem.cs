@@ -150,16 +150,16 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
 
             Utils.DrawRectForTilesInWorld(
                 Main.spriteBatch,
-                new Rectangle(pathfinder.topLeftOfGrid.X, pathfinder.topLeftOfGrid.Y, pathfinder.gridSizeX, pathfinder.gridSizeY),
+                new Rectangle(pathfinder.pathfinderGrid.TopLeft.X, pathfinder.pathfinderGrid.TopLeft.Y, pathfinder.pathfinderGrid.Width, pathfinder.pathfinderGrid.Height),
                 Color.White
             );
 
-            string pathfinderInfo = $"Pathfinder Grid Size: {pathfinder.gridSizeX}, {pathfinder.gridSizeY}";
+            string pathfinderInfo = $"Pathfinder Grid Size: {pathfinder.pathfinderGrid.Width}, {pathfinder.pathfinderGrid.Height}";
             ChatManager.DrawColorCodedStringWithShadow(
                 Main.spriteBatch,
                 FontAssets.MouseText.Value,
                 pathfinderInfo,
-                pathfinder.topLeftOfGrid.ToWorldCoordinates() - Main.screenPosition,
+                pathfinder.pathfinderGrid.TopLeft.ToWorldCoordinates() - Main.screenPosition,
                 Color.White,
                 0f,
                 Vector2.Zero,
@@ -274,6 +274,23 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
         _towns[ownedTownIndex] = CopyTownWithNewZone(ownedTown);
 
         CalculateTowns(unlinkedRoomPositions);
+    }
+
+    /// <summary>
+    ///     Gets the pathfinder instance that a position should belong to, determined by the Pathfinder rectangle of each of the towns. If there is no such pathfinder, returns null.
+    /// </summary>
+    public TownNPCPathfinder GetPathfinderForPos(Point2D<ushort> position) {
+        if (_towns.Count <= 0) {
+            return null;
+        }
+
+        foreach ((Rectangle2D<int> _, List<Rectangle2D<int>> _, TownNPCPathfinder townPathfinder) in _towns) {
+            if (townPathfinder.pathfinderGrid.Contains(position)) {
+                return townPathfinder;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>

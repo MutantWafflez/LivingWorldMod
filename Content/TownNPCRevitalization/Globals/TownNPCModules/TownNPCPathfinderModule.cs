@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using LivingWorldMod.Content.TownNPCRevitalization.DataStructures.Classes;
 using LivingWorldMod.Content.TownNPCRevitalization.Globals.BaseTypes.NPCs;
+using LivingWorldMod.Content.TownNPCRevitalization.Globals.Systems;
 using LivingWorldMod.DataStructures.Records;
 using LivingWorldMod.Globals.Configs;
 using Microsoft.Xna.Framework;
@@ -43,7 +44,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
     private bool _isPaused;
     private bool _wasPaused;
 
-    private TownNPCPathfinder _cachedPathfinder;
     private PathfinderResult _currentPathfinderResult;
 
     public override int UpdatePriority => 3;
@@ -85,7 +85,6 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     public override void UpdateModule() {
         _cachedResults.Clear();
-        _cachedPathfinder = null;
 
         if (!IsPathfinding) {
             goto EarlyReturn;
@@ -353,8 +352,17 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             return _currentPathfinderResult;
         }
 
-        Rectangle2D<int> pathfinderGrid = LWMUtils.ClampRectangleToWorld(new Rectangle2D<int>(TopLeftOfPathfinderZone.X, TopLeftOfPathfinderZone.Y, PathfinderSize, PathfinderSize));
-        TownNPCPathfinder pathFinder = _cachedPathfinder ?? new TownNPCPathfinder(pathfinderGrid.Convert<ushort>());
+        Rectangle2D<ushort> pathfinderGrid;
+        TownNPCPathfinder pathfinder;
+        if (TownNPCTownSystem.Instance.GetPathfinderForPos((Point2D<ushort>)BottomLeftTileOfNPC) is { } townPathfinder) {
+            pathfinderGrid = townPathfinder.pathfinderGrid;
+            pathfinder = townPathfinder;
+        }
+        else {
+            pathfinderGrid = LWMUtils.ClampRectangleToWorld(new Rectangle2D<int>(TopLeftOfPathfinderZone.X, TopLeftOfPathfinderZone.Y, PathfinderSize, PathfinderSize)).Convert<ushort>();
+            pathfinder = new TownNPCPathfinder(pathfinderGrid.Convert<ushort>());
+        }
+
 
         Point adjustedBottomLeftOfNPC = BottomLeftTileOfNPC;
         Tile bottomLeftTileOfNPC = Main.tile[adjustedBottomLeftOfNPC];
@@ -362,7 +370,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             adjustedBottomLeftOfNPC.Y--;
         }
 
-        List<PathNode> path = pathFinder.FindPath(
+        List<PathNode> path = pathfinder.FindPath(
             (Point2D<ushort>)(adjustedBottomLeftOfNPC - (Point)pathfinderGrid.TopLeft),
             (Point2D<ushort>)(endPoint - (Point)pathfinderGrid.TopLeft),
             (ushort)Math.Ceiling(NPC.width / 16f),
