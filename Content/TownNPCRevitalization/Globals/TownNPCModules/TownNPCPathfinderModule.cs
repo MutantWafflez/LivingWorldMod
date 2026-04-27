@@ -27,7 +27,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     private readonly record struct OpenedDoorData(Point16 TilePos, Rectangle DoorHitBox, bool IsGate = false);
 
-    public const int PathfinderSize = 128;
+    public const int DefaultPathfinderSize = 64;
     private const int MaxPathRecyclesBeforeFailure = 5;
 
     private readonly List<PathfinderResult> _cachedResults = [];
@@ -52,7 +52,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
 
     public Point BottomLeftTileOfNPC => (NPC.BottomLeft + new Vector2(0f, -2f)).ToTileCoordinates();
 
-    public Point TopLeftOfPathfinderZone => BottomLeftTileOfNPC - new Point(PathfinderSize / 2, PathfinderSize / 2);
+    public Point TopLeftOfPathfinderZone => BottomLeftTileOfNPC - new Point(DefaultPathfinderSize / 2, DefaultPathfinderSize / 2);
 
     /// <summary>
     ///     This is what the X velocity for the NPC will be while moving horizontally (not jumping or falling). This defaults to 1f.
@@ -359,7 +359,7 @@ public sealed class TownNPCPathfinderModule : TownNPCModule {
             pathfinder = townPathfinder;
         }
         else {
-            pathfinderGrid = LWMUtils.ClampRectangleToWorld(new Rectangle2D<int>(TopLeftOfPathfinderZone.X, TopLeftOfPathfinderZone.Y, PathfinderSize, PathfinderSize)).Convert<ushort>();
+            pathfinderGrid = LWMUtils.ClampRectangleToWorld(new Rectangle2D<int>(TopLeftOfPathfinderZone.X, TopLeftOfPathfinderZone.Y, DefaultPathfinderSize, DefaultPathfinderSize)).Convert<ushort>();
             pathfinder = new TownNPCPathfinder(pathfinderGrid.Convert<ushort>());
         }
 

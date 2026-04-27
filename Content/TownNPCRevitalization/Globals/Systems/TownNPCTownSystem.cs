@@ -63,8 +63,8 @@ public class TownNPCTownSystem : BaseModSystem<TownNPCTownSystem> {
     ///     Creates a new <see cref="TownNPCPathfinder" /> instance based on the rectangle passed in for use for NPCs within whatever Town has said rectangle as its zone.
     /// </summary>
     private static TownNPCPathfinder CreatePathfinderFromTownZone(Rectangle2D<int> townZone) {
-        ushort gridSizeX = Math.Max(LWMUtils.CeilingToNearestPowerOfTwo((ushort)townZone.Width), (ushort)TownNPCPathfinderModule.PathfinderSize);
-        ushort gridSizeY = Math.Max(LWMUtils.CeilingToNearestPowerOfTwo((ushort)townZone.Height), (ushort)(TownNPCPathfinderModule.PathfinderSize / 2));
+        ushort gridSizeX = Math.Max(LWMUtils.CeilingToNearestPowerOfTwo((ushort)townZone.Width), (ushort)(TownNPCPathfinderModule.DefaultPathfinderSize * 2));
+        ushort gridSizeY = Math.Max(LWMUtils.CeilingToNearestPowerOfTwo((ushort)townZone.Height), (ushort)TownNPCPathfinderModule.DefaultPathfinderSize);
         Point2D<int> topLeftOfGrid = townZone.Center - new Point2D<int>(gridSizeX / 2, gridSizeY / 2);
 
         Rectangle2D<ushort> pathfinderGrid = LWMUtils.ClampRectangleToWorld(new Rectangle2D<int>(topLeftOfGrid, gridSizeX, gridSizeY)).Convert<ushort>();

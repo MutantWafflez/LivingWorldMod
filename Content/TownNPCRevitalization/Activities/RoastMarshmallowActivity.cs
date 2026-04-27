@@ -53,8 +53,8 @@ public class RoastMarshmallowActivity : TownNPCActivity {
     public override bool CanDoActivity(TownGlobalNPC globalNPC, NPC npc) {
         Point origin = npc.GetGlobalNPC<TownNPCPathfinderModule>().TopLeftOfPathfinderZone;
         List<Point> campfires = [];
-        for (int i = origin.X; i < origin.X + TownNPCPathfinderModule.PathfinderSize; i++) {
-            for (int j = origin.Y; j < origin.Y + TownNPCPathfinderModule.PathfinderSize; j++) {
+        for (int i = origin.X; i < origin.X + TownNPCPathfinderModule.DefaultPathfinderSize; i++) {
+            for (int j = origin.Y; j < origin.Y + TownNPCPathfinderModule.DefaultPathfinderSize; j++) {
                 Tile tile = Main.tile[i, j];
                 if (!TileID.Sets.Campfire[tile.TileType]) {
                     continue;
