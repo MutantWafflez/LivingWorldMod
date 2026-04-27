@@ -1110,6 +1110,11 @@ public static partial class LWMUtils {
     ///     further into the world bounds if necessary.
     /// </summary>
     public static Rectangle2D<int> ClampRectangleToWorld(Rectangle2D<int> rect, int worldFluffX = 10, int worldFluffY = 0) {
+        Rectangle2D<int> worldRect = new (worldFluffX, worldFluffY, Main.maxTilesX - worldFluffX * 2, Main.maxTilesY - worldFluffY * 2);
+        if (worldRect.Contains(rect)) {
+            return rect;
+        }
+
         int left = Math.Max(worldFluffX, rect.X);
         int right = Math.Min(Main.maxTilesX - worldFluffX, rect.Right);
         int top = Math.Max(worldFluffY, rect.Y);
@@ -1135,7 +1140,6 @@ public static partial class LWMUtils {
             cornerTwo.Y = bottom;
         }
 
-        Rectangle2D<int> worldRect = new (worldFluffX, worldFluffY, Main.maxTilesX - worldFluffX * 2, Main.maxTilesY - worldFluffY * 2);
         Rectangle2D<int> newRect = new (cornerOne, cornerTwo);
 
         return worldRect.Intersect(newRect);
